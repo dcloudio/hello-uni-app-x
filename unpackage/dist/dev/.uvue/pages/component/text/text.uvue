@@ -1,0 +1,96 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    export default {
+        data() {
+            return {
+                title: 'text',
+                texts: [
+                    'HBuilder，400万开发者选择的IDE',
+                    'MUI，轻巧、漂亮的前端开源框架',
+                    'wap2app，M站快速转换原生体验的App',
+                    '5+Runtime，为HTML5插上原生的翅膀',
+                    'HBuilderX，轻巧、极速，极客编辑器',
+                    'uni-app，终极跨平台方案',
+                    'HBuilder，400万开发者选择的IDE',
+                    'MUI，轻巧、漂亮的前端开源框架',
+                    'wap2app，M站快速转换原生体验的App',
+                    '5+Runtime，为HTML5插上原生的翅膀',
+                    'HBuilderX，轻巧、极速，极客编辑器',
+                    'uni-app，终极跨平台方案',
+                    '......'
+                ] as string[],
+                text: '',
+                canAdd: true,
+                canRemove: false,
+                extraLine: [] as string[]
+            }
+        },
+        methods: {
+            add: function () {
+                this.extraLine.push(this.texts[this.extraLine.length % 12]);
+                this.text = this.extraLine.join('\n');
+                this.canAdd = this.extraLine.length < 12;
+                this.canRemove = this.extraLine.length > 0;
+            },
+            remove: function () {
+                if (this.extraLine.length > 0) {
+                    this.extraLine.pop();
+                    this.text = this.extraLine.join('\n');
+                    this.canAdd = this.extraLine.length < 12;
+                    this.canRemove = this.extraLine.length > 0;
+                }
+            }
+        }
+    }
+
+
+const GenPagesComponentTextTextStyles = [new Map<string, Map<string, Map<string, any>>>([["common-page-head", new Map<string, any>([["", new Map<string, any>([["paddingTop", "35rpx"], ["paddingRight", "35rpx"], ["paddingBottom", "35rpx"], ["paddingLeft", "35rpx"], ["flexDirection", "row"], ["justifyContent", "center"]])]])], ["common-page-head-title-box", new Map<string, any>([["", new Map<string, any>([["paddingTop", 0], ["paddingRight", "40rpx"], ["paddingBottom", 0], ["paddingLeft", "40rpx"], ["height", "88rpx"], ["borderBottomWidth", "2rpx"], ["borderBottomStyle", "solid"], ["borderBottomColor", "#D8D8D8"]])]])], ["common-page-head-title", new Map<string, any>([["", new Map<string, any>([["lineHeight", "88rpx"], ["fontSize", "30rpx"], ["color", "#BEBEBE"]])]])], ["text-box", new Map<string, any>([["", new Map<string, any>([["marginBottom", "40rpx"], ["paddingTop", "40rpx"], ["paddingRight", 0], ["paddingBottom", "40rpx"], ["paddingLeft", 0], ["display", "flex"], ["height", "300rpx"], ["backgroundColor", "#FFFFFF"], ["justifyContent", "center"], ["alignItems", "center"], ["textAlign", "center"]])]])], ["text", new Map<string, any>([["", new Map<string, any>([["fontSize", "30rpx"], ["color", "#353535"], ["lineHeight", "54rpx"]])]])]])]
+@Suppress("UNUSED_PARAMETER") function GenPagesComponentTextTextRender(_ctx: GenPagesComponentTextText): VNode | null {
+const _component_page_head = resolveComponent("page-head")
+const _component_button = resolveComponent("button")
+
+  return createElementVNode("view", null, [
+    createVNode(_component_page_head, new Map<string, any | null>([["title", _ctx.title]]), null, 8 /* PROPS */, ["title"]),
+    createElementVNode("view", new Map<string, any | null>([["class", "uni-padding-wrap uni-common-mt"]]), [
+      createElementVNode("view", new Map<string, any | null>([
+        ["class", "text-box"],
+        ["scroll-y", "true"]
+      ]), [
+        createElementVNode("text", new Map<string, any | null>([["class", "text"]]), toDisplayString(_ctx.text), 1 /* TEXT */)
+      ]),
+      createElementVNode("view", new Map<string, any | null>([["class", "uni-btn-v"]]), [
+        createVNode(_component_button, new Map<string, any | null>([
+          ["class", "uni-btn"],
+          ["type", "primary"],
+          ["disabled", !_ctx.canAdd],
+          ["onClick", _ctx.add]
+        ]), new Map<string, any | null>([
+          ["default", ((): any[] => ["add line"])],
+          ["_", 1 /* STABLE */]
+        ]), 8 /* PROPS */, ["disabled", "onClick"]),
+        createVNode(_component_button, new Map<string, any | null>([
+          ["class", "uni-btn"],
+          ["type", "warn"],
+          ["disabled", !_ctx.canRemove],
+          ["onClick", _ctx.remove]
+        ]), new Map<string, any | null>([
+          ["default", ((): any[] => ["remove line"])],
+          ["_", 1 /* STABLE */]
+        ]), 8 /* PROPS */, ["disabled", "onClick"])
+      ])
+    ])
+  ])
+}
