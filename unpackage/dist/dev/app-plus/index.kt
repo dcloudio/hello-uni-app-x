@@ -11,6 +11,8 @@ import io.dcloud.uts.vue.*;
 import io.dcloud.uts.vue.shared.*;
 import io.dcloud.uts.vue.reactivity.*;
 import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uts.vue.createSSRApp;
+import io.dcloud.uniapp.appframe.AppConfig;
 import io.dcloud.uts.extapi.ShowToastOptions as UniShowToastOptions;
 import io.dcloud.uts.extapi.NavigateToOptions as UniNavigateToOptions;
 import io.dcloud.uts.extapi.SwitchTabOptions as UniSwitchTabOptions;
@@ -23,8 +25,6 @@ import io.dcloud.uts.extapi.navigateTo as uni_navigateTo;
 import io.dcloud.uts.extapi.showToast as uni_showToast;
 import io.dcloud.uts.extapi.navigateBack as uni_navigateBack;
 import io.dcloud.uts.extapi.redirectTo as uni_redirectTo;
-import io.dcloud.uts.vue.createSSRApp;
-import io.dcloud.uniapp.appframe.AppConfig;
 open class GenApp : BaseApp() {
 }
 val GenAppClass = GenApp::class;
@@ -371,7 +371,7 @@ open class GenPagesTabBarComponentComponent : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesTabBarComponentComponent): VNode? {
-        val _component_u_link = resolveComponent("u-link");
+        val _component_u_link = resolveEasyComponent("u-link", GenComponentsULinkULinkClass);
         return createElementVNode("view", Map<String, Any?>(mutableListOf(
             mutableListOf(
                 "class",
@@ -1193,7 +1193,7 @@ open class GenPagesComponentViewView : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentViewView): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
                 mutableListOf(
@@ -2169,7 +2169,7 @@ open class GenPagesComponentScrollViewScrollView : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentScrollViewScrollView): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
                 mutableListOf(
@@ -2651,7 +2651,7 @@ open class GenPagesComponentTextText : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentTextText): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         val _component_button = resolveComponent("button");
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
@@ -2999,7 +2999,7 @@ open class GenPagesComponentProgressProgress : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentProgressProgress): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         val _component_progress = resolveComponent("progress");
         val _component_button = resolveComponent("button");
         return createElementVNode("view", null, mutableListOf(
@@ -3350,7 +3350,7 @@ open class GenPagesComponentButtonButton : BasePage {
     }
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentButtonButton): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         val _component_button = resolveComponent("button");
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
@@ -3869,20 +3869,20 @@ open class GenPagesComponentButtonButton : BasePage {
                             "",
                             Map<String, Any>(mutableListOf(
                                 mutableListOf(
-                                    "marginTop",
+                                    "paddingTop",
                                     0
                                 ),
                                 mutableListOf(
-                                    "marginRight",
-                                    "auto"
+                                    "paddingRight",
+                                    "20%"
                                 ),
                                 mutableListOf(
-                                    "marginBottom",
+                                    "paddingBottom",
                                     0
                                 ),
                                 mutableListOf(
-                                    "marginLeft",
-                                    "auto"
+                                    "paddingLeft",
+                                    "20%"
                                 ),
                                 mutableListOf(
                                     "width",
@@ -3947,7 +3947,7 @@ open class GenPagesComponentRadioRadio : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentRadioRadio): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         val _component_radio = resolveComponent("radio");
         val _component_radio_group = resolveComponent("radio-group");
         return createElementVNode("view", null, mutableListOf(
@@ -4402,7 +4402,7 @@ open class GenPagesComponentCheckboxCheckbox : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentCheckboxCheckbox): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         val _component_checkbox = resolveComponent("checkbox");
         val _component_checkbox_group = resolveComponent("checkbox-group");
         return createElementVNode("view", null, mutableListOf(
@@ -4841,7 +4841,7 @@ open class GenPagesComponentInputInput : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentInputInput): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         return createElementVNode("view", Map<String, Any?>(mutableListOf(
             mutableListOf(
                 "class",
@@ -5728,7 +5728,7 @@ open class GenPagesComponentTextareaTextarea : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentTextareaTextarea): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
                 mutableListOf(
@@ -5938,7 +5938,7 @@ open class GenPagesComponentImageImage : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesComponentImageImage): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
                 mutableListOf(
@@ -6267,7 +6267,7 @@ open class GenPagesTabBarAPIAPI : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesTabBarAPIAPI): VNode? {
-        val _component_u_link = resolveComponent("u-link");
+        val _component_u_link = resolveEasyComponent("u-link", GenComponentsULinkULinkClass);
         return createElementVNode("view", Map<String, Any?>(mutableListOf(
             mutableListOf(
                 "class",
@@ -7090,7 +7090,7 @@ open class GenPagesAPINavigatorNavigator : BasePage {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER")
     open fun render(_ctx: GenPagesAPINavigatorNavigator): VNode? {
-        val _component_page_head = resolveComponent("page-head");
+        val _component_page_head = resolveEasyComponent("page-head", GenComponentsPageHeadPageHeadClass);
         val _component_button = resolveComponent("button");
         return createElementVNode("view", null, mutableListOf(
             createVNode(_component_page_head, Map<String, Any?>(mutableListOf(
