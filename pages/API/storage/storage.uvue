@@ -1,127 +1,273 @@
 <template>
-    <view>
-        <page-head :title="title"></page-head>
-        <view class="uni-common-mt">
-            <view class="uni-list">
-                <view class="uni-list-cell uni-list-cell-line">
-                    <view class="uni-list-cell-left">
-                        <view class="uni-label">key</view>
-                    </view>
-                    <view class="uni-list-cell-db">
-                        <input class="uni-input" type="text" placeholder="请输入key" name="key" :value="key"
-                            @input="keyChange" />
-                    </view>
-                </view>
-                <view class="uni-list-cell">
-                    <view class="uni-list-cell-left">
-                        <view class="uni-label">value</view>
-                    </view>
-                    <view class="uni-list-cell-db">
-                        <input class="uni-input" type="text" placeholder="请输入value" name="data" :value="data"
-                            @input="dataChange" />
-                    </view>
-                </view>
-            </view>
-            <view class="uni-padding-wrap">
-                <view class="uni-btn-v">
-                    <button type="primary" class="uni-btn btn-setstorage" @tap="setStorage">存储数据</button>
-                    <button class="uni-btn" @tap="getStorage">读取数据</button>
-                    <button class="uni-btn" @tap="clearStorage">清理数据</button>
-                </view>
-            </view>
-        </view>
-    </view>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-common-mt">
+			<view class="uni-list">
+				<view class="uni-list-cell uni-list-cell-line">
+					<view class="uni-list-cell-left">
+						<view class="uni-label">key</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" placeholder="请输入key" name="key" :value="key"
+							@input="keyChange" />
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-list-cell-left">
+						<view class="uni-label">value</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" placeholder="请输入value" name="data" :value="data"
+							@input="dataChange" />
+					</view>
+				</view>
+			</view>
+			<view class="uni-padding-wrap">
+				
+				<view class="uni-btn-v">
+					<button class="uni-btn" type="primary" @tap="getStorageInfo">获取储存概述-同步</button>
+					<button class="uni-btn" @tap="getStorageInfoSync">获取储存概述-异步</button>
+				</view>
+				<text>{{storageInfo}}</text>
+				<view class="uni-flex uni-row">
+					<button type="default" style="-webkit-flex: 1;flex: 1;" @tap="strMock">填充字符串</button>
+					<button type="default" style="-webkit-flex: 1;flex: 1;" @tap="complexMock">填充复杂对象</button>
+				</view>
+				<view class="uni-flex uni-row">
+					<button type="default" style="-webkit-flex: 1;flex: 1;" @tap="numberMock">填充整型</button>
+					<button type="default" style="-webkit-flex: 1;flex: 1;" @tap="floatMock">填充浮点型</button>
+				</view>
+			</view>
+			<view class="uni-padding-wrap">
+				<view class="uni-btn-v">
+					<button type="primary" class="uni-btn btn-setstorage" @tap="setStorage">存储数据-异步</button>
+					<button class="uni-btn" @tap="getStorage">读取数据-异步</button>
+					<button class="uni-btn" @tap="removeStorage">移除数据-异步</button>
+					<button class="uni-btn" @tap="clearStorage">清理数据-异步</button>
+				</view>
+				
+				<view class="uni-btn-v">
+					<button type="primary" class="uni-btn btn-setstorage" @tap="setStorageSync">存储数据-同步</button>
+					<button class="uni-btn" @tap="getStorageSync">读取数据-同步</button>
+					<button class="uni-btn" @tap="removeStorageSync">移除数据-同步</button>
+					<button class="uni-btn" @tap="clearStorageSync">清理数据-同步</button>
+				</view>
+
+
+			</view>
+		</view>
+	</view>
 </template>
 <script lang="ts">
-    export default {
-        data() {
-            return {
-                title: 'get/set/clearStorage',
-                key: '',
-                data: ''
-            }
-        },
-        methods: {
-            keyChange: function (e : InputEvent) {
-                this.key = e.detail.value
-            },
-            dataChange: function (e : InputEvent) {
-                this.data = e.detail.value
-            },
-            getStorage: function () {
-                var key = this.key;
-                if (key.length == 0) {
-                    uni.showModal({
-                        title: '读取数据失败',
-                        content: "key 不能为空",
-                        showCancel: false
-                    })
-                } else {
-                    uni.getStorage({
-                        key: key,
-                        success: (res) => {
-                            uni.showModal({
-                                title: '读取数据成功',
-                                content: "data: '" + res.data + "'",
-                                showCancel: false
-                            })
-                        },
-                        fail: () => {
-                            uni.showModal({
-                                title: '读取数据失败',
-                                content: "找不到 key 对应的数据",
-                                showCancel: false
-                            })
-                        }
-                    })
-                }
-            },
-            setStorage: function () {
-                var key = this.key
-                var data = this.data
-                if (key.length == 0) {
-                    uni.showModal({
-                        title: '保存数据失败',
-                        content: 'key 不能为空',
-                        showCancel: false
-                    })
-                } else {
-                    uni.setStorage({
-                        key: key,
-                        data: data,
-                        success: () => {
-                            uni.showModal({
-                                title: '存储数据成功',
-                                content: data,
-                                showCancel: false
-                            })
-                        },
-                        fail: () => {
-                            uni.showModal({
-                                title: '储存数据失败!',
-                                showCancel: false
-                            })
-                        }
-                    })
-                }
-            },
-            clearStorage: function () {
-                this.key = ''
-                this.data = ''
-                uni.clearStorageSync()
-                uni.showModal({
-                    title: '清除数据成功',
-                    content: ' ',
-                    showCancel: false
-                })
-            }
-        }
-    }
+	export default {
+		data() {
+			return {
+				title: 'get/set/clearStorage',
+				key: '',
+				data: '' as any,
+				storageInfo: ''
+			}
+		},
+		methods: {
+			getStorageInfo(){
+				uni.getStorageInfo({
+					success: function (res) {
+						this.storageInfo = JSON.stringify(res)
+					}
+				});
+			},
+			getStorageInfoSync(){
+				try {
+					const res = uni.getStorageInfoSync();
+					this.storageInfo = JSON.stringify(res)
+				} catch (e) {
+					// error
+					console.log(e)
+				}
+
+			},
+			strMock() {
+				this.key = "key_" + Math.random();
+				this.data = "测试字符串数据，长度为16个字符"
+			},
+			complexMock() {
+				this.key = "key_" + Math.random();
+				let jsonObj = {
+					'name': '张三',
+					'age': 12,
+					'classMate': [{
+						'id': 1001,
+						'name': '李四'
+					}, {
+						'id': 1002,
+						'name': 'jack ma'
+					}]
+				}
+				this.data = jsonObj
+			},
+			numberMock() {
+				this.key = "key_" + Math.random();
+				this.data = 10011
+			},
+			floatMock() {
+				this.key = "key_" + Math.random();
+				this.data = 3.1415926535893384626
+			},
+
+			keyChange: function (e : InputEvent) {
+				this.key = e.detail.value
+			},
+			dataChange: function (e : InputEvent) {
+				this.data = e.detail.value
+			},
+			getStorage: function () {
+				var key = this.key;
+				if (key.length == 0) {
+					uni.showModal({
+						title: '读取数据失败',
+						content: "key 不能为空",
+						showCancel: false
+					})
+				} else {
+					uni.getStorage({
+						key: key,
+						success: (res) => {
+							uni.showModal({
+								title: '读取数据成功',
+								content: "data: '" + res.data + "'",
+								showCancel: false
+							})
+						},
+						fail: () => {
+							uni.showModal({
+								title: '读取数据失败',
+								content: "找不到 key 对应的数据",
+								showCancel: false
+							})
+						}
+					})
+				}
+			},
+			getStorageSync: function () {
+				var key = this.key;
+				if (key.length == 0) {
+					uni.showModal({
+						title: '读取数据失败',
+						content: "key 不能为空",
+						showCancel: false
+					})
+				} else {
+					let ret = uni.getStorageSync(key)
+					uni.showModal({
+						title: '读取数据成功',
+						content: "data: '" + ret + "'",
+						showCancel: false
+					})
+				}
+			},
+			setStorage: function () {
+				var key = this.key
+				var data = this.data
+				if (key.length == 0) {
+					uni.showModal({
+						title: '保存数据失败',
+						content: 'key 不能为空',
+						showCancel: false
+					})
+				} else {
+					uni.setStorage({
+						key: key,
+						data: data,
+						success: () => {
+							uni.showModal({
+								title: '存储数据成功',
+								showCancel: false
+							})
+						},
+						fail: () => {
+							uni.showModal({
+								title: '储存数据失败!',
+								showCancel: false
+							})
+						}
+					})
+				}
+			},
+			setStorageSync: function () {
+				var key = this.key
+				var data = this.data
+				if (key.length == 0) {
+					uni.showModal({
+						title: '保存数据失败',
+						content: 'key 不能为空',
+						showCancel: false
+					})
+				} else {
+					uni.setStorageSync(key,data)
+					uni.showModal({
+						title: '存储数据成功',
+						showCancel: false
+					})
+				}
+			},
+			removeStorage: function () {
+				uni.removeStorage({
+					key:this.key,
+					success: () => {
+						uni.showModal({
+							title: '移除数据成功',
+							showCancel: false
+						})
+					},
+					fail: () => {
+						uni.showModal({
+							title: '移除数据失败',
+							showCancel: false
+						})
+					}
+				})
+				
+			},
+			removeStorageSync: function () {
+				uni.removeStorageSync(this.key)
+				uni.showModal({
+					title: '移除数据成功',
+					showCancel: false
+				})
+				
+			},
+			clearStorage: function () {
+				this.key = ''
+				this.data = ''
+				uni.clearStorage()
+				uni.showModal({
+					title: '清除数据成功',
+					content: ' ',
+					showCancel: false
+				})
+			},
+			clearStorageSync: function () {
+				this.key = ''
+				this.data = ''
+				uni.clearStorageSync()
+				uni.showModal({
+					title: '清除数据成功',
+					content: ' ',
+					showCancel: false
+				})
+			}
+		}
+	}
 </script>
 
 <style>
-    .btn-setstorage {
-        background-color: #007aff;
-        color: #ffffff;
-    }
+	.btn-setstorage {
+		background-color: #007aff;
+		color: #ffffff;
+	}
+
+	.button-sp-area {
+		flex-direction: row;
+		margin: 0 auto;
+	}
 </style>
