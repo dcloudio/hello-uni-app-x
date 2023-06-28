@@ -1,6 +1,21 @@
 <template>
     <view>
         <page-head :title="title"></page-head>
+		<view class="uni-list">
+		    <radio-group @change="radioChange">
+		        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+		            :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
+		            :checked="index === current">
+		            {{item.name}}
+		        </radio>
+		    </radio-group>
+		</view>
+		<view class="uni-list">
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">自定义itemColor</view>
+		    <switch :checked="itemColorCustom" />
+		  </view>
+		</view>
         <view class="uni-padding-wrap">
             <view class="uni-btn-v">
                 <button class="target" type="default" @tap="actionSheetTap">弹出action sheet</button>
@@ -9,10 +24,29 @@
     </view>
 </template>
 <script lang="ts">
+	type ItemType = {
+	    value : string,
+	    name : string,
+	}
     export default {
         data() {
             return {
                 title: 'action-sheet',
+				itemColorCustom:false,
+				items: [{
+				    value: '标题',
+				    name: '有标题'
+				},
+				{
+				    value: '',
+				    name: '无标题'
+				},
+				{
+				    value: '超长标题测试内容，测试超过显示最大范围之后的样式-超长标题测试内容，测试超过显示最大范围之后的样式',
+				    name: '超长标题'
+				}
+				] as ItemType[],
+				current: 0,
                 // #ifdef H5
                 buttonRect: {},
                 // #endif
@@ -28,10 +62,19 @@
         },
         // #endif
         methods: {
+			radioChange(e : RadioGroupChangeEvent) {
+			    for (let i = 0; i < this.items.length; i++) {
+			        if (this.items[i].value === e.detail.value) {
+			            this.current = i;
+			            break;
+			        }
+			    }
+			},
             actionSheetTap() {
+				console.log("itemColorCustom  === " + this.itemColorCustom)
                 const that = this
                 uni.showActionSheet({
-                    title: '标题',
+                    title: this.items[this.current].value,
                     itemList: ['item1', 'item2', 'item3', 'item4'],
                     // #ifdef H5
                     popover: {
@@ -49,6 +92,7 @@
                     }
                 })
             },
+			
             // #ifdef H5
             getNodeInfo() {
                 uni.createSelectorQuery().select('.target').boundingClientRect().exec((ret) => {
