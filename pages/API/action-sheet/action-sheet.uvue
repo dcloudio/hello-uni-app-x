@@ -13,7 +13,7 @@
 		<view class="uni-list">
 		  <view class="uni-list-cell uni-list-cell-pd">
 		    <view class="uni-list-cell-db">自定义itemColor</view>
-		    <switch :checked="itemColorCustom" />
+		    <switch :checked="itemColorCustom" @change="itemColorChange"/>
 		  </view>
 		</view>
         <view class="uni-padding-wrap">
@@ -70,27 +70,54 @@
 			        }
 			    }
 			},
+			itemColorChange: function (e : SwitchChangeEvent) {
+				this.itemColorCustom = e.detail.value
+			},
             actionSheetTap() {
-				console.log("itemColorCustom  === " + this.itemColorCustom)
-                const that = this
-                uni.showActionSheet({
-                    title: this.items[this.current].value,
-                    itemList: ['item1', 'item2', 'item3', 'item4'],
-                    // #ifdef H5
-                    popover: {
-                        // 104: navbar + topwindow 高度，暂时 fix createSelectorQuery 在 pc 上获取 top 不准确的 bug
-                        top: that.buttonRect.top + 104 + that.buttonRect.height,
-                        left: that.buttonRect.left + that.buttonRect.width / 2
-                    },
-                    // #endif
-                    success: (e) => {
-                        console.log(e.tapIndex);
-                        uni.showToast({
-                            title: "点击了第" + e.tapIndex + "个选项",
-                            icon: "none"
-                        })
-                    }
-                })
+				
+				const that = this
+				if(this.itemColorCustom){
+					uni.showActionSheet({
+					    title: this.items[this.current].value,
+					    itemList: ['item1', 'item2', 'item3', 'item4'],
+						itemColor:"#ff00ff",
+					    // #ifdef H5
+					    popover: {
+					        // 104: navbar + topwindow 高度，暂时 fix createSelectorQuery 在 pc 上获取 top 不准确的 bug
+					        top: that.buttonRect.top + 104 + that.buttonRect.height,
+					        left: that.buttonRect.left + that.buttonRect.width / 2
+					    },
+					    // #endif
+					    success: (e) => {
+					        console.log(e.tapIndex);
+					        uni.showToast({
+					            title: "点击了第" + e.tapIndex + "个选项",
+					            icon: "none"
+					        })
+					    }
+					})
+				}else{
+					uni.showActionSheet({
+					    title: this.items[this.current].value,
+					    itemList: ['item1', 'item2', 'item3', 'item4'],
+					    // #ifdef H5
+					    popover: {
+					        // 104: navbar + topwindow 高度，暂时 fix createSelectorQuery 在 pc 上获取 top 不准确的 bug
+					        top: that.buttonRect.top + 104 + that.buttonRect.height,
+					        left: that.buttonRect.left + that.buttonRect.width / 2
+					    },
+					    // #endif
+					    success: (e) => {
+					        console.log(e.tapIndex);
+					        uni.showToast({
+					            title: "点击了第" + e.tapIndex + "个选项",
+					            icon: "none"
+					        })
+					    }
+					})
+				}
+                
+                
             },
 			
             // #ifdef H5
