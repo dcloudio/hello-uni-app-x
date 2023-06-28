@@ -2,18 +2,18 @@
     <view>
         <page-head :title="title"></page-head>
         <view class="uni-padding-wrap uni-common-mt">
-            <button type="primary">页面主操作 Normal</button>
+            <button type="primary" class="button test-button">页面主操作 Normal</button>
             <!-- <button type="primary" :loading="loading" class="button">页面主操作 Loading</button> -->
             <button type="primary" :disabled="true" class="button">页面主操作 Disabled</button>
 
-            <button type="default" class="button">页面次要操作 Normal</button>
-            <button type="default" :disabled="true" class="button">页面次要操作 Disabled</button>
+            <button type="default" class="button default-button" @click="addCount">页面次要操作 Normal</button>
+            <button type="default" :disabled="true" class="button disabled-button">页面次要操作 Disabled</button>
 
             <button type="warn" class="button">警告类操作 Normal</button>
             <button type="warn" :disabled="true" class="button">警告类操作 Disabled</button>
 
             <view class="button-sp-area">
-                <button type="primary" :plain="true" class="button">按钮</button>
+                <button type="primary" :plain="true" class="button text-button">{{text}}</button>
                 <button type="primary" :disabled="true" :plain="true" class="button">
                     不可点击的按钮
                 </button>
@@ -24,7 +24,8 @@
                 <view class="uni-flex uni-row">
                     <button class="button mini-btn" type="primary" size="mini">按钮</button>
                     <button class="button mini-btn" type="default" size="mini">按钮</button>
-                    <button class="button mini-btn" type="warn" size="mini">按钮</button>
+                    <button class="button mini-btn" :type="type" :size="size" :plain="plain"
+                        :disabled="disabled">按钮</button>
                 </view>
             </view>
         </view>
@@ -36,7 +37,13 @@
             return {
                 title: 'button',
                 loading: false,
-                _timer: 0
+                _timer: 0,
+                text: '按钮',
+                type: 'warn',
+                size: 'mini',
+                plain: false,
+                disabled: false,
+                count: 0
             }
         },
         onShow() {
@@ -55,6 +62,9 @@
             //         clearTimeout(this._timer);
             //     }
             // }
+            addCount() {
+                this.count++
+            }
         },
     }
 </script>
