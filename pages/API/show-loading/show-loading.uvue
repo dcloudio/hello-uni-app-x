@@ -1,6 +1,16 @@
 <template>
     <view>
         <page-head :title="title"></page-head>
+		<view class="uni-list">
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">是否显示透明蒙层</view>
+		    <switch :checked="maskSelect" @change="maskChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">超长标题</view>
+		    <switch :checked="titleSelect" @change="titleChange"/>
+		  </view>
+		</view>
         <view class="uni-padding-wrap">
             <view class="uni-btn-v">
                 <button class="uni-btn" type="primary" @click="showLoading">显示 loading 提示框</button>
@@ -15,14 +25,30 @@
     export default {
         data() {
             return {
-                title: 'loading'
+                title: 'loading',
+				maskSelect:false,
+				titleSelect:false
             }
         },
         methods: {
+			maskChange: function (e : SwitchChangeEvent) {
+				this.maskSelect = e.detail.value
+			},
+			titleChange: function (e : SwitchChangeEvent) {
+				this.titleSelect = e.detail.value
+			},
             showLoading: function() {
-                uni.showLoading({
-                    title: 'loading'
-                });
+				
+				let titleVal = "三秒后自动关闭"
+				if(this.titleSelect){
+					titleVal = "超长文本内容，测试超出范围-超长文本内容，测试超出范围"
+				}
+                
+				
+				uni.showLoading({
+				    title: titleVal,
+					mask:this.maskSelect
+				});
 
                 // #ifdef MP-ALIPAY
                 this._showTimer && clearTimeout(this._showTimer);
@@ -30,6 +56,11 @@
                     this.hideLoading();
                 }, 3000)
                 // #endif
+				// #ifdef APP-PLUS
+				setTimeout(function() {
+					this.hideLoading();
+				}, 3000);
+				// #endif
             },
             hideLoading: function() {
                 uni.hideLoading();
