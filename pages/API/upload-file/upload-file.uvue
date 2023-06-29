@@ -1,0 +1,87 @@
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="demo">
+				<image v-if="imageSrc" :src="imageSrc" class="image" mode="widthFix"></image>
+				<view v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</view>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+	export default {
+		data() {
+			return {
+				title: 'uploadFile',
+				imageSrc: ''
+			}
+		},
+		onUnload() {
+			this.imageSrc = '';
+		},
+		methods: {
+			chooseImage: function() {
+				uni.chooseImage({
+					count: 1,
+					sizeType: ['compressed'],
+					sourceType: ['album'],
+					success: (res) => {
+						console.log('chooseImage success, temp path is', res.tempFilePaths[0])
+						var imageSrc = res.tempFilePaths[0]
+						uni.uploadFile({
+							url: 'http://192.168.12.106:8080/uploadFile', //仅为示例，非真实的接口地址
+							filePath: imageSrc,
+							name: 'file',
+							formData: {
+								'user': 'test'
+							},
+							success: (res) => {
+								console.log('uploadImage success, res is:', res)
+								uni.showToast({
+									title: '上传成功',
+									icon: 'success',
+									duration: 1000
+								})
+								this.imageSrc = imageSrc
+							},
+							fail: (err) => {
+								console.log('uploadImage fail', err);
+								uni.showModal({
+									content: err.errMsg,
+									showCancel: false
+								});
+							},
+						});
+					},
+					fail: (err) => {
+						console.log('chooseImage fail', err)
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	.image {
+		width: 100%;
+	}
+
+	.demo {
+		background: #FFF;
+		padding: 50rpx;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.uni-hello-addfile {
+		text-align: center;
+		line-height: 300rpx;
+		background: #FFF;
+		padding: 50rpx;
+		margin-top: 10px;
+		font-size: 38rpx;
+		color: #808080;
+	}
+</style>

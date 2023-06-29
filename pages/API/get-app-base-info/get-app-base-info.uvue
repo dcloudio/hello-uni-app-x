@@ -1,0 +1,96 @@
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-common-mt">
+			<view class="uni-list">
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">AppId</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="appId"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">AppName</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="appName"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">应用版本名</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="appVersion"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">应用版本号</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="appVersionCode"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">应用设置的语言</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="appLanguage"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">是否是UniAppX</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="isUniAppX"/>
+					</view>
+				</view>
+			</view>
+			<view class="uni-padding-wrap">
+				<view class="uni-btn-v">
+					<button type="primary" @tap="getAppBaseInfo">获取App基础信息</button>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+	export default {
+		data() {
+			return {
+				title: 'getAppBaseInfo',
+				appId:"",
+				appName:"",
+				appVersion:"",
+				appVersionCode:"",
+				appLanguage:"",
+				isUniAppX:""
+			}
+		},
+		onUnload:function(){
+		},
+		methods: {
+			getAppBaseInfo: function () {
+				const res = uni.getAppBaseInfo();
+				this.appId = res.appId ?? "";
+				this.appName = res.appName ?? "";
+				this.appVersion = res.appVersion ?? "";
+				this.appVersionCode = res.appVersionCode ?? "";
+				this.appLanguage = res.appLanguage ?? "";
+				this.isUniAppX = res.isUniAppX ? "是": "否";
+			}
+		}
+	}
+</script>
+
+<style>
+	.uni-pd {
+		padding-left: 30rpx;
+	}
+</style>

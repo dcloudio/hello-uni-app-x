@@ -1,0 +1,116 @@
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-common-mt">
+			<view class="uni-list">
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">设备品牌</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="deviceBrand"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">设备 id </view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="deviceId"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">设备型号</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="deviceModel"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">设备类型</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="deviceType"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">设备方向</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="deviceOrientation"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">设备像素比</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="devicePixelRatio"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">操作系统及版本</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="system"/>
+					</view>
+				</view>
+				<view class="uni-list-cell">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">客户端平台</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="platform"/>
+					</view>
+				</view>
+			</view>
+			<view class="uni-padding-wrap">
+				<view class="uni-btn-v">
+					<button type="primary" @tap="getDeviceInfo">获取设备信息</button>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+	export default {
+		data() {
+			return {
+				title: 'getDeviceInfo',
+				deviceBrand:"",
+				deviceId:"",
+				deviceModel:"",
+				deviceType:"",
+				deviceOrientation:"",
+				devicePixelRatio:"",
+				system:"",
+				platform:""
+			}
+		},
+		onUnload:function(){
+		},
+		methods: {
+			getDeviceInfo: function () {
+				const res = uni.getDeviceInfo();
+				this.deviceBrand = res.deviceBrand ?? "";
+				this.deviceId = res.deviceId ?? "";
+				this.deviceModel = res.deviceModel ?? "";
+				this.deviceType = res.deviceType ?? "";
+				this.deviceOrientation = res.deviceOrientation ?? "";
+				this.devicePixelRatio = res.devicePixelRatio + "";
+				this.system = res.system ?? "";
+				this.platform = res.platform ?? "";
+			}
+		}
+	}
+</script>
+
+<style>
+	.uni-pd {
+		padding-left: 30rpx;
+	}
+</style>
