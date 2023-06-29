@@ -4,6 +4,7 @@
         <view class="uni-padding-wrap">
             <view class="uni-btn-v">
                 <button class="uni-btn" type="default" @tap="toast1Tap">点击弹出默认toast</button>
+				<button class="uni-btn" type="default" @tap="toastTapIconError">点击弹出设置icon的toast</button>
                 <button class="uni-btn" type="default" @tap="toast2Tap">点击弹出设置duration的toast</button>
                 <button class="uni-btn" type="default" @tap="toast3Tap">点击弹出显示loading的toast</button>
                 <!-- #ifndef MP-ALIPAY -->
@@ -14,6 +15,7 @@
                 <!-- #endif -->
                 <button class="uni-btn" type="default" @tap="hideToast">点击隐藏toast</button>
             </view>
+			<text>{{exeRet}}</text>
         </view>
     </view>
 </template>
@@ -22,6 +24,7 @@
         data() {
             return {
                 title: 'toast',
+				exeRet:'',
                 _showTimer: 0
             }
         },
@@ -33,20 +36,50 @@
         methods: {
             toast1Tap: function () {
                 uni.showToast({
-                    title: "默认"
+                    title: "默认",
+					success:function(res){
+						this.exeRet = "success:" + JSON.stringify(res) + new Date()
+					},
+					fail:function(res){
+						this.exeRet = "fail:" + JSON.stringify(res)
+					},
+                })
+            },
+			toastTapIconError: function () {
+                uni.showToast({
+                    title: "默认",
+					icon:'error',
+					success:function(res){
+						this.exeRet = "success:" + JSON.stringify(res) + new Date()
+					},
+					fail:function(res){
+						this.exeRet = "fail:" + JSON.stringify(res)
+					},
                 })
             },
             toast2Tap: function () {
                 uni.showToast({
                     title: "duration 3000",
-                    duration: 3000
+                    duration: 3000,
+					success:function(res){
+						this.exeRet = "success:" + JSON.stringify(res) + new Date()
+					},
+					fail:function(res){
+						this.exeRet = "fail:" + JSON.stringify(res)
+					},
                 })
             },
             toast3Tap: function () {
                 uni.showToast({
                     title: "loading",
                     icon: "loading",
-                    duration: 5000
+                    duration: 5000,
+					success:function(res){
+						this.exeRet = "success:" + JSON.stringify(res) + new Date()
+					},
+					fail:function(res){
+						this.exeRet = "fail:" + JSON.stringify(res)
+					},
                 })
                 // #ifdef MP-ALIPAY
                 this._showTimer = setTimeout(() => {
@@ -61,14 +94,26 @@
             toast4Tap: function () {
                 uni.showToast({
                     title: "logo",
-                    image: "/static/uni.png"
+                    image: "/static/uni.png",
+					success:function(res){
+						this.exeRet = "success:" + JSON.stringify(res) + new Date()
+					},
+					fail:function(res){
+						this.exeRet = "fail:" + JSON.stringify(res)
+					},
                 })
             },
             // #ifdef APP-PLUS
             toast5Tap: function () {
                 uni.showToast({
                     title: "显示一段轻提示",
-                    position: 'bottom'
+                    position: 'bottom',
+					success:function(res){
+						this.exeRet = "success:" + JSON.stringify(res) + new Date()
+					},
+					fail:function(res){
+						this.exeRet = "fail:" + JSON.stringify(res)
+					},
                 })
             },
             // #endif
