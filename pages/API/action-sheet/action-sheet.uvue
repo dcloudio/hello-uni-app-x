@@ -15,6 +15,10 @@
 		    <view class="uni-list-cell-db">自定义itemColor</view>
 		    <switch :checked="itemColorCustom" @change="itemColorChange"/>
 		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">超长列表文本</view>
+		    <switch :checked="itemContentLarge" @change="itemContentLargeChange"/>
+		  </view>
 		</view>
         <view class="uni-padding-wrap">
             <view class="uni-btn-v">
@@ -33,6 +37,7 @@
             return {
                 title: 'action-sheet',
 				itemColorCustom:false,
+				itemContentLarge:false,
 				items: [{
 				    value: '标题',
 				    name: '有标题'
@@ -70,16 +75,25 @@
 			        }
 			    }
 			},
+			itemContentLargeChange: function (e : SwitchChangeEvent) {
+				this.itemContentLarge = e.detail.value
+			},
 			itemColorChange: function (e : SwitchChangeEvent) {
 				this.itemColorCustom = e.detail.value
 			},
             actionSheetTap() {
 				
+				let itemInfo = ['item1', 'item2', 'item3', 'item4']
+				
+				if(this.itemContentLarge){
+					itemInfo = ['两个黄鹂鸣翠柳，一行白鹭上青天。窗含西岭千秋雪，门泊东吴万里船', '水光潋滟晴方好,山色空蒙雨亦奇。 欲把西湖比西子,淡妆浓抹总相宜', '']
+				}
+				
 				const that = this
 				if(this.itemColorCustom){
 					uni.showActionSheet({
 					    title: this.items[this.current].value,
-					    itemList: ['item1', 'item2', 'item3', 'item4'],
+					    itemList: itemInfo,
 						itemColor:"#ff00ff",
 					    // #ifdef H5
 					    popover: {
@@ -99,7 +113,7 @@
 				}else{
 					uni.showActionSheet({
 					    title: this.items[this.current].value,
-					    itemList: ['item1', 'item2', 'item3', 'item4'],
+					    itemList: itemInfo,
 					    // #ifdef H5
 					    popover: {
 					        // 104: navbar + topwindow 高度，暂时 fix createSelectorQuery 在 pc 上获取 top 不准确的 bug
