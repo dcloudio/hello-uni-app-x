@@ -1,0 +1,111 @@
+<template>
+	<view style="padding-left: 16rpx;padding-right: 16rpx;">
+		<view>
+			<text class="text-desc">图片指示器样式</text>
+			<radio-group class="cell-ct" style="background-color: white;" @change="onIndicatorChanged">
+				<view class="indicator-it" v-for="(item,index) in indicator" :key="item.value">
+					<radio :checked="index === 0" :value="item.value">{{item.name}}</radio>
+				</view>
+			</radio-group>
+		</view>
+		<view>
+			<checkbox-group @change="onCheckboxChange" style="margin-top: 32rpx;margin-bottom: 32rpx;margin-left: 16rpx;">
+				<checkbox :checked="isLoop" style="margin-right: 30rpx;">循环播放</checkbox>
+			</checkbox-group>
+		</view>
+		<view style="background-color: white;">
+			<text class="text-desc">点击图片开始预览</text>
+			<view class="cell-ct" style="background-color: #eeeeee; padding: 16rpx;">
+				<view class="cell cell-choose-image" v-for="(image,index) in imageList" :key="index">
+					<image style="width: 210rpx;height: 210rpx;" mode="aspectFit" :src="image" @click="previewImage(index)"></image>
+				</view>
+				<image class="cell cell-choose-image" src="/static/plus.png" @click="chooseImage">
+					<view></view>
+				</image>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	type ItemType = {
+		value: string,
+		name: string
+	}
+
+	export default {
+		data() {
+			return {
+				imageList: ["https://web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", "/static/logo.png"],
+				indicator: [{
+					value: "default",
+					name: "圆点"
+				}, {
+					value: "number",
+					name: "数字"
+				}, {
+					value: "none",
+					name: "不显示"
+				}] as ItemType[],
+				currentIndicator: "default",
+				isLoop: true
+			}
+		},
+		methods: {
+			previewImage(index: number) {
+				uni.previewImage({
+					urls: this.imageList,
+					current: index,
+					indicator: this.currentIndicator,
+					loop: this.isLoop
+				})
+			},
+			chooseImage() {
+				uni.chooseImage({
+					sourceType: ['album'],
+					success: (e) => {
+						this.imageList = this.imageList.concat(e.tempFilePaths)
+					},
+					fail(e) {
+					}
+				})
+			},
+			onIndicatorChanged(e: RadioGroupChangeEvent) {
+				this.currentIndicator = e.detail.value
+			},
+			onCheckboxChange(e: CheckboxGroupChangeEvent) {
+				this.isLoop = !this.isLoop
+			}
+		}
+	}
+</script>
+
+<style>
+	.text-desc {
+		margin-top: 32rpx;
+		margin-left: 16rpx;
+		margin-bottom: 32rpx;
+		font-weight: bold;
+	}
+
+	.cell-ct {
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+	}
+
+	.cell {
+		margin-left: 14rpx;
+		width: 210rpx;
+		height: 210rpx;
+	}
+
+	.cell-choose-image {
+		border-width: 1px;
+		border-color: lightgray;
+	}
+
+	.indicator-it {
+		margin: 16rpx;
+	}
+</style>
