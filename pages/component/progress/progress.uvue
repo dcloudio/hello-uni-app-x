@@ -3,16 +3,18 @@
         <page-head :title="title"></page-head>
         <view class="uni-padding-wrap uni-common-mt">
             <view class="progress-box">
-                <progress :percent="pgList[0]" :show-info="true" :stroke-width="3" />
+                <progress :percent="pgList[0]" :active="true" :border-radius="borderRadius" :show-info="showInfo"
+                    :font-size="fontSize" :stroke-width="strokeWidth" :background-color="backgroundColor"
+                    class="progress p" @activeend="activeend" />
             </view>
             <view class="progress-box">
-                <progress :percent="pgList[1]" :stroke-width="3" />
+                <progress :percent="pgList[1]" :stroke-width="3" class="progress p1" />
             </view>
             <view class="progress-box">
-                <progress :percent="pgList[2]" :stroke-width="3" />
+                <progress :percent="pgList[2]" :stroke-width="3" class="progress p2" />
             </view>
             <view class="progress-box">
-                <progress :percent="pgList[3]" activeColor="#10AEFF" :stroke-width="3" />
+                <progress :percent="pgList[3]" activeColor="#10AEFF" :stroke-width="3" class="progress p3" />
             </view>
             <view class="progress-control">
                 <button type="primary" @click="setProgress" class="button">设置进度</button>
@@ -26,7 +28,14 @@
         data() {
             return {
                 title: 'progress',
-                pgList: [0, 0, 0, 0] as number[]
+                pgList: [0, 0, 0, 0] as number[],
+
+                curPercent: 0,
+                showInfo: true,
+                borderRadius: 0,
+                fontSize: 16,
+                strokeWidth: 3,
+                backgroundColor: '#EBEBEB'
             }
         },
         methods: {
@@ -35,6 +44,10 @@
             },
             clearProgress() {
                 this.pgList = [0, 0, 0, 0] as number[]
+            },
+            activeend(e : ProgressActiveendEvent) {
+                // TODO e.detail.curPercent
+                this.curPercent = e.curPercent
             }
         }
     }
