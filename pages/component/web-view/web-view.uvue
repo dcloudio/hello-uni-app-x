@@ -1,0 +1,99 @@
+<template>
+	<view class="uni-flex-item">
+		<web-view ref="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles"
+			@onPostMessage="onPostMessage" @error="error" @loading="loading" @loaded="loaded">
+		</web-view>
+		<view class="uni-btn-v">
+			<button type="primary" @click="back">后退</button>
+		</view>
+		<view class="uni-btn-v">
+			<button type="primary" @click="forward">前进</button>
+		</view>
+		<view class="uni-btn-v">
+			<button type="primary" @click="reload">重新加载</button>
+		</view>
+		<view class="uni-btn-v">
+			<button type="primary" @click="stop">停止加载</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	import JSONObject from 'com.alibaba.fastjson.JSONObject';
+	export default {
+		data() {
+			return {
+				src: 'https://uniapp.dcloud.io/static/web-view.html',
+				webview_styles: {
+					progress: {
+						color: '#FF3333'
+					}
+				} as UTSJSONObject
+			}
+		},
+		methods: {
+			back() {
+				(this.$refs['web-view'] as IWebViewNode).back();
+			},
+			forward() {
+				(this.$refs['web-view'] as IWebViewNode).forward();
+			},
+			reload() {
+				(this.$refs['web-view'] as IWebViewNode).reload();
+			},
+			stop() {
+				(this.$refs['web-view'] as IWebViewNode).stop();
+			},
+			onPostMessage(event: WebViewPostMessageEvent) {
+				console.log(JSON.stringify(event.detail));
+				const data = event.detail.data as JSONObject;
+				switch (data['action']) {
+					case 'navigateTo':
+						uni.navigateTo({
+							url: data['url'] as string
+						});
+						break;
+					case 'redirectTo':
+						uni.redirectTo({
+							url: data['url'] as string
+						});
+						break;
+					case 'switchTab':
+						uni.switchTab({
+							url: data['url'] as string
+						});
+						break;
+					case 'reLaunch':
+						uni.reLaunch({
+							url: data['url'] as string
+						});
+						break;
+					case 'navigateBack':
+						uni.navigateBack({
+							delta: data['delta'] as number
+						});
+						break;
+					default:
+						uni.showModal({
+							content: JSON.stringify(event.detail),
+							showCancel: false
+						});
+						break;
+				}
+			},
+			error(event: WebViewErrorEvent) {
+				console.log(JSON.stringify(event.detail));
+			},
+			loading(event: WebViewLoadingEvent) {
+				console.log(JSON.stringify(event.type));
+			},
+			loaded(event: WebViewLoadedEvent) {
+				console.log(JSON.stringify(event.type));
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
