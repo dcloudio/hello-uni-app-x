@@ -1,44 +1,58 @@
 <template>
-    <view>
-        <page-head :title="title"></page-head>
-        <view class="uni-padding-wrap uni-common-mt">
-            <view class="uni-title">
-                <text class="uni-title-text">
-                    示例1
-                </text>
-                <text class="uni-subtitle-text">
-                    本地图片
-                </text>
-            </view>
-            <view class="uni-center" style="background:#FFFFFF; font-size:0;">
-                <image class="image" mode="widthFix" src="/static/uni.png" />
-            </view>
-            <view class="uni-title">
-                <text class="uni-title-text">
-                    示例2
-                </text>
-                <text class="uni-subtitle-text">
-                    网络图片
-                </text>
-            </view>
-            <view class="uni-center" style="background:#FFFFFF; font-size:0;">
-                <image class="image" mode="widthFix" src="https://web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png" />
-            </view>
-        </view>
-    </view>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-center" style="background:#FFFFFF;">
+				<image class="image" :fade-show="true" mode="widthFix" src="/static/logo.png" @error="error"
+					@load="load"></image>
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @tap="imageFormat">图片格式示例</button>
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @tap="imageMode">图片缩放模式示例</button>
+			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @tap="imagePath">图片路径示例</button>
+			</view>
+		</view>
+	</view>
 </template>
 <script>
-    export default {
-        data() {
-            return {
-                title: 'image'
-            }
-        }
-    }
+	export default {
+		data() {
+			return {
+				title: 'image'
+			}
+		},
+		methods: {
+			error(event: ImageErrorEvent) {
+				console.log(event.type, event.detail);
+			},
+			load(event: ImageLoadEvent) {
+				console.log(event.type, event.detail);
+			},
+			imageFormat() {
+				uni.navigateTo({
+					url: '/pages/component/image/image-format'
+				});
+			},
+			imageMode() {
+				uni.navigateTo({
+					url: '/pages/component/image/image-mode'
+				});
+			},
+			imagePath() {
+				uni.navigateTo({
+					url: '/pages/component/image/image-path'
+				});
+			}
+		}
+	}
 </script>
 <style>
-    .image {
-        margin: 40rpx auto;
-        width: 200rpx;
-    }
+	.image {
+		margin: 40rpx auto;
+		width: 200rpx;
+	}
 </style>
