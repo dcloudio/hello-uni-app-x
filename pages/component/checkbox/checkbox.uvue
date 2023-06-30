@@ -8,9 +8,11 @@
                 </text>
             </view>
             <view>
-                <checkbox-group class="uni-flex uni-row">
-                    <checkbox value="cb1" :checked="true" style="margin-right: 30rpx;">选中</checkbox>
-                    <checkbox value="cb">未选中</checkbox>
+                <checkbox-group class="uni-flex uni-row checkbox-group" @change="testChange">
+                    <checkbox value="cb" :checked="checked" :color="color" style="margin-right: 30rpx;"
+                        class="checkbox cb">{{text}}</checkbox>
+                    <checkbox value="cb1" style="margin-right: 30rpx;" class="checkbox cb1">未选中</checkbox>
+                    <checkbox value="cb2" :disabled="disabled" class="checkbox cb2">禁用</checkbox>
                 </checkbox-group>
             </view>
             <view class="uni-title uni-common-mt">
@@ -19,11 +21,11 @@
                 </text>
             </view>
             <view>
-                <checkbox-group class="uni-flex uni-row">
+                <checkbox-group class="uni-flex uni-row checkbox-group">
                     <checkbox value="cb1" :checked="true" color="#FFCC33"
-                        style="transform:scale(0.7); margin-right: 30rpx;">选中
+                        style="transform:scale(0.7); margin-right: 30rpx;" class="checkbox">选中
                     </checkbox>
-                    <checkbox value="cb" color="#FFCC33" style="transform:scale(0.7)">未选中</checkbox>
+                    <checkbox value="cb" color="#FFCC33" style="transform:scale(0.7)" class="checkbox">未选中</checkbox>
                 </checkbox-group>
             </view>
         </view>
@@ -39,9 +41,9 @@
             </view>
         </view>
         <view class="uni-list">
-            <checkbox-group @change="checkboxChange">
-                <checkbox class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-                    :value="item.value" :checked="item.checked"
+            <checkbox-group @change="checkboxChange" class="checkbox-group">
+                <checkbox class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in items"
+                    :key="item.value" :value="item.value" :checked="item.checked"
                     :class="index < items.length - 1 ? 'uni-list-cell-line': ''">
                     {{item.name}}
                 </checkbox>
@@ -89,7 +91,13 @@
                     name: '法国',
                     checked: false
                 }
-                ] as ItemType[]
+                ] as ItemType[],
+
+                text: '选中',
+                value: [] as string[],
+                disabled: true,
+                checked: true,
+                color: '#007aff'
             }
         },
         methods: {
@@ -104,6 +112,9 @@
                         item.checked = false
                     }
                 }
+            },
+            testChange: function (e : CheckboxGroupChangeEvent) {
+                this.value = e.detail.value
             }
         }
     }
