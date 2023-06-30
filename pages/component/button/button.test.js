@@ -35,9 +35,8 @@ describe('Button.uvue', () => {
         expect(await textBtn.text()).toEqual('button')
     })
     it('type', async () => {
-        // TODO 目前获取组件属性只能通过组件的name,并且拿到的是最后一个
-        const btn = await page.$('Button')
-        expect(await btn.property('type')).toBe('warn')
+        const btn = await page.$('.test-button')
+        expect(await btn.property('type')).toBe('primary')
         await page.setData({
             type: 'default'
         })
@@ -50,19 +49,16 @@ describe('Button.uvue', () => {
         expect(await btn.property('type')).toBe('warn')
     })
     it('size', async () => {
-        const btn = await page.$('Button')
-        expect(await btn.property('size')).toBe('mini')
-        await page.setData({
-            size: 'default'
-        })
-        await page.waitFor(500)
+        const btn = await page.$('.test-button')
         expect(await btn.property('size')).toBe('default')
         await page.setData({
             size: 'mini'
         })
+        await page.waitFor(500)
+        expect(await btn.property('size')).toBe('mini')
     })
     it('plain', async () => {
-        const btn = await page.$('Button')
+        const btn = await page.$('.test-button')
         expect(await btn.property('plain')).toBe(false)
         await page.setData({
             plain: true
@@ -71,7 +67,7 @@ describe('Button.uvue', () => {
         expect(await btn.property('plain')).toBe(true)
     })
     it('disabled', async () => {
-        const btn = await page.$('Button')
+        const btn = await page.$('.test-button')
         expect(await btn.property('disabled')).toBe(false)
         await page.setData({
             disabled: true
