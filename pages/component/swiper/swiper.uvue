@@ -2,7 +2,7 @@
 	<view>
 		<page-head title="swiper,可滑动视图"></page-head>
 		<view class="uni-margin-wrap">
-			<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
+			<swiper class="swiper" circular :indicator-dots="dotsSelect" :autoplay="autoplaySelect" :interval="intervalSelect"  :circular="circularSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive">
 				<swiper-item>
 					<view class="swiper-item uni-bg-red">A</view>
 				</swiper-item>
@@ -14,6 +14,30 @@
 				</swiper-item>
 			</swiper>
 		</view>
+		<view class="uni-list">
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">是否显示面板指示点</view>
+		    <switch :checked="dotsSelect" @change="dotsChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">是否自动切换</view>
+		    <switch :checked="autoplaySelect" @change="autoplayChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">是否循环</view>
+		    <switch :checked="circularSelect" @change="circularChange"/>
+		  </view>
+		  <view class="uni-title">间隔时间</view>
+		  <view>
+		    <slider @change="sliderChange" :value="1000" :min="500" :max="5000" :show-value="true" />
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">定制指示器颜色</view>
+		    <switch :checked="indicatorColorSelect" @change="indicatorColorChange"/>
+		  </view>
+		  
+		  
+		</view>
 
 
 	</view>
@@ -23,14 +47,42 @@
 		data() {
 			return {
 				background: ['color1', 'color2', 'color3'],
-				indicatorDots: true,
-				autoplay: true,
 				interval: 2000,
-				duration: 500
+				dotsSelect:false,
+				autoplaySelect:false,
+				circularSelect:false,
+				indicatorColorSelect:false,
+				intervalSelect:1000,
+				indicatorColor:"",
+				indicatorColorActive:"",
 			}
 		},
 		methods: {
-			
+			dotsChange: function (e : SwitchChangeEvent) {
+				this.dotsSelect = e.detail.value
+			},
+			autoplayChange: function (e : SwitchChangeEvent) {
+				this.autoplaySelect = e.detail.value
+			},
+			circularChange: function (e : SwitchChangeEvent) {
+				this.circularSelect = e.detail.value
+				console.log(this.circularSelect)
+			},
+			sliderChange(e : SliderChangeEvent) {
+			  this.intervalSelect = e.detail.value
+			},
+			indicatorColorChange(e : SwitchChangeEvent) {
+				this.indicatorColorSelect = e.detail.value
+				if(this.indicatorColorSelect){
+					// 选择了定制指示器颜色
+					this.indicatorColor = "#ff00ff"
+					this. indicatorColorActive = "#0000ff"
+				}else{
+					// 没有选择颜色
+					this.indicatorColor = ""
+					this. indicatorColorActive = ""
+				}
+			}
 		}
 	}
 </script>
@@ -44,6 +96,7 @@
 		height: 300rpx;
 	}
 	.swiper-item {
+		width: 100%;
 		height: 300rpx;
 		line-height: 300rpx;
 		text-align: center;
