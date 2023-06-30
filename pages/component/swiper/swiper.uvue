@@ -2,14 +2,14 @@
 	<view>
 		<page-head title="swiper,可滑动视图"></page-head>
 		<view class="uni-margin-wrap">
-			<swiper class="swiper" circular :indicator-dots="dotsSelect" :autoplay="autoplaySelect" :interval="intervalSelect"  :circular="circularSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive">
-				<swiper-item>
+			<swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect" :interval="intervalSelect"  :circular="circularSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive" :current="currentVal" :current-item-id="currentItemIdVal">
+				<swiper-item item-id="A">
 					<view class="swiper-item uni-bg-red">A</view>
 				</swiper-item>
-				<swiper-item>
+				<swiper-item item-id="B">
 					<view class="swiper-item uni-bg-green">B</view>
 				</swiper-item>
-				<swiper-item>
+				<swiper-item item-id="C">
 					<view class="swiper-item uni-bg-blue">C</view>
 				</swiper-item>
 			</swiper>
@@ -35,7 +35,18 @@
 		    <view class="uni-list-cell-db">定制指示器颜色</view>
 		    <switch :checked="indicatorColorSelect" @change="indicatorColorChange"/>
 		  </view>
-		  
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">纵向</view>
+		    <switch :checked="verticalSelect" @change="verticalChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">指定current为最后一个元素</view>
+		    <switch :checked="currentSelect" @change="currentChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">指定current-item-id为最后一个元素</view>
+		    <switch :checked="currentItemIdSelect" @change="currentItemIdChange"/>
+		  </view>
 		  
 		</view>
 
@@ -52,9 +63,14 @@
 				autoplaySelect:false,
 				circularSelect:false,
 				indicatorColorSelect:false,
+				verticalSelect:false,
+				currentSelect:false,
+				currentItemIdSelect:false,
 				intervalSelect:1000,
 				indicatorColor:"",
 				indicatorColorActive:"",
+				currentVal:0,
+				currentItemIdVal:""
 			}
 		},
 		methods: {
@@ -63,6 +79,26 @@
 			},
 			autoplayChange: function (e : SwitchChangeEvent) {
 				this.autoplaySelect = e.detail.value
+			},
+			verticalChange: function (e : SwitchChangeEvent) {
+				this.verticalSelect = e.detail.value
+			},
+			currentItemIdChange: function (e : SwitchChangeEvent) {
+				this.currentItemIdSelect = e.detail.value
+				if(this.currentItemIdSelect){
+					this.currentItemIdVal = 'C'
+				}else{
+					this.currentItemIdVal = 'A'
+				}
+			},
+			currentChange: function (e : SwitchChangeEvent) {
+				this.currentSelect = e.detail.value
+				if(this.currentSelect){
+					this.currentVal = 2
+				}else{
+					this.currentVal = 0
+				}
+				
 			},
 			circularChange: function (e : SwitchChangeEvent) {
 				this.circularSelect = e.detail.value
