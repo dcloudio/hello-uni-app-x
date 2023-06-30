@@ -22,8 +22,8 @@ describe('Button.uvue', () => {
         expect(await getData('count')).toEqual(1)
     })
     it('length', async () => {
-        const btnLen = await page.$$('.button')
-        expect(btnLen.length).toBe(13)
+        const elements = await page.$$('.button')
+        expect(elements.length).toBe(13)
     })
     it('text', async () => {
         const textBtn = await page.$('.text-button')

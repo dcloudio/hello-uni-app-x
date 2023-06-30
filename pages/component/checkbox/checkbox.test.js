@@ -23,6 +23,8 @@ describe('Checkbox.uvue', () => {
         expect(await getData('value')).toEqual(["cb1"])
         await cb2.tap()
         expect(await getData('value')).toEqual(["cb1"])
+        await cb1.tap()
+        expect(await getData('value')).toEqual([])
     })
     it('length', async () => {
         const checkboxGroupElements = await page.$$('.checkbox-group')
@@ -31,12 +33,12 @@ describe('Checkbox.uvue', () => {
         expect(checkboxElements.length).toBe(11)
     })
     it('text', async () => {
-        const cb = await page.$('.cb')
-        expect(await cb.text()).toEqual('选中')
+        const cb = await page.$('.cb1')
+        expect(await cb.text()).toEqual('未选中')
         await page.setData({
-            text: 'checked'
+            text: 'not selected'
         })
-        expect(await cb.text()).toEqual('checked')
+        expect(await cb.text()).toEqual('not selected')
     })
     it('checked', async () => {
         const cb = await page.$('.cb')

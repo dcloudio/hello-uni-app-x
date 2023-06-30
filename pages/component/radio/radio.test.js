@@ -31,12 +31,12 @@ describe('Radio.uvue', () => {
         expect(radioElements.length).toBe(11)
     })
     it('text', async () => {
-        const radio = await page.$('.r')
-        expect(await radio.text()).toEqual('选中')
+        const radio = await page.$('.r1')
+        expect(await radio.text()).toEqual('未选中')
         await page.setData({
-            text: 'checked'
+            text: 'not selected'
         })
-        expect(await radio.text()).toEqual('checked')
+        expect(await radio.text()).toEqual('not selected')
     })
     it('checked', async () => {
         const radio = await page.$('.r')
