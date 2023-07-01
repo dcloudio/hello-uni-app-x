@@ -1,7 +1,9 @@
 <template>
 	<view class="container">
 		<page-head title="scroll-view 下拉刷新"></page-head>
-		<scroll-view class="scroll" refresher-enabled = true @refresherrefresh="onRefresherrefresh" :refresher-triggered = "refresherTriggered">
+		<scroll-view class="scroll" refresher-enabled = true :refresher-triggered = "refresherTriggered"
+		@refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort" @refresherrestore="onRefresherrestore"
+		@refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower">
 			<view v-for="key in scrollData" :key="key">
 				<view class="scroll-item">
 					<text class="scroll-item-title">{{key}}</text>
@@ -11,7 +13,7 @@
 	</view>
 </template>
 <script>
-import RefresherEvent from 'io.dcloud.uniapp.runtime.RefresherEvent';
+
 	export default {
 
 		data() {
@@ -36,6 +38,18 @@ import RefresherEvent from 'io.dcloud.uniapp.runtime.RefresherEvent';
 					this.refresherTriggered = false
 				}, 1500)
 				
+			},
+			onRefresherabort(e: RefresherEvent) {
+				console.log("onRefresherabort------下拉刷新被中止")
+			},
+			onRefresherrestore(e: RefresherEvent) {
+				console.log("onRefresherrestore------下拉刷新被复位")
+			},
+			onRefresherpulling(e: RefresherEvent) {
+				console.log("onRefresherrestore------拉刷新控件被下拉-dy="+e.detail.dy)
+			},
+			onScrolltolower(e: ScrollToLowerEvent) {
+				console.log("onScrolltolower 滚动到底部-----"+e.detail.direction)
 			}
 		}
 	};
