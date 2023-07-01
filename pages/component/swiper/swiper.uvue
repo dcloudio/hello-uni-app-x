@@ -2,7 +2,7 @@
 	<view>
 		<page-head title="swiper,可滑动视图"></page-head>
 		<view class="uni-margin-wrap">
-			<swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect" :interval="intervalSelect"  :circular="circularSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive" :current="currentVal" :current-item-id="currentItemIdVal">
+			<swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect" :interval="intervalSelect"  :circular="circularSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive" :disable-touch="disableTouchSelect" :current="currentVal" :current-item-id="currentItemIdVal" @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 				<swiper-item item-id="A">
 					<view class="swiper-item uni-bg-red">A</view>
 				</swiper-item>
@@ -47,7 +47,14 @@
 		    <view class="uni-list-cell-db">指定current-item-id为最后一个元素</view>
 		    <switch :checked="currentItemIdSelect" @change="currentItemIdChange"/>
 		  </view>
-		  
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">禁止用户 touch 操作</view>
+		    <switch :checked="disableTouchSelect" @change="disableTouchChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">swiperTransition 是否打印</view>
+		    <switch :checked="swiperTransitionSelect" @change="swiperTransitionChange"/>
+		  </view>
 		</view>
 
 
@@ -70,18 +77,42 @@
 				indicatorColor:"",
 				indicatorColorActive:"",
 				currentVal:0,
-				currentItemIdVal:""
+				currentItemIdVal:"",
+				disableTouchSelect:false,
+				swiperTransitionSelect:false
 			}
 		},
 		methods: {
+			
+			swiperChange: function (e : SwiperChangeEvent) {
+				console.log("swiperChange")
+				console.log(e)
+			},
+			swiperTransition: function (e : SwiperTransitionEvent) {
+				if(this.swiperTransitionSelect){
+					console.log("swiperTransition")
+					console.log(e)
+				}
+			},
+			swiperAnimationfinish: function (e : SwiperAnimationFinishEvent) {
+				console.log("swiperAnimationfinish")
+				console.log(e)
+			},
+			
 			dotsChange: function (e : SwitchChangeEvent) {
 				this.dotsSelect = e.detail.value
+			},
+			swiperTransitionChange: function (e : SwitchChangeEvent) {
+				this.swiperTransitionSelect = e.detail.value
 			},
 			autoplayChange: function (e : SwitchChangeEvent) {
 				this.autoplaySelect = e.detail.value
 			},
 			verticalChange: function (e : SwitchChangeEvent) {
 				this.verticalSelect = e.detail.value
+			},
+			disableTouchChange: function (e : SwitchChangeEvent) {
+				this.disableTouchSelect = e.detail.value
 			},
 			currentItemIdChange: function (e : SwitchChangeEvent) {
 				this.currentItemIdSelect = e.detail.value
