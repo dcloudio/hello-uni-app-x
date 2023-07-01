@@ -1,0 +1,80 @@
+<template>
+	<view class="container">
+		<page-head title="scroll-view 下拉刷新"></page-head>
+		<scroll-view class="scroll" refresher-enabled = true @refresherrefresh="onRefresherrefresh" :refresher-triggered = "refresherTriggered">
+			<view v-for="key in scrollData" :key="key">
+				<view class="scroll-item">
+					<text class="scroll-item-title">{{key}}</text>
+				</view>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+<script>
+import RefresherEvent from 'io.dcloud.uniapp.runtime.RefresherEvent';
+	export default {
+
+		data() {
+			return {
+				scrollData: [] as Array <string>,
+				refresherTriggered: false 
+			};
+		},
+		onLoad() {
+			let lists: Array < string > = []
+			for (let i = 0; i < 20; i++) {
+				lists.push("item---"+i)
+			}
+			this.scrollData = lists
+		},
+
+		methods: {
+			onRefresherrefresh(e: RefresherEvent) {
+				console.log("onRefresherrefresh--------------下拉刷新触发")
+				this.refresherTriggered = true
+				setTimeout(function(){
+					this.refresherTriggered = false
+				}, 1500)
+				
+			}
+		}
+	};
+</script>
+
+<style>
+	.container{
+		display: flex;
+		flex-direction: column;
+		border:dashed;
+		flex: 1;
+	}
+	
+	.scroll {
+		background-color: #eee;
+		position: relative;
+		width: 100%;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		border-color: red;
+	}
+	
+	.scroll-item {
+	    margin-left: 12rpx;
+	    margin-right: 12rpx;
+	    margin-top: 12rpx;
+		background-color: #fff;
+	    border-radius: 8rpx;
+	}
+	
+	.scroll-item-title {
+	    width:100%;
+	    height: 120rpx;
+	    line-height: 120rpx;
+	    text-align: center;
+	    color: #555;
+	}
+	
+	
+
+</style>

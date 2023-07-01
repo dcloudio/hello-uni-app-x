@@ -25,7 +25,8 @@
 				connecting: false,
 				socketTask: null as SocketTask | null,
 				msg: "",
-				platform :"",
+				platform: "",
+				pageVisible: false
 			}
 		},
 		computed: {
@@ -41,10 +42,12 @@
 				}
 			}
 		},
-		onReady() {
-			this.platform = uni.getSystemInfoSync().platform;	
+		onLoad() {
+			this.platform = uni.getSystemInfoSync().platform;
+			this.pageVisible = true;
 		},
 		onUnload() {
+			this.pageVisible = false;
 			uni.hideLoading()
 			let task = this.socketTask;
 			if (task != null) {
@@ -75,34 +78,42 @@
 					}
 				})
 				this.socketTask?.onOpen((res) => {
-					this.connecting = false
-					this.connected = true
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'none',
-						title: '连接成功'
-					})
-					console.log('onOpen', res);
+					if (this.pageVisible) {
+						this.connecting = false
+						this.connected = true
+						uni.hideLoading()
+						uni.showToast({
+							icon: 'none',
+							title: '连接成功'
+						})
+						console.log('onOpen', res);
+					}
 				})
 				this.socketTask?.onError((err) => {
-					this.connecting = false
-					this.connected = false
-					uni.hideLoading()
-					uni.showModal({
-						content: '连接失败，可能是websocket服务不可用，请稍后再试',
-						showCancel: false
-					})
-					console.log('onError', err);
+					if (this.pageVisible) {
+						this.connecting = false
+						this.connected = false
+						uni.hideLoading()
+						uni.showModal({
+							content: '连接失败，可能是websocket服务不可用，请稍后再试',
+							showCancel: false
+						})
+						console.log('onError', err);
+					}
 				})
 				this.socketTask?.onMessage((res) => {
-					this.msg = res.data as string
-					console.log('onMessage', res)
+					if (this.pageVisible) {
+						this.msg = res.data as string
+						console.log('onMessage', res)
+					}
 				})
 				this.socketTask?.onClose((res) => {
-					this.connected = false
-					this.socketTask = null
-					this.msg = ""
-					console.log('onClose', res)
+					if (this.pageVisible) {
+						this.connected = false
+						this.socketTask = null
+						this.msg = ""
+						console.log('onClose', res)
+					}
 				})
 			},
 			send() {

@@ -10,15 +10,24 @@
 	</view>
 </template>
 <script>
+	import UploadTask from 'uts.sdk.modules.DCloudUniNetwork.UploadTask';
 	export default {
 		data() {
 			return {
 				title: 'uploadFile',
-				imageSrc: ''
+				imageSrc: '',
+				task: null as UploadTask | null,
+				pageVisible: false
 			}
+		},
+		onLoad() {
+			this.pageVisible = true;
 		},
 		onUnload() {
 			this.imageSrc = '';
+			this.pageVisible = false;
+			uni.hideLoading();
+			this.task?.abort();
 		},
 		methods: {
 			chooseImage: function() {
@@ -29,28 +38,37 @@
 					success: (res) => {
 						console.log('chooseImage success, temp path is', res.tempFilePaths[0])
 						var imageSrc = res.tempFilePaths[0]
-						uni.uploadFile({
-							url: 'http://192.168.12.106:8080/uploadFile', //仅为示例，非真实的接口地址
+						uni.showLoading({
+							title: '上传中'
+						})
+						this.task = uni.uploadFile({
+							url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
 							filePath: imageSrc,
 							name: 'file',
 							formData: {
 								'user': 'test'
 							},
 							success: (res) => {
-								console.log('uploadImage success, res is:', res)
-								uni.showToast({
-									title: '上传成功',
-									icon: 'success',
-									duration: 1000
-								})
-								this.imageSrc = imageSrc
+								if (this.pageVisible) {
+									console.log('uploadImage success, res is:', res)
+									uni.hideLoading();
+									uni.showToast({
+										title: '上传成功',
+										icon: 'success',
+										duration: 1000
+									})
+									this.imageSrc = imageSrc
+								}
 							},
 							fail: (err) => {
-								console.log('uploadImage fail', err);
-								uni.showModal({
-									content: err.errMsg,
-									showCancel: false
-								});
+								if (this.pageVisible) {
+									console.log('uploadImage fail', err);
+									uni.hideLoading();
+									uni.showModal({
+										content: err.errMsg,
+										showCancel: false
+									});
+								}
 							},
 						});
 					},
