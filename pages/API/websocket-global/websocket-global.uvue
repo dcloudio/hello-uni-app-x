@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOptions';
+	import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOptions';
 	export default {
 		data() {
 			return {
@@ -22,11 +22,12 @@ import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOp
 				connecting: false,
 				msg: "",
 				roomId: '',
-				platform :"",
+				platform: "",
+				pageVisible: false
 			}
 		},
 		computed: {
-			showMsg():string {
+			showMsg(): string {
 				if (this.connected) {
 					if (this.msg.length > 0) {
 						return '收到消息：' + this.msg
@@ -39,12 +40,14 @@ import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOp
 			}
 		},
 		onLoad() {
-			this.platform = uni.getSystemInfoSync().platform;	
+			this.platform = uni.getSystemInfoSync().platform;
+			this.pageVisible = true;
 		},
 		onUnload() {
+			this.pageVisible = false;
 			const closeOptions = new CloseSocketOptions();
 			uni.closeSocket(closeOptions);
-            uni.hideLoading()
+			uni.hideLoading()
 		},
 		methods: {
 			connect() {
@@ -69,33 +72,43 @@ import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOp
 					}
 				})
 				uni.onSocketOpen((res) => {
-					this.connecting = false
-					this.connected = true
-					uni.hideLoading()
-					uni.showToast({
-						icon: 'none',
-						title: '连接成功'
-					})
-					console.log('onOpen', res);
+					if (this.pageVisible) {
+						this.connecting = false
+						this.connected = true
+						uni.hideLoading()
+
+						uni.showToast({
+							icon: 'none',
+							title: '连接成功'
+						})
+						console.log('onOpen', res);
+					}
 				})
 				uni.onSocketError((err) => {
-					this.connecting = false
-					this.connected = false
-					uni.hideLoading()
-					uni.showModal({
-						content: '连接失败，可能是websocket服务不可用，请稍后再试',
-						showCancel: false
-					})
-					console.log('onError', err);
+					if (this.pageVisible) {
+						this.connecting = false
+						this.connected = false
+						uni.hideLoading()
+
+						uni.showModal({
+							content: '连接失败，可能是websocket服务不可用，请稍后再试',
+							showCancel: false
+						})
+						console.log('onError', err);
+					}
 				})
 				uni.onSocketMessage((res) => {
-					this.msg = res.data as string
-					console.log('onMessage', res)
+					if (this.pageVisible) {
+						this.msg = res.data as string
+						console.log('onMessage', res)
+					}
 				})
 				uni.onSocketClose((res) => {
-					this.connected = false
-					this.msg = ""
-					console.log('onClose', res)
+					if (this.pageVisible) {
+						this.connected = false
+						this.msg = ""
+						console.log('onClose', res)
+					}
 				})
 			},
 			send() {
@@ -122,7 +135,7 @@ import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOp
 		padding: 10rpx 0;
 	}
 
-	.uni-btn-v  {
+	.uni-btn-v {
 		margin: 20rpx 0;
 	}
 
@@ -142,11 +155,11 @@ import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOp
 		color: #666666;
 	}
 
-    .websocket-tips{
-        padding: 40px 0px;
-        text-align: center;
-        font-size: 14px;
-        line-height: 24px;
-        color: #666666;
-    }
+	.websocket-tips {
+		padding: 40px 0px;
+		text-align: center;
+		font-size: 14px;
+		line-height: 24px;
+		color: #666666;
+	}
 </style>

@@ -1,0 +1,87 @@
+<template>
+	<view style="height: 100%;width: 100%;">
+		<page-head :title="title"></page-head>
+		<view class="container">
+			<list class="uni-list" :refresher-enabled="true" @refresherrefresh="onRefresherrefresh"
+				:refresher-triggered="refresherTriggered">
+				<cell class="list_cell" v-for="(item, index) in dataList" :key="item.id">
+					<view class="list-item">
+						<text class="list-item-title" :value="item.name"></text>
+					</view>
+				</cell>
+			</list>
+		</view>
+	</view>
+</template>
+<script lang="ts">
+	import RefresherEvent from 'io.dcloud.uniapp.runtime.RefresherEvent';
+	type Item = {
+		id : string,
+		name : string
+	}
+	export default {
+		data() {
+			return {
+				title: 'list',
+				refresherTriggered: false,
+				dataList: [] as Item[],
+			}
+		},
+		onLoad() {
+			for (var i = 0; i < 25; i++) {
+				const item : Item = { id: i + "", name: "item " + i }
+				this.dataList.push(item)
+			}
+		},
+		methods: {
+			onRefresherrefresh(e : RefresherEvent) {
+				this.refresherTriggered = true
+				setTimeout(function () {
+					this.refresherTriggered = false
+				}, 1000)
+			}
+		}
+	}
+</script>
+
+<style>
+	.uni-list {
+		background-color: #eee;
+		position: relative;
+		width: 100%;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		border-color: red;
+	}
+
+	.container {
+		display: flex;
+		flex-direction: column;
+		border: dashed;
+		height: 100%;
+		width: 100%;
+	}
+	
+	.list_cell{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.list-item {
+		margin-left: 12px;
+		margin-right: 12px;
+		margin-top: 12px;
+		padding: 20px;
+		background-color: #fff;
+		border-radius: 5px;
+	}
+
+	.list-item-title {
+		font-size: 30px;
+		font-weight: bold;
+		color: #444;
+		width: 100%;
+	}
+</style>

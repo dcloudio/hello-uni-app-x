@@ -15,20 +15,31 @@
 	</view>
 </template>
 <script>
+	import RequestTask from 'uts.sdk.modules.DCloudUniNetwork.RequestTask';
 	const duration = 2000
 	export default {
 		data() {
 			return {
 				title: 'request',
 				loading: false,
-				res: ''
+				res: '',
+				task: null as RequestTask | null,
+				pageVisible: false
 			}
+		},
+		onLoad() {
+			this.pageVisible = true;
+		},
+		onUnload() {
+			this.pageVisible = false;
+			uni.hideLoading();
+			this.task?.abort();
 		},
 		methods: {
 			sendRequest() {
 				this.loading = true;
-				uni.request({
-					url: "http://192.168.12.106:8080/postHalo",
+				this.task = uni.request({
+					url: "https://unidemo.dcloud.net.cn/ajax/echo/text?name=uni-app",
 					dataType: "json",
 					responseType: "json",
 					method: "POST",
@@ -43,21 +54,25 @@
 					withCredentials: false,
 					firstIpv4: false,
 					success(res) {
-						console.log('request success', res)
-						uni.showToast({
-							title: '请求成功',
-							icon: 'success',
-							mask: true,
-							duration: duration
-						});
-						this.res = '请求结果 : ' + JSON.stringify(res);
+						if (this.pageVisible) {
+							console.log('request success', res)
+							uni.showToast({
+								title: '请求成功',
+								icon: 'success',
+								mask: true,
+								duration: duration
+							});
+							this.res = '请求结果 : ' + JSON.stringify(res);
+						}
 					},
 					fail(err) {
-						console.log('request fail', err);
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
+						if (this.pageVisible) {
+							console.log('request fail', err);
+							uni.showModal({
+								content: err.errMsg,
+								showCancel: false
+							});
+						}
 					},
 					complete() {
 						this.loading = false;
