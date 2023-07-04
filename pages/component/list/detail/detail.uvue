@@ -1,0 +1,107 @@
+<template>
+	<view>
+		<view class="banner">
+			<image class="banner-img" :src="cover"></image>
+			<text class="banner-title">{{title}}</text>
+		</view>
+		<view class="article-content">
+			<text>{{htmlNodes}}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+
+	export default {
+		data() {
+			return {
+				htmlNodes: "",
+				pageVisible: false,
+				title: '',
+				cover : "",
+				post_id : "",
+			}
+		},
+		onLoad(event) {
+			console.log("event",event);
+			this.pageVisible = true;
+			this.post_id = event["post_id"] ?? "";
+			this.cover = event["cover"] ?? "";
+			this.title = event["title"] ?? "";
+			this.getDetail();
+		},
+		onUnload() {
+			this.pageVisible = false;
+		},
+		methods: {
+			getDetail() {
+				uni.request({
+					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.post_id,
+					success: (data) => {
+						if (data.statusCode == 200) {
+							const result = data.data as UTSJSONObject
+							// var htmlString = result["content"].replace(/\\/g, "").replace(/<img/g, "<img style=\"display:none;\"");
+							this.htmlNodes = result["content"] as string;
+						}
+					},
+					fail: () => {
+						console.log('fail');
+					}
+				});
+			},
+		}
+	}
+</script>
+
+<style>
+	.banner {
+		height: 360rpx;
+		overflow: hidden;
+		position: relative;
+		background-color: #ccc;
+	}
+
+	.banner-img {
+		width: 100%;
+	}
+
+	.banner-title {
+		max-height: 84rpx;
+		overflow: hidden;
+		position: absolute;
+		left: 30rpx;
+		bottom: 30rpx;
+		width: 90%;
+		font-size: 32rpx;
+		font-weight: 400;
+		line-height: 42rpx;
+		color: white;
+		z-index: 11;
+	}
+
+	.article-meta {
+		padding: 20rpx 40rpx;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		color: gray;
+	}
+
+	.article-text {
+		font-size: 26rpx;
+		line-height: 50rpx;
+		margin: 0 20rpx;
+	}
+
+	.article-author,
+	.article-time {
+		font-size: 30rpx;
+	}
+
+	.article-content {
+		padding: 0 30rpx;
+		overflow: hidden;
+		font-size: 30rpx;
+		margin-bottom: 30rpx;
+	}
+</style>
