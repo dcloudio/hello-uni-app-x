@@ -3,13 +3,14 @@
     <view class="uni-common-mt">
       <view class="uni-title">默认样式</view>
       <view class="flex-row">
-        <switch :checked="true" @change="switch1Change" />
+        <switch class="switch-checked" :checked="checked" @change="switch1Change" />
         <switch @change="switch2Change" />
+        <!-- <text class="switch-checked-value">{{clickCheckedValue}}</text> -->
       </view>
       <view class="uni-title">不同颜色和尺寸的switch</view>
       <view class="flex-row">
-        <switch color="#FFCC33" style="transform:scale(0.7)" :checked="true" />
-        <switch color="#FFCC33" style="transform:scale(0.7)" />
+        <switch class="switch-color-checked" :color="color" style="transform:scale(0.7)" :checked="true" />
+        <switch class="switch-color" :color="color" style="transform:scale(0.7)" />
       </view>
       <view class="uni-title">推荐展示样式</view>
     </view>
@@ -30,11 +31,15 @@
   export default {
     data() {
       return {
-        title: 'switch 开关'
+        title: 'switch 开关',
+        checked: true,
+        color: '#FFCC33',
+        clickCheckedValue: true
       }
     },
     methods: {
       switch1Change: function (e : SwitchChangeEvent) {
+        this.clickCheckedValue = e.detail.value
         console.log('switch1 发生 change 事件，携带值为', e.detail.value)
       },
       switch2Change: function (e : SwitchChangeEvent) {
