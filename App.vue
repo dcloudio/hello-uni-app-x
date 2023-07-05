@@ -16,7 +16,10 @@ export default {
     console.log("App Hide");
   },
   onLastPageBackPress: function (): boolean | null {
-    console.log("App LastPageBackPress");
+    uni.showToast({
+      title: "再按一次退出应用",
+      position: "bottom",
+    });
     return null;
   },
 };
