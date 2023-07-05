@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 export default {
   onLaunch: function () {
     console.log("App Launch");
