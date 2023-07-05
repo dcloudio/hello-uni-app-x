@@ -1,6 +1,6 @@
 <template>
 	<view style="width: 100%;height: 100%;">
-		<view class="banner">
+		<view class="banner" @click="bannerClick(banner)">
 			<image class="banner-img" :src="banner.cover"></image>
 			<text class="banner-title">{{ banner.title }}</text>
 		</view>
@@ -32,6 +32,7 @@
 	type Banner = {
 		cover: string | null,
 		title: string | null,
+		post_id: string | null
 	}
 	type Item = {
 		author_name: string,
@@ -50,8 +51,6 @@
 				banner: {} as Banner,
 				listData: [] as Item[],
 				last_id: '',
-				reload: false,
-				status: 'more',
 				contentText: {
 					contentdown: '上拉加载更多',
 					contentrefresh: '加载中',
@@ -77,14 +76,16 @@
 					url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
 					data: data,
 					success: data => {
-						// uni.stopPullDownRefresh();
-						this.refresherTriggered = false
-						if (data.statusCode == 200) {
-							let result = data.data as UTSJSONObject;
-							this.banner = {
-								cover: result["cover"] as string,
-								title: result["title"] as string
-							} as Banner;
+						if(this.pageVisible){
+							this.refresherTriggered = false
+							if (data.statusCode == 200) {
+								let result = data.data as UTSJSONObject;
+								this.banner = {
+									cover: result["cover"] as string,
+									title: result["title"] as string,
+									post_id: result["post_id"] as string
+								} as Banner;
+							}
 						}
 					},
 					fail: (e) => {
@@ -93,32 +94,34 @@
 				});
 			},
 			getList() {
-				let data = {
-					column: 'id,post_id,title,author_name,cover,published_at', //需要的字段名
-				};
+				let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
 				if (this.last_id != "") {
-					//说明已有数据，目前处于上拉加载
-					this.status = 'loading';
-					data["minId"] = this.last_id;
-					data["time"] = new Date().getTime() + '';
-					data["pageSize"] = 10;
+					const minId = (this.last_id).toInt();
+					const time = new Date().getTime() + '';
+					const pageSize = 10;
+					url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
 				}
+				
 				uni.request({
-					url: 'https://unidemo.dcloud.net.cn/api/news',
-					data: data,
+					url: url,
+					method:"GET",
 					success: (data) => {
-						if (data.statusCode == 200) {
-							const result = data.data as UTSJSONObject
-							let list = this.setTime(result);
-							this.listData = this.reload ? list : this.listData.concat(list);
-							this.last_id = list[list.length - 1].id + "";
-							this.reload = false;
-							this.refresherTriggered = false
+						if(this.pageVisible){
+							if (data.statusCode == 200) {
+								const result = data.data as UTSJSONObject
+								let list = this.setTime(result);
+								this.listData = list.concat(this.listData);
+								console.log("after ",this.listData.size);
+								this.last_id = listData[0].id + "";
+								this.refresherTriggered = false;
+							}
 						}
 					},
 					fail: (res) => {
-						console.log('fail', res);
-						this.refresherTriggered = false
+						if(this.pageVisible){
+							console.log('fail', res);
+							this.refresherTriggered = false
+						}
 					}
 				});
 			},
@@ -131,11 +134,20 @@
 					url: 'pages/component/list/detail/detail?post_id=' + post_id + "&cover=" + cover + "&title=" + title
 				});
 			},
+			bannerClick(e:Banner){
+				const detail = e;
+				const post_id = detail.post_id;
+				const cover = detail.cover;
+				const title = detail.title;
+				uni.navigateTo({
+					url: 'pages/component/list/detail/detail?post_id=' + post_id + "&cover=" + cover + "&title=" + title
+				});
+			},
 			setTime(items: UTSJSONObject): Item[] {
 				let newItems = [] as Item[];
 				if (items.isJSONArray()) {
 					const array = items.toJSONObject() as JSONArray;
-					for (let i = 0; i < array.size - 1; i++) {
+					for (let i = array.size - 1; i >= 0; i--) {
 						const e = array.get(i) as JSONObject;
 						newItems.push({
 								author_name: e["author_name"] as string,
@@ -150,11 +162,11 @@
 				return newItems;
 			},
 			onRefresherrefresh() {
-				this.refresherTriggered = true
-				this.reload = true;
-				this.last_id = '';
-				this.getBanner();
-				this.getList();
+				if(this.pageVisible){
+					this.refresherTriggered = true
+					this.getBanner();
+					this.getList();
+				}
 			}
 		}
 	};
