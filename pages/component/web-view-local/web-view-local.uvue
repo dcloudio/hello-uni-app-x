@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-flex-item">
-		<web-view ref="web-view" class="uni-flex-item" src="/hybrid/html/local.html" @onPostMessage="onPostMessage"
-			@error="error" @loading="loading" @loaded="loaded">
+		<web-view ref="web-view" class="uni-flex-item" src="/hybrid/html/local.html" @message="message" @error="error"
+			@loading="loading" @loaded="loaded">
 		</web-view>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-btn-v">
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-	import JSONObject from 'com.alibaba.fastjson.JSONObject';
 	export default {
 		data() {
 			return {
@@ -41,9 +40,10 @@
 			stop() {
 				(this.$refs['web-view'] as IWebViewNode).stop();
 			},
-			onPostMessage(event: WebViewPostMessageEvent) {
+			message(event: WebViewMessageEvent) {
 				console.log(JSON.stringify(event.detail));
-				const data = event.detail.data as JSONObject;
+				const data = event.detail.data;
+				if (data == null) return;
 				switch (data['action']) {
 					case 'navigateTo':
 						uni.navigateTo({
