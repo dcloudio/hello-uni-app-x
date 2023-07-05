@@ -55,6 +55,15 @@
 		    <view class="uni-list-cell-db">swiperTransition 是否打印</view>
 		    <switch :checked="swiperTransitionSelect" @change="swiperTransitionChange"/>
 		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">swiperAnimationfinish 是否打印</view>
+		    <switch :checked="swiperAnimationfinishSelect" @change="swiperAnimationfinishChange"/>
+		  </view>
+		  <view class="uni-list-cell uni-list-cell-pd">
+		    <view class="uni-list-cell-db">swiperChange 是否打印</view>
+		    <switch :checked="swiperChangeSelect" @change="swiperChangeChange"/>
+		  </view>
+		  
 		</view>
 
 
@@ -79,14 +88,18 @@
 				currentVal:0,
 				currentItemIdVal:"",
 				disableTouchSelect:false,
-				swiperTransitionSelect:false
+				swiperTransitionSelect:false,
+				swiperAnimationfinishSelect:false,
+				swiperChangeSelect:false
 			}
 		},
 		methods: {
 			
 			swiperChange: function (e : SwiperChangeEvent) {
-				console.log("swiperChange")
-				console.log(e)
+				if(this.swiperChangeSelect){
+					console.log("swiperChange")
+					console.log(e)
+				}
 			},
 			swiperTransition: function (e : SwiperTransitionEvent) {
 				if(this.swiperTransitionSelect){
@@ -95,8 +108,10 @@
 				}
 			},
 			swiperAnimationfinish: function (e : SwiperAnimationFinishEvent) {
-				console.log("swiperAnimationfinish")
-				console.log(e)
+				if(this.swiperAnimationfinishSelect){
+					console.log("swiperAnimationfinish")
+					console.log(e)
+				}
 			},
 			
 			dotsChange: function (e : SwitchChangeEvent) {
@@ -104,6 +119,12 @@
 			},
 			swiperTransitionChange: function (e : SwitchChangeEvent) {
 				this.swiperTransitionSelect = e.detail.value
+			},
+			swiperChangeChange: function (e : SwitchChangeEvent) {
+				this.swiperChangeSelect = e.detail.value
+			},
+			swiperAnimationfinishChange: function (e : SwitchChangeEvent) {
+				this.swiperAnimationfinishSelect = e.detail.value
 			},
 			autoplayChange: function (e : SwitchChangeEvent) {
 				this.autoplaySelect = e.detail.value
