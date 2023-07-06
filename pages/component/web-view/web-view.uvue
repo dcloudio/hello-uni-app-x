@@ -4,17 +4,24 @@
 			@error="error" @loading="loading" @loaded="loaded">
 		</web-view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-btn-v">
-				<button type="primary" @click="back">后退</button>
+			<view class="uni-input-v">
+				<input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" />
 			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @click="forward">前进</button>
+			<view class="uni-row uni-btn-v">
+				<view class="uni-flex-item">
+					<button type="primary" @click="back">后退</button>
+				</view>
+				<view class="uni-btn-ml uni-flex-item">
+					<button type="primary" @click="forward">前进</button>
+				</view>
 			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @click="reload">重新加载</button>
-			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @click="stop">停止加载</button>
+			<view class="uni-row uni-btn-v">
+				<view class="uni-flex-item">
+					<button type="primary" @click="reload">重新加载</button>
+				</view>
+				<view class="uni-btn-ml uni-flex-item">
+					<button type="primary" @click="stop">停止加载</button>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -24,7 +31,7 @@
 	export default {
 		data() {
 			return {
-				src: 'https://uniapp.dcloud.io/static/web-view.html',
+				src: 'https://www.baidu.com',
 				webview_styles: {
 					progress: {
 						color: '#FF3333'
@@ -45,57 +52,36 @@
 			stop() {
 				(this.$refs['web-view'] as IWebViewNode).stop();
 			},
-			message(event: WebViewMessageEvent) {
+			message(event : WebViewMessageEvent) {
 				console.log(JSON.stringify(event.detail));
-				const data = event.detail.data;
-				if (data == null) return;
-				switch (data['action']) {
-					case 'navigateTo':
-						uni.navigateTo({
-							url: data['url'] as string
-						});
-						break;
-					case 'redirectTo':
-						uni.redirectTo({
-							url: data['url'] as string
-						});
-						break;
-					case 'switchTab':
-						uni.switchTab({
-							url: data['url'] as string
-						});
-						break;
-					case 'reLaunch':
-						uni.reLaunch({
-							url: data['url'] as string
-						});
-						break;
-					case 'navigateBack':
-						uni.navigateBack({
-							delta: data['delta'] as number
-						});
-						break;
-					default:
-						uni.showModal({
-							content: JSON.stringify(event.detail),
-							showCancel: false
-						});
-						break;
+			},
+			error(event : WebViewErrorEvent) {
+				console.log(JSON.stringify(event.detail));
+			},
+			loading(event : WebViewLoadingEvent) {
+				console.log(JSON.stringify(event.type));
+			},
+			loaded(event : WebViewLoadedEvent) {
+				console.log(JSON.stringify(event.type));
+			},
+			confirm(event : InputConfirmEvent) {
+				console.log(event.detail.value);
+				let url = event.detail.value;
+				if (!url.startsWith('https://') && !url.startsWith('http://')) {
+					url = 'https://' + url;
 				}
-			},
-			error(event: WebViewErrorEvent) {
-				console.log(JSON.stringify(event.detail));
-			},
-			loading(event: WebViewLoadingEvent) {
-				console.log(JSON.stringify(event.type));
-			},
-			loaded(event: WebViewLoadedEvent) {
-				console.log(JSON.stringify(event.type));
+				this.src = url;
 			}
 		}
 	}
 </script>
 
 <style>
+	.uni-input-v {
+		padding: 10rpx 0;
+	}
 
+	.uni-btn-ml {
+		margin-left: 10rpx;
+	}
 </style>
