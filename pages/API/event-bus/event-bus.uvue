@@ -1,0 +1,51 @@
+<template>
+  <view>
+    <button @click="on">开始监听</button>
+    <button @click="once">监听一次</button>
+    <button @click="off">取消监听</button>
+    <button @click="emit">触发监听</button>
+    <button @click="clear">清空消息</button>
+    <view class="box">
+      <view>收到的消息：</view>
+      <view>
+        <view v-for="(item, index) in log" :key="index">{{ item }}</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script lang="ts">
+export default {
+  data() {
+    return {
+      log: [] as string[]
+    }
+  },
+  methods: {
+    fn(res: string) {
+      this.log.push(res)
+    },
+    on() {
+      uni.$on('test', this.fn)
+    },
+    once() {
+      uni.$once('test', this.fn)
+    },
+    off() {
+      uni.$off('test', this.fn)
+    },
+    emit() {
+      uni.$emit('test', 'msg:' + Date.now())
+    },
+    clear() {
+      this.log.length = 0
+    }
+  }
+}
+</script>
+
+<style>
+.box {
+  padding: 10px;
+}
+</style>
