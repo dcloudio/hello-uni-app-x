@@ -1,0 +1,102 @@
+<template>
+  <view class="uni-container">
+    <view class="uni-header-logo">
+      <image class="uni-header-image" src="/static/templateIndex.png"></image>
+    </view>
+    <view class="uni-hello-text">
+      <text class="hello-text">以下是部分模板示例，更多模板见插件市场：</text>
+      <u-link class="hello-link" href="https://ext.dcloud.net.cn" :text="'https://ext.dcloud.net.cn'"
+        :inWhiteList="true"></u-link>
+    </view>
+    <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
+      <view class="uni-panel-h" :class="item.open ? 'uni-panel-h-on' : ''" @click="triggerCollapse(index, item)">
+        <text class="uni-panel-text" :class="item.enable == false ? 'text-disabled' : ''">{{item.name}}</text>
+        <image :src="item.pages.length > 0 ? item.open ? arrowUpIcon : arrowDownIcon : arrowRightIcon" class="uni-icon">
+        </image>
+      </view>
+      <view class="uni-panel-c" v-if="item.open">
+        <view class="uni-navigate-item" v-for="(page,key) in item.pages" :key="key" @click="goDetailPage(page)">
+          <text class="uni-navigate-text" :class="page.enable != true ? 'text-disabled' : ''">{{page.name}}</text>
+          <image :src="arrowRightIcon" class="uni-icon"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script lang="ts">
+  type Page = {
+    name : string,
+    enable ?: boolean,
+    url : string
+  }
+
+  type ListItem = {
+    id : string,
+    name : string,
+    open : boolean,
+    pages : Page[],
+    url ?: string,
+    enable ?: boolean
+  }
+  export default {
+    data() {
+      return {
+        list: [
+          {
+            id: "drop-card",
+            url: "drop-card",
+            name: "drop-card",
+            open: false,
+            enable: true,
+            pages: [] as Page[]
+          }
+        ] as ListItem[],
+        arrowUpIcon: '/static/icons/arrow-up.png',
+        arrowDownIcon: '/static/icons/arrow-down.png',
+        arrowRightIcon: '/static/icons/arrow-right.png',
+      }
+    },
+    methods: {
+      triggerCollapse(index ?: number, item : ListItem) {
+        if (item.pages.length == 0) {
+          const page : Page = {
+            name: item.name,
+            enable: item.enable,
+            url: item.url!
+          }
+          this.goDetailPage(page);
+          return;
+        }
+        for (var i = 0; i < this.list.length; ++i) {
+          if (index == i) {
+            this.list[i].open = !this.list[i].open;
+          } else {
+            this.list[i].open = false;
+          }
+        }
+      },
+      goDetailPage(e : Page) {
+        if (e.enable != true) {
+          uni.showToast({
+            icon: 'none',
+            title: '暂不支持'
+          })
+          return
+        }
+        const url = e.url.indexOf('platform') > -1 ? e.url : `/pages/template/${e.url}/${e.url}`
+        uni.navigateTo({
+          url
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  @import '../../../common/uni-uvue.css';
+
+  .uni-container {
+    flex: 1;
+  }
+</style>
