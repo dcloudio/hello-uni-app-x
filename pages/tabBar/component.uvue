@@ -1,0 +1,265 @@
+<template>
+    <view class="uni-container">
+        <view class="uni-header-logo">
+            <image class="uni-header-image" src="/static/componentIndex.png"></image>
+        </view>
+        <view class="uni-hello-text">
+            <text class="hello-text">uni-app内置组件，展示样式仅供参考，文档详见：</text>
+            <u-link :href="'https://uniapp.dcloud.io/component/'" :text="'https://uniapp.dcloud.io/component/'"
+                :inWhiteList="true"></u-link>
+        </view>
+        <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
+            <view class="uni-panel-h" :class="item.open ? 'uni-panel-h-on' : ''" @click="triggerCollapse(index, item)">
+                <text class="uni-panel-text" :class="item.enable == false ? 'text-disabled' : ''">{{item.name}}</text>
+                <image :src="item.pages.length > 0 ? item.open ? arrowUpIcon : arrowDownIcon : arrowRightIcon"
+                    class="uni-icon"></image>
+            </view>
+            <view class="uni-panel-c" v-if="item.open">
+                <view class="uni-navigate-item" v-for="(page,key) in item.pages" :key="key" @click="goDetailPage(page)">
+                    <text class="uni-navigate-text"
+                        :class="page.enable != true ? 'text-disabled' : ''">{{page.name}}</text>
+                    <image :src="arrowRightIcon" class="uni-icon"></image>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script lang="ts">
+    type Page = {
+        name : string,
+        enable ?: boolean,
+        url ?: string
+    }
+    type ListItem = {
+        id : string,
+        name : string,
+        open : boolean,
+        pages : Page[],
+        url ?: string,
+        enable ?: boolean
+    }
+    export default {
+        data() {
+            return {
+                list: [{
+                    id: 'view',
+                    name: '视图容器',
+                    open: false,
+                    pages: [
+                        {
+                            name: 'view',
+                            enable: true
+                        },
+                        {
+                            name: 'scroll-view',
+                            enable: true
+                        },
+                        {
+                            name: 'swiper',
+                            enable: true
+                        },
+                        // #ifndef MP-TOUTIAO || MP-LARK
+                        {
+                            name: 'movable-view',
+                            enable: false
+                        },
+                        {
+                            name: 'cover-view',
+                            enable: false
+                        },
+                        // #endif
+						{
+							name:'list',
+							enable:true
+						}
+                    ] as Page[]
+                }, {
+                    id: 'content',
+                    name: '基础内容',
+                    open: false,
+                    pages: [
+                        {
+                            name: 'text',
+                            enable: true
+                        },
+                        {
+                            name: 'rich-text',
+                            enable: false
+                        },
+                        {
+                            name: 'progress',
+                            enable: true
+                        }
+                    ] as Page[]
+                }, {
+                    id: 'form',
+                    name: '表单组件',
+                    open: false,
+                    pages: [
+                        {
+                            name: 'button',
+                            enable: true
+                        },
+                        {
+                            name: 'checkbox',
+                            enable: true
+                        },
+                        {
+                            name: 'form',
+                            enable: false
+                        },
+                        {
+                            name: 'input',
+                            enable: true
+                        }, {
+                            name: 'label',
+                            enable: false
+                        }, {
+                            name: 'picker',
+                            enable: false
+                        }, {
+                            name: 'picker-view',
+                            enable: false
+                        }, {
+                            name: 'radio',
+                            enable: true
+                        }, {
+                            name: 'slider',
+                            enable: true
+                        }, {
+                            name: 'slider-100',
+                            enable: true
+                        },{
+                            name: 'switch',
+                            enable: true
+                        }, {
+                            name: 'textarea',
+                            enable: true
+                        },
+                        // #ifdef APP-PLUS || MP-WEIXIN || H5 || MP-BAIDU
+                        {
+                            name: 'editor',
+                            enable: false
+                        },
+                        // #endif
+                    ] as Page[]
+                }, {
+                    id: 'nav',
+                    name: '导航',
+                    open: false,
+                    pages: [{
+                        name: 'navigator',
+                        enable: false
+                    }] as Page[]
+                }, {
+                    id: 'media',
+                    name: '媒体组件',
+                    open: false,
+                    pages: [{
+                        name: 'image',
+                        enable: true
+                    }, {
+                        name: 'video',
+                        enable: false
+                    }] as Page[]
+                },
+                // #ifndef MP-TOUTIAO || MP-KUAISHOU
+                {
+                    id: 'map',
+                    name: '地图',
+                    open: false,
+                    pages: [
+                        {
+                            name: 'map',
+                            enable: false
+                        }
+                    ] as Page[]
+                },
+                // #endif
+                // #ifndef QUICKAPP-WEBVIEW-UNION
+                {
+                    id: 'canvas',
+                    name: '画布',
+                    open: false,
+                    pages: [
+                        {
+                            name: 'canvas'
+                        }
+                    ] as Page[]
+                },
+                // #endif
+                // #ifdef APP-PLUS || H5
+                {
+                    id: 'web-view',
+                    name: '网页',
+                    open: false,
+                    pages: [
+                        {
+                            name: '网络网页',
+                            enable: true,
+                            url: '/pages/component/web-view/web-view'
+                        },
+                        {
+                            name: '本地网页',
+                            enable: true,
+                            url: '/pages/component/web-view-local/web-view-local'
+                        }
+                    ] as Page[]
+                },
+                // #endif
+                // #ifndef H5 || MP-BAIDU || QUICKAPP-WEBVIEW || MP-LARK || MP-JD
+                {
+                    id: 'ad',
+                    url: 'ad',
+                    name: 'AD组件',
+                    enable: false,
+                    open: false,
+                    pages: [] as Page[]
+                }
+                // #endif
+                ] as ListItem[],
+                arrowUpIcon: '/static/icons/arrow-up.png',
+                arrowDownIcon: '/static/icons/arrow-down.png',
+                arrowRightIcon: '/static/icons/arrow-right.png',
+            }
+        },
+        methods: {
+            triggerCollapse(index ?: number, item : ListItem) {
+                if (item.pages.length == 0) {
+                    const page : Page = {
+                        name: item.name,
+                        enable: item.enable,
+                        url: item.url
+                    }
+                    this.goDetailPage(page);
+                    return;
+                }
+                for (var i = 0; i < this.list.length; ++i) {
+                    if (index == i) {
+                        this.list[i].open = !this.list[i].open;
+                    } else {
+                        this.list[i].open = false;
+                    }
+                }
+            },
+            goDetailPage(e : Page) {
+                if (e.enable != true) {
+                    uni.showToast({
+                        icon: 'none',
+                        title: '暂不支持'
+                    })
+                    return
+                }
+                const url = e.url != null ? e.url! : `/pages/component/${e.name}/${e.name}`
+                uni.navigateTo({
+                    url
+                })
+            }
+        }
+    }
+</script>
+
+<style>
+    @import '../../common/uni-uvue.css';
+</style>

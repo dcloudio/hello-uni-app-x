@@ -7,13 +7,14 @@ describe('page-scrollTo', () => {
     await page.waitFor(500)
   })
   // TODO
-  // it('scrollTo', async () => {
-  //   const btnScrollTo = await page.$('.btn-scrollTo')
+  it('scrollTo', async () => {
+    const btnScrollTo = await page.$('.btn-scrollTo')
 
-  //   await toggle.tap()
-  //   await page.waitFor(50)
-  //   expect(await page.scrollTop).toBe(100)
-  // })
+    await btnScrollTo.tap()
+    await page.waitFor(50)
+    // const scrollTop = await page.scrollTop()
+    // expect(scrollTop).toBe(100)
+  })
   // it('scrollToElement', async () => {
   //   const btnScrollTo = await page.$('.btn-scrollToElement')
   //   const scrollToElement = await page.$('.custom-element')
