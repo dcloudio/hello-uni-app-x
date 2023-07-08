@@ -1,165 +1,199 @@
 <template>
-	<view>
-		<page-head title="websocket通讯示例"></page-head>
-		<view class="uni-padding-wrap">
-			<view class="uni-btn-v">
-				<view class="websocket-msg">{{showMsg}}</view>
-				<button class="uni-btn-v" type="primary" @click="connect">连接websocket服务</button>
-				<button class="uni-btn-v" v-show="connected" type="primary" @click="send">发送一条消息</button>
-				<button class="uni-btn-v" type="primary" @click="close">断开websocket服务</button>
-				<view class="websocket-tips">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</view>
-			</view>
-		</view>
-	</view>
+  <view>
+    <page-head title="websocket通讯示例"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-btn-v">
+        <view class="websocket-msg">{{ showMsg }}</view>
+        <button class="uni-btn-v" type="primary" @click="connect">
+          连接websocket服务
+        </button>
+        <button
+          class="uni-btn-v"
+          v-show="connected"
+          type="primary"
+          @click="send"
+        >
+          发送一条消息
+        </button>
+        <button class="uni-btn-v" type="primary" @click="close">
+          断开websocket服务
+        </button>
+        <view class="websocket-tips"
+          >发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</view
+        >
+      </view>
+    </view>
+  </view>
 </template>
 
-<script>
-	import CloseSocketOptions from 'uts.sdk.modules.DCloudUniWebsocket.CloseSocketOptions';
-	export default {
-		data() {
-			return {
-				connected: false,
-				connecting: false,
-				msg: "",
-				roomId: '',
-				platform: "",
-				pageVisible: false
-			}
-		},
-		computed: {
-			showMsg(): string {
-				if (this.connected) {
-					if (this.msg.length > 0) {
-						return '收到消息：' + this.msg
-					} else {
-						return '等待接收消息'
-					}
-				} else {
-					return '尚未连接'
-				}
-			}
-		},
-		onLoad() {
-			this.platform = uni.getSystemInfoSync().platform;
-			this.pageVisible = true;
-		},
-		onUnload() {
-			this.pageVisible = false;
-			const closeOptions = new CloseSocketOptions();
-			uni.closeSocket(closeOptions);
-			uni.hideLoading()
-		},
-		methods: {
-			connect() {
-				if (this.connected || this.connecting) {
-					uni.showModal({
-						content: '正在连接或者已经连接，请勿重复连接',
-						showCancel: false
-					})
-					return
-				}
-				this.connecting = true
-				uni.showLoading({
-					title: '连接中...'
-				})
-				uni.connectSocket({
-					url: 'ws://websocket.dcloud.net.cn',
-					success(res) {
-						// 这里是接口调用成功的回调，不是连接成功的回调，请注意
-					},
-					fail(err) {
-						// 这里是接口调用失败的回调，不是连接失败的回调，请注意
-					}
-				})
-				uni.onSocketOpen((res) => {
-					if (this.pageVisible) {
-						this.connecting = false
-						this.connected = true
-						uni.hideLoading()
+<script lang="ts">
+export default {
+  data() {
+    return {
+      connected: false,
+      connecting: false,
+      msg: '',
+      roomId: '',
+      platform: '',
+      pageVisible: false,
+    }
+  },
+  computed: {
+    showMsg(): string {
+      if (this.connected) {
+        if (this.msg.length > 0) {
+          return '收到消息：' + this.msg
+        } else {
+          return '等待接收消息'
+        }
+      } else {
+        return '尚未连接'
+      }
+    },
+  },
+  onLoad() {
+    this.platform = uni.getSystemInfoSync().platform
+    this.pageVisible = true
+  },
+  onUnload() {
+    this.pageVisible = false
+    uni.closeSocket({
+      code: 1000,
+      reason: 'close reason from client',
+      success(res: any) {
+        console.log('uni.closeSocket success', res)
+      },
+      fail(err: any) {
+        console.log('uni.closeSocket fail', err)
+      },
+    } as CloseSocketOptions)
+    uni.hideLoading()
+  },
+  methods: {
+    connect() {
+      if (this.connected || this.connecting) {
+        uni.showModal({
+          content: '正在连接或者已经连接，请勿重复连接',
+          showCancel: false,
+        })
+        return
+      }
+      this.connecting = true
+      uni.showLoading({
+        title: '连接中...',
+      })
+      uni.connectSocket({
+        url: 'ws://websocket.dcloud.net.cn',
+        success(res: any) {
+          // 这里是接口调用成功的回调，不是连接成功的回调，请注意
+          console.log('uni.connectSocket success', res)
+        },
+        fail(err: any) {
+          // 这里是接口调用失败的回调，不是连接失败的回调，请注意
+          console.log('uni.connectSocket fail', err)
+        },
+      })
+      uni.onSocketOpen((res) => {
+        if (this.pageVisible) {
+          this.connecting = false
+          this.connected = true
+          uni.hideLoading()
 
-						uni.showToast({
-							icon: 'none',
-							title: '连接成功'
-						})
-						console.log('onOpen', res);
-					}
-				})
-				uni.onSocketError((err) => {
-					if (this.pageVisible) {
-						this.connecting = false
-						this.connected = false
-						uni.hideLoading()
+          uni.showToast({
+            icon: 'none',
+            title: '连接成功',
+          })
+          console.log('onOpen', res)
+        }
+      })
+      uni.onSocketError((err) => {
+        if (this.pageVisible) {
+          this.connecting = false
+          this.connected = false
+          uni.hideLoading()
 
-						uni.showModal({
-							content: '连接失败，可能是websocket服务不可用，请稍后再试',
-							showCancel: false
-						})
-						console.log('onError', err);
-					}
-				})
-				uni.onSocketMessage((res) => {
-					if (this.pageVisible) {
-						this.msg = res.data as string
-						console.log('onMessage', res)
-					}
-				})
-				uni.onSocketClose((res) => {
-					if (this.pageVisible) {
-						this.connected = false
-						this.msg = ""
-						console.log('onClose', res)
-					}
-				})
-			},
-			send() {
-				uni.sendSocketMessage({
-					data: 'from ' + platform + ' : ' + parseInt((Math.random() * 10000).toString()).toString(),
-					success(res) {
-						console.log(res);
-					},
-					fail(err) {
-						console.log(err);
-					}
-				})
-			},
-			close() {
-				const closeSocketOptions = new CloseSocketOptions();
-				uni.closeSocket(closeSocketOptions)
-			}
-		}
-	}
+          uni.showModal({
+            content: '连接失败，可能是websocket服务不可用，请稍后再试',
+            showCancel: false,
+          })
+          console.log('onError', err)
+        }
+      })
+      uni.onSocketMessage((res) => {
+        if (this.pageVisible) {
+          this.msg = res.data as string
+          console.log('onMessage', res)
+        }
+      })
+      uni.onSocketClose((res) => {
+        if (this.pageVisible) {
+          this.connected = false
+          this.msg = ''
+          console.log('onClose', res)
+        }
+      })
+    },
+    send() {
+      uni.sendSocketMessage({
+        data:
+          'from ' +
+          platform +
+          ' : ' +
+          parseInt((Math.random() * 10000).toString()).toString(),
+        success(res: any) {
+          console.log(res)
+        },
+        fail(err: any) {
+          console.log(err)
+        },
+      } as SendSocketMessageOptions)
+    },
+    close() {
+      uni.closeSocket({
+        code: 1000,
+        reason: 'close reason from client',
+        success(res: any) {
+          console.log('uni.closeSocket success', res)
+        },
+        fail(err: any) {
+          console.log('uni.closeSocket fail', err)
+        },
+      } as CloseSocketOptions)
+    },
+  },
+}
 </script>
 
 <style>
-	.uni-btn-v {
-		padding: 10rpx 0;
-	}
+.uni-btn-v {
+  padding: 10rpx 0;
+}
 
-	.uni-btn-v {
-		margin: 20rpx 0;
-	}
+.uni-btn-v {
+  margin: 20rpx 0;
+}
 
-	.websocket-room {
-		height: 40px;
-		line-height: 40px;
-		text-align: center;
-		border-bottom: solid 1px #DDDDDD;
-		margin-bottom: 20px;
-	}
+.websocket-room {
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-bottom: solid 1px #dddddd;
+  margin-bottom: 20px;
+}
 
-	.websocket-msg {
-		padding: 40px 0px;
-		text-align: center;
-		font-size: 14px;
-		line-height: 40px;
-		color: #666666;
-	}
+.websocket-msg {
+  padding: 40px 0px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 40px;
+  color: #666666;
+}
 
-	.websocket-tips {
-		padding: 40px 0px;
-		text-align: center;
-		font-size: 14px;
-		line-height: 24px;
-		color: #666666;
-	}
+.websocket-tips {
+  padding: 40px 0px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 24px;
+  color: #666666;
+}
 </style>
