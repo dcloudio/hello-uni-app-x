@@ -1,13 +1,13 @@
-const PAGE_PATH = '/pages/API/page-scrollTo/page-scrollTo'
+const PAGE_PATH = '/pages/API/page-scroll-to/page-scroll-to'
 
-describe('page-scrollTo', () => {
+describe('page-scroll-to', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
   })
   // TODO
-  it('scrollTo', async () => {
+  it('scroll-to', async () => {
     const btnScrollTo = await page.$('.btn-scrollTo')
 
     await btnScrollTo.tap()
@@ -15,7 +15,7 @@ describe('page-scrollTo', () => {
     // const scrollTop = await page.scrollTop()
     // expect(scrollTop).toBe(100)
   })
-  // it('scrollToElement', async () => {
+  // it('scroll-to-element', async () => {
   //   const btnScrollTo = await page.$('.btn-scrollToElement')
   //   const scrollToElement = await page.$('.custom-element')
 
