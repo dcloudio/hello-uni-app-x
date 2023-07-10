@@ -1,0 +1,115 @@
+<template>
+  <view class="page">
+    <view style="padding: 20px;">
+      <text>仿抖音，复用组件，无限滚动、加载、浏览视频的示例模板</text>
+      <text>已知问题：</text>
+      <text>1.swiper 组件竖滑动有 bug，先横向滑动</text>
+      <text>2.uvue暂未支持video</text>
+    </view>
+
+    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="false" @change="onSwiperChange" @transition="onTransition">
+      <swiper-item class="swiper-item" v-for="(item,index) in visibleList" :key="index">
+        <!-- <video ref="video" class="video" :id="item.id" :ref="item.id" :src="item.src" :controls="false" :loop="true"
+                    :show-center-play-btn="false"></video> -->
+        第：{{index}}个容器
+        数据内容：{{item.content}}
+      </swiper-item>
+    </swiper>
+  </view>
+</template>
+<script>
+  type ListItem = { _id : string, content : string }
+  let page : number = 0;
+  export default {
+    data() {
+      return {
+        list: [] as ListItem[],
+        visibleList: [] as ListItem[],// 提高性能 可见的只有3个
+        current: 0 as number,
+        index: 0
+      }
+    },
+    beforeCreate() {
+      this.list = this.getData()
+      this.visibleList = this.list.slice(0, 3)
+    },
+    watch: {
+      current(current : number, oldCurrent : number) {
+        let changeNumber = current - oldCurrent
+        if (changeNumber == 1 || changeNumber == -2) {
+          // console.error('向右');
+          this.index++
+        } else {
+          // console.error('向左');
+          this.index--
+        }
+        // //翻页（3项为一页）
+        if (Math.abs(changeNumber) == 2) {
+          // console.log('翻页');
+          page = Math.floor(this.index / 3);
+          // console.log(this.index);
+          // console.log('page',page);
+          // console.log('slice',3*page,3*page+3);
+          if (this.list.length < 3 * page + 3) {
+            let list : ListItem[] = this.getData()
+            this.list.push(...list.toTypedArray())
+          }
+          
+          let visibleList = this.list.slice(3 * page, 3 * page + 3)
+          // 换数据
+          this.visibleList = visibleList
+          /*
+          // 不换数据，只换内容
+          for (let i = 0; i < 3; i++) {
+            this.visibleList[i].src = visibleList[i].src
+            this.visibleList[i].other = visibleList[i].other
+          }*/
+        }
+      }
+    },
+    methods: {
+      getData() : ListItem[] {
+        /* Promise 暂不支持
+        Promise<void> 
+        return new Promise((resolve) => {
+          resolve();
+        });*/
+        let list = [] as ListItem[];
+        for (let i = 0; i < 6; i++) {
+          let index = this.list.length + i;
+          let listItem : ListItem = {
+            "_id": "a00" + index,
+            "content": "这是第" + index + "条数据"
+          }
+          list.push(listItem)
+        }
+        return list
+      },
+      onSwiperChange(e : SwiperChangeEvent) {
+        // console.error('SwiperChangeEvent',e.detail.current);
+        this.current = e.detail.current
+      },
+      onTransition(e:SwiperTransitionEvent){
+        console.log('onTransition e.detail.dx',e.detail.dx);
+      }
+    }
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    /* width: 750rpx; */
+  }
+
+  .swiper {
+    flex: 1;
+    border: 1px solid #000;
+  }
+
+  .swiper-item {
+    flex: 1;
+    border: 1px solid red;
+    padding: 10px 5px;
+  }
+</style>

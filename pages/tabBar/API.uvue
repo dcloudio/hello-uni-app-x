@@ -17,7 +17,7 @@
             <view class="uni-panel-c" v-if="item.open">
                 <view class="uni-navigate-item" v-for="(page,key) in item.pages" :key="key" @click="goDetailPage(page)">
                     <text class="uni-navigate-text"
-                        :class="page.enable != true ? 'text-disabled' : ''">{{page.name}}</text>
+                        :class="page.enable == false ? 'text-disabled' : ''">{{page.name}}</text>
                     <image :src="arrowRightIcon" class="uni-icon"></image>
                 </view>
             </view>
@@ -50,29 +50,39 @@
                         {
                             name: "页面跳转",
                             url: "navigator",
-                            enable: true
                         },
 						{
+						    name: "页面通信event-bus",
+						    url: "event-bus",
+						},
+						{
+						    name: "页面栈管理",
+						    url: "getCurrentPages",
+							enable: false
+						},
+						{
 						    name: "设置导航条",
-						    url: "set-navigation-bar-title"
+						    url: "set-navigation-bar-title",
+							enable: false
 						},
                         {
                             name: "设置TabBar",
                             url: "set-tabbar",
+							enable: false
                         },
                         {
                             name: "下拉刷新",
                             url: "pull-down-refresh",
+							enable: false
                         },
-						{
-						    name: "页面生命周期",
-						    url: "page-lifecircle",
-						    enable: true
-						},
                         {
-                            name: "将页面滚动到目标位置",
+                            name: "将页面滚动到指定位置",
                             url: "page-scroll-to",
-                            enable: true
+                        },
+                        {
+                            name: "获取启动参数",
+                            url: "get-launch-options-sync",
+							enable: false
                         },
                     ] as Page[],
                 },
@@ -84,38 +94,38 @@
 				        {
 				            name: "创建动画",
 				            url: "animation",
+							enable: false
 				        },
 				        {
 				            name: "创建绘画",
 				            url: "canvas",
+							enable: false
 				        },
 				        {
 				            name: "节点信息",
 				            url: "get-node-info",
+							enable: false
 				        },
 				        {
 				            name: "节点布局交互状态",
 				            url: "intersection-observer",
+							enable: false
 				        },
 				        {
 				            name: "显示操作菜单",
 				            url: "action-sheet",
-				            enable: true
 				        },
 				        {
 				            name: "显示模态弹窗",
 				            url: "modal",
-				            enable: true
 				        },
 				        {
 				            name: "显示加载提示框",
 				            url: "show-loading",
-				            enable: true
 				        },
 				        {
 				            name: "显示消息提示框",
 				            url: "toast",
-				            enable: true
 				        },
 				    ] as Page[],
 				},
@@ -127,38 +137,37 @@
                         {
                             name: "获取设备网络状态",
                             url: "get-network-type",
-							enable:true
                         },
                         {
                             name: "获取系统信息",
                             url: "get-system-info",
-							enable:true
                         },
 						{
 						    name: "获取设备信息",
 						    url: "get-device-info",
-							enable:true
 						},
 						{
 						    name: "获取APP基础信息",
 						    url: "get-app-base-info",
-							enable:true
 						},
 						{
 						    name: "获取设备设置",
 						    url: "get-system-setting",
-							enable:true
 						},
 						{
 						    name: "获取APP授权设置",
 						    url: "get-app-authorize-setting",
 							enable:true
 						},
-                        {
+						{
+						    name: "电量",
+						    url: "get-battery",
+							enable:false
+						},
+                        /* {
                             name: "打电话",
                             url: "make-phone-call",
                         },
-                        //#ifndef H5
                         {
                             name: "震动",
                             url: "vibrate",
@@ -171,50 +180,34 @@
                             name: "扫码",
                             url: "scan-code",
                         },
-                        //#endif
-                        //#ifndef H5 || MP-JD
                         {
                             name: "剪贴板",
                             url: "clipboard",
                         },
-                        //#endif
-                        // #ifndef H5 || MP-ALIPAY
                         {
                             name: "屏幕亮度",
                             url: "brightness",
                         },
-                        // #endif
-                        // #ifdef APP || MP-WEIXIN || MP-QQ || MP-JD
                         {
                             name: "蓝牙",
                             url: "bluetooth",
                         },
-                        // #endif
-                        // #ifdef APP || MP-WEIXIN || MP-QQ
                         {
                             name: "生物认证",
                             url: "soter",
                         },
-                        // #endif
-                        // #ifdef APP || MP-WEIXIN
                         {
                             name: "iBeacon",
                             url: "ibeacon",
                         },
-                        // #endif
-                        // #ifndef H5
                         {
                             name: "监听加速度传感器",
                             url: "on-accelerometer-change",
                         },
-                        // #endif
-                        // #ifndef H5 || MP-JD
                         {
                             name: "监听罗盘数据",
                             url: "on-compass-change",
                         },
-                        // #endif
-                        //#ifdef APP
                         {
                             name: "监听距离传感器",
                             url: "/platforms/app-plus/proximity/proximity",
@@ -222,8 +215,7 @@
                         {
                             name: "监听方向传感器",
                             url: "/platforms/app-plus/orientation/orientation",
-                        },
-                        //#endif
+                        }, */
                     ] as Page[],
                 },
                 {
@@ -234,17 +226,14 @@
                         {
                             name: "发起一个请求",
                             url: "request",
-							enable: true
                         },
                         {
                             name: "上传文件",
                             url: "upload-file",
-							enable: true
                         },
                         {
                             name: "下载文件",
                             url: "download-file",
-							enable: true
                         },
                     ] as Page[],
                 },
@@ -253,17 +242,13 @@
                     name: "websocket",
                     open: false,
                     pages: [
-                        // #ifndef MP-ALIPAY
                         {
                             name: "socketTask",
                             url: "websocket-socketTask",
-							enable: true
                         },
-                        // #endif
                         {
                             name: "全局websocket",
                             url: "websocket-global",
-							enable: true
                         },
                     ] as Page[],
                 },
@@ -273,21 +258,17 @@
                     open: false,
                     pages: [
                         {
-                            name: "图片",
-                            url: "image",
+                            name: "图片预览",
+                            url: "preview-image",
                         },
-						{
-						    name: "图片预览",
-						    url: "preview-image",
-							enable: true
-						},
-                        // #ifndef MP-LARK
-                        {
+                        /* {
+                            name: "图片选择和拍照",
+                            url: "image",
+							enable: false
+                        },{
                             name: "音频",
                             url: "inner-audio",
                         },
-                        // #endif
-                        // #ifdef APP || MP-WEIXIN || MP-BAIDU || MP-QQ|| MP-JD
                         {
                             name: "录音",
                             url: "voice",
@@ -295,29 +276,22 @@
                         {
                             name: "背景音频",
                             url: "background-audio",
-                        },
-                        // #endif
-                        // #ifndef MP-ALIPAY
+                        }, 
                         {
-                            name: "视频",
+                            name: "视频选择和拍照",
                             url: "video",
+							enable: false
                         },
-                        // #endif
-                        // #ifndef H5
                         {
                             name: "文件",
                             url: "file",
                         },
-                        // #endif
-                        // #ifndef H5 || MP-ALIPAY
                         {
                             name: "保存媒体到本地",
                             url: "save-media",
-                        },
-                        // #endif
+                        }, */
                     ] as Page[],
                 },
-                // #ifndef MP-KUAISHOU
                 {
                     id: "location",
                     name: "位置",
@@ -326,53 +300,37 @@
                         {
                             name: "获取当前位置",
                             url: "get-location",
-							enable: true
                         },
-                        {
+/*                        {
                             name: "使用地图查看位置",
                             url: "open-location",
                         },
-                        // #ifndef MP-TOUTIAO
                         {
                             name: "使用地图选择位置",
                             url: "choose-location",
                         },
-                        // #endif
-                        // #ifndef MP-QQ || MP-TOUTIAO || MP-LARK
                         {
                             name: "地图控制",
                             url: "map",
                         },
-                        // #endif
-                        // #ifdef APP
                         {
                             name: "地图搜索",
                             url: "map-search",
-                        },
-                        // #endif
+                        }, */
                     ] as Page[],
                 },
-                // #endif
                 {
                     id: "storage",
-                    name: "数据",
+                    name: "存储",
                     open: false,
                     pages: [
                         {
-                            name: "数据存储（key-value）",
+                            name: "storage（key-value存储）",
                             url: "storage",
-                            enable: true
-                        },
-                        // #ifdef APP
-                        {
-                            name: "SQLite",
-                            url: "sqlite",
-                        },
-                        // #endif
+                        }
                     ] as Page[],
                 },
-                // #ifdef APP || MP-WEIXIN
-                {
+/*                {
                     id: "rewarded-video-ad",
                     url: "rewarded-video-ad",
                     name: "激励视频广告",
@@ -380,8 +338,6 @@
                     enable: false,
                     pages: [] as Page[]
                 },
-                // #endif
-                // #ifdef APP
                 {
                     id: "full-screen-video-ad",
                     url: "full-screen-video-ad",
@@ -390,8 +346,6 @@
                     enable: false,
                     pages: [] as Page[]
                 },
-                // #endif
-                // #ifndef H5 || QUICKAPP-WEBVIEW || MP-KUAISHOU || MP-LARK
                 {
                     id: "login",
                     name: "登录",
@@ -407,8 +361,6 @@
                         },
                     ] as Page[],
                 },
-                // #endif
-                // #ifndef H5 || QUICKAPP-WEBVIEW-UNION
                 {
                     id: "share",
                     name: "分享",
@@ -420,8 +372,6 @@
                         },
                     ] as Page[],
                 },
-                // #endif
-                // #ifdef APP || MP-WEIXIN
                 {
                     id: "payment",
                     name: "支付",
@@ -433,8 +383,6 @@
                         },
                     ] as Page[],
                 },
-                // #endif
-                // #ifdef APP
                 {
                     id: "speech",
                     name: "语音",
@@ -456,16 +404,30 @@
                             url: "/platforms/app-plus/push/push",
                         },
                     ] as Page[],
-                },
+                }, */
                 {
-                    id: "event-bus",
-                    name: "event-bus",
+                    id: "view-event",
+                    name: "视图层事件",
                     open: false,
-                    enable: true,
-                    url: "event-bus",
-                    pages: [] as Page[],
-                },
-                    //#endif
+                    pages: [
+                        {
+                            name: "视图层事件",
+                            url: "view-event",
+                            enable: false
+                        }
+                    ] as Page[],
+                },{
+                    id: "exit",
+                    name: "退出",
+                    open: false,
+                    pages: [
+                        {
+                            name: "exit退出",
+                            url: "exit",
+                            enable: false
+                        }
+                    ] as Page[],
+                }
                 ] as ListItem[],
                 arrowUpIcon: '/static/icons/arrow-up.png',
                 arrowDownIcon: '/static/icons/arrow-down.png',
@@ -492,10 +454,10 @@
                 }
             },
             goDetailPage(e : Page) {
-                if (e.enable != true) {
+                if (e.enable == false) {
                     uni.showToast({
-                        icon: 'none',
-                        title: '暂不支持'
+                        title: '暂不支持',
+						icon:"none"
                     })
                     return
                 }

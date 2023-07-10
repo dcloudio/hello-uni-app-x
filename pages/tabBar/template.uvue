@@ -16,7 +16,7 @@
       </view>
       <view class="uni-panel-c" v-if="item.open">
         <view class="uni-navigate-item" v-for="(page,key) in item.pages" :key="key" @click="goDetailPage(page)">
-          <text class="uni-navigate-text" :class="page.enable != true ? 'text-disabled' : ''">{{page.name}}</text>
+          <text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{page.name}}</text>
           <image :src="arrowRightIcon" class="uni-icon"></image>
         </view>
       </view>
@@ -44,19 +44,40 @@
       return {
         list: [
           {
+            id: "custom-navigationbar",
+            url: "custom-navigationbar",
+            name: "自定义导航栏",
+            open: false,
+            enable: false,
+            pages: [] as Page[]
+          },{
             id: "drop-card",
             url: "drop-card",
-            name: "drop-card",
+            name: "划走式卡片",
             open: false,
-            enable: true,
             pages: [] as Page[]
           },
           {
-            id: "swiper-tiktok",
-            url: "swiper-tiktok",
-            name: "swiper-tiktok",
+            id: "swiper-vertical-video",
+            url: "swiper-vertical-video",
+            name: "竖滑视频",
             open: false,
-            enable: true,
+            pages: [] as Page[]
+          },
+          {
+            id: "sticky",
+            url: "sticky",
+            name: "吸顶",
+            open: false,
+            enable: false,
+            pages: [] as Page[]
+          },
+          {
+            id: "swiper-list",
+            url: "swiper-list",
+            name: "swiper-list",
+            open: false,
+            enable: false,
             pages: [] as Page[]
           }
         ] as ListItem[],
@@ -85,7 +106,7 @@
         }
       },
       goDetailPage(e : Page) {
-        if (e.enable != true) {
+        if (e.enable == false) {
           uni.showToast({
             icon: 'none',
             title: '暂不支持'

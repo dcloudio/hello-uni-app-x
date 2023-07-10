@@ -17,7 +17,7 @@
             <view class="uni-panel-c" v-if="item.open">
                 <view class="uni-navigate-item" v-for="(page,key) in item.pages" :key="key" @click="goDetailPage(page)">
                     <text class="uni-navigate-text"
-                        :class="page.enable != true ? 'text-disabled' : ''">{{page.name}}</text>
+                        :class="page.enable == false ? 'text-disabled' : ''">{{page.name}}</text>
                     <image :src="arrowRightIcon" class="uni-icon"></image>
                 </view>
             </view>
@@ -49,17 +49,14 @@
                     pages: [
                         {
                             name: 'view',
-                            enable: true
                         },
                         {
                             name: 'scroll-view',
-                            enable: true
                         },
                         {
                             name: 'swiper',
-                            enable: true
                         },
-                        // #ifndef MP-TOUTIAO || MP-LARK
+                        /*
                         {
                             name: 'movable-view',
                             enable: false
@@ -68,16 +65,14 @@
                             name: 'cover-view',
                             enable: false
                         },
-                        // #endif
+                        */
 						{
 							name:'list（新闻）',
 							url:"pages/component/list/list",
-							enable:true
 						},
 						{
 							name:'list',
 							url:"pages/component/long-list/long-list",
-							enable:true
 						}
                     ] as Page[]
                 }, {
@@ -87,7 +82,6 @@
                     pages: [
                         {
                             name: 'text',
-                            enable: true
                         },
                         {
                             name: 'rich-text',
@@ -95,7 +89,6 @@
                         },
                         {
                             name: 'progress',
-                            enable: true
                         }
                     ] as Page[]
                 }, {
@@ -105,59 +98,51 @@
                     pages: [
                         {
                             name: 'button',
-                            enable: true
                         },
                         {
                             name: 'checkbox',
-                            enable: true
                         },
-                        {
+                        /* {
                             name: 'form',
                             enable: false
-                        },
+                        }, */
                         {
                             name: 'input',
-                            enable: true
-                        }, {
+                        /* }, {
                             name: 'label',
                             enable: false
                         }, {
                             name: 'picker',
-                            enable: false
+                            enable: false */
                         }, {
                             name: 'picker-view',
                             enable: false
                         }, {
                             name: 'radio',
-                            enable: true
                         }, {
                             name: 'slider',
-                            enable: true
                         }, {
                             name: 'slider-100',
-                            enable: true
                         },{
                             name: 'switch',
-                            enable: true
                         }, {
                             name: 'textarea',
-                            enable: true
                         },
-                        // #ifdef APP-PLUS || MP-WEIXIN || H5 || MP-BAIDU
+                        /*
                         {
                             name: 'editor',
                             enable: false
                         },
-                        // #endif
+                        */
                     ] as Page[]
-                }, {
+                /* }, {
                     id: 'nav',
                     name: '导航',
                     open: false,
                     pages: [{
                         name: 'navigator',
                         enable: false
-                    }] as Page[]
+                    }] as Page[] */
                 }, {
                     id: 'media',
                     name: '媒体组件',
@@ -168,9 +153,12 @@
                     }, {
                         name: 'video',
                         enable: false
+                    }, {
+                        name: 'animation-view',
+                        enable: false
                     }] as Page[]
                 },
-                // #ifndef MP-TOUTIAO || MP-KUAISHOU
+                /*
                 {
                     id: 'map',
                     name: '地图',
@@ -182,8 +170,6 @@
                         }
                     ] as Page[]
                 },
-                // #endif
-                // #ifndef QUICKAPP-WEBVIEW-UNION
                 {
                     id: 'canvas',
                     name: '画布',
@@ -194,8 +180,7 @@
                         }
                     ] as Page[]
                 },
-                // #endif
-                // #ifdef APP-PLUS || H5
+                */
                 {
                     id: 'web-view',
                     name: '网页',
@@ -213,8 +198,7 @@
                         }
                     ] as Page[]
                 },
-                // #endif
-                // #ifndef H5 || MP-BAIDU || QUICKAPP-WEBVIEW || MP-LARK || MP-JD
+                /*
                 {
                     id: 'ad',
                     url: 'ad',
@@ -223,7 +207,7 @@
                     open: false,
                     pages: [] as Page[]
                 }
-                // #endif
+                */
                 ] as ListItem[],
                 arrowUpIcon: '/static/icons/arrow-up.png',
                 arrowDownIcon: '/static/icons/arrow-down.png',
@@ -250,10 +234,10 @@
                 }
             },
             goDetailPage(e : Page) {
-                if (e.enable != true) {
+                if (e.enable == false) {
                     uni.showToast({
-                        icon: 'none',
-                        title: '暂不支持'
+                        title: '暂不支持',
+                        icon: 'none'
                     })
                     return
                 }
