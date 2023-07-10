@@ -1,0 +1,41 @@
+<template>
+	<view class="page">
+		<text>page lifecycle</text>
+	</view>
+</template>
+
+<script lang="ts">
+	import { state, setLifeCycleNum } from '@/store/index.uts'
+	export default {
+		onLoad() {
+			setLifeCycleNum(state.lifeCycleNum + 100)
+			console.log('Page onLoad')
+		},
+		onShow() {
+			setLifeCycleNum(state.lifeCycleNum + 10)
+			console.log('Page onShow')
+		},
+		onReady() {
+			setLifeCycleNum(state.lifeCycleNum + 10)
+			console.log('Page onReady')
+		},
+		onHide() {
+			setLifeCycleNum(state.lifeCycleNum - 10)
+			console.log('Page onHide')
+		},
+		onUnload() {
+			setLifeCycleNum(state.lifeCycleNum - 100)
+			console.log('Page onUnload')
+		},
+		onBackPress(options: Map<string, string>) : boolean | null {
+			setLifeCycleNum(state.lifeCycleNum - 10)
+			console.log('Page onBackPress',options)
+			return null
+		},
+		methods: {
+			getLifeCycleNum() : number {
+				return state.lifeCycleNum
+			}
+		},
+	}
+</script>

@@ -1,6 +1,8 @@
 <script lang="ts">
+import { state, setLifeCycleNum } from './store/index.uts'
 export default {
   onLaunch: function () {
+    setLifeCycleNum(state.lifeCycleNum + 1000)
     console.log("App Launch");
 
     // const performance: Performance = uni.getPerformance()
@@ -10,12 +12,15 @@ export default {
     // observer1.observe({ entryTypes: ['render', 'navigation'] } as PerformanceObserverOptions)
   },
   onShow: function () {
+    setLifeCycleNum(state.lifeCycleNum + 100)
     console.log("App Show");
   },
   onHide: function () {
+    setLifeCycleNum(state.lifeCycleNum - 100)
     console.log("App Hide");
   },
   onLastPageBackPress: function (): boolean | null {
+    setLifeCycleNum(state.lifeCycleNum - 1000)
     uni.showToast({
       title: "再按一次退出应用",
       position: "bottom",
