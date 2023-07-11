@@ -1,0 +1,28 @@
+<template>
+	<view>
+		<text>当前电量：{{level}}%</text>
+		<text>是否充电中：{{isCharging}}</text>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				level: 0,
+				isCharging: false
+			}
+		},
+		onLoad() {
+			uni.getBatteryInfo({
+				success: res => {
+					this.level = res.level;
+					this.isCharging = res.isCharging;
+				}
+			});
+		}
+	}
+</script>
+<style>
+
+</style>

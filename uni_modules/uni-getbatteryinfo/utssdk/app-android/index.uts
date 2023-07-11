@@ -1,0 +1,69 @@
+import Context from "android.content.Context";
+import BatteryManager from "android.os.BatteryManager";
+import { UTSAndroid } from "io.dcloud.uts";
+
+import { GetBatteryInfo, GetBatteryInfoSuccess, GetBatteryInfoFail, GetBatteryInfoResult,GetBatteryInfoSync } from '../interface.uts'
+/**
+ * 异步获取电量
+ * @param {Object} options
+ */
+export const getBatteryInfo : GetBatteryInfo = function (options) {
+    const context = UTSAndroid.getAppContext();
+    if (context != null) {
+        const manager = context.getSystemService(
+            Context.BATTERY_SERVICE
+        ) as BatteryManager;
+        const level = manager.getIntProperty(
+            BatteryManager.BATTERY_PROPERTY_CAPACITY
+        );
+        const res : GetBatteryInfoSuccess = {
+            errMsg: 'getBatteryInfo:ok',
+            level,
+            isCharging: manager.isCharging()
+        }
+        options.success?.(res)
+        options.complete?.(res)
+    } else {
+        const res : GetBatteryInfoFail = {
+            errSubject: "uni-getBatteryInfo",
+            errCode: 1001,
+            errMsg: 'getBatteryInfo:fail getAppContext is null',
+            cause: null
+        }
+        options.fail?.(res)
+        options.complete?.(res)
+    }
+}
+
+/**
+ * 同步获取电量示例
+ */
+export const getBatteryInfoSync : GetBatteryInfoSync = function (): GetBatteryInfoResult {
+	
+    const context = UTSAndroid.getAppContext();
+    if (context != null) {
+        const manager = context.getSystemService(
+            Context.BATTERY_SERVICE
+        ) as BatteryManager;
+        const level = manager.getIntProperty(
+            BatteryManager.BATTERY_PROPERTY_CAPACITY
+        );
+		
+		const res : GetBatteryInfoResult = {
+		    level: level,
+		    isCharging: manager.isCharging()
+		};
+		return res;
+    } else {
+		/**
+		 * 无有效上下文
+		 */
+		const res : GetBatteryInfoResult = {
+		    level: -1,
+		    isCharging: false
+		};
+		return res;
+    }
+	
+	
+}
