@@ -1,0 +1,55 @@
+<template>
+  <view class="uni-padding-wrap">
+    <text>onLoad 接收到参数</text>
+    <text>data: {{ data }}</text>
+  </view>
+</template>
+<script lang="ts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+export default {
+  data() {
+    return {
+      data: '',
+    }
+  },
+  onLoad(options: OnLoadOptions) {
+    console.log('new-page onLoad', options)
+    if(options.has('data')) {
+      this.data = options.get('data')!
+    }
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 100)
+  },
+  onShow() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  },
+  onReady() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  },
+  onHide() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 10)
+  },
+  onBackPress(_: OnBackPressOptions): boolean | null {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 10)
+    return null
+  },
+  onUnload() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 100)
+  },
+  methods: {
+    // 自动化测试
+    getLifeCycleNum(): number {
+      return state.lifeCycleNum
+    },
+    // 自动化测试
+    setLifeCycleNum(num: number) {
+      setLifeCycleNum(num)
+    },
+  },
+}
+</script>
