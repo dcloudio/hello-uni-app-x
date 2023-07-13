@@ -1,120 +1,122 @@
 <template>
-	<view>
-		<page-head title="navigate"></page-head>
-		<view class="uni-padding-wrap uni-common-mt">
-			<view style="flex-direction: row">
-				<text style="width: 170px">onLoad触发时间戳：</text>
-				<text style="text-align: right">{{ onLoadTime }}</text>
-			</view>
-			<view style="flex-direction: row">
-				<text style="width: 170px">onReady触发时间戳：</text>
-				<text style="text-align: right">{{ onReadyTime }}</text>
-			</view>
-			<view style="flex-direction: row">
-				<text style="width: 170px">onUnload触发时间戳：</text>
-				<text style="text-align: right">见控制台</text>
-			</view>
-			<view style="flex-direction: row">
-				<text style="width: 170px">onShow触发时间戳：</text>
-				<text style="text-align: right">{{ onShowTime }}</text>
-			</view>
-			<view style="flex-direction: row">
-				<text style="width: 170px">onHide触发时间戳：</text>
-				<text style="text-align: right">{{ onHideTime }}</text>
-			</view>
-			<text>onBackPress触发时间戳：见控制台</text>
-			<!-- <view style="flex-direction: row">
+  <view>
+    <page-head title="navigate"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view style="flex-direction: row">
+        <text style="width: 170px">onLoad触发时间戳：</text>
+        <text style="text-align: right">{{ onLoadTime }}</text>
+      </view>
+      <view style="flex-direction: row">
+        <text style="width: 170px">onReady触发时间戳：</text>
+        <text style="text-align: right">{{ onReadyTime }}</text>
+      </view>
+      <view style="flex-direction: row">
+        <text style="width: 170px">onUnload触发时间戳：</text>
+        <text style="text-align: right">见控制台</text>
+      </view>
+      <view style="flex-direction: row">
+        <text style="width: 170px">onShow触发时间戳：</text>
+        <text style="text-align: right">{{ onShowTime }}</text>
+      </view>
+      <view style="flex-direction: row">
+        <text style="width: 170px">onHide触发时间戳：</text>
+        <text style="text-align: right">{{ onHideTime }}</text>
+      </view>
+      <text>onBackPress触发时间戳：见控制台</text>
+      <!-- <view style="flex-direction: row">
 				<text style="width: 170px">onBackPress触发时间戳：</text>
 				<text style="text-align: right">见控制台</text>
 			</view> -->
-			<view class="uni-btn-v">
-				<button @tap="navigateTo" class="uni-btn">
-					跳转新页面，并传递数据
-				</button>
-				<button @tap="navigateBack" class="uni-btn">返回上一页</button>
-				<button @tap="redirectTo" class="uni-btn">在当前页面打开</button>
-				<button @tap="switchTab" class="uni-btn">切换到模板选项卡</button>
-				<button @tap="reLaunch" class="uni-btn">关闭所有页面，打开首页</button>
-				<button @tap="customAnimation" class="uni-btn">
-					使用自定义动画打开页面
-				</button>
-			</view>
-		</view>
-	</view>
+      <view class="uni-btn-v">
+        <button @tap="navigateTo" class="uni-btn">
+          跳转新页面，并传递数据
+        </button>
+        <button @tap="navigateBack" class="uni-btn">返回上一页</button>
+        <button @tap="redirectTo" class="uni-btn">在当前页面打开</button>
+        <button @tap="switchTab" class="uni-btn">切换到模板选项卡</button>
+        <button @tap="reLaunch" class="uni-btn">关闭所有页面，打开首页</button>
+        <button @tap="customAnimation" class="uni-btn">
+          使用自定义动画打开页面
+        </button>
+      </view>
+    </view>
+  </view>
 </template>
 <script lang="ts">
-	import { setLifeCycleNum, state } from '@/store/index.uts'
-	export default {
-		data() {
-			return {
-				onLoadTime: 0,
-				onShowTime: 0,
-				onReadyTime: 0,
-				onHideTime: 0,
-			}
-		},
-		onLoad() {
-			this.onLoadTime = Date.now()
-			console.log('onLoad', this.onLoadTime)
-		},
-		onShow() {
-			this.onShowTime = Date.now()
-			console.log('onShow', this.onShowTime)
-		},
-		onReady() {
-			this.onReadyTime = Date.now()
-			console.log('onReady', this.onReadyTime)
-		},
-		onHide() {
-			this.onHideTime = Date.now()
-			console.log('onHide', Date.now())
-		},
-		onUnload() {
-			console.log('onUnLoad', Date.now())
-		},
-		/* onBackPress() {
+import { setLifeCycleNum, state } from '@/store/index.uts'
+export default {
+  data() {
+    return {
+      onLoadTime: 0,
+      onShowTime: 0,
+      onReadyTime: 0,
+      onHideTime: 0,
+    }
+  },
+  onLoad() {
+    this.onLoadTime = Date.now()
+    console.log('onLoad', this.onLoadTime)
+  },
+  onShow() {
+    this.onShowTime = Date.now()
+    console.log('onShow', this.onShowTime)
+  },
+  onReady() {
+    this.onReadyTime = Date.now()
+    console.log('onReady', this.onReadyTime)
+  },
+  onHide() {
+    this.onHideTime = Date.now()
+    console.log('onHide', Date.now())
+  },
+  onUnload() {
+    console.log('onUnLoad', Date.now())
+  },
+  /* onBackPress() {
 			console.log('onBackPress', Date.now()) // 为何不生效？？？
 			// 要把event也打出来
 		}, */
-		methods: {
-			navigateTo() {
-				uni.navigateTo({
-					url: '/pages/API/navigator/new-page/new-uvue-page-1?data=Hello',
-				})
-			},
-			navigateBack() {
-				uni.navigateBack({
-					delta: 1,
-				})
-			},
-			redirectTo() {
-				uni.redirectTo({
-					url: '/pages/API/navigator/new-page/new-uvue-page-1?data=Hello',
-				})
-			},
-			switchTab() {
-				uni.switchTab({
-					url: '/pages/tabBar/template',
-				})
-			},
-			reLaunch() {
-				uni.reLaunch({
-					url: '/pages/tabBar/component',
-				})
-			},
-			customAnimation() {
-				uni.navigateTo({
-					url: '/pages/API/navigator/new-page/new-uvue-page-1?data=使用自定义动画打开页面',
-					animationType: 'slide-in-bottom',
-					animationDuration: 200,
-				})
-			},
-			setLifeCycleNum(num : number) {
-				setLifeCycleNum(num)
-			},
-			getLifeCycleNum() : number {
-				return state.lifeCycleNum
-			},
-		},
-	}
+  methods: {
+    navigateTo() {
+      uni.navigateTo({
+        url: '/pages/API/navigator/new-page/new-uvue-page-1?data=Hello',
+      })
+    },
+    navigateBack() {
+      uni.navigateBack({
+        delta: 1,
+      })
+    },
+    redirectTo() {
+      uni.redirectTo({
+        url: '/pages/API/navigator/new-page/new-uvue-page-1?data=Hello',
+      })
+    },
+    switchTab() {
+      uni.switchTab({
+        url: '/pages/tabBar/template',
+      })
+    },
+    reLaunch() {
+      uni.reLaunch({
+        url: '/pages/tabBar/component',
+      })
+    },
+    customAnimation() {
+      uni.navigateTo({
+        url: '/pages/API/navigator/new-page/new-uvue-page-1?data=使用自定义动画打开页面',
+        animationType: 'slide-in-bottom',
+        animationDuration: 200,
+      })
+    },
+		// 自动化测试
+    setLifeCycleNum(num: number) {
+      setLifeCycleNum(num)
+    },
+		// 自动化测试
+    getLifeCycleNum(): number {
+      return state.lifeCycleNum
+    },
+  },
+}
 </script>
