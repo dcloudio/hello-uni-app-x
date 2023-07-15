@@ -1,0 +1,118 @@
+<template>
+  <view class="page">
+    <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view">
+      <view class="content">
+        <view style="height: 110px;">
+          <!-- 垫高专用 -->
+        </view>
+        <view v-for="(item,index) in 100" :key="index" style="height: 100px;background-color: #FFF;">
+          content-{{item}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="top-box" :style="{height:(110 - (scrollTop>40?40:scrollTop) )+'px','background-color': 'rgba(255, 255, 255, '+(scrollTop*3>100?100:scrollTop*3)/100+')'}">
+      <view class="scroll-fold-nav"
+        :style="{'opacity': 1 -(scrollTop*3>100?100:scrollTop*3)/100}"
+      >
+        <view style="margin-left: 30px;">DCloud 为开发者而生</view>
+      </view>
+      <view @click="back" class="back" style="position: absolute;top:35px;left: 8px;">
+        <image src="/static/template/scroll-fold-nav/back.png" style="width: 20px;" mode="widthFix"></image>
+      </view>
+      <view class="search" @click="toSearchPage" :style="{
+        'width':searchWidth - (scrollTop>40?40:scrollTop) +'rpx',
+        'top':0 - (scrollTop>40?40:scrollTop) +'px'
+      }">
+        <view style="flex-direction: row;">
+          <image src="/static/template/scroll-fold-nav/search.png" style="width: 15px;" mode="widthFix"></image>
+          <text class="search-tip-text">请输入你要搜索的内容</text>
+        </view>
+        <text class="search-btn">搜索</text>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import ScrollEvent from 'io.dcloud.uniapp.runtime.ScrollEvent';
+  export default {
+    data() {
+      return {
+        scrollTop: 0,
+        searchWidth: 700
+      }
+    },
+    methods: {
+      onScroll(e : ScrollEvent) {
+        this.scrollTop = e.detail.scrollTop
+      },
+      back(){
+        // 暂不支持通过navigateBack api 返回
+        // uni.navigateBack()
+        
+        uni.switchTab({
+          url:'/pages/tabBar/template'
+        })
+        
+      },
+      toSearchPage(){
+        uni.showToast({
+          title: '暂不支持',
+          icon: 'none'
+        });
+      }
+    },
+    onLoad() {
+    }
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    background-color: #fbdf0d;
+  }
+
+  .scroll-view {
+    flex: 1;
+  }
+
+  .top-box {
+    position: fixed;
+    top: 0;
+    padding-top: 25px;
+    align-items: flex-end;
+    border-bottom: 1px solid #efefef;
+  }
+
+  .scroll-fold-nav {
+    height: 44px;
+    width: 750rpx;
+    justify-content: center;
+  }
+
+  .search {
+    background-color: #FFFFFF;
+    border: 1px solid #fbdf0d;
+    height: 35px;
+    border-radius: 100px;
+    margin: 0 25rpx;
+    padding: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .search-tip-text {
+    font-size: 12px;
+    color: #666;
+  }
+  .search-btn {
+    font-size: 12px;
+    background-color: #ff6900;
+    color: #FFF;
+    padding: 5px 8px;
+    border-radius: 100px;
+  }
+</style>
