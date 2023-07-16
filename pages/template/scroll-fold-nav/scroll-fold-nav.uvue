@@ -5,7 +5,7 @@
         <view style="height: 110px;">
           <!-- 垫高专用 -->
         </view>
-        <view v-for="(item,index) in 100" :key="index" style="height: 100px;background-color: #FFF;">
+        <view v-for="(item,index) in 20" :key="index" style="height: 100px;background-color: #FFF;">
           content-{{item}}
         </view>
       </view>
@@ -49,12 +49,23 @@
         this.scrollTop = e.detail.scrollTop
       },
       back(){
-        // 暂不支持通过navigateBack api 返回
-        // uni.navigateBack()
+        // uni.navigateBack()  // 这么写用不了
+        // 这么写可以用
+		uni.navigateBack({
+		  success(result) {
+		    console.log('navigateBack success', result.errMsg)
+		  },
+		  fail(error) {
+		    console.log('navigateBack fail', error.errMsg)
+		  },
+		  complete(result) {
+		    console.log('navigateBack complete', result.errMsg)
+		  },
+		})
         
-        uni.switchTab({
-          url:'/pages/tabBar/template'
-        })
+        // uni.switchTab({
+        //   url:'/pages/tabBar/template'
+        // })
         
       },
       toSearchPage(){
