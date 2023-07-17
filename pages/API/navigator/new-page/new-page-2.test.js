@@ -1,0 +1,73 @@
+const PAGE_PATH = '/pages/API/navigator/new-page/new-page-2'
+const INTERMEDIATE_PAGE_PATH = '/pages/API/navigator/navigator'
+let page
+let lifeCycleNum
+
+describe('app-lifecycle', () => {
+  it('onLaunch onShow', async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH)
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(1100)
+  })
+  it('onLastPageBackPress', async () => {
+    page = await program.navigateBack()
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(100)
+
+    await page.callMethod('setLifeCycleNum', 0)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(0)
+  })
+})
+
+describe('page-lifecycle', () => {
+  it('onLoad onShow onReady', async () => {
+    page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(120)
+  })
+  it('onPullDownRefresh', async () => {
+    await page.callMethod('pullDownRefresh')
+    await page.waitFor(1500)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(130)
+  })
+  // TODO: pageScrollTo 无法触发 onReachBottom, 待修复后调整 lifeCycleNum
+  it('onPageScroll onReachBottom', async () => {
+    await program.pageScrollTo(2000)
+    const data = await page.data()
+    expect(data.isScrolled).toBe(true)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(130)
+  })
+  it('onHide', async () => {
+    page = await program.navigateTo(INTERMEDIATE_PAGE_PATH)
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(120)
+    page = await program.navigateBack()
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(130)
+  })
+  it('onUnload', async () => {
+    page = await program.redirectTo(INTERMEDIATE_PAGE_PATH)
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(30)
+  })
+  it('onBackPress', async () => {
+    page = await program.navigateTo(PAGE_PATH)
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(150)
+    page = await program.navigateBack()
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(40)
+    await page.callMethod('setLifeCycleNum', 0)
+  })
+})

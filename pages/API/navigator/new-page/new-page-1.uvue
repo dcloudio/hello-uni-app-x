@@ -1,0 +1,28 @@
+<template>
+  <view class="uni-padding-wrap">
+    <text>onLoad 接收到参数</text>
+    <text>data: {{ data }}</text>
+  </view>
+</template>
+<script lang="ts">
+import { state } from '@/store/index.uts'
+export default {
+  data() {
+    return {
+      data: '',
+    }
+  },
+  onLoad(options: OnLoadOptions) {
+    console.log('new-page2 onLoad', options)
+    if (options.has('data')) {
+      this.data = options.get('data')!
+    }
+  },
+  methods: {
+    // 自动化测试
+    getLifeCycleNum(): number {
+      return state.lifeCycleNum
+    },
+  },
+}
+</script>

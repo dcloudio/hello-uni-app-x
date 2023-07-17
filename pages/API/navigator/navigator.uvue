@@ -77,17 +77,101 @@ export default {
     console.log('onUnload', Date.now())
   },
   methods: {
+    reLaunch() {
+      uni.reLaunch({
+        url: '/pages/tabBar/component',
+        success(result) {
+          console.log('reLaunch success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail(error) {
+          console.log('reLaunch fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
+        },
+        complete(result) {
+          console.log('reLaunch complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+      })
+    },
     navigateTo() {
       uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page?data=Hello',
+        url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
         success(result) {
           console.log('navigateTo success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
         fail(error) {
           console.log('navigateTo fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
         },
         complete(result) {
           console.log('navigateTo complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+      })
+    },
+    navigateToErrorPage() {
+      uni.navigateTo({
+        url: '/pages/error-page/error-page',
+        success(result) {
+          console.log('navigateTo success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
+        },
+        fail(error) {
+          console.log('navigateTo fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        complete(result) {
+          console.log('navigateTo complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+      })
+    },
+    navigateToDebounce() {
+      uni.navigateTo({
+        url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+        success(result) {
+          console.log('navigateTo success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail(error) {
+          console.log('navigateTo fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
+        },
+        complete(result) {
+          console.log('navigateTo complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+      })
+      uni.navigateTo({
+        url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+        success(result) {
+          console.log('navigateTo success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
+        },
+        fail(error) {
+          console.log('navigateTo fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        complete(result) {
+          console.log('navigateTo complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
       })
     },
@@ -95,26 +179,38 @@ export default {
       uni.navigateBack({
         success(result) {
           console.log('navigateBack success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
         fail(error) {
           console.log('navigateBack fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
         },
         complete(result) {
           console.log('navigateBack complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
       })
     },
     redirectTo() {
       uni.redirectTo({
-        url: '/pages/API/navigator/new-page/new-page?data=Hello',
+        url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
         success(result) {
           console.log('redirectTo success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
         fail(error) {
           console.log('redirectTo fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
         },
         complete(result) {
           console.log('redirectTo complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
       })
     },
@@ -123,32 +219,24 @@ export default {
         url: '/pages/tabBar/template',
         success(result) {
           console.log('switchTab success', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
         fail(error) {
           console.log('switchTab fail', error.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 1)
         },
         complete(result) {
           console.log('switchTab complete', result.errMsg)
-        },
-      })
-    },
-    reLaunch() {
-      uni.reLaunch({
-        url: '/pages/tabBar/component',
-        success(result) {
-          console.log('reLaunch success', result.errMsg)
-        },
-        fail(error) {
-          console.log('reLaunch fail', error.errMsg)
-        },
-        complete(result) {
-          console.log('reLaunch complete', result.errMsg)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
         },
       })
     },
     customAnimation() {
       uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page?data=自定义动画打开页面',
+        url: '/pages/API/navigator/new-page/new-page-1?data=自定义动画打开页面',
         animationType: 'slide-in-bottom',
         animationDuration: 200,
       })

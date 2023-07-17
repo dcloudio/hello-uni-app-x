@@ -1,0 +1,87 @@
+<template>
+  <view class="uni-padding-wrap container">
+		<button @click="pageScrollTo">scrollToBottom</button>
+  </view>
+</template>
+<script lang="ts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+export default {
+  data() {
+    return {
+      isScrolled: false,
+    }
+  },
+  onLoad(_: OnLoadOptions) {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 100)
+  },
+  onShow() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  },
+  onReady() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  },
+  onPullDownRefresh() {
+    console.log('onPullDownRefresh')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  },
+  onPageScroll(_) {
+    // 自动化测试
+    this.isScrolled = true
+  },
+  onReachBottom() {
+    console.log('onReachBottom')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 10)
+  },
+  onBackPress(_: OnBackPressOptions): boolean | null {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 10)
+    return null
+  },
+  onHide() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 10)
+  },
+  onUnload() {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 100)
+  },
+  methods: {
+    // 自动化测试
+    getLifeCycleNum(): number {
+      return state.lifeCycleNum
+    },
+    // 自动化测试
+    setLifeCycleNum(num: number) {
+      setLifeCycleNum(num)
+    },
+    pullDownRefresh() {
+      uni.startPullDownRefresh({
+        success() {
+          setTimeout(() => {
+            uni.stopPullDownRefresh()
+          }, 1000)
+        },
+      })
+    },
+		pageScrollTo(){
+			uni.pageScrollTo({
+				scrollTop: 1200,
+				complete(res){
+					console.warn('pageScrollTo', res)
+				}
+			})
+		}
+  },
+}
+</script>
+
+<style>
+.container {
+  height: 1200px;
+}
+</style>
