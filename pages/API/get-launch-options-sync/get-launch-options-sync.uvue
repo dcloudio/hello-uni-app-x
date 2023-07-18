@@ -2,21 +2,25 @@
 	<view>
 		<page-head title="getLaunchOptionsSync"></page-head>
 		<button @click="getLaunchOptionsSync">getLaunchOptionsSync</button>
+		<text>结果：{{result}}</text>
 	</view>
 </template>
 <script>
 	export default {
 		data() {
 			return {
-				checked: false
+				checked: false,
+				result:""
 			}
 		},
 		methods: {
-      getLaunchOptionsSync: function () {
-        const launchOptions = uni.getLaunchOptionsSync()
-        if (launchOptions.path != null) {
-          this.checked = true
-        }
+			getLaunchOptionsSync: function () {
+				const launchOptions = uni.getLaunchOptionsSync()
+				// console.log(launchOptions)
+				this.result = JSON.stringify(launchOptions)
+				if (launchOptions.path != null) { // TODO 需要以各种方式启动hello uni-app x的包，把得到的启动参数传给调用方，进行对比
+					this.checked = true
+				}
 			}
 		}
 	}

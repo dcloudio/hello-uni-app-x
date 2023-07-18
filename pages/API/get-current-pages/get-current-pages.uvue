@@ -1,28 +1,37 @@
 <template>
-  <view>
-    <page-head title="getCurrentPages"></page-head>
-    <button @click="getCurrentPages">getCurrentPages</button>
-  </view>
+	<view>
+		<page-head title="getCurrentPages"></page-head>
+		<button @click="getCurrentPages">getCurrentPages</button>
+		<text>{{result}}</text>
+	</view>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      checked: false,
-    }
-  },
-  methods: {
-    getCurrentPages: function () {
-			const pages = getCurrentPages()
-      if (pages[0].route.includes('/tabBar/')) {
-        this.checked = true
-      }
-      for (let i = 1; i < pages.length; i++) {
-        if (pages[i].route.includes('/tabBar/')) {
-          this.checked = false
-        }
-      }
-    },
-  },
-}
+	export default {
+		data() {
+			return {
+				checked: false,
+				result:""
+			}
+		},
+		methods: {
+			getCurrentPages: function () {
+				const pages = getCurrentPages()
+				let tmps ="当前页面栈中有" + pages.length.toString() + "个页面。列表如下：\n"
+				for (let i = 0; i < pages.length; i++) {
+					tmps = tmps + pages[i].route + "\n"
+				}
+				this.result = tmps
+				// console.log('pages: ',pages.toString());
+				// TODO 判断条件不对，需要根据自动化测试执行脚本准确验证所有栈内页面
+				if (pages[0].route.includes('/tabBar/')) {
+					this.checked = true
+				}
+				for (let i = 1; i < pages.length; i++) {
+					if (pages[i].route.includes('/tabBar/')) {
+						this.checked = false
+					}
+				}
+			},
+		},
+	}
 </script>
