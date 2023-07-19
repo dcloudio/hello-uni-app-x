@@ -1,37 +1,58 @@
 <template>
-	<view>
-		<page-head title="getCurrentPages"></page-head>
-		<button @click="getCurrentPages">getCurrentPages</button>
-		<text>{{result}}</text>
-	</view>
+  <view>
+    <page-head title="getCurrentPages"></page-head>
+    <button @click="_getCurrentPages">getCurrentPages</button>
+    <button class="uni-common-mt" @click="hideAndShow">页面隐藏并显示</button>
+    <view style="padding: 15px 10px">
+      <text>当前页面栈中 {{pages.length}} 个页面，列表如下：</text>
+      <template v-for="(page, index) in pages" :key="page.route">
+        <text style="margin-top: 5px"
+          >index: {{ index }}, route: {{ page.route }}</text
+        >
+      </template>
+    </view>
+  </view>
 </template>
 <script>
-	export default {
-		data() {
-			return {
-				checked: false,
-				result:""
+class Page {
+	constructor(public route : string) {
+	}
+}
+export default {
+	data() {
+		return {
+			checked: false,
+			showTimes: 0,
+			pages: [] as Page[],
+		}
+	},
+	onShow() {
+		this.showTimes++
+	},
+	methods: {
+		_getCurrentPages: function () {
+			this.pages.length = 0
+			const pages = getCurrentPages()
+			this.pages.push(new Page(pages[0].route))
+			if (this.pages[0].route.includes('/tabBar/')) {
+				this.checked = true
+			}
+			for (let i = 1; i < pages.length; i++) {
+				this.pages.push(new Page(pages[i].route))
+				if (pages[i].route.includes('/tabBar/')) {
+					this.checked = false
+				}
 			}
 		},
-		methods: {
-			getCurrentPages: function () {
-				const pages = getCurrentPages()
-				let tmps ="当前页面栈中有" + pages.length.toString() + "个页面。列表如下：\n"
-				for (let i = 0; i < pages.length; i++) {
-					tmps = tmps + pages[i].route + "\n"
-				}
-				this.result = tmps
-				// console.log('pages: ',pages.toString());
-				// TODO 判断条件不对，需要根据自动化测试执行脚本准确验证所有栈内页面
-				if (pages[0].route.includes('/tabBar/')) {
-					this.checked = true
-				}
-				for (let i = 1; i < pages.length; i++) {
-					if (pages[i].route.includes('/tabBar/')) {
-						this.checked = false
-					}
-				}
-			},
-		},
-	}
+		hideAndShow() {
+			const pages = getCurrentPages()
+			const currentPage = pages[pages.length - 1]
+			const currentPageInstance = currentPage.$getAppPage()
+			if (currentPageInstance != null) {
+				currentPageInstance.hide(new Map())
+				currentPageInstance.show(new Map())
+			}
+		}
+	},
+}
 </script>
