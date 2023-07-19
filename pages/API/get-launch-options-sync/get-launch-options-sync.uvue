@@ -1,27 +1,30 @@
 <template>
-	<view>
-		<page-head title="getLaunchOptionsSync"></page-head>
-		<button @click="getLaunchOptionsSync">getLaunchOptionsSync</button>
-		<text>结果：{{result}}</text>
-	</view>
+  <view>
+    <page-head title="getLaunchOptionsSync"></page-head>
+    <button @click="getLaunchOptionsSync">getLaunchOptionsSync</button>
+    <view class="uni-common-pl uni-common-mt">
+      <text>应用启动路径：</text>
+      <text style="margin-top:5px;">{{ launchOptionsPath }}</text>
+    </view>
+  </view>
 </template>
 <script>
-	export default {
-		data() {
-			return {
-				checked: false,
-				result:""
-			}
-		},
-		methods: {
-			getLaunchOptionsSync: function () {
-				const launchOptions = uni.getLaunchOptionsSync()
-				// console.log(launchOptions)
-				this.result = JSON.stringify(launchOptions)
-				if (launchOptions.path != null) { // TODO 需要以各种方式启动hello uni-app x的包，把得到的启动参数传给调用方，进行对比
-					this.checked = true
-				}
-			}
-		}
-	}
+export default {
+  data() {
+    return {
+      checked: false,
+      homePagePath: '/pages/tabBar/component',
+      launchOptionsPath: '',
+    }
+  },
+  methods: {
+    getLaunchOptionsSync: function () {
+      const launchOptions = uni.getLaunchOptionsSync()
+      this.launchOptionsPath = launchOptions.path
+      if (launchOptions.path == this.homePagePath) {
+        this.checked = true
+      }
+    },
+  },
+}
 </script>
