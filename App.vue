@@ -32,10 +32,6 @@ export default {
   onLastPageBackPress: function (): boolean | null {
     // 自动化测试
     setLifeCycleNum(state.lifeCycleNum - 1000)
-    uni.showToast({
-      title: '再按一次退出应用',
-      position: 'bottom',
-    })
     return null
   },
 }
