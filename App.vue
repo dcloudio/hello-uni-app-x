@@ -35,6 +35,12 @@ export default {
     console.log('App LastPageBackPress')
     return null
   },
+  methods: {
+    increasetLifeCycleNum() {
+      setLifeCycleNum(state.lifeCycleNum + 100)
+      console.log('App increasetLifeCycleNum')
+    }
+  }
 }
 </script>
 
