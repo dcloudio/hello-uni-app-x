@@ -1,21 +1,29 @@
 <template>
-	<view>
-		<page-head title="getApp"></page-head>
-		<button @click="_getApp">getApp</button>
-	</view>
+  <view>
+    <page-head title="getApp"></page-head>
+    <view class="uni-padding-wrap">
+      <button @click="_increasetLifeCycleNum">increase lifeCycleNum</button>
+      <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
+    </view>
+  </view>
 </template>
-<script>
-	export default {
-		data() {
-			return {
-				checked: false
-			}
-		},
-		methods: {
-      _getApp: function () {
-				// const app = getApp()
-				this.checked = true
-			}
-		}
-	}
+<script lang="ts">
+import { state } from '@/store/index.uts'
+export default {
+  data() {
+    return {
+      lifeCycleNum: 0,
+    }
+	},
+	onReady() {
+		this.lifeCycleNum = state.lifeCycleNum
+	},
+  methods: {
+    _increasetLifeCycleNum: function () {
+      const app = getApp()
+      app.increasetLifeCycleNum()
+      this.lifeCycleNum = state.lifeCycleNum
+    },
+  },
+}
 </script>

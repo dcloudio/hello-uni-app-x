@@ -4,8 +4,9 @@ describe('getApp', () => {
   it('getApp', async () => {
     const page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(1000)
-    await page.callMethod('_getApp')
-    const data = await page.data()
-    expect(data.checked).toBe(true)
+    const oldData = await page.data()
+    await page.callMethod('_increasetLifeCycleNum')
+    const newData = await page.data()
+    expect(newData.lifeCycleNum - oldData.lifeCycleNum).toBe(100)
   })
 })

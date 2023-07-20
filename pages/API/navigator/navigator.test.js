@@ -51,6 +51,36 @@ describe('navigator', () => {
     await page.waitFor(1000)
   })
 
+  it('navigateTo relative path', async () => {
+    await page.callMethod('setLifeCycleNum', 0)
+    await page.callMethod('navigateToRelativePath1')
+    page = await program.navigateBack()
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(2)
+    await page.waitFor(1000)
+  })
+
+  it('navigateTo relative path ./', async () => {
+    await page.callMethod('setLifeCycleNum', 0)
+    await page.callMethod('navigateToRelativePath2')
+    page = await program.navigateBack()
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(2)
+    await page.waitFor(1000)
+  })
+
+  it('navigateTo relative path ../', async () => {
+    await page.callMethod('setLifeCycleNum', 0)
+    await page.callMethod('navigateToRelativePath3')
+    page = await program.navigateBack()
+    await page.waitFor(1000)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(2)
+    await page.waitFor(1000)
+  })
+
   it('navigateBack', async () => {
     await page.callMethod('setLifeCycleNum', 0)
     await page.callMethod('navigateBack')
