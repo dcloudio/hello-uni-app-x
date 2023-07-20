@@ -32,6 +32,7 @@ export default {
   onLastPageBackPress: function (): boolean | null {
     // 自动化测试
     setLifeCycleNum(state.lifeCycleNum - 1000)
+    console.log('App LastPageBackPress')
     return null
   },
 }
