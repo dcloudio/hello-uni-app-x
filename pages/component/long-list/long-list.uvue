@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import { readFile, ReadFileOptions,ReadFileSuccessResult } from '@/uni_modules/uts-file-manager';
 	type Item = {
 		title: string
 		subTitle: string,
@@ -47,9 +46,10 @@ import { readFile, ReadFileOptions,ReadFileSuccessResult } from '@/uni_modules/u
 		},
 		methods: {
 			getList() {
-                readFile({
-					type:'text',
-					path:'static/list-mock/mock.json',
+				const fileManager = uni.getFileSystemManager()
+                fileManager.readFile({
+					encoding:'utf-8',
+					filePath:'static/list-mock/mock.json',
 					success:function(result:ReadFileSuccessResult){
 						const content = result.content;
 						if (content != null){
@@ -86,7 +86,7 @@ import { readFile, ReadFileOptions,ReadFileSuccessResult } from '@/uni_modules/u
 			},
 			goDetail(e: Item) {
 				uni.navigateTo({
-					url: 'pages/component/long-list/detail/detail?content=' + e.detail
+					url: '/pages/component/long-list/detail/detail?content=' + e.detail
 				});
 			},
 			onRefresherrefresh() {
