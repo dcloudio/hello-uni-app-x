@@ -1,0 +1,115 @@
+<template>
+	<scroll-view :scroll-y="true" @scroll="onScroll" class="page">
+
+	<view v-for="(item,index) in list" :key="index" class="item">
+		first content-{{item}}
+	</view>
+
+	<view ref="sticky" class="search" @click="" :style="{
+'transform': 'translateY('+stickyTran+'px)'
+	}">
+	<!-- <view ref="sticky" class="search" @click=""> -->
+		<view style="flex-direction: row;">
+		  <image src="/static/template/scroll-fold-nav/search.png" style="width: 15px;" mode="widthFix"></image>
+		  <text class="search-tip-text">请输入你要搜索的内容</text>
+		</view>
+		<text class="search-btn">搜索</text>
+	</view>
+
+	<view v-for="(item,index) in list" :key="index" class="item">
+		second content-{{item}}
+	</view>
+
+	<view v-for="(item,index) in list" :key="index" class="item">
+		second content-{{item}}
+	</view>
+
+	</scroll-view>
+</template>
+
+<script>
+  import ScrollEvent from 'io.dcloud.uniapp.runtime.ScrollEvent';
+  export default {
+    data() {
+      return {
+		list: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'],
+		stickyTop: 0,
+		stickyTran: 0,
+        scrollTop: 0,
+        stickyNode: null as INode | null
+      }
+    },
+    methods: {
+		onScroll(e : ScrollEvent) {
+			if(e.detail.scrollTop > this.stickyTop){
+				let stickyTran = e.detail.scrollTop - this.stickyTop;
+				// this.stickyNode?.style?.setProperty('transform','translateY('+stickyTran+'px)');
+
+				this.stickyTran = stickyTran;
+			}else{
+				// this.stickyNode?.style?.setProperty('transform','');
+
+				this.stickyTran = 0;
+			}
+		},
+      back(){
+		uni.navigateBack({
+		  success(result) {
+		    console.log('navigateBack success', result.errMsg)
+		  },
+		  fail(error) {
+		    console.log('navigateBack fail', error.errMsg)
+		  },
+		  complete(result) {
+		    console.log('navigateBack complete', result.errMsg)
+		  },
+		})
+      }
+    },
+    onLoad() {
+    },
+	onReady() {
+		this.stickyNode = this.$refs['sticky'] as INode;
+		// let rect = this.stickyNode?.getBoundingClientRect();
+		// this.stickyTop = rect?.top;
+
+		let rect = (this.$refs['sticky'] as INode).getBoundingClientRect();
+		this.stickyTop = rect.top;
+	}
+  }
+</script>
+
+<style>
+.page {
+	flex: 1;
+	background-color: azure;
+}
+
+.item {
+	height: 100px;
+}
+
+.search {
+	background-color: #FFFFFF;
+	border: 1px solid #fbdf0d;
+	height: 35px;
+	border-radius: 100px;
+	margin: 0 25rpx;
+	padding: 8px;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+.search-tip-text {
+	font-size: 12px;
+	color: #666;
+}
+.search-btn {
+	font-size: 12px;
+	background-color: #ff6900;
+	color: #FFF;
+	padding: 5px 8px;
+	border-radius: 100px;
+}
+
+</style>
