@@ -11,6 +11,15 @@
 					<image class="image" mode="widthFix" :src="item.src"></image>
 				</view>
 			</view>
+			<view class="uni-title">
+				<text class="uni-title-text">暂不支持的格式</text>
+			</view>
+			<view>
+				<text class="uni-subtitle-text">tif</text>
+				<view class="uni-center" style="background:#FFFFFF;">
+					<image src="/static/test-image/logo.tif" @error="imageErrorEvent"></image>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -20,29 +29,47 @@
 		data() {
 			return {
 				title: 'image-format',
-				data: [{
-						format: 'png',
-						src: '/static/logo.png'
-					},
+				data: [
 					{
-						format: 'jpg',
-						src: '/static/logo.jpg'
-					},
-					{
-						format: 'webp',
-						src: '/static/logo.webp'
+						format: 'avif',
+						src: '/static/test-image/logo.avif' //TODO
 					},
 					{
 						format: 'bmp',
-						src: '/static/logo.bmp'
+						src: '/static/test-image/logo.bmp'
 					},
 					{
 						format: 'gif',
-						src: '/static/logo.gif'
+						src: '/static/test-image/logo.gif'
+					},
+					{
+						format: 'heic',
+						src: '/static/test-image/logo.heic'
+					},
+					{
+						format: 'ico',
+						src: '/static/test-image/logo.ico'
+					},
+					{
+						format: 'jpg',
+						src: '/static/test-image/logo.jpg'
+					},
+					{
+						format: 'png',
+						src: '/static/test-image/logo.png'
+					},
+					{
+						format: 'webp',
+						src: '/static/test-image/logo.webp'
 					}
 				] as Array < ImageFormat >
 			}
-		}
+		},
+		methods: {
+			imageErrorEvent(e:ImageErrorEvent) {
+				console.log("图片加载错误",e.detail); //TODO tif打不出正确的错误日志
+			}
+		},
 	}
 
 	class ImageFormat {
