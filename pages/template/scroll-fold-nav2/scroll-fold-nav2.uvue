@@ -11,10 +11,8 @@
       </view>
     </scroll-view>
 
-    <view class="top-box" :style="{height:(110 - (scrollTop>40?40:scrollTop) )+'px','background-color': 'rgba(255, 255, 255, '+(scrollTop*3>100?100:scrollTop*3)/100+')'}">
-      <view class="scroll-fold-nav"
-        :style="{'opacity': 1 -(scrollTop*3>100?100:scrollTop*3)/100}"
-      >
+    <view ref="top-box" class="top-box" style="height:110px;background-color:rgba(255,255,255,0)">
+      <view ref="scroll-fold-nav" class="scroll-fold-nav">
         <view style="margin-left: 30px;">DCloud 为开发者而生</view>
       </view>
       <view @click="back" class="back" style="position: absolute;top:35px;left: 8px;">
@@ -39,16 +37,20 @@
       return {
         scrollTop: 0,
         searchWidth: 700,
-		searchNode: null as INode|null
+		searchNode: null as INode|null,
+		boxNode: null as INode|null,
+		navNode: null as INode|null
       }
     },
     methods: {
       onScroll(e : ScrollEvent) {
         let scrollTop = e.detail.scrollTop
-		this.searchNode?.style?.setProperty('width',700 - (scrollTop>40?40:scrollTop) +'rpx');
-		this.searchNode?.style?.setProperty('top',0 - (scrollTop>40?40:scrollTop) +'px');
+		this.boxNode?.style?.setProperty('height', (110 - (scrollTop>40?40:scrollTop) )+'px');
+		this.boxNode?.style?.setProperty('background-color', 'rgba(255, 255, 255, '+(scrollTop*3>100?100:scrollTop*3)/100+')');
+		this.navNode?.style?.setProperty('opacity', 1 - (scrollTop*3>100?100:scrollTop*3)/100.0);
+		this.searchNode?.style?.setProperty('width', 700 - (scrollTop>40?40:scrollTop) +'rpx');
+		this.searchNode?.style?.setProperty('top', 0 - (scrollTop>40?40:scrollTop) +'px');
 		this.scrollTop = scrollTop;
-		console.log('onScroll', e);
       },
       back(){
         // uni.navigateBack()  // 这么写用不了
@@ -81,6 +83,8 @@
     },
 	onReady() {
 		this.searchNode = this.$refs['search'] as INode;
+		this.boxNode = this.$refs['top-box'] as INode;
+		this.navNode = this.$refs['scroll-fold-nav'] as INode;
 	}
   }
 </script>
