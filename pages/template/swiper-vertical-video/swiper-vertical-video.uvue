@@ -1,32 +1,54 @@
 <template>
   <view class="page">
-    <view style="padding: 20px;">
-      <text>仿抖音，复用组件，无限滚动、加载、浏览视频的示例模板</text>
-      <text>已知问题：</text>
-      <text>1.swiper 组件竖滑动有 bug，先横向滑动</text>
-      <text>2.uvue暂未支持video</text>
-    </view>
+    <view style="padding: 10px;">
+      <text>复用组件，无限滚动、加载、浏览视频的短视频模板</text>
+      
+      <text>【已知问题】swiper 组件竖滑动有 bug，先横向滑动</text>
 
-    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="false" @change="onSwiperChange" @transition="onTransition">
-      <swiper-item class="swiper-item" v-for="(item,index) in visibleList" :key="index">
-        <!-- <video ref="video" class="video" :id="item.id" :ref="item.id" :src="item.src" :controls="false" :loop="true"
-                    :show-center-play-btn="false"></video> -->
-        第：{{index}}个容器
-        数据内容：{{item.content}}
+      <view style="flex-direction: row;font-size: 10px;">
+        <view>【状态】</view>
+        <text v-for="(value,index) in state">
+           第{{index+1}}个:{{value?'播放中':'已暂停'}}
+        </text>
+      </view>
+    </view>
+    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="false" @change="onSwiperChange"
+      @transition="onTransition">
+      <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
+        <video :ref="'video-'+i" class="video" :id="item._id" :src="item.src" :poster="item.src+'?x-oss-process=video/snapshot,t_1000,f_jpg'"
+           :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true"
+          @play="onPlay(i)" @pause="onPause(i)"
+        ></video>
+        <view class="video-top-view" @click="changeState(i)">
+          <image v-if="!state[i]" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
+        </view>
+        <view>
+          <text>第：{{i}}个容器，内容：{{item.content}}</text>
+        </view>
       </swiper-item>
     </swiper>
   </view>
 </template>
 <script>
-  type ListItem = { _id : string, content : string }
+  import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
+  type ListItem = { _id : string, content : string, src : string }
   let page : number = 0;
+  
   export default {
+    components:{},
+    computed:{
+      currentVideo():VideoNode{
+        console.log('"video-"+this.current',"video-"+this.current);
+        return this.$refs["video-"+this.current] as VideoNode
+      }
+    },
     data() {
       return {
         list: [] as ListItem[],
         visibleList: [] as ListItem[],// 提高性能 可见的只有3个
         current: 0 as number,
-        index: 0
+        index: 0,
+        state:[false,false,false] as boolean[]
       }
     },
     beforeCreate() {
@@ -54,20 +76,52 @@
             let list : ListItem[] = this.getData()
             this.list.push(...list.toTypedArray())
           }
-          
+
           let visibleList = this.list.slice(3 * page, 3 * page + 3)
           // 换数据
           this.visibleList = visibleList
-          /*
-          // 不换数据，只换内容
-          for (let i = 0; i < 3; i++) {
-            this.visibleList[i].src = visibleList[i].src
-            this.visibleList[i].other = visibleList[i].other
-          }*/
         }
+      },
+      current(current){
+        this.state.forEach((val:boolean,index:number)=>{
+          if(index === current){
+            this.doPlay(current)
+          }else if(val){
+           // 除了选中的其他已经播放的都需要停止
+           this.doPause(index)
+           console.log('index:'+index+'已被执行暂停');
+          }
+        })
       }
     },
+    onReady() {
+      // 一启动完成，就播放第一个
+      this.doPlay(0)
+    },
     methods: {
+      changeState(index:number){
+        if(this.state[index]){
+          this.doPause(index)
+        }else{
+          this.doPlay(current)
+        }
+      },
+      doPlay(index:number){
+        (this.$refs["video-"+index] as VideoNode).play()
+        console.log("doPlay  video-"+index);
+      },
+      doPause(index:number){
+        (this.$refs["video-"+index] as VideoNode).pause()
+        console.log("doPause  video-"+index);
+      },
+      onPause(index:number){
+        this.state[index] = false
+        console.log('onPause',index);
+      },
+      onPlay(index:number){
+        this.state[index] = true
+        console.log('onPlay',index);
+      },
       getData() : ListItem[] {
         /* Promise 暂不支持
         Promise<void> 
@@ -79,7 +133,8 @@
           let index = this.list.length + i;
           let listItem : ListItem = {
             "_id": "a00" + index,
-            "content": "这是第" + index + "条数据"
+            "content": "这是第" + index + "条数据",
+            "src": "https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-0"+(i%3+1)+".mp4"
           }
           list.push(listItem)
         }
@@ -87,10 +142,10 @@
       },
       onSwiperChange(e : SwiperChangeEvent) {
         // console.error('SwiperChangeEvent',e.detail.current);
-        this.current = e.detail.current
+        this.current = e.detail.current;
       },
-      onTransition(e:SwiperTransitionEvent){
-        console.log('onTransition e.detail.dx',e.detail.dx);
+      onTransition(/*e : SwiperTransitionEvent*/) {
+        // console.log('onTransition e.detail.dx', e.detail.dx);
       }
     }
   }
@@ -102,6 +157,14 @@
     /* width: 750rpx; */
   }
 
+  .swiper,
+  .swiper-item,
+  .video,
+  .video-top-view ,
+  .video-cover {
+    height: 750rpx;
+  }
+
   .swiper {
     flex: 1;
     border: 1px solid #000;
@@ -111,5 +174,32 @@
     flex: 1;
     border: 1px solid red;
     padding: 10px 5px;
+    position: relative;
+  }
+
+  .video {}
+
+  .video-top-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    border: 1px solid red;
+    flex: 1;
+    width: 750rpx;
+  }
+
+  .play-btn {
+    width: 30px;
+    height: 30px;
+    color: #FFF;
+  }
+  .video-cover{
+    position: absolute;
+    width: 750rpx;
+    top: 0;
+    left: 0;
   }
 </style>
