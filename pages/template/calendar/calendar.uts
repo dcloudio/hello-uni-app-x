@@ -44,7 +44,7 @@ const lunarYears = [
 ]
 
 // ['月','正','一','二','三','四','五','六','七','八','九','十','冬','腊'];
-const N_STR_3 = ["\u6708","\u6b63", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d", "\u4e03", "\u516b", "\u4e5d", "\u5341", "\u51ac", "\u814a"]
+const N_STR_3 = ["\u6708", "\u6b63", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d", "\u4e03", "\u516b", "\u4e5d", "\u5341", "\u51ac", "\u814a"]
 // ['日','一','二','三','四','五','六','七','八','九','十']
 const N_STR_1 = ["\u65e5", "\u4e00", "\u4e8c", "\u4e09", "\u56db", "\u4e94", "\u516d", "\u4e03", "\u516b", "\u4e5d", "\u5341"]
 
@@ -82,6 +82,8 @@ export type LunarInfoType = {
 
 
 export class Lunar {
+	private lunarYearDaysMap = new Map<number, number>()
+	private lunarMonthDaysMap = new Map<number, number[]>()
 	constructor() { }
 	/**
 		* 传入农历数字月份返回汉语通俗表示法
@@ -90,10 +92,6 @@ export class Lunar {
 		* @eg:let cnMonth = calendar.toChinaMonth(12) ;//cnMonth='腊月'
 		*/
 	toChinaMonth(m : number, leap : boolean = false) : string { // 月 => \u6708
-		// if (m > 12 || m < 1) { return '' } // 若参数错误 返回-1
-		// let s = N_STR_3[m - 1]
-		// s += '\u6708'// 加上月字
-		// return s
 		return leap ? (N_STR_3[4] + N_STR_3[m] + N_STR_3[0]) : (N_STR_3[m] + N_STR_3[0]);
 	}
 
@@ -148,27 +146,43 @@ export class Lunar {
 
 	// 某年份农历各月天数
 	lunarMonthDays(year : number) : number[] {
-		let lunarYear = lunarYears[year - 1900];
-		let monthDays : number[] = [];
-		for (let i = 4; i < 16; i++) {
-			let monthDay = (lunarYear >> i & 0x1) != 0 ? 30 : 29;
-			monthDays.push(monthDay);
-		}
-		monthDays.reverse();
-		// 添加闰月
-		let leapM = this.leapMonth(year);
-		if (leapM > 0) monthDays.splice(leapM, 0, leapDays(year));
-		return monthDays;
+		
+		 let monthDays = this.lunarMonthDaysMap.get(year)
+			if (monthDays != null) {
+					return monthDays
+			}
+
+			monthDays = [];
+
+			let lunarYear = lunarYears[year - 1900];
+
+			for (let i = 15; i >= 4; i--) {
+					let monthDay = (lunarYear >> i & 0x1) != 0 ? 30 : 29;
+					monthDays.push(monthDay);
+			}
+
+			// 添加闰月
+			let leapM = this.leapMonth(year);
+
+			if (leapM > 0) monthDays.splice(leapM, 0, leapDays(year));
+			this.lunarMonthDaysMap.set(year, monthDays)
+
+			return monthDays;
 	}
 
 
 	// 某年农历天数
 	lunarYearDays(year : number) : number {
+		if (this.lunarYearDaysMap.has(year)) {
+			return this.lunarYearDaysMap.get(year)!
+		}
 		let num = 0;
 		this.lunarMonthDays(year).forEach(item => {
 			num += item;
 		});
+		this.lunarYearDaysMap.set(year, num)
 		return num;
+
 	}
 
 
@@ -189,7 +203,7 @@ export class Lunar {
 
 		// 计算农历日期
 		const IMonthCn = this.toChinaMonth(lMonth, isLeap)
-		
+
 		let IDayCn = lDay == 1 ? IMonthCn : this.toChinaDay(lDay)
 
 		// 是否今天
@@ -280,6 +294,4 @@ export class Lunar {
 
 		return info
 	}
-
-
 }

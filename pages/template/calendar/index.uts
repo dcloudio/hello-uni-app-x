@@ -13,7 +13,10 @@ export type DateType = {
 }
 
 export class Calendar {
-	constructor() { }
+	private lunar:Lunar
+	constructor() {
+		this.lunar =new Lunar()
+	}
 
 	getDateInfo(time : string = '') : DateType {
 		const nowDate = this.getDate(time)
@@ -121,8 +124,7 @@ export class Calendar {
 	 * 计算阴历日期显示
 	 */
 	getlunar(year : number, month : number, date : number) : LunarInfoType {
-		const lunar = new Lunar()
-		return lunar.solar2lunar(year, month, date)
+		return this.lunar.solar2lunar(year, month, date)
 	}
 	
 
