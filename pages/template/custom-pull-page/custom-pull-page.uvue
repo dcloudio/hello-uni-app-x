@@ -2,7 +2,6 @@
   <view class="root">
     <view class="top-box">
       <text class="top-box-text">可通过slot自定义，上拉加载下来刷新效果示例</text>
-      <text class="top-box-text">已知问题：因不支持通过ref 调用组件内的方法，本示例在下拉触发刷新方法时，1秒后“组件内”直接调用刷新完成接口，上拉加载同理。后续会修复</text>
     </view>
 
     <custom-pull :height="300" width="750rpx" :refreshBoxHeight="60" :refreshThreshold="60" :refreshHoldHeight="60"
@@ -11,7 +10,7 @@
 
       <template v-slot:refresh-box="scope">
         <view class="refresh-box">
-          <image class="logo" src="/static/logo.png" mode="widthFix"></image>
+          <image class="logo" src="/static/uni.png" mode="widthFix"></image>
           <text class="tip-text" v-if="scope.get('refreshState')== 0">继续下拉执行刷新（slot）</text>
           <text class="tip-text" v-if="scope.get('refreshState')== 1">释放立即刷新</text>
           <text class="tip-text" v-if="scope.get('refreshState')== 2">刷新中</text>
@@ -20,7 +19,6 @@
           <!-- <text class="tip-text">拖动的距离：{{scope.get('pullingDistance')}}</text> -->
         </view>
       </template>
-
 
       <view v-for="i in 8" class="item">
         item-{{i}}
@@ -53,18 +51,18 @@
       return {
       }
     },
-    onLoad() {
-      console.log('this.$refs["custom-pull"]', this.$refs["custom-pull"]);
+    onReady() {
+      // console.log('this.$refs["custom-pull"]', this.$refs["custom-pull"] as ComponentPublicInstance);
     },
     methods: {
       loading() {
         setTimeout(() => {
-          // this.$refs["custom-pull"].endLoading() //暂不支持，内部模拟实现
+          (this.$refs["custom-pull"] as ComponentPublicInstance).$callMethod('endLoading')
         }, 1000);
       },
       refresh() {
         setTimeout(() => {
-          // this.$refs["custom-pull"].endRefresh() //暂不支持，内部模拟实现
+          (this.$refs["custom-pull"] as ComponentPublicInstance).$callMethod('endRefresh')
         }, 1000);
       }
     }

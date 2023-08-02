@@ -94,11 +94,13 @@
       },
       touchmove(e : TouchEvent) {
         if (
-          // 滚动条不在顶部，也不是触底
-          scrollTop != 0 && !this.scrollInBottom ||
-          // 正在刷新中，或者加载更多中
-          this.refreshState != 0 && this.loadingState != 0
+          !( 
+            (scrollTop == 0 && this.refreshState == 0) || 
+            (this.scrollInBottom == true && this.loadingState == 0)
+          )
         ) {
+          // console.log('this.scrollInBottom == true && this.loadingState == 0')
+          // console.log(this.scrollInBottom,this.loadingState)
           return
         }
 
@@ -150,9 +152,12 @@
         }
       },
       onScroll(e : ScrollEvent) {
-        console.log('ScrollViewScroll-currentTarget', e.currentTarget);
-        scrollTop = e.detail.scrollTop
-        this.scrollInBottom = (scrollTop + this.height) == e.detail.scrollHeight
+        // console.log('ScrollEvent-currentTarget', e.currentTarget);
+        // console.log('e.detail.scrollTop',Math.floor(e.detail.scrollTop));
+        scrollTop = Math.floor(e.detail.scrollTop)
+        // console.log('(scrollTop + this.height) == e.detail.scrollHeight',(scrollTop + this.height) == e.detail.scrollHeight)
+        // console.log('(scrollTop + this.height) == e.detail.scrollHeight',scrollTop,this.height,e.detail.scrollHeight)
+        this.scrollInBottom = (scrollTop + this.height) == Math.floor(e.detail.scrollHeight)
       },
       endRefresh() {
         this.refreshState = 3
@@ -173,9 +178,7 @@
 </script>
 
 <style scoped>
-  .pull-box-root {
-  }
-
+  .pull-box-root {}
   .pull-box {}
 
   /* .loading-box {
