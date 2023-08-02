@@ -3,100 +3,12 @@
 		<page-head :title="title"></page-head>
 		<view class="uni-common-mt">
 			<view class="uni-list">
-				<view class="uni-list-cell">
+				<view class="uni-list-cell" v-for="(item,_) in items" style="align-items: center;">
 					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">设备型号</view>
+						<view class="uni-label" style="width:180px;">{{item.label}}</view>
 					</view>
 					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="model"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">客户端平台</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="platform"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">操作系统版本</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="system"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">语言</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="language"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">版本</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="version"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">屏幕宽度</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="screenWidth"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">屏幕高度</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="screenHeight"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">可使用窗口高度</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="windowHeight"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">可使用窗口的顶部位置</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="windowTop"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">可使用窗口的底部位置</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="windowBottom"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">状态栏的高度</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="statusBarHeight"/>
-					</view>
-				</view>
-				<view class="uni-list-cell">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">DPI</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<input class="uni-input" type="text" :disabled="true" placeholder="未获取" :value="pixelRatio"/>
+						<textarea :auto-height="true" :disabled="true" placeholder="未获取" :value="item.value" />
 					</view>
 				</view>
 			</view>
@@ -109,51 +21,33 @@
 	</view>
 </template>
 <script>
+	type Item = {
+		label : string,
+		value : string,
+	}
 	export default {
 		data() {
 			return {
 				title: 'getSystemInfo',
-				model:"",
-				platform:"",
-				system:"",
-				language:"",
-				version:"",
-				screenWidth:"",
-				screenHeight:"",
-				windowHeight:"",
-				windowTop:"",
-				windowBottom:"",
-				statusBarHeight:"",
-				pixelRatio:"",
-				SDKVersion:""
+				items: [] as Item[],
 			}
 		},
-		onUnload:function(){
+		onUnload: function () {
 		},
 		methods: {
 			getSystemInfo: function () {
 				uni.getSystemInfo({
 					success: (res) => {
-						console.log('SystemInfo: ',res);
-						this.model = res.model;
-						this.platform = res.platform;
-						this.system = res.system;
-						this.language = res.language ?? "";
-						this.version = res.version;
-						this.screenWidth = res.screenWidth + "";
-						this.screenHeight = res.screenHeight + "";
-						this.windowHeight = res.windowHeight + "";
-						this.windowTop = res.windowTop + "";
-						this.windowBottom = res.windowBottom + "";
-						const statusBarHeight = res.statusBarHeight;
-						if (statusBarHeight == null){
-							this.statusBarHeight = "";	
-						}else{
-							this.statusBarHeight = statusBarHeight + "";
-						}
-						this.pixelRatio = res.pixelRatio + "";
-						this.SDKVersion = res.SDKVersion;
-					}
+						const json = JSON.stringify(res);
+						const result = JSON.parse<Map<string, any>>(json);
+						result.forEach((value, key) => {
+							const item = {
+								label: key,
+								value: "" + value
+							} as Item;
+							this.items.push(item);
+						})
+					},
 				})
 			}
 		}
