@@ -3,6 +3,9 @@
     <page-head title="new-page-1" />
     <text>onLoad 接收到参数</text>
     <text>data: {{ data }}</text>
+    <button @tap="navigateBackWithDelta2" class="uni-btn">
+      回退到上上层页面
+    </button>
   </view>
 </template>
 
@@ -23,6 +26,17 @@ export default {
     // 自动化测试
     getLifeCycleNum(): number {
       return state.lifeCycleNum
+    },
+    navigateBackWithDelta2() {
+      uni.navigateBack({
+        delta: 2,
+        success() {
+          console.log('回退上上层页面成功')
+        },
+        fail(error) {
+          console.warn(`回退上上层页面失败: ${error.errMsg}`)
+        },
+      })
     },
   },
 }

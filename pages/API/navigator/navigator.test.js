@@ -1,5 +1,7 @@
 jest.setTimeout(40000)
 const CURRENT_PAGE_PATH = '/pages/API/navigator/navigator'
+const CHILD1_PAGE_PATH = '/pages/API/navigator/new-page/new-page-1'
+const CHILD2_PAGE_PATH = '/pages/API/navigator/new-page/new-page-2'
 
 describe('navigator', () => {
   let page
@@ -100,6 +102,20 @@ describe('navigator', () => {
     expect(`/${page.path}`).toBe(CURRENT_PAGE_PATH)
     lifeCycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifeCycleNum).toBe(2)
+  })
+
+  it('navigateBackWithDelta2', async () => {
+    await page.callMethod('setLifeCycleNum', 0)
+    await program.navigateTo(CHILD2_PAGE_PATH)
+    await page.waitFor(500)
+    page = await program.navigateTo(CHILD1_PAGE_PATH)
+    await page.waitFor(500)
+    await page.callMethod('navigateBackWithDelta2')
+    await page.waitFor(500)
+    page = await program.currentPage()
+    expect(`/${page.path}`).toBe(CURRENT_PAGE_PATH)
+    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifeCycleNum).toBe(10)
   })
 
   it('navigateBackWithDelta100', async () => {

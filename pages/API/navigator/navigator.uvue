@@ -1,7 +1,7 @@
 <template>
   <view>
     <page-head title="navigate"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
+    <view class="uni-padding-wrap uni-common-mt uni-common-mb">
       <view class="direction-row">
         <text class="label">onLoad触发时间戳:</text>
         <text>{{ onLoadTime }}</text>
@@ -36,6 +36,9 @@
         <button @tap="reLaunch" class="uni-btn">关闭所有页面，打开首页</button>
         <button @tap="customAnimation" class="uni-btn">
           使用自定义动画打开页面
+        </button>
+        <button @tap="navigateToErrorPage" class="uni-btn">
+          打开不存在的页面
         </button>
       </view>
     </view>
@@ -128,6 +131,10 @@ export default {
         },
         fail(error) {
           console.log('navigateTo fail', error.errMsg)
+          uni.showToast({
+            title: error.errMsg,
+            icon: 'none',
+          })
           // 自动化测试
           setLifeCycleNum(state.lifeCycleNum + 1)
         },

@@ -37,7 +37,7 @@ describe('page-lifecycle', () => {
   })
   // TODO: pageScrollTo 无法触发 onReachBottom, 待修复后调整 lifeCycleNum
   it('onPageScroll onReachBottom', async () => {
-    await program.pageScrollTo(1200)
+    await program.pageScrollTo(2000)
     const data = await page.data()
     expect(data.isScrolled).toBe(true)
     lifeCycleNum = await page.callMethod('getLifeCycleNum')
