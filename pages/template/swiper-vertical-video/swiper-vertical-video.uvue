@@ -15,7 +15,7 @@
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="false" @change="onSwiperChange"
       @transition="onTransition">
       <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-        <video :ref="'video-'+i" class="video" :id="item._id" :src="item.src" :poster="item.src+'?x-oss-process=video/snapshot,t_1000,f_jpg'"
+        <video :ref="'video-'+i" class="video" :id="item._id" :src="item.src" :poster="item.poster_src"
            :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true"
           @play="onPlay(i)" @pause="onPause(i)"
         ></video>
@@ -31,7 +31,7 @@
 </template>
 <script>
   import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
-  type ListItem = { _id : string, content : string, src : string }
+  type ListItem = { _id : string, content : string, src : string ,poster_src :string }
   let page : number = 0;
   
   export default {
@@ -135,13 +135,20 @@
           'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/video/uni-verify.mp4'
         ] as string[]
         
+        let posterSrcList = [
+          '/static/template/swiper-vertical-video/poster/uni-uts.jpg',
+          '/static/template/swiper-vertical-video/poster/uni-ai.jpg',
+          '/static/template/swiper-vertical-video/poster/uni-verify.jpg'
+        ] as string[]
+        
         let list = [] as ListItem[];
         for (let i = 0; i < 6; i++) {
           let index = this.list.length + i;
           let listItem : ListItem = {
             "_id": "a00" + index,
             "content": "这是第" + index + "条数据"+videoUrlList[i%3],
-            "src": videoUrlList[i%3]
+            "src": videoUrlList[i%3],
+            "poster_src":posterSrcList[i%3]
           }
           list.push(listItem)
         }
