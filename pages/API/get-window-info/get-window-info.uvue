@@ -1,0 +1,58 @@
+<template>
+	<view>
+		<page-head :title="title"></page-head>
+		<view class="uni-common-mt">
+			<view class="uni-list">
+				<view class="uni-list-cell" v-for="(item,_) in items" style="align-items: center;">
+					<view class="uni-pd">
+						<view class="uni-label" style="width:180px;">{{item.label}}</view>
+					</view>
+					<view class="uni-list-cell-db">
+						<textarea :auto-height="true" :disabled="true" placeholder="未获取" :value="item.value" />
+					</view>
+				</view>
+			</view>
+			<view class="uni-padding-wrap">
+				<view class="uni-btn-v">
+					<button type="primary" @tap="getWindowInfo">获取窗口信息</button>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+	type Item = {
+		label : string,
+		value : string,
+	}
+	export default {
+		data() {
+			return {
+				title: 'getWindowInfo',
+				items: [] as Item[],
+			}
+		},
+		onUnload: function () {
+		},
+		methods: {
+			getWindowInfo: function () {
+				const res = uni.getWindowInfo();
+				const json = JSON.stringify(res);
+				const result = JSON.parse<Map<string, any>>(json);
+				result.forEach((value, key) => {
+					const item = {
+						label: key,
+						value: "" + value
+					} as Item;
+					this.items.push(item);
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	.uni-pd {
+		padding-left: 30rpx;
+	}
+</style>
