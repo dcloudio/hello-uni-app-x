@@ -9,7 +9,7 @@
 				<textarea :value="res"></textarea>
 			</view>
 			<view class="uni-btn-v uni-common-mt">
-				<button type="primary" @click="sendRequest" :loading="loading">发起请求（Callback）</button>
+				<button type="primary" @click="sendRequest">发起请求（Callback）</button>
 			</view>
 		</view>
 	</view>
@@ -21,7 +21,6 @@
 		data() {
 			return {
 				title: 'request',
-				loading: false,
 				res: '',
 				task: null as RequestTask | null,
 				pageVisible: false
@@ -37,7 +36,9 @@
 		},
 		methods: {
 			sendRequest() {
-				this.loading = true;
+				uni.showLoading({
+					title:"请求中..."
+				})
 				this.task = uni.request({
 					url: "https://unidemo.dcloud.net.cn/ajax/echo/text?name=uni-app",
 					dataType: "json",
@@ -75,7 +76,7 @@
 						}
 					},
 					complete() {
-						this.loading = false;
+						uni.hideLoading()
 					},
 				});
 			}
