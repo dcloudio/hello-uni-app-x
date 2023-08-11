@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<scroll-view>
 		<page-head :title="title"></page-head>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-title">
@@ -12,7 +12,7 @@
 				</view>
 			</view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
@@ -26,12 +26,12 @@
 						description: '本地根路径'
 					},
 					{
-						src: '../../../static/test-image/logo.png', //TODO
+						src: '../../../static/test-image/logo.png',
 						description: '本地相对路径'
 					},
 					{
 						src: 'logo.png', //TODO
-						description: '本地当前路径'
+						description: '本地当前路径（暂不支持）'
 					},
 					{
 						src: 'file:///storage/emulated/0/Android/data/io.dcloud.uniappx/apps/__UNI__4517034/www/static/test-image/logo.png',
@@ -48,37 +48,44 @@
 					{
 						src: 'https://request.dcloud.net.cn/api/http/contentType/image/png',
 						description: '正确网络路径'
-					},{
+					},
+					{
 						src: 'https://request.dcloud.net.cn/api/http/contentType/wrongImage/gif',
 						description: '错误网络格式，假gif实为jpeg'
-					},{
+					},
+					{
 						src: 'https://request.dcloud.net.cn/api/http/contentType/wrongImage/jpeg',
 						description: '错误网络格式，假jpg实为png'
-					},{
+					},
+					{
 						src: 'https://request.dcloud.net.cn/api/http/contentType/wrongImage/png',
 						description: '错误网络格式，假png实为gif'
-					},{
+					},
+					{
 						src: 'https://request.dcloud.net.cn/api/http/contentType/404',
 						description: '错误网络地址404接口'
-					},{
+					},
+					{
 						src: 'https://request.dcloud.net.cn/api/http/contentType/404.png',
 						description: '错误网络地址，不存在的图片'
-					},
-				] as Array < ImagePath >
+					}
+				] as Array<ImagePath>
 			}
 		},
 		methods: {
-			imageErrorEvent(e:ImageErrorEvent) {
-				console.log("图片加载错误",e.detail); //TODO
+			imageErrorEvent(e : ImageErrorEvent) {
+				console.log("图片加载错误", e.detail);
+				// 图片加载失败，加载本地占位图
+				e.target?.setAttribute('src', '/static/template/drop-card/dislike.png')
 			}
 		},
 	}
 
 	class ImagePath {
-		src: string;
-		description: string;
+		src : string;
+		description : string;
 
-		constructor(src: string, description: string) {
+		constructor(src : string, description : string) {
 			this.src = src;
 			this.description = description;
 		}
