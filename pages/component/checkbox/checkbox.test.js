@@ -30,7 +30,7 @@ describe('Checkbox.uvue', () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
     expect(checkboxGroupElements.length).toBe(3)
     const checkboxElements = await page.$$('.checkbox')
-    expect(checkboxElements.length).toBe(11)
+    expect(checkboxElements.length).toBe(12)
   })
   it('text', async () => {
     const cb = await page.$('.cb1')

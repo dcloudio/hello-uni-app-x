@@ -8,11 +8,14 @@
                 </text>
             </view>
             <view>
-                <checkbox-group class="uni-flex uni-row checkbox-group" @change="testChange">
+                <checkbox-group class="uni-flex uni-row checkbox-group" @change="testChange" style="flex-wrap: wrap;">
                     <checkbox value="cb" :checked="checked" :color="color" style="margin-right: 30rpx;"
                         class="checkbox cb">选中</checkbox>
                     <checkbox value="cb1" style="margin-right: 30rpx;" class="checkbox cb1">{{text}}</checkbox>
                     <checkbox value="cb2" :disabled="disabled" class="checkbox cb2">禁用</checkbox>
+                    <checkbox value="cb3" style="margin-top: 20rpx;" class="checkbox cb3">
+                        {{wrapText}}
+                    </checkbox>
                 </checkbox-group>
             </view>
             <view class="uni-title uni-common-mt">
@@ -34,9 +37,6 @@
             <view class="uni-title uni-common-mt">
                 <text class="uni-title-text">
                     推荐展示样式
-                </text>
-                <text class="uni-subtitle-text">
-                    使用 uni-list 布局
                 </text>
             </view>
         </view>
@@ -61,57 +61,59 @@
         data() {
             return {
                 title: 'checkbox 复选框',
-                items: [{
-                    value: 'USA',
-                    name: '美国',
-                    checked: false
-                },
-                {
-                    value: 'CHN',
-                    name: '中国',
-                    checked: true
-                },
-                {
-                    value: 'BRA',
-                    name: '巴西',
-                    checked: false
-                },
-                {
-                    value: 'JPN',
-                    name: '日本',
-                    checked: false
-                },
-                {
-                    value: 'ENG',
-                    name: '英国',
-                    checked: false
-                },
-                {
-                    value: 'FRA',
-                    name: '法国',
-                    checked: false
-                }
+                items: [
+                    {
+                        value: 'CHN',
+                        name: '中国',
+                        checked: true
+                    },
+                    {
+                        value: 'USA',
+                        name: '美国',
+                        checked: false
+                    },
+                    {
+                        value: 'BRA',
+                        name: '巴西',
+                        checked: false
+                    },
+                    {
+                        value: 'JPN',
+                        name: '日本',
+                        checked: false
+                    },
+                    {
+                        value: 'ENG',
+                        name: '英国',
+                        checked: false
+                    },
+                    {
+                        value: 'FRA',
+                        name: '法国',
+                        checked: false
+                    }
                 ] as ItemType[],
 
                 text: '未选中',
+                wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
                 value: [] as string[],
                 disabled: true,
                 checked: true,
-                color: '#007aff'
+                color: '#007aff',
             }
         },
         methods: {
             checkboxChange: function (e : CheckboxGroupChangeEvent) {
-                var items = this.items,
-                    values = e.detail.value;
-                for (var i = 0, lenI = items.length; i < lenI; ++i) {
-                    const item = items[i]
-                    if (values.indexOf(item.value) >= 0) {
-                        item.checked = true
-                    } else {
-                        item.checked = false
+                const selectedNames : string[] = []
+                this.items.forEach(item => {
+                    if (e.detail.value.includes(item.value)) {
+                        selectedNames.push(item.name)
                     }
-                }
+                })
+                uni.showToast({
+                    icon: 'none',
+                    title: '当前选中:' + selectedNames.join(',')
+                })
             },
             testChange: function (e : CheckboxGroupChangeEvent) {
                 this.value = e.detail.value

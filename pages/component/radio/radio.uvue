@@ -7,13 +7,15 @@
                     默认样式
                 </text>
             </view>
-            <radio-group class="uni-flex uni-row radio-group" @change="testChange">
+            <radio-group class="uni-flex uni-row radio-group" @change="testChange" style="flex-wrap: wrap;">
                 <radio value="r" :checked="checked" :color="color" style="margin-right: 30rpx;" class="radio r">选中
                 </radio>
                 <radio value="r1" style="margin-right: 30rpx;" class="radio r1">{{text}}</radio>
                 <radio value="r2" :disabled="disabled" class="radio r2">禁用</radio>
+                <radio value="r3" class="radio r3" style="margin-top: 20rpx;">{{wrapText}}</radio>
             </radio-group>
         </view>
+
         <view class="uni-padding-wrap">
             <view class="uni-title uni-common-mt">
                 <text class="uni-title-text">
@@ -27,6 +29,7 @@
                 <radio value="r2" color="#FFCC33" style="transform:scale(0.7)" class="radio">未选中</radio>
             </radio-group>
         </view>
+
         <view class="uni-padding-wrap">
             <view class="uni-title uni-common-mt">
                 <text class="uni-title-text">
@@ -54,35 +57,38 @@
         data() {
             return {
                 title: 'radio 单选框',
-                items: [{
-                    value: 'USA',
-                    name: '美国'
-                },
-                {
-                    value: 'CHN',
-                    name: '中国'
-                },
-                {
-                    value: 'BRA',
-                    name: '巴西'
-                },
-                {
-                    value: 'JPN',
-                    name: '日本'
-                },
-                {
-                    value: 'ENG',
-                    name: '英国'
-                },
-                {
-                    value: 'FRA',
-                    name: '法国'
-                },
+                items: [
+                    {
+                        value: 'CHN',
+                        name: '中国'
+                    },
+                    {
+                        value: 'USA',
+                        name: '美国'
+                    },
+
+                    {
+                        value: 'BRA',
+                        name: '巴西'
+                    },
+                    {
+                        value: 'JPN',
+                        name: '日本'
+                    },
+                    {
+                        value: 'ENG',
+                        name: '英国'
+                    },
+                    {
+                        value: 'FRA',
+                        name: '法国'
+                    },
                 ] as ItemType[],
                 current: 0,
 
                 value: '',
                 text: '未选中',
+                wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
                 disabled: true,
                 checked: true,
                 color: '#007aff'
@@ -90,12 +96,13 @@
         },
         methods: {
             radioChange(e : RadioGroupChangeEvent) {
-                for (let i = 0; i < this.items.length; i++) {
-                    if (this.items[i].value === e.detail.value) {
-                        this.current = i;
-                        break;
-                    }
-                }
+                const selected = this.items.find((item) : boolean => {
+                    return item.value == e.detail.value
+                })
+                uni.showToast({
+                    icon: 'none',
+                    title: '当前选中:' + selected?.name
+                })
             },
             testChange(e : RadioGroupChangeEvent) {
                 this.value = e.detail.value
