@@ -27,7 +27,7 @@ describe('Button.uvue', () => {
   })
   it('text', async () => {
     const textBtn = await page.$('.text-button')
-    expect(await textBtn.text()).toEqual('按钮')
+    expect(await textBtn.text()).toEqual('文字来自data绑定')
     await page.setData({
       text: 'button',
     })
