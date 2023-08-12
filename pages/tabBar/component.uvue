@@ -1,57 +1,66 @@
 <template>
-  <scroll-view class="uni-container">
-    <view class="uni-header-logo">
-      <image class="uni-header-image" src="/static/componentIndex.png"></image>
-    </view>
-    <view class="uni-hello-text">
-      <text class="hello-text"
-        >uni-app内置组件，展示样式仅供参考，文档详见：</text
-      >
-      <u-link
-        :href="'https://uniapp.dcloud.io/component/'"
-        :text="'https://uniapp.dcloud.io/component/'"
-        :inWhiteList="true"
-      ></u-link>
-    </view>
-    <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
-      <view
-        class="uni-panel-h"
-        :class="item.open ? 'uni-panel-h-on' : ''"
-        @click="triggerCollapse(index, item)"
-      >
-        <text
-          class="uni-panel-text"
-          :class="item.enable == false ? 'text-disabled' : ''"
-          >{{ item.name }}</text
-        >
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view class="uni-container">
+      <view class="uni-header-logo">
         <image
-          :src="
-            item.pages.length > 0
-              ? item.open
-                ? arrowUpIcon
-                : arrowDownIcon
-              : arrowRightIcon
-          "
-          class="uni-icon"
+          class="uni-header-image"
+          src="/static/componentIndex.png"
         ></image>
       </view>
-      <view class="uni-panel-c" v-if="item.open">
+      <view class="uni-hello-text">
+        <text class="hello-text"
+          >uni-app内置组件，展示样式仅供参考，文档详见：</text
+        >
+        <u-link
+          :href="'https://uniapp.dcloud.io/component/'"
+          :text="'https://uniapp.dcloud.io/component/'"
+          :inWhiteList="true"
+        ></u-link>
+      </view>
+      <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
         <view
-          class="uni-navigate-item"
-          v-for="(page, key) in item.pages"
-          :key="key"
-          @click="goDetailPage(page)"
+          class="uni-panel-h"
+          :class="item.open ? 'uni-panel-h-on' : ''"
+          @click="triggerCollapse(index, item)"
         >
           <text
-            class="uni-navigate-text"
-            :class="page.enable == false ? 'text-disabled' : ''"
-            >{{ page.name }}</text
+            class="uni-panel-text"
+            :class="item.enable == false ? 'text-disabled' : ''"
+            >{{ item.name }}</text
           >
-          <image :src="arrowRightIcon" class="uni-icon"></image>
+          <image
+            :src="
+              item.pages.length > 0
+                ? item.open
+                  ? arrowUpIcon
+                  : arrowDownIcon
+                : arrowRightIcon
+            "
+            class="uni-icon"
+          ></image>
+        </view>
+        <view class="uni-panel-c" v-if="item.open">
+          <view
+            class="uni-navigate-item"
+            v-for="(page, key) in item.pages"
+            :key="key"
+            @click="goDetailPage(page)"
+          >
+            <text
+              class="uni-navigate-text"
+              :class="page.enable == false ? 'text-disabled' : ''"
+              >{{ page.name }}</text
+            >
+            <image :src="arrowRightIcon" class="uni-icon"></image>
+          </view>
         </view>
       </view>
     </view>
+    <!-- #ifdef APP -->
   </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script lang="ts">
@@ -87,15 +96,15 @@ export default {
               name: 'swiper',
             },
             /*
-						{
-							name: 'movable-view',
-							enable: false
-						},
-						{
-							name: 'cover-view',
-							enable: false
-						},
-						*/
+							{
+								name: 'movable-view',
+								enable: false
+							},
+							{
+								name: 'cover-view',
+								enable: false
+							},
+							*/
             {
               name: 'list（新闻）',
               url: '/pages/component/list/list',
@@ -135,17 +144,17 @@ export default {
               name: 'checkbox',
             },
             /* {
-							name: 'form',
-							enable: false
-						}, */
+								name: 'form',
+								enable: false
+							}, */
             {
               name: 'input',
               /* }, {
-								name: 'label',
-								enable: false
-							}, {
-								name: 'picker',
-								enable: false */
+									name: 'label',
+									enable: false
+								}, {
+									name: 'picker',
+									enable: false */
             },
             {
               name: 'picker-view',
@@ -166,20 +175,20 @@ export default {
               name: 'textarea',
             },
             /*
-						{
-							name: 'editor',
-							enable: false
-						},
-						*/
+							{
+								name: 'editor',
+								enable: false
+							},
+							*/
           ] as Page[],
           /* }, {
-						id: 'nav',
-						name: '导航',
-						open: false,
-						pages: [{
-							name: 'navigator',
-							enable: false
-						}] as Page[] */
+							id: 'nav',
+							name: '导航',
+							open: false,
+							pages: [{
+								name: 'navigator',
+								enable: false
+							}] as Page[] */
         },
         {
           id: 'media',
@@ -201,28 +210,28 @@ export default {
           ] as Page[],
         },
         /*
-				{
-					id: 'map',
-					name: '地图',
-					open: false,
-					pages: [
-						{
-							name: 'map',
-							enable: false
-						}
-					] as Page[]
-				},
-				{
-					id: 'canvas',
-					name: '画布',
-					open: false,
-					pages: [
-						{
-							name: 'canvas'
-						}
-					] as Page[]
-				},
-				*/
+					{
+						id: 'map',
+						name: '地图',
+						open: false,
+						pages: [
+							{
+								name: 'map',
+								enable: false
+							}
+						] as Page[]
+					},
+					{
+						id: 'canvas',
+						name: '画布',
+						open: false,
+						pages: [
+							{
+								name: 'canvas'
+							}
+						] as Page[]
+					},
+					*/
         {
           id: 'web-view',
           name: '网页',
@@ -241,15 +250,15 @@ export default {
           ] as Page[],
         },
         /*
-				{
-					id: 'ad',
-					url: 'ad',
-					name: 'AD组件',
-					enable: false,
-					open: false,
-					pages: [] as Page[]
-				}
-				*/
+					{
+						id: 'ad',
+						url: 'ad',
+						name: 'AD组件',
+						enable: false,
+						open: false,
+						pages: [] as Page[]
+					}
+					*/
         {
           id: 'general-attr-event',
           name: '通用属性和事件',

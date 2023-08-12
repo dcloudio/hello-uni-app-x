@@ -1,63 +1,82 @@
 <template>
-	<view>
-		<page-head :title="title"></page-head>
-		<view class="uni-common-mt">
-			<view class="uni-list">
-				<view class="uni-list-cell" v-for="(item,_) in items" style="align-items: center;">
-					<view class="uni-pd">
-						<view class="uni-label" style="width:180px;">{{item.label}}</view>
-					</view>
-					<view class="uni-list-cell-db">
-						<textarea :auto-height="true" :disabled="true" placeholder="未获取" :value="item.value" />
-					</view>
-				</view>
-			</view>
-			<view class="uni-padding-wrap">
-				<view class="uni-btn-v">
-					<button type="primary" @tap="getSystemInfo">获取设备系统信息</button>
-				</view>
-			</view>
-		</view>
-	</view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-common-mt">
+        <view class="uni-list">
+          <view
+            class="uni-list-cell"
+            v-for="(item, _) in items"
+            style="align-items: center"
+          >
+            <view class="uni-pd">
+              <view class="uni-label" style="width: 180px">{{
+                item.label
+              }}</view>
+            </view>
+            <view class="uni-list-cell-db">
+              <textarea
+                :auto-height="true"
+                :disabled="true"
+                placeholder="未获取"
+                :value="item.value"
+              />
+            </view>
+          </view>
+        </view>
+        <view class="uni-padding-wrap">
+          <view class="uni-btn-v">
+            <button type="primary" @tap="getSystemInfo">
+              获取设备系统信息
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script>
-	type Item = {
-		label : string,
-		value : string,
-	}
-	export default {
-		data() {
-			return {
-				title: 'getSystemInfo',
-				items: [] as Item[],
-			}
-		},
-		onUnload: function () {
-		},
-		methods: {
-			getSystemInfo: function () {
-				uni.getSystemInfo({
-					success: (res) => {
-						//类型对象暂时不支持forin或Object.keys(), 临时通过字符串进行转化。
-						const json = JSON.stringify(res);
-						const result = JSON.parse<Map<string, any>>(json);
-						this.items = [] as Item[];
-						result.forEach((value, key) => {
-							const item = {
-								label: key,
-								value: "" + value
-							} as Item;
-							this.items.push(item);
-						})
-					},
-				})
-			}
+type Item = {
+	label : string,
+	value : string,
+}
+export default {
+	data() {
+		return {
+			title: 'getSystemInfo',
+			items: [] as Item[],
+		}
+	},
+	onUnload: function () {
+	},
+	methods: {
+		getSystemInfo: function () {
+			uni.getSystemInfo({
+				success: (res) => {
+					//类型对象暂时不支持forin或Object.keys(), 临时通过字符串进行转化。
+					const json = JSON.stringify(res);
+					const result = JSON.parse<Map<string, any>>(json);
+					this.items = [] as Item[];
+					result.forEach((value, key) => {
+						const item = {
+							label: key,
+							value: "" + value
+						} as Item;
+						this.items.push(item);
+					})
+				},
+			})
 		}
 	}
+}
 </script>
 
 <style>
-	.uni-pd {
-		padding-left: 30rpx;
-	}
+.uni-pd {
+  padding-left: 30rpx;
+}
 </style>

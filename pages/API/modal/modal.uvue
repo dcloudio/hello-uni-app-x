@@ -1,78 +1,85 @@
 <template>
-    <view>
-        <page-head :title="title"></page-head>
-		<view class="uni-list">
-		    <radio-group @change="radioChange">
-		        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-		            :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
-		            :checked="index === current">
-		            {{item.name}}
-		        </radio>
-		    </radio-group>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1">
+		<!-- #endif -->
+		<view>
+			<page-head :title="title"></page-head>
+			<view class="uni-list">
+				<radio-group @change="radioChange">
+					<radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+						:class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
+						:checked="index === current">
+						{{ item.name }}
+					</radio>
+				</radio-group>
+			</view>
+			<view class="uni-list">
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">是否显示取消按钮</view>
+					<switch :checked="showCancelSelect" @change="showCancelChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">定制取消文案</view>
+					<switch :checked="cancelTextSelect" @change="cancelTextChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">定制确认文案</view>
+					<switch :checked="confirmTextSelect" @change="confirmTextChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">是否显示输入框</view>
+					<switch :checked="editableSelect" @change="editableChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">是否定制输入提示词</view>
+					<switch :checked="placeholderTextSelect" @change="placeholderTextChange" />
+				</view>
+			</view>
+			<view class="uni-padding-wrap uni-common-mt">
+				<view class="uni-btn-v">
+					<button class="uni-btn-v" type="default" @tap="modalTap">
+						modal测试
+					</button>
+				</view>
+				<text>{{ exeRet }}</text>
+			</view>
 		</view>
-		<view class="uni-list">
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">是否显示取消按钮</view>
-		    <switch :checked="showCancelSelect" @change="showCancelChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">定制取消文案</view>
-		    <switch :checked="cancelTextSelect" @change="cancelTextChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">定制确认文案</view>
-		    <switch :checked="confirmTextSelect" @change="confirmTextChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">是否显示输入框</view>
-		    <switch :checked="editableSelect" @change="editableChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">是否定制输入提示词</view>
-		    <switch :checked="placeholderTextSelect" @change="placeholderTextChange"/>
-		  </view>
-		</view>
-        <view class="uni-padding-wrap uni-common-mt">
-            <view class="uni-btn-v">
-                <button class="uni-btn-v" type="default" @tap="modalTap">modal测试</button>
-            </view>
-			<text>{{exeRet}}</text>
-        </view>
-		
-    </view>
+		<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 <script lang="uts">
 	type ItemType = {
-	    value : string,
-	    name : string,
+		value : string,
+		name : string,
 	}
-    export default {
-        data() {
-            return {
-                title: 'modal',
-				showCancelSelect:false,
-				cancelTextSelect:false,
-				confirmTextSelect:false,
-				editableSelect:false,
-				placeholderTextSelect:false,
-				exeRet:"",
+	export default {
+		data() {
+			return {
+				title: 'modal',
+				showCancelSelect: false,
+				cancelTextSelect: false,
+				confirmTextSelect: false,
+				editableSelect: false,
+				placeholderTextSelect: false,
+				exeRet: "",
 				items: [{
-				    value: '标题',
-				    name: '有标题'
+					value: '标题',
+					name: '有标题'
 				},
 				{
-				    value: '',
-				    name: '无标题'
+					value: '',
+					name: '无标题'
 				},
 				{
-				    value: '超长标题测试内容，测试超过显示最大范围之后的样式-超长标题测试内容，测试超过显示最大范围之后的样式',
-				    name: '超长标题'
+					value: '超长标题测试内容，测试超过显示最大范围之后的样式-超长标题测试内容，测试超过显示最大范围之后的样式',
+					name: '超长标题'
 				}
 				] as ItemType[],
 				current: 0
-            }
-        },
-        methods: {
+			}
+		},
+		methods: {
 			showCancelChange: function (e : SwitchChangeEvent) {
 				this.showCancelSelect = e.detail.value
 			},
@@ -89,60 +96,56 @@
 				this.placeholderTextSelect = e.detail.value
 			},
 			radioChange(e : RadioGroupChangeEvent) {
-			    for (let i = 0; i < this.items.length; i++) {
-			        if (this.items[i].value === e.detail.value) {
-			            this.current = i;
-			            break;
-			        }
-			    }
+				for (let i = 0; i < this.items.length; i++) {
+					if (this.items[i].value === e.detail.value) {
+						this.current = i;
+						break;
+					}
+				}
 			},
-            modalTap: function () {
-				
-				let cancelTextVal:string
+			modalTap: function () {
+				let cancelTextVal : string
 				let cancelColorVal = ''
-				if(this.cancelTextSelect){
+				if (this.cancelTextSelect) {
 					cancelTextVal = "修改后的取消文本"
 					cancelColorVal = "#ff00ff"
-				}else{
+				} else {
 					cancelTextVal = "取消"
 				}
-				
+
 				let confirmTextVal = '确定'
 				let confirmColorVal = ''
-				if(this.confirmTextSelect){
+				if (this.confirmTextSelect) {
 					confirmTextVal = "修改后的确定文本"
 					confirmColorVal = "#00ffff"
 				}
-				
+
 				let placeholderTextVal = ''
 				let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
-				if(this.placeholderTextSelect){
+				if (this.placeholderTextSelect) {
 					placeholderTextVal = "定制提示信息"
 					contentVal = ""
 				}
-				
-				
-
 				uni.showModal({
-				    title: this.items[this.current].value,
-					editable:this.editableSelect,
-					placeholderText:placeholderTextVal,
-				    content: contentVal,
-				    showCancel: this.showCancelSelect,
-					cancelText:cancelTextVal,
-					cancelColor:cancelColorVal,
-					confirmText:confirmTextVal,
-					confirmColor:confirmColorVal,
-					success:function(res){
+					title: this.items[this.current].value,
+					editable: this.editableSelect,
+					placeholderText: placeholderTextVal,
+					content: contentVal,
+					showCancel: this.showCancelSelect,
+					cancelText: cancelTextVal,
+					cancelColor: cancelColorVal,
+					confirmText: confirmTextVal,
+					confirmColor: confirmColorVal,
+					success: function (res) {
 						this.exeRet = JSON.stringify(res)
 					},
-					fail:function(res){
+					fail: function (res) {
 						this.exeRet = JSON.stringify(res)
 					}
 				})
-                
-            }
-            
-        }
-    }
+
+			}
+
+		}
+	}
 </script>

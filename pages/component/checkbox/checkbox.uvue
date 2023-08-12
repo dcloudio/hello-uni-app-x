@@ -1,129 +1,166 @@
 <template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
     <view>
-        <page-head :title="title"></page-head>
-        <view class="uni-padding-wrap uni-common-mt">
-            <view class="uni-title uni-common-mt">
-                <text class="uni-title-text">
-                    默认样式
-                </text>
-            </view>
-            <view>
-                <checkbox-group class="uni-flex uni-row checkbox-group" @change="testChange" style="flex-wrap: wrap;">
-                    <checkbox value="cb" :checked="checked" :color="color" style="margin-right: 30rpx;"
-                        class="checkbox cb">选中</checkbox>
-                    <checkbox value="cb1" style="margin-right: 30rpx;" class="checkbox cb1">{{text}}</checkbox>
-                    <checkbox value="cb2" :disabled="disabled" class="checkbox cb2">禁用</checkbox>
-                    <checkbox value="cb3" style="margin-top: 20rpx;" class="checkbox cb3">
-                        {{wrapText}}
-                    </checkbox>
-                </checkbox-group>
-            </view>
-            <view class="uni-title uni-common-mt">
-                <text class="uni-title-text">
-                    不同颜色和尺寸的checkbox
-                </text>
-            </view>
-            <view>
-                <checkbox-group class="uni-flex uni-row checkbox-group">
-                    <checkbox value="cb1" :checked="true" color="#FFCC33"
-                        style="transform:scale(0.7); margin-right: 30rpx;" class="checkbox">选中
-                    </checkbox>
-                    <checkbox value="cb" color="#FFCC33" style="transform:scale(0.7)" class="checkbox">未选中</checkbox>
-                </checkbox-group>
-            </view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 默认样式 </text>
         </view>
+        <view>
+          <checkbox-group
+            class="uni-flex uni-row checkbox-group"
+            @change="testChange"
+            style="flex-wrap: wrap"
+          >
+            <checkbox
+              value="cb"
+              :checked="checked"
+              :color="color"
+              style="margin-right: 30rpx"
+              class="checkbox cb"
+              >选中</checkbox
+            >
+            <checkbox
+              value="cb1"
+              style="margin-right: 30rpx"
+              class="checkbox cb1"
+              >{{ text }}</checkbox
+            >
+            <checkbox value="cb2" :disabled="disabled" class="checkbox cb2"
+              >禁用</checkbox
+            >
+            <checkbox
+              value="cb3"
+              style="margin-top: 20rpx"
+              class="checkbox cb3"
+            >
+              {{ wrapText }}
+            </checkbox>
+          </checkbox-group>
+        </view>
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 不同颜色和尺寸的checkbox </text>
+        </view>
+        <view>
+          <checkbox-group class="uni-flex uni-row checkbox-group">
+            <checkbox
+              value="cb1"
+              :checked="true"
+              color="#FFCC33"
+              style="transform: scale(0.7); margin-right: 30rpx"
+              class="checkbox"
+              >选中
+            </checkbox>
+            <checkbox
+              value="cb"
+              color="#FFCC33"
+              style="transform: scale(0.7)"
+              class="checkbox"
+              >未选中</checkbox
+            >
+          </checkbox-group>
+        </view>
+      </view>
 
-        <view class="uni-padding-wrap">
-            <view class="uni-title uni-common-mt">
-                <text class="uni-title-text">
-                    推荐展示样式
-                </text>
-            </view>
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 推荐展示样式 </text>
         </view>
-        <view class="uni-list uni-common-pl">
-            <checkbox-group @change="checkboxChange" class="checkbox-group">
-                <checkbox class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in items"
-                    :key="item.value" :value="item.value" :checked="item.checked"
-                    :class="index < items.length - 1 ? 'uni-list-cell-line': ''">
-                    {{item.name}}
-                </checkbox>
-            </checkbox-group>
-        </view>
+      </view>
+      <view class="uni-list uni-common-pl">
+        <checkbox-group @change="checkboxChange" class="checkbox-group">
+          <checkbox
+            class="uni-list-cell uni-list-cell-pd checkbox"
+            v-for="(item, index) in items"
+            :key="item.value"
+            :value="item.value"
+            :checked="item.checked"
+            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''"
+          >
+            {{ item.name }}
+          </checkbox>
+        </checkbox-group>
+      </view>
     </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="ts">
-    type ItemType = {
-        value : string,
-        name : string,
-        checked : boolean
-    }
-    export default {
-        data() {
-            return {
-                title: 'checkbox 复选框',
-                items: [
-                    {
-                        value: 'CHN',
-                        name: '中国',
-                        checked: true
-                    },
-                    {
-                        value: 'USA',
-                        name: '美国',
-                        checked: false
-                    },
-                    {
-                        value: 'BRA',
-                        name: '巴西',
-                        checked: false
-                    },
-                    {
-                        value: 'JPN',
-                        name: '日本',
-                        checked: false
-                    },
-                    {
-                        value: 'ENG',
-                        name: '英国',
-                        checked: false
-                    },
-                    {
-                        value: 'FRA',
-                        name: '法国',
-                        checked: false
-                    }
-                ] as ItemType[],
-
-                text: '未选中',
-                wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
-                value: [] as string[],
-                disabled: true,
-                checked: true,
-                color: '#007aff',
-            }
+type ItemType = {
+  value: string
+  name: string
+  checked: boolean
+}
+export default {
+  data() {
+    return {
+      title: 'checkbox 复选框',
+      items: [
+        {
+          value: 'CHN',
+          name: '中国',
+          checked: true,
         },
-        methods: {
-            checkboxChange: function (e : CheckboxGroupChangeEvent) {
-                const selectedNames : string[] = []
-                this.items.forEach(item => {
-                    if (e.detail.value.includes(item.value)) {
-                        selectedNames.push(item.name)
-                    }
-                })
-                uni.showToast({
-                    icon: 'none',
-                    title: '当前选中:' + selectedNames.join(',')
-                })
-            },
-            testChange: function (e : CheckboxGroupChangeEvent) {
-                this.value = e.detail.value
-            }
-        }
+        {
+          value: 'USA',
+          name: '美国',
+          checked: false,
+        },
+        {
+          value: 'BRA',
+          name: '巴西',
+          checked: false,
+        },
+        {
+          value: 'JPN',
+          name: '日本',
+          checked: false,
+        },
+        {
+          value: 'ENG',
+          name: '英国',
+          checked: false,
+        },
+        {
+          value: 'FRA',
+          name: '法国',
+          checked: false,
+        },
+      ] as ItemType[],
+
+      text: '未选中',
+      wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
+      value: [] as string[],
+      disabled: true,
+      checked: true,
+      color: '#007aff',
     }
+  },
+  methods: {
+    checkboxChange: function (e: CheckboxGroupChangeEvent) {
+      const selectedNames: string[] = []
+      this.items.forEach((item) => {
+        if (e.detail.value.includes(item.value)) {
+          selectedNames.push(item.name)
+        }
+      })
+      uni.showToast({
+        icon: 'none',
+        title: '当前选中:' + selectedNames.join(','),
+      })
+    },
+    testChange: function (e: CheckboxGroupChangeEvent) {
+      this.value = e.detail.value
+    },
+  },
+}
 </script>
 
 <style>
-    .uni-list-cell {
-        justify-content: flex-start
-    }
+.uni-list-cell {
+  justify-content: flex-start;
+}
 </style>

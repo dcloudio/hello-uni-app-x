@@ -1,83 +1,89 @@
 <template>
-	<view>
-		<page-head :title="title"></page-head>
-		<view class="uni-padding-wrap uni-common-mt">
-			<view v-if="imageSrc" class="image-container">
-				<image class="img" :src="imageSrc" mode="center" />
-			</view>
-			<view v-else style="margin-top: 50px;">
-				<view class="uni-hello-text">
-					点击按钮下载服务端示例图片（下载网络文件到本地临时目录）
-				</view>
-				<view class="uni-btn-v">
-					<button type="primary" @tap="downloadImage">下载</button>
-				</view>
-			</view>
-		</view>
-	</view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view v-if="imageSrc" class="image-container">
+          <image class="img" :src="imageSrc" mode="center" />
+        </view>
+        <view v-else style="margin-top: 50px">
+          <view class="uni-hello-text">
+            点击按钮下载服务端示例图片（下载网络文件到本地临时目录）
+          </view>
+          <view class="uni-btn-v">
+            <button type="primary" @tap="downloadImage">下载</button>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script>
-	import DownloadTask from 'uts.sdk.modules.DCloudUniNetwork.DownloadTask';
-	export default {
-		data() {
-			return {
-				title: 'downloadFile',
-				imageSrc: '',
-				task: null as DownloadTask | null,
-				pageVisible: false
-			}
-		},
-		onLoad() {
-			this.pageVisible = true;
-		},
-		onUnload() {
-			this.imageSrc = '';
-			this.pageVisible = false;
-			uni.hideLoading();
-			this.task?.abort();
-		},
-		methods: {
-			downloadImage: function() {
-				uni.showLoading({
-					title: '下载中'
-				})
-				var self = this
-				this.task = uni.downloadFile({
-					url: "https://web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
-					success(res) {
-						if (this.pageVisible) {
-							console.log('downloadFile success, res is', res)
-							self.imageSrc = res.tempFilePath;
-							uni.hideLoading();
-						}
-					},
-					fail: (err) => {
-						if (this.pageVisible) {
-							console.log('downloadFile fail, err is:', err)
-							uni.hideLoading();
-						}
-					}
-				});
-				this.task?.onProgressUpdate((update) => {
+import DownloadTask from 'uts.sdk.modules.DCloudUniNetwork.DownloadTask';
+export default {
+	data() {
+		return {
+			title: 'downloadFile',
+			imageSrc: '',
+			task: null as DownloadTask | null,
+			pageVisible: false
+		}
+	},
+	onLoad() {
+		this.pageVisible = true;
+	},
+	onUnload() {
+		this.imageSrc = '';
+		this.pageVisible = false;
+		uni.hideLoading();
+		this.task?.abort();
+	},
+	methods: {
+		downloadImage: function() {
+			uni.showLoading({
+				title: '下载中'
+			})
+			var self = this
+			this.task = uni.downloadFile({
+				url: "https://web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+				success(res) {
 					if (this.pageVisible) {
-						console.log("progress : ", update.progress);
+						console.log('downloadFile success, res is', res)
+						self.imageSrc = res.tempFilePath;
+						uni.hideLoading();
 					}
-				})
-			}
+				},
+				fail: (err) => {
+					if (this.pageVisible) {
+						console.log('downloadFile fail, err is:', err)
+						uni.hideLoading();
+					}
+				}
+			});
+			this.task?.onProgressUpdate((update) => {
+				if (this.pageVisible) {
+					console.log("progress : ", update.progress);
+				}
+			})
 		}
 	}
+}
 </script>
 
 <style>
-	.img {
-		width: 500rpx;
-		height: 500rpx;
-		margin: 0 auto;
-	}
+.img {
+  width: 500rpx;
+  height: 500rpx;
+  margin: 0 auto;
+}
 
-	.image-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>

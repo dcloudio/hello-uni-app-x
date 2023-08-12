@@ -1,73 +1,80 @@
 <template>
-	<view>
-		<page-head title="swiper,可滑动视图"></page-head>
-		<view class="uni-margin-wrap">
-			<swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect" :interval="intervalSelect"  :circular="circularSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive" :disable-touch="disableTouchSelect" :current="currentVal" :current-item-id="currentItemIdVal" @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
-				<swiper-item item-id="A">
-					<view class="swiper-item uni-bg-red"><text class="swiper-item-Text">A</text></view>
-				</swiper-item>
-				<swiper-item item-id="B">
-					<view class="swiper-item uni-bg-green"><text class="swiper-item-Text">B</text></view>
-				</swiper-item>
-				<swiper-item item-id="C">
-					<view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
-				</swiper-item>
-			</swiper>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1">
+		<!-- #endif -->
+		<view>
+			<page-head title="swiper,可滑动视图"></page-head>
+			<view class="uni-margin-wrap">
+				<swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect"
+					:interval="intervalSelect" :circular="circularSelect" :indicator-color="indicatorColor"
+					:indicator-active-color="indicatorColorActive" :disable-touch="disableTouchSelect" :current="currentVal"
+					:current-item-id="currentItemIdVal" @change="swiperChange" @transition="swiperTransition"
+					@animationfinish="swiperAnimationfinish">
+					<swiper-item item-id="A">
+						<view class="swiper-item uni-bg-red"><text class="swiper-item-Text">A</text></view>
+					</swiper-item>
+					<swiper-item item-id="B">
+						<view class="swiper-item uni-bg-green"><text class="swiper-item-Text">B</text></view>
+					</swiper-item>
+					<swiper-item item-id="C">
+						<view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
+					</swiper-item>
+				</swiper>
+			</view>
+			<view class="uni-list">
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">是否显示面板指示点</view>
+					<switch :checked="dotsSelect" @change="dotsChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">是否自动切换</view>
+					<switch :checked="autoplaySelect" @change="autoplayChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">是否循环</view>
+					<switch :checked="circularSelect" @change="circularChange" />
+				</view>
+				<view class="uni-title">间隔时间</view>
+				<view>
+					<slider @change="sliderChange" :value="1000" :min="500" :max="5000" :show-value="true" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">定制指示器颜色</view>
+					<switch :checked="indicatorColorSelect" @change="indicatorColorChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">纵向</view>
+					<switch :checked="verticalSelect" @change="verticalChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">指定current为最后一个元素</view>
+					<switch :checked="currentSelect" @change="currentChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">指定current-item-id为最后一个元素</view>
+					<switch :checked="currentItemIdSelect" @change="currentItemIdChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">禁止用户 touch 操作</view>
+					<switch :checked="disableTouchSelect" @change="disableTouchChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">swiperTransition 是否打印</view>
+					<switch :checked="swiperTransitionSelect" @change="swiperTransitionChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">swiperAnimationfinish 是否打印</view>
+					<switch :checked="swiperAnimationfinishSelect" @change="swiperAnimationfinishChange" />
+				</view>
+				<view class="uni-list-cell uni-list-cell-pd">
+					<view class="uni-list-cell-db">swiperChange 是否打印</view>
+					<switch :checked="swiperChangeSelect" @change="swiperChangeChange" />
+				</view>
+			</view>
 		</view>
-		<view class="uni-list">
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">是否显示面板指示点</view>
-		    <switch :checked="dotsSelect" @change="dotsChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">是否自动切换</view>
-		    <switch :checked="autoplaySelect" @change="autoplayChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">是否循环</view>
-		    <switch :checked="circularSelect" @change="circularChange"/>
-		  </view>
-		  <view class="uni-title">间隔时间</view>
-		  <view>
-		    <slider @change="sliderChange" :value="1000" :min="500" :max="5000" :show-value="true" />
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">定制指示器颜色</view>
-		    <switch :checked="indicatorColorSelect" @change="indicatorColorChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">纵向</view>
-		    <switch :checked="verticalSelect" @change="verticalChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">指定current为最后一个元素</view>
-		    <switch :checked="currentSelect" @change="currentChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">指定current-item-id为最后一个元素</view>
-		    <switch :checked="currentItemIdSelect" @change="currentItemIdChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">禁止用户 touch 操作</view>
-		    <switch :checked="disableTouchSelect" @change="disableTouchChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">swiperTransition 是否打印</view>
-		    <switch :checked="swiperTransitionSelect" @change="swiperTransitionChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">swiperAnimationfinish 是否打印</view>
-		    <switch :checked="swiperAnimationfinishSelect" @change="swiperAnimationfinishChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">swiperChange 是否打印</view>
-		    <switch :checked="swiperChangeSelect" @change="swiperChangeChange"/>
-		  </view>
-		  
-		</view>
-
-
-	</view>
+		<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 <script>
 	export default {
@@ -75,45 +82,45 @@
 			return {
 				background: ['color1', 'color2', 'color3'],
 				interval: 2000,
-				dotsSelect:false,
-				autoplaySelect:false,
-				circularSelect:false,
-				indicatorColorSelect:false,
-				verticalSelect:false,
-				currentSelect:false,
-				currentItemIdSelect:false,
-				intervalSelect:1000,
-				indicatorColor:"",
-				indicatorColorActive:"",
-				currentVal:0,
-				currentItemIdVal:"",
-				disableTouchSelect:false,
-				swiperTransitionSelect:false,
-				swiperAnimationfinishSelect:false,
-				swiperChangeSelect:false
+				dotsSelect: false,
+				autoplaySelect: false,
+				circularSelect: false,
+				indicatorColorSelect: false,
+				verticalSelect: false,
+				currentSelect: false,
+				currentItemIdSelect: false,
+				intervalSelect: 1000,
+				indicatorColor: "",
+				indicatorColorActive: "",
+				currentVal: 0,
+				currentItemIdVal: "",
+				disableTouchSelect: false,
+				swiperTransitionSelect: false,
+				swiperAnimationfinishSelect: false,
+				swiperChangeSelect: false
 			}
 		},
 		methods: {
-			
+
 			swiperChange: function (e : SwiperChangeEvent) {
-				if(this.swiperChangeSelect){
+				if (this.swiperChangeSelect) {
 					console.log("swiperChange")
 					console.log(e)
 				}
 			},
 			swiperTransition: function (e : SwiperTransitionEvent) {
-				if(this.swiperTransitionSelect){
+				if (this.swiperTransitionSelect) {
 					console.log("swiperTransition")
 					console.log(e)
 				}
 			},
 			swiperAnimationfinish: function (e : SwiperAnimationFinishEvent) {
-				if(this.swiperAnimationfinishSelect){
+				if (this.swiperAnimationfinishSelect) {
 					console.log("swiperAnimationfinish")
 					console.log(e)
 				}
 			},
-			
+
 			dotsChange: function (e : SwitchChangeEvent) {
 				this.dotsSelect = e.detail.value
 			},
@@ -137,38 +144,38 @@
 			},
 			currentItemIdChange: function (e : SwitchChangeEvent) {
 				this.currentItemIdSelect = e.detail.value
-				if(this.currentItemIdSelect){
+				if (this.currentItemIdSelect) {
 					this.currentItemIdVal = 'C'
-				}else{
+				} else {
 					this.currentItemIdVal = 'A'
 				}
 			},
 			currentChange: function (e : SwitchChangeEvent) {
 				this.currentSelect = e.detail.value
-				if(this.currentSelect){
+				if (this.currentSelect) {
 					this.currentVal = 2
-				}else{
+				} else {
 					this.currentVal = 0
 				}
-				
+
 			},
 			circularChange: function (e : SwitchChangeEvent) {
 				this.circularSelect = e.detail.value
 				console.log(this.circularSelect)
 			},
 			sliderChange(e : SliderChangeEvent) {
-			  this.intervalSelect = e.detail.value
+				this.intervalSelect = e.detail.value
 			},
 			indicatorColorChange(e : SwitchChangeEvent) {
 				this.indicatorColorSelect = e.detail.value
-				if(this.indicatorColorSelect){
+				if (this.indicatorColorSelect) {
 					// 选择了定制指示器颜色
 					this.indicatorColor = "#ff00ff"
-					this. indicatorColorActive = "#0000ff"
-				}else{
+					this.indicatorColorActive = "#0000ff"
+				} else {
 					// 没有选择颜色
 					this.indicatorColor = ""
-					this. indicatorColorActive = ""
+					this.indicatorColorActive = ""
 				}
 			}
 		}
@@ -177,25 +184,25 @@
 
 <style>
 	.uni-margin-wrap {
-		width:690rpx;
-		width: 100%;;
+		width: 690rpx;
+		width: 100%;
+		;
 	}
+
 	.swiper {
 		height: 300rpx;
 	}
+
 	.swiper-item {
 		width: 100%;
 		height: 300rpx;
 		line-height: 300rpx;
 		text-align: center;
 	}
-	
+
 	.swiper-item-Text {
 		width: 100%;
-		text-align:center;
+		text-align: center;
 		line-height: 300rpx;
 	}
-	
-	
-
 </style>
