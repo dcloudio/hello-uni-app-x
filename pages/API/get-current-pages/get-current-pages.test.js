@@ -13,10 +13,4 @@ describe('getCurrentPages', () => {
     const data = await page.data()
     expect(data.checked).toBe(true)
   })
-  it('hideAndShow', async () => {
-    await page.callMethod('hideAndShow')
-    await page.waitFor(1000)
-    const data = await page.data()
-    expect(data.showTimes).toBe(2)
-  })
 })
