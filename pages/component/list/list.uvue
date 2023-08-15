@@ -98,10 +98,12 @@
 					success: (data) => {
 						if(this.pageVisible){
 							if (data.statusCode == 200) {
-								const result = data.data as UTSJSONObject
-								let list = this.setTime(result);
-								this.listData = list.concat(this.listData);
-								this.last_id = listData[0].id + "";
+								const result = data.data as UTSJSONObject[]
+								if(result != null){
+									let list = this.setTime(result);
+									this.listData = list.concat(this.listData);
+									this.last_id = listData[0].id + "";
+								}
 								this.refresherTriggered = false;
 							}
 						}
@@ -132,10 +134,10 @@
 					url: '/pages/component/list/detail/detail?post_id=' + post_id + "&cover=" + cover + "&title=" + title
 				});
 			},
-			setTime(items: UTSJSONObject): Item[] {
+			setTime(items: UTSJSONObject[]): Item[] {
 				let newItems = [] as Item[];
-				items.forEach((res)=>{
-					const e = res as UTSJSONObject;
+				for(const item in items){
+					const e = item;
 					newItems.push({
 							author_name: e["author_name"] as string,
 							cover: e["cover"] as string,
@@ -144,7 +146,7 @@
 							published_at: e["published_at"] as string,
 							title: e["title"] as string
 						} as Item);
-				});
+				}
 				return newItems;
 			},
 			onRefresherrefresh() {
