@@ -1,0 +1,194 @@
+<template>
+  <list-view class="list" @loadmore="loadData">
+    <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
+      <view class="list-item-icon">
+        <image class="list-item-icon-image" :src="item.image"></image>
+        <text class="list-item-icon-index">{{item.index}}</text>
+      </view>
+      <view class="list-item-fill">
+        <view class="flex-row">
+          <text class="title">{{item.title}}</text>
+        </view>
+        <view class="description">
+          <text class="description-text">{{item.description}}</text>
+        </view>
+        <view class="tag-list">
+          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2.name}}</text>
+        </view>
+        <!-- <uts-rate></uts-rate> -->
+        <view class="flex-row update-date">
+          <text class="update-date-text">更新日期</text>
+          <text class="update-date-value">{{item.updateDate}}</text>
+          <text class="author">Dcloud</text>
+        </view>
+      </view>
+    </list-item>
+  </list-view>
+</template>
+
+<script>
+  // 测试数据 - 标题
+  const TEST_DATA_TITLE_LIST = [
+    '升级中心 uni-upgrade-center',
+    'schema2code',
+    'uni-sec-check',
+    'uni-starter',
+    'uni-admin 基础框架',
+    '有奖猜歌游戏',
+    '看图App模板',
+    '网赚游戏管理后台',
+    '云端一体搜索模板',
+  ]
+
+  // 测试数据 - 标签
+  const TEST_DATA_TAG_LIST = [
+    'uni-ai-chat',
+    'gpt',
+    'chatgpt',
+    'openai',
+  ]
+
+  type TagItem = {
+    index : string,
+    name : string
+  }
+
+  type ListItem = {
+    index : string,
+    image : string,
+    title : string,
+    description : string,
+    tags : Array<TagItem>,
+    updateDate : string,
+  }
+
+  export default {
+    data() {
+      return {
+        dataList: [] as ListItem[]
+      }
+    },
+    onLoad() {
+      this.loadData()
+    },
+    methods: {
+      // 滚动到页面底部时调用
+      loadData() {
+        let index = this.dataList.length
+
+        // 生成 20 条测试数据, 随机标题、标签
+        const updateDate = new Date().toISOString().split('T')[0]
+        for (let i = 0; i < 20; i++) {
+          // 标签
+          let tags : TagItem[] = []
+          for (let j = 0; j < 3; j++) {
+            tags.push({
+              index: i + '_' + j,
+              name: TEST_DATA_TAG_LIST[parseInt((Math.random() * (TEST_DATA_TAG_LIST.length - 1)) + '')],
+            } as TagItem)
+          }
+
+          this.dataList.push({
+            index: index.toString(),
+            image: '/static/uni.png',
+            title: TEST_DATA_TITLE_LIST[parseInt((Math.random() * (TEST_DATA_TITLE_LIST.length - 1)) + '')],
+            description: '描述',
+            tags: tags,
+            updateDate
+          } as ListItem)
+
+          index++
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .list {
+    flex: 1;
+    background-color: #ffffff;
+  }
+
+  .list-item {
+    flex-direction: row;
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .list-item-icon {
+    position: relative;
+  }
+
+  .list-item-icon-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .list-item-icon-index {
+    font-size: 12px;
+    color: #cccccc;
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+  }
+
+  .list-item-fill {
+    flex: 1;
+    margin-left: 15px;
+  }
+
+  .index {
+    margin-left: 10px;
+  }
+
+  .description {
+    margin-top: 5px;
+  }
+
+  .description-text {
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+  }
+
+  .tag-list {
+    flex-direction: row;
+    margin-top: 5px;
+  }
+
+  .tag-item {
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #EFF9F0;
+    color: #639069;
+    border-radius: 20px;
+    margin-right: 5px;
+    padding: 2px 5px;
+  }
+
+  .update-date {
+    margin-top: 10px;
+  }
+
+  .update-date-text {
+    font-size: 12px;
+    color: #888888;
+  }
+
+  .update-date-value {
+    font-size: 12px;
+    color: #777777;
+    margin-left: 5px;
+  }
+
+  .author {
+    font-size: 12px;
+    color: #008000;
+    margin-left: auto;
+  }
+</style>
