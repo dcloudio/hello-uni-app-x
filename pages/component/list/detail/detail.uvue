@@ -1,25 +1,30 @@
 <template>
-	<view>
-		<view class="banner">
-			<image class="banner-img" :src="cover"></image>
-			<text class="banner-title">{{title}}</text>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1">
+		<!-- #endif -->
+		<view>
+			<view class="banner">
+				<image class="banner-img" :src="cover"></image>
+				<text class="banner-title">{{title}}</text>
+			</view>
+			<view class="article-content">
+				<text>{{htmlNodes}}</text>
+			</view>
 		</view>
-		<view class="article-content">
-			<text>{{htmlNodes}}</text>
-		</view>
-	</view>
+		<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 
 <script>
-
 	export default {
 		data() {
 			return {
 				htmlNodes: "",
 				pageVisible: false,
 				title: '',
-				cover : "",
-				post_id : "",
+				cover: "",
+				post_id: "",
 			}
 		},
 		onLoad(event) {
@@ -37,7 +42,7 @@
 				uni.request({
 					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.post_id,
 					success: (data) => {
-						if(this.pageVisible){
+						if (this.pageVisible) {
 							if (data.statusCode == 200) {
 								const result = data.data as UTSJSONObject
 								this.htmlNodes = result["content"] as string;
