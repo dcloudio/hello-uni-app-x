@@ -1,82 +1,119 @@
 <template>
-  <view class="top-box" :style="{height:(110 - (scrollTop>40?40:scrollTop) )+'px','background-color': 'rgba(255, 255, 255, '+(scrollTop*3>100?100:scrollTop*3)/100+')'}">
-    <view class="scroll-fold-nav"
-      :style="{'opacity': 1 -(scrollTop*3>100?100:scrollTop*3)/100}"
-    >
-      <view style="margin-left: 30px;">DCloud 为开发者而生</view>
-    </view>
-    <view @click="back" class="back" style="position: absolute;top:35px;left: 8px;">
-      <image src="/static/template/scroll-fold-nav/back.png" style="width: 20px;" mode="widthFix"></image>
-    </view>
-    <view class="search" @click="toSearchPage" :style="{
+	<view class="top-box" :style="headBoxStyle">
+		<view class="scroll-fold-nav" :style="titleStyle">
+			<view class="nav-title">DCloud 为开发者而生</view>
+		</view>
+		<view @click="back" class="nav-back">
+			<image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
+		</view>
+		<view class="search" @click="toSearchPage" :style="{
       'width':maxSearchWidth - (scrollTop>40?40:scrollTop) +'rpx',
       'top':0 - (scrollTop>40?40:scrollTop) +'px'
     }">
-      <view style="flex-direction: row;">
-        <image src="/static/template/scroll-fold-nav/search.png" style="width: 15px;" mode="widthFix"></image>
-        <text class="search-tip-text">请输入你要搜索的内容</text>
-      </view>
-      <text class="search-btn">搜索</text>
-    </view>
-  </view>
+			<view class="search-inner">
+				<image class="search-img" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
+				<text class="search-tip-text">请输入你要搜索的内容</text>
+			</view>
+			<text class="search-btn">搜索</text>
+		</view>
+	</view>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        scrollTop: 0,
-        maxSearchWidth: 700
-      }
-    },
-    methods: {
-      toSearchPage(){
-        this.$emit('toSearchPage')
-      },
-      back(){
-        this.$emit('back')
-      }
-    }
-  }
+	export default {
+		data() {
+			return {
+				scrollTop: 0,
+				maxSearchWidth: 700
+			}
+		},
+		computed: {
+			// 修理导航栏头部高度和背景颜色变化
+			headBoxStyle() : string {
+				const scrollTop = this.scrollTop
+				let style = `height:  ${110 - (scrollTop > 40 ? 40 : scrollTop)}px;background-color: rgba(255, 255, 255, ${(scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100})`
+		
+				return style
+			},
+			// 处理导航栏标题透明度变化
+			titleStyle() : string {
+				const scrollTop = this.scrollTop
+				let style = `opacity: ${1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100}`
+				return style
+			}
+		},
+		methods: {
+			toSearchPage() {
+				this.$emit('toSearchPage')
+			},
+			back() {
+				this.$emit('back')
+			}
+		}
+	}
 </script>
 
 <style>
-.top-box {
-    position: fixed;
-    top: 0;
-    padding-top: 25px;
-    align-items: flex-end;
-    border-bottom: 1px solid #efefef;
-  }
+	.top-box {
+		position: fixed;
+		top: 0;
+		padding-top: 25px;
+		align-items: flex-end;
+		border-bottom: 1px solid #efefef;
+	}
 
-  .scroll-fold-nav {
-    height: 44px;
-    width: 750rpx;
-    justify-content: center;
-  }
+	.scroll-fold-nav {
+		height: 44px;
+		width: 750rpx;
+		justify-content: center;
+	}
 
-  .search {
-    background-color: #FFFFFF;
-    border: 1px solid #fbdf0d;
-    height: 35px;
-    border-radius: 100px;
-    margin: 0 25rpx;
-    padding: 8px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+	.nav-title {
+		margin-left: 30px;
+	}
 
-  .search-tip-text {
-    font-size: 12px;
-    color: #666;
-  }
+	.nav-back {
+		position: absolute;
+		top: 35px;
+		left: 8px;
+	}
 
-  .search-btn {
-    font-size: 12px;
-    background-color: #ff6900;
-    color: #FFF;
-    padding: 5px 8px;
-    border-radius: 100px;
-  }
+	.nav-back .back-img {
+		width: 18px;
+		margin-top: 2px;
+	}
+
+	.search {
+		background-color: #FFFFFF;
+		border: 1px solid #fbdf0d;
+		height: 35px;
+		border-radius: 100px;
+		margin: 0 25rpx;
+		padding: 8px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.search-inner {
+		margin-top: 2px;
+		flex-direction: row;
+	}
+
+	.search-inner .search-img {
+		width: 15px;
+	}
+
+	.search-tip-text {
+		font-size: 12px;
+		color: #666;
+	}
+
+	.search-btn {
+		font-size: 12px;
+		background-color: #ff6900;
+		color: #FFF;
+		padding: 5px 8px;
+		border-radius: 100px;
+	}
 </style>

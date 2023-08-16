@@ -1,26 +1,31 @@
 <template>
   <view class="page">
     <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view" bounces="false">
+			<view class="height-seat" style="height: 110px;">
+			  <!-- 垫高专用 -->
+			</view>
       <view class="content">
-        <view style="height: 110px;">
-          <!-- 垫高专用 -->
-        </view>
-        <view v-for="(item,index) in 20" :key="index" style="height: 100px;background-color: #FFF;">
-          content-{{item}}
+				<view class="content-item">
+					<text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
+					<text class="text">2. 与上一个示例不同的是，此示例使用 ref 直接获取了元素的节点，并在 scroll 事件中通过节点的 setProperty 方法来修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
+					<text class="text">3. 请向上\向下滚动页面观察效果。</text>
+				</view>
+        <view class="content-item" v-for="(item,index) in 20" :key="index">
+          <text class="text">content-{{item}}</text>
         </view>
       </view>
     </scroll-view>
 
-    <view ref="top-box" class="top-box" style="height:110px;background-color:rgba(255,255,255,0)">
+    <view ref="top-box" class="top-box">
       <view ref="scroll-fold-nav" class="scroll-fold-nav">
-        <view style="margin-left: 30px;">DCloud 为开发者而生</view>
+        <view class="nav-title">DCloud 为开发者而生</view>
       </view>
-      <view @click="back" class="back" style="position: absolute;top:35px;left: 8px;">
-        <image src="/static/template/scroll-fold-nav/back.png" style="width: 20px;" mode="widthFix"></image>
+      <view @click="back" class="nav-back">
+        <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
       </view>
-      <view ref="search" class="search" @click="toSearchPage" style="width:700rpx;top:0px">
-        <view style="flex-direction: row;">
-          <image src="/static/template/scroll-fold-nav/search.png" style="width: 15px;" mode="widthFix"></image>
+      <view ref="search" class="search" @click="toSearchPage">
+        <view class="search-inner">
+          <image class="search-img" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
           <text class="search-tip-text">请输入你要搜索的内容</text>
         </view>
         <text class="search-btn">搜索</text>
@@ -42,6 +47,12 @@
         navNode: null as INode | null
       }
     },
+		onLoad() {},
+		onReady() {
+		  this.searchNode = this.$refs['search'] as INode;
+		  this.boxNode = this.$refs['top-box'] as INode;
+		  this.navNode = this.$refs['scroll-fold-nav'] as INode;
+		},
     methods: {
       onScroll(e : ScrollEvent) {
         let scrollTop = e.detail.scrollTop
@@ -79,13 +90,7 @@
         });
       }
     },
-    onLoad() {
-    },
-    onReady() {
-      this.searchNode = this.$refs['search'] as INode;
-      this.boxNode = this.$refs['top-box'] as INode;
-      this.navNode = this.$refs['scroll-fold-nav'] as INode;
-    }
+    
   }
 </script>
 
@@ -98,6 +103,27 @@
   .scroll-view {
     flex: 1;
   }
+	
+	.height-seat {
+		height: 110px;
+		/* background-color: #fbdf0d; */
+	}
+	.content {
+		padding: 5px 15px;
+		background-color: #f5f5f5;
+	}
+	.content-item {
+		padding: 15px;
+		margin: 5px 0;
+		background-color: #fff;
+		border-radius: 5px;
+		
+	} 
+	.text {
+		font-size: 14px;
+		color: #666; 
+		line-height: 20px;
+	}
 
   .top-box {
     position: fixed;
@@ -105,6 +131,8 @@
     padding-top: 25px;
     align-items: flex-end;
     border-bottom: 1px solid #efefef;
+		height:110px;
+		background-color:rgba(255,255,255,0)
   }
 
   .scroll-fold-nav {
@@ -112,7 +140,22 @@
     width: 750rpx;
     justify-content: center;
   }
-
+	
+	.nav-title {
+		margin-left: 30px;
+	}
+	
+	.nav-back {
+		position: absolute;
+		top: 35px;
+		left: 8px;
+	}
+	
+	.nav-back .back-img {
+		width: 18px;
+		margin-top: 2px;
+	}
+	
   .search {
     background-color: #FFFFFF;
     border: 1px solid #fbdf0d;
@@ -123,7 +166,18 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+		width:700rpx;
+		top:0px
   }
+	
+	.search-inner {
+		margin-top: 2px;
+		flex-direction: row;
+	}
+	
+	.search-inner .search-img {
+		width: 15px;
+	}
 
   .search-tip-text {
     font-size: 12px;

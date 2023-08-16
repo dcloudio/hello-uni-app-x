@@ -1,64 +1,94 @@
 <template>
-  <view class="page">
-    <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view">
-      <view class="content">
-        <view style="height: 110px;">
-          <!-- 垫高专用 -->
-        </view>
-        <view v-for="(item,index) in 20" :key="index" style="height: 100px;background-color: #FFF;">
-          content-{{item}}
-        </view>
-      </view>
-    </scroll-view>
-    <scroll-fold-header ref="header" @back="back" @toSearchPage="toSearchPage()"/>
-  </view>
+	<view class="page">
+		<scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view">
+			<view class="height-seat">
+				<!-- 垫高专用 -->
+			</view>
+			<view class="content">
+				<view class="content-item">
+					<text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听 scrollTop。</text>
+					<text class="text">2. 在模板中根据 scrollTop 的变化，通过 style 修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
+					<text class="text">3. 请向上\向下滚动页面观察效果。</text>
+				</view>
+				<view class="content-item" v-for="(item,index) in 20" :key="index">
+					<text class="text">content-{{item}}</text>
+				</view>
+			</view>
+		</scroll-view>
+		<scroll-fold-header ref="header" @back="back" @toSearchPage="toSearchPage()" />
+	</view>
 </template>
 
 <script>
-  import ScrollEvent from 'io.dcloud.uniapp.runtime.ScrollEvent';
-  import scrollFoldHeader from './scroll-fold-header/scroll-fold-header.uvue';
-  export default {
-    components:{scrollFoldHeader},
-    data() {
-      return {}
-    },
-    methods: {
-      onScroll(e : ScrollEvent) {
-        (this.$refs['header'] as ComponentPublicInstance).$data['scrollTop'] = (e.detail.scrollTop<0?0:e.detail.scrollTop)
-      },
-      back() {
-        // uni.navigateBack()  // 这么写用不了
-        // 这么写可以用
-        uni.navigateBack({
-          success(result) {
-            console.log('navigateBack success', result.errMsg)
-          },
-          fail(error) {
-            console.log('navigateBack fail', error.errMsg)
-          },
-          complete(result) {
-            console.log('navigateBack complete', result.errMsg)
-          },
-        })
-      },
-      toSearchPage() {
-        uni.showToast({
-          title: '暂不支持',
-          icon: 'none'
-        });
-      }
-    },
-    onLoad() {}
-  }
+	import ScrollEvent from 'io.dcloud.uniapp.runtime.ScrollEvent';
+	import scrollFoldHeader from './scroll-fold-header/scroll-fold-header.uvue';
+	export default {
+		components: { scrollFoldHeader },
+		data() {
+			return {}
+		},
+		methods: {
+			onScroll(e : ScrollEvent) {
+				(this.$refs['header'] as ComponentPublicInstance).$data['scrollTop'] = (e.detail.scrollTop < 0 ? 0 : e.detail.scrollTop)
+			},
+			back() {
+				// uni.navigateBack()  // 这么写用不了
+				// 这么写可以用
+				uni.navigateBack({
+					success(result) {
+						console.log('navigateBack success', result.errMsg)
+					},
+					fail(error) {
+						console.log('navigateBack fail', error.errMsg)
+					},
+					complete(result) {
+						console.log('navigateBack complete', result.errMsg)
+					},
+				})
+			},
+			toSearchPage() {
+				uni.showToast({
+					title: '暂不支持',
+					icon: 'none'
+				});
+			}
+		},
+		onLoad() { }
+	}
 </script>
 
 <style>
-  .page {
-    flex: 1;
-    background-color: #fbdf0d;
-  }
+	.page {
+		flex: 1;
+		background-color: #fbdf0d;
+		/* background-color: #f5f5f5; */
+	}
 
-  .scroll-view {
-    flex: 1;
-  }
+	.scroll-view {
+		flex: 1;
+	}
+
+	.height-seat {
+		height: 110px;
+		/* background-color: #fbdf0d; */
+	}
+
+	.content {
+		padding: 5px 15px;
+		background-color: #f5f5f5;
+	}
+
+	.content-item {
+		padding: 15px;
+		margin: 5px 0;
+		background-color: #fff;
+		border-radius: 5px;
+
+	}
+
+	.text {
+		font-size: 14px;
+		color: #666;
+		line-height: 20px;
+	}
 </style>
