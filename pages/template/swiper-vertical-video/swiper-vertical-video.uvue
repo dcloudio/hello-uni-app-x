@@ -1,219 +1,269 @@
 <template>
-  <view class="page">
-    <view style="padding: 10px;">
-      <text>复用组件，无限滚动、加载、浏览视频的短视频模板</text>
-      
-      <text>【已知问题】swiper 组件竖滑动有 bug，先横向滑动</text>
+	<view class="page">
+		<view class="header-tips" style="padding: 10px;">
+			<text class="tip-text">当前示例为无限滚动、加载、浏览视频的短视频模板的演示，提供了组件复用的方式。为提高性能可见的视频项只有 3 个</text>
 
-      <view style="flex-direction: row;font-size: 10px;">
-        <view>【状态】</view>
-        <text v-for="(value,index) in state">
-           第{{index+1}}个:{{value?'播放中':'已暂停'}}
-        </text>
-      </view>
-    </view>
-    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
-      @transition="onTransition">
-      <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-        <video :ref="'video-'+i" class="video" :id="item._id" :src="item.src" :poster="item.poster_src"
-           :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true"
-          @play="onPlay(i)" @pause="onPause(i)"
-        ></video>
-        <view class="video-top-view" @click="changeState(i)">
-          <image v-if="!state[i]" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
-        </view>
-        <view>
-          <text>第：{{i}}个容器，内容：{{item.content}}</text>
-        </view>
-      </swiper-item>
-    </swiper>
-  </view>
+			<view class="tip-status-box">
+				<text class="status-text">播放状态:</text>
+				<text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{value?'播放中':'已暂停'}}</text>
+			</view>
+		</view>
+		<swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
+			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
+				<video :ref="'video-'+i" class="video" :id="item._id" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
+				<view class="video-top-view" @click="changeState(i)">
+					<image v-if="!state[i]" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
+				</view>
+				<view class="video-info">
+					<text class="video-info-text">容器：第 {{i}} 个</text>
+					<text class="video-info-text">内容：{{item.content}}</text>
+				</view>
+				<view class="swiper-item-info">
+					<text class="info-text">向上滑动查看下一个视频</text>
+				</view>
+			</swiper-item>
+		</swiper>
+	</view>
 </template>
 <script>
-  import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
-  type ListItem = { _id : string, content : string, src : string ,poster_src :string }
-  let page : number = 0;
-  
-  export default {
-    components:{},
-    computed:{
-      currentVideo():VideoNode{
-        console.log('"video-"+this.current',"video-"+this.current);
-        return this.$refs["video-"+this.current] as VideoNode
-      }
-    },
-    data() {
-      return {
-        list: [] as ListItem[],
-        visibleList: [] as ListItem[],// 提高性能 可见的只有3个
-        current: 0 as number,
-        index: 0,
-        state:[false,false,false] as boolean[]
-      }
-    },
-    beforeCreate() {
-      this.list = this.getData()
-      this.visibleList = this.list.slice(0, 3)
-    },
-    watch: {
-      current(current : number, oldCurrent : number) {
-        let changeNumber = current - oldCurrent
-        if (changeNumber == 1 || changeNumber == -2) {
-          // console.error('向右');
-          this.index++
-        } else {
-          // console.error('向左');
-          this.index--
-        }
-        // //翻页（3项为一页）
-        if (Math.abs(changeNumber) == 2) {
-          // console.log('翻页');
-          page = Math.floor(this.index / 3);
-          // console.log(this.index);
-          // console.log('page',page);
-          // console.log('slice',3*page,3*page+3);
-          if (this.list.length < 3 * page + 3) {
-            let list : ListItem[] = this.getData()
-            this.list.push(...list.toTypedArray())
-          }
+	import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
+	type ListItem = { _id : string, content : string, src : string, poster_src : string }
+	let page : number = 0;
 
-          let visibleList = this.list.slice(3 * page, 3 * page + 3)
-          // 换数据
-          this.visibleList = visibleList
-        }
-      },
-      current(current){
-        this.state.forEach((val:boolean,index:number)=>{
-          if(index === current){
-            this.doPlay(current)
-          }else if(val){
-           // 除了选中的其他已经播放的都需要停止
-           this.doPause(index)
-           console.log('index:'+index+'已被执行暂停');
-          }
-        })
-      }
-    },
-    onReady() {
-      // 一启动完成，就播放第一个
-      this.doPlay(0)
-    },
-    methods: {
-      changeState(index:number){
-        if(this.state[index]){
-          this.doPause(index)
-        }else{
-          this.doPlay(current)
-        }
-      },
-      doPlay(index:number){
-        (this.$refs["video-"+index] as VideoNode).play()
-        console.log("doPlay  video-"+index);
-      },
-      doPause(index:number){
-        (this.$refs["video-"+index] as VideoNode).pause()
-        console.log("doPause  video-"+index);
-      },
-      onPause(index:number){
-        this.state[index] = false
-        console.log('onPause',index);
-      },
-      onPlay(index:number){
-        this.state[index] = true
-        console.log('onPlay',index);
-      },
-      getData() : ListItem[] {
-        /* Promise 暂不支持
-        Promise<void> 
-        return new Promise((resolve) => {
-          resolve();
-        });*/
-        
-        let videoUrlList = [
-          'https://web-assets.dcloud.net.cn/unidoc/zh/video/uts.mp4',
-          'https://web-assets.dcloud.net.cn/unidoc/zh/video/uni-ai.mp4',
-          'https://web-assets.dcloud.net.cn/unidoc/zh/video/uni-verify.mp4'
-        ] as string[]
-        
-        let posterSrcList = [
-          '/static/template/swiper-vertical-video/poster/uni-uts.jpg',
-          '/static/template/swiper-vertical-video/poster/uni-ai.jpg',
-          '/static/template/swiper-vertical-video/poster/uni-verify.jpg'
-        ] as string[]
-        
-        let list = [] as ListItem[];
-        for (let i = 0; i < 6; i++) {
-          let index = this.list.length + i;
-          let listItem : ListItem = {
-            "_id": "a00" + index,
-            "content": "这是第" + index + "条数据"+videoUrlList[i%3],
-            "src": videoUrlList[i%3],
-            "poster_src":posterSrcList[i%3]
-          }
-          list.push(listItem)
-        }
-        return list
-      },
-      onSwiperChange(e : SwiperChangeEvent) {
-        // console.error('SwiperChangeEvent',e.detail.current);
-        this.current = e.detail.current;
-      },
-      onTransition(/*e : SwiperTransitionEvent*/) {
-        // console.log('onTransition e.detail.dx', e.detail.dx);
-      }
-    }
-  }
+	export default {
+		components: {},
+		computed: {
+			currentVideo() : VideoNode {
+				console.log('"video-"+this.current', "video-" + this.current);
+				return this.$refs["video-" + this.current] as VideoNode
+			}
+		},
+		data() {
+			return {
+				list: [] as ListItem[],
+				visibleList: [] as ListItem[],// 提高性能 可见的只有3个
+				current: 0 as number,
+				index: 0,
+				state: [false, false, false] as boolean[]
+			}
+		},
+		beforeCreate() {
+			this.list = this.getData()
+			this.visibleList = this.list.slice(0, 3)
+		},
+		watch: {
+			current(current : number, oldCurrent : number) {
+				let changeNumber = current - oldCurrent
+				if (changeNumber == 1 || changeNumber == -2) {
+					// console.error('向右');
+					this.index++
+				} else {
+					// console.error('向左');
+					this.index--
+				}
+				// //翻页（3项为一页）
+				if (Math.abs(changeNumber) == 2) {
+					// console.log('翻页');
+					page = Math.floor(this.index / 3);
+					// console.log(this.index);
+					// console.log('page',page);
+					// console.log('slice',3*page,3*page+3);
+					if (this.list.length < 3 * page + 3) {
+						let list : ListItem[] = this.getData()
+						this.list.push(...list.toTypedArray())
+					}
+
+					let visibleList = this.list.slice(3 * page, 3 * page + 3)
+					// 换数据
+					this.visibleList = visibleList
+				}
+			},
+			current(current) {
+				this.state.forEach((val : boolean, index : number) => {
+					if (index === current) {
+						this.doPlay(current)
+					} else if (val) {
+						// 除了选中的其他已经播放的都需要停止
+						this.doPause(index)
+						console.log('index:' + index + '已被执行暂停');
+					}
+				})
+			}
+		},
+		onReady() {
+			// 一启动完成，就播放第一个
+			this.doPlay(0)
+		},
+		methods: {
+			changeState(index : number) {
+				if (this.state[index]) {
+					this.doPause(index)
+				} else {
+					this.doPlay(current)
+				}
+			},
+			doPlay(index : number) {
+				(this.$refs["video-" + index] as VideoNode).play()
+				console.log("doPlay  video-" + index);
+			},
+			doPause(index : number) {
+				(this.$refs["video-" + index] as VideoNode).pause()
+				console.log("doPause  video-" + index);
+			},
+			onPause(index : number) {
+				this.state[index] = false
+				console.log('onPause', index);
+			},
+			onPlay(index : number) {
+				this.state[index] = true
+				console.log('onPlay', index);
+			},
+			getData() : ListItem[] {
+				/* Promise 暂不支持
+				Promise<void> 
+				return new Promise((resolve) => {
+					resolve();
+				});*/
+
+				let videoUrlList = [
+					'https://web-assets.dcloud.net.cn/unidoc/zh/video/uts.mp4',
+					'https://web-assets.dcloud.net.cn/unidoc/zh/video/uni-ai.mp4',
+					'https://web-assets.dcloud.net.cn/unidoc/zh/video/uni-verify.mp4'
+				] as string[]
+
+				let posterSrcList = [
+					'/static/template/swiper-vertical-video/poster/uni-uts.jpg',
+					'/static/template/swiper-vertical-video/poster/uni-ai.jpg',
+					'/static/template/swiper-vertical-video/poster/uni-verify.jpg'
+				] as string[]
+
+				let list = [] as ListItem[];
+				for (let i = 0; i < 6; i++) {
+					let index = this.list.length + i;
+					let listItem : ListItem = {
+						"_id": "a00" + index,
+						"content": "这是第" + index + "条数据" + videoUrlList[i % 3],
+						"src": videoUrlList[i % 3],
+						"poster_src": posterSrcList[i % 3]
+					}
+					list.push(listItem)
+				}
+				return list
+			},
+			onSwiperChange(e : SwiperChangeEvent) {
+				// console.error('SwiperChangeEvent',e.detail.current);
+				this.current = e.detail.current;
+			},
+			onTransition(/*e : SwiperTransitionEvent*/) {
+				// console.log('onTransition e.detail.dx', e.detail.dx);
+			}
+		}
+	}
 </script>
 
 <style>
-  .page {
-    flex: 1;
-    /* width: 750rpx; */
-  }
+	.page {
+		flex: 1;
+		/* width: 750rpx; */
+	}
 
-  .swiper,
-  .swiper-item,
-  .video,
-  .video-top-view ,
-  .video-cover {
-    height: 750rpx;
-  }
+	.header-tips {
+		margin: 10px;
+		padding: 10px;
+		background-color: #fff;
+		border-radius: 5px;
 
-  .swiper {
-    flex: 1;
-    /* border: 1px solid #000; */
-  }
+	}
 
-  .swiper-item {
-    flex: 1;
-    /* border: 1px solid red; */
-    padding: 10px 5px;
-    position: relative;
-  }
+	.tip-text {
+		font-size: 14px;
+		color: #666;
+		line-height: 18px;
+	}
 
-  .video {}
+	.tip-status-box {
+		margin-top: 10px;
+	}
 
-  .video-top-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    /* border: 1px solid red; */
-    flex: 1;
-    width: 750rpx;
-  }
+	.status-text {
+		font-size: 14px;
+		color: #666;
+	}
 
-  .play-btn {
-    width: 30px;
-    height: 30px;
-    color: #FFF;
-  }
-  .video-cover{
-    position: absolute;
-    width: 750rpx;
-    top: 0;
-    left: 0;
-  }
+	.swiper,
+	.swiper-item,
+	.video,
+	.video-top-view,
+	.video-cover {
+		height: 750rpx;
+	}
+
+	.swiper {
+		flex: 1;
+		margin: 0 10px;
+		margin-bottom: 15px;
+		background-color: #fff;
+		border-radius: 5px;
+		/* border: 1px solid #000; */
+	}
+
+	.swiper-item {
+		flex: 1;
+		/* border: 1px solid red; */
+		padding: 10px;
+		position: relative;
+	}
+
+	.video {}
+
+	.video-top-view {
+		position: absolute;
+		top: 0;
+		left: 0;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+		/* border: 1px solid red; */
+		flex: 1;
+		width: 750rpx;
+	}
+
+	.video-info {
+		margin-top: 10px;
+
+	}
+
+	.swiper-item-info {
+		position: absolute;
+		bottom: 15px;
+		left: 0;
+		right: 0;
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	.info-text {
+		font-size: 12px;
+		color: #999;
+	}
+
+
+	.video-info-text {
+		font-size: 14px;
+		color: #666;
+		line-height: 20px;
+	}
+
+	.play-btn {
+		width: 30px;
+		height: 30px;
+		color: #FFF;
+	}
+
+	.video-cover {
+		position: absolute;
+		width: 750rpx;
+		top: 0;
+		left: 0;
+	}
 </style>
