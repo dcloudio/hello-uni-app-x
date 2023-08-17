@@ -8,6 +8,7 @@ describe('navigator', () => {
   let lifeCycleNum
 
   afterAll(async () => {
+		page = await program.reLaunch(CURRENT_PAGE_PATH)
     const resetLifecycleNum = 1100
     await page.callMethod('setLifeCycleNum', resetLifecycleNum)
     lifeCycleNum = await page.callMethod('getLifeCycleNum')
