@@ -11,13 +11,14 @@
         </template>
       </view>
     </template>
+    
   </view>
 </template>
 <script lang="ts">
   let sX : number = 0,
     sY : number = 0,
     screenWidth : number = 1,
-    nodesMap = new Map<string, INode[]>();
+    nodesMap = new Map<string, INode[]>()
   export default {
     data() {
       return {
@@ -32,29 +33,37 @@
       }
     },
     onReady() {
-      this.setStyle('card',2,'transitionTimingFunction','ease-in-out');
-      this.setStyle('card',2,'transitionProperty','transform');
-      
       uni.getSystemInfo({
         success: (e) => {
           // console.log('e',e);
           screenWidth = e.screenWidth;
           let height = e.screenHeight - 200 + 'px'
           for (var i = 0; i < 3; i++) {
+            this.setStyle('card',i,'margin-top', 100 - 35*i+'px');
             this.setStyle('card',i,'height', height);
             this.setStyle('card-img',i,'height', height);
+            
+            this.setStyle('card',i,'transform', 'scale('+(0.8+0.1*i)+')')
+            this.setStyle('card',i,'transitionTimingFunction','ease-in-out');
+            this.setStyle('card',i,'transitionProperty','transform');
           }
+          
+          setTimeout(()=>{
+            let time = 600;
+            this.setStyle('card',0,'transitionDuration',time.toFixed(0));
+            this.setStyle('card',1,'transitionDuration',time.toFixed(0));
+          },0)
         }
       })
     },
-    watch: {
-      x() {
-        this.onMove()
-      },
-      y() {
-        this.onMove()
-      }
-    },
+    // watch: {
+    //   x() {
+    //     this.afterMove()
+    //   },
+    //   y() {
+    //     this.afterMove()
+    //   }
+    // },
     computed: {
       movePercent() : number {
         return Math.abs(this.x) / (screenWidth/2*3)
@@ -77,21 +86,18 @@
         }
         (nodes)[index].style.setProperty(propertyName,propertyStyle);
       },
-      onMove() {
-        this.setStyle('card',0,'transform', 'scale('+(this.movePercent/10+0.80)+')')
-        this.setStyle('card',1,'transform', 'scale('+(this.movePercent/10+0.90)+')')
-        this.setStyle('card',2,'transform', 'translateX('+this.x+'px) translateY('+this.y+'px) rotate('+this.x/-30+'deg)')
+      afterMove() {
+        // console.log('afterMove');
+        this.setStyle('card',0,'transform', 'scale('+(this.movePercent/20+0.8)+')')
+        this.setStyle('card',1,'transform', 'scale('+(this.movePercent/20+0.9)+')')
         
+        for (var i = 0; i < 3; i++) {
+          this.setStyle('card',i,'margin-top', 100 - 35*i - this.x/screenWidth * 10 +'px');
+        }
+        
+        this.setStyle('card',2,'transform', 'translateX('+this.x+'px) translateY('+this.y+'px) rotate('+this.x/-30+'deg) scale(1)')
         this.setStyle('state-icon-like',0,'opacity', x < 0 ? 0 : movePercent * 10)
         this.setStyle('state-icon-dislike',0,'opacity', x > 0 ? 0 : movePercent * 10)
-      },
-      changeCardList() {
-        let newArr = this.cardList.slice();
-        this.cardList[0] = newArr[2]
-        this.cardList[1] = newArr[0]
-        this.cardList[2] = newArr[1]
-        this.x = 0
-        this.y = 0
       },
       touchstart(e : TouchEvent,index:number) {
         if(index != 2){
@@ -99,6 +105,8 @@
         }
         sX = e.touches[0].screenX;
         sY = e.touches[0].screenY;
+        this.x = 0
+        this.y = 0
       },
       touchmove(e : TouchEvent,index:number) {
         if(index != 2){
@@ -108,10 +116,11 @@
         this.y += e.touches[0].screenY - sY;
         sX = e.touches[0].screenX;
         sY = e.touches[0].screenY;
+        this.afterMove()
       },
       touchend() {
         // console.log('touchend');
-        
+
         // 设置释放之后飘走的方向 0回到坐标中心 1向右 2向左
         let k:number = 0;
         if (this.x > screenWidth / 6 ) {
@@ -119,21 +128,73 @@
         }else if(this.x < screenWidth * -1 / 6){
           k = -1
         }
+        
         // 设置动画时间
-        let time = 400;
-        this.setStyle('card',2,'transitionDuration',time.toFixed(0));
+        let time = 300;
         
-        this.x = screenWidth * 1.5 * k
-        this.y = Math.abs(screenWidth * 0.5 * k)
-        
-        setTimeout(()=>{
-          //关闭动画
-          this.setStyle('card',2,'transitionDuration',0);
-          // 更改卡片上的图片内容
-          if(k != 0){
-            this.changeCardList()
+        /**
+         * @description 卡片2 transform 的 transition
+         */
+        const card2TT = {
+          open(){
+            this.setStyle('card',2,'transitionProperty','transform');
+            this.setStyle('card',2,'transitionDuration',time.toFixed(0));
+          },
+          close(){
+            this.setStyle('card',2,'transitionProperty','');
+            this.setStyle('card',2,'transitionDuration',0);
           }
-        },time)
+        }
+        
+        card2TT.open()
+          
+        /**
+         * @description 卡片2回到原点
+         */
+        const card2To0 = ()=> {
+          // 设置横纵坐标归0
+          this.x = 0
+          this.y = 0
+          //执行移动后的相应效果
+          this.afterMove()
+          
+          setTimeout(()=>{
+            //动画结果关闭
+            card2TT.close()
+          },time)
+        }
+        
+        if(k == 0){
+          card2To0()
+        }else{
+          // 卡片飘出界面
+          this.setStyle('card',2,'transform', `translate(${screenWidth * 1.5 * k},${Math.abs(screenWidth * 0.5 * k)})`)
+          
+          setTimeout(()=>{
+            //动画结果关闭
+           card2TT.close()
+            
+            // 更改置顶卡片内容
+            let newArr = this.cardList.slice();
+            this.cardList[2] = newArr[1];
+            
+            setTimeout(()=>{
+              // 将置顶卡片归c位
+              // this.setStyle('card',2,'margin-top', '50px');
+              this.setStyle('card',2,'transform', 'scale(0.95)')
+              
+              // 更改非置顶 卡片内容
+              this.cardList[0] = newArr[2]
+              this.cardList[1] = newArr[0]
+              
+              // 开启动画
+              card2TT.open()
+              card2To0()
+            },100)
+            
+          },time)
+        }
+        
       }
     }
   }
@@ -149,7 +210,7 @@
     height: 750rpx;
     position: absolute;
     margin: 0 25rpx;
-    margin-top: 30px;
+    margin-top: 50px;
     border-radius: 10px;
     color: #FFF;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
