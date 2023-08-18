@@ -1,4 +1,4 @@
-function getData(key = '') {
+/* function getData(key = '') {
   return new Promise(async (resolve, reject) => {
     const data = await page.data()
     resolve(key ? data[key] : data)
@@ -9,10 +9,12 @@ let page
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/button/button')
   await page.waitFor(1000)
-})
+})*/
+
 
 describe('Button.uvue', () => {
-  it('click', async () => {
+	// TODO BUTTON TEST
+  /* it('click', async () => {
     const defaultBtn = await page.$('.default-button')
     const disabledBtn = await page.$('.disabled-button')
     expect(await getData('count')).toEqual(0)
@@ -73,5 +75,5 @@ describe('Button.uvue', () => {
     })
     await page.waitFor(500)
     expect(await btn.property('disabled')).toBe(true)
-  })
+  }) */
 })

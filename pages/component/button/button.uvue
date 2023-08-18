@@ -1,119 +1,64 @@
-<template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-    <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <button
-          :type="type"
-          :size="size"
-          :plain="plain"
-          :disabled="disabled"
-          class="button test-button"
-        >
-          页面主操作 Normal
-        </button>
-        <!-- <button type="primary" :loading="loading" class="button">页面主操作 Loading</button> -->
-        <button type="primary" :disabled="true" class="button">
-          页面主操作 Disabled
-        </button>
-
-        <button type="default" class="button default-button" @click="addCount">
-          页面次要操作 Normal
-        </button>
-        <button type="default" :disabled="true" class="button disabled-button">
-          页面次要操作 Disabled
-        </button>
-
-        <button type="warn" class="button">警告类操作 Normal</button>
-        <button type="warn" :disabled="true" class="button">
-          警告类操作 Disabled
-        </button>
-
-        <view class="button-sp-area">
-          <button type="primary" :plain="true" class="button text-button">
-            {{ text }}
-          </button>
-          <button type="primary" :disabled="true" :plain="true" class="button">
-            不可点击的按钮
-          </button>
-
-          <button type="default" :plain="true" class="button">
-            按钮 plain背景镂空
-          </button>
-          <button type="default" :disabled="true" :plain="true" class="button">
-            按钮 Disabled
-          </button>
-
-          <view class="uni-flex uni-row">
-            <button class="button mini-btn" type="primary" size="mini">
-              按钮 mini
-            </button>
-            <button class="button mini-btn" type="default" size="mini">
-              按钮 mini
-            </button>
-            <button class="button mini-btn" type="warn" size="mini">
-              按钮 mini
-            </button>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
-</template>
-<script lang="ts">
+<script>
+import { type ItemType } from '@/components/enum-data/enum-data.vue'
 export default {
-  data() {
-    return {
-      title: 'button',
-      loading: false,
-      _timer: 0,
-      text: '文字来自data绑定',
-      type: 'primary',
-      size: 'default',
-      plain: false,
-      disabled: false,
-      count: 0,
-    }
-  },
-  onShow() {
-    // this.clearTimer();
-    // this._timer = setTimeout(() => {
-    //     // this.loading = true;
-    // }, 300)
-  },
-  onUnload() {
-    // this.clearTimer();
-    // this.loading = false;
-  },
-  methods: {
-    // clearTimer() {
-    //     if (this._timer != 0) {
-    //         clearTimeout(this._timer);
-    //     }
-    // }
-    addCount() {
-      this.count++
-    },
-  },
+	data() {
+		return {
+			plain_boolean: false,
+			disabled_boolean: false,
+			size_enum: [{"value":0,"name":"default"},{"value":1,"name":"mini"}] as ItemType[],
+			size_enum_current: 0,
+			type_enum: [{"value":0,"name":"default"},{"value":1,"name":"primary"},{"value":2,"name":"warn"}] as ItemType[],
+			type_enum_current: 0
+		}
+	},
+	methods: {
+		button_click() { console.log("组件被点击时触发") },
+		button_touchstart() { console.log("手指触摸动作开始") },
+		button_touchmove() { console.log("手指触摸后移动") },
+		button_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") },
+		button_touchend() { console.log("手指触摸动作结束") },
+		button_tap() { console.log("手指触摸后马上离开") },
+		button_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
+		change_plain_boolean(checked : boolean) { this.plain_boolean = checked },
+		change_disabled_boolean(checked : boolean) { this.disabled_boolean = checked },
+		radio_change_size_enum(checked : number) { this.size_enum_current = checked },
+		radio_change_type_enum(checked : number) { this.type_enum_current = checked }
+	}
 }
 </script>
 
+<template>
+	<view class="main">
+	<button :disabled="disabled_boolean" :size="size_enum[size_enum_current].name" :type="type_enum[type_enum_current].name" :plain="plain_boolean" @click="button_click" @touchstart="button_touchstart" @touchmove="button_touchmove" @touchcancel="button_touchcancel" @touchend="button_touchend" @tap="button_tap" @longpress="button_longpress">uni-app-x</button>
+	</view>
+
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+	<view class="content nvue">
+			<boolean-data :defaultValue="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
+		<boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+	<enum-data :items="size_enum" title="按钮的大小" @change="radio_change_size_enum"></enum-data>
+	<enum-data :items="type_enum" title="按钮的类型" @change="radio_change_type_enum"></enum-data>
+	</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
 <style>
-.button {
-  margin-top: 30rpx;
+.main {
+	max-height: 500rpx;
+	padding: 10rpx 0;
+	border-bottom: 1px solid rgba(0,0,0,.06);
+	flex-direction: row;
+	justify-content: center;
 }
 
-.button-sp-area {
-  margin: 0 auto;
-  width: 90%;
+.main .list-item {
+	width:100%;
+	height:200rpx;
+	border: 1px solid #666;
 }
 
-.mini-btn {
-  margin-right: 10rpx;
-  margin-bottom: 30rpx;
-}
 </style>
