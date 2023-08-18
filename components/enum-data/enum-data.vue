@@ -8,7 +8,8 @@
 				default: ''
 			},
 			items: {
-				type: Array as PropType<Array<ItemType>>
+				type: Array as PropType<Array<ItemType>>,
+				required: true
 			}
 		},
 		data() {
