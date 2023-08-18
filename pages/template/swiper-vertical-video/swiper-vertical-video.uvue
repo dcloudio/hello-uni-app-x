@@ -2,7 +2,7 @@
 	<view class="page">
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
 			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-				<video :ref="'video-'+i" class="video-box" :id="item._id" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
+				<video ref="video" class="video-box" :id="item._id" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
 				<view class="video-cover" @click="changeState(i)">
 					<image v-if="!state[i]" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
 				</view>
@@ -12,7 +12,7 @@
 				</view>
 			</swiper-item>
 		</swiper>
-    <view class="debug-info">
+    <view class="debug-info" v-if="0">
       <text class="status-text">debug-info 播放状态:</text>
       <text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{value?'播放中':'已暂停'}}</text>
     </view>
@@ -90,11 +90,11 @@
 				}
 			},
 			doPlay(index : number) {
-        console.log("doPlay  video-" + index,this.$refs["video-" + index]);
-				(this.$refs["video-" + index] as VideoNode).play()
+        // console.log("doPlay  video" + index,(this.$refs["video"] as VideoNode[])[0] );
+				(this.$refs["video"] as VideoNode[])[index].play()
 			},
 			doPause(index : number) {
-				(this.$refs["video-" + index] as VideoNode).pause()
+				(this.$refs["video"] as VideoNode[])[index].pause()
 				console.log("doPause  video-" + index);
 			},
 			onPause(index : number) {
@@ -129,7 +129,7 @@
 					let index = this.list.length + i;
 					let listItem : ListItem = {
 						"_id": "a00" + index,
-						"content": "这是第" + index + "条数据" + videoUrlList[i % 3],
+						"content": "这是第" + index + "条数据，url地址" + videoUrlList[i % 3],
 						"src": videoUrlList[i % 3],
 						"poster_src": posterSrcList[i % 3]
 					}
@@ -200,6 +200,7 @@
     position: fixed;
     top:15px;
     width: 750rpx;
+    background-color: rgba(255, 255, 255, 0.3);
   }
   .status-text{
     color:red;
