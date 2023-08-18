@@ -1,28 +1,21 @@
 <template>
 	<view class="page">
-		<view class="header-tips" style="padding: 10px;">
-			<text class="tip-text">当前示例为无限滚动、加载、浏览视频的短视频模板的演示，提供了组件复用的方式。为提高性能可见的视频项只有 3 个</text>
-
-			<view class="tip-status-box">
-				<text class="status-text">播放状态:</text>
-				<text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{value?'播放中':'已暂停'}}</text>
-			</view>
-		</view>
-		<swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
+    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
 			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-				<video :ref="'video-'+i" class="video" :id="item._id" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
-				<view class="video-top-view" @click="changeState(i)">
+				<video :ref="'video-'+i" class="video-box" :id="item._id" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
+				<view class="video-cover" @click="changeState(i)">
 					<image v-if="!state[i]" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
 				</view>
 				<view class="video-info">
 					<text class="video-info-text">容器：第 {{i}} 个</text>
 					<text class="video-info-text">内容：{{item.content}}</text>
 				</view>
-				<view class="swiper-item-info">
-					<text class="info-text">向上滑动查看下一个视频</text>
-				</view>
 			</swiper-item>
 		</swiper>
+    <view class="debug-info">
+      <text class="status-text">debug-info 播放状态:</text>
+      <text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{value?'播放中':'已暂停'}}</text>
+    </view>
 	</view>
 </template>
 <script>
@@ -32,12 +25,6 @@
 
 	export default {
 		components: {},
-		computed: {
-			currentVideo() : VideoNode {
-				console.log('"video-"+this.current', "video-" + this.current);
-				return this.$refs["video-" + this.current] as VideoNode
-			}
-		},
 		data() {
 			return {
 				list: [] as ListItem[],
@@ -103,8 +90,8 @@
 				}
 			},
 			doPlay(index : number) {
+        console.log("doPlay  video-" + index,this.$refs["video-" + index]);
 				(this.$refs["video-" + index] as VideoNode).play()
-				console.log("doPlay  video-" + index);
 			},
 			doPause(index : number) {
 				(this.$refs["video-" + index] as VideoNode).pause()
@@ -126,9 +113,9 @@
 				});*/
 
 				let videoUrlList = [
-					'https://web-assets.dcloud.net.cn/unidoc/zh/video/uts.mp4',
-					'https://web-assets.dcloud.net.cn/unidoc/zh/video/uni-ai.mp4',
-					'https://web-assets.dcloud.net.cn/unidoc/zh/video/uni-verify.mp4'
+					'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/video/uts.mp4',
+					'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/video/uni-ai.mp4',
+					'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/video/uni-verify.mp4'
 				] as string[]
 
 				let posterSrcList = [
@@ -163,107 +150,59 @@
 
 <style>
 	.page {
-		flex: 1;
-		/* width: 750rpx; */
+    width: 750rpx;
+    flex: 1;
 	}
-
-	.header-tips {
-		margin: 10px;
-		padding: 10px;
-		background-color: #fff;
-		border-radius: 5px;
-
-	}
-
-	.tip-text {
-		font-size: 14px;
-		color: #666;
-		line-height: 18px;
-	}
-
-	.tip-status-box {
-		margin-top: 10px;
-	}
-
-	.status-text {
-		font-size: 14px;
-		color: #666;
-	}
-
+  
 	.swiper,
 	.swiper-item,
-	.video,
-	.video-top-view,
+	.video-box,
 	.video-cover {
-		height: 750rpx;
-	}
-
-	.swiper {
-		flex: 1;
-		margin: 0 10px;
-		margin-bottom: 15px;
-		background-color: #fff;
-		border-radius: 5px;
-		/* border: 1px solid #000; */
+		width:750rpx;
+    flex: 1;
+    height: 100%;
 	}
 
 	.swiper-item {
-		flex: 1;
-		/* border: 1px solid red; */
-		padding: 10px;
 		position: relative;
 	}
 
-	.video {}
+	.video-box {
+    width: 750rpx;
+  }
 
-	.video-top-view {
-		position: absolute;
-		top: 0;
-		left: 0;
+	.video-cover {
+    position: absolute;
 		justify-content: center;
 		align-items: center;
 		align-content: center;
-		/* border: 1px solid red; */
-		flex: 1;
-		width: 750rpx;
 	}
+  
+  .play-btn {
+  	width: 30px;
+  	height: 30px;
+  	color: #FFF;
+  }
 
 	.video-info {
-		margin-top: 10px;
-
+    position: absolute;
+    bottom: 0;
+    padding: 15px;
 	}
-
-	.swiper-item-info {
-		position: absolute;
-		bottom: 15px;
-		left: 0;
-		right: 0;
-		flex-direction: row;
-		justify-content: center;
-	}
-
-	.info-text {
-		font-size: 12px;
-		color: #999;
-	}
-
 
 	.video-info-text {
 		font-size: 14px;
-		color: #666;
+		color: red;
 		line-height: 20px;
 	}
 
-	.play-btn {
-		width: 30px;
-		height: 30px;
-		color: #FFF;
-	}
-
-	.video-cover {
-		position: absolute;
-		width: 750rpx;
-		top: 0;
-		left: 0;
-	}
+  .debug-info{
+    position: fixed;
+    top:15px;
+    width: 750rpx;
+  }
+  .status-text{
+    color:red;
+    padding: 15px;
+  }
 </style>
