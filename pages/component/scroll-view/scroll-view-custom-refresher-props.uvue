@@ -1,0 +1,75 @@
+<template>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex:1" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
+		refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh">
+		<!-- #endif -->
+		<scroll-view style="margin: 50rpx;">
+			<view v-for="i in 20" class="content-item">
+				<text class="text">item-{{i}}</text>
+			</view>
+		</scroll-view>
+		<refresh-box slot="refresher" :state="state"></refresh-box>
+		<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+	import RefresherEvent from 'io.dcloud.uniapp.runtime.RefresherEvent';
+	import refreshBox from '../../template/custom-refresher/refresh-box/refresh-box.uvue';
+	export default {
+		components: { refreshBox },
+		data() {
+			return {
+				refresherTriggered: false,
+				pullingDistance: 0,
+				resetting: false
+			}
+		},
+		computed: {
+			state() : number {
+				if (this.resetting) {
+					return 3;
+				}
+				if (this.refresherTriggered) {
+					return 2
+				}
+				if (this.pullingDistance > 45) {
+					return 1
+				} else {
+					return 0;
+				}
+			}
+		},
+		methods: {
+			onRefresherpulling(e : RefresherEvent) {
+				this.pullingDistance = e.detail.dy;
+				if (this.pullingDistance.toDouble() == 0.0) {
+					this.resetting = false;
+				}
+			},
+			onRefresherrefresh() {
+				this.refresherTriggered = true
+				setTimeout(() => {
+					this.refresherTriggered = false
+					this.resetting = true;
+				}, 1500)
+			},
+		}
+	}
+</script>
+
+<style>
+	.content-item {
+		padding: 15px;
+		margin: 5px 0;
+		background-color: #fff;
+		border-radius: 5px;
+	}
+
+	.text {
+		font-size: 14px;
+		color: #666;
+		line-height: 20px;
+	}
+</style>

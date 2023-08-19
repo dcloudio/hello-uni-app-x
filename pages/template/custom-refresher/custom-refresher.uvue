@@ -23,11 +23,15 @@
       return {
         refresherTriggered:false,
         refresherThreshold:40,
-        pullingDistance:0
+        pullingDistance:0,
+		resetting: false
       }
     },
     computed:{
       state():number{
+		if (this.resetting) {
+		  return 3;
+		}
         if(this.refresherTriggered){
           return 2
         }
@@ -42,6 +46,9 @@
       onRefresherpulling(e:RefresherEvent){
         // console.log('onRefresherpulling',e.detail.dy)
         this.pullingDistance = e.detail.dy
+		if (this.pullingDistance.toDouble() == 0.0) {
+			this.resetting = false;
+		}
       },
       onRefresherrefresh(){
         this.refresherTriggered = true
