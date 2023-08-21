@@ -23,6 +23,9 @@
 					<button type="primary" @click="stop">停止加载</button>
 				</view>
 			</view>
+			<view class="uni-btn-v">
+				<button type="primary" @click="nativeToWeb">原生和Web通信</button>
+			</view>
 		</view>
 	</view>
 </template>
@@ -36,7 +39,7 @@
 					progress: {
 						color: '#FF3333'
 					}
-				} as UTSJSONObject
+				}
 			}
 		},
 		methods: {
@@ -51,6 +54,9 @@
 			},
 			stop() {
 				(this.$refs['web-view'] as IWebViewNode).stop();
+			},
+			nativeToWeb() {
+				(this.$refs['web-view'] as IWebViewNode).evalJS("alert('hello uni-app x')");
 			},
 			message(event : WebViewMessageEvent) {
 				console.log(JSON.stringify(event.detail));
