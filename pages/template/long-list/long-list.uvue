@@ -1,25 +1,24 @@
 <template>
-  <list-view class="list" @loadmore="loadData">
+  <list-view class="list" @scrolltolower="loadData">
     <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
       <view class="list-item-icon">
-        <image class="list-item-icon-image" :src="item.image"></image>
-        <text class="list-item-icon-index">{{item.index}}</text>
+        <image class="list-item-icon-image" :src="item.img"></image>
       </view>
       <view class="list-item-fill">
         <view class="flex-row">
-          <text class="title">{{item.title}}</text>
+          <text class="title">{{item.name}}</text>
         </view>
         <view class="description">
-          <text class="description-text">{{item.description}}</text>
+          <text class="description-text">{{item.intro}}</text>
         </view>
-        <view class="tag-list">
+        <!-- <view class="tag-list">
           <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2.name}}</text>
-        </view>
+        </view> -->
         <!-- <uts-rate></uts-rate> -->
         <view class="flex-row update-date">
           <text class="update-date-text">更新日期</text>
-          <text class="update-date-value">{{item.updateDate}}</text>
-          <text class="author">Dcloud</text>
+          <!-- <text class="update-date-value">{{item.updateDate}}</text> -->
+          <!-- <text class="author">Dcloud</text> -->
         </view>
       </view>
     </list-item>
@@ -27,78 +26,73 @@
 </template>
 
 <script>
-  // 测试数据 - 标题
-  const TEST_DATA_TITLE_LIST = [
-    '升级中心 uni-upgrade-center',
-    'schema2code',
-    'uni-sec-check',
-    'uni-starter',
-    'uni-admin 基础框架',
-    '有奖猜歌游戏',
-    '看图App模板',
-    '网赚游戏管理后台',
-    '云端一体搜索模板',
-  ]
+  // TODO 临时地址
+  const SERVER_URL = "https://test-ext.dcloud.net.cn/plugin/plugin-list"
+  const PAGE_SIZE = 10; // 最大值 10
 
-  // 测试数据 - 标签
-  const TEST_DATA_TAG_LIST = [
-    'uni-ai-chat',
-    'gpt',
-    'chatgpt',
-    'openai',
-  ]
-
-  type TagItem = {
-    index : string,
-    name : string
-  }
-
+  // TODO 暂不支持tag，更新日期等属性
   type ListItem = {
-    index : string,
-    image : string,
-    title : string,
-    description : string,
-    tags : Array<TagItem>,
-    updateDate : string,
+    id : number,
+    img : string,
+    name : string,
+    intro : string,
+    // tags : Array<String>,
+    // updateDate : string,
   }
 
   export default {
     data() {
       return {
-        dataList: [] as ListItem[]
+        loading: false,
+        dataList: [] as ListItem[],
+        isEnded: false,
+        $currentPage: 0
       }
     },
     onLoad() {
       this.loadData()
     },
     methods: {
-      // 滚动到页面底部时调用
       loadData() {
-        let index = this.dataList.length
-
-        // 生成 20 条测试数据, 随机标题、标签
-        const updateDate = new Date().toISOString().split('T')[0]
-        for (let i = 0; i < 20; i++) {
-          // 标签
-          let tags : TagItem[] = []
-          for (let j = 0; j < 3; j++) {
-            tags.push({
-              index: i + '_' + j,
-              name: TEST_DATA_TAG_LIST[parseInt((Math.random() * (TEST_DATA_TAG_LIST.length - 1)) + '')],
-            } as TagItem)
-          }
-
-          this.dataList.push({
-            index: index.toString(),
-            image: '/static/uni.png',
-            title: TEST_DATA_TITLE_LIST[parseInt((Math.random() * (TEST_DATA_TITLE_LIST.length - 1)) + '')],
-            description: '描述',
-            tags: tags,
-            updateDate
-          } as ListItem)
-
-          index++
+        if (this.loading || this.isEnded) {
+          return
         }
+
+        this.loading = true;
+
+        uni.request({
+          url: SERVER_URL,
+          data: {
+            page: this.$currentPage,
+            pageSize: PAGE_SIZE
+          },
+          success: (res) => {
+            const responseData = res.data as UTSJSONObject
+            if (responseData['data'] == null) {
+              return;
+            }
+
+            const responseDataList = responseData['data'] as UTSJSONObject[]
+            for (const item in responseDataList) {
+              this.dataList.push({
+                id: item["id"] as number,
+                img: 'https:' + item["img"] as string,
+                name: item["name"] as string,
+                intro: item["intro"] as string,
+              } as ListItem)
+            }
+
+            this.isEnded = responseDataList.length <= 0;
+
+            this.$currentPage++
+          },
+          fail: (err) => {
+            console.log(err);
+          },
+          complete: () => {
+            this.loading = false;
+          }
+        })
       }
     }
   }
