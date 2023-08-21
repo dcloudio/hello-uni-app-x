@@ -73,14 +73,16 @@
           },
           dataType: '',
           success: (res) => {
-            const responseData = JSON.parse<ResponseDataType>(res.data as string)!
-            const list = responseData.data
+            const responseData = JSON.parse<ResponseDataType>(res.data as string)
+            if (responseData == null) {
+              return
+            }
 
-            list.forEach((item) => {
+            responseData.data.forEach((item) => {
               this.dataList.push(item)
             })
 
-            this.isEnded = list.length <= 0;
+            this.isEnded = responseData.data.length <= 0;
 
             this.$currentPage++
           },
