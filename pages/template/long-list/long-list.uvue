@@ -2,23 +2,23 @@
   <list-view class="list" @scrolltolower="loadData">
     <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
       <view class="list-item-icon">
-        <image class="list-item-icon-image" :src="item.img"></image>
+        <image class="list-item-icon-image" :src="item.author_avatar_link"></image>
       </view>
       <view class="list-item-fill">
         <view class="flex-row">
-          <text class="title">{{item.name}}</text>
+          <text class="title">{{item.plugin_name}}</text>
         </view>
         <view class="description">
-          <text class="description-text">{{item.intro}}</text>
+          <text class="description-text">{{item.plugin_intro}}</text>
         </view>
-        <!-- <view class="tag-list">
-          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2.name}}</text>
-        </view> -->
+        <view class="tag-list">
+          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
+        </view>
         <!-- <uts-rate></uts-rate> -->
         <view class="flex-row update-date">
           <text class="update-date-text">更新日期</text>
-          <!-- <text class="update-date-value">{{item.updateDate}}</text> -->
-          <!-- <text class="author">Dcloud</text> -->
+          <text class="update-date-value">{{item.update_date}}</text>
+          <text class="author">{{item.author_name}}</text>
         </view>
       </view>
     </list-item>
@@ -26,18 +26,22 @@
 </template>
 
 <script>
-  // TODO 临时地址
-  const SERVER_URL = "https://test-ext.dcloud.net.cn/plugin/plugin-list"
+  const SERVER_URL = "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list"
   const PAGE_SIZE = 10; // 最大值 10
 
-  // TODO 暂不支持tag，更新日期等属性
   type ListItem = {
-    id : number,
-    img : string,
-    name : string,
-    intro : string,
-    // tags : Array<String>,
-    // updateDate : string,
+    plugin_id : number,
+    author_avatar_link : string,
+    plugin_name : string,
+    plugin_intro : string,
+    tags : Array<string>,
+    update_date : string,
+    author_name : string,
+  }
+
+  type ResponseDataType = {
+    code : number,
+    data : ListItem[]
   }
 
   export default {
@@ -60,29 +64,23 @@
 
         this.loading = true;
 
+        // TODO request data 没有拼接到 url 中，暂时手动拼接
         uni.request({
-          url: SERVER_URL,
+          url: `${SERVER_URL}?page=${this.$currentPage}&page_size=${PAGE_SIZE}`,
           data: {
             page: this.$currentPage,
-            pageSize: PAGE_SIZE
+            page_size: PAGE_SIZE
           },
+          dataType: '',
           success: (res) => {
-            const responseData = res.data as UTSJSONObject
-            if (responseData['data'] == null) {
-              return;
-            }
+            const responseData = JSON.parse<ResponseDataType>(res.data as string)!
+            const list = responseData.data
 
-            const responseDataList = responseData['data'] as UTSJSONObject[]
-            for (const item in responseDataList) {
-              this.dataList.push({
-                id: item["id"] as number,
-                img: 'https:' + item["img"] as string,
-                name: item["name"] as string,
-                intro: item["intro"] as string,
-              } as ListItem)
-            }
+            list.forEach((item) => {
+              this.dataList.push(item)
+            })
 
-            this.isEnded = responseDataList.length <= 0;
+            this.isEnded = list.length <= 0;
 
             this.$currentPage++
           },
@@ -141,7 +139,7 @@
   }
 
   .description {
-    margin-top: 5px;
+    margin-top: 3px;
   }
 
   .description-text {
@@ -182,7 +180,7 @@
 
   .author {
     font-size: 12px;
-    color: #008000;
+    color: #005000;
     margin-left: auto;
   }
 </style>
