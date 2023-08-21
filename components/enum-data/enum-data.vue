@@ -25,10 +25,10 @@
 				})
 				this.current = selected?.value as number
 				this.$emit('change', this.current)
-				/* uni.showToast({
+				uni.showToast({
 					icon: 'none',
 					title: '当前选中:' + selected?.name,
-				}) */
+				})
 			}
 		}
 	}

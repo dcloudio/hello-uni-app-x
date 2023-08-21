@@ -29,10 +29,16 @@
 </script>
 
 <template>
-	<view class="uni-flex" style="justify-content: space-between;padding: 10rpx;">
+	<view class="button-data-main uni-flex">
 		<view class="uni-title" style="width:80%">{{ title }}</view>
 		<switch :checked="_checked" @change="_change" />
 	</view>
 </template>
 
-<style></style>
+<style>
+	.button-data-main {
+		justify-content: space-between;
+		padding: 20rpx;
+		border-bottom: 1px solid rgba(0,0,0,.06);
+	}
+</style>
