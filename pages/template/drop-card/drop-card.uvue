@@ -3,33 +3,33 @@
     <template v-for="(item,index) in cardList" :key="index">
       <view class="card" ref="card" @touchstart="touchstart($event as TouchEvent,index)" @touchmove="touchmove($event as TouchEvent,index)" @touchend="touchend" @touchcancel="touchend">
         <image class="card-img" ref="card-img" :src="item"></image>
-        <template v-if="index == 2">
-          <view class="state">
-            <image class="state-icon like" ref="state-icon-like" src="/static/template/drop-card/like.png" mode="widthFix"></image>
-            <image class="state-icon dislike" ref="state-icon-dislike" src="/static/template/drop-card/dislike.png" mode="widthFix"></image>
-          </view>
-        </template>
+        <view class="state">
+          <image class="state-icon like" ref="state-icon-like" src="/static/template/drop-card/like.png" mode="widthFix"></image>
+          <image class="state-icon dislike" ref="state-icon-dislike" src="/static/template/drop-card/dislike.png" mode="widthFix"></image>
+        </view>
       </view>
     </template>
-    
   </view>
 </template>
 <script lang="ts">
   let sX : number = 0,
     sY : number = 0,
     screenWidth : number = 1,
-    nodesMap = new Map<string, INode[]>()
+    nodesMap = new Map<string, INode[]>();
+    
   export default {
     data() {
       return {
-        x: 0,
-        y: 0,
+        x: 0 as number,
+        y: 0 as number,
         cardList: [
           '/static/template/drop-card/1.jpg',
           '/static/template/drop-card/2.jpg',
           '/static/template/drop-card/3.jpg'
         ] as string[],
         NodesMap: new Map<string, INode[]>(),
+        // 页码
+        currentIndex:0 as number
       }
     },
     onReady() {
@@ -39,31 +39,13 @@
           screenWidth = e.screenWidth;
           let height = e.screenHeight - 200 + 'px'
           for (var i = 0; i < 3; i++) {
-            this.setStyle('card',i,'margin-top', 100 - 40*i+'px');
-            this.setStyle('card',i,'height', height);
-            this.setStyle('card-img',i,'height', height);
-            
-            this.setStyle('card',i,'transform', 'scale('+(0.8+0.1*i)+')')
-            this.setStyle('card',i,'transitionTimingFunction','ease-in-out');
-            this.setStyle('card',i,'transitionProperty','transform');
+            this.setINodeStyle('card',i,'height', height);
+            this.setINodeStyle('card-img',i,'height', height);
           }
-          
-          setTimeout(()=>{
-            let time = 600;
-            this.setStyle('card',0,'transitionDuration',time.toFixed(0));
-            this.setStyle('card',1,'transitionDuration',time.toFixed(0));
-          },0)
         }
       })
+      this.initCardList()
     },
-    // watch: {
-    //   x() {
-    //     this.afterMove()
-    //   },
-    //   y() {
-    //     this.afterMove()
-    //   }
-    // },
     computed: {
       movePercent() : number {
         return Math.abs(this.x) / (screenWidth/2*3)
@@ -73,10 +55,14 @@
       },
       dislikeOpacity() : number {
         return this.x > 0 ? 0 : this.movePercent * 100
+      },
+      topCardIndex():number{
+        return 2 - Math.abs(this.currentIndex)%3
       }
     },
     methods: {
-      setStyle(refName:string,index:number,propertyName:string,propertyStyle:any):void{
+      // 工具方法，用于快速设置 INode 的 style
+      setINodeStyle(refName:string,index:number,propertyName:string,propertyStyle:any):void{
         let nodes:INode[]|null = nodesMap.get(refName)
         if(nodes == null){
           nodes = this.$refs.get(refName) as INode[]
@@ -86,21 +72,32 @@
         }
         (nodes)[index].style.setProperty(propertyName,propertyStyle);
       },
-      afterMove() {
-        // console.log('afterMove');
-        this.setStyle('card',0,'transform', 'scale('+(this.movePercent/20+0.8)+')')
-        this.setStyle('card',1,'transform', 'scale('+(this.movePercent/20+0.9)+')')
-        
+      // 设置卡片样式（层级，大小，上边距)
+      initCardList(){
         for (var i = 0; i < 3; i++) {
-          this.setStyle('card',i,'margin-top', 100 - 40*i - this.x/screenWidth * 10 +'px');
+          let endIndex = (i + this.currentIndex)%3
+          this.setINodeStyle('card',i,'margin-top', 100 - 30*endIndex+'px');
+          this.setINodeStyle('card',i,'transform', 'scale('+(0.9+0.05*endIndex)+')')
+          // console.log(0.9+0.05*endIndex,50 - 20*endIndex+'px');
+          this.setINodeStyle('card',i,'z-index', endIndex)
         }
-        
-        this.setStyle('card',2,'transform', 'translateX('+this.x+'px) translateY('+this.y+'px) rotate('+this.x/-30+'deg) scale(1)')
-        this.setStyle('state-icon-like',0,'opacity', x < 0 ? 0 : movePercent * 10)
-        this.setStyle('state-icon-dislike',0,'opacity', x > 0 ? 0 : movePercent * 10)
+      },
+      moveCard() {
+        for (var i = 0; i < 3; i++) {
+          // 设置置顶卡片样式
+          if(i === this.topCardIndex){
+            this.setINodeStyle('card',this.topCardIndex,'transform', 'translateX('+this.x+'px) translateY('+this.y+'px) rotate('+this.x/-30+'deg) scale('+( 0.9+0.05*2 + movePercent/20 )+')')
+            this.setINodeStyle('state-icon-like',this.topCardIndex,'opacity', x < 0 ? 0 : movePercent * 10)
+            this.setINodeStyle('state-icon-dislike',this.topCardIndex,'opacity', x > 0 ? 0 : movePercent * 10)
+          }else{
+            let endIndex = (i + this.currentIndex)%3
+            this.setINodeStyle('card',i,'transform', 'scale('+( 0.9+0.05*endIndex + movePercent*0.05 )+')')
+            this.setINodeStyle('card',i,'margin-top', 100 - 30*endIndex - movePercent*30 +'px');
+          }
+        }
       },
       touchstart(e : TouchEvent,index:number) {
-        if(index != 2){
+        if(index != this.topCardIndex){
           return 
         }
         sX = e.touches[0].screenX;
@@ -109,14 +106,14 @@
         this.y = 0
       },
       touchmove(e : TouchEvent,index:number) {
-        if(index != 2){
+        if(index != this.topCardIndex){
           return 
         }
         this.x += e.touches[0].screenX - sX;
         this.y += e.touches[0].screenY - sY;
         sX = e.touches[0].screenX;
         sY = e.touches[0].screenY;
-        this.afterMove()
+        this.moveCard()
       },
       touchend() {
         // console.log('touchend');
@@ -129,71 +126,31 @@
           k = -1
         }
         
+        this.x = k * screenWidth * 1.5
+        this.y = k * screenWidth * 0.5
+
         // 设置动画时间
-        let time = 300;
-        
-        /**
-         * @description 卡片2 transform 的 transition
-         */
-        const card2TT = {
-          open(){
-            this.setStyle('card',2,'transitionProperty','transform');
-            this.setStyle('card',2,'transitionDuration',time.toFixed(0));
-          },
-          close(){
-            this.setStyle('card',2,'transitionProperty','');
-            this.setStyle('card',2,'transitionDuration',0);
-          }
-        }
-        
-        card2TT.open()
-          
-        /**
-         * @description 卡片2回到原点
-         */
-        const card2To0 = ()=> {
-          // 设置横纵坐标归0
-          this.x = 0
-          this.y = 0
-          //执行移动后的相应效果
-          this.afterMove()
-          
-          setTimeout(()=>{
-            //动画结果关闭
-            card2TT.close()
-          },time)
-        }
-        
-        if(k == 0){
-          card2To0()
-        }else{
-          // 卡片飘出界面
-          this.setStyle('card',2,'transform', `translate(${screenWidth * 1.5 * k},${Math.abs(screenWidth * 0.5 * k)})`)
-          
-          setTimeout(()=>{
-            //动画结果关闭
-           card2TT.close()
-            
-            // 更改置顶卡片内容
-            let newArr = this.cardList.slice();
-            this.cardList[2] = newArr[1];
-            
+        let time = 60;
+        let topCardIndex = this.topCardIndex
+        this.setINodeStyle('card',topCardIndex,'transitionProperty','transform');
+        this.setINodeStyle('card',topCardIndex,'transitionDuration',time);
+        // this.setINodeStyle('card',topCardIndex,'transitionOrigin','bottom center');
+        this.moveCard()
+         // 移动结束
+        setTimeout(()=>{
+          // 关闭动画
+          this.setINodeStyle('card',topCardIndex,'transitionProperty','scale');
+          if(this.x != 0.0){
             setTimeout(()=>{
-              // 将置顶卡片归c位
-              // this.setStyle('card',2,'margin-top', '50px');
-              this.setStyle('card',2,'transform', 'scale(0.95)')
-              
-              // 更改非置顶 卡片内容
-              this.cardList[0] = newArr[2]
-              this.cardList[1] = newArr[0]
-              
-              // 开启动画
-              card2TT.open()
-              card2To0()
+              this.x = 0
+              this.y = 0
+              this.moveCard()
+              this.setINodeStyle('card',topCardIndex,'transitionProperty','marginTop,scale');
+              this.currentIndex ++
+              this.initCardList()
             },100)
-            
-          },time)
-        }
+          }
+        },time)
         
       }
     }
@@ -214,7 +171,10 @@
     border-radius: 10px;
     color: #FFF;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    background-color: #FFF;
+    /* transform-origin:bottom; */
+    transition:margin-top 60ms;
+    transition-timing-function: linear;
   }
   
   .card-img {
@@ -230,7 +190,7 @@
     flex-direction: row;
     justify-content: space-between;
   }
-
+  
   .state-icon {
     width: 30px;
     height: 30px;
@@ -241,4 +201,5 @@
     box-shadow: 0 0 1px #EBEBEB;
     opacity: 0;
   }
+  
 </style>
