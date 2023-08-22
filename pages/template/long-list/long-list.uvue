@@ -1,98 +1,150 @@
 <template>
-  <list-view class="list" @scrolltolower="loadData">
-    <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
-      <view class="list-item-icon">
-        <image class="list-item-icon-image" :src="item.author_avatar_link"></image>
-      </view>
-      <view class="list-item-fill">
-        <view class="flex-row">
-          <text class="title">{{item.plugin_name}}</text>
+  <scroll-view class="page" :scroll-top="pageScrollTop">
+    <view class="search-bar">
+      <input placeholder="搜索..." />
+    </view>
+    <view class="swiper-list">
+      <scroll-view class="swiper-tabs" :scroll-left="tabsScrollLeft" :scroll-x="true" :show-scrollbar="false">
+        <view>
+          <view class="flex-row">
+            <view class="swiper-tabs-item" v-for="(item, index) in swiperList" :id="'swipertab' + index" ref="swipertab"
+              :key="index" @click="onTabClick(index)">
+              <text class="swiper-tabs-item-text"
+                :class="swiperIndex==index ? 'uni-tab-item-title-active' : ''">{{item.name}}</text>
+            </view>
+          </view>
+          <view class="swiper-tabs-indicator">
+            <view class="swiper-tabs-underline"
+              :style="{left: swiperIndicatorLineLeft + 'px', width: swiperIndicatorLineWidth + 'px'}"></view>
+          </view>
         </view>
-        <view class="description">
-          <text class="description-text">{{item.plugin_intro}}</text>
-        </view>
-        <view class="tag-list">
-          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
-        </view>
-        <!-- <uts-rate></uts-rate> -->
-        <view class="flex-row update-date">
-          <text class="update-date-text">更新日期</text>
-          <text class="update-date-value">{{item.update_date}}</text>
-          <text class="author">{{item.author_name}}</text>
-        </view>
-      </view>
-    </list-item>
-  </list-view>
+      </scroll-view>
+      <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @change="onSwiperChange"
+        @transition="onSwiperTransition" @animationfinish="onSwiperAnimationfinish">
+        <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
+          <long-page :type="item.type"></long-page>
+        </swiper-item>
+      </swiper>
+    </view>
+  </scroll-view>
 </template>
 
 <script>
-  const SERVER_URL = "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list"
-  const PAGE_SIZE = 10; // 最大值 10
+  import longPage from './long-list-page.uvue';
 
-  type ListItem = {
-    plugin_id : number,
-    author_avatar_link : string,
-    plugin_name : string,
-    plugin_intro : string,
-    tags : Array<string>,
-    update_date : string,
-    author_name : string,
+  type SwiperTabsItem = {
+    left : number,
+    width : number
   }
 
-  type ResponseDataType = {
-    code : number,
-    data : ListItem[]
+  type SwiperViewItem = {
+    type : string,
+    name : string
   }
+
+  // 测试数据
+  const CategoryData = [
+    {
+      type: 'UpdatedDate',
+      name: '最新上架'
+    } as SwiperViewItem,
+    {
+      type: 'FreeHot',
+      name: '免费热榜'
+    } as SwiperViewItem,
+    {
+      type: 'PaymentHot',
+      name: '付费热榜'
+    } as SwiperViewItem,
+    {
+      type: 'HotList',
+      name: '热门总榜'
+    } as SwiperViewItem
+  ]
 
   export default {
+    components: {
+      longPage
+    },
     data() {
       return {
-        loading: false,
-        dataList: [] as ListItem[],
-        isEnded: false,
-        $currentPage: 0
+        pageScrollTop: 0,
+        swiperList: [] as SwiperViewItem[],
+        swiperIndex: -1,
+        tabsScrollLeft: 0,
+        swiperIndicatorLineLeft: 0,
+        swiperIndicatorLineWidth: 0,
+        $lastSwiperIndex: 0,
+        $swiperWidth: 0,
+        $swiperTabsRect: [] as SwiperTabsItem[],
+        $isTap: false
       }
     },
     onLoad() {
-      this.loadData()
+      CategoryData.forEach((item) => {
+        this.swiperList.push(item)
+      })
+    },
+    onReady() {
+      this.$swiperWidth = (this.$refs["swiper"] as INode)?.offsetWidth as number
+      this.queryTabItemsSize()
+      this.setSwiperIndex(0, true)
     },
     methods: {
-      loadData() {
-        if (this.loading || this.isEnded) {
+      onTabClick(index : number) {
+        this.setSwiperIndex(index, false)
+      },
+      onSwiperChange(e : SwiperChangeEvent) {
+        this.setSwiperIndex(e.detail.current, false)
+      },
+      onSwiperTransition(e : SwiperTransitionEvent) {
+        const offsetX = e.detail.dx;
+
+        let moveToIndex = offsetX > 0 ? this.$lastSwiperIndex + 1 : this.$lastSwiperIndex - 1
+        if (moveToIndex < 0) { moveToIndex = 0 }
+        if (moveToIndex > this.$swiperTabsRect.length - 1) { moveToIndex = this.$swiperTabsRect.length - 1 }
+
+        const percentage = Math.abs(offsetX) / this.$swiperWidth;
+        const currentSize = this.$swiperTabsRect[this.$lastSwiperIndex];
+        const moveToSize = this.$swiperTabsRect[moveToIndex];
+        const indicatorlineL = currentSize.left + (moveToSize.left - currentSize.left) * percentage;
+        const indicatorlineW = currentSize.width + (moveToSize.width - currentSize.width) * percentage;
+
+        this.updateTabIndicator(indicatorlineL, indicatorlineW);
+        //console.log(this.$lastSwiperIndex, moveToIndex, offsetX, this.$swiperWidth, percentage);
+      },
+      onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
+        this.$lastSwiperIndex = e.detail.current;
+        // console.log("onSwiperAnimationfinish", e.detail.current);
+        // this.setSwiperIndex(e.detail.current, true);
+      },
+      queryTabItemsSize() {
+        this.$swiperTabsRect.length = 0;
+        const tabs = this.$refs["swipertab"] as INode[]
+        tabs.forEach((node) => {
+          this.$swiperTabsRect.push({
+            left: node.offsetLeft as number,
+            width: node.offsetWidth as number
+          } as SwiperTabsItem)
+        })
+      },
+      setSwiperIndex(index : Number, updateIndicator : Boolean) {
+        if (this.swiperIndex === index) {
           return
         }
+        this.swiperIndex = index
 
-        this.loading = true;
-
-        // TODO request data 没有拼接到 url 中，暂时手动拼接
-        uni.request({
-          url: `${SERVER_URL}?page=${this.$currentPage}&page_size=${PAGE_SIZE}`,
-          data: {
-            page: this.$currentPage,
-            page_size: PAGE_SIZE
-          },
-          dataType: '',
-          success: (res) => {
-            const responseData = JSON.parse<ResponseDataType>(res.data as string)
-            if (responseData == null) {
-              return
-            }
-
-            responseData.data.forEach((item) => {
-              this.dataList.push(item)
-            })
-
-            this.isEnded = responseData.data.length <= 0;
-
-            this.$currentPage++
-          },
-          fail: (err) => {
-            console.log(err);
-          },
-          complete: () => {
-            this.loading = false;
-          }
-        })
+        if (updateIndicator) {
+          this.updateTabIndicator(this.$swiperTabsRect[index].left, this.$swiperTabsRect[index].width)
+        }
+      },
+      updateTabIndicator(left : Number, width : Number) {
+        this.swiperIndicatorLineLeft = left
+        this.swiperIndicatorLineWidth = width
+        const offset = left + width / 2
+        if (offset > this.$swiperWidth / 2) {
+          this.tabsScrollLeft = offset - this.$swiperWidth / 2
+        }
       }
     }
   }
@@ -103,86 +155,53 @@
     flex-direction: row;
   }
 
-  .list {
+  .page {
     flex: 1;
-    background-color: #ffffff;
   }
 
-  .list-item {
-    flex-direction: row;
-    margin-top: 10px;
+  .search-bar {
     padding: 10px;
   }
 
-  .list-item-icon {
+  .swiper-list {
+    height: 100%;
+  }
+
+  .swiper-tabs {
+    background-color: #ffffff;
+  }
+
+  .swiper-tabs-item {
+    padding: 12px 25px;
+  }
+
+  .swiper-tabs-item-text {
+    color: #555;
+    font-size: 16px;
+  }
+
+  .swiper-tabs-item-text-active {
+    color: #007AFF;
+  }
+
+  .swiper-tabs-indicator {
     position: relative;
+    height: 2px;
   }
 
-  .list-item-icon-image {
-    width: 80px;
-    height: 80px;
-  }
-
-  .list-item-icon-index {
-    font-size: 12px;
-    color: #cccccc;
+  .swiper-tabs-underline {
     position: absolute;
-    left: 2px;
-    bottom: 2px;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background-color: #007AFF;
   }
 
-  .list-item-fill {
+  .swiper-view {
     flex: 1;
-    margin-left: 15px;
   }
 
-  .index {
-    margin-left: 10px;
-  }
-
-  .description {
-    margin-top: 3px;
-  }
-
-  .description-text {
-    font-size: 13px;
-    color: #666;
-    margin-top: 5px;
-  }
-
-  .tag-list {
-    flex-direction: row;
-    margin-top: 5px;
-  }
-
-  .tag-item {
-    font-size: 14px;
-    font-weight: bold;
-    background-color: #EFF9F0;
-    color: #639069;
-    border-radius: 20px;
-    margin-right: 5px;
-    padding: 2px 5px;
-  }
-
-  .update-date {
-    margin-top: 10px;
-  }
-
-  .update-date-text {
-    font-size: 12px;
-    color: #888888;
-  }
-
-  .update-date-value {
-    font-size: 12px;
-    color: #777777;
-    margin-left: 5px;
-  }
-
-  .author {
-    font-size: 12px;
-    color: #005000;
-    margin-left: auto;
+  .swiper-item {
+    flex: 1;
   }
 </style>
