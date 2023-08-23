@@ -130,27 +130,36 @@
         this.y = k * screenWidth * 0.5
 
         // 设置动画时间
-        let time = 60;
-        let topCardIndex = this.topCardIndex
-        this.setINodeStyle('card',topCardIndex,'transitionProperty','transform');
-        this.setINodeStyle('card',topCardIndex,'transitionDuration',time);
-        // this.setINodeStyle('card',topCardIndex,'transitionOrigin','bottom center');
+        let transitionDuration = 300;
+        let floatCardIndex = this.topCardIndex
+        this.setINodeStyle('card',floatCardIndex,'transitionProperty','transform');
+        this.setINodeStyle('card',floatCardIndex,'transitionDuration',transitionDuration);
+        // this.setINodeStyle('card',floatCardIndex,'transitionOrigin','bottom center');
         this.moveCard()
          // 移动结束
         setTimeout(()=>{
-          // 关闭动画
-          this.setINodeStyle('card',topCardIndex,'transitionProperty','scale');
+          // 动画速度设置为0(即：关闭动画)
+          this.setINodeStyle('card',floatCardIndex,'transitionDuration',0);
+          
           if(this.x != 0.0){
-            setTimeout(()=>{
+              // 飘动的卡片挪回中心
+              this.setINodeStyle('card',floatCardIndex,'transform', 'translate(0,0) rotate(0)')
+              this.setINodeStyle('state-icon-like',floatCardIndex,'opacity', 0)
+              this.setINodeStyle('state-icon-dislike',floatCardIndex,'opacity', 0)
+              
+              // 坐标归零
               this.x = 0
               this.y = 0
-              this.moveCard()
-              this.setINodeStyle('card',topCardIndex,'transitionProperty','marginTop,scale');
+              
+              // 动画改成marginTop,scale
+              this.setINodeStyle('card',floatCardIndex,'transitionProperty','marginTop,scale');
+              this.setINodeStyle('card',floatCardIndex,'transitionDuration',transitionDuration);
+              // 切换卡片顺序
               this.currentIndex ++
+              // 根据最新卡片顺序，设置层级大小样式
               this.initCardList()
-            },100)
           }
-        },time)
+        },transitionDuration)
         
       }
     }
@@ -174,7 +183,7 @@
     background-color: #FFF;
     /* transform-origin:bottom; */
     transition:margin-top 60ms;
-    transition-timing-function: linear;
+    transition-timing-function: ease-in;
   }
   
   .card-img {
