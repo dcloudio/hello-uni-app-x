@@ -1,5 +1,5 @@
 <template>
-  <list-view class="list" ref="listView" @scrolltolower="loadData">
+  <list-view class="list" ref="listView" @scroll="onScroll" @scrolltolower="loadData">
     <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
       <view class="list-item-icon">
         <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
@@ -129,9 +129,10 @@
 
         return result
       },
-      // onScroll(e : ScrollEvent) {
-      //   console.log(e.detail.deltaY);
-      // }
+      onScroll(e : ScrollEvent) {
+        // TODO e.detail.deltaY 值不正确
+        this.$emit('pageScroll', e.detail.deltaY)
+      }
     }
   }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="page" :scroll-top="pageScrollTop">
-    <view class="search-bar">
+    <view class="search-bar" ref="header">
       <input placeholder="搜索..." />
     </view>
     <view class="swiper-list">
@@ -22,7 +22,7 @@
       <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @change="onSwiperChange"
         @transition="onSwiperTransition" @animationfinish="onSwiperAnimationfinish">
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
-          <long-page ref="longPage" :type="item.type"></long-page>
+          <long-page ref="longPage" :type="item.type" @pageScroll="onSwiperItemPageScroll"></long-page>
         </swiper-item>
       </swiper>
     </view>
@@ -75,6 +75,7 @@
         tabsScrollLeft: 0,
         swiperIndicatorLineLeft: 0,
         swiperIndicatorLineWidth: 0,
+        $headerHeight: 0,
         $lastSwiperIndex: 0,
         $swiperWidth: 0,
         $swiperTabsRect: [] as SwiperTabsItem[],
@@ -87,6 +88,7 @@
       })
     },
     onReady() {
+      this.$headerHeight = (this.$refs["header"] as INode)?.offsetHeight as number
       this.$swiperWidth = (this.$refs["swiper"] as INode)?.offsetWidth as number
       this.queryTabItemsSize()
       this.setSwiperIndex(0, true)
@@ -121,6 +123,14 @@
         this.$lastSwiperIndex = e.detail.current;
         // console.log("onSwiperAnimationfinish", e.detail.current);
         // this.setSwiperIndex(e.detail.current, true);
+      },
+      onSwiperItemPageScroll(dy : number) {
+        let top = this.pageScrollTop + dy
+
+        if (top > this.$headerHeight) { top = this.$headerHeight }
+        if (top < 0) { top = 0 }
+
+        this.pageScrollTop = top
       },
       queryTabItemsSize() {
         this.$swiperTabsRect.length = 0;
