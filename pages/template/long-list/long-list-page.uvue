@@ -66,9 +66,13 @@
         family: 'UtsIconsFontFamily',
         source: '/static/fonts/icon-star.ttf'
       })
-      this.loadData()
     },
     methods: {
+      init() {
+        if (this.dataList.length == 0) {
+          this.loadData()
+        }
+      },
       loadData() {
         if (this.loading || this.isEnded) {
           return
@@ -94,7 +98,7 @@
               this.dataList.push(item)
             })
 
-            if (responseData.data.length <= 0) {
+            if (responseData.data.length == 0) {
               this.isEnded = true
             } else {
               this.$currentPage++

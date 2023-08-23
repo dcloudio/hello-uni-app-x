@@ -22,7 +22,7 @@
       <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @change="onSwiperChange"
         @transition="onSwiperTransition" @animationfinish="onSwiperAnimationfinish">
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
-          <long-page :type="item.type"></long-page>
+          <long-page ref="longPage" :type="item.type"></long-page>
         </swiper-item>
       </swiper>
     </view>
@@ -39,7 +39,8 @@
 
   type SwiperViewItem = {
     type : string,
-    name : string
+    name : string,
+    init : Boolean,
   }
 
   // 测试数据
@@ -98,19 +99,22 @@
         this.setSwiperIndex(e.detail.current, false)
       },
       onSwiperTransition(e : SwiperTransitionEvent) {
-        const offsetX = e.detail.dx;
+        const offsetX = e.detail.dx
 
         let moveToIndex = offsetX > 0 ? this.$lastSwiperIndex + 1 : this.$lastSwiperIndex - 1
         if (moveToIndex < 0) { moveToIndex = 0 }
         if (moveToIndex > this.$swiperTabsRect.length - 1) { moveToIndex = this.$swiperTabsRect.length - 1 }
 
-        const percentage = Math.abs(offsetX) / this.$swiperWidth;
-        const currentSize = this.$swiperTabsRect[this.$lastSwiperIndex];
-        const moveToSize = this.$swiperTabsRect[moveToIndex];
-        const indicatorlineL = currentSize.left + (moveToSize.left - currentSize.left) * percentage;
-        const indicatorlineW = currentSize.width + (moveToSize.width - currentSize.width) * percentage;
+        const percentage = Math.abs(offsetX) / this.$swiperWidth
+        const currentSize = this.$swiperTabsRect[this.$lastSwiperIndex]
+        const moveToSize = this.$swiperTabsRect[moveToIndex]
+        const indicatorlineL = currentSize.left + (moveToSize.left - currentSize.left) * percentage
+        const indicatorlineW = currentSize.width + (moveToSize.width - currentSize.width) * percentage
 
-        this.updateTabIndicator(indicatorlineL, indicatorlineW);
+        this.updateTabIndicator(indicatorlineL, indicatorlineW)
+
+        this.initSwiperItemPage(moveToIndex)
+
         //console.log(this.$lastSwiperIndex, moveToIndex, offsetX, this.$swiperWidth, percentage);
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
@@ -134,8 +138,16 @@
         }
         this.swiperIndex = index
 
+        this.initSwiperItemPage(index)
+
         if (updateIndicator) {
           this.updateTabIndicator(this.$swiperTabsRect[index].left, this.$swiperTabsRect[index].width)
+        }
+      },
+      initSwiperItemPage(index : Number) {
+        if (!this.swiperList[index].init) {
+          this.swiperList[index].init = true;
+          (this.$refs["longPage"] as ComponentPublicInstance[])[index].$callMethod('init')
         }
       },
       updateTabIndicator(left : Number, width : Number) {
