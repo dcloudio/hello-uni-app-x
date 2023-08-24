@@ -1,522 +1,515 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-    <!-- #endif -->
-    <view class="uni-container">
-      <view class="uni-header-logo">
-        <image class="uni-header-image" src="/static/apiIndex.png"></image>
-      </view>
-      <view class="uni-hello-text">
-        <text class="hello-text">以下将演示uni-app接口能力，详细文档见：</text>
-        <u-link
-          :href="'https://uniapp.dcloud.io/api/'"
-          :text="'https://uniapp.dcloud.io/api/'"
-          :inWhiteList="true"
-        ></u-link>
-      </view>
-      <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
-        <view
-          class="uni-panel-h"
-          :class="item.open ? 'uni-panel-h-on' : ''"
-          @click="triggerCollapse(index, item)"
-        >
-          <text
-            class="uni-panel-text"
-            :class="item.enable == false ? 'text-disabled' : ''"
-            >{{ item.name }}</text
-          >
-          <image
-            :src="
-              item.pages.length > 0
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1">
+		<!-- #endif -->
+		<view class="uni-container">
+			<view class="uni-header-logo">
+				<image class="uni-header-image" src="/static/apiIndex.png"></image>
+			</view>
+			<view class="uni-hello-text">
+				<text class="hello-text">以下将演示uni-app接口能力，详细文档见：</text>
+				<u-link :href="'https://uniapp.dcloud.io/api/'" :text="'https://uniapp.dcloud.io/api/'" :inWhiteList="true"></u-link>
+			</view>
+
+			<uni-collapse>
+				<template v-for="item in list" :key="item.id">
+					<uni-collapse-item :title="item.name" class="item">
+						<view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'" v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
+							<text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
+							<image :src="arrowRightIcon" class="uni-icon"></image>
+						</view>
+					</uni-collapse-item>
+				</template>
+			</uni-collapse>
+
+			<!-- <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
+				<view class="uni-panel-h" :class="item.open ? 'uni-panel-h-on' : ''" @click="triggerCollapse(index, item)">
+					<text class="uni-panel-text" :class="item.enable == false ? 'text-disabled' : ''">{{ item.name }}</text>
+					<image :src="
+              item.pages.length > 
                 ? item.open
                   ? arrowUpIcon
                   : arrowDownIcon
                 : arrowRightIcon
-            "
-            class="uni-icon"
-          ></image>
-        </view>
-        <view class="uni-panel-c" v-if="item.open">
-          <view
-            class="uni-navigate-item"
-            v-for="(page, key) in item.pages"
-            :key="key"
-            @click="goDetailPage(page)"
-          >
-            <text
-              class="uni-navigate-text"
-              :class="page.enable == false ? 'text-disabled' : ''"
-              >{{ page.name }}</text
-            >
-            <image :src="arrowRightIcon" class="uni-icon"></image>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+            " class="uni-icon"></image>
+				</view>
+				<view class="uni-panel-c" v-if="item.open">
+					<view class="uni-navigate-item" v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
+						<text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
+						<image :src="arrowRightIcon" class="uni-icon"></image>
+					</view>
+				</view>
+			</view> -->
+		</view>
+		<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 
 <script lang="ts">
-type Page = {
-  name: string
-  enable?: boolean
-  url: string
-}
-type ListItem = {
-  id: string
-  name: string
-  open: boolean
-  pages: Page[]
-  url?: string
-  enable?: boolean
-}
-export default {
-  data() {
-    return {
-      list: [
-        {
-          id: 'base',
-          name: '基础',
-          open: false,
-          pages: [
-            {
-              name: 'getApp',
-              url: 'get-app',
-            },
-            {
-              name: 'getCurrentPages',
-              url: 'get-current-pages',
-            },
-            {
-              name: '事件总线event-bus',
-              url: 'event-bus',
-            },
-            {
-              name: '获取启动参数',
-              url: 'get-launch-options-sync',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'page',
-          name: '页面',
-          open: false,
-          pages: [
-            {
-              name: '页面跳转',
-              url: 'navigator',
-            },
-            {
-              name: '页面栈管理',
-              url: 'getCurrentPages',
-              enable: false,
-            },
-            {
-              name: '设置导航条标题',
-              url: 'set-navigation-bar-title',
-              enable: false,
-            },
-            {
-              name: '设置导航条颜色',
-              url: 'set-navigation-bar-color',
-            },
-            {
-              name: '设置TabBar',
-              url: 'set-tabbar',
-              enable: false,
-            },
-            {
-              name: '下拉刷新',
-              url: 'pull-down-refresh',
-              // enable: false,
-            },
-            {
-              name: '将页面滚动到指定位置',
-              url: 'page-scroll-to',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'ui',
-          name: '界面',
-          open: false,
-          pages: [
-            /* {
-              name: "创建动画",
-              url: "animation",
-              enable: false
-            },
-            {
-              name: "创建绘画",
-              url: "canvas",
-              enable: false
-            },
-            {
-              name: "节点布局交互状态",
-              url: "intersection-observer",
-              enable: false
-            }, */
-            {
-              name: '节点信息',
-              url: 'nodes-info',
-            },
-            {
-              name: '显示操作菜单',
-              url: 'action-sheet',
-            },
-            {
-              name: '显示模态弹窗',
-              url: 'modal',
-            },
-            {
-              name: '显示加载提示框',
-              url: 'show-loading',
-            },
-            {
-              name: '显示消息提示框',
-              url: 'toast',
-            },
-            {
-              name: '动态加载字体',
-              url: 'load-font-face',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'device',
-          name: '设备',
-          open: false,
-          pages: [
-            {
-              name: '获取设备网络状态',
-              url: 'get-network-type',
-            },
-            {
-              name: '获取系统信息',
-              url: 'get-system-info',
-            },
-            {
-              name: '获取设备信息',
-              url: 'get-device-info',
-            },
-            {
-              name: '获取APP基础信息',
-              url: 'get-app-base-info',
-            },
-            {
-              name: '获取系统设置',
-              url: 'get-system-setting',
-            },
-            {
-              name: '获取APP授权设置',
-              url: 'get-app-authorize-setting',
-            },
-            {
-              name: '获取窗口信息',
-              url: 'get-window-info',
-            },
-            {
-              name: '电量',
-              url: 'get-battery-info',
-            },
-            /* {
-              name: "打电话",
-              url: "make-phone-call",
-            },
-            {
-              name: "震动",
-              url: "vibrate",
-            },
-            {
-              name: "添加手机联系人",
-              url: "add-phone-contact",
-            },
-            {
-              name: "扫码",
-              url: "scan-code",
-            },
-            {
-              name: "剪贴板",
-              url: "clipboard",
-            },
-            {
-              name: "屏幕亮度",
-              url: "brightness",
-            },
-            {
-              name: "蓝牙",
-              url: "bluetooth",
-            },
-            {
-              name: "生物认证",
-              url: "soter",
-            },
-            {
-              name: "iBeacon",
-              url: "ibeacon",
-            },
-            {
-              name: "监听加速度传感器",
-              url: "on-accelerometer-change",
-            },
-            {
-              name: "监听罗盘数据",
-              url: "on-compass-change",
-            },
-            {
-              name: "监听距离传感器",
-              url: "/platforms/app-plus/proximity/proximity",
-            },
-            {
-              name: "监听方向传感器",
-              url: "/platforms/app-plus/orientation/orientation",
-            }, */
-          ] as Page[],
-        },
-        {
-          id: 'network',
-          name: '网络',
-          open: false,
-          pages: [
-            {
-              name: '发起一个请求',
-              url: 'request',
-            },
-            {
-              name: '上传文件',
-              url: 'upload-file',
-            },
-            {
-              name: '下载文件',
-              url: 'download-file',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'websocket',
-          name: 'websocket',
-          open: false,
-          pages: [
-            {
-              name: 'socketTask',
-              url: 'websocket-socketTask',
-            },
-            {
-              name: '全局websocket',
-              url: 'websocket-global',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'media',
-          name: '媒体',
-          open: false,
-          pages: [
-            {
-              name: '图片选择和预览',
-              url: 'preview-image',
-            },
-            /* {
-              name: "图片选择和拍照",
-              url: "image",
-              enable: false
-            },{
-              name: "音频",
-              url: "inner-audio",
-            },
-            {
-              name: "录音",
-              url: "voice",
-            },
-            {
-              name: "背景音频",
-              url: "background-audio",
-            }, 
-            {
-              name: "视频选择和拍照",
-              url: "video",
-              enable: false
-            },
-            {
-              name: "文件",
-              url: "file",
-            },
-            {
-              name: "保存媒体到本地",
-              url: "save-media",
-            }, */
-          ] as Page[],
-        },
-        {
-          id: 'location',
-          name: '位置',
-          open: false,
-          pages: [
-            {
-              name: '获取当前位置',
-              url: 'get-location',
-            },
-            /* {
-              name: "使用地图查看位置",
-              url: "open-location",
-            },
-            {
-              name: "使用地图选择位置",
-              url: "choose-location",
-            },
-            {
-              name: "地图控制",
-              url: "map",
-            },
-            {
-              name: "地图搜索",
-              url: "map-search",
-            }, */
-          ] as Page[],
-        },
-        {
-          id: 'storage',
-          name: '存储',
-          open: false,
-          pages: [
-            {
-              name: 'storage（key-value存储）',
-              url: 'storage',
-            },
-          ] as Page[],
-        },
-        /* {
-          id: "rewarded-video-ad",
-          url: "rewarded-video-ad",
-          name: "激励视频广告",
-          open: false,
-          enable: false,
-          pages: [] as Page[]
-        },
-        {
-          id: "full-screen-video-ad",
-          url: "full-screen-video-ad",
-          name: "全屏视频广告",
-          open: false,
-          enable: false,
-          pages: [] as Page[]
-        },
-        {
-          id: "login",
-          name: "登录",
-          open: false,
-          pages: [
-            {
-              name: "登录",
-              url: "login",
-            },
-            {
-              name: "获取用户信息",
-              url: "get-user-info",
-            },
-          ] as Page[],
-        },
-        {
-          id: "share",
-          name: "分享",
-          open: false,
-          pages: [
-            {
-              name: "分享",
-              url: "share",
-            },
-          ] as Page[],
-        },
-        {
-          id: "payment",
-          name: "支付",
-          open: false,
-          pages: [
-            {
-              name: "发起支付",
-              url: "request-payment",
-            },
-          ] as Page[],
-        },
-        {
-          id: "speech",
-          name: "语音",
-          open: false,
-          pages: [
-            {
-              name: "语音识别",
-              url: "/platforms/app-plus/speech/speech",
-            },
-          ] as Page[],
-        },
-        {
-          id: "push",
-          name: "推送",
-          open: false,
-          pages: [
-            {
-              name: "推送",
-              url: "/platforms/app-plus/push/push",
-            },
-          ] as Page[],
-        }, */
-        {
-          id: 'exit',
-          name: '退出',
-          open: false,
-          pages: [
-            {
-              name: 'exit退出',
-              url: 'exit',
-              enable: true
-            },
-          ] as Page[],
-        },
-      ] as ListItem[],
-      arrowUpIcon: '/static/icons/arrow-up.png',
-      arrowDownIcon: '/static/icons/arrow-down.png',
-      arrowRightIcon: '/static/icons/arrow-right.png',
-    }
-  },
-  methods: {
-    triggerCollapse(index?: number, item: ListItem) {
-      if (item.pages.length == 0) {
-        const page: Page = {
-          name: item.name,
-          enable: item.enable,
-          url: item.url!,
-        }
-        this.goDetailPage(page)
-        return
-      }
-      for (var i = 0; i < this.list.length; ++i) {
-        if (index == i) {
-          this.list[i].open = !this.list[i].open
-        } else {
-          this.list[i].open = false
-        }
-      }
-    },
-    goDetailPage(e: Page) {
-      if (e.enable == false) {
-        uni.showToast({
-          title: '暂不支持',
-          icon: 'none',
-        })
-        return
-      }
-      const url =
-        e.url.indexOf('platform') > -1 ? e.url : `/pages/API/${e.url}/${e.url}`
-      uni.navigateTo({
-        url,
-      })
-    },
-  },
-}
+	type Page = {
+		name : string
+		enable ?: boolean
+		url : string
+	}
+	type ListItem = {
+		id : string
+		name : string
+		open : boolean
+		pages : Page[]
+		url ?: string
+		enable ?: boolean
+	}
+	export default {
+		data() {
+			return {
+				list: [
+					{
+						id: 'base',
+						name: '基础',
+						open: false,
+						pages: [
+							{
+								name: 'getApp',
+								url: 'get-app',
+							},
+							{
+								name: 'getCurrentPages',
+								url: 'get-current-pages',
+							},
+							{
+								name: '事件总线event-bus',
+								url: 'event-bus',
+							},
+							{
+								name: '获取启动参数',
+								url: 'get-launch-options-sync',
+							},
+						] as Page[],
+					},
+					{
+						id: 'page',
+						name: '页面',
+						open: false,
+						pages: [
+							{
+								name: '页面跳转',
+								url: 'navigator',
+							},
+							{
+								name: '页面栈管理',
+								url: 'getCurrentPages',
+								enable: false,
+							},
+							{
+								name: '设置导航条标题',
+								url: 'set-navigation-bar-title',
+								enable: false,
+							},
+							{
+								name: '设置导航条颜色',
+								url: 'set-navigation-bar-color',
+							},
+							{
+								name: '设置TabBar',
+								url: 'set-tabbar',
+								enable: false,
+							},
+							{
+								name: '下拉刷新',
+								url: 'pull-down-refresh',
+								enable: false,
+							},
+							{
+								name: '将页面滚动到指定位置',
+								url: 'page-scroll-to',
+							},
+						] as Page[],
+					},
+					{
+						id: 'ui',
+						name: '界面',
+						open: false,
+						pages: [
+							/* {
+								name: "创建动画",
+								url: "animation",
+								enable: false
+							},
+							{
+								name: "创建绘画",
+								url: "canvas",
+								enable: false
+							},
+							{
+								name: "节点布局交互状态",
+								url: "intersection-observer",
+								enable: false
+							}, */
+							{
+								name: '节点信息',
+								url: 'nodes-info',
+							},
+							{
+								name: '显示操作菜单',
+								url: 'action-sheet',
+							},
+							{
+								name: '显示模态弹窗',
+								url: 'modal',
+							},
+							{
+								name: '显示加载提示框',
+								url: 'show-loading',
+							},
+							{
+								name: '显示消息提示框',
+								url: 'toast',
+							},
+							{
+								name: '动态加载字体',
+								url: 'load-font-face',
+							},
+						] as Page[],
+					},
+					{
+						id: 'device',
+						name: '设备',
+						open: false,
+						pages: [
+							{
+								name: '获取设备网络状态',
+								url: 'get-network-type',
+							},
+							{
+								name: '获取系统信息',
+								url: 'get-system-info',
+							},
+							{
+								name: '获取设备信息',
+								url: 'get-device-info',
+							},
+							{
+								name: '获取APP基础信息',
+								url: 'get-app-base-info',
+							},
+							{
+								name: '获取系统设置',
+								url: 'get-system-setting',
+							},
+							{
+								name: '获取APP授权设置',
+								url: 'get-app-authorize-setting',
+							},
+							{
+								name: '获取窗口信息',
+								url: 'get-window-info',
+							},
+							{
+								name: '电量',
+								url: 'get-battery-info',
+							},
+							/* {
+								name: "打电话",
+								url: "make-phone-call",
+							},
+							{
+								name: "震动",
+								url: "vibrate",
+							},
+							{
+								name: "添加手机联系人",
+								url: "add-phone-contact",
+							},
+							{
+								name: "扫码",
+								url: "scan-code",
+							},
+							{
+								name: "剪贴板",
+								url: "clipboard",
+							},
+							{
+								name: "屏幕亮度",
+								url: "brightness",
+							},
+							{
+								name: "蓝牙",
+								url: "bluetooth",
+							},
+							{
+								name: "生物认证",
+								url: "soter",
+							},
+							{
+								name: "iBeacon",
+								url: "ibeacon",
+							},
+							{
+								name: "监听加速度传感器",
+								url: "on-accelerometer-change",
+							},
+							{
+								name: "监听罗盘数据",
+								url: "on-compass-change",
+							},
+							{
+								name: "监听距离传感器",
+								url: "/platforms/app-plus/proximity/proximity",
+							},
+							{
+								name: "监听方向传感器",
+								url: "/platforms/app-plus/orientation/orientation",
+							}, */
+						] as Page[],
+					},
+					{
+						id: 'network',
+						name: '网络',
+						open: false,
+						pages: [
+							{
+								name: '发起一个请求',
+								url: 'request',
+							},
+							{
+								name: '上传文件',
+								url: 'upload-file',
+							},
+							{
+								name: '下载文件',
+								url: 'download-file',
+							},
+						] as Page[],
+					},
+					{
+						id: 'websocket',
+						name: 'websocket',
+						open: false,
+						pages: [
+							{
+								name: 'socketTask',
+								url: 'websocket-socketTask',
+							},
+							{
+								name: '全局websocket',
+								url: 'websocket-global',
+							},
+						] as Page[],
+					},
+					{
+						id: 'media',
+						name: '媒体',
+						open: false,
+						pages: [
+							{
+								name: '图片选择和预览',
+								url: 'preview-image',
+							},
+							/* {
+								name: "图片选择和拍照",
+								url: "image",
+								enable: false
+							},{
+								name: "音频",
+								url: "inner-audio",
+							},
+							{
+								name: "录音",
+								url: "voice",
+							},
+							{
+								name: "背景音频",
+								url: "background-audio",
+							}, 
+							{
+								name: "视频选择和拍照",
+								url: "video",
+								enable: false
+							},
+							{
+								name: "文件",
+								url: "file",
+							},
+							{
+								name: "保存媒体到本地",
+								url: "save-media",
+							}, */
+						] as Page[],
+					},
+					{
+						id: 'location',
+						name: '位置',
+						open: false,
+						pages: [
+							{
+								name: '获取当前位置',
+								url: 'get-location',
+							},
+							/* {
+								name: "使用地图查看位置",
+								url: "open-location",
+							},
+							{
+								name: "使用地图选择位置",
+								url: "choose-location",
+							},
+							{
+								name: "地图控制",
+								url: "map",
+							},
+							{
+								name: "地图搜索",
+								url: "map-search",
+							}, */
+						] as Page[],
+					},
+					{
+						id: 'storage',
+						name: '存储',
+						open: false,
+						pages: [
+							{
+								name: 'storage（key-value存储）',
+								url: 'storage',
+							},
+						] as Page[],
+					},
+					/* {
+						id: "rewarded-video-ad",
+						url: "rewarded-video-ad",
+						name: "激励视频广告",
+						open: false,
+						enable: false,
+						pages: [] as Page[]
+					},
+					{
+						id: "full-screen-video-ad",
+						url: "full-screen-video-ad",
+						name: "全屏视频广告",
+						open: false,
+						enable: false,
+						pages: [] as Page[]
+					},
+					{
+						id: "login",
+						name: "登录",
+						open: false,
+						pages: [
+							{
+								name: "登录",
+								url: "login",
+							},
+							{
+								name: "获取用户信息",
+								url: "get-user-info",
+							},
+						] as Page[],
+					},
+					{
+						id: "share",
+						name: "分享",
+						open: false,
+						pages: [
+							{
+								name: "分享",
+								url: "share",
+							},
+						] as Page[],
+					},
+					{
+						id: "payment",
+						name: "支付",
+						open: false,
+						pages: [
+							{
+								name: "发起支付",
+								url: "request-payment",
+							},
+						] as Page[],
+					},
+					{
+						id: "speech",
+						name: "语音",
+						open: false,
+						pages: [
+							{
+								name: "语音识别",
+								url: "/platforms/app-plus/speech/speech",
+							},
+						] as Page[],
+					},
+					{
+						id: "push",
+						name: "推送",
+						open: false,
+						pages: [
+							{
+								name: "推送",
+								url: "/platforms/app-plus/push/push",
+							},
+						] as Page[],
+					}, */
+					{
+						id: 'exit',
+						name: '退出',
+						open: false,
+						pages: [
+							{
+								name: 'exit退出',
+								url: 'exit',
+								enable: true
+							},
+						] as Page[],
+					},
+				] as ListItem[],
+				arrowUpIcon: '/static/icons/arrow-up.png',
+				arrowDownIcon: '/static/icons/arrow-down.png',
+				arrowRightIcon: '/static/icons/arrow-right.png',
+			}
+		},
+		methods: {
+			triggerCollapse(index ?: number, item : ListItem) {
+				if (item.pages.length == 0) {
+					const page : Page = {
+						name: item.name,
+						enable: item.enable,
+						url: item.url!,
+					}
+					this.goDetailPage(page)
+					return
+				}
+				for (var i = 0; i < this.list.length; ++i) {
+					if (index == i) {
+						this.list[i].open = !this.list[i].open
+					} else {
+						this.list[i].open = false
+					}
+				}
+			},
+			goDetailPage(e : Page) {
+				if (e.enable == false) {
+					uni.showToast({
+						title: '暂不支持',
+						icon: 'none',
+					})
+					return
+				}
+				const url =
+					e.url.indexOf('platform') > -1 ? e.url : `/pages/API/${e.url}/${e.url}`
+				uni.navigateTo({
+					url,
+				})
+			},
+		},
+	}
 </script>
 
 <style>
-@import '../../common/uni-uvue.css';
+	@import '../../common/uni-uvue.css';
+
+	.item {
+		margin-bottom: 12px;
+	}
+	
 </style>
