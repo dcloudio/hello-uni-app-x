@@ -14,8 +14,7 @@
 <script lang="ts">
   let sX : number = 0,
     sY : number = 0,
-    screenWidth : number = 1,
-    nodesMap = new Map<string, INode[]>();
+    screenWidth : number = 1;
     
   export default {
     data() {
@@ -27,9 +26,9 @@
           '/static/template/drop-card/2.jpg',
           '/static/template/drop-card/3.jpg'
         ] as string[],
-        NodesMap: new Map<string, INode[]>(),
         // 页码
-        currentIndex:0 as number
+        currentIndex:0 as number,
+        $nodesMap:new Map<string, INode[]>()
       }
     },
     onReady() {
@@ -63,10 +62,10 @@
     methods: {
       // 工具方法，用于快速设置 INode 的 style
       setINodeStyle(refName:string,index:number,propertyName:string,propertyStyle:any):void{
-        let nodes:INode[]|null = nodesMap.get(refName)
+        let nodes:INode[]|null = this.$nodesMap.get(refName)
         if(nodes == null){
           nodes = this.$refs.get(refName) as INode[]
-          nodesMap.set(refName,nodes)
+          this.$nodesMap.set(refName,nodes)
         }else{
           // console.log('直接拿');
         }
