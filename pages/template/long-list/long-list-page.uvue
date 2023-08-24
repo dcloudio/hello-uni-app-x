@@ -1,27 +1,33 @@
 <template>
-  <list-view class="list" ref="listView" @scroll="onScroll" @scrolltolower="loadData">
-    <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
-      <view class="list-item-icon">
-        <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
-      </view>
-      <view class="list-item-fill">
-        <view class="flex-row">
-          <text class="title">{{item.plugin_name}}</text>
+  <list-view class="list" ref="listView" @scrolltolower="loadData">
+    <template v-for="(item, index) in dataList" :key="index">
+      <list-item class="list-item">
+        <view class="list-item-icon">
+          <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
         </view>
-        <view class="description">
-          <text class="description-text">{{item.plugin_intro}}</text>
+        <view class="list-item-fill">
+          <view class="flex-row">
+            <text class="title">{{item.plugin_name}}</text>
+          </view>
+          <view class="description">
+            <text class="description-text">{{item.plugin_intro}}</text>
+          </view>
+          <text class="icon-star star">{{convertToStarUnicode(item.score)}}</text>
+          <view class="tag-list">
+            <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
+          </view>
+          <view class="flex-row update-date">
+            <text class="update-date-text">更新日期</text>
+            <text class="update-date-value">{{item.update_date}}</text>
+            <text class="author">{{item.author_name}}</text>
+          </view>
         </view>
-        <text class="icon-star star">{{convertToStarUnicode(item.score)}}</text>
-        <view class="tag-list">
-          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
-        </view>
-        <view class="flex-row update-date">
-          <text class="update-date-text">更新日期</text>
-          <text class="update-date-value">{{item.update_date}}</text>
-          <text class="author">{{item.author_name}}</text>
-        </view>
-      </view>
-    </list-item>
+      </list-item>
+      <!-- TODO 暂时这样写才能保证 loading 在 list 底部 -->
+      <list-item key="loading" v-if="index==dataList.length-1">
+        <text class="loading">{{loadingText}}</text>
+      </list-item>
+    </template>
   </list-view>
 </template>
 
@@ -57,7 +63,21 @@
         loading: false,
         dataList: [] as ListItem[],
         isEnded: false,
+        loadingError: '',
         $currentPage: 0
+      }
+    },
+    computed: {
+      loadingText() : string {
+        if (this.loading) {
+          return "加载中..."
+        } else if (this.isEnded) {
+          return "没有更多了"
+        } else if (this.loadingError.length > 0) {
+          return this.loadingError
+        } else {
+          return ""
+        }
       }
     },
     mounted() {
@@ -105,7 +125,7 @@
             }
           },
           fail: (err) => {
-            console.log(err)
+            this.loadingError = err.errMsg
           },
           complete: () => {
             this.loading = false
@@ -128,10 +148,6 @@
         if (nullStarCount > 0) { result += null_code.repeat(nullStarCount) }
 
         return result
-      },
-      onScroll(e : ScrollEvent) {
-        // TODO e.detail.deltaY 值不正确
-        this.$emit('pageScroll', e.detail.deltaY)
       }
     }
   }
@@ -214,5 +230,11 @@
     font-size: 12px;
     color: #008000;
     margin-left: auto;
+  }
+
+  .loading {
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f8f8;
   }
 </style>

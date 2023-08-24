@@ -10,7 +10,7 @@
             <view class="swiper-tabs-item" v-for="(item, index) in swiperList" :id="'swipertab' + index" ref="swipertab"
               :key="index" @click="onTabClick(index)">
               <text class="swiper-tabs-item-text"
-                :class="swiperIndex==index ? 'uni-tab-item-title-active' : ''">{{item.name}}</text>
+                :class="swiperIndex==index ? 'swiper-tabs-item-text-active' : ''">{{item.name}}</text>
             </view>
           </view>
           <view class="swiper-tabs-indicator">
@@ -22,7 +22,7 @@
       <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @change="onSwiperChange"
         @transition="onSwiperTransition" @animationfinish="onSwiperAnimationfinish">
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
-          <long-page ref="longPage" :type="item.type" @pageScroll="onSwiperItemPageScroll"></long-page>
+          <long-page ref="longPage" :type="item.type"></long-page>
         </swiper-item>
       </swiper>
     </view>
@@ -120,17 +120,9 @@
         //console.log(this.$lastSwiperIndex, moveToIndex, offsetX, this.$swiperWidth, percentage);
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
-        this.$lastSwiperIndex = e.detail.current;
         // console.log("onSwiperAnimationfinish", e.detail.current);
-        // this.setSwiperIndex(e.detail.current, true);
-      },
-      onSwiperItemPageScroll(dy : number) {
-        let top = this.pageScrollTop + dy
-
-        if (top > this.$headerHeight) { top = this.$headerHeight }
-        if (top < 0) { top = 0 }
-
-        this.pageScrollTop = top
+        this.$lastSwiperIndex = e.detail.current
+        this.setSwiperIndex(e.detail.current, true)
       },
       queryTabItemsSize() {
         this.$swiperTabsRect.length = 0;
@@ -186,7 +178,8 @@
   }
 
   .swiper-list {
-    height: 100%;
+    flex: 1;
+    /* height: 100%; */
   }
 
   .swiper-tabs {
