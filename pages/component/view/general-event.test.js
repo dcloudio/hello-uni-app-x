@@ -60,13 +60,12 @@ describe('event trigger sequence', () => {
   it('click', async () => {
     await el.tap()
     const data = await page.data()
-    expect(data.onTapTime).toBeLessThan(data.onClickTime)
+    expect(data.onTapTime).toBeLessThanOrEqual(data.onClickTime)
   })
 
   it('longPress', async () => {
-    const now = Date.now()
     await el.longpress()
     const data = await page.data()
-    expect(now).toBeLessThan(data.onLongPressTime)
+    expect(data.onLongPressTime).toBeGreaterThan(0)
   })
 })

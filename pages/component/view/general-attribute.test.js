@@ -14,6 +14,7 @@ describe('general attribute', () => {
   it('validateGeneralAttributes', async () => {
     const button = await page.$('.btn')
     await button.tap()
-    expect(await button.text()).toBe('基础属性验证成功')
+    const btnInner = await page.$('.btn-inner')
+    expect(await btnInner.text()).toBe('基础属性验证成功')
   })
 })
