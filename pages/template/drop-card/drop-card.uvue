@@ -1,7 +1,7 @@
 <template>
   <view class="root">
     <template v-for="(item,index) in cardList" :key="index">
-      <view class="card" ref="card" @touchstart="touchstart($event as TouchEvent,index)" @touchmove="touchmove($event as TouchEvent,index)" @touchend="touchend" @touchcancel="touchend">
+      <view class="card" ref="card" @touchstart="touchstart($event as TouchEvent)" @touchmove="touchmove($event as TouchEvent)" @touchend="touchend" @touchcancel="touchend">
         <image class="card-img" ref="card-img" :src="item"></image>
         <view class="state">
           <image class="state-icon like" ref="state-icon-like" src="/static/template/drop-card/like.png" mode="widthFix"></image>
@@ -14,7 +14,9 @@
 <script lang="ts">
   let sX : number = 0,
     sY : number = 0,
-    screenWidth : number = 1;
+    screenWidth : number = 1,
+    floating:boolean = false,
+    touchstartAfter:boolean = false;
     
   export default {
     data() {
@@ -95,18 +97,27 @@
           }
         }
       },
-      touchstart(e : TouchEvent,index:number) {
-        if(index != this.topCardIndex){
-          return 
+      touchstart(e : TouchEvent) {
+        // console.log('touchstart')
+        if(floating){
+          return // 浮动动画进行中
         }
         sX = e.touches[0].screenX;
         sY = e.touches[0].screenY;
         this.x = 0
         this.y = 0
+        
+        touchstartAfter = true
       },
-      touchmove(e : TouchEvent,index:number) {
-        if(index != this.topCardIndex){
-          return 
+      touchmove(e : TouchEvent) {
+        // console.log('touchmove')
+        
+        if(!touchstartAfter){
+          return //
+        }
+        
+        if(floating){
+          return // 浮动动画进行中
         }
         this.x += e.touches[0].screenX - sX;
         this.y += e.touches[0].screenY - sY;
@@ -115,7 +126,14 @@
         this.moveCard()
       },
       touchend() {
+        // console.log('touchend')
+        touchstartAfter = false
+        if(floating){
+          return // 浮动动画进行中
+        }
+        
         // console.log('touchend');
+        floating = true
 
         // 设置释放之后飘走的方向 0回到坐标中心 1向右 2向左
         let k:number = 0;
@@ -126,7 +144,7 @@
         }
         
         this.x = k * screenWidth * 1.5
-        this.y = k * screenWidth * 0.5
+        this.y = this.y * 3 * k * k
 
         // 设置动画时间
         let transitionDuration = 300;
@@ -142,21 +160,27 @@
           
           if(this.x != 0.0){
               // 飘动的卡片挪回中心
-              this.setINodeStyle('card',floatCardIndex,'transform', 'translate(0,0) rotate(0)')
+              this.setINodeStyle('card',floatCardIndex,'transform', 'translate(0,0) rotate(0) scale(0.9)')
+              this.setINodeStyle('card',floatCardIndex,'z-index', -1)
               this.setINodeStyle('state-icon-like',floatCardIndex,'opacity', 0)
               this.setINodeStyle('state-icon-dislike',floatCardIndex,'opacity', 0)
               
-              // 坐标归零
-              this.x = 0
-              this.y = 0
-              
-              // 动画改成marginTop,scale
-              this.setINodeStyle('card',floatCardIndex,'transitionProperty','marginTop,scale');
-              this.setINodeStyle('card',floatCardIndex,'transitionDuration',transitionDuration);
-              // 切换卡片顺序
-              this.currentIndex ++
-              // 根据最新卡片顺序，设置层级大小样式
-              this.initCardList()
+              setTimeout(()=>{
+                // 坐标归零
+                this.x = 0
+                this.y = 0
+                
+                // 动画改成marginTop,scale
+                this.setINodeStyle('card',floatCardIndex,'transitionProperty','marginTop,scale');
+                this.setINodeStyle('card',floatCardIndex,'transitionDuration',transitionDuration);
+                // 切换卡片顺序
+                this.currentIndex ++
+                // 根据最新卡片顺序，设置层级大小样式
+                this.initCardList()
+                floating = false
+              },0)
+          }else{
+            floating = false
           }
         },transitionDuration)
         
@@ -181,7 +205,7 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     background-color: #FFF;
     /* transform-origin:bottom; */
-    transition:margin-top 60ms;
+    transition:margin-top 10ms;
     transition-timing-function: ease-in;
   }
   
