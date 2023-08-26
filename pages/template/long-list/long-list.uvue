@@ -22,7 +22,7 @@
       <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @change="onSwiperChange"
         @transition="onSwiperTransition" @animationfinish="onSwiperAnimationfinish">
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
-          <long-page ref="longPage" :type="item.type"></long-page>
+          <long-page ref="longPage" :type="item.type" :preload="item.preload"></long-page>
         </swiper-item>
       </swiper>
     </view>
@@ -40,7 +40,7 @@
   type SwiperViewItem = {
     type : string,
     name : string,
-    init : Boolean,
+    preload : Boolean,
   }
 
   export default {
@@ -53,7 +53,8 @@
         swiperList: [
           {
             type: 'UpdatedDate',
-            name: '最新上架'
+            name: '最新上架',
+            preload: true
           } as SwiperViewItem,
           {
             type: 'FreeHot',
@@ -139,9 +140,9 @@
         }
       },
       initSwiperItemPage(index : Number) {
-        if (!this.swiperList[index].init) {
-          this.swiperList[index].init = true;
-          (this.$refs["longPage"] as ComponentPublicInstance[])[index].$callMethod('init')
+        if (!this.swiperList[index].preload) {
+          this.swiperList[index].preload = true;
+          (this.$refs["longPage"] as ComponentPublicInstance[])[index].$callMethod('loadData')
         }
       },
       updateTabIndicator(left : Number, width : Number) {

@@ -56,6 +56,10 @@
       type: {
         type: String,
         default: ''
+      },
+      preload: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -80,19 +84,18 @@
         }
       }
     },
-    mounted() {
+    created() {
       uni.loadFontFace({
         global: false,
         family: 'UtsIconsFontFamily',
         source: '/static/fonts/icon-star.ttf'
       })
+
+      if (this.preload) {
+        this.loadData()
+      }
     },
     methods: {
-      init() {
-        if (this.dataList.length == 0) {
-          this.loadData()
-        }
-      },
       loadData() {
         if (this.loading || this.isEnded) {
           return
