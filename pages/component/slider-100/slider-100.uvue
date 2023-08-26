@@ -5,20 +5,20 @@
     <page-head :title="title"></page-head>
     <view class="flex-row">
       <view class="flex-fill">
-        <slider v-for="(_, index1) in 25" :key="index1" class="slider" @changing="sliderChanging" :value="sliderValue"
-          :block-size="20" :show-value="true" />
+        <slider ref="slider1" v-for="(_, index1) in 25" :key="index1" class="slider" @changing="sliderChanging"
+          :value="sliderValue" :block-size="20" :show-value="true" />
       </view>
       <view class="flex-fill">
-        <slider v-for="(_, index2) in 25" :key="index2" class="slider" @changing="sliderChanging" :value="sliderValue"
-          :block-size="20" :show-value="true" />
+        <slider ref="slider2" v-for="(_, index2) in 25" :key="index2" class="slider" @changing="sliderChanging"
+          :value="sliderValue" :block-size="20" :show-value="true" />
       </view>
       <view class="flex-fill">
-        <slider v-for="(_, index3) in 25" :key="index3" class="slider" @changing="sliderChanging" :value="sliderValue"
-          :block-size="20" :show-value="true" />
+        <slider ref="slider3" v-for="(_, index3) in 25" :key="index3" class="slider" @changing="sliderChanging"
+          :value="sliderValue" :block-size="20" :show-value="true" />
       </view>
       <view class="flex-fill">
-        <slider v-for="(_, index4) in 25" :key="index4" class="slider" @changing="sliderChanging" :value="sliderValue"
-          :block-size="20" :show-value="true" />
+        <slider ref="slider4" v-for="(_, index4) in 25" :key="index4" class="slider" @changing="sliderChanging"
+          :value="sliderValue" :block-size="20" :show-value="true" />
       </view>
     </view>
     <!-- #ifdef APP -->
@@ -36,7 +36,26 @@
     },
     methods: {
       sliderChanging(e : SliderChangeEvent) {
-        this.sliderValue = e.detail.value
+        // this.sliderValue = e.detail.value
+
+        // TODO
+        const sliderValue = e.detail.value;
+        (this.$refs["slider1"]! as ComponentPublicInstance[]).forEach((item) => {
+          item.$data["sliderValue"] = sliderValue
+          item.$callMethod("_onRender")
+        });
+        (this.$refs["slider2"]! as ComponentPublicInstance[]).forEach((item) => {
+          item.$data["sliderValue"] = sliderValue
+          item.$callMethod("_onRender")
+        });
+        (this.$refs["slider3"]! as ComponentPublicInstance[]).forEach((item) => {
+          item.$data["sliderValue"] = sliderValue
+          item.$callMethod("_onRender")
+        });
+        (this.$refs["slider4"]! as ComponentPublicInstance[]).forEach((item) => {
+          item.$data["sliderValue"] = sliderValue
+          item.$callMethod("_onRender")
+        });
       },
     },
   }
@@ -56,6 +75,6 @@
   }
 
   .slider {
-    margin: 2px 0.5px;
+    margin: 1px 0.5px;
   }
 </style>
