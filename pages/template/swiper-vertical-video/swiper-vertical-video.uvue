@@ -7,7 +7,7 @@
 			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
 				<video ref="video" class="video-box" objectFit="cover" :id="item._id" @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
 				<view class="video-cover" @click="changeState(i)">
-					<image v-if="state[i] === 'onPause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
+					<image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
 				</view>
 				<view class="video-info" v-if="0">
 					<text class="video-info-text">容器：第 {{i}} 个</text>
@@ -24,7 +24,8 @@
 <script>
 	import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
 	type ListItem = { _id : string, content : string, src : string, poster_src : string }
-	let page : number = 0;
+	let page : number = 0,
+  currentPageIsShow : boolean = true;
 
 	export default {
 		components: {},
@@ -72,7 +73,7 @@
 				this.state.forEach((val : string, index : number) => {
 					if (index === current) {
 						this.doPlay(current)
-					} else if (val === 'onPlay') {
+					} else {
 						// 除了选中的其他已经播放的都需要停止
 						this.doStop(index)
 						console.log('index:' + index + '已被执行停止');
@@ -84,9 +85,20 @@
 			// 一启动完成，就播放第一个
 			this.doPlay(0)
 		},
+    onShow(){
+      currentPageIsShow = true
+    },
+    onHide() {
+      currentPageIsShow = false
+      console.log('pages-onHide');
+      this.doPause(this.current)
+    },
+    onUnload() {
+      this.doPause(this.current)
+    },
 		methods: {
 			changeState(index : number) {
-				if (this.state[index] === 'onPlay') {
+				if (this.state[index] === 'play') {
 					this.doPause(index)
 				} else {
 					this.doPlay(current)
@@ -113,12 +125,16 @@
       	console.log("doPause  video-" + index);
       },
 			onPause(index : number) {
-				this.state[index] = 'onPause'
+				this.state[index] = 'pause'
 				console.log('onPause', index);
 			},
 			onPlay(index : number) {
-				this.state[index] = 'onPlay'
-				console.log('onPlay', index);
+        if(this.current != index || !currentPageIsShow){
+          this.onPause(index)
+        }else{
+          this.state[index] = 'play'
+          console.log('onPlay', index);
+        }
 			},
 			getData() : ListItem[] {
 				let videoUrlList = [
@@ -163,7 +179,7 @@
       		},
       		complete(result) {
       			console.log('navigateBack complete', result.errMsg)
-      		},
+      		}
       	})
       }
 		}
