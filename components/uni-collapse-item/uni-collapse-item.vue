@@ -68,10 +68,12 @@
 				const boxNode = this.boxNode?.style!;
 				const contentNode = this.contentNode?.style!;
 				let hide = open ? 'flex' : 'none';
+				const opacity = open ? 1 : 0
 				let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
 				boxNode.setProperty('display', hide);
 				this.$nextTick(() => {
 					contentNode.setProperty('transform', ani_transform);
+					contentNode.setProperty('opacity', opacity);
 				})
 			}
 		}
@@ -131,5 +133,6 @@
 		transition-property: transform;
 		transition-duration: 0.3s;
 		transform: translateY(-100%);
+		opacity: 0;
 	}
 </style>
