@@ -1,6 +1,7 @@
 <script lang="uts">
 import { state, setLifeCycleNum } from '@/store/index.uts'
 
+let firstBackTime = 0
 export default {
   onLaunch: function () {
     // 自动化测试
@@ -34,6 +35,19 @@ export default {
     // 自动化测试
     setLifeCycleNum(state.lifeCycleNum - 1000)
     console.log('App LastPageBackPress')
+    if (firstBackTime == 0) {
+      uni.showToast({
+        title: '再按一次退出应用',
+        position: 'bottom',
+      })
+      firstBackTime = Date.now()
+      setTimeout(() => {
+        firstBackTime = 0
+      }, 2000)
+    } else if (Date.now() - firstBackTime < 2000) {
+      firstBackTime = Date.now()
+      uni.exit(null)
+    }
   },
   methods: {
     increasetLifeCycleNum() {
@@ -75,11 +89,11 @@ uni-page-body {
   display: none !important;
 }
 
-.uni-row{
-	flex-direction: row;
+.uni-row {
+  flex-direction: row;
 }
-.uni-column{
-	flex-direction: column;
+.uni-column {
+  flex-direction: column;
 }
 
 /* #endif */
