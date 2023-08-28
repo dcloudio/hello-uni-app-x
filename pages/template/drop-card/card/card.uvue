@@ -57,12 +57,12 @@
         }
       })
       
-      // TODO 需要延迟设置才能生效，临时方案
+      // TODO 需要延迟设置才能生效
       setTimeout(()=>{
         this.setINodeStyle('card','height', screenHeight * 0.7 + 'px');
         this.setINodeStyle('card-img','height', screenHeight * 0.7 + 'px');
         this.initCardStyle()
-      },30)
+      },200)
       
       uni.$on('uni-drop-card-float',()=>{
         this.floatCount ++
@@ -74,9 +74,9 @@
       initCardStyle(){
         let _index = (this.cardIndex + this.floatCount)%3
         // console.log('~~~~~~_index:'+_index + ' cardIndex:'+this.cardIndex+' floatCount:'+this.floatCount);
+        this.setINodeStyle('card','z-index', _index)
         this.setINodeStyle('card','margin-top', screenHeight * 0.15 - 30 * _index + 'px');
         this.setINodeStyle('card','transform', 'scale('+(0.9 + 0.05 * _index)+')')
-        this.setINodeStyle('card','z-index', _index)
       },
       // 工具方法，用于快速设置 INode 的 style
       setINodeStyle(refName:string,propertyName : string, propertyStyle : any) : void {
@@ -137,16 +137,19 @@
             if( Math.abs(this.x) > Math.abs(k * screenWidth * 1.5)){
               clearInterval(interval)
               // 飘动的卡片挪回中心
-              // 设置为透明，防止飘回时因为 margin-top 太高，露出来
-              this.setINodeStyle("card",'opacity', 0)
+              
               //  状态图标变回透明
               this.setINodeStyle("state-icon-like",'opacity', 0)
               this.setINodeStyle("state-icon-dislike",'opacity', 0)
-              // 执行卡片飘动后事件，注意uni.$emit是全局事件。其他卡片也会执行
-              uni.$emit('uni-drop-card-float',null)
+              
+              // 设置为透明，防止飘回时因为 margin-top 太高，露出来
+              this.setINodeStyle("card",'opacity', 0)
               setTimeout(()=>{
                 this.setINodeStyle("card",'opacity', 1)
-              },130)
+              },300)
+              
+              // 执行卡片飘动后事件，注意uni.$emit是全局事件。其他卡片也会执行
+              uni.$emit('uni-drop-card-float',null)
               floating = false
             }
           },16)
@@ -161,7 +164,7 @@
       moveCard() {
         this.setINodeStyle("card",
           'transform',
-          `translate(${this.x}px,${this.y}px) rotate(${this.x/-30}deg) scale(${0.9 + 0.05 * 2 + movePercent / 20})`
+          `translate(${this.x}px,${this.y}px) rotate(${this.x/-30}deg) scale(1)`
         )
         this.setINodeStyle("state-icon-like",'opacity', this.x < 0 ? 0 : movePercent * 10)
         this.setINodeStyle("state-icon-dislike",'opacity', this.x > 0 ? 0 : movePercent * 10)
@@ -183,7 +186,7 @@
     color: #FFF;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     background-color: #FFF;
-    transition: margin-top 100ms;
+    transition: margin-top 300ms;
     transition-timing-function: ease-in;
   }
 
