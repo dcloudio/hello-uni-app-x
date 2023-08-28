@@ -1,189 +1,23 @@
 <template>
   <view class="root">
     <template v-for="(item,index) in cardList" :key="index">
-      <view class="card" ref="card" @touchstart="touchstart($event as TouchEvent)" @touchmove="touchmove($event as TouchEvent)" @touchend="touchend" @touchcancel="touchend">
-        <image class="card-img" ref="card-img" :src="item"></image>
-        <view class="state">
-          <image class="state-icon like" ref="state-icon-like" src="/static/template/drop-card/like.png" mode="widthFix"></image>
-          <image class="state-icon dislike" ref="state-icon-dislike" src="/static/template/drop-card/dislike.png" mode="widthFix"></image>
-        </view>
-      </view>
+      <card ref="card" :img="item" :cardIndex="index"></card>
     </template>
   </view>
 </template>
 <script lang="ts">
-  let sX : number = 0,
-    sY : number = 0,
-    screenWidth : number = 1,
-    floating:boolean = false,
-    touchstartAfter:boolean = false;
-    
+  import card from './card/card.uvue';
   export default {
+    components: {
+      card
+    },
     data() {
       return {
-        x: 0 as number,
-        y: 0 as number,
         cardList: [
           '/static/template/drop-card/1.jpg',
           '/static/template/drop-card/2.jpg',
           '/static/template/drop-card/3.jpg'
-        ] as string[],
-        // 页码
-        currentIndex:0 as number,
-        $nodesMap:new Map<string, INode[]>()
-      }
-    },
-    onReady() {
-      uni.getSystemInfo({
-        success: (e) => {
-          // console.log('e',e);
-          screenWidth = e.screenWidth;
-          let height = e.screenHeight - 200 + 'px'
-          for (var i = 0; i < 3; i++) {
-            this.setINodeStyle('card',i,'height', height);
-            this.setINodeStyle('card-img',i,'height', height);
-          }
-        }
-      })
-      this.initCardList()
-    },
-    computed: {
-      movePercent() : number {
-        return Math.abs(this.x) / (screenWidth/2*3)
-      },
-      likeOpacity() : number {
-        return this.x < 0 ? 0 : this.movePercent * 100
-      },
-      dislikeOpacity() : number {
-        return this.x > 0 ? 0 : this.movePercent * 100
-      },
-      topCardIndex():number{
-        return 2 - Math.abs(this.currentIndex)%3
-      }
-    },
-    methods: {
-      // 工具方法，用于快速设置 INode 的 style
-      setINodeStyle(refName:string,index:number,propertyName:string,propertyStyle:any):void{
-        let nodes:INode[]|null = this.$nodesMap.get(refName)
-        if(nodes == null){
-          nodes = this.$refs.get(refName) as INode[]
-          this.$nodesMap.set(refName,nodes)
-        }else{
-          // console.log('直接拿');
-        }
-        (nodes)[index].style.setProperty(propertyName,propertyStyle);
-      },
-      // 设置卡片样式（层级，大小，上边距)
-      initCardList(){
-        for (var i = 0; i < 3; i++) {
-          let endIndex = (i + this.currentIndex)%3
-          this.setINodeStyle('card',i,'margin-top', 100 - 30*endIndex+'px');
-          this.setINodeStyle('card',i,'transform', 'scale('+(0.9+0.05*endIndex)+')')
-          // console.log(0.9+0.05*endIndex,50 - 20*endIndex+'px');
-          this.setINodeStyle('card',i,'z-index', endIndex)
-        }
-      },
-      moveCard() {
-        for (var i = 0; i < 3; i++) {
-          // 设置置顶卡片样式
-          if(i === this.topCardIndex){
-            this.setINodeStyle('card',this.topCardIndex,'transform', 'translateX('+this.x+'px) translateY('+this.y+'px) rotate('+this.x/-30+'deg) scale('+( 0.9+0.05*2 + movePercent/20 )+')')
-            this.setINodeStyle('state-icon-like',this.topCardIndex,'opacity', x < 0 ? 0 : movePercent * 10)
-            this.setINodeStyle('state-icon-dislike',this.topCardIndex,'opacity', x > 0 ? 0 : movePercent * 10)
-          }else{
-            let endIndex = (i + this.currentIndex)%3
-            this.setINodeStyle('card',i,'transform', 'scale('+( 0.9+0.05*endIndex + movePercent*0.05 )+')')
-            this.setINodeStyle('card',i,'margin-top', 100 - 30*endIndex - movePercent*30 +'px');
-          }
-        }
-      },
-      touchstart(e : TouchEvent) {
-        // console.log('touchstart')
-        if(floating){
-          return // 浮动动画进行中
-        }
-        sX = e.touches[0].screenX;
-        sY = e.touches[0].screenY;
-        this.x = 0
-        this.y = 0
-        
-        touchstartAfter = true
-      },
-      touchmove(e : TouchEvent) {
-        // console.log('touchmove')
-        
-        if(!touchstartAfter){
-          return //
-        }
-        
-        if(floating){
-          return // 浮动动画进行中
-        }
-        this.x += e.touches[0].screenX - sX;
-        this.y += e.touches[0].screenY - sY;
-        sX = e.touches[0].screenX;
-        sY = e.touches[0].screenY;
-        this.moveCard()
-      },
-      touchend() {
-        // console.log('touchend')
-        touchstartAfter = false
-        if(floating){
-          return // 浮动动画进行中
-        }
-        
-        // console.log('touchend');
-        floating = true
-
-        // 设置释放之后飘走的方向 0回到坐标中心 1向右 2向左
-        let k:number = 0;
-        if (this.x > screenWidth / 6 ) {
-          k = 1
-        }else if(this.x < screenWidth * -1 / 6){
-          k = -1
-        }
-        
-        this.x = k * screenWidth * 1.5
-        this.y = this.y * 3 * k * k
-
-        // 设置动画时间
-        let transitionDuration = 300;
-        let floatCardIndex = this.topCardIndex
-        this.setINodeStyle('card',floatCardIndex,'transitionProperty','transform');
-        this.setINodeStyle('card',floatCardIndex,'transitionDuration',transitionDuration);
-        // this.setINodeStyle('card',floatCardIndex,'transitionOrigin','bottom center');
-        this.moveCard()
-         // 移动结束
-        setTimeout(()=>{
-          // 动画速度设置为0(即：关闭动画)
-          this.setINodeStyle('card',floatCardIndex,'transitionDuration',0);
-          
-          if(this.x != 0.0){
-              // 飘动的卡片挪回中心
-              this.setINodeStyle('card',floatCardIndex,'transform', 'translate(0,0) rotate(0) scale(0.9)')
-              this.setINodeStyle('card',floatCardIndex,'z-index', -1)
-              this.setINodeStyle('state-icon-like',floatCardIndex,'opacity', 0)
-              this.setINodeStyle('state-icon-dislike',floatCardIndex,'opacity', 0)
-              
-              setTimeout(()=>{
-                // 坐标归零
-                this.x = 0
-                this.y = 0
-                
-                // 动画改成marginTop,scale
-                this.setINodeStyle('card',floatCardIndex,'transitionProperty','marginTop,scale');
-                this.setINodeStyle('card',floatCardIndex,'transitionDuration',transitionDuration);
-                // 切换卡片顺序
-                this.currentIndex ++
-                // 根据最新卡片顺序，设置层级大小样式
-                this.initCardList()
-                floating = false
-              },0)
-          }else{
-            floating = false
-          }
-        },transitionDuration)
-        
+        ] as string[]
       }
     }
   }
@@ -193,45 +27,4 @@
     flex: 1;
     position: relative;
   }
-
-  .card {
-    width: 700rpx;
-    height: 750rpx;
-    position: absolute;
-    margin: 0 25rpx;
-    margin-top: 50px;
-    border-radius: 10px;
-    color: #FFF;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    background-color: #FFF;
-    /* transform-origin:bottom; */
-    transition:margin-top 10ms;
-    transition-timing-function: ease-in;
-  }
-  
-  .card-img {
-    border-radius: 10px;
-  }
-
-  .state {
-    top: 20rpx;
-    left: 20rpx;
-    width: 650rpx;
-    padding: 4px;
-    position: absolute;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  
-  .state-icon {
-    width: 30px;
-    height: 30px;
-    border: 1px solid #FFF;
-    background-color: #FFF;
-    padding: 3px;
-    border-radius: 100px;
-    box-shadow: 0 0 1px #EBEBEB;
-    opacity: 0;
-  }
-  
 </style>
