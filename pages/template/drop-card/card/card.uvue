@@ -128,37 +128,67 @@
           k = -1
         }
         
-        if(k !== 0.0){
-          let interval:number = 0;
+        function cardTo(x:number,y:number,callback: () => void,s:number = 10){
+          // console.log('s',s);
+          // console.log('--cardTo---',x,y);
+          let interval:number = 0
+          let _k:number = 1
           interval = setInterval(()=>{
-            this.x += k * 30
-            this.y *= 1.1
-            this.moveCard()
-            if( Math.abs(this.x) > Math.abs(k * screenWidth * 1.5)){
-              clearInterval(interval)
-              // 飘动的卡片挪回中心
-              
-              //  状态图标变回透明
-              this.setINodeStyle("state-icon-like",'opacity', 0)
-              this.setINodeStyle("state-icon-dislike",'opacity', 0)
-              
-              // 设置为透明，防止飘回时因为 margin-top 太高，露出来
-              this.setINodeStyle("card",'opacity', 0)
-              setTimeout(()=>{
-                this.setINodeStyle("card",'opacity', 1)
-              },300)
-              
-              // 执行卡片飘动后事件，注意uni.$emit是全局事件。其他卡片也会执行
-              uni.$emit('uni-drop-card-float',null)
-              floating = false
+            // 加速度
+            _k += 0.2
+            
+            const dx = x - this.x
+            if(this.x.toInt() != x){
+              this.x += dx/s*_k
+              // console.log('dx/s*_k',dx/s*_k)
+              if(Math.abs(dx) < 3){
+                this.x = x
+              }
             }
+            const dy = y - this.y
+            if(this.y.toInt() != y){
+              this.y += dy/s*_k
+              // console.log('dy/s*_k',dy/s*_k)
+              if(Math.abs(dy) < 3){
+                this.y = y
+              }
+            }
+            // console.log('this.x',this.x,'this.y',this.y);
+            // console.log('x',x,'y',y);
+            
+            this.moveCard()
+            if( this.x.toInt() == x.toInt() && this.y.toInt() == y.toInt()){
+              clearInterval(interval)
+              callback()
+            } 
           },16)
-        }else{
-          // 坐标归零
-          this.x = 0
-          this.y = 0
-          this.moveCard()
-          floating = false
+        }
+        
+        if(k.toInt() != 0){
+          cardTo(k * screenWidth * 1.3, this.y * 3,()=>{
+            //  状态图标变回透明
+            this.setINodeStyle("state-icon-like",'opacity', 0)
+            this.setINodeStyle("state-icon-dislike",'opacity', 0)
+            
+            // 设置为透明，防止飘回时因为 margin-top 太高，露出来
+            this.setINodeStyle("card",'opacity', 0)
+            setTimeout(()=>{
+              this.setINodeStyle("card",'opacity', 1)
+            },300)
+            
+            // 执行卡片飘动后事件，注意uni.$emit是全局事件。其他卡片也会执行
+            uni.$emit('uni-drop-card-float',null) 
+            floating = false
+          },8)
+        }else{ 
+          const _x:number = this.x
+          const _y:number = this.y
+          cardTo( (_x*-0.05).toInt() , (_y*-0.05).toInt() ,()=>{
+            cardTo(0,0,()=>{
+             console.log('bounce')
+             floating = false
+            },30)
+          })
         }
       },
       moveCard() {
