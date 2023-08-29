@@ -8,8 +8,8 @@
 			<scroll-view v-if="scrollX" :scroll-x="true" :scroll-top="scrollTop" :scroll-left="scrollLeft"
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
-				:show-scrollbar="showScrollbar" @scrolltoupper="scrolltoupper" @scrolltolower="scrolltolower"
-				@scroll="scroll" @scrollend="scrollend">
+				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
+				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend">
 				<view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
 					<text class="uni-text">{{item.label}}</text>
 				</view>
@@ -17,8 +17,8 @@
 			<scroll-view v-else :scroll-x="false" :scroll-top="scrollTop" :scroll-left="scrollLeft"
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
-				:show-scrollbar="showScrollbar" @scrolltoupper="scrolltoupper" @scrolltolower="scrolltolower"
-				@scroll="scroll" @scrollend="scrollend">
+				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
+				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend">
 				<view class="item" :id="item.id" v-for="(item,_) in items">
 					<text class="uni-text">{{item.label}}</text>
 				</view>
@@ -32,7 +32,7 @@
 			</view>
 			<view class="uni-option">
 				<text>是否有反弹效果</text>
-				<switch :checked="bounces" @change="bounces=!bounces"></switch>
+				<switch :checked="rebound" @change="rebound=!rebound"></switch>
 			</view>
 			<view class="uni-option">
 				<text>是否开启滚动时使用动画过渡</text>
@@ -89,7 +89,7 @@
 			return {
 				items: [] as Item[],
 				scrollX: false,
-				bounces: false,
+				rebound: false,
 				scrollTop: 0,
 				scrollLeft: 0,
 				scrollIntoView: "",
