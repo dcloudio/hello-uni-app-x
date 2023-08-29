@@ -3,11 +3,10 @@
     <scroll-view class="swiper-tabs" :scroll-left="tabsScrollLeft" :scroll-x="true" :show-scrollbar="false">
       <view>
         <view class="flex-row">
-          <view class="swiper-tabs-item" v-for="(item, index) in swiperList" :id="'swipertab' + index" ref="swipertab"
-            :key="index" @click="onTabClick(index)">
-            <text class="swiper-tabs-item-text"
-              :class="swiperIndex==index ? 'uni-tab-item-title-active' : ''">{{item.title}}</text>
-          </view>
+          <text class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
+            v-for="(item, index) in swiperList" ref="swipertab" :key="index" @click="onTabClick(index)">
+            {{item.title}}
+          </text>
         </view>
         <view class="swiper-tabs-indicator">
           <view class="swiper-tabs-underline"
@@ -15,8 +14,8 @@
         </view>
       </view>
     </scroll-view>
-    <swiper class="swiper-view" ref="swiper" :current="swiperIndex" :duration="300" @change="onSwiperChange"
-      @transition="onSwiperTransition" @animationfinish="onSwiperAnimationfinish">
+    <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @transition="onSwiperTransition"
+      @animationfinish="onSwiperAnimationfinish">
       <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
         <text class="swiper-item-text">{{index}}</text>
       </swiper-item>
@@ -31,7 +30,7 @@
   }
 
   type SwiperViewItem = {
-    title : string
+    title : string,
   }
 
   export default {
@@ -42,53 +41,49 @@
         tabsScrollLeft: 0,
         swiperIndicatorLineLeft: 0,
         swiperIndicatorLineWidth: 0,
-        $lastSwiperIndex: 0,
+        $animationFinishIndex: 0,
         $swiperWidth: 0,
-        $swiperTabsRect: [] as SwiperTabsItem[],
-        $isTap: false
+        $swiperTabsRect: [] as SwiperTabsItem[]
       }
     },
     onLoad() {
       for (let i = 0; i < 8; i++) {
+        const space = " ".repeat(i)
         this.swiperList.push({
-          title: "TAB " + i
+          title: "Tab " + space + i
         } as SwiperViewItem)
       }
     },
     onReady() {
-      this.$swiperWidth = (this.$refs["swiper"]! as INode)!?.offsetWidth! as number;
-      this.queryTabItemsSize();
-      this.setSwiperIndex(0, true);
+      this.$swiperWidth = (this.$refs["swiper"] as INode)!.offsetWidth! as number
+      this.queryTabItemsSize()
+      this.setSwiperIndex(0, true)
     },
     methods: {
       onTabClick(index : number) {
-        this.setSwiperIndex(index, false);
-      },
-      onSwiperChange(e : SwiperChangeEvent) {
-        this.setSwiperIndex(e.detail.current, false);
-        console.log("onSwiperChange", e.detail.current);
+        this.setSwiperIndex(index, false)
       },
       onSwiperTransition(e : SwiperTransitionEvent) {
-        const offsetX = e.detail.dx;
+        const offsetX = e.detail.dx
+        // 兼容微信 skyline 和 webview
+        const offsetIndex = Math.abs(offsetX.toInt()) == this.$swiperWidth ? 0 : offsetX / this.$swiperWidth
+        const currentIndex = this.$animationFinishIndex + Math.abs(offsetIndex.toInt())
 
-        let moveToIndex = offsetX > 0 ? this.$lastSwiperIndex + 1 : this.$lastSwiperIndex - 1
+        let moveToIndex = offsetX > 0 ? currentIndex + 1 : currentIndex - 1
         if (moveToIndex < 0) { moveToIndex = 0 }
         if (moveToIndex > this.$swiperTabsRect.length - 1) { moveToIndex = this.$swiperTabsRect.length - 1 }
 
-        const percentage = Math.abs(offsetX) / this.$swiperWidth;
-        const currentSize = this.$swiperTabsRect[this.$lastSwiperIndex];
-        const moveToSize = this.$swiperTabsRect[moveToIndex];
-        const indicatorlineL = currentSize.left + (moveToSize.left - currentSize.left) * percentage;
-        const indicatorlineW = currentSize.width + (moveToSize.width - currentSize.width) * percentage;
+        const percentage = Math.abs(offsetX) / this.$swiperWidth
+        const currentSize = this.$swiperTabsRect[currentIndex]
+        const moveToSize = this.$swiperTabsRect[moveToIndex]
+        const indicatorlineL = currentSize.left + (moveToSize.left - currentSize.left) * percentage
+        const indicatorlineW = currentSize.width + (moveToSize.width - currentSize.width) * percentage
 
-        this.updateTabIndicator(indicatorlineL, indicatorlineW);
-        //console.log(this.$lastSwiperIndex, moveToIndex, offsetX, this.$swiperWidth, percentage);
+        this.updateTabIndicator(indicatorlineL, indicatorlineW)
       },
-      // TODO 事件触发时机不对
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
-        this.$lastSwiperIndex = e.detail.current;
-        console.log("onSwiperAnimationfinish", e.detail.current);
-        // this.setSwiperIndex(e.detail.current, true);
+        this.setSwiperIndex(e.detail.current, true)
+        this.$animationFinishIndex = e.detail.current
       },
       queryTabItemsSize() {
         this.$swiperTabsRect.length = 0;
@@ -102,21 +97,18 @@
       },
       setSwiperIndex(index : Number, updateIndicator : Boolean) {
         if (this.swiperIndex === index) {
-          return;
+          return
         }
-        this.swiperIndex = index;
+        this.swiperIndex = index
 
         if (updateIndicator) {
-          this.updateTabIndicator(this.$swiperTabsRect[index].left, this.$swiperTabsRect[index].width);
+          this.updateTabIndicator(this.$swiperTabsRect[index].left, this.$swiperTabsRect[index].width)
         }
       },
       updateTabIndicator(left : Number, width : Number) {
-        this.swiperIndicatorLineLeft = left;
-        this.swiperIndicatorLineWidth = width;
-        const offset = left + width / 2;
-        if (offset > this.$swiperWidth / 2) {
-          this.tabsScrollLeft = offset - this.$swiperWidth / 2;
-        }
+        this.swiperIndicatorLineLeft = left
+        this.swiperIndicatorLineWidth = width
+        this.tabsScrollLeft = left + width / 2 - this.$swiperWidth / 2
       }
     }
   }
@@ -136,15 +128,12 @@
   }
 
   .swiper-tabs-item {
+    color: #555;
+    font-size: 16px;
     padding: 12px 25px;
   }
 
-  .swiper-tabs-item-text {
-    color: #555;
-    font-size: 16px;
-  }
-
-  .swiper-tabs-item-text-active {
+  .swiper-tabs-item-active {
     color: #007AFF;
   }
 
@@ -161,11 +150,6 @@
     background-color: #007AFF;
   }
 
-  .swiper-tabs-animation {
-    transition-duration: 0.2s;
-    transition-property: left;
-  }
-
   .swiper-view {
     flex: 1;
   }
@@ -179,6 +163,5 @@
   .swiper-item-text {
     font-size: 72px;
     font-weight: bold;
-    margin: auto;
   }
 </style>
