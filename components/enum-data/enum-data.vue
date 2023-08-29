@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="uts">
 	export type ItemType = { value : number; name : string }
 
 	export default {

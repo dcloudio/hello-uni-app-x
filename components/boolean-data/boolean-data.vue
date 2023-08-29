@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="uts">
 	export default {
 		props: {
 			title: {
