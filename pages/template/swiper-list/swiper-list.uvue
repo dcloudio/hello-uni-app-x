@@ -55,7 +55,7 @@
       }
     },
     onReady() {
-      this.$swiperWidth = (this.$refs["swiper"] as INode).offsetWidth
+      this.$swiperWidth = (this.$refs["swiper"] as INode).getBoundingClientRect().width
       this.queryTabItemsSize()
       this.setSwiperIndex(0, true)
     },
@@ -66,8 +66,8 @@
       onSwiperTransition(e : SwiperTransitionEvent) {
         const offsetX = e.detail.dx
         // 兼容微信 skyline 和 webview
-        const offsetIndex = Math.abs(offsetX.toInt()) == this.$swiperWidth ? 0 : offsetX / this.$swiperWidth
-        const currentIndex = this.$animationFinishIndex + Math.abs(offsetIndex.toInt())
+        const offsetIndex = offsetX.toInt() / this.$swiperWidth
+        const currentIndex = this.$animationFinishIndex + offsetIndex.toInt()
 
         let moveToIndex = offsetX > 0 ? currentIndex + 1 : currentIndex - 1
         if (moveToIndex < 0) { moveToIndex = 0 }
