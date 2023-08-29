@@ -1,178 +1,130 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-    <!-- #endif -->
-    <view>
-      <page-head title="scroll-view,区域滚动视图"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">Vertical Scroll</text>
-          <text class="uni-subtitle-text">纵向滚动</text>
-        </view>
-        <view>
-          <scroll-view
-            :scrollTop="scrollTop"
-            :scrollY="true"
-            class="scroll-Y"
-            scroll-with-animation="true"
-            @scrolltoupper="upper"
-            @scrolltolower="lower"
-            @scroll="scroll"
-          >
-            <view id="demo1" class="scroll-view-item uni-bg-red"
-              ><text class="text">A</text></view
-            >
-            <view id="demo2" class="scroll-view-item uni-bg-green"
-              ><text class="text">B</text></view
-            >
-            <view id="demo3" class="scroll-view-item uni-bg-blue"
-              ><text class="text">C</text></view
-            >
-          </scroll-view>
-        </view>
-        <view @tap="goTop" class="uni-center uni-common-mt">
-          <text class="uni-link">点击这里返回顶部</text>
-        </view>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1">
+		<!-- #endif -->
+		<view>
+			<page-head title="scroll-view,区域滚动视图"></page-head>
+			<view class="uni-padding-wrap uni-common-mt">
+				<view class="uni-title uni-common-mt">
+					<text class="uni-title-text">Vertical Scroll</text>
+					<text class="uni-subtitle-text">纵向滚动</text>
+				</view>
+				<view>
+					<scroll-view :scrollTop="scrollTop" :scrollY="true" class="scroll-Y" scroll-with-animation="true"
+						@scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+						<view id="demo1" class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
+						<view id="demo2" class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
+						<view id="demo3" class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
+					</scroll-view>
+				</view>
+				<view @tap="goTop" class="uni-center uni-common-mt">
+					<text class="uni-link">点击这里返回顶部</text>
+				</view>
 
-        <view class="uni-title uni-common-mt">
-          <text class="uni-subtitle-text">下拉刷新</text>
-        </view>
-        <button
-          type="primary"
-          class="button default-button"
-          @click="gotoRefresher"
-        >
-          跳转"下拉刷新示例"
-        </button>
+				<view class="uni-title uni-common-mt">
+					<text class="uni-title-text">Horizontal Scroll</text>
+					<text class="uni-subtitle-text">横向滚动</text>
+				</view>
+				<view>
+					<scroll-view class="scroll-view_H" :scrollX="true" @scroll="scroll" :scrollLeft="120">
+						<view id="demo1" class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+						<view id="demo2" class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+						<view id="demo3" class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+					</scroll-view>
+				</view>
 
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text">Horizontal Scroll</text>
-          <text class="uni-subtitle-text">横向滚动</text>
-        </view>
-        <view>
-          <scroll-view
-            class="scroll-view_H"
-            :scrollX="true"
-            @scroll="scroll"
-            :scrollLeft="120"
-          >
-            <view id="demo1" class="scroll-view-item_H uni-bg-red"
-              ><text class="text">A</text></view
-            >
-            <view id="demo2" class="scroll-view-item_H uni-bg-green"
-              ><text class="text">B</text></view
-            >
-            <view id="demo3" class="scroll-view-item_H uni-bg-blue"
-              ><text class="text">C</text></view
-            >
-          </scroll-view>
-        </view>
-        
-		<button
-		  type="primary"
-		  class="button default-button"
-		  @click="moreProps"
-		>
-		  非下拉刷新的属性示例
-		</button>
-		<view class="uni-common-pb"></view>
-		<button type="primary" class="button default-button" @click="jumpToRefresher">
-			下拉刷新的属性示例
-		</button>
-		<view class="uni-common-pb"></view>
-		<button type="primary" class="button default-button" @click="jumpToCustomRefresher">
-			自定义下拉刷新的属性示例
-		</button>
-		<view class="uni-common-pb"></view>
-      </view>
-    </view>
-    <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+				<navigator url="/pages/component/scroll-view/scroll-view-props">
+				<button type="primary" class="button default-button">
+					非下拉刷新的属性示例
+				</button>
+				</navigator>
+				<view class="uni-common-pb"></view>
+				<navigator url="/pages/component/scroll-view/scroll-view-refresher-props">
+				<button type="primary" class="button default-button">
+					下拉刷新的属性示例
+				</button>
+				</navigator>
+				<view class="uni-common-pb"></view>
+				<navigator url="/pages/component/scroll-view/scroll-view-refresher">
+				<button type="primary" class="button default-button"> 默认下拉刷新示例 </button>
+				</navigator>
+				<view class="uni-common-pb"></view>
+				<navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props">
+				<button type="primary" class="button default-button">
+					自定义下拉刷新示例
+				</button>
+				</navigator>
+				<view class="uni-common-pb"></view>
+			</view>
+		</view>
+		<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 <script lang="ts">
-import ScrollToLowerEvent from 'io.dcloud.uniapp.runtime.ScrollToLowerEvent'
-import ScrollToUpperEvent from 'io.dcloud.uniapp.runtime.ScrollToUpperEvent'
-export default {
-  data() {
-    return {
-      scrollTop: 0,
-      oldScrollTop: 0,
-    }
-  },
-  methods: {
-    upper: function (e: ScrollToUpperEvent) {
-      console.log(e)
-    },
-    lower: function (e: ScrollToLowerEvent) {
-      console.log(e)
-    },
-    scroll: function (e: ScrollEvent) {
-      this.oldScrollTop = e.detail.scrollTop
-    },
-    goTop: function () {
-      // 解决view层不同步的问题
-      this.scrollTop = this.oldScrollTop
-      this.$nextTick(function () {
-        this.scrollTop = 0
-      })
-      uni.showToast({
-        icon: 'none',
-        title: '纵向滚动 scrollTop 值已被修改为 0',
-      })
-    },
-    gotoRefresher: function () {
-      uni.navigateTo({
-        url: '/pages/component/scroll-view/scroll-view-refresher',
-      })
-    },
-	moreProps(){
-		uni.navigateTo({
-		  url: '/pages/component/scroll-view/scroll-view-props',
-		})
-	},
-	jumpToRefresher() {
-		uni.navigateTo({
-		  url: '/pages/component/scroll-view/scroll-view-refresher-props',
-		})
-	},
-	jumpToCustomRefresher() {
-		uni.navigateTo({
-		  url: '/pages/component/scroll-view/scroll-view-custom-refresher-props',
-		})
+	import ScrollToLowerEvent from 'io.dcloud.uniapp.runtime.ScrollToLowerEvent'
+	import ScrollToUpperEvent from 'io.dcloud.uniapp.runtime.ScrollToUpperEvent'
+	export default {
+		data() {
+			return {
+				scrollTop: 0,
+				oldScrollTop: 0,
+			}
+		},
+		methods: {
+			upper: function (e : ScrollToUpperEvent) {
+				console.log(e)
+			},
+			lower: function (e : ScrollToLowerEvent) {
+				console.log(e)
+			},
+			scroll: function (e : ScrollEvent) {
+				this.oldScrollTop = e.detail.scrollTop
+			},
+			goTop: function () {
+				// 解决view层不同步的问题
+				this.scrollTop = this.oldScrollTop
+				this.$nextTick(function () {
+					this.scrollTop = 0
+				})
+				uni.showToast({
+					icon: 'none',
+					title: '纵向滚动 scrollTop 值已被修改为 0',
+				})
+			}
+		},
 	}
-  },
-}
 </script>
 
 <style>
-.scroll-Y {
-  height: 300rpx;
-}
+	.scroll-Y {
+		height: 300rpx;
+	}
 
-.scroll-view_H {
-  width: 100%;
-  flex-direction: row;
-}
+	.scroll-view_H {
+		width: 100%;
+		flex-direction: row;
+	}
 
-.scroll-view-item {
-  height: 300rpx;
-  justify-content: center;
-  align-items: center;
-}
+	.scroll-view-item {
+		height: 300rpx;
+		justify-content: center;
+		align-items: center;
+	}
 
-.scroll-view-item_H {
-  width: 690rpx;
-  height: 300rpx;
-  justify-content: center;
-  align-items: center;
-}
+	.scroll-view-item_H {
+		width: 690rpx;
+		height: 300rpx;
+		justify-content: center;
+		align-items: center;
+	}
 
-.text {
-  font-size: 36rpx;
-  color: #ffffff;
-}
-.button {
-  margin-top: 30rpx;
-}
+	.text {
+		font-size: 36rpx;
+		color: #ffffff;
+	}
+
+	.button {
+		margin-top: 30rpx;
+	}
 </style>
