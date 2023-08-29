@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-collapse-item">
-		<view class="uni-collapse-item__title" :class="{'open--active':is_open}" @click="openCollapse(!this.is_open)">
-			<text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled}">{{title}}</text>
+		<view class="uni-collapse-item__title" @click="openCollapse(!this.is_open)">
+			<text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
 			<view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
 		</view>
 		<view ref="boxRef" class="uni-collapse-item__content">
@@ -92,9 +92,7 @@
 		background-color: #fff;
 	}
 
-	.open--active {
-		background-color: #f0f0f0;
-	}
+	
 
 	.down_arrow {
 		width: 8px;
@@ -118,7 +116,12 @@
 		font-size: 14px;
 		font-weight: 400;
 	}
-
+	
+	.open--active {
+		/* background-color: #f0f0f0; */
+		color: #bbb;
+	}
+	
 	.is-disabled {
 		color: #999;
 	}
@@ -130,8 +133,8 @@
 
 	.uni-collapse-item__content-box {
 		width: 100%;
-		transition-property: transform;
-		transition-duration: 0.3s;
+		transition-property: transform , opacity;
+		transition-duration: 0.2s;
 		transform: translateY(-100%);
 		opacity: 0;
 	}
