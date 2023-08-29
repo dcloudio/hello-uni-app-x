@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/component/view/general-event'
+const PAGE_PATH = '/pages/component/general-event/general-event'
 
 describe('event trigger sequence', () => {
   let page
@@ -8,7 +8,7 @@ describe('event trigger sequence', () => {
     await page.waitFor(1000)
     el = await page.$('.target')
   })
-	
+
   it('touch', async () => {
     await el.touchstart({
       touches: [
