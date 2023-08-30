@@ -14,9 +14,17 @@ export default {
 			lower_threshold_input: 50,
 			scroll_top_input: 0,
 			scroll_left_input: 0,
-			refresher_background_input: "#FFF"
+			refresher_background_input: "#FFF",
+      scrollData: [] as Array <string>
 		}
 	},
+  onLoad() {
+  	let lists: Array < string > = []
+  	for (let i = 0; i < 10; i++) {
+  		lists.push("item---"+i)
+  	}
+  	this.scrollData = lists
+  },
 	methods: {
 		list_view_click() { console.log("组件被点击时触发") },
 		list_view_touchstart() { console.log("手指触摸动作开始") },
@@ -57,7 +65,7 @@ export default {
 
 <template>
 	<view class="main">
-	<list-view :scroll-x="scroll_x_boolean" :scroll-y="scroll_y_boolean" :rebound="rebound_boolean" :upper-threshold="upper_threshold_input" :lower-threshold="lower_threshold_input" :scroll-top="scroll_top_input" :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean" :scroll-with-animation="scroll_with_animation_boolean" :refresher-enabled="refresher_enabled_boolean" :refresher-background="refresher_background_input" :refresher-triggered="refresher_triggered_boolean" @click="list_view_click" @touchstart="list_view_touchstart" @touchmove="list_view_touchmove" @touchcancel="list_view_touchcancel" @touchend="list_view_touchend" @tap="list_view_tap" @longpress="list_view_longpress" @refresherpulling="list_view_refresherpulling" @refresherrefresh="list_view_refresherrefresh" @refresherrestore="list_view_refresherrestore" @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper" @scrolltolower="list_view_scrolltolower" @scroll="list_view_scroll" style="width:100%;"><list-item @click="list_item_click" @touchstart="list_item_touchstart" @touchmove="list_item_touchmove" @touchcancel="list_item_touchcancel" @touchend="list_item_touchend" @tap="list_item_tap" @longpress="list_item_longpress" class="list-item"><text>uni-app-x</text></list-item></list-view>
+	<list-view :scroll-x="scroll_x_boolean" :scroll-y="scroll_y_boolean" :rebound="rebound_boolean" :upper-threshold="upper_threshold_input" :lower-threshold="lower_threshold_input" :scroll-top="scroll_top_input" :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean" :scroll-with-animation="scroll_with_animation_boolean" :refresher-enabled="refresher_enabled_boolean" :refresher-background="refresher_background_input" :refresher-triggered="refresher_triggered_boolean" @click="list_view_click" @touchstart="list_view_touchstart" @touchmove="list_view_touchmove" @touchcancel="list_view_touchcancel" @touchend="list_view_touchend" @tap="list_view_tap" @longpress="list_view_longpress" @refresherpulling="list_view_refresherpulling" @refresherrefresh="list_view_refresherrefresh" @refresherrestore="list_view_refresherrestore" @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper" @scrolltolower="list_view_scrolltolower" @scroll="list_view_scroll" style="width:100%;"><list-item v-for="key in scrollData" :key="key" @click="list_item_click" @touchstart="list_item_touchstart" @touchmove="list_item_touchmove" @touchcancel="list_item_touchcancel" @touchend="list_item_touchend" @tap="list_item_tap" @longpress="list_item_longpress" class="list-item"><text>{{key}}</text></list-item></list-view>
 	</view>
 
 	<!-- #ifdef APP -->
@@ -92,8 +100,7 @@ export default {
 }
 
 .main .list-item {
-	width:750px;
-	height:1000px;
+	height: 500rpx;
 	border: 1px solid #666;
 	background-color:#66ccff;
 	align-items: center;
