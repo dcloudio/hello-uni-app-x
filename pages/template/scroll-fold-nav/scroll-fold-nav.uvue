@@ -1,93 +1,193 @@
 <template>
-	<view class="page">
-		<scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view">
-			<view class="height-seat">
-				<!-- 垫高专用 -->
+  <view class="page">
+    <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view" rebound="false">
+			<view class="height-seat" style="height: 110px;">
+			  <!-- 垫高专用 -->
 			</view>
-			<view class="content">
+      <view class="content">
 				<view class="content-item">
-					<text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听 scrollTop。</text>
-					<text class="text">2. 在模板中根据 scrollTop 的变化，通过 style 修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
+					<text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
+					<text class="text">2. 使用 ref 直接获取元素的节点，并在 scroll 事件中通过节点的 setProperty 方法来修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
 					<text class="text">3. 请向上\向下滚动页面观察效果。</text>
 				</view>
-				<view class="content-item" v-for="(item,index) in 20" :key="index">
-					<text class="text">content-{{item}}</text>
-				</view>
-			</view>
-		</scroll-view>
-		<scroll-fold-header ref="header" @back="back" @toSearchPage="toSearchPage()" />
-	</view>
+        <view class="content-item" v-for="(item,index) in 20" :key="index">
+          <text class="text">content-{{item}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view ref="top-box" class="top-box">
+      <view ref="scroll-fold-nav" class="scroll-fold-nav">
+        <view class="nav-title">DCloud 为开发者而生</view>
+      </view>
+      <view @click="back" class="nav-back">
+        <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
+      </view>
+      <view ref="search" class="search" @click="toSearchPage">
+        <view class="search-inner">
+          <image class="search-img" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
+          <text class="search-tip-text">请输入你要搜索的内容</text>
+        </view>
+        <text class="search-btn">搜索</text>
+      </view>
+    </view>
+
+  </view>
 </template>
 
 <script>
-	import scrollFoldHeader from './scroll-fold-header/scroll-fold-header.uvue';
-	export default {
-		components: { scrollFoldHeader },
-		data() {
-			return {}
+  export default {
+    data() {
+      return {
+        scrollTop: 0,
+        searchWidth: 700,
+        searchNode: null as INode | null,
+        boxNode: null as INode | null,
+        navNode: null as INode | null
+      }
+    },
+		onLoad() {},
+		onReady() {
+		  this.searchNode = this.$refs['search'] as INode;
+		  this.boxNode = this.$refs['top-box'] as INode;
+		  this.navNode = this.$refs['scroll-fold-nav'] as INode;
 		},
-		methods: {
-			onScroll(e : ScrollEvent) {
-				(this.$refs['header'] as ComponentPublicInstance).$data['scrollTop'] = (e.detail.scrollTop < 0 ? 0 : e.detail.scrollTop)
-			},
-			back() {
-				// uni.navigateBack()  // 这么写用不了
-				// 这么写可以用
-				uni.navigateBack({
-					success(result) {
-						console.log('navigateBack success', result.errMsg)
-					},
-					fail(error) {
-						console.log('navigateBack fail', error.errMsg)
-					},
-					complete(result) {
-						console.log('navigateBack complete', result.errMsg)
-					},
-				})
-			},
-			toSearchPage() {
-				uni.showToast({
-					title: '暂不支持',
-					icon: 'none'
-				});
-			}
-		},
-		onLoad() { }
-	}
+    methods: {
+      onScroll(e : ScrollEvent) {
+        let scrollTop = e.detail.scrollTop
+        this.boxNode?.style?.setProperty('height', (110 - (scrollTop > 40 ? 40 : scrollTop)) + 'px');
+        this.boxNode?.style?.setProperty('backgroundColor', 'rgba(255, 255, 255, ' + (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0 + ')');
+        this.navNode?.style?.setProperty('opacity', 1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0);
+        this.searchNode?.style?.setProperty('width', 700 - (scrollTop > 40 ? 40 : scrollTop) + 'rpx');
+        this.searchNode?.style?.setProperty('top', 0 - (scrollTop > 40 ? 40 : scrollTop) + 'px');
+        this.scrollTop = scrollTop;
+      },
+      back() {
+        // uni.navigateBack()  // 这么写用不了
+        // 这么写可以用
+        uni.navigateBack({
+          success(result) {
+            console.log('navigateBack success', result.errMsg)
+          },
+          fail(error) {
+            console.log('navigateBack fail', error.errMsg)
+          },
+          complete(result) {
+            console.log('navigateBack complete', result.errMsg)
+          },
+        })
+
+        // uni.switchTab({
+        //   url:'/pages/tabBar/template'
+        // })
+
+      },
+      toSearchPage() {
+        uni.showToast({
+          title: '暂不支持',
+          icon: 'none'
+        });
+      }
+    },
+    
+  }
 </script>
 
 <style>
-	.page {
-		flex: 1;
-		background-color: #fbdf0d;
-		/* background-color: #f5f5f5; */
-	}
+  .page {
+    flex: 1;
+    background-color: #fbdf0d;
+  }
 
-	.scroll-view {
-		flex: 1;
-	}
-
+  .scroll-view {
+    flex: 1;
+  }
+	
 	.height-seat {
 		height: 110px;
 		/* background-color: #fbdf0d; */
 	}
-
 	.content {
 		padding: 5px 15px;
 		background-color: #f5f5f5;
 	}
-
 	.content-item {
 		padding: 15px;
 		margin: 5px 0;
 		background-color: #fff;
 		border-radius: 5px;
-
-	}
-
+		
+	} 
 	.text {
 		font-size: 14px;
-		color: #666;
+		color: #666; 
 		line-height: 20px;
 	}
+
+  .top-box {
+    position: fixed;
+    top: 0;
+    padding-top: 25px;
+    align-items: flex-end;
+    border-bottom: 1px solid #efefef;
+		height:110px;
+		background-color:rgba(255,255,255,0)
+  }
+
+  .scroll-fold-nav {
+    height: 44px;
+    width: 750rpx;
+    justify-content: center;
+  }
+	
+	.nav-title {
+		margin-left: 30px;
+	}
+	
+	.nav-back {
+		position: absolute;
+		top: 35px;
+		left: 8px;
+	}
+	
+	.nav-back .back-img {
+		width: 18px;
+		margin-top: 2px;
+	}
+	
+  .search {
+    background-color: #FFFFFF;
+    border: 1px solid #fbdf0d;
+    height: 35px;
+    border-radius: 100px;
+    margin: 0 25rpx;
+    padding: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+		width:700rpx;
+		top:0px
+  }
+	
+	.search-inner {
+		margin-top: 2px;
+		flex-direction: row;
+	}
+	
+	.search-inner .search-img {
+		width: 15px;
+	}
+
+  .search-tip-text {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .search-btn {
+    font-size: 12px;
+    background-color: #ff6900;
+    color: #FFF;
+    padding: 5px 8px;
+    border-radius: 100px;
+  }
 </style>

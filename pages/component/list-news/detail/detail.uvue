@@ -1,17 +1,13 @@
 <template>
 	<!-- #ifdef APP -->
 	<scroll-view style="flex: 1">
-		<!-- #endif -->
-		<view>
-			<view class="banner">
-				<image class="banner-img" :src="cover"></image>
-				<text class="banner-title">{{title}}</text>
-			</view>
-			<view class="article-content">
-				<text>{{htmlNodes}}</text>
-			</view>
-		</view>
-		<!-- #ifdef APP -->
+	<!-- #endif -->
+    <view class="banner">
+      <image class="banner-img" :src="cover"></image>
+      <text class="banner-title">{{title}}</text>
+    </view>
+    <rich-text :nodes="htmlNodes" style="padding: 3px"></rich-text>
+	<!-- #ifdef APP -->
 	</scroll-view>
 	<!-- #endif -->
 </template>
@@ -21,33 +17,28 @@
 		data() {
 			return {
 				htmlNodes: "",
-				pageVisible: false,
 				title: '',
 				cover: "",
 				post_id: "",
 			}
 		},
 		onLoad(event) {
-			this.pageVisible = true;
+      // console.log(event);
 			this.post_id = event["post_id"] ?? "";
 			this.cover = event["cover"] ?? "";
 			this.title = event["title"] ?? "";
 			this.getDetail();
-		},
-		onUnload() {
-			this.pageVisible = false;
 		},
 		methods: {
 			getDetail() {
 				uni.request({
 					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.post_id,
 					success: (data) => {
-						if (this.pageVisible) {
-							if (data.statusCode == 200) {
-								const result = data.data as UTSJSONObject
-								this.htmlNodes = result["content"] as string;
-							}
-						}
+            if (data.statusCode == 200) {
+              const result = data.data as UTSJSONObject
+              // console.log(result["content"]);
+              this.htmlNodes = result["content"] as string;
+            }
 					},
 					fail: () => {
 						console.log('fail');
@@ -81,32 +72,10 @@
 		font-weight: 400;
 		line-height: 42rpx;
 		color: white;
-		/* z-index: 11; */
 	}
-
-	.article-meta {
-		padding: 20rpx 40rpx;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		color: gray;
-	}
-
-	.article-text {
-		font-size: 26rpx;
-		line-height: 50rpx;
-		margin: 0 20rpx;
-	}
-
-	.article-author,
-	.article-time {
-		font-size: 30rpx;
-	}
-
 	.article-content {
 		padding: 0 30rpx;
 		overflow: hidden;
-		font-size: 30rpx;
 		margin-bottom: 30rpx;
 	}
 </style>
