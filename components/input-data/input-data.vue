@@ -91,6 +91,7 @@
 	.input-wrapper_image {
 		width: 22px;
 		height: 22px;
+		align-self: center;
 		margin-right: 10rpx;
 	}
 </style>
