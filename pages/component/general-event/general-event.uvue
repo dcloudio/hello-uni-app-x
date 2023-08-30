@@ -8,6 +8,7 @@
         <view
           class="target"
           @touchstart="onTouchStart"
+          @touchcancel="onTouchCancel"
           @touchmove="onTouchMove"
           @touchend="onTouchEnd"
           @tap="onTap"
@@ -33,6 +34,37 @@
           <text class="title2 uni-common-mt">changedTouches: </text>
           <template
             v-for="(touch, index) in touchStartEvent!.changedTouches"
+            :key="index"
+          >
+            <text class="title3">touch[{{ index }}]:</text>
+            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+            <text
+              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
+            >
+            <text
+              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
+            >
+          </template>
+        </view>
+        <view v-if="touchCancelEvent !== null">
+          <text class="title1">touchCancel Event: </text>
+          <text class="title2">touches: </text>
+          <template
+            v-for="(touch, index) in touchCancelEvent!.touches"
+            :key="index"
+          >
+            <text class="title3">touch[{{ index }}]:</text>
+            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+            <text
+              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
+            >
+            <text
+              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
+            >
+          </template>
+          <text class="title2 uni-common-mt">changedTouches: </text>
+          <template
+            v-for="(touch, index) in touchCancelEvent!.changedTouches"
             :key="index"
           >
             <text class="title3">touch[{{ index }}]:</text>
@@ -161,6 +193,7 @@ export default {
       title: 'general-event',
       onTouchStartTime: 0,
       touchStartEvent: null as TouchEvent | null,
+      touchCancelEvent: null as TouchEvent | null,
       onTouchMoveTime: 0,
       touchMoveEvent: null as TouchEvent | null,
       onTouchEndTime: 0,
@@ -178,6 +211,10 @@ export default {
       this.touchStartEvent = e
       this.onTouchStartTime = Date.now()
       console.log('onTouchStart')
+    },
+    onTouchCancel(e: TouchEvent){
+      this.touchCancelEvent = e
+      console.log('onTouchCancel')
     },
     onTouchMove(e: TouchEvent){
       this.touchMoveEvent = e
