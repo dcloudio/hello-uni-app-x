@@ -25,8 +25,8 @@
 
 <script>
   type SwiperTabsItem = {
-    left : number,
-    width : number
+    x : number,
+    w : number
   }
 
   type SwiperViewItem = {
@@ -63,23 +63,41 @@
       onTabClick(index : number) {
         this.setSwiperIndex(index, false)
       },
+      /// 兼容微信 skyline 和 webview, uni-app-x 和 webview 行为一致
+      /// skyline 每项完成触发 Animationfinish，偏移值重置
+      /// webview 全部完成触发 Animationfinish，偏移值累加
+      /// 在滑动到下一个项的过程中，再次反向滑动，偏移值递减
       onSwiperTransition(e : SwiperTransitionEvent) {
-        const offsetX = e.detail.dx
-        // 兼容微信 skyline 和 webview
-        const offsetIndex = offsetX.toInt() / this.$swiperWidth
-        const currentIndex = this.$animationFinishIndex + offsetIndex.toInt()
+        const offset_x = e.detail.dx
 
-        let moveToIndex = offsetX > 0 ? currentIndex + 1 : currentIndex - 1
-        if (moveToIndex < 0) { moveToIndex = 0 }
-        if (moveToIndex > this.$swiperTabsRect.length - 1) { moveToIndex = this.$swiperTabsRect.length - 1 }
+        // 重置差异，计算当前实时索引位置
+        const current_offset_x = offset_x % this.$swiperWidth
+        const current_offset_i = offset_x / this.$swiperWidth
+        const current_index = this.$animationFinishIndex + current_offset_i.toInt()
 
-        const percentage = Math.abs(offsetX % this.$swiperWidth) / this.$swiperWidth
-        const currentSize = this.$swiperTabsRect[currentIndex]
-        const moveToSize = this.$swiperTabsRect[moveToIndex]
-        const indicatorlineL = currentSize.left + (moveToSize.left - currentSize.left) * percentage
-        const indicatorlineW = currentSize.width + (moveToSize.width - currentSize.width) * percentage
+        // 边界检查
+        let move_to_index = current_index
+        if (current_offset_x > 0) {
+          if (move_to_index < this.$swiperTabsRect.length - 1) {
+            move_to_index += 1
+          }
+        } else if (current_offset_x < 0) {
+          if (move_to_index > 0) {
+            move_to_index -= 1
+          }
+        }
 
-        this.updateTabIndicator(indicatorlineL, indicatorlineW)
+        // 计算蛇形线位置和大小
+        const percentage = Math.abs(current_offset_x) / this.$swiperWidth
+        const current_size = this.$swiperTabsRect[current_index]
+        const move_to_size = this.$swiperTabsRect[move_to_index]
+        const indicator_line_l = current_size.x + (move_to_size.x - current_size.x) * percentage
+        const indicator_line_w = current_size.w + (move_to_size.w - current_size.w) * percentage
+
+        // 更新蛇形线位置和大小
+        this.updateTabIndicator(indicator_line_l, indicator_line_w)
+
+        // console.log(current_index + "->" + move_to_index + " x=" + offset_x + " p=" + percentage)
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
@@ -90,8 +108,8 @@
         const tabs = this.$refs["swipertab"] as INode[]
         tabs.forEach((node) => {
           this.$swiperTabsRect.push({
-            left: node.offsetLeft,
-            width: node.offsetWidth
+            x: node.offsetLeft,
+            w: node.offsetWidth
           } as SwiperTabsItem)
         })
       },
@@ -102,7 +120,7 @@
         this.swiperIndex = index
 
         if (updateIndicator) {
-          this.updateTabIndicator(this.$swiperTabsRect[index].left, this.$swiperTabsRect[index].width)
+          this.updateTabIndicator(this.$swiperTabsRect[index].x, this.$swiperTabsRect[index].w)
         }
       },
       updateTabIndicator(left : Number, width : Number) {
