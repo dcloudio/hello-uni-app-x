@@ -6,6 +6,7 @@
 			<page-head title="swiper,可滑动视图"></page-head>
 			<view class="uni-margin-wrap">
 				<swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect"
+          :rebound="reboundSelect"
 					:interval="intervalSelect" :circular="circularSelect" :indicator-color="indicatorColor"
 					:indicator-active-color="indicatorColorActive" :disable-touch="disableTouchSelect" :current="currentVal"
 					:current-item-id="currentItemIdVal" @change="swiperChange" @transition="swiperTransition"
@@ -34,6 +35,10 @@
 					<view class="uni-list-cell-db">是否循环</view>
 					<switch :checked="circularSelect" @change="circularChange" />
 				</view>
+        <view class="uni-list-cell uni-list-cell-pd">
+        	<view class="uni-list-cell-db">是否显示rebound效果</view>
+        	<switch :checked="reboundSelect" @change="reboundSelectChange" />
+        </view>
 				<view class="uni-title">间隔时间(毫秒)</view>
 				<view>
 					<slider @change="sliderChange" :value="1000" :min="500" :max="5000" :show-value="true" />
@@ -83,6 +88,7 @@
 				background: ['color1', 'color2', 'color3'],
 				interval: 2000,
 				dotsSelect: false,
+        reboundSelect:false,
 				autoplaySelect: false,
 				circularSelect: false,
 				indicatorColorSelect: false,
@@ -163,6 +169,10 @@
 				this.circularSelect = e.detail.value
 				console.log(this.circularSelect)
 			},
+      reboundSelectChange: function (e : SwitchChangeEvent) {
+      	this.reboundSelect = e.detail.value
+      	console.log(this.reboundSelect)
+      },
 			sliderChange(e : SliderChangeEvent) {
 				this.intervalSelect = e.detail.value
 			},
