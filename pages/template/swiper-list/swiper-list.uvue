@@ -1,20 +1,17 @@
 <template>
   <view class="swiper-list">
-    <scroll-view class="swiper-tabs" :scroll-left="tabsScrollLeft" :scroll-x="true" :show-scrollbar="false">
+    <scroll-view ref="tabScroll" class="swiper-tabs" :scroll-x="true" :show-scrollbar="false">
       <view>
         <view class="flex-row">
-          <text class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
-            v-for="(item, index) in swiperList" ref="swipertab" :key="index" @click="onTabClick(index)">
+          <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
+            v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
             {{item.title}}
           </text>
         </view>
-        <view class="swiper-tabs-indicator">
-          <view class="swiper-tabs-underline"
-            :style="{left: swiperIndicatorLineLeft + 'px', width: swiperIndicatorLineWidth + 'px'}"></view>
-        </view>
+        <view ref="indicator" class="swiper-tabs-indicator"></view>
       </view>
     </scroll-view>
-    <swiper class="swiper-view" ref="swiper" :current="swiperIndex" @transition="onSwiperTransition"
+    <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
       @animationfinish="onSwiperAnimationfinish">
       <swiper-item class="swiper-item" v-for="(_, index) in swiperList" :key="index">
         <text class="swiper-item-text">{{index}}</text>
@@ -38,9 +35,8 @@
       return {
         swiperList: [] as SwiperViewItem[],
         swiperIndex: -1,
-        tabsScrollLeft: 0,
-        swiperIndicatorLineLeft: 0,
-        swiperIndicatorLineWidth: 0,
+        $tabScrollView: null as null | INode,
+        $indicatorNode: null as null | INode,
         $animationFinishIndex: 0,
         $swiperWidth: 0,
         $swiperTabsRect: [] as SwiperTabsItem[]
@@ -55,6 +51,8 @@
       }
     },
     onReady() {
+      this.$tabScrollView = this.$refs.get('tabScroll') as INode
+      this.$indicatorNode = this.$refs.get('indicator') as INode
       this.$swiperWidth = (this.$refs["swiper"] as INode).getBoundingClientRect().width
       this.queryTabItemsSize()
       this.setSwiperIndex(0, true)
@@ -63,14 +61,15 @@
       onTabClick(index : number) {
         this.setSwiperIndex(index, false)
       },
-      /// 兼容微信 skyline 和 webview, uni-app-x 和 webview 行为一致
-      /// skyline 每项完成触发 Animationfinish，偏移值重置
-      /// webview 全部完成触发 Animationfinish，偏移值累加
-      /// 在滑动到下一个项的过程中，再次反向滑动，偏移值递减
       onSwiperTransition(e : SwiperTransitionEvent) {
+        // skyline 每项完成触发 Animationfinish，偏移值重置
+        // webview 全部完成触发 Animationfinish，偏移值累加
+        // 在滑动到下一个项的过程中，再次反向滑动，偏移值递减
+        // uni-app-x 和 webview 行为一致
+
         const offset_x = e.detail.dx
 
-        // 重置差异，计算当前实时索引位置
+        // 重置差异，计算当前索引
         const current_offset_x = offset_x % this.$swiperWidth
         const current_offset_i = offset_x / this.$swiperWidth
         const current_index = this.$animationFinishIndex + current_offset_i.toInt()
@@ -87,14 +86,14 @@
           }
         }
 
-        // 计算蛇形线位置和大小
+        // 计算指示线位置和大小
         const percentage = Math.abs(current_offset_x) / this.$swiperWidth
         const current_size = this.$swiperTabsRect[current_index]
         const move_to_size = this.$swiperTabsRect[move_to_index]
         const indicator_line_l = current_size.x + (move_to_size.x - current_size.x) * percentage
         const indicator_line_w = current_size.w + (move_to_size.w - current_size.w) * percentage
 
-        // 更新蛇形线位置和大小
+        // 更新指示线位置和大小
         this.updateTabIndicator(indicator_line_l, indicator_line_w)
 
         // console.log(current_index + "->" + move_to_index + " x=" + offset_x + " p=" + percentage)
@@ -117,6 +116,7 @@
         if (this.swiperIndex === index) {
           return
         }
+
         this.swiperIndex = index
 
         if (updateIndicator) {
@@ -124,9 +124,13 @@
         }
       },
       updateTabIndicator(left : Number, width : Number) {
-        this.swiperIndicatorLineLeft = left
-        this.swiperIndicatorLineWidth = width
-        this.tabsScrollLeft = left + width / 2 - this.$swiperWidth / 2
+        // 更新指示线
+        const x = left + width / 2
+        this.$indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${width}px)`)
+
+        // 将指示线滚动到水平中心位置
+        const scroll_x = x - this.$swiperWidth / 2
+        this.$tabScrollView?.setAttribute('scrollLeft', scroll_x)
       }
     }
   }
@@ -156,15 +160,8 @@
   }
 
   .swiper-tabs-indicator {
-    position: relative;
+    width: 1px;
     height: 2px;
-  }
-
-  .swiper-tabs-underline {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 0;
     background-color: #007AFF;
   }
 
