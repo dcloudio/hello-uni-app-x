@@ -35,8 +35,7 @@
 			input: function (event : InputEvent) {
 				// @ts-ignore
 				this.inputClearValue = event.detail.value
-				// @ts-ignore
-				if (event.detail.value.length > 0) {
+				if ((this.inputClearValue as string).length > 0) {
 					this.showClearIcon = true
 				} else {
 					this.showClearIcon = false
@@ -51,6 +50,20 @@
 			// @ts-ignore
 			confirm(e : InputConfirmEvent) {
 				// this.$emit('confirm', this.getValue(e.detail.value))
+			},
+			blur() {
+				this.showClearIcon = false
+			},
+			focus() {
+				let inputValue = this.inputClearValue
+				if (typeof inputValue !== 'string') {
+					inputValue = inputValue.toString()
+				}
+				if ((inputValue as string).length > 0) {
+					this.showClearIcon = true
+				} else {
+					this.showClearIcon = false
+				}
 			},
 			getValue(value : any) : any {
 				switch (this.type) {
@@ -70,9 +83,9 @@
 			<text class="uni-title-text"> {{title}} </text>
 		</view>
 	</view>
-	<view class="uni-input-wrapper input-wrapper uni-flex">
+	<view class="uni-input-wrapper input-wrapper">
 		<input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" @input="input"
-			@confirm="confirm" />
+			@confirm="confirm" @blur="blur" @focus="focus"/>
 		<image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
 		</image>
 	</view>
