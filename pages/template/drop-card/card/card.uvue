@@ -56,19 +56,19 @@
           screenHeight = e.screenHeight;
         }
       })
-      
+
       // TODO 需要延迟设置才能生效
       setTimeout(()=>{
         this.setINodeStyle('card','height', screenHeight * 0.7 + 'px');
         this.setINodeStyle('card-img','height', screenHeight * 0.7 + 'px');
         this.initCardStyle()
       },200)
-      
+
       uni.$on('uni-drop-card-float',()=>{
         this.floatCount ++
         this.initCardStyle()
       })
-      
+
     },
     methods: {
       initCardStyle(){
@@ -119,7 +119,7 @@
           return // 浮动动画进行中
         }
         floating = true
-    
+
         // 设置释放之后飘走的方向 0回到坐标中心 1向右 2向左
         let k:number = 0;
         if (this.x > screenWidth / 10 ) {
@@ -127,60 +127,53 @@
         }else if(this.x < screenWidth * -1 / 10){
           k = -1
         }
-        
-        function cardTo(x:number,y:number,callback: () => void,s:number = 10){
-          // console.log('s',s);
-          // console.log('--cardTo---',x,y);
+
+        function cardTo(x:number,y:number,callback: () => void,speed:number = 10){
           let interval:number = 0
-          let _k:number = 1
+          let acceleration:number = 1
           interval = setInterval(()=>{
             // 加速度
-            _k += 0.2
-            
+            acceleration += 0.2
+
             const dx = x - this.x
-            if(this.x.toInt() != x){
-              this.x += dx/s*_k
-              // console.log('dx/s*_k',dx/s*_k)
-              if(Math.abs(dx) < 3){
-                this.x = x
-              }
+            if(Math.abs(dx) < 1){
+              this.x = x
+            }else{
+              this.x += dx/speed*acceleration
             }
+
             const dy = y - this.y
-            if(this.y.toInt() != y){
-              this.y += dy/s*_k
-              // console.log('dy/s*_k',dy/s*_k)
-              if(Math.abs(dy) < 3){
-                this.y = y
-              }
+            if(Math.abs(dy) < 1){
+              this.y = y
+            }else{
+              this.y += dy/speed*acceleration
             }
-            // console.log('this.x',this.x,'this.y',this.y);
-            // console.log('x',x,'y',y);
-            
+
             this.moveCard()
-            if( this.x.toInt() == x.toInt() && this.y.toInt() == y.toInt()){
+            if( this.x == x && this.y == y){
               clearInterval(interval)
               callback()
-            } 
+            }
           },16)
         }
-        
+
         if(k.toInt() != 0){
           cardTo(k * screenWidth * 1.3, this.y * 3,()=>{
             //  状态图标变回透明
             this.setINodeStyle("state-icon-like",'opacity', 0)
             this.setINodeStyle("state-icon-dislike",'opacity', 0)
-            
+
             // 设置为透明，防止飘回时因为 margin-top 太高，露出来
             this.setINodeStyle("card",'opacity', 0)
             setTimeout(()=>{
               this.setINodeStyle("card",'opacity', 1)
             },300)
-            
+
             // 执行卡片飘动后事件，注意uni.$emit是全局事件。其他卡片也会执行
-            uni.$emit('uni-drop-card-float',null) 
+            uni.$emit('uni-drop-card-float',null)
             floating = false
           },8)
-        }else{ 
+        }else{
           const _x:number = this.x
           const _y:number = this.y
           cardTo( (_x*-0.05).toInt() , (_y*-0.05).toInt() ,()=>{
