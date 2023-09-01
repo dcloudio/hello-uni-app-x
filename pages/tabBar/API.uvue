@@ -1,7 +1,7 @@
 <template>
 	<!-- #ifdef APP -->
 	<scroll-view style="flex: 1">
-		<!-- #endif -->
+	<!-- #endif -->
 		<view class="uni-container">
 			<view class="uni-header-logo">
 				<image class="uni-header-image" src="/static/apiIndex.png"></image>
@@ -23,9 +23,14 @@
 			</uni-collapse>
 
 		</view>
-		<!-- #ifdef APP -->
+	<!-- #ifdef APP -->
 	</scroll-view>
 	<!-- #endif -->
+  <view ref="pop" @click="hidePop()" style="width: 100%; height: 100%; position: absolute;align-items: center;justify-content: center; display: none;background-color: rgba(16, 16, 16, 0.5);">
+  	<view style="width: 90%;background-color: white;" @click="stopClickPop">
+      <api-set-tabbar></api-set-tabbar>
+  	</view>
+  </view>
 </template>
 
 <script lang="uts">
@@ -95,12 +100,10 @@
 							{
 								name: '设置TabBar',
 								url: 'set-tabbar',
-								enable: false,
 							},
 							{
 								name: '页面下拉刷新',
 								url: 'pull-down-refresh',
-								enable: true,
 							},
 							{
 								name: '将页面滚动到指定位置',
@@ -481,12 +484,25 @@
 					})
 					return
 				}
+        if (e.url === 'set-tabbar') {
+        	this.showPop()
+        	return;
+        }
 				const url =
 					e.url.indexOf('platform') > -1 ? e.url : `/pages/API/${e.url}/${e.url}`
 				uni.navigateTo({
 					url,
 				})
 			},
+      showPop: function () {
+      	(this.$refs["pop"] as INode).style.setProperty("display","flex")
+      },
+      hidePop: function () {
+      	(this.$refs["pop"] as INode).style.setProperty("display","none")
+      },
+      stopClickPop: function (e:MouseEvent) {
+      	e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
+      }
 		},
 	}
 </script>
