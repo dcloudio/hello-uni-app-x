@@ -1,6 +1,7 @@
 <template>
   <view class="swiper-list">
     <scroll-view ref="tabScroll" class="swiper-tabs" :scroll-x="true" :show-scrollbar="false">
+      <!-- TODO 多一层 view -->
       <view>
         <view class="flex-row">
           <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
@@ -62,10 +63,10 @@
         this.setSwiperIndex(index, false)
       },
       onSwiperTransition(e : SwiperTransitionEvent) {
-        // skyline 每项完成触发 Animationfinish，偏移值重置
-        // webview 全部完成触发 Animationfinish，偏移值累加
+        // 微信 skyline 每项完成触发 Animationfinish，偏移值重置
+        // 微信 webview 全部完成触发 Animationfinish，偏移值累加
         // 在滑动到下一个项的过程中，再次反向滑动，偏移值递减
-        // uni-app-x 和 webview 行为一致
+        // uni-app-x 和 微信 webview 行为一致
 
         const offset_x = e.detail.dx
 
@@ -74,29 +75,21 @@
         const current_offset_i = offset_x / this.$swiperWidth
         const current_index = this.$animationFinishIndex + current_offset_i.toInt()
 
-        // 边界检查
+        // 更新索引及边界检查
         let move_to_index = current_index
-        if (current_offset_x > 0) {
-          if (move_to_index < this.$swiperTabsRect.length - 1) {
-            move_to_index += 1
-          }
-        } else if (current_offset_x < 0) {
-          if (move_to_index > 0) {
-            move_to_index -= 1
-          }
+        if (current_offset_x > 0 && move_to_index < this.swiperList.length - 1) {
+          move_to_index += 1
+        } else if (current_offset_x < 0 && move_to_index > 0) {
+          move_to_index -= 1
         }
 
-        // 计算指示线位置和大小
+        // 计算偏移百分比
         const percentage = Math.abs(current_offset_x) / this.$swiperWidth
-        const current_size = this.$swiperTabsRect[current_index]
-        const move_to_size = this.$swiperTabsRect[move_to_index]
-        const indicator_line_l = current_size.x + (move_to_size.x - current_size.x) * percentage
-        const indicator_line_w = current_size.w + (move_to_size.w - current_size.w) * percentage
 
-        // 更新指示线位置和大小
-        this.updateTabIndicator(indicator_line_l, indicator_line_w)
+        // 通知更新指示线
+        this.updateTabIndicator(current_index, move_to_index, percentage)
 
-        // console.log(current_index + "->" + move_to_index + " x=" + offset_x + " p=" + percentage)
+        // console.log(current_index + "->" + move_to_index+ " p=" + percentage + " x=" + offset_x )
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
@@ -120,13 +113,19 @@
         this.swiperIndex = index
 
         if (updateIndicator) {
-          this.updateTabIndicator(this.$swiperTabsRect[index].x, this.$swiperTabsRect[index].w)
+          this.updateTabIndicator(index, index, 1)
         }
       },
-      updateTabIndicator(left : number, width : number) {
+      updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
+        // 计算指示线
+        const current_size = this.$swiperTabsRect[current_index]
+        const move_to_size = this.$swiperTabsRect[move_to_index]
+        const indicator_line_l = current_size.x + (move_to_size.x - current_size.x) * percentage
+        const indicator_line_w = current_size.w + (move_to_size.w - current_size.w) * percentage
+
         // 更新指示线
-        const x = left + width / 2
-        this.$indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${width}px)`)
+        const x = indicator_line_l + indicator_line_w / 2
+        this.$indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
 
         // 将指示线滚动到水平中心位置
         const scroll_x = x - this.$swiperWidth / 2
