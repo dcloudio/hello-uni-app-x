@@ -55,7 +55,7 @@
       this.$tabScrollView = this.$refs.get('tabScroll') as INode
       this.$indicatorNode = this.$refs.get('indicator') as INode
       this.$swiperWidth = (this.$refs["swiper"] as INode).getBoundingClientRect().width
-      this.queryTabItemsSize()
+      this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
     methods: {
@@ -70,12 +70,12 @@
 
         const offset_x = e.detail.dx
 
-        // 重置差异，计算当前索引
+        // 计算当前索引并重置差异
         const current_offset_x = offset_x % this.$swiperWidth
         const current_offset_i = offset_x / this.$swiperWidth
         const current_index = this.$animationFinishIndex + current_offset_i.toInt()
 
-        // 更新索引及边界检查
+        // 计算目标索引及边界检查
         let move_to_index = current_index
         if (current_offset_x > 0 && move_to_index < this.swiperList.length - 1) {
           move_to_index += 1
@@ -88,14 +88,12 @@
 
         // 通知更新指示线
         this.updateTabIndicator(current_index, move_to_index, percentage)
-
-        // console.log(current_index + "->" + move_to_index+ " p=" + percentage + " x=" + offset_x )
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
         this.$animationFinishIndex = e.detail.current
       },
-      queryTabItemsSize() {
+      cacheTabItemsSize() {
         this.$swiperTabsRect.length = 0;
         const tabs = this.$refs["swipertab"] as INode[]
         tabs.forEach((node) => {
@@ -120,14 +118,14 @@
         // 计算指示线
         const current_size = this.$swiperTabsRect[current_index]
         const move_to_size = this.$swiperTabsRect[move_to_index]
-        const indicator_line_l = current_size.x + (move_to_size.x - current_size.x) * percentage
+        const indicator_line_x = current_size.x + (move_to_size.x - current_size.x) * percentage
         const indicator_line_w = current_size.w + (move_to_size.w - current_size.w) * percentage
 
         // 更新指示线
-        const x = indicator_line_l + indicator_line_w / 2
+        const x = indicator_line_x + indicator_line_w / 2
         this.$indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
 
-        // 将指示线滚动到水平中心位置
+        // 滚动到水平中心位置
         const scroll_x = x - this.$swiperWidth / 2
         this.$tabScrollView?.setAttribute('scrollLeft', scroll_x)
       }
