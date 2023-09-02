@@ -1,108 +1,107 @@
 <template>
-    <view>
-        <page-head :title="title"></page-head>
-        <view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-list">
-			    <radio-group @change="radioChange">
-			        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-			            :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
-			            :checked="index === current">
-			            {{item.name}}
-			        </radio>
-			    </radio-group>
-			</view>
-			<view class="uni-list-cell uni-list-cell-pd">
-			  <view class="uni-list-cell-db">高度信息</view>
-			  <switch :checked="altitudeSelect" @change="altitudeChange" />
-			</view>
-			<view class="uni-list-cell uni-list-cell-pd">
-			  <view class="uni-list-cell-db">开启高精度定位</view>
-			  <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
-			</view>
-			<view class="uni-list-cell uni-list-cell-pd">
-			  <view class="uni-list-cell-db">是否解析地址信息</view>
-			  <switch :checked="geocodeSelect" @change="geocodeChange" />
-			</view>
-			<text>{{exeRet}}</text>
-            <view class="uni-btn-v">
-                <button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
-            </view>
-        </view>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-list">
+        <radio-group @change="radioChange">
+          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+            :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
+            :checked="index === current">
+            {{item.name}}
+          </radio>
+        </radio-group>
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">高度信息</view>
+        <switch :checked="altitudeSelect" @change="altitudeChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">开启高精度定位</view>
+        <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">是否解析地址信息</view>
+        <switch :checked="geocodeSelect" @change="geocodeChange" />
+      </view>
+      <text>{{exeRet}}</text>
+      <view class="uni-btn-v">
+        <button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
+      </view>
     </view>
+  </view>
 </template>
 <script lang="uts">
-	type ItemType = {
-	    value : string,
-	    name : string,
-	}
-    export default {
-        data() {
-            return {
-                title: 'get-location',
-				altitudeSelect:false,
-				isHighAccuracySelect:false,
-				geocodeSelect:false,
-				exeRet:'',
-				items: [{
-				    value: 'gcj02',
-				    name: 'gcj02'
-				},
-				{
-				    value: 'wgs84',
-				    name: 'wgs84'
-				}
-				] as ItemType[],
-				current: 0,
-            }
+  type ItemType = {
+    value : string,
+    name : string,
+  }
+  export default {
+    data() {
+      return {
+        title: 'get-location',
+        altitudeSelect: false,
+        isHighAccuracySelect: false,
+        geocodeSelect: false,
+        exeRet: '',
+        items: [{
+          value: 'gcj02',
+          name: 'gcj02'
         },
-        methods: {
-			altitudeChange: function (e : SwitchChangeEvent) {
-				this.altitudeSelect = e.detail.value
-			},
-			geocodeChange: function (e : SwitchChangeEvent) {
-				this.geocodeSelect = e.detail.value
-			},
-			highAccuracySelectChange: function (e : SwitchChangeEvent) {
-				this.isHighAccuracySelect = e.detail.value
-			},
-			radioChange(e : RadioGroupChangeEvent) {
-			    for (let i = 0; i < this.items.length; i++) {
-			        if (this.items[i].value === e.detail.value) {
-			            this.current = i;
-			            break;
-			        }
-			    }
-			},
-            getLocationTap: function () {
-				uni.showLoading({
-					title:'定位中'
-				})
-				console.log(this.altitudeSelect)
-				uni.getLocation(({  
-				    type: this.items[this.current].value,  
-					altitude:this.altitudeSelect,
-					isHighAccuracy:this.isHighAccuracySelect,
-					geocode:this.geocodeSelect,
-				    success: function (res:any) {  
-						uni.hideLoading()
-				        console.log(res);  
-						this.exeRet = JSON.stringify(res)
-				    },
-					fail: function (res:any) {
-						uni.hideLoading()
-					    console.log(res);  
-						this.exeRet = JSON.stringify(res)
-					} ,
-					complete: function (res:any) {
-						uni.hideLoading()
-					    console.log(res);  
-						this.exeRet = JSON.stringify(res)
-					} 
-				}));
-				
-				
-            }
-            
+        {
+          value: 'wgs84',
+          name: 'wgs84'
         }
+        ] as ItemType[],
+        current: 0,
+      }
+    },
+    methods: {
+      altitudeChange: function (e : SwitchChangeEvent) {
+        this.altitudeSelect = e.detail.value
+      },
+      geocodeChange: function (e : SwitchChangeEvent) {
+        this.geocodeSelect = e.detail.value
+      },
+      highAccuracySelectChange: function (e : SwitchChangeEvent) {
+        this.isHighAccuracySelect = e.detail.value
+      },
+      radioChange(e : RadioGroupChangeEvent) {
+        for (let i = 0; i < this.items.length; i++) {
+          if (this.items[i].value === e.detail.value) {
+            this.current = i;
+            break;
+          }
+        }
+      },
+      getLocationTap: function () {
+        uni.showLoading({
+          title: '定位中'
+        })
+        uni.getLocation(({
+          type: this.items[this.current].value,
+          altitude: this.altitudeSelect,
+          isHighAccuracy: this.isHighAccuracySelect,
+          geocode: this.geocodeSelect,
+          success: function (res : any) {
+            uni.hideLoading()
+            console.log(res);
+            this.exeRet = JSON.stringify(res)
+          },
+          fail: function (res : any) {
+            uni.hideLoading()
+            console.log(res);
+            this.exeRet = JSON.stringify(res)
+          },
+          complete: function (res : any) {
+            uni.hideLoading()
+            console.log(res);
+            this.exeRet = JSON.stringify(res)
+          }
+        }));
+
+
+      }
+
     }
+  }
 </script>
