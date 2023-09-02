@@ -1,5 +1,6 @@
 <template>
-  <list-view class="list" ref="listView" @scrolltolower="loadData" scroll-y = true>
+  <list-view ref="listView" class="list" :rebound="false" :scroll-y="true" :custom-nested-scroll="true"
+    @scrolltolower="loadData">
     <!-- TODO 暂时这样写才能保证 loading 在 list 底部 -->
     <template v-for="(item, index) in dataList" :key="index">
       <list-item class="list-item">
@@ -102,9 +103,8 @@
         }
         this.loading = true
 
-        // TODO request data 没有拼接到 url 中，暂时手动拼接
         uni.request<ResponseDataType>({
-          url: `${SERVER_URL}?type=${this.type}&page=${this.$currentPage}&page_size=${PAGE_SIZE}`,
+          url: SERVER_URL,
           data: {
             type: this.type,
             page: this.$currentPage,
@@ -133,7 +133,7 @@
         })
       },
       // score 0 ~ 50
-      convertToStarUnicode(score : number) : string {
+      convertToStarUnicode(score : Number) : string {
         const fill_code = '\ue879'
         const half_code = '\ue87a'
         const null_code = '\ue87b'
@@ -190,7 +190,7 @@
   }
 
   .icon-star {
-    font-family: "UtsIconsFontFamily";
+    font-family: "UtsIconsFontFamily" !important;
     font-size: 16px;
     font-style: normal;
     color: #ffca3e;
@@ -236,5 +236,6 @@
     padding: 20px;
     text-align: center;
     background-color: #f8f8f8;
+    margin-bottom: 1px;
   }
 </style>
