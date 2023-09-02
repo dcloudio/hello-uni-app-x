@@ -1,6 +1,7 @@
 <template>
-  <scroll-view class="page" :scroll-top="pageScrollTop">
-    <view class="search-bar" ref="header">
+  <scroll-view ref="pageScrollView" class="page" :scroll-y="true" :rebound="false"
+    @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll">
+    <view ref="header" class="search-bar">
       <input placeholder="搜索..." />
     </view>
     <view class="swiper-list">
@@ -37,7 +38,7 @@
   type SwiperViewItem = {
     type : string,
     name : string,
-    preload : Boolean,
+    preload : boolean,
   }
 
   /**
@@ -58,7 +59,6 @@
     },
     data() {
       return {
-        pageScrollTop: 0,
         swiperList: [
           {
             type: 'UpdatedDate',
@@ -79,23 +79,59 @@
           } as SwiperViewItem
         ] as SwiperViewItem[],
         swiperIndex: -1,
-        $tabScrollView: null as null | INode,
-        $indicatorNode: null as null | INode,
+        $pageScrollView: null as null | INode,
         $headerHeight: 0,
         $animationFinishIndex: 0,
+        $tabScrollView: null as null | INode,
+        $indicatorNode: null as null | INode,
         $swiperWidth: 0,
         $swiperTabsRect: [] as SwiperTabsItem[]
       }
     },
     onReady() {
-      this.$tabScrollView = this.$refs.get('tabScroll') as INode
-      this.$indicatorNode = this.$refs.get('indicator') as INode
+      this.$pageScrollView = this.$refs['pageScrollView'] as INode;
       this.$headerHeight = (this.$refs["header"] as INode).offsetHeight
       this.$swiperWidth = (this.$refs["swiper"] as INode).getBoundingClientRect().width
-      this.queryTabItemsSize()
+      this.$tabScrollView = this.$refs.get('tabScroll') as INode
+      this.$indicatorNode = this.$refs.get('indicator') as INode
+      this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
     methods: {
+      // TODO
+      onStartNestedScroll(event : StartNestedScrollEvent) : boolean {
+        return true
+      },
+      onNestedPreScroll(event : NestedPreScrollEvent) {
+        const deltaY = event.deltaY
+        const scrollTop = this.$pageScrollView!.scrollTop
+        // console.log("deltaY=" + deltaY, "pageScrollTop=" + scrollTop)
+
+        /// 优先处理父容器滚动，父容器不能滚动时在滚动子
+
+        // 向上滚动
+        if (deltaY > 0) {
+          // 如果父容器 header scrollTop < offsetHeight，先滚动父容器
+          if (scrollTop < this.$headerHeight) {
+            // console.log('pageScrollTop=' + scrollTop)
+            const difference = this.$headerHeight - scrollTop - deltaY
+            if (difference > 0) {
+              this.$pageScrollView!.scrollBy(event.deltaX, deltaY)
+              event.consumed(event.deltaX, deltaY)
+            } else {
+              const top : number = deltaY + difference
+              event.consumed(event.deltaX, top.toFloat())
+              this.$pageScrollView!.scrollBy(event.deltaX, top.toFloat())
+            }
+          }
+        } else if (deltaY < 0) {
+          // 向下滚动，如果父容器 scrollTop > 0，通知子被父容器消耗，然后滚动到 0
+          if (scrollTop > 0) {
+            event.consumed(event.deltaX, deltaY)
+            this.$pageScrollView!.scrollBy(event.deltaX, deltaY)
+          }
+        }
+      },
       onTabClick(index : number) {
         this.setSwiperIndex(index, false)
       },
@@ -103,16 +139,16 @@
         // 微信 skyline 每项完成触发 Animationfinish，偏移值重置
         // 微信 webview 全部完成触发 Animationfinish，偏移值累加
         // 在滑动到下一个项的过程中，再次反向滑动，偏移值递减
-        // uni-app-x 微信 webview 行为一致
+        // uni-app-x 和微信 webview 行为一致
 
         const offset_x = e.detail.dx
 
-        // 重置差异，计算当前索引
+        // 计算当前索引并重置差异
         const current_offset_x = offset_x % this.$swiperWidth
         const current_offset_i = offset_x / this.$swiperWidth
         const current_index = this.$animationFinishIndex + current_offset_i.toInt()
 
-        // 更新索引及边界检查
+        // 计算目标索引及边界检查
         let move_to_index = current_index
         if (current_offset_x > 0 && move_to_index < this.swiperList.length - 1) {
           move_to_index += 1
@@ -133,7 +169,7 @@
         this.setSwiperIndex(e.detail.current, true)
         this.$animationFinishIndex = e.detail.current
       },
-      queryTabItemsSize() {
+      cacheTabItemsSize() {
         this.$swiperTabsRect.length = 0
         const tabs = this.$refs["swipertab"] as INode[]
         tabs.forEach((node) => {
@@ -143,7 +179,7 @@
           } as SwiperTabsItem)
         })
       },
-      setSwiperIndex(index : Number, updateIndicator : Boolean) {
+      setSwiperIndex(index : number, updateIndicator : boolean) {
         if (this.swiperIndex === index) {
           return
         }
@@ -171,7 +207,7 @@
         const scroll_x = x - this.$swiperWidth / 2
         this.$tabScrollView?.setAttribute('scrollLeft', scroll_x)
       },
-      initSwiperItemPage(index : Number) {
+      initSwiperItemPage(index : number) {
         if (!this.swiperList[index].preload) {
           this.swiperList[index].preload = true;
           (this.$refs["longPage"]! as ComponentPublicInstance[])[index].$callMethod('loadData')
@@ -195,8 +231,7 @@
   }
 
   .swiper-list {
-    flex: 1;
-    /* height: 100%; */
+    height: 100%;
   }
 
   .swiper-tabs {
