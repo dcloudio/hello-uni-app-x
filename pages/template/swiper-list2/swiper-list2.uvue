@@ -22,6 +22,18 @@
     title : string,
   }
 
+  /**
+   * 根据权重在两个值之间执行线性插值.
+   * @constructor
+   * @param {number} value1 - 第一个值，该值应为下限.
+   * @param {number} value2 - 第二个值，该值应为上限.
+   * @param {number} amount - 应介于 0 和 1 之间，指示内插的权重.
+   * @returns {number} 内插值
+   */
+  function lerpNumber(value1 : number, value2 : number, amount : number) : number {
+    return (value1 + (value2 - value1) * amount)
+  }
+
   export default {
     data() {
       return {
@@ -99,28 +111,17 @@
         const move_to_node = tabs[move_to_index]!
 
         // 当前
-        const current_scale = this.lerpNumber(min_ratio, max_ratio, 1 - percentage)
+        const current_scale = lerpNumber(min_ratio, max_ratio, 1 - percentage)
         current_node.style?.setProperty('transform', `scale(${current_scale})`)
 
         // 目标
-        const move_to_scale = this.lerpNumber(min_ratio, max_ratio, percentage)
+        const move_to_scale = lerpNumber(min_ratio, max_ratio, percentage)
         move_to_node.style?.setProperty('transform', `scale(${move_to_scale})`)
 
         // 滚动到水平中心位置
         const target_x = current_node.offsetLeft + (move_to_node.offsetLeft - current_node.offsetLeft) * percentage
         const center_x = target_x + move_to_node.offsetWidth / 2 - this.$swiperWidth / 2
         this.$tabScrollView?.setAttribute('scrollLeft', center_x)
-      },
-      /**
-       * 根据权重在两个值之间执行线性插值.
-       * @constructor
-       * @param {number} value1 - 第一个值，该值应为下限.
-       * @param {number} value2 - 第二个值，该值应为上限.
-       * @param {number} amount - 应介于 0 和 1 之间，指示内插的权重.
-       * @returns {number} 内插值
-       */
-      lerpNumber(value1 : number, value2 : number, amount : number) : number {
-        return (value1 + (value2 - value1) * amount)
       }
     }
   }

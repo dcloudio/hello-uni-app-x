@@ -31,6 +31,18 @@
     title : string,
   }
 
+  /**
+   * 根据权重在两个值之间执行线性插值.
+   * @constructor
+   * @param {number} value1 - 第一个值，该值应为下限.
+   * @param {number} value2 - 第二个值，该值应为上限.
+   * @param {number} amount - 应介于 0 和 1 之间，指示内插的权重.
+   * @returns {number} 内插值
+   */
+  function lerpNumber(value1 : number, value2 : number, amount : number) : number {
+    return (value1 + (value2 - value1) * amount)
+  }
+
   export default {
     data() {
       return {
@@ -118,8 +130,8 @@
         // 计算指示线
         const current_size = this.$swiperTabsRect[current_index]
         const move_to_size = this.$swiperTabsRect[move_to_index]
-        const indicator_line_x = current_size.x + (move_to_size.x - current_size.x) * percentage
-        const indicator_line_w = current_size.w + (move_to_size.w - current_size.w) * percentage
+        const indicator_line_x = lerpNumber(current_size.x, move_to_size.x, percentage)
+        const indicator_line_w = lerpNumber(current_size.w, move_to_size.w, percentage)
 
         // 更新指示线
         const x = indicator_line_x + indicator_line_w / 2
