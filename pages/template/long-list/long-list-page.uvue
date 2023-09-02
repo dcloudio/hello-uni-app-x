@@ -103,16 +103,15 @@
         this.loading = true
 
         // TODO request data 没有拼接到 url 中，暂时手动拼接
-        uni.request({
+        uni.request<ResponseDataType>({
           url: `${SERVER_URL}?type=${this.type}&page=${this.$currentPage}&page_size=${PAGE_SIZE}`,
           data: {
             type: this.type,
             page: this.$currentPage,
             page_size: PAGE_SIZE
           },
-          dataType: '',
           success: (res) => {
-            const responseData = JSON.parse<ResponseDataType>(res.data as string)
+            const responseData = res.data
             if (responseData == null) {
               return
             }
