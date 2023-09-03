@@ -36,8 +36,9 @@
 <script lang="uts">
 	type Page = {
 		name : string
-		enable ?: boolean
 		url : string
+		enable ?: boolean
+    api ?: Array<string>
 	}
 	type ListItem = {
 		id : string
@@ -52,8 +53,8 @@
 			return {
 				list: [
 					{
-						id: 'base',
-						name: '基础',
+						id: 'globle',
+						name: '全局',
 						open: false,
 						pages: [
 							{
@@ -63,31 +64,40 @@
 							{
 								name: 'getCurrentPages',
 								url: 'get-current-pages',
-							},
+							}
+						] as Page[],
+					},
+          {
+						id: 'base',
+						name: '基础',
+						open: false,
+						pages: [
 							{
 								name: '事件总线event-bus',
 								url: 'event-bus',
+                api:["$on","$once","$off","$emit"]
 							},
 							{
 								name: '获取启动参数',
 								url: 'get-launch-options-sync',
 							},
+              {
+								name: '退出应用',
+								url: 'exit',
+							},
 						] as Page[],
 					},
 					{
 						id: 'page',
-						name: '页面',
+						name: '页面和路由',
 						open: false,
 						pages: [
 							{
 								name: '页面跳转',
 								url: 'navigator',
+                api:["navigator","reLaunch","navigateBack","redirectTo","switchTab"]
 							},
-							/* {
-								name: '页面栈管理',
-								url: 'getCurrentPages',
-								enable: false,
-							},
+							/*
 							{
 								name: '设置导航条标题',
 								url: 'set-navigation-bar-title',
@@ -100,10 +110,12 @@
 							{
 								name: '设置TabBar',
 								url: 'set-tabbar',
+                api:["showTabBar","hideTabBar","showTabBarRedDot","hideTabBarRedDot","setTabBarBadge","removeTabBarBadge","setTabBarStyle","setTabBarItem"]
 							},
 							{
 								name: '页面下拉刷新',
 								url: 'pull-down-refresh',
+                api:["stopPullDownRefresh"]
 							},
 							{
 								name: '将页面滚动到指定位置',
@@ -111,6 +123,39 @@
 							},
 						] as Page[],
 					},
+          {
+          	id: 'network',
+          	name: '网络',
+          	open: false,
+          	pages: [
+          		{
+          			name: '发起一个请求',
+          			url: 'request',
+          		},
+          		{
+          			name: '上传文件',
+          			url: 'upload-file',
+          		},
+          		{
+          			name: '下载文件',
+          			url: 'download-file',
+          		},
+              {
+              	name: '获取设备网络状态',
+              	url: 'get-network-type',
+              },
+              {
+              	name: 'socketTask',
+              	url: 'websocket-socketTask',
+                api:[""] //它不是uni.的api
+              },
+              {
+              	name: '全局websocket',
+              	url: 'websocket-global',
+                api:["connectSocket","onSocketOpen","onSocketError","sendSocketMessage","onSocketMessage","closeSocket","onSocketClose"]
+              },
+          	] as Page[],
+          },
 					{
 						id: 'ui',
 						name: '界面',
@@ -134,6 +179,7 @@
 							{
 								name: '节点信息',
 								url: 'nodes-info',
+                api:["createSelectorQuery"]
 							},
 							{
 								name: '显示操作菜单',
@@ -142,6 +188,7 @@
 							{
 								name: '显示模态弹窗',
 								url: 'modal',
+                api:["showModal"]
 							},
 							{
 								name: '显示加载提示框',
@@ -150,6 +197,7 @@
 							{
 								name: '显示消息提示框',
 								url: 'toast',
+                api:["showToast"]
 							},
 							{
 								name: '动态加载字体',
@@ -163,10 +211,6 @@
 						open: false,
 						pages: [
 							{
-								name: '获取设备网络状态',
-								url: 'get-network-type',
-							},
-							{
 								name: '获取系统信息',
 								url: 'get-system-info',
 							},
@@ -175,20 +219,20 @@
 								url: 'get-device-info',
 							},
 							{
-								name: '获取APP基础信息',
-								url: 'get-app-base-info',
+								name: '获取窗口信息',
+								url: 'get-window-info',
 							},
 							{
-								name: '获取系统设置',
-								url: 'get-system-setting',
+								name: '获取APP基础信息',
+								url: 'get-app-base-info',
 							},
 							{
 								name: '获取APP授权设置',
 								url: 'get-app-authorize-setting',
 							},
 							{
-								name: '获取窗口信息',
-								url: 'get-window-info',
+								name: '获取系统设置',
+								url: 'get-system-setting',
 							},
 							{
 								name: '电量',
@@ -249,40 +293,6 @@
 						] as Page[],
 					},
 					{
-						id: 'network',
-						name: '网络',
-						open: false,
-						pages: [
-							{
-								name: '发起一个请求',
-								url: 'request',
-							},
-							{
-								name: '上传文件',
-								url: 'upload-file',
-							},
-							{
-								name: '下载文件',
-								url: 'download-file',
-							},
-						] as Page[],
-					},
-					{
-						id: 'websocket',
-						name: 'websocket',
-						open: false,
-						pages: [
-							{
-								name: 'socketTask',
-								url: 'websocket-socketTask',
-							},
-							{
-								name: '全局websocket',
-								url: 'websocket-global',
-							},
-						] as Page[],
-					},
-					{
 						id: 'media',
 						name: '媒体',
 						open: false,
@@ -290,6 +300,7 @@
 							{
 								name: '图片选择和预览',
 								url: 'preview-image',
+								api: ["previewImage","closePreviewImage","chooseImage"]
 							},
 							{
 								name: "保存图片到相册",
@@ -355,12 +366,13 @@
 					},
 					{
 						id: 'storage',
-						name: '存储',
+						name: '数据存储',
 						open: false,
 						pages: [
 							{
 								name: 'storage（key-value存储）',
 								url: 'storage',
+                api:["uni.getStorageInfo","uni.getStorageInfoSync","uni.getStorage","uni.getStorageSync","uni.setStorage","uni.setStorageSync","uni.removeStorage","uni.removeStorageSync","uni.clearStorage","uni.clearStorageSync"]
 							},
 						] as Page[],
 					},
@@ -439,18 +451,6 @@
 							},
 						] as Page[],
 					}, */
-					{
-						id: 'exit',
-						name: '退出',
-						open: false,
-						pages: [
-							{
-								name: 'exit退出',
-								url: 'exit',
-								enable: true
-							},
-						] as Page[],
-					},
 				] as ListItem[],
 				arrowUpIcon: '/static/icons/arrow-up.png',
 				arrowDownIcon: '/static/icons/arrow-down.png',
