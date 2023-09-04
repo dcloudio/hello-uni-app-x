@@ -2,7 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view>
     <!-- #endif -->
-    <page-head :title="title"></page-head>
+    <page-head title="rich-text-tags"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
         <text class="uni-title-text">支持的HTML标签</text>
@@ -23,7 +23,6 @@
   export default {
     data() {
       return {
-        title: 'rich-text-tags',
         data: [
           {
             name: '<br/>',
@@ -301,14 +300,15 @@
     methods: {
       itemClick(e : RichTextItemClickEvent) {
         console.log(JSON.stringify(e.detail));
-        let title = '';
+        let clicktext = '';
         if (e.detail.src != null) {
-          title = '点击了图片，src = ' + e.detail.src;
+          clicktext = '点击了图片，src = ' + e.detail.src;
         } else if (e.detail.href != null) {
-          title = '点击了链接，href = ' + e.detail.href;
+          clicktext = '点击了链接，href = ' + e.detail.href;
         }
         uni.showModal({
-          title: title
+          content:clicktext,
+          showCancel:false
         });
       }
     }

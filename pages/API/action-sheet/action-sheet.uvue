@@ -1,173 +1,133 @@
 <template>
-    <view>
-        <page-head :title="title"></page-head>
-		<view class="uni-list">
-		    <radio-group @change="radioChange">
-		        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-		            :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
-		            :checked="index === current">
-		            {{item.name}}
-		        </radio>
-		    </radio-group>
-		</view>
-		<view class="uni-list">
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">自定义itemColor</view>
-		    <switch :checked="itemColorCustom" @change="itemColorChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">超长列表文本</view>
-		    <switch :checked="itemContentLarge" @change="itemContentLargeChange"/>
-		  </view>
-		  <view class="uni-list-cell uni-list-cell-pd">
-		    <view class="uni-list-cell-db">大量选项</view>
-		    <switch :checked="itemNumLargeSelect" @change="itemNumLargeChange"/>
-		  </view>
-		</view>
-        <view class="uni-padding-wrap">
-            <view class="uni-btn-v">
-                <button class="uni-btn-v" type="default" @tap="actionSheetTap">弹出action sheet</button>
-            </view>
-        </view>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-list">
+      <radio-group @change="radioChange">
+        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+          :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value" :checked="index === current">
+          {{item.name}}
+        </radio>
+      </radio-group>
     </view>
+    <view class="uni-list">
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">自定义itemColor</view>
+        <switch :checked="itemColorCustom" @change="itemColorChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">超长文本和空文本item</view>
+        <switch :checked="itemContentLarge" @change="itemContentLargeChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">超过6个item</view>
+        <switch :checked="itemNumLargeSelect" @change="itemNumLargeChange" />
+      </view>
+    </view>
+    <view class="uni-padding-wrap">
+      <view class="uni-btn-v">
+        <button class="uni-btn-v" type="default" @tap="actionSheetTap">弹出action sheet</button>
+      </view>
+    </view>
+  </view>
 </template>
 <script lang="uts">
-	type ItemType = {
-	    value : string,
-	    name : string,
-	}
-    export default {
-        data() {
-            return {
-                title: 'action-sheet',
-				itemColorCustom:false,
-				itemContentLarge:false,
-				itemNumLargeSelect:false,
-				items: [{
-				    value: '标题',
-				    name: '有标题'
-				},
-				{
-				    value: '',
-				    name: '无标题'
-				},
-				{
-				    value: '超长标题测试内容，测试超过显示最大范围之后的样式-超长标题测试内容，测试超过显示最大范围之后的样式',
-				    name: '超长标题'
-				}
-				] as ItemType[],
-				current: 0,
-                // #ifdef H5
-                buttonRect: {},
-                // #endif
-            }
+  type ItemType = {
+    value : string,
+    name : string,
+  }
+  export default {
+    data() {
+      return {
+        title: 'action-sheet',
+        itemColorCustom: false,
+        itemContentLarge: false,
+        itemNumLargeSelect: false,
+        items: [{
+          value: '标题',
+          name: '有标题'
         },
-        // #ifdef H5
-        onReady() {
-            this.getNodeInfo()
-            window.addEventListener('resize', this.getNodeInfo)
+        {
+          value: '',
+          name: '无标题'
         },
-        beforeDestroy() {
-            window.removeEventListener('resize', this.getNodeInfo)
-        },
-        // #endif
-        methods: {
-			radioChange(e : RadioGroupChangeEvent) {
-			    for (let i = 0; i < this.items.length; i++) {
-			        if (this.items[i].value === e.detail.value) {
-			            this.current = i;
-			            break;
-			        }
-			    }
-			},
-			itemContentLargeChange: function (e : SwitchChangeEvent) {
-				this.itemContentLarge = e.detail.value
-			},
-			itemColorChange: function (e : SwitchChangeEvent) {
-				this.itemColorCustom = e.detail.value
-			},
-			itemNumLargeChange: function (e : SwitchChangeEvent) {
-				this.itemNumLargeSelect = e.detail.value
-			},
-            actionSheetTap() {
-				
-				let itemInfo = ['item1', 'item2', 'item3', 'item4']
-				
-				if(this.itemContentLarge){
-					itemInfo = ['两个黄鹂鸣翠柳，一行白鹭上青天。窗含西岭千秋雪，门泊东吴万里船', '水光潋滟晴方好,山色空蒙雨亦奇。 欲把西湖比西子,淡妆浓抹总相宜', '']
-				}else if(this.itemNumLargeSelect){
-					// 大量选项测试,不能超过6个元素 https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
-					itemInfo = []
-					for (var i = 1; i <= 10; i++) {
-					    itemInfo.push('两个黄鹂鸣翠柳，一行白鹭上青天');
-					}
-				}
-				
-				const that = this
-				if(this.itemColorCustom){
-					uni.showActionSheet({
-					    title: this.items[this.current].value,
-					    itemList: itemInfo,
-						itemColor:"#ff00ff",
-					    // #ifdef H5
-					    popover: {
-					        // 104: navbar + topwindow 高度，暂时 fix createSelectorQuery 在 pc 上获取 top 不准确的 bug
-					        top: that.buttonRect.top + 104 + that.buttonRect.height,
-					        left: that.buttonRect.left + that.buttonRect.width / 2
-					    },
-					    // #endif
-					    success: (e) => {
-					        console.log(e.tapIndex);
-					        uni.showToast({
-					            title: "点击了第" + e.tapIndex + "个选项",
-					            icon: "none"
-					        })
-					    },
-						fail: (e) => {
-						    console.log(e);
-						}
-					})
-				}else{
-					uni.showActionSheet({
-					    title: this.items[this.current].value,
-					    itemList: itemInfo,
-					    // #ifdef H5
-					    popover: {
-					        // 104: navbar + topwindow 高度，暂时 fix createSelectorQuery 在 pc 上获取 top 不准确的 bug
-					        top: that.buttonRect.top + 104 + that.buttonRect.height,
-					        left: that.buttonRect.left + that.buttonRect.width / 2
-					    },
-					    // #endif
-					    success: (e) => {
-					        console.log(e.tapIndex);
-					        uni.showToast({
-					            title: "点击了第" + e.tapIndex + "个选项",
-					            icon: "none"
-					        })
-					    },
-						fail: (e) => {
-						    console.log(e);
-							uni.showToast({
-							    title: e.errMsg,
-							    icon: "none"
-							})
-						}
-					})
-				}
-                
-                
-            },
-			
-            // #ifdef H5
-            getNodeInfo() {
-                uni.createSelectorQuery().select('.target').boundingClientRect().exec((ret) => {
-                    const rect = ret[0]
-                    if (rect) {
-                        this.buttonRect = rect
-                    }
-                });
-            }
-            // #endif
+        {
+          value: '超长标题测试内容，测试超过显示最大范围之后的样式-超长标题测试内容，测试超过显示最大范围之后的样式',
+          name: '超长标题'
         }
+        ] as ItemType[],
+        current: 0,
+      }
+    },
+    methods: {
+      radioChange(e : RadioGroupChangeEvent) {
+        for (let i = 0; i < this.items.length; i++) {
+          if (this.items[i].value === e.detail.value) {
+            this.current = i;
+            break;
+          }
+        }
+      },
+      itemContentLargeChange: function (e : SwitchChangeEvent) {
+        this.itemContentLarge = e.detail.value
+      },
+      itemColorChange: function (e : SwitchChangeEvent) {
+        this.itemColorCustom = e.detail.value
+      },
+      itemNumLargeChange: function (e : SwitchChangeEvent) {
+        this.itemNumLargeSelect = e.detail.value
+      },
+      actionSheetTap() {
+
+        let itemInfo = ['item1', 'item2', 'item3', 'item4']
+
+        if (this.itemContentLarge) {
+          itemInfo = ['两个黄鹂鸣翠柳，一行白鹭上青天。窗含西岭千秋雪，门泊东吴万里船', '水光潋滟晴方好,山色空蒙雨亦奇。 欲把西湖比西子,淡妆浓抹总相宜', '']
+        } else if (this.itemNumLargeSelect) {
+          // 大量选项测试,不能超过6个元素 https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
+          itemInfo = []
+          for (var i = 1; i <= 10; i++) {
+            itemInfo.push('两个黄鹂鸣翠柳，一行白鹭上青天');
+          }
+        }
+
+        const that = this
+        if (this.itemColorCustom) {
+          uni.showActionSheet({
+            title: this.items[this.current].value,
+            itemList: itemInfo,
+            itemColor: "#ff00ff",
+            success: (e) => {
+              console.log(e.tapIndex);
+              uni.showToast({
+                title: "点击了第" + e.tapIndex + "个选项",
+                icon: "none"
+              })
+            },
+            fail: (e) => {
+              console.log(e);
+            }
+          })
+        } else {
+          uni.showActionSheet({
+            title: this.items[this.current].value,
+            itemList: itemInfo,
+            success: (e) => {
+              console.log(e.tapIndex);
+              uni.showToast({
+                title: "点击了第" + e.tapIndex + "个选项",
+                icon: "none"
+              })
+            },
+            fail: (e) => {
+              console.log(e);
+              uni.showToast({
+                title: e.errMsg,
+                icon: "none"
+              })
+            }
+          })
+        }
+      },
     }
+  }
 </script>
