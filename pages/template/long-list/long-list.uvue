@@ -97,6 +97,9 @@
       this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
+    onPullDownRefresh() {
+      (this.$refs["longPage"]! as ComponentPublicInstance[])[this.swiperIndex].$callMethod('refreshData')
+    },
     methods: {
       // TODO
       onStartNestedScroll(event : StartNestedScrollEvent) : boolean {
@@ -105,15 +108,12 @@
       onNestedPreScroll(event : NestedPreScrollEvent) {
         const deltaY = event.deltaY
         const scrollTop = this.$pageScrollView!.scrollTop
-        // console.log("deltaY=" + deltaY, "pageScrollTop=" + scrollTop)
 
         /// 优先处理父容器滚动，父容器不能滚动时在滚动子
-
         // 向上滚动
         if (deltaY > 0) {
           // 如果父容器 header scrollTop < offsetHeight，先滚动父容器
           if (scrollTop < this.$headerHeight) {
-            // console.log('pageScrollTop=' + scrollTop)
             const difference = this.$headerHeight - scrollTop - deltaY
             if (difference > 0) {
               this.$pageScrollView!.scrollBy(event.deltaX, deltaY)
@@ -163,7 +163,7 @@
         this.updateTabIndicator(current_index, move_to_index, percentage)
 
         // 首次可见时初始化数据
-        this.initSwiperItemPage(move_to_index)
+        this.initSwiperItemData(move_to_index)
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
@@ -186,7 +186,7 @@
 
         this.swiperIndex = index
 
-        this.initSwiperItemPage(index)
+        this.initSwiperItemData(index)
 
         if (updateIndicator) {
           this.updateTabIndicator(index, index, 1)
@@ -207,7 +207,7 @@
         const scroll_x = x - this.$swiperWidth / 2
         this.$tabScrollView?.setAttribute('scrollLeft', scroll_x)
       },
-      initSwiperItemPage(index : number) {
+      initSwiperItemData(index : number) {
         if (!this.swiperList[index].preload) {
           this.swiperList[index].preload = true;
           (this.$refs["longPage"]! as ComponentPublicInstance[])[index].$callMethod('loadData')

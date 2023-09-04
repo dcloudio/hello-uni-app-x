@@ -25,9 +25,10 @@
           </view>
         </view>
       </list-item>
-      <list-item key="loading" v-if="index==dataList.length-1">
+      <!-- TODO 暂时注释，否者在清空数据时引发异常 -->
+      <!-- <list-item v-if="index==dataList.length-1" key="loading">
         <text class="loading">{{loadingText}}</text>
-      </list-item>
+      </list-item> -->
     </template>
   </list-view>
 </template>
@@ -83,7 +84,7 @@
         } else {
           return ""
         }
-      }
+      },
     },
     created() {
       uni.loadFontFace({
@@ -97,6 +98,11 @@
       }
     },
     methods: {
+      refreshData() {
+        this.dataList.length = 0
+        this.$currentPage = 1
+        this.loadData()
+      },
       loadData() {
         if (this.loading || this.isEnded) {
           return
@@ -129,6 +135,8 @@
           },
           complete: () => {
             this.loading = false
+            // TODO
+            uni.stopPullDownRefresh()
           }
         })
       },
