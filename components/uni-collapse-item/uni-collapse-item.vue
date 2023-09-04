@@ -87,7 +87,6 @@
 	.uni-collapse-item__title {
 		flex-direction: row;
 		align-items: center;
-		line-height: 22px;
 		padding: 12px;
 		background-color: #fff;
 	}
