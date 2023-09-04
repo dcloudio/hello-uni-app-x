@@ -1,0 +1,62 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @click="callFunction">请求云函数</button>
+        </view>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        title: 'uniCloud.callFunction'
+      }
+    },
+    onLoad() {
+    },
+    onUnload() {
+    },
+    methods: {
+      callFunction: function () {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        uniCloud.callFunction({
+          name: 'echo-cf',
+          data: {
+            num: 1,
+            str: 'ABC'
+          } as UTSJSONObject
+        }).then<void>(res => {
+          const result = res.result
+          console.log(JSON.stringify(result))
+          uni.hideLoading()
+          uni.showModal({
+            title: '提示',
+            content: result['showMessage'] as string,
+            showCancel: false
+          })
+        }).catch<void>((err: UniCloudError) => {
+          uni.hideLoading()
+          uni.showModal({
+            title: '错误',
+            content: err.errMsg,
+            showCancel: false
+          })
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+</style>
