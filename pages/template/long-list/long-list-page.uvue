@@ -99,15 +99,12 @@
       }
     },
     methods: {
-      refreshData() {
+      refreshData(loadComplete : (() => void) | null) {
         this.dataList.length = 0
         this.$currentPage = 1
-        this.loadData(() => {
-          // TODO
-          uni.stopPullDownRefresh()
-        })
+        this.loadData(loadComplete)
       },
-      loadData(oncomplete : (() => void) | null) {
+      loadData(loadComplete : (() => void) | null) {
         if (this.loading || this.isEnded) {
           return
         }
@@ -139,8 +136,8 @@
           },
           complete: () => {
             this.loading = false
-            if (oncomplete != null) {
-              oncomplete()
+            if (loadComplete != null) {
+              loadComplete()
             }
           }
         })

@@ -98,7 +98,9 @@
       this.setSwiperIndex(0, true)
     },
     onPullDownRefresh() {
-      (this.$refs["longPage"]! as ComponentPublicInstance[])[this.swiperIndex].$callMethod('refreshData')
+      (this.$refs["longPage"]! as ComponentPublicInstance[])[this.swiperIndex].$callMethod('refreshData', () => {
+        uni.stopPullDownRefresh()
+      })
     },
     methods: {
       // TODO
@@ -210,7 +212,7 @@
       initSwiperItemData(index : number) {
         if (!this.swiperList[index].preload) {
           this.swiperList[index].preload = true;
-          (this.$refs["longPage"]! as ComponentPublicInstance[])[index].$callMethod('loadData')
+          (this.$refs["longPage"]! as ComponentPublicInstance[])[index].$callMethod('loadData', null)
         }
       }
     }
