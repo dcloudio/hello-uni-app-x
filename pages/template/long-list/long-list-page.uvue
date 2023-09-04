@@ -14,7 +14,7 @@
           <view class="description">
             <text class="description-text">{{item.plugin_intro}}</text>
           </view>
-          <text class="icon-star star">{{convertToStarUnicode(item.score)}}</text>
+          <text class="font-star icon-star">{{convertToStarUnicode(item.score)}}</text>
           <view class="tag-list">
             <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
           </view>
@@ -87,6 +87,7 @@
       },
     },
     created() {
+      // TODO 后续通过css加载本地路径
       uni.loadFontFace({
         global: false,
         family: 'UtsIconsFontFamily',
@@ -94,16 +95,19 @@
       })
 
       if (this.preload) {
-        this.loadData()
+        this.loadData(null)
       }
     },
     methods: {
       refreshData() {
         this.dataList.length = 0
         this.$currentPage = 1
-        this.loadData()
+        this.loadData(() => {
+          // TODO
+          uni.stopPullDownRefresh()
+        })
       },
-      loadData() {
+      loadData(oncomplete : (() => void) | null) {
         if (this.loading || this.isEnded) {
           return
         }
@@ -135,8 +139,9 @@
           },
           complete: () => {
             this.loading = false
-            // TODO
-            uni.stopPullDownRefresh()
+            if (oncomplete != null) {
+              oncomplete()
+            }
           }
         })
       },
@@ -162,6 +167,13 @@
 </script>
 
 <style>
+  .font-star {
+    font-family: "UtsIconsFontFamily" !important;
+    /* src: url('~@/static/fonts/icon-star.ttf') format('truetype'); */
+    font-size: 16px;
+    font-style: normal;
+  }
+
   .list {
     flex: 1;
     background-color: #ffffff;
@@ -198,9 +210,6 @@
   }
 
   .icon-star {
-    font-family: "UtsIconsFontFamily" !important;
-    font-size: 16px;
-    font-style: normal;
     color: #ffca3e;
     letter-spacing: 3px;
   }
