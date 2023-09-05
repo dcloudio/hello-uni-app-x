@@ -1,35 +1,32 @@
 <template>
   <list-view ref="listView" class="list" :rebound="false" :scroll-y="true" :custom-nested-scroll="true"
     @scrolltolower="loadData(null)">
-    <!-- TODO 暂时这样写才能保证 loading 在 list 底部 -->
-    <template v-for="(item, index) in dataList" :key="index">
-      <list-item class="list-item">
-        <view class="list-item-icon">
-          <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
+    <list-item class="list-item" v-for="(item, _) in dataList" :key="item.plugin_id">
+      <view class="list-item-icon">
+        <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
+      </view>
+      <view class="list-item-fill">
+        <view class="flex-row">
+          <text class="title">{{item.plugin_name}}</text>
         </view>
-        <view class="list-item-fill">
-          <view class="flex-row">
-            <text class="title">{{item.plugin_name}}</text>
-          </view>
-          <view class="description">
-            <text class="description-text">{{item.plugin_intro}}</text>
-          </view>
-          <text class="font-star icon-star">{{convertToStarUnicode(item.score)}}</text>
-          <view class="tag-list">
-            <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
-          </view>
-          <view class="flex-row update-date">
-            <text class="update-date-text">更新日期</text>
-            <text class="update-date-value">{{item.update_date}}</text>
-            <text class="author">{{item.author_name}}</text>
-          </view>
+        <view class="description">
+          <text class="description-text">{{item.plugin_intro}}</text>
         </view>
-      </list-item>
-      <!-- TODO 暂时注释，否者在清空数据时引发异常 -->
-      <!-- <list-item v-if="index==dataList.length-1" key="loading">
-        <text class="loading">{{loadingText}}</text>
-      </list-item> -->
-    </template>
+        <text class="icon-star">{{convertToStarUnicode(item.score)}}</text>
+        <view class="tag-list">
+          <text class="tag-item" v-for="(item2, index2) in item.tags" :key="index2">{{item2}}</text>
+        </view>
+        <view class="flex-row update-date">
+          <text class="update-date-text">更新日期</text>
+          <text class="update-date-value">{{item.update_date}}</text>
+          <text class="author">{{item.author_name}}</text>
+        </view>
+      </view>
+      <!-- TODO 暂时这样写才能保证 loading 在 list 底部 -->
+      <view v-if="item.plugin_id==-1" class="loading">
+        <text class="loading-text">{{loadingText}}</text>
+      </view>
+    </list-item>
   </list-view>
 </template>
 
@@ -87,21 +84,32 @@
       },
     },
     created() {
-      // TODO 后续通过css加载本地路径
-      uni.loadFontFace({
-        global: false,
-        family: 'UtsIconsFontFamily',
-        source: '/static/fonts/icon-star.ttf'
-      })
+      this.insertLoadingData()
 
       if (this.preload) {
         this.loadData(null)
       }
     },
     methods: {
+      // TODO 目前 list-item 不支持注释节点
+      // 暂时在数据末尾插入一条空数据用于显示 loading
+      insertLoadingData() {
+        const loadingData = {
+          plugin_id: -1,
+          plugin_img_link: '',
+          plugin_name: '',
+          plugin_intro: '',
+          score: 0,
+          tags: [],
+          update_date: '',
+          author_name: '',
+        } as ListItem
+        this.dataList.push(loadingData)
+      },
       refreshData(loadComplete : (() => void) | null) {
         this.dataList.length = 0
         this.$currentPage = 1
+        this.insertLoadingData()
         this.loadData(loadComplete)
       },
       loadData(loadComplete : (() => void) | null) {
@@ -123,7 +131,9 @@
               return
             }
 
-            this.dataList.push(...responseData.data)
+            // TODO
+            this.dataList.splice(this.dataList.length - 1, 0, ...responseData.data)
+            // this.dataList.push(...responseData.data)
 
             if (responseData.data.length == 0) {
               this.isEnded = true
@@ -164,12 +174,11 @@
 </script>
 
 <style>
-  .font-star {
-    font-family: "UtsIconsFontFamily" !important;
-    /* src: url('~@/static/fonts/icon-star.ttf') format('truetype'); */
-    font-size: 16px;
-    font-style: normal;
-  }
+  /* TODO 暂时写到了页面 long-list */
+  /* @font-face {
+    font-family: "UtsStarIcons";
+    src: url('@/static/fonts/icon-star.ttf');
+  } */
 
   .list {
     flex: 1;
@@ -196,10 +205,6 @@
     margin-left: 15px;
   }
 
-  .description {
-    /* line-height: 14px; */
-  }
-
   .description-text {
     font-size: 13px;
     color: #666;
@@ -207,6 +212,9 @@
   }
 
   .icon-star {
+    font-family: "UtsStarIcons";
+    font-size: 16px;
+    font-style: normal;
     color: #ffca3e;
     letter-spacing: 3px;
   }
@@ -247,9 +255,18 @@
   }
 
   .loading {
-    padding: 20px;
-    text-align: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
     background-color: #f8f8f8;
     margin-bottom: 1px;
+    justify-content: center;
+  }
+
+  .loading-text {
+    padding: 20px;
+    text-align: center;
   }
 </style>
