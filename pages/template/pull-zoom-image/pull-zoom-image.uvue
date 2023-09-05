@@ -38,8 +38,8 @@
           5. 请向上\向下拖动页面观察效果。
         </text>
       </view>
-      <view class="content-item" v-for="(item,index) in 10" :key="index">
-        <text class="text">content-{{item}}</text>
+      <view class="content-item" v-for="(item,index) in 15" :key="index">
+        <text class="text" style="padding-left: 4px;">{{item + 5}}. 占位</text>
       </view>
     </view>
   </view>
@@ -50,7 +50,8 @@
   let sY : number = 0,
       dY : number = 0,
       maxScrollTop:number = 0,
-      moveIng:boolean = false;
+      moveIng:boolean = false,
+      startMoveTime:number = 0;
   export default {
     data() {
       return {
@@ -62,7 +63,7 @@
     onReady() {
       uni.getSystemInfo({
         success: (e) => {
-          maxScrollTop = 1425 - e.screenHeight
+          maxScrollTop = 1750 - e.screenHeight
         }
       })
     },
@@ -78,12 +79,22 @@
       },
       touchstart(e : TouchEvent) {
         sY = e.touches[0].screenY;
+        //计时
+        startMoveTime = 0
       },
       touchmove(e : TouchEvent) {
         this.y += e.touches[0].screenY - sY;
         dY = e.touches[0].screenY - sY
         sY = e.touches[0].screenY;
+        // 限制滚动到底后上拉
+        if(this.y < maxScrollTop*-1){
+          this.y = maxScrollTop*-1
+        }
         this.doMove()
+        //计时
+        if(startMoveTime === 0){
+          startMoveTime = Date.now()
+        }
       },
       touchend() {
         // console.log('touchend')
@@ -91,18 +102,18 @@
           return
         }
         moveIng = true
-        function moveTo(y : number, callback : () => void, speed : number = 10) {
+        function moveTo(y : number, callback : () => void, speed : number = 10,acceleration : number = 0.2) {
           let interval : number = 0
-          let acceleration : number = 1
+          let _acceleration : number = 1
           interval = setInterval(() => {
             // 加速度
-            acceleration += 0.2
+            _acceleration += acceleration
 
             const dy = y - this.y
-            if (Math.abs(dy) < 1) {
+            if (Math.abs(dy) < 3) {
               this.y = y
             } else {
-              this.y += dy / speed * acceleration
+              this.y += dy / speed * _acceleration
             }
 
             this.doMove()
@@ -113,10 +124,14 @@
           }, 16)
         }
         // console.log('dY',dY);
-        console.log('this.y',this.y);
+        // console.log('this.y',this.y);
         if(this.y < 0){
-          // console.log(dY);
-          let endY = this.y + dY * 30
+          let speed:number = dY/(Date.now() - startMoveTime) * 1000
+          let inertia = speed * 3
+          if( Math.abs(inertia) < 100 ){
+            inertia = inertia > 0 ? 100 : -100;
+          }
+          let endY = this.y + inertia
           // 滚动边界限制
           if(endY < maxScrollTop*-1){
             endY = maxScrollTop*-1
@@ -126,12 +141,10 @@
           }
           // console.log('endY',endY);
           moveTo(endY, () => {
-            // console.log('done');
             moveIng = false
-          },5)
+          },10,0.1)
         }else{
           moveTo(0, () => {
-            // console.log('done');
             moveIng = false
           })
         }
