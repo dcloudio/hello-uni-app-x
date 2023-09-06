@@ -62,19 +62,17 @@
 				let data = {
 					column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
 				};
-				uni.request({
+				uni.request<Banner>({
 					url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
 					data: data,
 					success: data => {
 						if(this.pageVisible){
 							this.refresherTriggered = false
 							if (data.statusCode == 200) {
-								let result = data.data as UTSJSONObject;
-								this.banner = {
-									cover: result["cover"] as string,
-									title: result["title"] as string,
-									post_id: result["post_id"] as string
-								} as Banner;
+                const result = data.data
+                if(result != null){
+                  this.banner = result;
+                }
 							}
 						}
 					},
