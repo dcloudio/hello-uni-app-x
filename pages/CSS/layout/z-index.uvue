@@ -1,0 +1,40 @@
+<template>
+  <view style="flex-grow: 1;">
+    <view class="common" style="background-color: red;z-index: 10;">
+      <text>z-index: 10</text>
+    </view>
+    <view ref="view" class="common" style="background-color: green;transform: translate(125rpx, -125rpx);z-index: 5;"
+      @click="changeZIndex(20)">
+      <text>z-index: {{zIndex}}</text>
+      <text>点击修改z-index</text>
+    </view>
+    <view class="common" style="background-color: blue;transform: translate(250rpx, -250rpx);">
+      <text>z-index: 0</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        zIndex: 5
+      }
+    },
+    methods: {
+      changeZIndex(zIndex : number) {
+        this.zIndex = 20;
+        (this.$refs['view'] as INode).style.setProperty('z-index', zIndex);
+      }
+    }
+  }
+</script>
+
+<style>
+  .common {
+    width: 250rpx;
+    height: 250rpx;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
