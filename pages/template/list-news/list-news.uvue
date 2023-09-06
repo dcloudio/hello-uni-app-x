@@ -50,7 +50,7 @@
 			};
 		},
 		onLoad() {
-			this.pageVisible = true;
+			this.pageVisible = true; //设这个变量是为了避免联网结束后页面已经关闭，此时还继续执行回调逻辑的问题。不是必须的
 			this.getBanner();
 			this.getList();
 		},
@@ -85,24 +85,25 @@
 			},
 			getList() {
 				let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
-				if (this.last_id != "") {
-					const minId = (this.last_id).toInt();
+				/* if (this.last_id != "") {
+					const minId = parseInt((this.last_id))
 					const time = new Date().getTime() + '';
 					const pageSize = 10;
 					url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
-				}
+				} */
 
-				uni.request({
+				uni.request<Item[]>({
 					url: url,
 					method:"GET",
-					success: (data) => {
+					success: (res) => {
 						if(this.pageVisible){
-							if (data.statusCode == 200) {
-								const result = data.data as UTSJSONObject[]
+							if (res.statusCode == 200) {
+                console.log(res);
+								const result = res.data
 								if(result != null){
-									let list = this.setTime(result);
-									this.listData = list.concat(this.listData);
-									this.last_id = listData[0].id + "";
+									this.listData = result //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
+									// this.listData.push(...result)
+									// this.last_id = this.listData[0].id + "";
 								}
 								this.refresherTriggered = false;
 							}
@@ -133,21 +134,6 @@
 				uni.navigateTo({
 					url: '/pages/template/list-news/detail/detail?post_id=' + post_id + "&cover=" + cover + "&title=" + title
 				});
-			},
-			setTime(items: UTSJSONObject[]): Item[] {
-				let newItems = [] as Item[];
-				for(const item in items){
-					const e = item;
-					newItems.push({
-							author_name: e["author_name"] as string,
-							cover: e["cover"] as string,
-							id: e["id"] as number,
-							post_id: e["post_id"] as string,
-							published_at: e["published_at"] as string,
-							title: e["title"] as string
-						} as Item);
-				}
-				return newItems;
 			},
 			onRefresherrefresh() {
 				if(this.pageVisible){
