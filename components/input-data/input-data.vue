@@ -48,10 +48,6 @@
         this.showClearIcon = false
         this.$emit('confirm', this.getValue(this.inputClearValue))
       },
-      // @ts-ignore
-      confirm(e : InputConfirmEvent) {
-        // this.$emit('confirm', this.getValue(e.detail.value))
-      },
       blur() {
         this.showClearIcon = false
       },
@@ -85,8 +81,7 @@
     </view>
   </view>
   <view class="uni-input-wrapper input-wrapper">
-    <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" @input="input"
-      @confirm="confirm" @blur="blur" @focus="focus" />
+    <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" @input="input" @blur="blur" @focus="focus" />
     <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
     </image>
   </view>
