@@ -37,7 +37,6 @@
     data() {
       return {
         $INodeMap: new Map<string, INode>(),
-
         refresherTriggered: false,
       }
     },
@@ -55,7 +54,7 @@
           this.refresherTriggered = false
         }, 0)
       },
-      getINodeByRefName(refName : string) : INode {
+      getINode(refName : string) : INode {
         let iNode : INode | null = this.$INodeMap.get(refName)
         if (iNode == null) {
           iNode = this.$refs.get(refName) as INode;
@@ -65,8 +64,8 @@
       },
       // 工具方法，用于快速设置 INode 的 style
       setINodeStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let iNode = this.getINodeByRefName(refName)
-        iNode?.style?.setProperty(propertyName, propertyStyle);
+        let iNode = this.getINode(refName)
+        iNode.style.setProperty(propertyName, propertyStyle);
       },
       back() {
         uni.navigateBack({
