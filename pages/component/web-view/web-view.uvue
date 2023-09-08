@@ -1,93 +1,97 @@
 <template>
-	<view class="uni-flex-item">
-		<web-view ref="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles" @message="message"
-			@error="error" @loading="loading" @loaded="loaded">
-		</web-view>
-		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-input-v">
-				<input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" />
-			</view>
-			<view class="uni-row uni-btn-v">
-				<view class="uni-flex-item">
-					<button type="primary" @click="back">后退</button>
-				</view>
-				<view class="uni-btn-ml uni-flex-item">
-					<button type="primary" @click="forward">前进</button>
-				</view>
-			</view>
-			<view class="uni-row uni-btn-v">
-				<view class="uni-flex-item">
-					<button type="primary" @click="reload">重新加载</button>
-				</view>
-				<view class="uni-btn-ml uni-flex-item">
-					<button type="primary" @click="stop">停止加载</button>
-				</view>
-			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @click="nativeToWeb">原生和Web通信</button>
-			</view>
-		</view>
-	</view>
+  <view class="uni-flex-item">
+    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles" @message="message"
+      @error="error" @loading="loading" @loaded="loaded">
+    </web-view>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-input-v">
+        <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" />
+      </view>
+      <view class="uni-row uni-btn-v">
+        <view class="uni-flex-item">
+          <button type="primary" @click="back">后退</button>
+        </view>
+        <view class="uni-btn-ml uni-flex-item">
+          <button type="primary" @click="forward">前进</button>
+        </view>
+      </view>
+      <view class="uni-row uni-btn-v">
+        <view class="uni-flex-item">
+          <button type="primary" @click="reload">重新加载</button>
+        </view>
+        <view class="uni-btn-ml uni-flex-item">
+          <button type="primary" @click="stop">停止加载</button>
+        </view>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="nativeToWeb">原生和Web通信</button>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				src: 'https://www.baidu.com',
-				webview_styles: {
-					progress: {
-						color: '#FF3333'
-					}
-				}
-			}
-		},
-		methods: {
-			back() {
-				(this.$refs['web-view'] as IWebViewNode).back();
-			},
-			forward() {
-				(this.$refs['web-view'] as IWebViewNode).forward();
-			},
-			reload() {
-				(this.$refs['web-view'] as IWebViewNode).reload();
-			},
-			stop() {
-				(this.$refs['web-view'] as IWebViewNode).stop();
-			},
-			nativeToWeb() {
-				(this.$refs['web-view'] as IWebViewNode).evalJS("alert('hello uni-app x')");
-			},
-			message(event : WebViewMessageEvent) {
-				console.log(JSON.stringify(event.detail));
-			},
-			error(event : WebViewErrorEvent) {
-				console.log(JSON.stringify(event.detail));
-			},
-			loading(event : WebViewLoadingEvent) {
-				console.log(JSON.stringify(event.type));
-			},
-			loaded(event : WebViewLoadedEvent) {
-				console.log(JSON.stringify(event.type));
-			},
-			confirm(event : InputConfirmEvent) {
-				console.log(event.detail.value);
-				let url = event.detail.value;
-				if (!url.startsWith('https://') && !url.startsWith('http://')) {
-					url = 'https://' + url;
-				}
-				this.src = url;
-			}
-		}
-	}
+  export default {
+    data() {
+      return {
+        src: 'https://www.baidu.com',
+        webview_styles: {
+          progress: {
+            color: '#FF3333'
+          }
+        },
+        webviewContext: null as WebviewContext | null
+      }
+    },
+    onReady() {
+      this.webviewContext = uni.createWebviewContext('web-view', this)
+    },
+    methods: {
+      back() {
+        this.webviewContext?.back();
+      },
+      forward() {
+        this.webviewContext?.forward();
+      },
+      reload() {
+        this.webviewContext?.reload();
+      },
+      stop() {
+        this.webviewContext?.stop();
+      },
+      nativeToWeb() {
+        this.webviewContext?.evalJS("alert('hello uni-app x')");
+      },
+      message(event : WebViewMessageEvent) {
+        console.log(JSON.stringify(event.detail));
+      },
+      error(event : WebViewErrorEvent) {
+        console.log(JSON.stringify(event.detail));
+      },
+      loading(event : WebViewLoadingEvent) {
+        console.log(JSON.stringify(event.type));
+      },
+      loaded(event : WebViewLoadedEvent) {
+        console.log(JSON.stringify(event.type));
+      },
+      confirm(event : InputConfirmEvent) {
+        console.log(event.detail.value);
+        let url = event.detail.value;
+        if (!url.startsWith('https://') && !url.startsWith('http://')) {
+          url = 'https://' + url;
+        }
+        this.src = url;
+      }
+    }
+  }
 </script>
 
 <style>
-	.uni-input-v {
-		padding: 10rpx 0;
-	}
+  .uni-input-v {
+    padding: 10rpx 0;
+  }
 
-	.uni-btn-ml {
-		margin-left: 10rpx;
-	}
+  .uni-btn-ml {
+    margin-left: 10rpx;
+  }
 </style>
