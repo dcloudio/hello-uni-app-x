@@ -3,8 +3,8 @@
     <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
   </view>
   <scroll-view :scroll-y="true" style="flex:1;" :refresher-enabled="true"
-    :refresher-triggered="refresherTriggered" refresher-default-style="none" @refresherpulling="onRefresherpulling"
-    @refresherrefresh="onRefresherrefresh" :refresher-threshold="300">
+     refresher-default-style="none" @refresherpulling="onRefresherpulling"
+     :refresher-threshold="300" :refresher-max-drag-distance="299">
 
     <view class="head-img-box">
       <image class="head-img-2" ref="head-img-2" src="../../../static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
@@ -36,8 +36,7 @@
   export default {
     data() {
       return {
-        $INodeMap: new Map<string, INode>(),
-        refresherTriggered: false,
+        $INodeMap: new Map<string, INode>()
       }
     },
     methods: {
@@ -47,24 +46,13 @@
         this.setINodeStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
         this.setINodeStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
       },
-      onRefresherrefresh() {
-        this.refresherTriggered = true
-        //拖动结束
-        setTimeout(() => {
-          this.refresherTriggered = false
-        }, 0)
-      },
-      getINode(refName : string) : INode {
+      // 工具方法，用于快速设置 INode 的 style
+      setINodeStyle(refName : string, propertyName : string, propertyStyle : any) : void {
         let iNode : INode | null = this.$INodeMap.get(refName)
         if (iNode == null) {
           iNode = this.$refs.get(refName) as INode;
           this.$INodeMap.set(refName, iNode)
         }
-        return iNode
-      },
-      // 工具方法，用于快速设置 INode 的 style
-      setINodeStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let iNode = this.getINode(refName)
         iNode.style.setProperty(propertyName, propertyStyle);
       },
       back() {
