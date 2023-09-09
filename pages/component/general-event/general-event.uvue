@@ -1,270 +1,204 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt container">
-        <view
-          class="target"
-          @touchstart="onTouchStart"
-          @touchcancel="onTouchCancel"
-          @touchmove="onTouchMove"
-          @touchend="onTouchEnd"
-          @tap="onTap"
-          @click="onClick"
-          @longpress="onLongPress"
-        ></view>
-        <view v-if="touchStartEvent !== null">
-          <text class="title1">touchStart Event: </text>
-          <text class="title2">touches: </text>
-          <template
-            v-for="(touch, index) in touchStartEvent!.touches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-          <text class="title2 uni-common-mt">changedTouches: </text>
-          <template
-            v-for="(touch, index) in touchStartEvent!.changedTouches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-        </view>
-        <view v-if="touchCancelEvent !== null">
-          <text class="title1">touchCancel Event: </text>
-          <text class="title2">touches: </text>
-          <template
-            v-for="(touch, index) in touchCancelEvent!.touches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-          <text class="title2 uni-common-mt">changedTouches: </text>
-          <template
-            v-for="(touch, index) in touchCancelEvent!.changedTouches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-        </view>
-        <view v-if="touchMoveEvent !== null">
-          <text class="title1">touchMove Event: </text>
-          <text class="title2">touches: </text>
-          <template
-            v-for="(touch, index) in touchMoveEvent!.touches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-          <text class="title2 uni-common-mt">changedTouches: </text>
-          <template
-            v-for="(touch, index) in touchMoveEvent!.changedTouches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-        </view>
-        <view v-if="longPressEvent !== null">
-          <text class="title1">longPress Event: </text>
-          <text class="title2">touches: </text>
-          <template
-            v-if="longPressEvent!.touches.length > 0"
-            v-for="(touch, index) in longPressEvent!.touches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-          <text class="title2 uni-common-mt">changedTouches: </text>
-          <template
-            v-for="(touch, index) in longPressEvent!.changedTouches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-        </view>
-        <view v-if="touchEndEvent !== null">
-          <text class="title1">touchEnd Event: </text>
-          <text class="title2">touches: </text>
-          <template
-            v-if="touchEndEvent!.touches.length > 0"
-            v-for="(touch, index) in touchEndEvent!.touches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-          <text class="title2 uni-common-mt">changedTouches: </text>
-          <template
-            v-for="(touch, index) in touchEndEvent!.changedTouches"
-            :key="index"
-          >
-            <text class="title3">touch[{{ index }}]:</text>
-            <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-            <text
-              >clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text
-            >
-            <text
-              >screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text
-            >
-          </template>
-        </view>
-        <view v-if="tapEvent !== null">
-          <text class="title1">tap Event: </text>
-          <text>x: {{ tapEvent!.x }}, y: {{ tapEvent!.y }}</text>
-        </view>
-        <view v-if="clickEvent !== null">
-          <text class="title1">click Event: </text>
-          <text>x: {{ clickEvent!.x }}, y: {{ clickEvent!.y }}</text>
-        </view>
+  <!-- #endif -->
+    <page-head title="触摸方块测试相关事件"></page-head>
+    <view class="uni-padding-wrap uni-common-mt container">
+      <view class="target" @touchstart="onTouchStart" @touchcancel="onTouchCancel" @touchmove="onTouchMove"
+        @touchend="onTouchEnd" @tap="onTap" @click="onClick" @longpress="onLongPress"></view>
+      <view v-if="touchStartEvent !== null">
+        <text class="title1">touchStart Event: </text>
+        <text class="title2">touches: </text>
+        <template v-for="(touch, index) in touchStartEvent!.touches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+        <text class="title2 uni-common-mt">changedTouches: </text>
+        <template v-for="(touch, index) in touchStartEvent!.changedTouches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+      </view>
+      <view v-if="touchCancelEvent !== null">
+        <text class="title1">touchCancel Event: </text>
+        <text class="title2">touches: </text>
+        <template v-for="(touch, index) in touchCancelEvent!.touches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+        <text class="title2 uni-common-mt">changedTouches: </text>
+        <template v-for="(touch, index) in touchCancelEvent!.changedTouches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+      </view>
+      <view v-if="touchMoveEvent !== null">
+        <text class="title1">touchMove Event: </text>
+        <text class="title2">touches: </text>
+        <template v-for="(touch, index) in touchMoveEvent!.touches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+        <text class="title2 uni-common-mt">changedTouches: </text>
+        <template v-for="(touch, index) in touchMoveEvent!.changedTouches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+      </view>
+      <view v-if="longPressEvent !== null">
+        <text class="title1">longPress Event: </text>
+        <text class="title2">touches: </text>
+        <template v-if="longPressEvent!.touches.length > 0" v-for="(touch, index) in longPressEvent!.touches"
+          :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+        <text class="title2 uni-common-mt">changedTouches: </text>
+        <template v-for="(touch, index) in longPressEvent!.changedTouches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+      </view>
+      <view v-if="touchEndEvent !== null">
+        <text class="title1">touchEnd Event: </text>
+        <text class="title2">touches: </text>
+        <template v-if="touchEndEvent!.touches.length > 0" v-for="(touch, index) in touchEndEvent!.touches"
+          :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+        <text class="title2 uni-common-mt">changedTouches: </text>
+        <template v-for="(touch, index) in touchEndEvent!.changedTouches" :key="index">
+          <text class="title3">touch[{{ index }}]:</text>
+          <text>identifier: {{touch.identifier}}</text>
+          <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+          <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+          <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+        </template>
+      </view>
+      <view v-if="tapEvent !== null">
+        <text class="title1">tap Event: </text>
+        <text>x: {{ tapEvent!.x }}, y: {{ tapEvent!.y }}</text>
+      </view>
+      <view v-if="clickEvent !== null">
+        <text class="title1">click Event: </text>
+        <text>x: {{ clickEvent!.x }}, y: {{ clickEvent!.y }}</text>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 <script lang="uts">
-export default {
-  data() {
-    return {
-      title: 'general-event',
-      onTouchStartTime: 0,
-      touchStartEvent: null as TouchEvent | null,
-      touchCancelEvent: null as TouchEvent | null,
-      onTouchMoveTime: 0,
-      touchMoveEvent: null as TouchEvent | null,
-      onTouchEndTime: 0,
-      longPressEvent: null as TouchEvent | null,
-      touchEndEvent: null as TouchEvent | null,
-      onTapTime: 0,
-      tapEvent: null as MouseEvent | null,
-      onClickTime: 0,
-      clickEvent: null as MouseEvent | null,
-      onLongPressTime: 0,
-    }
-  },
-  methods: {
-    onTouchStart(e: TouchEvent){
-      this.touchStartEvent = e
-      this.onTouchStartTime = Date.now()
-      console.log('onTouchStart')
+  export default {
+    data() {
+      return {
+        title: 'general-event',
+        onTouchStartTime: 0,
+        touchStartEvent: null as TouchEvent | null,
+        touchCancelEvent: null as TouchEvent | null,
+        onTouchMoveTime: 0,
+        touchMoveEvent: null as TouchEvent | null,
+        onTouchEndTime: 0,
+        longPressEvent: null as TouchEvent | null,
+        touchEndEvent: null as TouchEvent | null,
+        onTapTime: 0,
+        tapEvent: null as MouseEvent | null,
+        onClickTime: 0,
+        clickEvent: null as MouseEvent | null,
+        onLongPressTime: 0,
+      }
     },
-    onTouchCancel(e: TouchEvent){
-      this.touchCancelEvent = e
-      console.log('onTouchCancel')
+    methods: {
+      onTouchStart(e : TouchEvent) {
+        this.touchStartEvent = e
+        this.onTouchStartTime = Date.now()
+        console.log('onTouchStart')
+      },
+      onTouchCancel(e : TouchEvent) {
+        this.touchCancelEvent = e
+        console.log('onTouchCancel')
+      },
+      onTouchMove(e : TouchEvent) {
+        this.touchMoveEvent = e
+        this.onTouchMoveTime = Date.now()
+        console.log('onTouchMove')
+      },
+      onLongPress(e : TouchEvent) {
+        this.longPressEvent = e
+        this.onLongPressTime = Date.now()
+        console.log('onLongPress')
+      },
+      onTouchEnd(e : TouchEvent) {
+        this.touchEndEvent = e
+        this.onTouchEndTime = Date.now()
+        console.log('onTouchEnd')
+      },
+      onTap(e : MouseEvent) {
+        this.tapEvent = e
+        this.onTapTime = Date.now()
+        console.log('onTap')
+      },
+      onClick(e : MouseEvent) {
+        this.clickEvent = e
+        this.onClickTime = Date.now()
+        console.log('onClick')
+      },
     },
-    onTouchMove(e: TouchEvent){
-      this.touchMoveEvent = e
-      this.onTouchMoveTime = Date.now()
-      console.log('onTouchMove')
-    },
-    onLongPress(e: TouchEvent){
-      this.longPressEvent = e
-      this.onLongPressTime = Date.now()
-      console.log('onLongPress')
-    },
-    onTouchEnd(e: TouchEvent){
-      this.touchEndEvent = e
-      this.onTouchEndTime = Date.now()
-      console.log('onTouchEnd')
-    },
-    onTap(e: MouseEvent){
-      this.tapEvent = e
-      this.onTapTime = Date.now()
-      console.log('onTap')
-    },
-    onClick(e: MouseEvent){
-      this.clickEvent = e
-      this.onClickTime = Date.now()
-      console.log('onClick')
-    },
-  },
-}
+  }
 </script>
 
 <style>
-.container {
-  padding-bottom: 1000px;
-}
-.target {
-  margin: 20px 0 0 50px;
-  width: 200px;
-  height: 100px;
-  background-color: aqua;
-}
-.title1 {
-  margin-top: 15px;
-  font-size: 20px;
-}
-.title2 {
-  margin-top: 10px;
-  font-size: 18px;
-}
-.title3 {
-  margin-top: 5px;
-  font-size: 16px;
-}
+  .container {
+    padding-bottom: 10px;
+  }
+
+  .target {
+    margin: 20px 0 0 50px;
+    width: 200px;
+    height: 100px;
+    background-color: aqua;
+  }
+
+  .title1 {
+    margin-top: 15px;
+    font-size: 20px;
+  }
+
+  .title2 {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+
+  .title3 {
+    margin-top: 5px;
+    font-size: 16px;
+  }
 </style>
