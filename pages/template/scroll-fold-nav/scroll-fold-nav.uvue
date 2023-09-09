@@ -1,20 +1,19 @@
 <template>
-  <view class="page">
-    <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view" rebound="false">
-			<view class="height-seat" style="height: 110px;">
-			  <!-- 垫高专用 -->
-			</view>
-      <view class="content">
-				<view class="content-item">
-					<text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
-					<text class="text">2. 使用 ref 直接获取元素的节点，并在 scroll 事件中通过节点的 setProperty 方法来修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
-					<text class="text">3. 请向上\向下滚动页面观察效果。</text>
-				</view>
-        <view class="content-item" v-for="(item,index) in 20" :key="index">
-          <text class="text">content-{{item}}</text>
-        </view>
+  <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view" rebound="false">
+    <view class="height-seat" style="height: 125px;">
+      <!-- 垫高专用 -->
+    </view>
+    <view class="content">
+      <view class="content-item">
+        <text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
+        <text class="text">2. 使用 ref 直接获取元素的节点，并在 scroll 事件中通过节点的 setProperty
+          方法来修改搜索导航栏的高度、位置和背景颜色等样式，从而达到滚动折叠的效果。</text>
+        <text class="text">3. 请向上\向下滚动页面观察效果。</text>
       </view>
-    </scroll-view>
+      <view class="content-item" v-for="(item,index) in 20" :key="index">
+        <text class="text">content-{{item}}</text>
+      </view>
+    </view>
 
     <view ref="top-box" class="top-box">
       <view ref="scroll-fold-nav" class="scroll-fold-nav">
@@ -32,13 +31,14 @@
       </view>
     </view>
 
-  </view>
+  </scroll-view>
 </template>
 
 <script>
   export default {
     data() {
       return {
+        statusBarHeight: 35,
         scrollTop: 0,
         searchWidth: 700,
         searchNode: null as INode | null,
@@ -46,16 +46,17 @@
         navNode: null as INode | null
       }
     },
-		onLoad() {},
-		onReady() {
-		  this.searchNode = this.$refs['search'] as INode;
-		  this.boxNode = this.$refs['top-box'] as INode;
-		  this.navNode = this.$refs['scroll-fold-nav'] as INode;
-		},
+    onLoad() { },
+    onReady() {
+      this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight ?? 35;
+      this.searchNode = this.$refs['search'] as INode;
+      this.boxNode = this.$refs['top-box'] as INode;
+      this.navNode = this.$refs['scroll-fold-nav'] as INode;
+    },
     methods: {
       onScroll(e : ScrollEvent) {
         let scrollTop = e.detail.scrollTop
-        this.boxNode?.style?.setProperty('height', (110 - (scrollTop > 40 ? 40 : scrollTop)) + 'px');
+        this.boxNode?.style?.setProperty('height', (125 - (scrollTop > this.statusBarHeight ? this.statusBarHeight : scrollTop)) + 'px');
         this.boxNode?.style?.setProperty('backgroundColor', 'rgba(255, 255, 255, ' + (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0 + ')');
         this.navNode?.style?.setProperty('opacity', 1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0);
         this.searchNode?.style?.setProperty('width', 700 - (scrollTop > 40 ? 40 : scrollTop) + 'rpx');
@@ -89,7 +90,7 @@
         });
       }
     },
-    
+
   }
 </script>
 
@@ -102,36 +103,39 @@
   .scroll-view {
     flex: 1;
   }
-	
-	.height-seat {
-		height: 110px;
-		/* background-color: #fbdf0d; */
-	}
-	.content {
-		padding: 5px 15px;
-		background-color: #f5f5f5;
-	}
-	.content-item {
-		padding: 15px;
-		margin: 5px 0;
-		background-color: #fff;
-		border-radius: 5px;
-		
-	} 
-	.text {
-		font-size: 14px;
-		color: #666; 
-		line-height: 20px;
-	}
+
+  .height-seat {
+    height: 110px;
+    /* background-color: #fbdf0d; */
+  }
+
+  .content {
+    padding: 5px 15px;
+    background-color: #f5f5f5;
+  }
+
+  .content-item {
+    padding: 15px;
+    margin: 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .text {
+    font-size: 14px;
+    color: #666;
+    line-height: 20px;
+  }
 
   .top-box {
     position: fixed;
     top: 0;
-    padding-top: 25px;
+    padding-top: 35px;
     align-items: flex-end;
     border-bottom: 1px solid #efefef;
-		height:110px;
-		background-color:rgba(255,255,255,0)
+    height: 125px;
+    background-color: rgba(255, 255, 255, 0);
+    background-color: aliceblue;
   }
 
   .scroll-fold-nav {
@@ -139,22 +143,22 @@
     width: 750rpx;
     justify-content: center;
   }
-	
-	.nav-title {
-		margin-left: 30px;
-	}
-	
-	.nav-back {
-		position: absolute;
-		top: 35px;
-		left: 8px;
-	}
-	
-	.nav-back .back-img {
-		width: 18px;
-		margin-top: 2px;
-	}
-	
+
+  .nav-title {
+    margin-left: 30px;
+  }
+
+  .nav-back {
+    position: absolute;
+    top: 44px;
+    left: 8px;
+  }
+
+  .nav-back .back-img {
+    width: 18px;
+    margin-top: 2px;
+  }
+
   .search {
     background-color: #FFFFFF;
     border: 1px solid #fbdf0d;
@@ -165,18 +169,18 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-		width:700rpx;
-		top:0px
+    width: 700rpx;
+    top: 0px;
   }
-	
-	.search-inner {
-		margin-top: 2px;
-		flex-direction: row;
-	}
-	
-	.search-inner .search-img {
-		width: 15px;
-	}
+
+  .search-inner {
+    margin-top: 2px;
+    flex-direction: row;
+  }
+
+  .search-inner .search-img {
+    width: 15px;
+  }
 
   .search-tip-text {
     font-size: 12px;
