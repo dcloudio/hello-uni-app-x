@@ -5,7 +5,7 @@
     </view>
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
 			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-				<video ref="video" class="video-box" objectFit="cover" :id="item._id" @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
+				<video ref="video" class="video-box" objectFit="cover" :id="'video-'+i" @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
 				<view class="video-cover" @click="changeState(i)">
 					<image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
 				</view>
@@ -22,7 +22,6 @@
 	</view>
 </template>
 <script>
-	import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
 	type ListItem = { _id : string, content : string, src : string, poster_src : string }
 	let page : number = 0,
   currentPageIsShow : boolean = true;
@@ -31,6 +30,7 @@
 		components: {},
 		data() {
 			return {
+        $videoContextMap:new Map<string, VideoContext>(),
 				list: [] as ListItem[],
 				visibleList: [] as ListItem[],// 提高性能 可见的只有3个
 				current: 0 as number,
@@ -107,21 +107,32 @@
       onLoadstart(index : number) {
         console.error("onLoadstart  video" + index );
       },
+      getVideoContext(index : number) : VideoContext{
+        let videoContext : VideoContext | null = this.$videoContextMap.get('video-'+index)
+        if(videoContext == null){
+          videoContext = uni.createVideoContext('video-'+index, this) as VideoContext
+          this.$videoContextMap.set('video-'+index,videoContext)
+        }
+        return videoContext
+      },
 			doPlay(index : number) {
-        // console.log("doPlay  video" + index,(this.$refs["video"] as VideoNode[])[0] );
-				(this.$refs["video"] as VideoNode[])[index].play()
+        console.log("doPlay  video" + index );
+				this.getVideoContext(index).play()
 			},
 			doStop(index : number) {
-				(this.$refs["video"] as VideoNode[])[index].stop()
-				console.log("doPause  video-" + index);
+				console.log("doStop  video-" + index);
 
-        // TODO 临时方案：解决.stop()时触发了doPause的问题
+        // this.getVideoContext(index).stop()
+
+        // TODO 临时方案： 暂不支持stop()，先调用暂停并将播放时间归零
+        this.getVideoContext(index).pause()
+        this.getVideoContext(index).seek(0)
         setTimeout(()=>{
           this.state[index] = 'unPlay'
         },1000)
 			},
       doPause(index : number) {
-      	(this.$refs["video"] as VideoNode[])[index].pause()
+      	this.getVideoContext(index).pause()
       	console.log("doPause  video-" + index);
       },
 			onPause(index : number) {
