@@ -5,7 +5,11 @@
     </view>
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
 			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-				<video ref="video" class="video-box" objectFit="cover" :id="'video-'+i" @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :show-center-play-btn="false" :autoplay="false" :controls="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
+				<video @click="changeState(i)" ref="video" class="video-box" objectFit="cover" :id="'video-'+i"
+          @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src"
+          :autoplay="false" :show-center-play-btn="false"
+          :loop="true" @play="onPlay(i)" @pause="onPause(i)"
+        ></video>
 				<view class="video-cover" @click="changeState(i)">
 					<image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
 				</view>
@@ -121,12 +125,8 @@
 			},
 			doStop(index : number) {
 				console.log("doStop  video-" + index);
-
-        // this.getVideoContext(index).stop()
-
-        // TODO 临时方案： 暂不支持stop()，先调用暂停并将播放时间归零
-        this.getVideoContext(index).pause()
-        this.getVideoContext(index).seek(0)
+        this.getVideoContext(index).stop();
+        // TODO 临时方案：解决.stop()时触发了doPause的问题
         setTimeout(()=>{
           this.state[index] = 'unPlay'
         },1000)
