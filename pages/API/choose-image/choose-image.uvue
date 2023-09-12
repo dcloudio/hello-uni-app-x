@@ -1,0 +1,192 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+    <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-common-mt">
+        <view class="uni-list">
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              图片来源
+            </view>
+            <view class="uni-list-cell-right" @click="chooseImageSource">
+              <text class="click-t">{{sourceType[sourceTypeIndex]}}</text>
+            </view>
+          </view>
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              图片质量
+            </view>
+            <view class="uni-list-cell-right" @click="chooseImageType">
+              <text class="click-t">{{sizeType[sizeTypeIndex]}}</text>
+            </view>
+          </view>
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              数量限制
+            </view>
+            <view class="uni-list-cell-right">
+              <input class="click-t" :value="countIndex+1" type="number" :maxlength="1" @confirm="chooseImageCount" confirm-type="done"/>
+            </view>
+          </view>
+        </view>
+
+        <view class="uni-list list-pd" style="padding: 30rpx;">
+          <view class="uni-flex" style="margin-bottom: 20rpx;">
+            <view class="uni-list-cell-left">点击可预览选好的图片</view>
+            <view style="margin-left: auto;">
+              <text class="click-t">{{imageList.length}}/{{countIndex+1}}</text>
+            </view>
+          </view>
+          <view class="uni-flex" style="flex-wrap: wrap;">
+            <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0rpx;">
+              <image style="width: 208rpx; height: 208rpx;" :src="image" :data-src="image" @tap="previewImage(index)"></image>
+              <image src="/static/plus.png" class="image-remove" @click="removeImage(index)"></image>
+            </view>
+            <image class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  var sourceTypeArray : Array<Array<string>> = [
+    ['camera'],
+    ['album'],
+    ['camera', 'album']
+  ]
+  var sizeTypeArray : Array<Array<string>> = [
+    ['compressed'],
+    ['original'],
+    ['compressed', 'original']
+  ]
+  export default {
+    data() {
+      return {
+        title: 'choose/previewImage',
+        imageList: [] as Array<string>,
+        sourceTypeIndex: 2,
+        sourceType: ['拍照', '相册', '拍照或相册'],
+        sizeTypeIndex: 2,
+        sizeType: ['压缩', '原图', '压缩或原图'],
+        countIndex: 8,
+        count: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      }
+    },
+    onUnload() {
+      this.imageList = [];
+      this.sourceTypeIndex = 2
+      this.sourceType = ['拍照', '相册', '拍照或相册']
+      this.sizeTypeIndex = 2
+      this.sizeType = ['压缩', '原图', '压缩或原图']
+      this.countIndex = 8
+    },
+    methods: {
+      removeImage(index : number) {
+        this.imageList.splice(index, 1)
+      },
+      chooseImageSource() {
+        uni.showActionSheet({
+          itemList: ['拍照', '相册', '拍照或相册'],
+          success(e){
+            this.sourceTypeIndex = e.tapIndex!
+          }
+        })
+      },
+      chooseImageType() {
+        uni.showActionSheet({
+          itemList: ['压缩', '原图', '压缩或原图'],
+          success(e){
+            this.sizeTypeIndex = e.tapIndex!
+          }
+        })
+      },
+      chooseImageCount(event: InputConfirmEvent) {
+        let count = parseInt(event.detail.value) - 1
+        if(count <=0) {
+          uni.showToast({
+            position:"bottom",
+            title:"图片数量应该大于0"
+          })
+          return
+        }
+        this.countIndex = count
+      },
+      chooseImage: function () {
+        if (this.imageList.length >= 9) {
+          uni.showToast({
+            position: "bottom",
+            title: "已经有9张图片了，请删除部分图片之后重新选择"
+          })
+          return
+        }
+        uni.chooseImage({
+          sourceType: sourceTypeArray[this.sourceTypeIndex],
+          sizeType: sizeTypeArray[this.sizeTypeIndex],
+          count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
+          success: (res) => {
+            this.imageList = this.imageList.concat(res.tempFilePaths);
+          },
+          fail: (err) => {
+            console.log("err: ", JSON.stringify(err));
+          }
+        })
+      },
+      previewImage: function (index : number) {
+        uni.previewImage({
+          current: index,
+          urls: this.imageList
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  .cell-pd {
+    padding: 22rpx 30rpx;
+  }
+
+  .click-t {
+    color: darkgray;
+  }
+
+  .list-pd {
+    margin-top: 50rpx;
+  }
+
+  .uni-uploader__input-box {
+    margin: 10rpx;
+    width: 208rpx;
+    height: 208rpx;
+    border: 2rpx solid #D9D9D9;
+  }
+
+  .uni-uploader__input {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  .image-remove {
+    transform: rotate(45deg);
+    width: 50rpx;
+    height: 50rpx;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 25rpx;
+    background-color: rgba(200, 200, 200, 0.8);
+  }
+</style>
