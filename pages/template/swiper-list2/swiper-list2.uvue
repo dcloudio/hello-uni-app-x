@@ -112,14 +112,14 @@
 
         // 当前
         const current_scale = lerpNumber(min_ratio, max_ratio, 1 - percentage)
-        current_node.style?.setProperty('transform', `scale(${current_scale})`)
+        current_node.style.setProperty('transform', `scale(${current_scale})`)
 
         // 目标
         const move_to_scale = lerpNumber(min_ratio, max_ratio, percentage)
-        move_to_node.style?.setProperty('transform', `scale(${move_to_scale})`)
+        move_to_node.style.setProperty('transform', `scale(${move_to_scale})`)
 
         // 滚动到水平中心位置
-        const target_x = current_node.offsetLeft + (move_to_node.offsetLeft - current_node.offsetLeft) * percentage
+        const target_x = lerpNumber(current_node.offsetLeft, move_to_node.offsetLeft, percentage)
         const center_x = target_x + move_to_node.offsetWidth / 2 - this.$swiperWidth / 2
         this.$tabScrollView?.setAttribute('scrollLeft', center_x)
       }
@@ -139,8 +139,7 @@
   .swiper-tabs-item {
     color: #555;
     font-size: 16px;
-    margin: 12px 25px 5px 25px;
-    /* transform-origin: left bottom; */
+    margin: 15px 25px 5px 25px;
   }
 
   .swiper-tabs-item-active {
