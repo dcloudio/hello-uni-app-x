@@ -47,7 +47,6 @@
   type ListItem = {
     id : string
     name : string
-    open : boolean
     pages : Page[]
     url ?: string
     enable ?: boolean
@@ -59,7 +58,6 @@
           {
             id: 'global',
             name: '全局',
-            open: false,
             pages: [
               {
                 name: 'getApp',
@@ -74,7 +72,6 @@
           {
             id: 'base',
             name: '基础',
-            open: false,
             pages: [
               {
                 name: '事件总线event-bus',
@@ -94,7 +91,6 @@
           {
             id: 'page',
             name: '页面和路由',
-            open: false,
             pages: [
               {
                 name: '页面跳转',
@@ -162,7 +158,6 @@
           {
             id: 'ui',
             name: '界面',
-            open: false,
             pages: [
               /* {
                 name: "创建动画",
@@ -211,7 +206,6 @@
           {
             id: 'device',
             name: '设备',
-            open: false,
             pages: [
               {
                 name: '获取系统信息',
@@ -298,7 +292,6 @@
           {
             id: 'media',
             name: '媒体',
-            open: false,
             pages: [
               {
                 name: "图片",
@@ -399,7 +392,6 @@
             id: "rewarded-video-ad",
             url: "rewarded-video-ad",
             name: "激励视频广告",
-            open: false,
             enable: false,
             pages: [] as Page[]
           },
@@ -407,14 +399,12 @@
             id: "full-screen-video-ad",
             url: "full-screen-video-ad",
             name: "全屏视频广告",
-            open: false,
             enable: false,
             pages: [] as Page[]
           },
           {
             id: "login",
             name: "登录",
-            open: false,
             pages: [
               {
                 name: "登录",
@@ -429,7 +419,6 @@
           {
             id: "share",
             name: "分享",
-            open: false,
             pages: [
               {
                 name: "分享",
@@ -440,7 +429,6 @@
           {
             id: "payment",
             name: "支付",
-            open: false,
             pages: [
               {
                 name: "发起支付",
@@ -451,7 +439,6 @@
           {
             id: "speech",
             name: "语音",
-            open: false,
             pages: [
               {
                 name: "语音识别",
@@ -462,7 +449,6 @@
           {
             id: "push",
             name: "推送",
-            open: false,
             pages: [
               {
                 name: "推送",
@@ -477,24 +463,6 @@
       }
     },
     methods: {
-      triggerCollapse(index ?: number, item : ListItem) {
-        if (item.pages.length == 0) {
-          const page : Page = {
-            name: item.name,
-            enable: item.enable,
-            url: item.url!,
-          }
-          this.goDetailPage(page)
-          return
-        }
-        for (var i = 0; i < this.list.length; ++i) {
-          if (index == i) {
-            this.list[i].open = !this.list[i].open
-          } else {
-            this.list[i].open = false
-          }
-        }
-      },
       goDetailPage(e : Page) {
         if (e.enable == false) {
           uni.showToast({
