@@ -1,34 +1,34 @@
 <template>
   <view @click="back" class="nav-back">
-    <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
+    <image class="back-img" src="/static/template/pull-zoom-image/back.png" mode="widthFix"></image>
   </view>
   <scroll-view :scroll-y="true" style="flex:1;" :refresher-enabled="true"
-     refresher-default-style="none" @refresherpulling="onRefresherpulling"
-     :refresher-threshold="300" :refresher-max-drag-distance="299">
-
-    <view class="head-img-box">
-      <image class="head-img-2" ref="head-img-2" src="../../../static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
+    refresher-default-style="none" @refresherpulling="onRefresherpulling"
+    :refresher-threshold="300" :refresher-max-drag-distance="299"
+    @scroll="onScroll" :rebound="false"
+    >
+    <view class="head-img-box-2" ref="head-img-box-2">
+      <image class="img" ref="head-img-2" src="../../../static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
     </view>
-    <view class="body">
-      <view class="user-info">
-        <image class="user-avatar" src="../../../static/test-image/logo.png" mode="widthFix"></image>
-        <view class="font-box">
-          <text class="username">uni-app-x</text>
-          <text class="slogan">一次开发，多端覆盖</text>
-        </view>
+    <view class="user-info" ref="user-info">
+      <image class="user-avatar" src="../../../static/test-image/logo.png" mode="widthFix"></image>
+      <view class="font-box">
+        <text class="username">uni-app-x</text>
+        <text class="slogan">一次开发，多端覆盖</text>
       </view>
-      <view class="list-item" v-for="(item,index) in 30" :key="index" :class="{'last-list-item':index == 29}">
-        <view class="item-content">
-          <text class="item-content-text" style="padding-left: 4px;">{{item}}. 占位</text>
-        </view>
+    </view>
+    <view class="list-box">
+      <view class="item" v-for="(item,index) in 30" :key="index">
+        <text class="text">{{item}}. 占位</text>
       </view>
     </view>
 
     <view slot="refresher">
-      <view class="head-img-box">
-        <image class="head-img-1" ref="head-img-1" src="../../../static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
+      <view class="head-img-box-1">
+        <image class="img" ref="head-img-1" src="../../../static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
       </view>
     </view>
+
   </scroll-view>
 </template>
 
@@ -40,9 +40,23 @@
       }
     },
     methods: {
+      onScroll(e : ScrollEvent) {
+        const {scrollTop} = e.detail
+        let y : number = scrollTop - 110
+        let s : number = (100 - scrollTop/3)/100
+        if(y < 0){
+          y = 0
+        }
+        if(s < 0.7){
+          s = 0.7
+        }
+        let x : number = (1 - s) * -100
+        this.setINodeStyle("user-info", "transform", `translate(${x},${y + (s-1)* -50}px) scale(${s})`)
+        this.setINodeStyle("head-img-box-2", "transform", `translateY(${y}px)`)
+      },
       onRefresherpulling(e : RefresherEvent) {
         // console.log('onRefresherpulling',e.detail.dy)
-        let pullingDistance:number = e.detail.dy
+        let pullingDistance : number = e.detail.dy
         this.setINodeStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
         this.setINodeStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
       },
@@ -73,79 +87,80 @@
 </script>
 
 <style>
-  .head-img-box {
+  .head-img-box-1,
+  .head-img-box-2
+  {
     position: relative;
     height: 300px;
   }
-  .head-img-1,.head-img-2{
+
+  .head-img-box-1 .img,
+  .head-img-box-2 .img
+  {
     position: absolute;
     left: -125rpx;
     width: 1000rpx;
     height: 600px;
   }
-  .head-img-1 {
+
+  .head-img-box-1 .img {
     top: 0;
   }
-  .head-img-2 {
-    bottom: 0;
+
+  .head-img-box-2 .img {
+    bottom: -100;
   }
 
-  .body {
-    margin-top: -200px;
+  .head-img-box-2 {
+    z-index: 9;
+    height: 200px;
+  }
+
+  .user-info{
+    margin-top: -110px;
     width: 750rpx;
-  }
-
-  .user-info {
     padding: 15px;
     flex-direction: row;
+    z-index: 10;
   }
 
-  .user-avatar {
+  .user-info .user-avatar {
     width: 150rpx;
     height: 150rpx;
     border-radius: 100px;
     border: 3px solid #FFF;
   }
 
-  .font-box {
+  .user-info .font-box {
     flex-direction: column;
     justify-content: space-around;
     padding: 10px;
   }
 
-  .username {
+  .user-info .username {
     font-size: 26px;
     color: #FFF;
   }
 
-  .slogan {
+  .user-info .slogan {
     font-size: 16px;
     color: #FFF;
   }
 
-  .content {
+
+  .list-box {
     background-color: #FFF;
-    border-radius: 10px;
-    padding: 15px;
+    z-index: 1;
   }
 
-  .list-item {
-    background-color: #FFF;
-    padding-top: 15px;
-  }
-  .last-list-item{
-    padding-bottom: 15px;
-  }
-
-  .item-content {
-    background-color: #fff;
-    margin: 0 5px;
+  .list-box .item {
     padding: 10px;
+    margin: 5px;
     border-radius: 5px;
     border: 1px solid rgba(220, 220, 220, 0.3);
   }
 
-  .item-content-text {
+  .list-box .text {
     font-size: 14px;
     color: #666;
     line-height: 20px;
@@ -155,7 +170,6 @@
     position: absolute;
     top: 30px;
     left: 10px;
-    background-color: rgba(220, 220, 220, 0.3);
     border-radius: 100px;
     width: 28px;
     height: 28px;
