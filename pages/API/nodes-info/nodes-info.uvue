@@ -1,34 +1,38 @@
 <template>
-  <view>
+  <view class="uni-padding-wrap">
     <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <button @click="getNodeInfo">getNodeInfo</button>
+    <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
+    <button class="btn btn-get-all-node-info" @click="getAllNodeInfo">getAllNodeInfo</button>
+    <view class="rect-1-2">
+      <view class="rect rect1"></view>
+      <view class="rect rect2"></view>
     </view>
-    <view class="rect" :style="{left: left, width: width, height: height}"></view>
-    <view class="rect-info">
-      <view class="node-info-item">
-        <text class="node-info-item-k">left: </text>
-        <text class="node-info-item-v">{{nodeInfo.left}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">top: </text>
-        <text class="node-info-item-v">{{nodeInfo.top}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">right: </text>
-        <text class="node-info-item-v">{{nodeInfo.right}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">bottom: </text>
-        <text class="node-info-item-v">{{nodeInfo.bottom}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">width: </text>
-        <text class="node-info-item-v">{{nodeInfo.width}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">height: </text>
-        <text class="node-info-item-v">{{nodeInfo.height}}</text>
+    <view class="rect-info-1-2">
+      <view class="rect-info" v-for="(nodeInfo, index) in nodeInfoList" :key="index">
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{nodeInfo.left}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{nodeInfo.top}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{nodeInfo.right}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{nodeInfo.bottom}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{nodeInfo.width}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{nodeInfo.height}}</text>
+        </view>
       </view>
     </view>
   </view>
@@ -39,16 +43,20 @@
     data() {
       return {
         title: 'createSelectorQuery',
-        nodeInfo: { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 } as NodeInfo,
-        left: 16,
-        width: 150,
-        height: 100,
+        nodeInfoList: [] as NodeInfo[],
       }
     },
     methods: {
       getNodeInfo() {
-        uni.createSelectorQuery().select('.rect').boundingClientRect().exec((ret) => {
-          this.nodeInfo = ret[0] as NodeInfo
+        uni.createSelectorQuery().select('.rect1').boundingClientRect().exec((ret) => {
+          this.nodeInfoList.length = 0
+          this.nodeInfoList.push(ret[0] as NodeInfo)
+        })
+      },
+      getAllNodeInfo() {
+        uni.createSelectorQuery().selectAll('.rect').boundingClientRect().exec((ret) => {
+          this.nodeInfoList.length = 0
+          this.nodeInfoList.push(...(ret[0] as NodeInfo[]))
         })
       }
     }
@@ -56,15 +64,37 @@
 </script>
 
 <style>
+  .btn {
+    margin-top: 15px;
+  }
+
+  .rect-1-2 {
+    flex-direction: row;
+    margin-top: 15px;
+  }
+
   .rect {
+    width: 150px;
+    height: 100px;
+  }
+
+  .rect1 {
     background-color: dodgerblue;
-    margin-top: 50px;
+  }
+
+  .rect2 {
+    margin-left: auto;
+    background-color: seagreen;
+  }
+
+  .rect-info-1-2 {
+    flex-direction: row;
+    margin-top: 15px;
   }
 
   .rect-info {
-    display: flex;
+    flex: 1;
     flex-direction: column;
-    padding: 15px;
   }
 
   .node-info-item {
@@ -72,12 +102,12 @@
   }
 
   .node-info-item-k {
-    width: 100px;
-    line-height: 24px;
+    width: 72px;
+    line-height: 2;
   }
 
   .node-info-item-v {
     font-weight: bold;
-    line-height: 24px;
+    line-height: 2;
   }
 </style>
