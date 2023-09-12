@@ -1,4 +1,6 @@
 <script lang="uts">
+  import {type PropType} from 'vue'
+  
   export type ItemType = { value : number; name : string }
 
   export default {
