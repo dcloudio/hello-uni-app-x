@@ -27,7 +27,7 @@
 		detail: string,
 	}
 
-    
+
 	export default {
 		data() {
 			return {
@@ -55,20 +55,19 @@
 						const items = [] as Item[];
 						const jsonArr = JSON.parse<Array<UTSJSONObject>>(content);
 						if(jsonArr != null){
-							for(const res in jsonArr){
-								const json = res as UTSJSONObject;
-								const title = json["title"] as string;
-								const subTitle = json["subTitle"] as string;
-								const img = json["img"] as string;
-								const detail = json["detail"] as string;
-								const item:Item = {
-									title,
-									subTitle,
-									img,
-									detail
-								}
-								items.push(item);
-							}
+              jsonArr.forEach((json) => {
+                const title = json["title"] as string;
+                const subTitle = json["subTitle"] as string;
+                const img = json["img"] as string;
+                const detail = json["detail"] as string;
+                const item:Item = {
+                	title,
+                	subTitle,
+                	img,
+                	detail
+                }
+                items.push(item);
+              })
 							let temp = [] as Item[];
 							for(let i = 0; i < 100; i++){
 								temp = temp.concat(items);
@@ -80,7 +79,7 @@
 						},0);
 					},
 					complete:function(_){
-						
+
 					}
 				} as ReadFileOptions)
 			},
@@ -128,7 +127,7 @@
 		display: flex;
 		margin-top: 10rpx;
 	}
-	
+
 	.uni-media-list-text {
 		color: #9D9D9F;
 		font-size: 25rpx;
