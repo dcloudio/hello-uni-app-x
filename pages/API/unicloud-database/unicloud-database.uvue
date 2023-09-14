@@ -1,0 +1,312 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @click="dbAdd">新增单条数据</button>
+          <button type="primary" @click="dbBatchAdd">新增多条数据</button>
+          <button type="primary" @click="dbUpdate">更新数据</button>
+          <button type="primary" @click="dbGet">where传字符串获取数据</button>
+          <button type="primary" @click="dbGetWithCommand">where传对象获取数据</button>
+          <button type="primary" @click="dbRemove">删除数据</button>
+          <button type="primary" @click="dbLookupInit">初始化联表查询数据</button>
+          <button type="primary" @click="dbLookup">联表查询</button>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        title: 'ClientDB'
+      }
+    },
+    onLoad() {
+    },
+    onUnload() {
+    },
+    methods: {
+      dbAdd: function () {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .add({
+            num: 1,
+            tag: 'default-tag',
+            date: new Date(),
+            point: new db.Geo.Point(116, 38)
+          })
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `新增成功，id: ${res.id}`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbBatchAdd() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .add([{
+            num: 2,
+            tag: 'default-tag',
+          }, {
+            num: 3,
+            tag: 'default-tag',
+          }])
+          .then<void>((res) => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `新增成功，id列表: ${res.ids.join(',')}`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbUpdate() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          )
+          .update({
+            num: 4
+          })
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `更新成功，更新了${res.updated}条数据`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbGet() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          )
+          .field('num, tag')
+          .orderBy('num desc')
+          .skip(1)
+          .limit(2)
+          .get()
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `获取成功，取到了${res.data.length}条数据`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbGetWithCommand() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .where({
+            num: db.command.gt(2)
+          })
+          .field('num, tag')
+          .orderBy('num desc')
+          .skip(1)
+          .limit(2)
+          .get()
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `获取成功，取到了${res.data.length}条数据`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbRemove() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          )
+          .remove()
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `删除成功，删掉了${res.deleted}条数据`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbLookupInit() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('local')
+          .where('tag == "default-tag"')
+          .remove()
+          .then(() : Promise<UniCloudDBRemoveResult> => {
+            return db.collection('foreign')
+              .where('tag == "default-tag"')
+              .remove()
+          })
+          .then(() : Promise<UniCloudDBBatchAddResult> => {
+            return db.collection('local')
+              .add([{
+                id: "local_1",
+                name: "local_1_name",
+                tag: "default-tag",
+                foreign_id: "foreign_1"
+              }, {
+                id: "local_2",
+                name: "local_2_name",
+                tag: "default-tag",
+                foreign_id: "foreign_2"
+              }])
+          })
+          .then(() : Promise<UniCloudDBBatchAddResult> => {
+            return db.collection('foreign')
+              .add([{
+                id: "foreign_1",
+                name: "foreign_1_name",
+                tag: "default-tag"
+              }, {
+                id: "foreign_2",
+                name: "foreign_2_name",
+                tag: "default-tag"
+              }])
+          })
+          .then<void>((_) : void => {
+            uni.hideLoading()
+            uni.showModal({
+              content: '数据初始化成功',
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            console.error(err)
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbLookup() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        const local = db.collection('local')
+          .where('tag == "default-tag"')
+          .getTemp()
+        const foreign = db.collection('foreign')
+          .where('tag == "default-tag"')
+          .getTemp()
+        db.collection(local, foreign)
+          .get()
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            uni.showModal({
+              content: `联表查询成功，取到了${res.data.length}条数据`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      }
+    }
+  }
+</script>
+
+<style>
+</style>
