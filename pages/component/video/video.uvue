@@ -25,22 +25,13 @@
         <button type="primary" @click="seek(pos)">跳转到指定位置</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="requestFullScreen(direction)">进入全屏</button>
+        <button type="primary" @click="requestFullScreen(requestFullScreenOptions)">进入全屏</button>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="exitFullScreen">退出全屏</button>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="stop">停止</button>
-      </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="hide">隐藏</button>
-      </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="show">显示</button>
-      </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="close">关闭</button>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="sendDanmu(danmu)">发送弹幕</button>
@@ -137,7 +128,6 @@
 </template>
 
 <script lang="uts">
-  import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
   export default {
     onReady() {
       this.videoContext = uni.createVideoContext('video', this);
@@ -180,10 +170,9 @@
         danmuBtn: false,
         enableDanmu: true,
         pageGesture: false,
-        direction: {
-          direction: 0
-        } as RequestFullScreenOptions,
-        _direction: {
+        direction: -90,
+        _direction: 0,
+        requestFullScreenOptions: {
           direction: -90
         } as RequestFullScreenOptions,
         showProgress: true,
@@ -246,19 +235,7 @@
       },
       stop: function () {
         console.log("stop");
-        (this.$refs["video"] as VideoNode).stop();
-      },
-      hide: function () {
-        console.log("hide");
-        (this.$refs["video"] as VideoNode).hide();
-      },
-      show: function () {
-        console.log("show");
-        (this.$refs["video"] as VideoNode).show();
-      },
-      close: function () {
-        console.log("close");
-        (this.$refs["video"] as VideoNode).close();
+        this.videoContext?.stop();
       },
       sendDanmu: function (danmu : Danmu) {
         console.log("sendDanmu -> " + danmu);
@@ -305,8 +282,8 @@
         this.pageGesture = !this.pageGesture;
         console.log("pageGesture -> " + this.pageGesture)
       },
-      setDirection: function (options : RequestFullScreenOptions) {
-        this.direction = options;
+      setDirection: function (direction: number) {
+        this.direction = direction;
         console.log("direction -> " + this.direction)
       },
       setShowProgress: function () {
