@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex:1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-common-mt">
@@ -29,7 +29,49 @@
               数量限制
             </view>
             <view class="uni-list-cell-right">
-              <input class="click-t" :value="countIndex+1" type="number" :maxlength="1" @confirm="chooseImageCount" confirm-type="done"/>
+              <input class="click-t" :value="countIndex+1" type="number" :maxlength="1" @confirm="chooseImageCount" confirm-type="done" />
+            </view>
+          </view>
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              图像裁剪
+            </view>
+            <view class="uni-list-cell-right">
+              <switch :checked="isCrop" @change="switchCrop"></switch>
+            </view>
+          </view>
+          <view ref="cropOptionNode" class="crop-option" :style="{'height':isCrop?'200px':'0px'}">
+            <view class="uni-list-cell cell-pd">
+              <view class="uni-list-cell-left item_width">
+                图片质量(%)
+              </view>
+              <view class="uni-list-cell-right">
+                <input :value="cropPercent" @confirm="cropPercentConfim" type="number" />
+              </view>
+            </view>
+            <view class="uni-list-cell cell-pd">
+              <view class="uni-list-cell-left item_width">
+                裁剪宽度(px)
+              </view>
+              <view class="uni-list-cell-right">
+                <input :value="cropWidth" @confirm="cropWidthConfim" type="number" />
+              </view>
+            </view>
+            <view class="uni-list-cell cell-pd">
+              <view class="uni-list-cell-left item_width">
+                裁剪高度(px)
+              </view>
+              <view class="uni-list-cell-right">
+                <input :value="cropHeight" @confirm="cropHeightConfim" type="number" />
+              </view>
+            </view>
+            <view class="uni-list-cell cell-pd">
+              <view class="uni-list-cell-left item_width">
+                保留原宽高
+              </view>
+              <view class="uni-list-cell-right">
+                <switch :checked="cropResize" @change="cropResizeChange"></switch>
+              </view>
             </view>
           </view>
         </view>
@@ -51,7 +93,7 @@
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -77,7 +119,12 @@
         sizeTypeIndex: 2,
         sizeType: ['压缩', '原图', '压缩或原图'],
         countIndex: 8,
-        count: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        count: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        isCrop: false,
+        cropPercent: 80,
+        cropWidth: 100,
+        cropHeight: 100,
+        cropResize: false
       }
     },
     onUnload() {
@@ -89,13 +136,52 @@
       this.countIndex = 8
     },
     methods: {
+      cropHeightConfim(e : InputConfirmEvent) {
+        let value = parseInt(e.detail.value)
+        if (value > 0) {
+          this.cropHeight = value
+        } else {
+          uni.showToast({
+            position: "bottom",
+            title: "裁剪高度需要大于0"
+          })
+        }
+      },
+      cropWidthConfim(e : InputConfirmEvent) {
+        let value = parseInt(e.detail.value)
+        if (value > 0) {
+          this.cropWidth = value
+        } else {
+          uni.showToast({
+            position: "bottom",
+            title: "裁剪宽度需要大于0"
+          })
+        }
+      },
+      cropPercentConfim(e : InputConfirmEvent) {
+        let value = parseInt(e.detail.value)
+        if (value > 0 && value <= 100) {
+          this.cropPercent = value
+        } else {
+          uni.showToast({
+            position: "bottom",
+            title: "请输入0~100之间的值"
+          })
+        }
+      },
+      cropResizeChange(e : SwitchChangeEvent) {
+        this.cropResize = e.detail.value
+      },
+      switchCrop(e : SwitchChangeEvent) {
+        this.isCrop = e.detail.value
+      },
       removeImage(index : number) {
         this.imageList.splice(index, 1)
       },
       chooseImageSource() {
         uni.showActionSheet({
           itemList: ['拍照', '相册', '拍照或相册'],
-          success(e){
+          success(e) {
             this.sourceTypeIndex = e.tapIndex!
           }
         })
@@ -103,23 +189,24 @@
       chooseImageType() {
         uni.showActionSheet({
           itemList: ['压缩', '原图', '压缩或原图'],
-          success(e){
+          success(e) {
             this.sizeTypeIndex = e.tapIndex!
           }
         })
       },
-      chooseImageCount(event: InputConfirmEvent) {
+      chooseImageCount(event : InputConfirmEvent) {
         let count = parseInt(event.detail.value) - 1
-        if(count <=0) {
+        if (count < 0) {
           uni.showToast({
-            position:"bottom",
-            title:"图片数量应该大于0"
+            position: "bottom",
+            title: "图片数量应该大于0"
           })
           return
         }
         this.countIndex = count
       },
       chooseImage: function () {
+        // var cropOption:ChooseImageCropOptions|null = this.isCrop ? null : new ChooseImageCropOptions(  )
         if (this.imageList.length >= 9) {
           uni.showToast({
             position: "bottom",
@@ -130,6 +217,7 @@
         uni.chooseImage({
           sourceType: sourceTypeArray[this.sourceTypeIndex],
           sizeType: sizeTypeArray[this.sizeTypeIndex],
+          crop: this.isCrop ? { "quality": this.cropPercent, "width": this.cropWidth, "height": this.cropHeight, "resize": this.cropResize } as ChooseImageCropOptions : null,
           count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
           success: (res) => {
             this.imageList = this.imageList.concat(res.tempFilePaths);
@@ -188,5 +276,17 @@
     right: 0;
     border-radius: 25rpx;
     background-color: rgba(200, 200, 200, 0.8);
+  }
+
+  .item_width {
+    width: 260rpx;
+  }
+
+  .crop-option {
+    border-top-color: lightgray;
+    border-width: 1rpx;
+    padding: 20rpx;
+    transition: height;
+    transition-duration: 300;
   }
 </style>
