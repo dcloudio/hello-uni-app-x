@@ -21,7 +21,7 @@
   export default {
     data() {
       return {
-        $nodeMap:new Map<string, INode>(),
+        $elementMap:new Map<string, Element>(),
         x: 0 as number,
         y: 0 as number,
         // 飘走的卡片计数
@@ -59,8 +59,8 @@
 
       // TODO 需要延迟设置才能生效
       setTimeout(()=>{
-        this.setINodeStyle('card','height', screenHeight * 0.7 + 'px');
-        this.setINodeStyle('card-img','height', screenHeight * 0.7 + 'px');
+        this.setElementStyle('card','height', screenHeight * 0.7 + 'px');
+        this.setElementStyle('card-img','height', screenHeight * 0.7 + 'px');
         this.initCardStyle()
       },200)
 
@@ -74,20 +74,20 @@
       initCardStyle(){
         let _index = (this.cardIndex + this.floatCount)%3
         // console.log('~~~~~~_index:'+_index + ' cardIndex:'+this.cardIndex+' floatCount:'+this.floatCount);
-        this.setINodeStyle('card','z-index', _index)
-        this.setINodeStyle('card','margin-top', screenHeight * 0.15 - 30 * _index + 'px');
-        this.setINodeStyle('card','transform', 'scale('+(0.9 + 0.05 * _index)+')')
+        this.setElementStyle('card','z-index', _index)
+        this.setElementStyle('card','margin-top', screenHeight * 0.15 - 30 * _index + 'px');
+        this.setElementStyle('card','transform', 'scale('+(0.9 + 0.05 * _index)+')')
       },
-      // 工具方法，用于快速设置 INode 的 style
-      setINodeStyle(refName:string,propertyName : string, propertyStyle : any) : void {
-        let node : INode | null = this.$nodeMap.get(refName)
-        if(node == null){
-          node = this.$refs.get(refName) as INode;
-          this.$nodeMap.set(refName,node)
+      // 工具方法，用于快速设置 Element 的 style
+      setElementStyle(refName:string,propertyName : string, propertyStyle : any) : void {
+        let element : Element | null = this.$elementMap.get(refName)
+        if(element == null){
+          element = this.$refs.get(refName) as Element;
+          this.$elementMap.set(refName,element)
         }else{
           // console.log('直接拿');
         }
-        node?.style?.setProperty(propertyName, propertyStyle);
+        element?.style?.setProperty(propertyName, propertyStyle);
       },
       touchstart(e : TouchEvent) {
         // console.log('touchstart')
@@ -160,13 +160,13 @@
         if(k.toInt() != 0){
           cardTo(k * screenWidth * 1.3, this.y * 3,()=>{
             //  状态图标变回透明
-            this.setINodeStyle("state-icon-like",'opacity', 0)
-            this.setINodeStyle("state-icon-dislike",'opacity', 0)
+            this.setElementStyle("state-icon-like",'opacity', 0)
+            this.setElementStyle("state-icon-dislike",'opacity', 0)
 
             // 设置为透明，防止飘回时因为 margin-top 太高，露出来
-            this.setINodeStyle("card",'opacity', 0)
+            this.setElementStyle("card",'opacity', 0)
             setTimeout(()=>{
-              this.setINodeStyle("card",'opacity', 1)
+              this.setElementStyle("card",'opacity', 1)
             },300)
 
             // 执行卡片飘动后事件，注意uni.$emit是全局事件。其他卡片也会执行
@@ -185,12 +185,12 @@
         }
       },
       moveCard() {
-        this.setINodeStyle("card",
+        this.setElementStyle("card",
           'transform',
           `translate(${this.x}px,${this.y}px) rotate(${this.x/-30}deg) scale(1)`
         )
-        this.setINodeStyle("state-icon-like",'opacity', this.x < 0 ? 0 : this.movePercent * 10)
-        this.setINodeStyle("state-icon-dislike",'opacity', this.x > 0 ? 0 : this.movePercent * 10)
+        this.setElementStyle("state-icon-like",'opacity', this.x < 0 ? 0 : this.movePercent * 10)
+        this.setElementStyle("state-icon-dislike",'opacity', this.x > 0 ? 0 : this.movePercent * 10)
       }
     }
   }
