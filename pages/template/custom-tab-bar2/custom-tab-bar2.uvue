@@ -1,0 +1,208 @@
+<template>
+  <view class="tabs">
+    <view class="tab-view">
+      <tab1 ref="tab1" v-if="tabList[0].init" v-show="selectedIndex==0"></tab1>
+      <tab2 ref="tab2" v-if="tabList[1].init" v-show="selectedIndex==1"></tab2>
+    </view>
+    <view ref="tabbar" class="tab-bar">
+      <view class="tab-item">
+        <view ref="tab-item1" class="tab-item-content" @click="onTabClick(0)">
+          <text class="tab-item-icon uni-icon"
+            :class="selectedIndex==0 ? 'tab-item-text-active' : ''">{{'\ue644'}}</text>
+          <text class="tab-item-text" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            列表
+          </text>
+        </view>
+      </view>
+      <view class="tab-item">
+        <view class="btn-plus">
+          <text class="btn-plus-text">+</text>
+        </view>
+      </view>
+      <view class="tab-item">
+        <view ref="tab-item2" class="tab-item-content" @click="onTabClick(1)">
+          <text class="tab-item-icon uni-icon"
+            :class="selectedIndex==1 ? 'tab-item-text-active' : ''">{{'\ue699'}}</text>
+          <text class="tab-item-text" :class="selectedIndex==1 ? 'tab-item-text-active' : ''">
+            我的
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import tab1 from './custom-tab-bar2-tab1.uvue';
+  import tab2 from './custom-tab-bar2-tab2.uvue';
+
+  type TabItem = {
+    init : boolean,
+    preload : boolean,
+  }
+
+  export default {
+    components: {
+      tab1,
+      tab2
+    },
+    data() {
+      return {
+        tabList: [
+          {
+            init: false
+          } as TabItem,
+          {
+            init: false
+          } as TabItem,
+        ] as TabItem[],
+        selectedIndex: -1,
+        $tabBarNode: null as null | Element,
+        $tabBarWidth: 0,
+        $drawContext: null as null | DrawableContext,
+      }
+    },
+    onReady() {
+      this.setSelectedIndex(0)
+      this.$tabBarNode = this.$refs['tabbar'] as Element
+      this.$tabBarWidth = this.$tabBarNode?.offsetWidth as number
+      this.$drawContext = this.$tabBarNode!.getDrawableContext()
+      this._renderTabbar()
+    },
+    methods: {
+      onTabClick(index : number) {
+        this.setSelectedIndex(index);
+        if (index == 0) {
+          (this.$refs["tab1"]! as ComponentPublicInstance).$callMethod('scrollTop', 0)
+        }
+      },
+      onTabPageEvent(top : number) {
+        const tabItem1 = this.$refs["tabs-item1"] as Element
+        const angle = top < 50 ? '0deg' : '180deg'
+        tabItem1.style.setProperty('transform', `rotate(${angle})`)
+      },
+      setSelectedIndex(index : number) {
+        if (this.selectedIndex === index) {
+          return
+        }
+        if (!this.tabList[index].init) {
+          this.tabList[index].init = true
+        }
+        this.selectedIndex = index
+      },
+      _renderTabbar() {
+        const ctx = this.$drawContext!
+
+        ctx.reset()
+
+        const plus_radius = 40
+        const plus_offset = 8
+        const center = this.$tabBarWidth / 2
+        const plus_x1 = center - plus_radius - plus_offset
+        const plus_x2 = center + plus_radius + plus_offset
+        const center_x = center
+        const center_y = plus_radius
+
+        const control_o = 15
+        const control_x = 4.8
+        const control_y = 4.4
+
+        ctx.fillStyle = "dodgerblue"
+
+        ctx.beginPath()
+        ctx.moveTo(0, 0)
+        ctx.lineTo(plus_x1, 0)
+        ctx.bezierCurveTo(plus_x1 + control_o, 0, plus_x1 + control_x, center_y - control_y, center, center_y)
+        ctx.bezierCurveTo(plus_x2 - control_x, center_y - control_y, plus_x2 - control_o, 0, plus_x2, 0)
+        ctx.lineTo(plus_x2, 0)
+        ctx.lineTo(this.$tabBarWidth, 0)
+        ctx.lineTo(this.$tabBarWidth, 52)
+        ctx.lineTo(0, 52)
+        ctx.lineTo(0, 0)
+        ctx.stroke()
+        ctx.fill()
+
+        ctx.update()
+      }
+    }
+  }
+</script>
+
+<style>
+  @font-face {
+    font-family: "UniIcon";
+    src: url('@/static/fonts/uni-icon.ttf');
+  }
+
+  .uni-icon {
+    font-family: "UniIcon";
+    font-size: 16px;
+    font-style: normal;
+  }
+
+  .tabs {
+    flex: 1;
+    background-color: #fff;
+    overflow: visible;
+  }
+
+  .tab-view {
+    flex: 1;
+  }
+
+  .tab-view-item {
+    flex: 1;
+  }
+
+  .tab-bar {
+    flex-direction: row;
+    height: 56px;
+    overflow: visible;
+  }
+
+  .tab-item {
+    flex: 1;
+    position: relative;
+    overflow: visible;
+  }
+
+  .tab-item-content {
+    margin: auto;
+  }
+
+  .tab-item-icon {
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .tab-item-text {
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .tab-item-text-active {
+    color: #fff;
+  }
+
+  .btn-plus {
+    width: 70px;
+    height: 70px;
+    border-radius: 50px;
+    background-color: #FE5722;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -35px;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .btn-plus-text {
+    color: #fff;
+    font-size: 32px;
+  }
+</style>
