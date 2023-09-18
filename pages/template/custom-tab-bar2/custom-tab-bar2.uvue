@@ -5,8 +5,8 @@
       <tab2 ref="tab2" v-if="tabList[1].init" v-show="selectedIndex==1"></tab2>
     </view>
     <view ref="tabbar" class="tab-bar">
-      <view class="tab-item">
-        <view ref="tab-item1" class="tab-item-content" @click="onTabClick(0)">
+      <view class="tab-item" @click="onTabClick(0)">
+        <view ref="tab-item1" class="tab-item-content">
           <text class="tab-item-icon uni-icon"
             :class="selectedIndex==0 ? 'tab-item-text-active' : ''">{{'\ue644'}}</text>
           <text class="tab-item-text" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
@@ -16,12 +16,12 @@
       </view>
       <view>
         <image class="concave-image" src="/static/template/custom-tab-bar2/concave.png"></image>
-        <view class="btn-plus">
+        <view class="btn-plus" @click="onPlusClick">
           <text class="btn-plus-text">+</text>
         </view>
       </view>
-      <view class="tab-item">
-        <view ref="tab-item2" class="tab-item-content" @click="onTabClick(1)">
+      <view class="tab-item" @click="onTabClick(1)">
+        <view ref="tab-item2" class="tab-item-content">
           <text class="tab-item-icon uni-icon"
             :class="selectedIndex==1 ? 'tab-item-text-active' : ''">{{'\ue699'}}</text>
           <text class="tab-item-text" :class="selectedIndex==1 ? 'tab-item-text-active' : ''">
@@ -83,6 +83,13 @@
           this.tabList[index].init = true
         }
         this.selectedIndex = index
+      },
+      onPlusClick() {
+        uni.showModal({
+          title: "提示",
+          content: "你点击了 +",
+          showCancel: false
+        })
       }
     }
   }
@@ -161,8 +168,8 @@
     border-radius: 50px;
     background-color: #FE5722;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    margin-left: auto;
-    margin-right: auto;
+    /* margin-left: auto;
+    margin-right: auto; */
     margin-top: -35px;
     align-items: center;
     justify-content: center;
