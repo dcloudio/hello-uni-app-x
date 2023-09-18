@@ -14,7 +14,8 @@
           </text>
         </view>
       </view>
-      <view class="tab-item">
+      <view>
+        <image class="concave-image" src="/static/template/custom-tab-bar2/concave.png"></image>
         <view class="btn-plus">
           <text class="btn-plus-text">+</text>
         </view>
@@ -56,18 +57,11 @@
             init: false
           } as TabItem,
         ] as TabItem[],
-        selectedIndex: -1,
-        $tabBarNode: null as null | Element,
-        $tabBarWidth: 0,
-        $drawContext: null as null | DrawableContext,
+        selectedIndex: -1
       }
     },
     onReady() {
       this.setSelectedIndex(0)
-      this.$tabBarNode = this.$refs['tabbar'] as Element
-      this.$tabBarWidth = this.$tabBarNode?.offsetWidth as number
-      this.$drawContext = this.$tabBarNode!.getDrawableContext()
-      this._renderTabbar()
     },
     methods: {
       onTabClick(index : number) {
@@ -89,40 +83,6 @@
           this.tabList[index].init = true
         }
         this.selectedIndex = index
-      },
-      _renderTabbar() {
-        const ctx = this.$drawContext!
-
-        ctx.reset()
-
-        const plus_radius = 40
-        const plus_offset = 8
-        const center = this.$tabBarWidth / 2
-        const plus_x1 = center - plus_radius - plus_offset
-        const plus_x2 = center + plus_radius + plus_offset
-        const center_x = center
-        const center_y = plus_radius
-
-        const control_o = 15
-        const control_x = 4.8
-        const control_y = 4.4
-
-        ctx.fillStyle = "dodgerblue"
-
-        ctx.beginPath()
-        ctx.moveTo(0, 0)
-        ctx.lineTo(plus_x1, 0)
-        ctx.bezierCurveTo(plus_x1 + control_o, 0, plus_x1 + control_x, center_y - control_y, center, center_y)
-        ctx.bezierCurveTo(plus_x2 - control_x, center_y - control_y, plus_x2 - control_o, 0, plus_x2, 0)
-        ctx.lineTo(plus_x2, 0)
-        ctx.lineTo(this.$tabBarWidth, 0)
-        ctx.lineTo(this.$tabBarWidth, 52)
-        ctx.lineTo(0, 52)
-        ctx.lineTo(0, 0)
-        ctx.stroke()
-        ctx.fill()
-
-        ctx.update()
       }
     }
   }
@@ -163,6 +123,7 @@
   .tab-item {
     flex: 1;
     position: relative;
+    background-color: #1e90ff;
     overflow: visible;
   }
 
@@ -187,7 +148,14 @@
     color: #fff;
   }
 
+  .concave-image {
+    width: 115px;
+    height: 56px;
+  }
+
   .btn-plus {
+    position: absolute;
+    left: 23px;
     width: 70px;
     height: 70px;
     border-radius: 50px;
