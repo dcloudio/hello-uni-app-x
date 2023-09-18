@@ -1,15 +1,23 @@
 <template>
   <view>
-    <page-head title="setNavigationBarColor"></page-head>
+    <view class="custom-navigation">
+      <text
+        class="back-icon"
+        @click="back"
+        :style="`color:${navigationBarTextColor}`"
+        >{{ backIcon }}</text
+      >
+      <text class="title" :style="`color:${navigationBarTextColor}`"
+        >自定义导航栏</text
+      >
+    </view>
+    <page-head title="setCustomNavigationBarColor"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <button @tap="setNavigationBarColor1" class="uni-btn">
-        设置导航条背景绿色，标题白色
+        设置自定义导航栏前景色白色
       </button>
       <button @tap="setNavigationBarColor2" class="uni-btn">
-        设置导航条背景红色，标题黑色
-      </button>
-      <button @tap="goCustomNavigation" class="uni-btn">
-        跳转自定义导航栏页面
+        设置自定义导航栏前景色黑色
       </button>
     </view>
   </view>
@@ -19,12 +27,28 @@
 import { state, setLifeCycleNum } from '@/store/index.uts'
 
 export default {
+  data() {
+    return {
+      backIcon: '\ue582',
+      navigationBarTextColor: '#fff'
+    }
+  },
+  onShow(){
+    uni.loadFontFace({
+      family: 'UniFontFamily',
+      source: 'static/font/uni.ttf'
+    })
+  },
   methods: {
+    back(){
+      uni.navigateBack()
+    },
     setNavigationBarColor1() {
       uni.setNavigationBarColor({
         frontColor: '#ffffff',
-        backgroundColor: '#00ff00',
+        backgroundColor: '#0000',
         success() {
+          this.navigationBarTextColor = '#fff'
           console.log('setNavigationBarColor success')
         },
         fail() {
@@ -38,8 +62,9 @@ export default {
     setNavigationBarColor2() {
       uni.setNavigationBarColor({
         frontColor: '#000000',
-        backgroundColor: '#ff0000',
+        backgroundColor: '#0000',
         success() {
+          this.navigationBarTextColor = '#000'
           console.log('setNavigationBarColor success')
         },
         fail() {
@@ -58,20 +83,23 @@ export default {
     setLifeCycleNum(num: number) {
       setLifeCycleNum(num)
     },
-    goCustomNavigation(){
-      uni.navigateTo({
-        url: '/pages/API/set-navigation-bar-color/set-custom-navigation-bar-color'
-      })
-    }
   },
 }
 </script>
 
 <style>
-.direction-row {
-  flex-direction: row;
+.custom-navigation {
+  padding-top: 40px;
+  padding-bottom: 10px;
+  background-color: #007aff;
 }
-.label {
-  width: 190px;
+.custom-navigation > .title {
+  margin: 0 auto;
+}
+.custom-navigation > .back-icon {
+  position: absolute;
+  font-family: UniFontFamily;
+  font-size: 20px;
+  left: 10px;
 }
 </style>
