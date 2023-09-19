@@ -4,7 +4,7 @@
             <view class="left-content" @click="back">
                 <text class="uni-icons">{{unicode}}</text>
             </view>
-            <view class="uni-navbar-content">
+            <view class="uni-navbar-content" :class="{'is-left':isLeft}">
                 <slot>{{title}}</slot>
             </view>
             <view class="right-content">
@@ -23,11 +23,7 @@
         		type: String,
         		default: ''
         	},
-        	open: {
-        		type: Boolean,
-        		default: false
-        	},
-        	disabled: {
+        	isLeft: {
         		type: Boolean,
         		default: false
         	}
@@ -55,10 +51,18 @@
                     console.log(err);
                 },
             })
-
             const sys = uni.getSystemInfoSync()
             const statusBarHeight = sys.statusBarHeight
             this.statusBarHeight = statusBarHeight
+        },
+        mounted() {
+          // TODO 暂时加定时器，否则不生效
+          setTimeout(() => {
+            uni.setNavigationBarColor({
+                frontColor: '#000000',
+                backgroundColor: '#ffffff'
+            })
+          }, 100)
         },
         methods: {
             back() {
@@ -104,7 +108,11 @@
         left: 45px;
         right: 45px;
         display: flex;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
+    }
+    .is-left {
+      justify-content: flex-start;
     }
 </style>
