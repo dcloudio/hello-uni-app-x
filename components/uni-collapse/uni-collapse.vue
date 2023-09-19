@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	// import { ComponentPublicInstance } from 'vue'
+	import { ComponentPublicInstance } from 'vue'
 	export default {
 		name: "UniCollapse",
 		props: {
