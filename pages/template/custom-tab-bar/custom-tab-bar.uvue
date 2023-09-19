@@ -1,15 +1,26 @@
 <template>
-  <view class="custom-tab-bar">
-    <view class="tab-view">
+  <view class="tabs">
+    <view ref="tabview" class="tab-view">
       <tab1 ref="tab1" v-if="tabList[0].init" v-show="selectedIndex==0"></tab1>
       <tab2 ref="tab2" v-if="tabList[1].init" v-show="selectedIndex==1"></tab2>
     </view>
-    <view class="tab-bar">
+    <view ref="tabbar" class="tab-bar">
       <view class="tab-item" @click="onTabClick(0)">
         <view ref="tab-item1" class="tab-item-content">
-          <text class="tab-item-icon tab-item-icon1 uni-icon" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
-            {{'\ue6be'}}
+          <text v-if="displayArrow" class="tab-item-icon tab-item-arrow uni-icon" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            {{'\ue6bd'}}
           </text>
+          <text v-if="!displayArrow" class="tab-item-icon uni-icon"
+            :class="selectedIndex==0 ? 'tab-item-text-active' : ''">{{'\ue644'}}</text>
+          <text v-if="!displayArrow" class="tab-item-text" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            首页
+          </text>
+        </view>
+      </view>
+      <view>
+        <image class="concave-image" src="/static/template/custom-tab-bar2/concave.png"></image>
+        <view class="btn-plus" @click="onPlusClick">
+          <text class="btn-plus-text">+</text>
         </view>
       </view>
       <view class="tab-item" @click="onTabClick(1)">
@@ -50,17 +61,20 @@
             init: false
           } as TabItem,
         ] as TabItem[],
-        selectedIndex: -1
+        selectedIndex: -1,
+        displayArrow: false,
+        $tabViewHeight: 0
       }
     },
     onLoad() {
       uni.$on('tabchange', this.onTabPageEvent)
     },
-    onUnload() {
-      uni.$off('tabchange', this.onTabPageEvent)
-    },
     onReady() {
       this.setSelectedIndex(0)
+      this.$tabViewHeight = (this.$refs["tabview"] as Element).getBoundingClientRect().height
+    },
+    onUnload() {
+      uni.$off('tabchange', this.onTabPageEvent)
     },
     methods: {
       onTabClick(index : number) {
@@ -70,9 +84,10 @@
         }
       },
       onTabPageEvent(top : number) {
-        const tabItem1 = this.$refs["tab-item1"] as Element
-        const angle = top < 50 ? 0 : 180
-        tabItem1.style.setProperty('transform', `rotate(${angle}deg)`)
+        // const tabItem1 = this.$refs["tab-item1"] as Element
+        this.displayArrow = top > this.$tabViewHeight
+        // const angle = displayIcon ? 180 : 0
+        // tabItem1.style.setProperty('transform', `rotate(${angle}deg)`)
       },
       setSelectedIndex(index : number) {
         if (this.selectedIndex === index) {
@@ -82,6 +97,13 @@
           this.tabList[index].init = true
         }
         this.selectedIndex = index
+      },
+      onPlusClick() {
+        uni.showModal({
+          title: "提示",
+          content: "你点击了 +",
+          showCancel: false
+        })
       }
     }
   }
@@ -95,12 +117,14 @@
 
   .uni-icon {
     font-family: "UniIcon";
-    font-size: 18px;
+    font-size: 16px;
     font-style: normal;
   }
 
-  .custom-tab-bar {
+  .tabs {
     flex: 1;
+    background-color: #fff;
+    overflow: visible;
   }
 
   .tab-view {
@@ -112,14 +136,16 @@
   }
 
   .tab-bar {
-    background-color: #f0f0f0;
-    border-top: 1px solid #dbdbdb;
     flex-direction: row;
     height: 56px;
+    overflow: visible;
   }
 
   .tab-item {
     flex: 1;
+    position: relative;
+    background-color: #1e90ff;
+    overflow: visible;
   }
 
   .tab-item-content {
@@ -128,24 +154,50 @@
   }
 
   .tab-item-icon {
-    color: #555;
+    color: #ccc;
     font-size: 12px;
     text-align: center;
+    margin-bottom: 4px;
   }
 
   .tab-item-text {
-    color: #555;
+    color: #ccc;
     font-size: 12px;
-    margin-top: 4px;
     text-align: center;
   }
 
   .tab-item-text-active {
-    color: #007AFF;
+    color: #fff;
   }
 
-  .tab-item-icon1 {
+  .tab-item-arrow {
     font-size: 30px !important;
     font-weight: bold;
+  }
+
+  .concave-image {
+    width: 115px;
+    height: 56px;
+  }
+
+  .btn-plus {
+    position: absolute;
+    left: 23px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50px;
+    background-color: #FE5722;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    /* margin-left: auto;
+    margin-right: auto; */
+    margin-top: -35px;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .btn-plus-text {
+    color: #fff;
+    font-size: 32px;
   }
 </style>
