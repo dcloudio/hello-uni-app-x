@@ -5,11 +5,11 @@
 		<page-head title="非下拉刷新的scroll-view属性示例"></page-head>
 		<view class="uni-margin-wrap">
 			<!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-x或scroll-y属性一经设置不能动态改变。 -->
-			<scroll-view v-if="scrollX" :scroll-x="true" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+			<scroll-view v-if="scrollX" :scroll-x="true" :scroll-y="false" :scroll-top="scrollTop" :scroll-left="scrollLeft"
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
 				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
-				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend">
+				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewX" id="scrollViewX">
 				<view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
 					<text class="uni-text">{{item.label}}</text>
 				</view>
@@ -18,7 +18,7 @@
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
 				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
-				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend">
+				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY">
 				<view class="item" :id="item.id" v-for="(item,_) in items">
 					<text class="uni-text">{{item.label}}</text>
 				</view>
@@ -161,7 +161,31 @@
 			},
 			scrollend() {
 				console.log("滚动停止");
-			}
+			},
+      //自动化测试专用
+      checkScrollHeight(): Boolean {
+        var element = this.$refs["scrollViewY"]
+        if(element != null) {
+           var scrollHeight = (element as Element).scrollHeight
+           console.log("checkScrollHeight"+scrollHeight)
+           if(scrollHeight > 1900) {
+             return true
+           }
+        }
+        return false
+      },
+      //自动化测试专用
+      checkScrollWidth(): Boolean {
+        var element = this.$refs["scrollViewX"]
+        if(element != null) {
+           var scrollWidth = (element as Element).scrollWidth
+           console.log("checkScrollWidth---"+scrollWidth)
+           if(scrollWidth > 1900) {
+             return true
+           }
+        }
+        return false
+      }
 		}
 	}
 </script>
