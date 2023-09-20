@@ -67,7 +67,25 @@
       confirm_scroll_top_input(value : number) { this.scroll_top_input = value },
       confirm_scroll_left_input(value : number) { this.scroll_left_input = value },
       confirm_refresher_background_input(value : string) { this.refresher_background_input = value },
-      item_change_size_enum(index : number) { this.scrollIntoView = "item---"+index }
+      item_change_size_enum(index : number) { this.scrollIntoView = "item---"+index },
+      //自动化测试例专用
+      check_scroll_height(): Boolean {
+        var listElement = this.$refs["listview"] as Element
+        console.log("check_scroll_height--"+listElement.scrollHeight)
+        if(listElement.scrollHeight > 2000) {
+          return true
+        }
+        return false
+      },
+      //自动化测试例专用
+      check_scroll_width(): Boolean {
+        var listElement = this.$refs["listview"] as Element
+        console.log("check_scroll_width"+listElement.scrollWidth)
+        if(listElement.scrollWidth > 2000) {
+          return true
+        }
+        return false
+      }
     }
   }
 </script>
@@ -83,7 +101,7 @@
       @touchcancel="list_view_touchcancel" @touchend="list_view_touchend" @tap="list_view_tap"
       @longpress="list_view_longpress" @refresherpulling="list_view_refresherpulling"
       @refresherrefresh="list_view_refresherrefresh" @refresherrestore="list_view_refresherrestore"
-      @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper"
+      @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper" ref="listview" id="listview"
       @scrolltolower="list_view_scrolltolower" @scroll="list_view_scroll" style="width:100%;">
       <list-item
         v-for="key in scrollData" :key="key" :id="key" @click="list_item_click" @touchstart="list_item_touchstart"
