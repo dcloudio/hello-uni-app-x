@@ -4,6 +4,8 @@ module.exports = {
   async add(title, content) {
     console.log(title, content)
     return {
+      title,
+      content,
       showMessage: `Todo added, title: ${title}, content: ${content}`
     }
   },

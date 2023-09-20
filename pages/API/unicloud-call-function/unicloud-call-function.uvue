@@ -18,7 +18,9 @@
   export default {
     data() {
       return {
-        title: '请求云函数'
+        title: '请求云函数',
+        callFunctionResult: {},
+        callFunctionError: {}
       }
     },
     onLoad() {
@@ -38,6 +40,7 @@
           }
         }).then<void>(res => {
           const result = res.result
+          this.callFunctionResult = result
           console.log(JSON.stringify(result))
           uni.hideLoading()
           uni.showModal({
@@ -47,6 +50,10 @@
           })
         }).catch<void>((err: any | null) => {
           const error = err as UniCloudError
+          this.callFunctionError = {
+            errCode: error.errCode,
+            errMsg: error.errMsg
+          }
           uni.hideLoading()
           uni.showModal({
             title: '错误',

@@ -25,7 +25,15 @@
   export default {
     data() {
       return {
-        title: 'ClientDB'
+        title: 'ClientDB',
+        addId: '',
+        batchAddIds: [] as Array<string>,
+        batchAddinserted: 0,
+        updateUpdated: 0,
+        getData: [] as Array<UTSJSONObject>,
+        getWithCommandData: [] as Array<UTSJSONObject>,
+        removeDeleted: 0,
+        lookupData: [] as Array<UTSJSONObject>,
       }
     },
     onLoad() {
@@ -48,6 +56,7 @@
           .then<void>(res => {
             uni.hideLoading()
             console.log(res)
+            this.addId = res.id
             uni.showModal({
               content: `新增成功，id: ${res.id}`,
               showCancel: false
@@ -79,38 +88,10 @@
           .then<void>((res) => {
             uni.hideLoading()
             console.log(res)
+            this.batchAddIds = res.ids
+            this.batchAddinserted = res.inserted
             uni.showModal({
               content: `新增成功，id列表: ${res.ids.join(',')}`,
-              showCancel: false
-            })
-          })
-          .catch<void>((err : any | null) => {
-            uni.hideLoading()
-            const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
-          })
-      },
-      dbUpdate() {
-        uni.showLoading({
-          title: '加载中...'
-        })
-        const db = uniCloud.databaseForJQL()
-        db.collection('type')
-          .where(
-            'tag == "default-tag"'
-          )
-          .update({
-            num: 4
-          })
-          .then<void>(res => {
-            uni.hideLoading()
-            console.log(res)
-            uni.showModal({
-              content: `更新成功，更新了${res.updated}条数据`,
               showCancel: false
             })
           })
@@ -141,6 +122,7 @@
           .then<void>(res => {
             uni.hideLoading()
             console.log(res)
+            this.getData = res.data
             uni.showModal({
               content: `获取成功，取到了${res.data.length}条数据`,
               showCancel: false
@@ -163,7 +145,7 @@
         const db = uniCloud.databaseForJQL()
         db.collection('type')
           .where({
-            num: db.command.gt(2)
+            num: db.command.gt(1)
           })
           .field('num, tag')
           .orderBy('num desc')
@@ -173,8 +155,40 @@
           .then<void>(res => {
             uni.hideLoading()
             console.log(res)
+            this.getWithCommandData = res.data
             uni.showModal({
               content: `获取成功，取到了${res.data.length}条数据`,
+              showCancel: false
+            })
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            uni.showModal({
+              title: '错误',
+              content: error.errMsg,
+              showCancel: false
+            })
+          })
+      },
+      dbUpdate() {
+        uni.showLoading({
+          title: '加载中...'
+        })
+        const db = uniCloud.databaseForJQL()
+        db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          )
+          .update({
+            num: 4
+          })
+          .then<void>(res => {
+            uni.hideLoading()
+            console.log(res)
+            this.updateUpdated = res.updated
+            uni.showModal({
+              content: `更新成功，更新了${res.updated}条数据`,
               showCancel: false
             })
           })
@@ -201,6 +215,7 @@
           .then<void>(res => {
             uni.hideLoading()
             console.log(res)
+            this.removeDeleted = res.deleted
             uni.showModal({
               content: `删除成功，删掉了${res.deleted}条数据`,
               showCancel: false
@@ -289,6 +304,7 @@
           .then<void>(res => {
             uni.hideLoading()
             console.log(res)
+            this.lookupData = res.data
             uni.showModal({
               content: `联表查询成功，取到了${res.data.length}条数据`,
               showCancel: false
