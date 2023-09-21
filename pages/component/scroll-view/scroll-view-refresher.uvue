@@ -18,7 +18,8 @@
 		data() {
 			return {
 				scrollData: [] as Array <string>,
-				refresherTriggered: false 
+				refresherTriggered: false,
+				refresherrefresh: false
 			};
 		},
 		onLoad() {
@@ -31,6 +32,7 @@
 
 		methods: {
 			onRefresherrefresh(_: RefresherEvent) {
+				this.refresherrefresh = true
 				console.log("onRefresherrefresh--------------下拉刷新触发")
 				this.refresherTriggered = true
 				setTimeout(function(){
@@ -42,6 +44,7 @@
 				console.log("onRefresherabort------下拉刷新被中止")
 			},
 			onRefresherrestore(_: RefresherEvent) {
+				this.refresherrefresh = false
 				console.log("onRefresherrestore------下拉刷新被复位")
 			},
 			onRefresherpulling(e: RefresherEvent) {

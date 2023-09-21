@@ -36,6 +36,16 @@ describe('component-native-list-view', () => {
     expect(scrollTop-690).toBeGreaterThanOrEqual(0)
   })
 
+  //检测下拉刷新
+  it('check_refresher', async () => {
+    await page.setData({
+        refresher_enabled_boolean: true,
+        refresher_triggered_boolean: true
+    })
+    await page.waitFor(2000)
+    expect(await page.data('refresherrefresh')).toBe(true)
+  })
+
   //检测横向可滚动区域
   it('check_scroll_width', async () => {
     await page.callMethod('change_scroll_y_boolean', false)
