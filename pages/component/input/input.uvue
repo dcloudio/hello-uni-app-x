@@ -1,310 +1,323 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1">
-		<!-- #endif -->
-		<page-head :title="title"></page-head>
-		<view class="uni-common-mt uni-padding-wrap">
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">设置输入框的初始内容</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" value="hello uni-app x" />
-				</view>
-			</view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt uni-padding-wrap">
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">设置输入框的初始内容</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-default" value="hello uni-app x" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">type取值（不同输入法表现可能不一致）</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" type="text" placeholder="文本输入键盘" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" type="number" placeholder="数字输入键盘" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" type="digit" placeholder="带小数点的数字输入键盘" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" type="tel" placeholder="电话输入键盘" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">type取值（不同输入法表现可能不一致）</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-type-text" type="text" placeholder="文本输入键盘" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-type-number" type="number" placeholder="数字输入键盘" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-type-digit" type="digit" placeholder="带小数点的数字输入键盘" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-type-tel" :type="inputTypeTel" placeholder="电话输入键盘" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">密码输入框</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :password="true" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">密码输入框</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-password" :password="inputPassword" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">占位符样式</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" placeholder-style="color:red" placeholder="占位符文字颜色为红色" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" placeholder-class="uni-input-placeholder-class" placeholder="占位符背景色为绿色" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">占位符样式</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-placeholder1" :placeholder-style="inputPlaceHolderStyle" placeholder="占位符文字颜色为红色" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-placeholder2" :placeholder-class="inputPlaceHolderClass" placeholder="占位符背景色为绿色" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">设置禁用输入框</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :disabled="true" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">设置禁用输入框</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-disable" :disabled="true" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">设置最大输入长度</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :maxlength="10" placeholder="最大输入长度为10" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">设置最大输入长度</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-maxlength" :maxlength="10" placeholder="最大输入长度为10" :value="inputMaxLengthValue" @input="onMaxLengthInput" :focus="inputMaxLengthFocus" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">设置光标与键盘的距离</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :cursor-spacing="1000" placeholder="光标与键盘的距离为1000px" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">设置光标与键盘的距离</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" :cursor-spacing="1000" placeholder="光标与键盘的距离为1000px" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">自动获取焦点</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :focus="true" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">自动获取焦点</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-focus" :focus="focus"/>
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">confirm-type取值（不同输入法表现可能不一致）</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" confirmType="send" placeholder="键盘右下角按钮显示为发送" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" confirmType="search" placeholder="键盘右下角按钮显示为搜索" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" confirmType="next" placeholder="键盘右下角按钮显示为下一个" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" confirmType="go" placeholder="键盘右下角按钮显示为前往" />
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" confirmType="done" placeholder="键盘右下角按钮显示为完成" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">confirm-type取值（不同输入法表现可能不一致）</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-confirm-send" confirmType="send" placeholder="键盘右下角按钮显示为发送" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-confirm-search" confirmType="search" placeholder="键盘右下角按钮显示为搜索" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-confirm-next" confirmType="next" placeholder="键盘右下角按钮显示为下一个" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-confirm-go" confirmType="go" placeholder="键盘右下角按钮显示为前往" />
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input uni-input-confirm-done" confirmType="done" placeholder="键盘右下角按钮显示为完成" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">点击键盘右下角按钮时保持键盘不收起</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :confirm-hold="true" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">点击键盘右下角按钮时保持键盘不收起</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" :confirm-hold="true" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title" @click="setCursor(4)">
-					<text class="uni-title-text">设置输入框聚焦时光标的位置（点击生效）</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input ref="input" class="uni-input" value="0123456789" :cursor="cursor" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title" @click="setCursor(4)">
+          <text class="uni-title-text">设置输入框聚焦时光标的位置（点击生效）</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input ref="input" class="uni-input" value="0123456789" :cursor="cursor" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title" @click="setSelection(0, 4)">
-					<text class="uni-title-text">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input ref="input2" class="uni-input" value="0123456789" :selection-start="selectionStart"
-						:selection-end="selectionEnd" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title" @click="setSelection(0, 4)">
+          <text class="uni-title-text">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input ref="input2" class="uni-input" value="0123456789" :selection-start="selectionStart" :selection-end="selectionEnd" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">键盘弹起时，自动上推页面</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" :adjust-position="true" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">键盘弹起时，自动上推页面</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" :adjust-position="true" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">input事件</text>
-					<text class="uni-subtitle-text" v-if="inputEventDetail">{{inputEventDetail}}</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" @input="onInput" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">input事件</text>
+          <text class="uni-subtitle-text" v-if="inputEventDetail">{{inputEventDetail}}</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" @input="onInput" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">focus事件和blur事件</text>
-					<text class="uni-subtitle-text" v-if="focusAndBlurEventDetail">{{focusAndBlurEventDetail}}</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" @focus="onFocus" @blur="onBlur" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">focus事件和blur事件</text>
+          <text class="uni-subtitle-text" v-if="focusAndBlurEventDetail">{{focusAndBlurEventDetail}}</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" @focus="onFocus" @blur="onBlur" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">confirm事件</text>
-					<text class="uni-subtitle-text" v-if="confirmEventDetail">{{confirmEventDetail}}</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" @confirm="onConfirm" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">confirm事件</text>
+          <text class="uni-subtitle-text" v-if="confirmEventDetail">{{confirmEventDetail}}</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" @confirm="onConfirm" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">keyboardheightchange事件</text>
-					<text class="uni-subtitle-text"
-						v-if="keyboardHeightChangeEventDetail">{{keyboardHeightChangeEventDetail}}</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" @keyboardheightchange="onKeyborardHeightChange" />
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">keyboardheightchange事件</text>
+          <text class="uni-subtitle-text" v-if="keyboardHeightChangeEventDetail">{{keyboardHeightChangeEventDetail}}</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" @keyboardheightchange="onKeyborardHeightChange" />
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">带清除按钮的输入框</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" placeholder="带清除按钮的输入框" :value="inputClearValue" @input="clearInput" />
-					<image class="uni-icon" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
-					</image>
-				</view>
-			</view>
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">带清除按钮的输入框</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" placeholder="带清除按钮的输入框" :value="inputClearValue" @input="clearInput" />
+          <image class="uni-icon" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
+          </image>
+        </view>
+      </view>
 
-			<view>
-				<view class="uni-title">
-					<text class="uni-title-text">可查看密码的输入框</text>
-				</view>
-				<view class="uni-input-wrapper">
-					<input class="uni-input" placeholder="请输入密码" :password="showPassword" />
-					<image class="uni-icon"
-						:src="!showPassword ? '/static/icons/eye-active.png' : '/static/icons/eye.png'"
-						@click="changePassword"></image>
-				</view>
-			</view>
-		</view>
-		<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">可查看密码的输入框</text>
+        </view>
+        <view class="uni-input-wrapper">
+          <input class="uni-input" placeholder="请输入密码" :password="showPassword" />
+          <image class="uni-icon" :src="!showPassword ? '/static/icons/eye-active.png' : '/static/icons/eye.png'" @click="changePassword"></image>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="uts">
-	export default {
-		data() {
-			return {
-				title: 'input',
-				showClearIcon: false,
-				inputClearValue: '',
-				showPassword: true,
-				cursor: -1,
-				selectionStart: -1,
-				selectionEnd: -1,
-				inputEventDetail: '',
-				focusAndBlurEventDetail: '',
-				confirmEventDetail: '',
-				keyboardHeightChangeEventDetail: ''
-			}
-		},
-		methods: {
-			setCursor: function (cursor : number) {
-				(this.$refs['input'] as Element).focus();
-				this.cursor = cursor;
-			},
-			setSelection: function (selectionStart : number, selectionEnd : number) {
-				(this.$refs['input2'] as Element).focus();
-				this.selectionStart = selectionStart;
-				this.selectionEnd = selectionEnd;
-			},
-			clearInput: function (event : InputEvent) {
-				this.inputClearValue = event.detail.value
-				if (event.detail.value.length > 0) {
-					this.showClearIcon = true
-				} else {
-					this.showClearIcon = false
-				}
-			},
-			clearIcon: function () {
-				this.inputClearValue = ''
-				this.showClearIcon = false
-			},
-			changePassword: function () {
-				this.showPassword = !this.showPassword
-			},
-			onInput: function (event : InputEvent) {
-				console.log("键盘输入", JSON.stringify(event.detail));
-				this.inputEventDetail = JSON.stringify(event.detail)
-			},
-			onFocus: function (event : InputFocusEvent) {
-				console.log("输入框聚焦", JSON.stringify(event.detail));
-				this.focusAndBlurEventDetail = JSON.stringify(event.detail);
-			},
-			onBlur: function (event : InputBlurEvent) {
-				console.log("输入框失去焦点", JSON.stringify(event.detail));
-				this.focusAndBlurEventDetail = JSON.stringify(event.detail);
-			},
-			onConfirm: function (event : InputConfirmEvent) {
-				console.log("点击完成按钮", JSON.stringify(event.detail));
-				this.confirmEventDetail = JSON.stringify(event.detail);
-			},
-			onKeyborardHeightChange: function (event : InputKeyboardHeightChangeEvent) {
-				console.log("键盘高度发生变化", JSON.stringify(event.detail));
-				this.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
-			}
-		}
-	}
+  export default {
+    data() {
+      return {
+        title: 'input',
+        showClearIcon: false,
+        inputClearValue: '',
+        showPassword: true,
+        cursor: -1,
+        selectionStart: -1,
+        selectionEnd: -1,
+        inputEventDetail: '',
+        focusAndBlurEventDetail: '',
+        confirmEventDetail: '',
+        keyboardHeightChangeEventDetail: '',
+        focus: true,
+        inputPassword: true,
+        inputTypeTel: "tel",
+        inputPlaceHolderStyle: "color:red",
+        inputPlaceHolderClass: "uni-input-placeholder-class",
+        inputMaxLengthValue:"",
+        onMaxLengthInputValue:"",
+        inputMaxLengthFocus:false
+      }
+    },
+    methods: {
+      onMaxLengthInput(event:InputEvent) {
+        this.onMaxLengthInputValue = event.detail.value
+      },
+      setCursor: function (cursor : number) {
+        (this.$refs['input'] as Element).focus();
+        this.cursor = cursor;
+      },
+      setSelection: function (selectionStart : number, selectionEnd : number) {
+        (this.$refs['input2'] as Element).focus();
+        this.selectionStart = selectionStart;
+        this.selectionEnd = selectionEnd;
+      },
+      clearInput: function (event : InputEvent) {
+        this.inputClearValue = event.detail.value
+        if (event.detail.value.length > 0) {
+          this.showClearIcon = true
+        } else {
+          this.showClearIcon = false
+        }
+      },
+      clearIcon: function () {
+        this.inputClearValue = ''
+        this.showClearIcon = false
+      },
+      changePassword: function () {
+        this.showPassword = !this.showPassword
+      },
+      onInput: function (event : InputEvent) {
+        console.log("键盘输入", JSON.stringify(event.detail));
+        this.inputEventDetail = JSON.stringify(event.detail)
+      },
+      onFocus: function (event : InputFocusEvent) {
+        console.log("输入框聚焦", JSON.stringify(event.detail));
+        this.focusAndBlurEventDetail = JSON.stringify(event.detail);
+      },
+      onBlur: function (event : InputBlurEvent) {
+        console.log("输入框失去焦点", JSON.stringify(event.detail));
+        this.focusAndBlurEventDetail = JSON.stringify(event.detail);
+      },
+      onConfirm: function (event : InputConfirmEvent) {
+        console.log("点击完成按钮", JSON.stringify(event.detail));
+        this.confirmEventDetail = JSON.stringify(event.detail);
+      },
+      onKeyborardHeightChange: function (event : InputKeyboardHeightChangeEvent) {
+        console.log("键盘高度发生变化", JSON.stringify(event.detail));
+        this.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
+      },
+      test_check_input_value():number {
+        return this.onMaxLengthInputValue.length
+      }
+    }
+  }
 </script>
 
 <style scoped>
-	.uni-input-wrapper {
-		display: flex;
-		padding: 8px 13px;
-		margin: 10rpx 0;
-		flex-direction: row;
-		flex-wrap: nowrap;
-		background-color: #ffffff;
-	}
+  .uni-input-wrapper {
+    display: flex;
+    padding: 8px 13px;
+    margin: 10rpx 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background-color: #ffffff;
+  }
 
-	.uni-input {
-		height: 28px;
-		line-height: 28px;
-		font-size: 15px;
-		padding: 0px;
-		flex: 1;
-		background-color: #ffffff;
-	}
+  .uni-input {
+    height: 28px;
+    line-height: 28px;
+    font-size: 15px;
+    padding: 0px;
+    flex: 1;
+    background-color: #ffffff;
+  }
 
-	.uni-icon {
-		width: 24px;
-		height: 24px;
-	}
+  .uni-icon {
+    width: 24px;
+    height: 24px;
+  }
 
-	.uni-input-placeholder-class {
-		background-color: green;
-	}
+  .uni-input-placeholder-class {
+    background-color: green;
+  }
+  .uni-input-placeholder-class-ts {
+    background-color: orange;
+  }
 </style>
