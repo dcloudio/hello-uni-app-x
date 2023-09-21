@@ -10,17 +10,17 @@ describe('unicloud-database', () => {
     await page.callMethod('dbRemove')
     await page.waitFor(3000)
     await page.callMethod('dbAdd')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     await page.callMethod('dbBatchAdd')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     await page.callMethod('dbGet')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     await page.callMethod('dbGetWithCommand')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     await page.callMethod('dbUpdate')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     await page.callMethod('dbRemove')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     
     const {
       addId,
@@ -31,6 +31,8 @@ describe('unicloud-database', () => {
       getWithCommandData,
       removeDeleted,
     } = await page.data()
+    
+    console.error((await page.data()).batchAddinserted)
     
     expect(addId.length > 0).toBe(true)
     expect(batchAddIds.length).toBe(2)
@@ -44,9 +46,9 @@ describe('unicloud-database', () => {
   
   it('databaseLookup', async () => {
     await page.callMethod('dbLookupInit')
-    await page.waitFor(1000)
+    await page.waitFor(3000)
     await page.callMethod('dbLookup')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
     
     const {
       lookupData
