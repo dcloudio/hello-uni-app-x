@@ -1,0 +1,191 @@
+let pageIndex = 0
+const pages = [
+  // API
+  '/pages/API/action-sheet/action-sheet',
+  '/pages/API/choose-image/choose-image',
+  '/pages/API/download-file/download-file',
+  '/pages/API/event-bus/event-bus',
+  '/pages/API/exit/exit',
+  '/pages/API/get-app/get-app',
+  '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
+  '/pages/API/get-app-base-info/get-app-base-info',
+  '/pages/API/get-battery-info/get-battery-info',
+  '/pages/API/get-current-pages/get-current-pages',
+  '/pages/API/get-device-info/get-device-info',
+  '/pages/API/get-launch-options-sync/get-launch-options-sync',
+  '/pages/API/get-location/get-location',
+  '/pages/API/get-network-type/get-network-type',
+  '/pages/API/get-system-info/get-system-info',
+  '/pages/API/get-system-setting/get-system-setting',
+  '/pages/API/get-window-info/get-window-info',
+  '/pages/API/load-font-face/load-font-face',
+  '/pages/API/load-font-face/load-font-face-child',
+  '/pages/API/modal/modal',
+  '/pages/API/navigator/navigator',
+  '/pages/API/navigator/new-page/new-page-1',
+  '/pages/API/navigator/new-page/new-page-2',
+  '/pages/API/nodes-info/nodes-info',
+  '/pages/API/page-scroll-to/page-scroll-to',
+  '/pages/API/preview-image/preview-image',
+  '/pages/API/pull-down-refresh/pull-down-refresh',
+  '/pages/API/request/request',
+  '/pages/API/save-image-to-album/save-image-to-album',
+  '/pages/API/set-navigation-bar-color/set-navigation-bar-color',
+  '/pages/API/set-navigation-bar-color/set-custom-navigation-bar-color',
+  '/pages/API/show-loading/show-loading',
+  '/pages/API/storage/storage',
+  '/pages/API/toast/toast',
+  '/pages/API/unicloud-call-function/unicloud-call-function',
+  '/pages/API/unicloud-database/unicloud-database',
+  '/pages/API/unicloud-file-api/unicloud-file-api',
+  '/pages/API/unicloud-import-object/unicloud-import-object',
+  '/pages/API/upload-file/upload-file',
+  // 卡住测试
+  // '/pages/API/websocket-global/websocket-global',
+  // '/pages/API/websocket-socketTask/websocket-socketTask',
+  
+  // component
+  '/pages/component/button/button',
+  '/pages/component/checkbox/checkbox',
+  '/pages/component/general-attribute/general-attribute',
+  '/pages/component/general-event/general-event',
+  '/pages/component/image/image-format',
+  // 截图过大
+  // '/pages/component/image/image-large',
+  '/pages/component/image/image-mode',
+  '/pages/component/image/image-path',
+  '/pages/component/image/image',
+  '/pages/component/input/input',
+  '/pages/component/list-view/list-view',
+  '/pages/component/navigator/navigate',
+  '/pages/component/navigator/navigator',
+  '/pages/component/navigator/redirect',
+  '/pages/component/picker-view/picker-view',
+  '/pages/component/progress/progress',
+  '/pages/component/radio/radio',
+  '/pages/component/rich-text/rich-text-complex',
+  '/pages/component/rich-text/rich-text-tags',
+  '/pages/component/rich-text/rich-text',
+  '/pages/component/scroll-view/scroll-view-custom-refresher-props',
+  '/pages/component/scroll-view/scroll-view-props',
+  '/pages/component/scroll-view/scroll-view-refresher-props',
+  '/pages/component/scroll-view/scroll-view-refresher',
+  '/pages/component/scroll-view/scroll-view',
+  '/pages/component/slider/slider',
+  '/pages/component/slider-100/slider-100',
+  '/pages/component/swiper/swiper',
+  '/pages/component/switch/switch',
+  '/pages/component/text/text-props',
+  '/pages/component/text/text',
+  '/pages/component/textarea/textarea',
+  '/pages/component/video/video',
+  '/pages/component/view/view-draw',
+  '/pages/component/view/view',
+  '/pages/component/web-view/web-view',
+  '/pages/component/web-view-local/web-view-local',
+  
+  // CSS
+  '/pages/CSS/background/background-color',
+  '/pages/CSS/background/background-image',
+  '/pages/CSS/border/complex-border/complex-border',
+  '/pages/CSS/border/border-bottom',
+  '/pages/CSS/border/border-color',
+  '/pages/CSS/border/border-left',
+  '/pages/CSS/border/border-radius',
+  '/pages/CSS/border/border-right',
+  '/pages/CSS/border/border-style',
+  '/pages/CSS/border/border-top',
+  '/pages/CSS/border/border-width',
+  '/pages/CSS/border/border',
+  '/pages/CSS/box-shadow/box-shadow',
+  '/pages/CSS/display/flex',
+  '/pages/CSS/display/none',
+  '/pages/CSS/flex/align-content',
+  '/pages/CSS/flex/align-items',
+  '/pages/CSS/flex/flex-basis',
+  '/pages/CSS/flex/flex-direction',
+  '/pages/CSS/flex/flex-flow',
+  '/pages/CSS/flex/flex-grow',
+  '/pages/CSS/flex/flex-shrink',
+  '/pages/CSS/flex/flex',
+  '/pages/CSS/flex/justify-content',
+  '/pages/CSS/layout/height',
+  '/pages/CSS/layout/max-height',
+  '/pages/CSS/layout/max-width',
+  '/pages/CSS/layout/min-height',
+  '/pages/CSS/layout/min-width',
+  '/pages/CSS/layout/position',
+  '/pages/CSS/layout/visibility',
+  '/pages/CSS/layout/width',
+  '/pages/CSS/layout/z-index',
+  '/pages/CSS/margin/margin-bottom',
+  '/pages/CSS/margin/margin-left',
+  '/pages/CSS/margin/margin-right',
+  '/pages/CSS/margin/margin-top',
+  '/pages/CSS/margin/margin',
+  '/pages/CSS/padding/padding-bottom',
+  '/pages/CSS/padding/padding-left',
+  '/pages/CSS/padding/padding-right',
+  '/pages/CSS/padding/padding-top',
+  '/pages/CSS/padding/padding',
+  '/pages/CSS/text/color',
+  '/pages/CSS/text/font-family',
+  '/pages/CSS/text/font-size',
+  '/pages/CSS/text/font-style',
+  '/pages/CSS/text/font-weight',
+  '/pages/CSS/text/letter-spacing',
+  '/pages/CSS/text/line-height',
+  '/pages/CSS/text/text-align',
+  '/pages/CSS/text/text-decoration-line',
+  '/pages/CSS/text/text-overflow',
+  '/pages/CSS/transform/rotate',
+  '/pages/CSS/transform/scale',
+  '/pages/CSS/transform/translate',
+  '/pages/CSS/transition/transition',
+  
+  // tabBar
+  '/pages/tabBar/API',
+  '/pages/tabBar/component',
+  '/pages/tabBar/CSS',
+  '/pages/tabBar/template',
+  
+  // template
+  '/pages/template/calendar/calendar',
+  '/pages/template/custom-refresher/custom-refresher',
+  '/pages/template/custom-tab-bar/custom-tab-bar',
+  '/pages/template/drop-card/drop-card',
+  '/pages/template/half-screen/half-screen',
+  '/pages/template/list-news/list-news',
+  '/pages/template/list-news/detail/detail',
+  '/pages/template/long-list/long-list',
+  '/pages/template/navbar-lite/navbar-lite',
+  '/pages/template/pull-zoom-image/pull-zoom-image',
+  '/pages/template/scroll-fold-nav/scroll-fold-nav',
+  '/pages/template/scroll-sticky/scroll-sticky',
+  '/pages/template/swiper-list/swiper-list',
+  '/pages/template/swiper-list2/swiper-list2',
+  '/pages/template/swiper-vertical-video/swiper-vertical-video'
+]
+
+describe('page screenshot test', () => {
+  beforeAll(async () => {
+    console.log("page screenshot test start");
+    await program.reLaunch('/pages/tabBar/component');
+  });
+  beforeEach(async () => {
+    const page = await program.reLaunch(pages[pageIndex]);
+    await page.waitFor(1000);
+  });
+  afterEach(() => {
+    pageIndex++;
+  });
+  afterAll(() => {
+    console.log("page screenshot test finish");
+  });
+  test.each(pages)('%s', async () => {
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toMatchImageSnapshot();
+  })
+})
