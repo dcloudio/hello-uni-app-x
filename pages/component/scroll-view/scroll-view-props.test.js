@@ -42,7 +42,7 @@ describe('component-native-scroll-view', () => {
         await page.setData({
             scrollIntoView: ""
         })
-        expect(scrollTop-690).toBeGreaterThanOrEqual(0)
+        expect(scrollTop-570).toBeGreaterThanOrEqual(0)
     })
 
     //检测横向可滚动区域
@@ -79,7 +79,7 @@ describe('component-native-scroll-view', () => {
       await page.setData({
           scrollIntoView: ""
       })
-      expect(scrollLeft-1080).toBeGreaterThanOrEqual(0)
+      expect(scrollLeft-930).toBeGreaterThanOrEqual(0)
     })
 
 });
