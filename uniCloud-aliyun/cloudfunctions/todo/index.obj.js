@@ -15,27 +15,27 @@ module.exports = {
     if (random > 0.5) {
       return {
         errCode: 'RANDOM_FAIL',
-        errMsg: 'todo.randomFail failed'
+        errMsg: '[预期内的报错]执行失败请重试'
       }
     } else {
       return {
         errCode: 0,
         errMsg: '',
-        showMessage: 'todo.randomFail successed'
+        showMessage: '执行成功'
       }
     }
   },
   async fail() {
     return {
       errCode: 'TEST_ERROR_CODE',
-      errMsg: 'todo.fail failed',
+      errMsg: '[预期内的报错]执行失败',
     }
   },
   async success() {
     return {
       errCode: 0,
       errMsg: '',
-      showMessage: 'todo.success successed'
+      showMessage: '执行成功'
     }
   }
 }
