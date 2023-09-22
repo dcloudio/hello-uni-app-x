@@ -6,8 +6,7 @@ const pages = [
   '/pages/component/general-attribute/general-attribute',
   '/pages/component/general-event/general-event',
   '/pages/component/image/image-format',
-  // 截图过大
-  // '/pages/component/image/image-large',
+  // '/pages/component/image/image-large', // 截图过大
   '/pages/component/image/image-mode',
   '/pages/component/image/image-path',
   '/pages/component/image/image',
@@ -16,7 +15,7 @@ const pages = [
   '/pages/component/navigator/navigate',
   '/pages/component/navigator/navigator',
   '/pages/component/navigator/redirect',
-  '/pages/component/picker-view/picker-view',
+  // '/pages/component/picker-view/picker-view', //动态内容
   '/pages/component/progress/progress',
   '/pages/component/radio/radio',
   '/pages/component/rich-text/rich-text-complex',
@@ -37,7 +36,7 @@ const pages = [
   '/pages/component/video/video',
   '/pages/component/view/view-draw',
   '/pages/component/view/view',
-  '/pages/component/web-view/web-view',
+  // '/pages/component/web-view/web-view', // 动态内容
   '/pages/component/web-view-local/web-view-local',
   
   // CSS
@@ -106,14 +105,14 @@ const pages = [
   '/pages/tabBar/template',
   
   // template
-  '/pages/template/calendar/calendar',
+  // '/pages/template/calendar/calendar', // 动态内容
   '/pages/template/custom-refresher/custom-refresher',
   '/pages/template/custom-tab-bar/custom-tab-bar',
   '/pages/template/drop-card/drop-card',
   '/pages/template/half-screen/half-screen',
   '/pages/template/list-news/list-news',
   '/pages/template/list-news/detail/detail',
-  '/pages/template/long-list/long-list',
+  // '/pages/template/long-list/long-list', // 动态内容
   '/pages/template/navbar-lite/navbar-lite',
   '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
