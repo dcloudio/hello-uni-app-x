@@ -10,12 +10,15 @@ export default {
 			confirm_hold_boolean: false,
 			focus_boolean: false,
 			auto_focus_boolean: false,
+      default_value:"",
+      maxlength:-1,
 			confirm_type_enum: [{"value":0,"name":"send"},{"value":1,"name":"search"},{"value":2,"name":"next"},{"value":3,"name":"go"},{"value":4,"name":"done"}] as ItemType[],
 			confirm_type_enum_current: 0,
 			inputmode_enum: [{"value":0,"name":"none"},{"value":1,"name":"text"},{"value":2,"name":"decimal"},{"value":3,"name":"numeric"},{"value":4,"name":"tel"},{"value":5,"name":"search"},{"value":6,"name":"email"},{"value":7,"name":"url"}] as ItemType[],
 			inputmode_enum_current: 0
 		}
 	},
+
 	methods: {
 		textarea_click() { console.log("组件被点击时触发") },
 		textarea_touchstart() { console.log("手指触摸动作开始") },
@@ -46,6 +49,7 @@ export default {
 <template>
   <view class="main">
     <textarea
+    :value="default_value"
       class="uni-textarea"
       :auto-focus="auto_focus_boolean"
       :focus="focus_boolean"
@@ -56,6 +60,7 @@ export default {
       :show-confirm-bar="show_confirm_bar_boolean"
       :adjust-position="adjust_position_boolean"
       :inputmode="inputmode_enum[inputmode_enum_current].name"
+      :maxlength="maxlength"
       @click="textarea_click"
       @touchstart="textarea_touchstart"
       @touchmove="textarea_touchmove"
@@ -82,6 +87,7 @@ export default {
         title="键盘弹起时，是否自动上推页面"
         @change="change_adjust_position_boolean"
       ></boolean-data>
+      <!-- #ifdef !APP -->
       <boolean-data
         :defaultValue="false"
         title="是否显示键盘上方带有”完成“按钮那一栏"
@@ -92,6 +98,7 @@ export default {
         title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true"
         @change="change_fixed_boolean"
       ></boolean-data>
+      <!-- #endif -->
       <boolean-data
         :defaultValue="false"
         title="是否自动增高，设置auto-height时，style.height不生效"
@@ -103,22 +110,22 @@ export default {
         @change="change_confirm_hold_boolean"
       ></boolean-data>
       <boolean-data
-        :defaultValue="false"
+        :defaultValue="focus_boolean"
         title="获取焦点"
-        @change="change_focus_boolean"
+        @change="change_focus_boolean" class="textarea-focus"
       ></boolean-data>
       <boolean-data
         :defaultValue="false"
         title="自动获取焦点"
         @change="change_auto_focus_boolean"
       ></boolean-data>
-      <enum-data
+      <enum-data class="textarea-confirm"
         :items="confirm_type_enum"
         title="设置键盘右下角按钮的文字"
         @change="radio_change_confirm_type_enum"
       ></enum-data>
       <enum-data
-        :items="inputmode_enum"
+        :items="inputmode_enum" class="textarea-input"
         title="是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。"
         @change="radio_change_inputmode_enum"
       ></enum-data>
