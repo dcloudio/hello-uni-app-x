@@ -36,7 +36,7 @@
           <text class="uni-title-text">密码输入框</text>
         </view>
         <view class="uni-input-wrapper">
-          <input class="uni-input uni-input-password" :password="inputPassword" />
+          <input class="uni-input uni-input-password" :password="inputPassword" :value="inputPasswordValue" />
         </view>
       </view>
 
@@ -84,7 +84,7 @@
           <text class="uni-title-text">自动获取焦点</text>
         </view>
         <view class="uni-input-wrapper">
-          <input class="uni-input uni-input-focus" :focus="focus"/>
+          <input class="uni-input uni-input-focus" :focus="focus" @keyboardheightchange="inputFocusKeyBoardChange"/>
         </view>
       </view>
 
@@ -232,10 +232,15 @@
         inputPlaceHolderClass: "uni-input-placeholder-class",
         inputMaxLengthValue:"",
         onMaxLengthInputValue:"",
-        inputMaxLengthFocus:false
+        inputMaxLengthFocus:false,
+        inputPasswordValue:"",
+        inputFocusKeyBoardChangeValue:true
       }
     },
     methods: {
+      inputFocusKeyBoardChange(e:InputKeyboardHeightChangeEvent) {
+        this.inputFocusKeyBoardChangeValue = e.detail.height > 50
+      },
       onMaxLengthInput(event:InputEvent) {
         this.onMaxLengthInputValue = event.detail.value
       },
