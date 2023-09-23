@@ -39,24 +39,51 @@
 </template>
 
 <script>
+  type NodeInfoType = {
+    left : number | null,
+    top : number | null,
+    right : number | null,
+    bottom : number | null,
+    width : number | null,
+    height : number | null,
+  }
+
   export default {
     data() {
       return {
         title: 'createSelectorQuery',
-        nodeInfoList: [] as NodeInfo[],
+        nodeInfoList: [] as NodeInfoType[],
       }
     },
     methods: {
       getNodeInfo() {
         uni.createSelectorQuery().select('.rect1').boundingClientRect().exec((ret) => {
           this.nodeInfoList.length = 0
-          this.nodeInfoList.push(ret[0] as NodeInfo)
+          const i = ret[0]! as NodeInfo
+          this.nodeInfoList.push({
+            left: i.left,
+            top: i.top,
+            right: i.right,
+            bottom: i.bottom,
+            width: i.width,
+            height: i.height,
+          } as NodeInfoType)
         })
       },
       getAllNodeInfo() {
         uni.createSelectorQuery().selectAll('.rect').boundingClientRect().exec((ret) => {
           this.nodeInfoList.length = 0
-          this.nodeInfoList.push(...(ret[0] as NodeInfo[]))
+          const array = ret[0]! as NodeInfo[]
+          array.forEach((i) => {
+            this.nodeInfoList.push({
+              left: i.left,
+              top: i.top,
+              right: i.right,
+              bottom: i.bottom,
+              width: i.width,
+              height: i.height,
+            } as NodeInfoType)
+          })
         })
       }
     }
