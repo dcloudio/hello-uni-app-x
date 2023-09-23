@@ -12,7 +12,7 @@
 	</view>
 </template>
 
-<script>
+<script lang="uts">
 	import { $dispatch } from './util.uts'
 	export default {
 		name: "UniCollapseItem",

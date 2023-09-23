@@ -5,7 +5,7 @@
 	</view>
 </template>
 
-<script>
+<script lang="uts">
 	import { ComponentPublicInstance } from 'vue'
 	export default {
 		name: "UniCollapse",
