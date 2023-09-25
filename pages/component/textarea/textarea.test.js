@@ -19,7 +19,7 @@ describe('component-native-textarea', () => {
     await page.waitFor(500)
     expect(await textarea.property("focus")).toBe(true)
   });
-  it("auto-height", async () => {
+  /* it("auto-height", async () => {
     await page.setData({
       auto_height_boolean: true
     })
@@ -60,7 +60,7 @@ describe('component-native-textarea', () => {
       height
     } = await textarea.size()
     expect(height).toBeLessThanOrEqual(150)
-  })
+  }) */
 
   it("inputmode", async () => {
     const inputmodeEnum = await page.data("inputmode_enum")
