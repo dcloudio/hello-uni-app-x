@@ -208,7 +208,11 @@
         danmu: {
           text: '要显示的文本',
           color: '#FF0000'
-        } as Danmu
+        } as Danmu,
+        // 自动化测试
+        isPlaying: false,
+        isPause: false,
+        isFullScreen: false
       }
     },
     methods: {
@@ -357,9 +361,13 @@
       // 事件
       onPlay: function (res : any) {
         console.log(JSON.stringify(res));
+        this.isPlaying = true;
+        this.isPause = false;
       },
       onPause: function (res : any) {
         console.log(JSON.stringify(res));
+        this.isPlaying = false;
+        this.isPause = true;
       },
       onEnded: function (res : any) {
         console.log(JSON.stringify(res));
@@ -369,6 +377,7 @@
       },
       onFullScreenChange: function (res : any) {
         console.log(JSON.stringify(res));
+        this.isFullScreen = !this.isFullScreen;
       },
       onWaiting: function (res : any) {
         console.log(JSON.stringify(res));
@@ -384,6 +393,25 @@
       },
       onControlsToggle: function (res : any) {
         console.log(JSON.stringify(res));
+      },
+      // 自动化测试
+      playTest: function () {
+        this.videoContext?.play();
+      },
+      pauseTest: function () {
+        this.videoContext?.pause();
+      },
+      requestFullScreenTest: function () {
+        const options : RequestFullScreenOptions = {
+          direction: -90
+        };
+        this.videoContext?.requestFullScreen(options);
+      },
+      exitFullScreenTest: function () {
+        this.videoContext?.exitFullScreen();
+      },
+      stopTest: function () {
+        this.videoContext?.stop();
       }
     }
   }
