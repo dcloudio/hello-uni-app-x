@@ -38,5 +38,5 @@ declare interface Uni {
 	/**
 	 * 同步获取电池电量信息
 	 */
-	GetBatteryInfoSync(): UniNamespace.GetBatteryInfoSuccessCallbackResult;
+	getBatteryInfoSync(): UniNamespace.GetBatteryInfoSuccessCallbackResult;
 }
