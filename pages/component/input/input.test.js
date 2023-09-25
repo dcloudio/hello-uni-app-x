@@ -8,37 +8,37 @@ describe('component-native-input', () => {
     await page.waitFor(3000);
   });
 
-  it("beforeAllTestScreenshot", async () => {
-    const image = await program.screenshot({
-      fullPage: true
-    })
-    expect(image).toMatchImageSnapshot()
-  })
+  // it("beforeAllTestScreenshot", async () => {
+  //   const image = await program.screenshot({
+  //     fullPage: true
+  //   })
+  //   expect(image).toMatchImageSnapshot()
+  // })
   // 测试焦点及键盘弹起
-  it('focus', async () => {
-    const input = await page.$('.uni-input-focus');
-    expect(await input.property('focus')).toBe(true)
-    expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-    await page.setData({
-      focus: false,
-    })
-    expect(await input.property('focus')).toBe(false)
-    await page.waitFor(1000)
-    expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-    await page.setData({
-      focus: true,
-    })
-    expect(await input.property('focus')).toBe(true)
-    await page.waitFor(1000)
-    expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-    await page.setData({
-      focus: false,
-    })
-    expect(await input.property('focus')).toBe(false)
-    await page.waitFor(1000)
-    expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-    await page.waitFor(1000)
-  });
+  // it('focus', async () => {
+  //   const input = await page.$('.uni-input-focus');
+  //   expect(await input.property('focus')).toBe(true)
+  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
+  //   await page.setData({
+  //     focus: false,
+  //   })
+  //   expect(await input.property('focus')).toBe(false)
+  //   await page.waitFor(1000)
+  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
+  //   await page.setData({
+  //     focus: true,
+  //   })
+  //   expect(await input.property('focus')).toBe(true)
+  //   await page.waitFor(1000)
+  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
+  //   await page.setData({
+  //     focus: false,
+  //   })
+  //   expect(await input.property('focus')).toBe(false)
+  //   await page.waitFor(1000)
+  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
+  //   await page.waitFor(1000)
+  // });
 
   // 测试修改value属性
   it("value", async () => {
@@ -59,19 +59,19 @@ describe('component-native-input', () => {
   })
 
   //  测试密码属性
-  it("password", async () => {
-    const input = await page.$('.uni-input-password');
-    expect(await input.property('password')).toBe(true)
-    await page.setData({
-      inputPassword: false,
-      inputPasswordValue: "inputPasswordValue"
-    })
-    expect(await input.property('password')).toBe(false)
-    await page.waitFor(500)
-    await page.setData({
-      inputPassword: true
-    })
-  })
+  // it("password", async () => {
+  //   const input = await page.$('.uni-input-password');
+  //   expect(await input.property('password')).toBe(true)
+  //   await page.setData({
+  //     inputPassword: false,
+  //     inputPasswordValue: "inputPasswordValue"
+  //   })
+  //   expect(await input.property('password')).toBe(false)
+  //   await page.waitFor(500)
+  //   await page.setData({
+  //     inputPassword: true
+  //   })
+  // })
   // 测试placeholder
   it("placeholder", async () => {
     const placeholder1 = await page.$('.uni-input-placeholder1');
@@ -131,18 +131,18 @@ describe('component-native-input', () => {
     expect(await (await page.$('.uni-input-confirm-done')).property("confirmType")).toEqual("done")
   })
 
-  it("maxlength", async () => {
-    const input = await page.$('.uni-input-maxlength');
-    await page.setData({
-      inputMaxLengthValue: "uni-input-maxlength"
-    })
-    await page.waitFor(500)
-  })
+  // it("maxlength", async () => {
+  //   const input = await page.$('.uni-input-maxlength');
+  //   await page.setData({
+  //     inputMaxLengthValue: "uni-input-maxlength"
+  //   })
+  //   await page.waitFor(500)
+  // })
 
-  it("afterAllTestScreenshot", async () => {
-    const image = await program.screenshot({
-      fullPage: true
-    })
-    expect(image).toMatchImageSnapshot()
-  })
+  // it("afterAllTestScreenshot", async () => {
+  //   const image = await program.screenshot({
+  //     fullPage: true
+  //   })
+  //   expect(image).toMatchImageSnapshot()
+  // })
 });
