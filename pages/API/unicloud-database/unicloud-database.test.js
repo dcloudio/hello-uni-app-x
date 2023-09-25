@@ -5,6 +5,9 @@ describe('unicloud-database', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
+    await page.setData({
+      isUniTest: true
+    })
   })
   it('databaseBasic', async () => {
     await page.callMethod('dbRemove')

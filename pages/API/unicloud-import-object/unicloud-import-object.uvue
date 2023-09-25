@@ -34,22 +34,34 @@
         returnTodoTitle: '',
         returnTodoContent: '',
         failErrCode: '',
-        successErrCode: -1
+        successErrCode: -1,
+        isUniTest: false
       }
     },
     methods: {
+      notify(content : string, title : string) {
+        if (!this.isUniTest) {
+          uni.showModal({
+            title,
+            content,
+            showCancel: false
+          })
+        } else {
+          uni.showToast({
+            title: content
+          })
+        }
+      },
       addTodo() {
-        const todo = uniCloud.importObject('todo')
+        const todo = uniCloud.importObject('todo', {
+          customUI: this.isUniTest
+        })
         const title = this.todoTitle
         const content = this.todoContent
         todo.add(title, content).then<void>((res : UTSJSONObject) : void => {
           this.returnTodoTitle = res['title'] as string
           this.returnTodoContent = res['content'] as string
-          uni.showModal({
-            title: '提示',
-            content: res['showMessage'] as string,
-            showCancel: false
-          })
+          this.notify(res['showMessage'] as string, '提示')
         }).catch<void>((err : any | null) : void => {
           const error = err as UniCloudError
           console.error(error)
@@ -62,40 +74,37 @@
           }
         })
         todoObj.randomFail().then<void>((res : UTSJSONObject) : void => {
-          uni.showModal({
-            title: '提示',
-            content: res['showMessage'] as string,
-            showCancel: false
-          })
+          this.notify(res['showMessage'] as string, '提示')
         }).catch<void>((err : any | null) : void => {
           const error = err as UniCloudError
           console.error(error)
         })
       },
       fail() {
-        const todo = uniCloud.importObject('todo')
+        const todo = uniCloud.importObject('todo', {
+          customUI: this.isUniTest
+        })
         todo.fail().then<void>((res : UTSJSONObject) : void => {
-          uni.showModal({
-            title: '提示',
-            content: 'todo.fail应调用失败，此处错误的触发了成功回调',
-            showCancel: false
-          })
+          this.notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
           console.log('todo.fail: ', res);
         }).catch<void>((err : any | null) : void => {
           const error = err as UniCloudError
           this.failErrCode = error.errCode as string
           console.error(error)
+          if (this.isUniTest) {
+            uni.showToast({
+              title: err.errMsg
+            })
+          }
         })
       },
       success() {
-        const todo = uniCloud.importObject('todo')
+        const todo = uniCloud.importObject('todo', {
+          customUI: this.isUniTest
+        })
         todo.success().then<void>((res : UTSJSONObject) : void => {
           this.successErrCode = res['errCode'] as number
-          uni.showModal({
-            title: '提示',
-            content: res['showMessage'] as string,
-            showCancel: false
-          })
+          this.notify(res['showMessage'] as string, '提示')
         }).catch<void>((err : any | null) : void => {
           const error = err as UniCloudError
           console.error(error)

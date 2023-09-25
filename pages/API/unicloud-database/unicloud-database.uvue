@@ -34,6 +34,7 @@
         getWithCommandData: [] as Array<UTSJSONObject>,
         removeDeleted: 0,
         lookupData: [] as Array<UTSJSONObject>,
+        isUniTest: false
       }
     },
     onLoad() {
@@ -41,6 +42,19 @@
     onUnload() {
     },
     methods: {
+      notify(content : string, title : string) {
+        if (!this.isUniTest) {
+          uni.showModal({
+            title,
+            content,
+            showCancel: false
+          })
+        } else {
+          uni.showToast({
+            title: content
+          })
+        }
+      },
       dbAdd: function () {
         uni.showLoading({
           title: '加载中...'
@@ -57,19 +71,12 @@
             uni.hideLoading()
             console.log(res)
             this.addId = res.id
-            uni.showModal({
-              content: `新增成功，id: ${res.id}`,
-              showCancel: false
-            })
+            this.notify(`新增成功，id: ${res.id}`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbBatchAdd() {
@@ -88,21 +95,15 @@
           .then<void>((res) => {
             uni.hideLoading()
             console.log(res)
+            console.log('JSON.stringify(res.inserted)', JSON.stringify(res.inserted))
             this.batchAddIds = res.ids
             this.batchAddinserted = res.inserted
-            uni.showModal({
-              content: `新增成功条数${res.inserted}, id列表: ${res.ids.join(',')}`,
-              showCancel: false
-            })
+            this.notify(`新增成功条数${res.inserted}, id列表: ${res.ids.join(',')}`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbGet() {
@@ -123,19 +124,12 @@
             uni.hideLoading()
             console.log(res)
             this.getData = res.data
-            uni.showModal({
-              content: `获取成功，取到了${res.data.length}条数据`,
-              showCancel: false
-            })
+            this.notify(`获取成功，取到了${res.data.length}条数据`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbGetWithCommand() {
@@ -156,19 +150,12 @@
             uni.hideLoading()
             console.log(res)
             this.getWithCommandData = res.data
-            uni.showModal({
-              content: `获取成功，取到了${res.data.length}条数据`,
-              showCancel: false
-            })
+            this.notify(`获取成功，取到了${res.data.length}条数据`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbUpdate() {
@@ -187,19 +174,12 @@
             uni.hideLoading()
             console.log(res)
             this.updateUpdated = res.updated
-            uni.showModal({
-              content: `更新成功，更新了${res.updated}条数据`,
-              showCancel: false
-            })
+            this.notify(`更新成功，更新了${res.updated}条数据`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbRemove() {
@@ -216,19 +196,12 @@
             uni.hideLoading()
             console.log(res)
             this.removeDeleted = res.deleted
-            uni.showModal({
-              content: `删除成功，删掉了${res.deleted}条数据`,
-              showCancel: false
-            })
+            this.notify(`删除成功，删掉了${res.deleted}条数据`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbLookupInit() {
@@ -272,20 +245,13 @@
           })
           .then<void>((_) : void => {
             uni.hideLoading()
-            uni.showModal({
-              content: '数据初始化成功',
-              showCancel: false
-            })
+            this.notify('数据初始化成功', '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             console.error(err)
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       },
       dbLookup() {
@@ -305,19 +271,12 @@
             uni.hideLoading()
             console.log(res)
             this.lookupData = res.data
-            uni.showModal({
-              content: `联表查询成功，取到了${res.data.length}条数据`,
-              showCancel: false
-            })
+            this.notify(`联表查询成功，取到了${res.data.length}条数据`, '提示')
           })
           .catch<void>((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
-            uni.showModal({
-              title: '错误',
-              content: error.errMsg,
-              showCancel: false
-            })
+            this.notify(error.errMsg, '错误')
           })
       }
     }

@@ -5,6 +5,9 @@ describe('unicloud-import-object', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
+    await page.setData({
+      isUniTest: true
+    })
   })
   it('importObject', async () => {
     await page.callMethod('addTodo')
