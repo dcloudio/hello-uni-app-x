@@ -18,13 +18,13 @@ describe("setCustomNavigationBarColor", () => {
 
   it("setNavigationBarColor2", async () => {
     await page.callMethod("setNavigationBarColor2");
-    const image = await program.screenshot();
+    const image = await program.screenshot({adb: true, area:{x:1000, y: 0, width: 80, height: 88}});
     expect(image).toMatchImageSnapshot();
   });
 
   it("setNavigationBarColor1", async () => {
     await page.callMethod("setNavigationBarColor1");
-    const image = await program.screenshot();
+    const image = await program.screenshot({adb: true, area:{x:1000, y: 0, width: 80, height: 88}});
     expect(image).toMatchImageSnapshot();
   });
 });
