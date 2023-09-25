@@ -36,6 +36,8 @@ export default {
       msg: '',
       platform: '',
       pageVisible: false,
+      //自动化测试例专用
+      jest_result: 0,
     }
   },
   computed: {
@@ -163,6 +165,37 @@ export default {
         },
       } as CloseSocketOptions)
     },
+    //自动化测试例专用
+    jest_connectSocket(){
+      this.socketTask = uni.connectSocket({
+        url: 'ws://websocket.dcloud.net.cn',
+        success:(_) => {
+          this.jest_result++
+        },
+        fail:(_) => {
+          this.jest_result = 0
+        },
+      })
+      this.socketTask?.onOpen((_) => {
+          const data =
+            'from ' +
+            this.platform +
+            ' : ' +
+            parseInt(Math.random() * 10000 + '').toString()
+          this.socketTask?.send({
+            data,
+            success(_) {
+              this.jest_result++
+            },
+            fail(_) {
+              this.jest_result = 0
+            },
+          } as SendSocketMessageOptions)
+      })
+      this.socketTask?.onError((_) => {
+          this.jest_result = 0;
+      })
+    }
   },
 }
 </script>

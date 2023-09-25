@@ -1,220 +1,242 @@
 <template>
-	<view style="flex: 1;">
-		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-common-mt" style="border-width: 2rpx;border-radius: 4rpx;">
-				<textarea :value="res" class="uni-textarea"></textarea>
-			</view>
-			<view>
-				<text>地址 : {{ host + url}}</text>
-				<text>请求方式 : {{method}}</text>
-			</view>
-			<view class="uni-btn-v uni-common-mt">
-				<button type="primary" @click="sendRequest">发起请求</button>
-			</view>
-		</view>
-		<scroll-view style="flex: 1;" show-scrollbar="true">
-			<view style="padding: 20rpx;">
-				<text>设置请求方式</text>
-				<view class="uni-common-pb"></view>
-				<view style="flex-direction: row;flex-wrap: wrap;">
-					<button style="padding: 5rpx; margin-right: 10rpx;" type="primary" size="mini"
-						@click="changeMethod('GET')">GET</button>
-					<button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
-						@click="changeMethod('POST')">POST</button>
-					<button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
-						@click="changeMethod('PUT')">PUT</button>
-					<button style="padding: 5rpx; margin-right: 10rpx;" type="primary" size="mini"
-						@click="changeMethod('DELETE')">DELETE</button>
-					<button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
-						@click="changeMethod('PATCH')">PATCH</button>
-					<button style="padding: 5rpx;margin-right: 10rpx;" type="primary" size="mini"
-						@click="changeMethod('OPTIONS')">OPTIONS</button>
-					<button style="padding: 5rpx;" type="primary" size="mini"
-						@click="changeMethod('HEAD')">HEAD</button>
-				</view>
-			</view>
-			<view style="padding: 20rpx;">
-				<text>请求返回错误码的接口（默认为GET）</text>
-				<view class="uni-common-pb"></view>
-				<view style="flex-direction: row;flex-wrap: wrap;">
-					<button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in errorCodeUrls"
-						:key="index" @click="changeUrl(item)">{{item}}</button>
-				</view>
-			</view>
-			<view style="padding: 20rpx;">
-				<text>请求不同header的接口（默认为GET）</text>
-				<view class="uni-common-pb"></view>
-				<view style="flex-direction: row;flex-wrap: wrap;">
-					<button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in headerUrls"
-						:key="index" @click="changeUrl(item)">{{item}}</button>
-				</view>
-			</view>
-			<view style="padding: 20rpx;">
-				<text>请求不同content-type的接口（默认为GET）</text>
-				<view class="uni-common-pb"></view>
-				<view style="flex-direction: row;flex-wrap: wrap;">
-					<button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in contentTypeUrls"
-						:key="index" @click="changeUrl(item)">{{item}}</button>
-				</view>
-			</view>
+  <view style="flex: 1;">
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-common-mt" style="border-width: 2rpx;border-radius: 4rpx;">
+        <textarea :value="res" class="uni-textarea"></textarea>
+      </view>
+      <view>
+        <text>地址 : {{ host + url}}</text>
+        <text>请求方式 : {{method}}</text>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="sendRequest">发起请求</button>
+      </view>
+    </view>
+    <scroll-view style="flex: 1;" show-scrollbar="true">
+      <view style="padding: 20rpx;">
+        <text>设置请求方式</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5rpx; margin-right: 10rpx;" type="primary" size="mini"
+            @click="changeMethod('GET')">GET</button>
+          <button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
+            @click="changeMethod('POST')">POST</button>
+          <button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
+            @click="changeMethod('PUT')">PUT</button>
+          <button style="padding: 5rpx; margin-right: 10rpx;" type="primary" size="mini"
+            @click="changeMethod('DELETE')">DELETE</button>
+          <button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
+            @click="changeMethod('PATCH')">PATCH</button>
+          <button style="padding: 5rpx;margin-right: 10rpx;" type="primary" size="mini"
+            @click="changeMethod('OPTIONS')">OPTIONS</button>
+          <button style="padding: 5rpx;" type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+        </view>
+      </view>
+      <view style="padding: 20rpx;">
+        <text>请求返回错误码的接口（默认为GET）</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in errorCodeUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
+        </view>
+      </view>
+      <view style="padding: 20rpx;">
+        <text>请求不同header的接口（默认为GET）</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in headerUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
+        </view>
+      </view>
+      <view style="padding: 20rpx;">
+        <text>请求不同content-type的接口（默认为GET）</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in contentTypeUrls"
+            :key="index" @click="changeUrl(item)">{{item}}</button>
+        </view>
+      </view>
 
-			<view style="padding: 20rpx;">
-				<text>POST请求(有body)</text>
-				<view class="uni-common-pb"></view>
-				<view style="flex-direction: row;flex-wrap: wrap;">
-					<button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in postUrls"
-						:key="index" @click="changeUrlFromPost(item)">{{item}}</button>
-				</view>
-			</view>
-		</scroll-view>
-	</view>
+      <view style="padding: 20rpx;">
+        <text>POST请求(有body)</text>
+        <view class="uni-common-pb"></view>
+        <view style="flex-direction: row;flex-wrap: wrap;">
+          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in postUrls" :key="index"
+            @click="changeUrlFromPost(item)">{{item}}</button>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
 </template>
 <script>
-	const duration = 2000
-	const methodMap = {
-		"GET": "/api/http/method/get",
-		"POST": "/api/http/method/post",
-		"PUT": "/api/http/method/put",
-		"DELETE": "/api/http/method/delete",
-		"PATCH": "/api/http/method/patch",
-		"OPTIONS": "/api/http/method/options",
-		"HEAD": "/api/http/method/head"
-	}
+  const duration = 2000
+  const methodMap = {
+    "GET": "/api/http/method/get",
+    "POST": "/api/http/method/post",
+    "PUT": "/api/http/method/put",
+    "DELETE": "/api/http/method/delete",
+    "PATCH": "/api/http/method/patch",
+    "OPTIONS": "/api/http/method/options",
+    "HEAD": "/api/http/method/head"
+  }
 
 
-	export default {
-		data() {
-			return {
-				title: 'request',
-				res: '',
-				task: null as RequestTask | null,
-				pageVisible: false,
-				host: "http://request.dcloud.net.cn",
-				url: "/api/http/method/get",
-				method: "GET",
-				data: null as any | null,
-				header: null as UTSJSONObject | null,
-				errorCodeUrls: [
-					"/api/http/statusCode/200",
-					"/api/http/statusCode/204",
-					"/api/http/statusCode/301",
-					"/api/http/statusCode/302",
-					"/api/http/statusCode/307",
-					"/api/http/statusCode/400",
-					"/api/http/statusCode/401",
-					"/api/http/statusCode/403",
-					"/api/http/statusCode/404",
-					"/api/http/statusCode/405",
-					"/api/http/statusCode/500",
-					"/api/http/statusCode/502",
-					"/api/http/statusCode/503",
-					"/api/http/statusCode/504",
-				],
-				headerUrls: [
-					"/api/http/header/ua",
-					"/api/http/header/referer",
-					"/api/http/header/requestCookie",
-					"/api/http/header/setCookie",
-					"/api/http/header/deleteCookie"
-				],
-				contentTypeUrls: [
-					"/api/http/contentType/text/plain",
-					"/api/http/contentType/text/html",
-					"/api/http/contentType/text/xml",
-					"/api/http/contentType/image/gif",
-					"/api/http/contentType/image/jpeg",
-					"/api/http/contentType/image/png",
-					"/api/http/contentType/application/json",
-					"/api/http/contentType/application/octetStream",
-				],
-				postUrls: [
-					"/api/http/contentType/json",
-					"/api/http/contentType/xWwwFormUrlencoded",
-				],
-			}
-		},
-		onLoad() {
-			this.pageVisible = true;
-		},
-		onUnload() {
-			this.pageVisible = false;
-			uni.hideLoading();
-			this.task?.abort();
-		},
-		methods: {
-			changeMethod(e : string) {
-				this.method = e;
-				this.url = methodMap[e] as string;
-				this.data = null;
-				this.header = null;
-			},
-			changeUrl(e : string) {
-				this.method = "GET";
-				this.url = e;
-				this.data = null;
-				this.header = null;
-			},
-			changeUrlFromPost(e : string) {
-				this.method = "POST";
-				this.url = e;
-				switch (e) {
-					case "/api/http/contentType/json":
-						this.header = {
-							"Content-Type": "application/json"
-						};
-						this.data = {
-							"hello": "world"
-						};
-						break;
-					case "/api/http/contentType/xWwwFormUrlencoded":
-						this.header = {
-							"Content-Type": "application/x-www-form-urlencoded"
-						};
-						this.data = "hello=world";
-						break;
-				}
-			},
-			sendRequest() {
-				uni.showLoading({
-					title: "请求中..."
-				})
-				this.task = uni.request({
-					url: this.host + this.url,
-					// dataType: "json",
-					// responseType: "json",
-					method: this.method,
-					data: this.data,
-					header: this.header,
-					timeout: 6000,
-					sslVerify: false,
-					withCredentials: false,
-					firstIpv4: false,
-					success(res) {
-						if (this.pageVisible) {
-							console.log('request success', JSON.stringify(res.data))
-							uni.showToast({
-								title: '请求成功',
-								icon: 'success',
-								mask: true,
-								duration: duration
-							});
-							this.res = '请求结果 : ' + JSON.stringify(res);
-						}
-					},
-					fail(err) {
-						if (this.pageVisible) {
-							console.log('request fail', err);
-							uni.showModal({
-								content: err.errMsg,
-								showCancel: false
-							});
-						}
-					},
-					complete() {
-						uni.hideLoading()
-					},
-				});
-			}
-		}
-	}
+  export default {
+    data() {
+      return {
+        title: 'request',
+        res: '',
+        task: null as RequestTask | null,
+        pageVisible: false,
+        host: "http://request.dcloud.net.cn",
+        url: "/api/http/method/get",
+        method: "GET",
+        data: null as any | null,
+        header: null as UTSJSONObject | null,
+        errorCodeUrls: [
+          "/api/http/statusCode/200",
+          "/api/http/statusCode/204",
+          "/api/http/statusCode/301",
+          "/api/http/statusCode/302",
+          "/api/http/statusCode/307",
+          "/api/http/statusCode/400",
+          "/api/http/statusCode/401",
+          "/api/http/statusCode/403",
+          "/api/http/statusCode/404",
+          "/api/http/statusCode/405",
+          "/api/http/statusCode/500",
+          "/api/http/statusCode/502",
+          "/api/http/statusCode/503",
+          "/api/http/statusCode/504",
+        ],
+        headerUrls: [
+          "/api/http/header/ua",
+          "/api/http/header/referer",
+          "/api/http/header/requestCookie",
+          "/api/http/header/setCookie",
+          "/api/http/header/deleteCookie"
+        ],
+        contentTypeUrls: [
+          "/api/http/contentType/text/plain",
+          "/api/http/contentType/text/html",
+          "/api/http/contentType/text/xml",
+          "/api/http/contentType/image/gif",
+          "/api/http/contentType/image/jpeg",
+          "/api/http/contentType/image/png",
+          "/api/http/contentType/application/json",
+          "/api/http/contentType/application/octetStream",
+        ],
+        postUrls: [
+          "/api/http/contentType/json",
+          "/api/http/contentType/xWwwFormUrlencoded",
+        ],
+        //自动化测试例专用
+        jest_result: false
+      }
+    },
+    onLoad() {
+      this.pageVisible = true;
+    },
+    onUnload() {
+      this.pageVisible = false;
+      uni.hideLoading();
+      this.task?.abort();
+    },
+    methods: {
+      changeMethod(e : string) {
+        this.method = e;
+        this.url = methodMap[e] as string;
+        this.data = null;
+        this.header = null;
+      },
+      changeUrl(e : string) {
+        this.method = "GET";
+        this.url = e;
+        this.data = null;
+        this.header = null;
+      },
+      changeUrlFromPost(e : string) {
+        this.method = "POST";
+        this.url = e;
+        switch (e) {
+          case "/api/http/contentType/json":
+            this.header = {
+              "Content-Type": "application/json"
+            };
+            this.data = {
+              "hello": "world"
+            };
+            break;
+          case "/api/http/contentType/xWwwFormUrlencoded":
+            this.header = {
+              "Content-Type": "application/x-www-form-urlencoded"
+            };
+            this.data = "hello=world";
+            break;
+        }
+      },
+      sendRequest() {
+        uni.showLoading({
+          title: "请求中..."
+        })
+        this.task = uni.request({
+          url: this.host + this.url,
+          // dataType: "json",
+          // responseType: "json",
+          method: this.method,
+          data: this.data,
+          header: this.header,
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success(res) {
+            if (this.pageVisible) {
+              console.log('request success', JSON.stringify(res.data))
+              uni.showToast({
+                title: '请求成功',
+                icon: 'success',
+                mask: true,
+                duration: duration
+              });
+              this.res = '请求结果 : ' + JSON.stringify(res);
+            }
+          },
+          fail(err) {
+            if (this.pageVisible) {
+              console.log('request fail', err);
+              uni.showModal({
+                content: err.errMsg,
+                showCancel: false
+              });
+            }
+          },
+          complete() {
+            uni.hideLoading()
+          },
+        });
+      },
+      //自动化测试例专用
+      jest_request() {
+        uni.request({
+          url: this.host + this.url,
+          // dataType: "json",
+          // responseType: "json",
+          method: this.method,
+          data: this.data,
+          header: this.header,
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success() {
+            this.jest_result = true;
+          },
+          fail() {
+            this.jest_result = false;
+          },
+        });
+      }
+    }
+  }
 </script>
