@@ -122,13 +122,13 @@ const pages = [
   '/pages/template/swiper-vertical-video/swiper-vertical-video'
 ]
 
+let page;
 describe('page screenshot test', () => {
   beforeAll(async () => {
     console.log("page screenshot test start");
-    await program.reLaunch('/pages/tabBar/component');
   });
   beforeEach(async () => {
-    const page = await program.reLaunch(pages[pageIndex]);
+    page = await program.reLaunch(pages[pageIndex]);
     await page.waitFor(1000);
   });
   afterEach(() => {
@@ -140,7 +140,8 @@ describe('page screenshot test', () => {
   test.each(pages)('%s', async () => {
     const image = await program.screenshot({
       fullPage: true
-    })
+    });
     expect(image).toMatchImageSnapshot();
+    await page.waitFor(500);
   })
 })
