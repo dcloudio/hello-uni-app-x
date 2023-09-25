@@ -53,16 +53,29 @@ describe('test swiper', () => {
     });
 
 
-    it('check loop index', async () => {
+    it('check current', async () => {
         await page.setData({
           currentVal: 2,
         })
-        await page.waitFor(1600)
+        await page.waitFor(600)
         expect(await getData('currentValChange')).toEqual(2)
         await page.setData({
           currentVal: 0,
         })
-        await page.waitFor(1600)
+        await page.waitFor(600)
+        expect(await getData('currentValChange')).toEqual(0)
+    });
+
+    it('check currentId', async () => {
+        await page.setData({
+          currentItemIdVal: 'C',
+        })
+        await page.waitFor(600)
+        expect(await getData('currentValChange')).toEqual(2)
+        await page.setData({
+          currentItemIdVal: 'A',
+        })
+        await page.waitFor(600)
         expect(await getData('currentValChange')).toEqual(0)
     });
 
