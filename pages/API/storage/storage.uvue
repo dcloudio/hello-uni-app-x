@@ -84,12 +84,12 @@
           <view class="uni-btn-v">
             <button
               type="primary"
-              class="uni-btn btn-setstorage"
+              class="uni-btn btn-setstorageAsync"
               @tap="setStorage"
             >
               存储数据-异步
             </button>
-            <button class="uni-btn" @tap="getStorage">读取数据-异步</button>
+            <button class="uni-btn btn-getstorageAsync" @tap="getStorage">读取数据-异步</button>
             <button class="uni-btn" @tap="removeStorage">移除数据-异步</button>
             <button class="uni-btn" @tap="clearStorage">清理数据-异步</button>
           </view>
@@ -124,6 +124,7 @@ export default {
       title: 'get/set/clearStorage',
       key: '',
       data: '' as any,
+      apiGetData:'' as any|null,
       storageInfo: '',
     }
   },
@@ -190,12 +191,14 @@ export default {
           showCancel: false,
         })
       } else {
+        let that = this
         uni.getStorage({
           key: key,
           success: (res) => {
+            that.apiGetData = res.data
             uni.showModal({
               title: '读取数据成功',
-              content: "data: '" + JSON.stringify(res.data) + "'",
+              content: "data: '" + JSON.stringify(that.apiGetData) + "'",
               showCancel: false,
             })
           },
