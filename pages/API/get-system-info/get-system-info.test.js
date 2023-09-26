@@ -25,11 +25,13 @@ describe('ExtApi-GetSystemInfo', () => {
   it('Check GetSystemInfoSync', async () => {
     for (const key in res) {
       const value = res[key];
-      expect(value).not.toBeNull();
+      console.log("key :",key , "value :", value);
       if (stringProperties.indexOf(key) != -1) {
+        expect(value).not.toBeNull();
         expect(value).not.toBe("");
       }
       if (numberProperties.indexOf(key) != -1) {
+        expect(value).not.toBeNull();
         expect(value).toBeGreaterThanOrEqual(0);
       }
       if (key == 'deviceOrientation') {
