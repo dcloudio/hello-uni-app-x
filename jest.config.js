@@ -1,5 +1,5 @@
 module.exports = {
-  testTimeout: 30000,
+  testTimeout: 10000,
   reporters: ['default'],
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
