@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-collapse-item">
-		<view class="uni-collapse-item__title" @click="openCollapse(!this.is_open)">
+		<view class="uni-collapse-item__title" @click="openCollapse(!is_open)">
 			<text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
 			<view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
 		</view>
