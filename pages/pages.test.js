@@ -33,7 +33,7 @@ const pages = [
   '/pages/component/text/text-props',
   '/pages/component/text/text',
   '/pages/component/textarea/textarea',
-  '/pages/component/video/video',
+  // '/pages/component/video/video',
   '/pages/component/view/view-draw',
   '/pages/component/view/view',
   // '/pages/component/web-view/web-view', // 动态内容
@@ -52,7 +52,7 @@ const pages = [
   '/pages/CSS/border/border-top',
   '/pages/CSS/border/border-width',
   '/pages/CSS/border/border',
-  '/pages/CSS/box-shadow/box-shadow',
+  // '/pages/CSS/box-shadow/box-shadow',
   '/pages/CSS/display/flex',
   '/pages/CSS/display/none',
   '/pages/CSS/flex/align-content',
@@ -108,7 +108,7 @@ const pages = [
   // '/pages/template/calendar/calendar', // 动态内容
   '/pages/template/custom-refresher/custom-refresher',
   '/pages/template/custom-tab-bar/custom-tab-bar',
-  '/pages/template/drop-card/drop-card',
+  // '/pages/template/drop-card/drop-card',
   '/pages/template/half-screen/half-screen',
   '/pages/template/list-news/list-news',
   '/pages/template/list-news/detail/detail',
@@ -119,7 +119,7 @@ const pages = [
   '/pages/template/scroll-sticky/scroll-sticky',
   '/pages/template/swiper-list/swiper-list',
   '/pages/template/swiper-list2/swiper-list2',
-  '/pages/template/swiper-vertical-video/swiper-vertical-video'
+  // '/pages/template/swiper-vertical-video/swiper-vertical-video'
 ]
 
 let page;

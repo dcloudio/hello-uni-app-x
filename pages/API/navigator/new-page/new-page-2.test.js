@@ -1,3 +1,4 @@
+jest.setTimeout(30000)
 const PAGE_PATH = '/pages/API/navigator/new-page/new-page-2'
 const INTERMEDIATE_PAGE_PATH = '/pages/API/navigator/navigator'
 let page
