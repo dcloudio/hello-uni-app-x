@@ -25,7 +25,7 @@
 
     <view slot="refresher">
       <view class="head-img-box-1">
-        <image class="img" ref="head-img-1" src="../../../static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
+        <image class="img" ref="head-img-1" src="/static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
       </view>
     </view>
 
@@ -36,7 +36,7 @@
   export default {
     data() {
       return {
-        $INodeMap: new Map<string, INode>()
+        $elementMap: new Map<string, Element>()
       }
     },
     methods: {
@@ -51,23 +51,23 @@
           s = 0.7
         }
         let x : number = (1 - s) * -100
-        this.setINodeStyle("user-info", "transform", `translate(${x},${y + (s-1)* -50}px) scale(${s})`)
-        this.setINodeStyle("head-img-box-2", "transform", `translateY(${y}px)`)
+        this.setElementStyle("user-info", "transform", `translate(${x},${y + (s-1)* -50}px) scale(${s})`)
+        this.setElementStyle("head-img-box-2", "transform", `translateY(${y}px)`)
       },
       onRefresherpulling(e : RefresherEvent) {
         // console.log('onRefresherpulling',e.detail.dy)
         let pullingDistance : number = e.detail.dy
-        this.setINodeStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
-        this.setINodeStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
+        this.setElementStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
+        this.setElementStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
       },
-      // 工具方法，用于快速设置 INode 的 style
-      setINodeStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let iNode : INode | null = this.$INodeMap.get(refName)
-        if (iNode == null) {
-          iNode = this.$refs.get(refName) as INode;
-          this.$INodeMap.set(refName, iNode)
+      // 工具方法，用于快速设置 Element 的 style
+      setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
+        let element : Element | null = this.$elementMap.get(refName)
+        if (element == null) {
+          element = this.$refs.get(refName) as Element;
+          this.$elementMap.set(refName, element)
         }
-        iNode.style.setProperty(propertyName, propertyStyle);
+        element.style.setProperty(propertyName, propertyStyle);
       },
       back() {
         uni.navigateBack({

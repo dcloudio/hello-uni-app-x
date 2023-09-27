@@ -5,8 +5,8 @@
 	</view>
 </template>
 
-<script>
-	// import { ComponentPublicInstance } from 'vue'
+<script lang="uts">
+	import { ComponentPublicInstance } from 'vue'
 	export default {
 		name: "UniCollapse",
 		props: {

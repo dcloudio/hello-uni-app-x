@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view class="page">
-    <!-- #endif -->
+  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="flex-row">
       <view class="flex-fill">
@@ -21,7 +21,7 @@
           @change="sliderChange" :value="sliderValue" :block-size="20" :show-value="true" />
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -41,25 +41,21 @@
       sliderChanging(e : SliderChangeEvent) {
         this.updateSliderValue(e.detail.value)
       },
-      updateSliderValue(value : Number) {
+      updateSliderValue(value : number) {
         // this.sliderValue = value
 
-        // 跳过vue框架，直接修改原生组件
-        (this.$refs["slider1"]! as ComponentPublicInstance[]).forEach((item) => {
-          item.$data["$sliderValue"] = value
-          item.$callMethod("_onRender")
+        // TODO 跳过vue框架，直接修改原生组件
+        (this.$refs["slider1"]! as SliderElement[]).forEach((item) => {
+          item.value = value
         });
-        (this.$refs["slider2"]! as ComponentPublicInstance[]).forEach((item) => {
-          item.$data["$sliderValue"] = value
-          item.$callMethod("_onRender")
+        (this.$refs["slider2"]! as SliderElement[]).forEach((item) => {
+          item.value = value
         });
-        (this.$refs["slider3"]! as ComponentPublicInstance[]).forEach((item) => {
-          item.$data["$sliderValue"] = value
-          item.$callMethod("_onRender")
+        (this.$refs["slider3"]! as SliderElement[]).forEach((item) => {
+          item.value = value
         });
-        (this.$refs["slider4"]! as ComponentPublicInstance[]).forEach((item) => {
-          item.$data["$sliderValue"] = value
-          item.$callMethod("_onRender")
+        (this.$refs["slider4"]! as SliderElement[]).forEach((item) => {
+          item.value = value
         });
       }
     },

@@ -4,7 +4,6 @@ const CURRENT_PAGE_PATH =
 describe('setNavigationBarColor', () => {
   let page
   let originLifeCycleNum
-  let lifeCycleNum
   beforeAll(async () => {
     page = await program.navigateTo(CURRENT_PAGE_PATH)
     await page.waitFor(1000)
@@ -13,7 +12,7 @@ describe('setNavigationBarColor', () => {
 
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', originLifeCycleNum)
-    lifeCycleNum = await page.callMethod('getLifeCycleNum')
+    const lifeCycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifeCycleNum).toBe(originLifeCycleNum)
   })
 

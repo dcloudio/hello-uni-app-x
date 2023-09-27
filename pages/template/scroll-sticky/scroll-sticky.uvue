@@ -1,5 +1,5 @@
 <template>
-	<scroll-view :scroll-y="true" @scroll="onScroll" class="page">
+	<scroll-view :scroll-y="true" @scroll="onScroll" class="page" rebound="false">
 		<view class="content-item">
 			<text class="text">向上滑动页面，体验元素吸顶效果。</text>
 		</view>
@@ -7,10 +7,7 @@
 			<text class="text">first content-{{item}}</text>
 		</view>
 
-		<!-- <view ref="sticky" class="search" @click="" :style="{
-'transform': 'translateY('+stickyTran+'px)'
-	}"> -->
-		<view ref="sticky" class="search" @click="">
+		<view ref="sticky" class="search">
 			<view style="flex-direction: row;">
 				<image src="/static/template/scroll-fold-nav/search.png" style="width: 15px;" mode="widthFix"></image>
 				<text class="search-tip-text">请输入你要搜索的内容</text>
@@ -37,7 +34,7 @@
 				stickyTop: 0,
 				stickyTran: 0,
 				scrollTop: 0,
-				stickyNode: null as INode | null
+				stickyNode: null as Element | null
 			}
 		},
 		methods: {
@@ -70,11 +67,11 @@
 		onLoad() {
 		},
 		onReady() {
-			this.stickyNode = this.$refs['sticky'] as INode;
+			this.stickyNode = this.$refs['sticky'] as Element;
 			// let rect = this.stickyNode?.getBoundingClientRect();
 			// this.stickyTop = rect?.top;
 			//this.stickyTop = this.stickyNode?.getBoundingClientRect()?.top;
-			let rect = (this.$refs['sticky'] as INode).getBoundingClientRect();
+			let rect = (this.$refs['sticky'] as Element).getBoundingClientRect();
 			this.stickyTop = rect.top;
 		}
 	}

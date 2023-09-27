@@ -1,0 +1,60 @@
+<template>
+  <list-view ref="listView" class="list" :rebound="false" :scroll-with-animation="true" :scroll-y="true" @scrolltolower="loadData()"
+    @scroll="onScroll">
+    <list-item class="list-item" v-for="(item, index) in dataList" :key="index">
+      <text class="title">{{item.title}}</text>
+    </list-item>
+  </list-view>
+</template>
+
+<script>
+  type ListItem = {
+    title : string
+  }
+
+  export default {
+    data() {
+      return {
+        dataList: [] as ListItem[]
+      }
+    },
+    created() {
+      this.loadData()
+    },
+    methods: {
+      loadData() {
+        let index = this.dataList.length
+        for (let i = 0; i < 10; i++) {
+          this.dataList.push({
+            title: index.toString(),
+          } as ListItem)
+          index++
+        }
+      },
+      onScroll(e : ScrollEvent) {
+        uni.$emit('tabchange', e.detail.scrollTop)
+      },
+      scrollTop(top : number) {
+        (this.$refs["listView"] as Element).setAttribute('scrollTop', top)
+      }
+    }
+  }
+</script>
+
+<style>
+  .list {
+    flex: 1;
+    background-color: #ffffff;
+  }
+
+  .list-item {
+    flex-direction: row;
+    padding: 30px;
+    border-bottom: 1px solid #dbdbdb;
+  }
+
+  .title {
+    font-size: 16px;
+    text-align: center;
+  }
+</style>

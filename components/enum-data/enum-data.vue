@@ -1,4 +1,6 @@
 <script lang="uts">
+  import {type PropType} from 'vue'
+
   export type ItemType = { value : number; name : string }
 
   export default {
@@ -22,7 +24,7 @@
       _change(e : RadioGroupChangeEvent) {
         const selected = this.items.find((item: ItemType) : boolean => {
           return item.name === e.detail.value
-        }) as ItemType | null
+        })
         if (selected !== null) {
           this.current = selected.value
           this.$emit('change', this.current)

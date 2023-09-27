@@ -23,14 +23,15 @@
   <!-- #endif -->
 </template>
 <script>
-import UploadTask from 'uts.sdk.modules.DCloudUniNetwork.UploadTask';
 export default {
 	data() {
 		return {
 			title: 'uploadFile',
 			imageSrc: '',
 			task: null as UploadTask | null,
-			pageVisible: false
+			pageVisible: false,
+      //自动化测试例专用
+      jest_result:false,
 		}
 	},
 	onLoad() {
@@ -89,7 +90,25 @@ export default {
 					console.log('chooseImage fail', err)
 				}
 			})
-		}
+		},
+    //自动化测试例专用
+    jest_uploadFile(){
+      const imageSrc = "/static/uni.png";
+      this.task = uni.uploadFile({
+      	url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+      	filePath: imageSrc,
+      	name: 'file',
+      	formData: {
+      		'user': 'test'
+      	},
+      	success: () => {
+          this.jest_result = true;
+      	},
+      	fail: () => {
+          this.jest_result = false;
+      	},
+      })
+    }
 	}
 }
 </script>

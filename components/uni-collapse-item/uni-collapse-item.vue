@@ -1,6 +1,6 @@
 <template>
 	<view class="uni-collapse-item">
-		<view class="uni-collapse-item__title" @click="openCollapse(!this.is_open)">
+		<view class="uni-collapse-item__title" @click="openCollapse(!is_open)">
 			<text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
 			<view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
 		</view>
@@ -12,7 +12,7 @@
 	</view>
 </template>
 
-<script>
+<script lang="uts">
 	import { $dispatch } from './util.uts'
 	export default {
 		name: "UniCollapseItem",
@@ -35,8 +35,8 @@
 			return {
 				height: 0,
 				is_open: this.open as boolean,
-				boxNode: null as INode | null,
-				contentNode: null as INode | null,
+				boxNode: null as Element | null,
+				contentNode: null as Element | null,
 			};
 		},
 		watch: {
@@ -51,8 +51,8 @@
 			$dispatch(this, 'UniCollapse', 'init', this)
 		},
 		mounted() {
-			this.boxNode = this.$refs['boxRef'] as INode;
-			this.contentNode = this.$refs['contentRef'] as INode;
+			this.boxNode = this.$refs['boxRef'] as Element;
+			this.contentNode = this.$refs['contentRef'] as Element;
 			// this.openCollapse(this.open)
 		},
 		methods: {

@@ -1,4 +1,5 @@
 <script>
+  import { type ItemType } from '@/components/enum-data/enum-data.vue'
   export default {
     data() {
       return {
@@ -14,7 +15,10 @@
         scroll_top_input: 0,
         scroll_left_input: 0,
         refresher_background_input: "#FFF",
-        scrollData: [] as Array<string>
+        scrollData: [] as Array<string>,
+        size_enum: [{ "value": 0, "name": "item---0" }, { "value": 3, "name": "item---3" }] as ItemType[],
+        scrollIntoView: "",
+        refresherrefresh: false
       }
     },
     onLoad() {
@@ -32,18 +36,22 @@
       list_view_touchend() { console.log("手指触摸动作结束") },
       list_view_tap() { console.log("手指触摸后马上离开") },
       list_view_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
-      list_view_refresherpulling() { console.log("自定义下拉刷新控件被下拉") },
-      list_view_refresherrefresh() { 
-        console.log("自定义下拉刷新被触发") 
+      list_view_refresherpulling() { console.log("下拉刷新控件被下拉") },
+      list_view_refresherrefresh() {
+        console.log("下拉刷新被触发 ")
+        this.refresherrefresh = true
         this.refresher_triggered_boolean = true
         setTimeout(function(){
         	this.refresher_triggered_boolean = false
         }, 1500)
       },
-      list_view_refresherrestore() { console.log("自定义下拉刷新被复位") },
-      list_view_refresherabort() { console.log("自定义下拉刷新被中止") },
-      list_view_scrolltoupper() { console.log("滚动到顶部/左边，会触发 scrolltoupper 事件") },
-      list_view_scrolltolower() { console.log("滚动到底部/右边，会触发 scrolltolower 事件") },
+      list_view_refresherrestore() {
+        this.refresherrefresh = false
+        console.log("下拉刷新被复位")
+      },
+      list_view_refresherabort() { console.log("下拉刷新被中止") },
+      list_view_scrolltoupper(e:ScrollToUpperEvent) { console.log("滚动到顶部/左边，会触发 scrolltoupper 事件  direction="+e.detail.direction) },
+      list_view_scrolltolower(e:ScrollToLowerEvent) { console.log("滚动到底部/右边，会触发 scrolltolower 事件  direction="+e.detail.direction) },
       list_view_scroll() { console.log("滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}") },
       list_item_click() { console.log("list-item组件被点击时触发") },
       list_item_touchstart() { console.log("手指触摸list-item组件动作开始") },
@@ -63,7 +71,26 @@
       confirm_lower_threshold_input(value : number) { this.lower_threshold_input = value },
       confirm_scroll_top_input(value : number) { this.scroll_top_input = value },
       confirm_scroll_left_input(value : number) { this.scroll_left_input = value },
-      confirm_refresher_background_input(value : string) { this.refresher_background_input = value }
+      confirm_refresher_background_input(value : string) { this.refresher_background_input = value },
+      item_change_size_enum(index : number) { this.scrollIntoView = "item---"+index },
+      //自动化测试例专用
+      check_scroll_height(): Boolean {
+        var listElement = this.$refs["listview"] as Element
+        console.log("check_scroll_height--"+listElement.scrollHeight)
+        if(listElement.scrollHeight > 2000) {
+          return true
+        }
+        return false
+      },
+      //自动化测试例专用
+      check_scroll_width(): Boolean {
+        var listElement = this.$refs["listview"] as Element
+        console.log("check_scroll_width"+listElement.scrollWidth)
+        if(listElement.scrollWidth > 2000) {
+          return true
+        }
+        return false
+      }
     }
   }
 </script>
@@ -72,17 +99,17 @@
   <view class="main">
     <list-view :scroll-x="scroll_x_boolean" :scroll-y="scroll_y_boolean" :rebound="rebound_boolean"
       :upper-threshold="upper_threshold_input" :lower-threshold="lower_threshold_input" :scroll-top="scroll_top_input"
-      :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean"
+      :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean" :scroll-into-view="scrollIntoView"
       :scroll-with-animation="scroll_with_animation_boolean" :refresher-enabled="refresher_enabled_boolean"
       :refresher-background="refresher_background_input" :refresher-triggered="refresher_triggered_boolean"
       @click="list_view_click" @touchstart="list_view_touchstart" @touchmove="list_view_touchmove"
       @touchcancel="list_view_touchcancel" @touchend="list_view_touchend" @tap="list_view_tap"
       @longpress="list_view_longpress" @refresherpulling="list_view_refresherpulling"
       @refresherrefresh="list_view_refresherrefresh" @refresherrestore="list_view_refresherrestore"
-      @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper"
+      @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper" ref="listview" id="listview"
       @scrolltolower="list_view_scrolltolower" @scroll="list_view_scroll" style="width:100%;">
       <list-item
-        v-for="key in scrollData" :key="key" @click="list_item_click" @touchstart="list_item_touchstart"
+        v-for="key in scrollData" :key="key" :id="key" @click="list_item_click" @touchstart="list_item_touchstart"
         @touchmove="list_item_touchmove" @touchcancel="list_item_touchcancel" @touchend="list_item_touchend"
         @tap="list_item_tap" @longpress="list_item_longpress"
         class="list-item">
@@ -97,7 +124,7 @@
     <view class="content nvue">
       <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
         @change="change_refresher_triggered_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="开启自定义下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
         @change="change_scroll_with_animation_boolean"></boolean-data>
       <boolean-data :defaultValue="true" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
@@ -110,8 +137,9 @@
         @confirm="confirm_lower_threshold_input"></input-data>
       <input-data defaultValue="0" title="设置竖向滚动条位置" type="number" @confirm="confirm_scroll_top_input"></input-data>
       <input-data defaultValue="0" title="设置横向滚动条位置" type="number" @confirm="confirm_scroll_left_input"></input-data>
-      <input-data defaultValue="#FFF" title="设置自定义下拉刷新区域背景颜色" type="text"
+      <input-data defaultValue="#FFF" title="设置下拉刷新区域背景颜色" type="text"
         @confirm="confirm_refresher_background_input"></input-data>
+      <enum-data :items="size_enum" title="通过id位置跳转" @change="item_change_size_enum"></enum-data>
     </view>
     <!-- #ifdef APP -->
   </scroll-view>

@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
@@ -10,7 +10,7 @@
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -18,14 +18,33 @@
   export default {
     data() {
       return {
-        title: 'uniCloud.callFunction'
+        title: '请求云函数',
+        callFunctionResult: {},
+        callFunctionError: {},
+        isUniTest: false
       }
     },
     onLoad() {
     },
     onUnload() {
+      if(this.isUniTest){
+        uni.hideToast()
+      }
     },
     methods: {
+      notify(content : string, title : string) {
+        if (!this.isUniTest) {
+          uni.showModal({
+            title,
+            content,
+            showCancel: false
+          })
+        } else {
+          uni.showToast({
+            title: content
+          })
+        }
+      },
       callFunction: function () {
         uni.showLoading({
           title: '加载中...'
@@ -35,24 +54,21 @@
           data: {
             num: 1,
             str: 'ABC'
-          } as UTSJSONObject
+          }
         }).then<void>(res => {
           const result = res.result
+          this.callFunctionResult = result
           console.log(JSON.stringify(result))
           uni.hideLoading()
-          uni.showModal({
-            title: '提示',
-            content: result['showMessage'] as string,
-            showCancel: false
-          })
-        }).catch<void>((err: any | null) => {
+          this.notify(result['showMessage'] as string, '提示')
+        }).catch<void>((err : any | null) => {
           const error = err as UniCloudError
+          this.callFunctionError = {
+            errCode: error.errCode,
+            errMsg: error.errMsg
+          }
           uni.hideLoading()
-          uni.showModal({
-            title: '错误',
-            content: error.errMsg,
-            showCancel: false
-          })
+          this.notify(error.errMsg, '错误')
         })
       }
     }

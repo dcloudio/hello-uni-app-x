@@ -8,19 +8,17 @@
       <button @tap="setNavigationBarColor2" class="uni-btn">
         设置导航条背景红色，标题黑色
       </button>
+      <button @tap="goCustomNavigation" class="uni-btn">
+        跳转自定义导航栏页面
+      </button>
     </view>
   </view>
 </template>
 
 <script lang="uts">
-import { State, state, setLifeCycleNum } from '@/store/index.uts'
+import { state, setLifeCycleNum } from '@/store/index.uts'
 
 export default {
-	data() {
-    return {
-			_state: state as State
-		}
-	},
   methods: {
     setNavigationBarColor1() {
       uni.setNavigationBarColor({
@@ -28,36 +26,30 @@ export default {
         backgroundColor: '#00ff00',
         success() {
           console.log('setNavigationBarColor success')
-          setLifeCycleNum(state.lifeCycleNum + 1)
         },
         fail() {
           console.log('setNavigationBarColor success')
-          setLifeCycleNum(state.lifeCycleNum - 1)
         },
         complete() {
           console.log('setNavigationBarColor success')
-          setLifeCycleNum(state.lifeCycleNum + 1)
         }
       })
     },
-		setNavigationBarColor2() {
-		  uni.setNavigationBarColor({
-		    frontColor: '#000000',
-		    backgroundColor: '#ff0000',
-		    success() {
-		      console.log('setNavigationBarColor success')
-		      setLifeCycleNum(state.lifeCycleNum + 1)
-		    },
-		    fail() {
-		      console.log('setNavigationBarColor success')
-		      setLifeCycleNum(state.lifeCycleNum - 1)
-		    },
-		    complete() {
-		      console.log('setNavigationBarColor success')
-		      setLifeCycleNum(state.lifeCycleNum + 1)
-		    }
-		  })
-		},
+    setNavigationBarColor2() {
+      uni.setNavigationBarColor({
+        frontColor: '#000000',
+        backgroundColor: '#ff0000',
+        success() {
+          console.log('setNavigationBarColor success')
+        },
+        fail() {
+          console.log('setNavigationBarColor success')
+        },
+        complete() {
+          console.log('setNavigationBarColor success')
+        }
+      })
+    },
     // 自动化测试
     getLifeCycleNum(): number {
       return state.lifeCycleNum
@@ -66,6 +58,11 @@ export default {
     setLifeCycleNum(num: number) {
       setLifeCycleNum(num)
     },
+    goCustomNavigation(){
+      uni.navigateTo({
+        url: '/pages/API/set-navigation-bar-color/set-custom-navigation-bar-color'
+      })
+    }
   },
 }
 </script>

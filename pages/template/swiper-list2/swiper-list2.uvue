@@ -39,7 +39,7 @@
       return {
         swiperList: [] as SwiperViewItem[],
         swiperIndex: -1,
-        $tabScrollView: null as null | INode,
+        $tabScrollView: null as null | Element,
         $animationFinishIndex: 0,
         $swiperWidth: 0
       }
@@ -52,8 +52,8 @@
       }
     },
     onReady() {
-      this.$tabScrollView = this.$refs['tabScroll'] as INode
-      this.$swiperWidth = (this.$refs["swiper"] as INode).getBoundingClientRect().width
+      this.$tabScrollView = this.$refs['tabScroll'] as Element
+      this.$swiperWidth = (this.$refs["swiper"] as Element).getBoundingClientRect().width
       this.setSwiperIndex(0, true)
     },
     methods: {
@@ -98,7 +98,8 @@
         }
       },
       updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-        if (percentage == 0) {
+        // TODO 0.0 != 0
+        if (percentage.toDouble() == 0.0) {
           return
         }
 
@@ -106,7 +107,7 @@
         const min_ratio = 1
         const max_ratio = 1.3
 
-        const tabs = this.$refs['swipertab'] as INode[]
+        const tabs = this.$refs['swipertab'] as Element[]
         const current_node = tabs[current_index]!
         const move_to_node = tabs[move_to_index]!
 

@@ -25,7 +25,7 @@
         <button type="primary" @click="seek(pos)">跳转到指定位置</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="requestFullScreen(direction)">进入全屏</button>
+        <button type="primary" @click="requestFullScreen(requestFullScreenOptions)">进入全屏</button>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="exitFullScreen">退出全屏</button>
@@ -34,22 +34,13 @@
         <button type="primary" @click="stop">停止</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="hide">隐藏</button>
-      </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="show">显示</button>
-      </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="close">关闭</button>
-      </view>
-      <view class="uni-btn-v">
         <button type="primary" @click="sendDanmu(danmu)">发送弹幕</button>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="playbackRate(rate)">设置倍速</button>
       </view>
       <view class="uni-title">
-        <text class="uni-title-text uni-center">属性示例</text>
+        <text class="uni-title-text">属性示例</text>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="setSrc(_src)">设置播放资源</button>
@@ -137,7 +128,6 @@
 </template>
 
 <script lang="uts">
-  import { VideoNode } from "uts.sdk.modules.DCloudUniVideo";
   export default {
     onReady() {
       this.videoContext = uni.createVideoContext('video', this);
@@ -180,10 +170,9 @@
         danmuBtn: false,
         enableDanmu: true,
         pageGesture: false,
-        direction: {
-          direction: 0
-        } as RequestFullScreenOptions,
-        _direction: {
+        direction: -90,
+        _direction: 0,
+        requestFullScreenOptions: {
           direction: -90
         } as RequestFullScreenOptions,
         showProgress: true,
@@ -219,7 +208,11 @@
         danmu: {
           text: '要显示的文本',
           color: '#FF0000'
-        } as Danmu
+        } as Danmu,
+        // 自动化测试
+        isPlaying: false,
+        isPause: false,
+        isFullScreen: false
       }
     },
     methods: {
@@ -246,19 +239,7 @@
       },
       stop: function () {
         console.log("stop");
-        (this.$refs["video"] as VideoNode).stop();
-      },
-      hide: function () {
-        console.log("hide");
-        (this.$refs["video"] as VideoNode).hide();
-      },
-      show: function () {
-        console.log("show");
-        (this.$refs["video"] as VideoNode).show();
-      },
-      close: function () {
-        console.log("close");
-        (this.$refs["video"] as VideoNode).close();
+        this.videoContext?.stop();
       },
       sendDanmu: function (danmu : Danmu) {
         console.log("sendDanmu -> " + danmu);
@@ -305,8 +286,8 @@
         this.pageGesture = !this.pageGesture;
         console.log("pageGesture -> " + this.pageGesture)
       },
-      setDirection: function (options : RequestFullScreenOptions) {
-        this.direction = options;
+      setDirection: function (direction: number) {
+        this.direction = direction;
         console.log("direction -> " + this.direction)
       },
       setShowProgress: function () {
@@ -380,9 +361,13 @@
       // 事件
       onPlay: function (res : any) {
         console.log(JSON.stringify(res));
+        this.isPlaying = true;
+        this.isPause = false;
       },
       onPause: function (res : any) {
         console.log(JSON.stringify(res));
+        this.isPlaying = false;
+        this.isPause = true;
       },
       onEnded: function (res : any) {
         console.log(JSON.stringify(res));
@@ -392,6 +377,7 @@
       },
       onFullScreenChange: function (res : any) {
         console.log(JSON.stringify(res));
+        this.isFullScreen = !this.isFullScreen;
       },
       onWaiting: function (res : any) {
         console.log(JSON.stringify(res));
@@ -407,6 +393,25 @@
       },
       onControlsToggle: function (res : any) {
         console.log(JSON.stringify(res));
+      },
+      // 自动化测试
+      playTest: function () {
+        this.videoContext?.play();
+      },
+      pauseTest: function () {
+        this.videoContext?.pause();
+      },
+      requestFullScreenTest: function () {
+        const options : RequestFullScreenOptions = {
+          direction: -90
+        };
+        this.videoContext?.requestFullScreen(options);
+      },
+      exitFullScreenTest: function () {
+        this.videoContext?.exitFullScreen();
+      },
+      stopTest: function () {
+        this.videoContext?.stop();
       }
     }
   }

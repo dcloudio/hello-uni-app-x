@@ -34,4 +34,9 @@ declare interface Uni {
    * 文档: [https://uniapp.dcloud.net.cn/api/system/batteryInfo.html](https://uniapp.dcloud.net.cn/api/system/batteryInfo.html)
    */
   getBatteryInfo(option?: UniNamespace.GetBatteryInfoOption): void;
+
+	/**
+	 * 同步获取电池电量信息
+	 */
+	getBatteryInfoSync(): UniNamespace.GetBatteryInfoSuccessCallbackResult;
 }

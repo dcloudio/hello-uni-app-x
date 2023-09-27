@@ -45,14 +45,15 @@
       return {
         swiperList: [] as SwiperViewItem[],
         swiperIndex: -1,
-        $tabScrollView: null as null | INode,
-        $indicatorNode: null as null | INode,
+        $tabScrollView: null as null | Element,
+        $indicatorNode: null as null | Element,
         $animationFinishIndex: 0,
         $swiperWidth: 0,
         $swiperTabsRect: [] as SwiperTabsItem[]
       }
     },
     onLoad() {
+      // 初始化 8 个页签，宽度依次递增，用于演示在滑动 swiper 过程中指示线宽度的线性变化
       for (let i = 0; i < 8; i++) {
         const space = " ".repeat(i)
         this.swiperList.push({
@@ -61,13 +62,18 @@
       }
     },
     onReady() {
-      this.$tabScrollView = this.$refs['tabScroll'] as INode
-      this.$indicatorNode = this.$refs['indicator'] as INode
-      this.$swiperWidth = (this.$refs["swiper"] as INode).getBoundingClientRect().width
+      this.$tabScrollView = this.$refs['tabScroll'] as Element
+      this.$indicatorNode = this.$refs['indicator'] as Element
+      this.$swiperWidth = (this.$refs["swiper"] as Element).getBoundingClientRect().width
       this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
     methods: {
+      /**
+       * 每个页签的点击事件，点击后设置当前 swiper.
+       * @constructor
+       * @param {number} index - 当前索引，该值应介于 0 和 最大数量之间.
+       */
       onTabClick(index : number) {
         this.setSwiperIndex(index, false)
       },
@@ -98,13 +104,21 @@
         // 通知更新指示线
         this.updateTabIndicator(current_index, move_to_index, percentage)
       },
+      /**
+       * Swiper滑动动画结束事件.
+       */
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
+
+        // 记录上次的索引位置
         this.$animationFinishIndex = e.detail.current
       },
+      /**
+       * 缓存所有页签的左边距和宽度，用于计算指示线在移动过程中的线性变化.
+       */
       cacheTabItemsSize() {
         this.$swiperTabsRect.length = 0;
-        const tabs = this.$refs["swipertab"] as INode[]
+        const tabs = this.$refs["swipertab"] as Element[]
         tabs.forEach((node) => {
           this.$swiperTabsRect.push({
             x: node.offsetLeft,
@@ -112,6 +126,12 @@
           } as SwiperTabsItem)
         })
       },
+      /**
+       * 设置当前 swiper 选中的索引值.
+       * @constructor
+       * @param {number} index - 当前索引，该值应介于 0 和 最大数量之间.
+       * @param {boolean} updateIndicator - 是否更新指示线.
+       */
       setSwiperIndex(index : number, updateIndicator : boolean) {
         if (this.swiperIndex === index) {
           return
@@ -123,14 +143,22 @@
           this.updateTabIndicator(index, index, 1)
         }
       },
+      /**
+       * 更新页签指示线的位置和宽度.
+       * @constructor
+       * @param {number} current_index - 当前索引，该值应介于 0 和 最大数量之间.
+       * @param {number} move_to_index - 目标索引，该值应介于 0 和 最大数量之间.
+       * @param {number} percentage - 偏移百分比，应介于 0 和 1 之间，用于计算在移动过程中的线性值.
+       */
       updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-        // 计算指示线
         const current_size = this.$swiperTabsRect[current_index]
         const move_to_size = this.$swiperTabsRect[move_to_index]
+
+        // 计算指示线 位置 和 宽度 在移动过程中的线性值
         const indicator_line_x = lerpNumber(current_size.x, move_to_size.x, percentage)
         const indicator_line_w = lerpNumber(current_size.w, move_to_size.w, percentage)
 
-        // 更新指示线
+        // 通过 transform 更新指示线，避免重排版
         const x = indicator_line_x + indicator_line_w / 2
         this.$indicatorNode!.style.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
 

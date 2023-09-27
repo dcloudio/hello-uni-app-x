@@ -1,0 +1,200 @@
+<template>
+  <view class="tabs">
+    <view ref="tabview" class="tab-view">
+      <tab1 ref="tab1" v-if="tabList[0].init" v-show="selectedIndex==0"></tab1>
+      <tab2 ref="tab2" v-if="tabList[1].init" v-show="selectedIndex==1"></tab2>
+    </view>
+    <view ref="tabbar" class="tab-bar">
+      <view class="tab-item" @click="onTabClick(0)">
+        <view ref="tab-item1" class="tab-item-content">
+          <text v-if="displayArrow" class="tab-item-icon tab-item-arrow uni-icon"
+            :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            {{'\ue6bd'}}
+          </text>
+          <text v-if="!displayArrow" class="tab-item-icon uni-icon"
+            :class="selectedIndex==0 ? 'tab-item-text-active' : ''">{{'\ue644'}}</text>
+          <text v-if="!displayArrow" class="tab-item-text" :class="selectedIndex==0 ? 'tab-item-text-active' : ''">
+            首页
+          </text>
+        </view>
+      </view>
+      <view @click="onPlusClick">
+        <image class="concave-image" mode="heightFix" src="/static/template/custom-tab-bar/concave.png"></image>
+        <view class="btn-plus">
+          <text class="btn-plus-text">+</text>
+        </view>
+      </view>
+      <view class="tab-item" @click="onTabClick(1)">
+        <view ref="tab-item2" class="tab-item-content">
+          <text class="tab-item-icon uni-icon"
+            :class="selectedIndex==1 ? 'tab-item-text-active' : ''">{{'\ue699'}}</text>
+          <text class="tab-item-text" :class="selectedIndex==1 ? 'tab-item-text-active' : ''">
+            我的
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import { ComponentPublicInstance } from 'vue';
+  import tab1 from './custom-tab-bar-tab1.uvue';
+  import tab2 from './custom-tab-bar-tab2.uvue';
+
+  type TabItem = {
+    init : boolean,
+    preload : boolean,
+  }
+
+  export default {
+    components: {
+      tab1,
+      tab2
+    },
+    data() {
+      return {
+        tabList: [
+          {
+            init: false
+          } as TabItem,
+          {
+            init: false
+          } as TabItem,
+        ] as TabItem[],
+        selectedIndex: -1,
+        displayArrow: false,
+        $tabViewHeight: 0
+      }
+    },
+    onLoad() {
+      uni.$on('tabchange', this.onTabPageEvent)
+    },
+    onReady() {
+      this.setSelectedIndex(0)
+      this.$tabViewHeight = (this.$refs["tabview"] as Element).getBoundingClientRect().height
+    },
+    onUnload() {
+      uni.$off('tabchange', this.onTabPageEvent)
+    },
+    methods: {
+      onTabClick(index : number) {
+        this.setSelectedIndex(index);
+        if (index == 0) {
+          (this.$refs["tab1"]! as ComponentPublicInstance).$callMethod('scrollTop', 0)
+        }
+      },
+      onTabPageEvent(top : number) {
+        this.displayArrow = top > this.$tabViewHeight
+      },
+      setSelectedIndex(index : number) {
+        if (this.selectedIndex === index) {
+          return
+        }
+        if (!this.tabList[index].init) {
+          this.tabList[index].init = true
+        }
+        this.selectedIndex = index
+      },
+      onPlusClick() {
+        uni.showModal({
+          title: "提示",
+          content: "你点击了 +",
+          showCancel: false
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  @font-face {
+    font-family: "UniIcon";
+    src: url('@/static/fonts/uni-icon.ttf');
+  }
+
+  .uni-icon {
+    font-family: "UniIcon";
+    font-size: 16px;
+    font-style: normal;
+  }
+
+  .tabs {
+    flex: 1;
+    background-color: #fff;
+    overflow: visible;
+  }
+
+  .tab-view {
+    flex: 1;
+  }
+
+  .tab-view-item {
+    flex: 1;
+  }
+
+  .tab-bar {
+    flex-direction: row;
+    height: 56px;
+    overflow: visible;
+  }
+
+  .tab-item {
+    flex: 1;
+    position: relative;
+    background-color: #1e90ff;
+    overflow: visible;
+  }
+
+  .tab-item-content {
+    margin: auto;
+    transition: transform 0.3s;
+  }
+
+  .tab-item-icon {
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .tab-item-text {
+    color: #ccc;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .tab-item-text-active {
+    color: #fff;
+  }
+
+  .tab-item-arrow {
+    font-size: 30px !important;
+    font-weight: bold;
+  }
+
+  .concave-image {
+    height: 56px;
+  }
+
+  .btn-plus {
+    position: absolute;
+    left: 43px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50px;
+    background-color: #FE5722;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    /* margin-left: auto;
+    margin-right: auto; */
+    margin-top: -35px;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .btn-plus-text {
+    color: #fff;
+    font-size: 32px;
+  }
+</style>

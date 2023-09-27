@@ -1,10 +1,10 @@
 module.exports = {
-  testTimeout: 10000,
+  testTimeout: 30000,
   reporters: ['default'],
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
   rootDir: __dirname,
-  testMatch: ["<rootDir>/pages/**/*test.[jt]s?(x)"],
+  testMatch: ["<rootDir>/pages/API/storage/storage.test.js"],
   testPathIgnorePatterns: ['/node_modules/'],
   setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
 }

@@ -54,7 +54,6 @@ type Page = {
 type ListItem = {
   id : string
   name : string
-  open : boolean
   pages : Page[]
   url ?: string
   enable ?: boolean
@@ -66,7 +65,6 @@ export default {
         {
           id: 'view',
           name: '视图容器',
-          open: false,
           pages: [
             {
               name: 'view',
@@ -95,7 +93,6 @@ export default {
         {
           id: 'content',
           name: '基础内容',
-          open: false,
           pages: [
             {
               name: 'text',
@@ -112,7 +109,6 @@ export default {
         {
           id: 'form',
           name: '表单组件',
-          open: false,
           pages: [
             {
               name: 'button',
@@ -162,7 +158,6 @@ export default {
         {
           id: 'nav',
           name: '导航',
-          open: false,
           pages: [{
             name: 'navigator',
             enable: true
@@ -171,7 +166,6 @@ export default {
         {
           id: 'media',
           name: '媒体组件',
-          open: false,
           pages: [
             {
               name: 'image',
@@ -191,7 +185,6 @@ export default {
           {
             id: 'map',
             name: '地图',
-            open: false,
             pages: [
               {
                 name: 'map',
@@ -202,7 +195,6 @@ export default {
           {
             id: 'canvas',
             name: '画布',
-            open: false,
             pages: [
               {
                 name: 'canvas'
@@ -213,7 +205,6 @@ export default {
         {
           id: 'web-view',
           name: '网页',
-          open: false,
           pages: [
             {
               name: '网络网页',
@@ -233,14 +224,12 @@ export default {
             url: 'ad',
             name: 'AD组件',
             enable: false,
-            open: false,
             pages: [] as Page[]
           }
           */
            {
          id: 'general-attr-event',
          name: '通用属性和事件',
-         open: false,
          pages: [
            {
              name: '通用属性',
@@ -261,24 +250,6 @@ export default {
     }
   },
   methods: {
-    triggerCollapse(index ?: number, item : ListItem) {
-      if (item.pages.length == 0) {
-        const page : Page = {
-          name: item.name,
-          enable: item.enable,
-          url: item.url,
-        }
-        this.goDetailPage(page)
-        return
-      }
-      for (var i = 0; i < this.list.length; ++i) {
-        if (index == i) {
-          this.list[i].open = !this.list[i].open
-        } else {
-          this.list[i].open = false
-        }
-      }
-    },
     goDetailPage(e : Page) {
       if (e.enable == false) {
         uni.showToast({

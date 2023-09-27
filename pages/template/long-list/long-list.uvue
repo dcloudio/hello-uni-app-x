@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import { ComponentPublicInstance } from 'vue';
   import longPage from './long-list-page.uvue';
 
   type SwiperTabsItem = {
@@ -76,21 +77,21 @@
           } as SwiperViewItem
         ] as SwiperViewItem[],
         swiperIndex: -1,
-        $pageScrollView: null as null | INode,
+        $pageScrollView: null as null | Element,
         $headerHeight: 0,
         $animationFinishIndex: 0,
-        $tabScrollView: null as null | INode,
-        $indicatorNode: null as null | INode,
+        $tabScrollView: null as null | Element,
+        $indicatorNode: null as null | Element,
         $swiperWidth: 0,
         $swiperTabsRect: [] as SwiperTabsItem[]
       }
     },
     onReady() {
-      this.$pageScrollView = this.$refs['pageScrollView'] as INode;
-      this.$headerHeight = (this.$refs['header'] as INode).offsetHeight
-      this.$swiperWidth = (this.$refs['swiper'] as INode).getBoundingClientRect().width
-      this.$tabScrollView = this.$refs['tabScroll'] as INode
-      this.$indicatorNode = this.$refs['indicator'] as INode
+      this.$pageScrollView = this.$refs['pageScrollView'] as Element;
+      this.$headerHeight = (this.$refs['header'] as Element).offsetHeight
+      this.$swiperWidth = (this.$refs['swiper'] as Element).getBoundingClientRect().width
+      this.$tabScrollView = this.$refs['tabScroll'] as Element
+      this.$indicatorNode = this.$refs['indicator'] as Element
       this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
@@ -108,10 +109,10 @@
         const deltaY = event.deltaY
         const scrollTop = this.$pageScrollView!.scrollTop
 
-        /// 优先处理父容器滚动，父容器不能滚动时滚动子
-        // 向上滚动
+        // 优先处理父容器滚动，父容器不能滚动时滚动子
+
         if (deltaY > 0) {
-          // 如果父容器 header scrollTop < offsetHeight，先滚动父容器
+          // 向上滚动，如果父容器 header scrollTop < offsetHeight，先滚动父容器
           if (scrollTop < this.$headerHeight) {
             const difference = this.$headerHeight - scrollTop - deltaY
             if (difference > 0) {
@@ -170,7 +171,7 @@
       },
       cacheTabItemsSize() {
         this.$swiperTabsRect.length = 0
-        const tabs = this.$refs["swipertab"] as INode[]
+        const tabs = this.$refs["swipertab"] as Element[]
         tabs.forEach((node) => {
           this.$swiperTabsRect.push({
             x: node.offsetLeft,
@@ -192,9 +193,10 @@
         }
       },
       updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-        // 计算指示线
         const current_size = this.$swiperTabsRect[current_index]
         const move_to_size = this.$swiperTabsRect[move_to_index]
+
+        // 计算指示线 左边距 和 宽度 在移动过程中的线性值
         const indicator_line_x = lerpNumber(current_size.x, move_to_size.x, percentage)
         const indicator_line_w = lerpNumber(current_size.w, move_to_size.w, percentage)
 
@@ -235,6 +237,7 @@
 
   .swiper-tabs {
     background-color: #ffffff;
+    flex-direction: column;
   }
 
   .swiper-tabs-item {

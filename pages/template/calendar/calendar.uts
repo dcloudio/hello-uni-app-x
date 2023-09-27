@@ -125,7 +125,7 @@ export class Lunar {
 		* 返回农历y年闰月是哪个月；若y年没有闰月 则返回0
 		* @param lunar Year
 		* @return Number (0-12)
-		* @eg:let leapMonth = calendar.leapMonth(1987) ;//leapMonth=6 
+		* @eg:let leapMonth = calendar.leapMonth(1987) ;//leapMonth=6
 		*/
 	leapMonth(year : number) : number {
 		return lunarYears[year - 1900] & 0xF;
@@ -146,7 +146,7 @@ export class Lunar {
 
 	// 某年份农历各月天数
 	lunarMonthDays(year : number) : number[] {
-		
+
 		 let monthDays = this.lunarMonthDaysMap.get(year)
 			if (monthDays != null) {
 					return monthDays
@@ -164,7 +164,7 @@ export class Lunar {
 			// 添加闰月
 			let leapM = this.leapMonth(year);
 
-			if (leapM > 0) monthDays.splice(leapM, 0, leapDays(year));
+			if (leapM > 0) monthDays.splice(leapM, 0, this.leapDays(year));
 			this.lunarMonthDaysMap.set(year, monthDays)
 
 			return monthDays;
@@ -265,7 +265,7 @@ export class Lunar {
 		} else {
 			// 补偿公历1901年2月的农历信息
 			if (offset == -23) {
-				const info : InfoType = {
+				let info : InfoType = {
 					lunarY: i,
 					lunarM: 12,
 					lunarD: 8,
