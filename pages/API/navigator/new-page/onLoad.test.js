@@ -13,51 +13,46 @@ describe("onLoad", () => {
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
   });
-  // 先出现 TARGET_PAGE_PATH 页面，再出现 onLoad 页面, 顺序异常
-  // it("navigateTo", async () => {
-  //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
-  //   await page.callMethod("navigateToOnLoadWithType", "navigateTo");
-  //   await page.waitFor(1000);
-  //   page = await program.currentPage();
-  //   expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
-  // });
-  // 页面白屏
-  // it("navigateBack", async () => {
-  //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
-  //   await page.callMethod("navigateToOnLoadWithType", "navigateBack");
-  //   await page.waitFor(1000);
-  //   page = await program.currentPage();
-  //   expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
-  // });
-  // 直接出现 TARGET_PAGE_PATH 页面，又动画了 TARGET_PAGE_PATH 页面
-  // it("redirectTo", async () => {
-  //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
-  //   await page.callMethod("navigateToOnLoadWithType", "redirectTo");
-  //   await page.waitFor(1000);
-  //   page = await program.currentPage();
-  //   expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
-  // });
-  // 直接出现 TARGET_PAGE_PATH 页面，又动画了 TARGET_PAGE_PATH 页面
-  // it("reLaunch", async () => {
-  //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
-  //   await page.callMethod("navigateToOnLoadWithType", "reLaunch");
-  //   await page.waitFor(1000);
-  //   page = await program.currentPage();
-  //   expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
-  // });
-  // 页面白屏
-  // it("switchTab", async () => {
-  //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
-  //   await page.callMethod("navigateToOnLoadWithType", "switchTab");
-  //   await page.waitFor(1000);
-  //   page = await program.currentPage();
-  //   expect(page.path).toBe("pages/tabBar/component");
-  // });
+  it("navigateTo", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor(500);
+    await page.callMethod("navigateToOnLoadWithType", "navigateTo");
+    await page.waitFor(1000);
+    page = await program.currentPage();
+    expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
+  });
+  it("navigateBack", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor(500);
+    await page.callMethod("navigateToOnLoadWithType", "navigateBack");
+    await page.waitFor(1000);
+    page = await program.currentPage();
+    expect(page.path).toBe(INTERMEDIATE_PAGE_PATH.substring(1));
+  });
+  it("redirectTo", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor(500);
+    await page.callMethod("navigateToOnLoadWithType", "redirectTo");
+    await page.waitFor(1000);
+    page = await program.currentPage();
+    expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
+  });
+  it("reLaunch", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor(500);
+    await page.callMethod("navigateToOnLoadWithType", "reLaunch");
+    await page.waitFor(1000);
+    page = await program.currentPage();
+    expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
+  });
+  it("switchTab", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor(500);
+    await page.callMethod("navigateToOnLoadWithType", "switchTab");
+    await page.waitFor(1000);
+    page = await program.currentPage();
+    expect(page.path).toBe("pages/tabBar/component");
+  });
   // toast 出现在 INTERMEDIATE_PAGE_PATH 页面（非 onLoad 生命周期所在页面）
   // 当 navigateTo 到 onLoad 页面时，toast 会被关闭
   // it("showToast", async () => {
