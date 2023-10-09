@@ -198,9 +198,17 @@ export default {
           key: key,
           success: (res) => {
             that.apiGetData = res.data
+
+            let desc:string = typeof this.apiGetData
+            if("object" == desc){
+              desc = desc  + ": " + JSON.stringify(this.apiGetData)
+            }else{
+              desc = desc  + ": " + this.apiGetData
+            }
+
             uni.showModal({
               title: '读取数据成功',
-              content: "data: '" + JSON.stringify(that.apiGetData) + "'",
+              content: desc,
               showCancel: false,
             })
           },
@@ -224,9 +232,17 @@ export default {
         })
       } else {
         this.apiGetData = uni.getStorageSync(key)
+
+        let desc:string = typeof this.apiGetData
+        if("object" == desc){
+          desc = desc  + ": " + JSON.stringify(this.apiGetData)
+        }else{
+          desc = desc  + ": " + this.apiGetData
+        }
+
         uni.showModal({
           title: '读取数据成功',
-          content: "data: '" + JSON.stringify(apiGetData) + "'",
+          content:  desc,
           showCancel: false,
         })
       }
