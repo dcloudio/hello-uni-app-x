@@ -1,7 +1,7 @@
 jest.setTimeout(20000);
 const PAGE_PATH = "/pages/API/navigator/new-page/onLoad";
 const INTERMEDIATE_PAGE_PATH = "/pages/API/navigator/new-page/new-page-1";
-const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-2";
+const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-3";
 let page;
 
 describe("onLoad", () => {
