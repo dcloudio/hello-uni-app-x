@@ -13,7 +13,9 @@ describe('page-scroll-to', () => {
     await page.waitFor(300)
 
     const scrollTop = await page.scrollTop()
-    expect(scrollTop).toBe(100)
+
+    // 设备精度问题，允许上下浮动 1px
+    expect(scrollTop > 99 && scrollTop < 101).toBe(true)
   })
   it('scroll-to-element', async () => {
     const btnScrollTo = await page.$('.btn-scrollToElement')

@@ -39,11 +39,11 @@
         </view>
         <view class="uni-padding-wrap">
           <view class="uni-btn-v">
-            <button class="uni-btn" type="primary" @tap="getStorageInfo">
-              获取存储概述-同步
-            </button>
-            <button class="uni-btn" @tap="getStorageInfoSync">
+            <button class="uni-btn btn-getStorageInfoASync" type="primary" @tap="getStorageInfo">
               获取存储概述-异步
+            </button>
+            <button class="uni-btn btn-getStorageInfoSync" @tap="getStorageInfoSync">
+              获取存储概述-同步
             </button>
           </view>
           <text>{{ storageInfo }}</text>
@@ -90,8 +90,8 @@
               存储数据-异步
             </button>
             <button class="uni-btn btn-getstorageAsync" @tap="getStorage">读取数据-异步</button>
-            <button class="uni-btn" @tap="removeStorage">移除数据-异步</button>
-            <button class="uni-btn" @tap="clearStorage">清理数据-异步</button>
+            <button class="uni-btn btn-removeStorageInfoASync" @tap="removeStorage">移除数据-异步</button>
+            <button class="uni-btn btn-clearStorageInfoASync" @tap="clearStorage">清理数据-异步</button>
           </view>
 
           <view class="uni-btn-v">
@@ -103,10 +103,10 @@
               存储数据-同步
             </button>
             <button class="uni-btn btn-getstorageSync" @tap="getStorageSync">读取数据-同步</button>
-            <button class="uni-btn" @tap="removeStorageSync">
+            <button class="uni-btn btn-removeStorageInfoSync" @tap="removeStorageSync">
               移除数据-同步
             </button>
-            <button class="uni-btn" @tap="clearStorageSync">
+            <button class="uni-btn btn-clearStorageInfoSync" @tap="clearStorageSync">
               清理数据-同步
             </button>
           </view>
@@ -132,6 +132,7 @@ export default {
     getStorageInfo() {
       uni.getStorageInfo({
         success: function (res) {
+          this.apiGetData = res
           this.storageInfo = JSON.stringify(res)
         },
       })
@@ -139,6 +140,7 @@ export default {
     getStorageInfoSync() {
       try {
         const res = uni.getStorageInfoSync()
+        this.apiGetData = res
         this.storageInfo = JSON.stringify(res)
       } catch (e) {
         // error
@@ -196,9 +198,17 @@ export default {
           key: key,
           success: (res) => {
             that.apiGetData = res.data
+
+            let desc:string = typeof this.apiGetData
+            if("object" == desc){
+              desc = desc  + ": " + JSON.stringify(this.apiGetData)
+            }else{
+              desc = desc  + ": " + this.apiGetData
+            }
+
             uni.showModal({
               title: '读取数据成功',
-              content: "data: '" + JSON.stringify(that.apiGetData) + "'",
+              content: desc,
               showCancel: false,
             })
           },
@@ -222,9 +232,17 @@ export default {
         })
       } else {
         this.apiGetData = uni.getStorageSync(key)
+
+        let desc:string = typeof this.apiGetData
+        if("object" == desc){
+          desc = desc  + ": " + JSON.stringify(this.apiGetData)
+        }else{
+          desc = desc  + ": " + this.apiGetData
+        }
+
         uni.showModal({
           title: '读取数据成功',
-          content: "data: '" + JSON.stringify(apiGetData) + "'",
+          content:  desc,
           showCancel: false,
         })
       }
