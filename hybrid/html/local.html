@@ -38,6 +38,7 @@
       <button class="btn" type="button" data-action="navigateBack">navigateBack</button>
       <button class="btn" type="button" data-action="reLaunch">reLaunch</button>
       <button class="btn" type="button" data-action="switchTab">switchTab</button>
+      <button class="btn" type="button" data-action="getEnv">getEnv</button>
     </div>
     <p class="desc">网页向应用发送消息。注意：小程序端应用会在此页面后退时接收到消息。</p>
     <div class="btn-list">
@@ -66,6 +67,13 @@
             case 'navigateBack':
               uni.navigateBack({
                 delta: 1
+              });
+              break;
+            case 'getEnv':
+              uni.getEnv((res) => {
+                uni.postMessage({
+                  data: res
+                })
               });
               break;
             default:
