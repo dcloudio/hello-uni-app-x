@@ -1,0 +1,81 @@
+<template>
+	<list-view :scroll-y="true" class="page" rebound="false" :refresher-enabled="refresher_enabled_boolean"
+	:refresher-triggered="refresher_triggered_boolean" @refresherrefresh="list_view_refresherrefresh">
+    <list-item type = 1>
+      <image src="/static/shuijiao.jpg" style="height: 240px;"></image>
+    </list-item>
+    <list-item class="content-item" type = 2>
+			<text class="text">向上滑动页面，体验sticky-header吸顶效果。</text>
+		</list-item>
+		<sticky-header>
+      <scroll-view style="background-color: white; flex-direction: row;" :scroll-x="true" :scroll-y="false" :show-scrollbar="false">
+        <view class="flex-row" style="align-self: flex-start; flex-direction: row;">
+          <text ref="swipertab" class="sift-item"
+            v-for="name in sift_item" @click="">
+            {{name}}
+          </text>
+        </view>
+      </scroll-view>
+		</sticky-header>
+
+		<list-item v-for="(item,index) in list_item" :key="index" class="content-item" type = 3>
+			<text class="text">{{item}}</text>
+		</list-item>
+	</list-view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+        sift_item: ["最新上架", "免费热榜", "付费热榜", "热门总榜", "观看最多", "平分最高", "下载总榜", "访问排行", "回复总榜"],
+				list_item: [] as Array<string>,
+				refresher_enabled_boolean: true,
+				refresher_triggered_boolean: false
+			}
+		},
+    onLoad() {
+      let lists : Array<string> = []
+      for (let i = 0; i < 40; i++) {
+        lists.push("list-item-" + i)
+      }
+      this.list_item = lists
+    },
+		methods: {
+			list_view_refresherrefresh() {
+			  console.log("下拉刷新被触发 ")
+			  this.refresher_triggered_boolean = true
+			  setTimeout(function(){
+			  	this.refresher_triggered_boolean = false
+			  }, 1500)
+			},
+		}
+	}
+</script>
+
+<style>
+	.page {
+		flex: 1;
+		background-color: #f5f5f5;
+	}
+
+	.content-item {
+		padding: 15px;
+		margin: 5px 0;
+		background-color: #fff;
+	}
+
+	.text {
+		font-size: 14px;
+		color: #666;
+		line-height: 20px;
+	}
+
+  .sift-item {
+    background-color: #f5f5f5;
+    color: #555;
+    font-size: 16px;
+    padding: 12px 15px;
+  }
+
+</style>
