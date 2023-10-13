@@ -1,5 +1,5 @@
 <template>
-	<list-view :scroll-y="true" class="page" rebound="false" :refresher-enabled="refresher_enabled_boolean"
+	<list-view :scroll-y="true" class="page" rebound="false" :scroll-top="scroll_top_input" :refresher-enabled="refresher_enabled_boolean"
 	:refresher-triggered="refresher_triggered_boolean" @refresherrefresh="list_view_refresherrefresh">
     <list-item type = 1>
       <image src="/static/shuijiao.jpg" style="height: 240px;"></image>
@@ -28,10 +28,11 @@
 	export default {
 		data() {
 			return {
-        sift_item: ["最新上架", "免费热榜", "付费热榜", "热门总榜", "观看最多", "平分最高", "下载总榜", "访问排行", "回复总榜"],
+				sift_item: ["最新上架", "免费热榜", "付费热榜", "热门总榜", "观看最多", "平分最高", "下载总榜", "访问排行", "回复总榜"],
 				list_item: [] as Array<string>,
 				refresher_enabled_boolean: true,
-				refresher_triggered_boolean: false
+				refresher_triggered_boolean: false,
+				scroll_top_input: 0
 			}
 		},
     onLoad() {
@@ -49,6 +50,9 @@
 			  	this.refresher_triggered_boolean = false
 			  }, 1500)
 			},
+			confirm_scroll_top_input(value : number) {
+			  this.scroll_top_input = value
+			}
 		}
 	}
 </script>
