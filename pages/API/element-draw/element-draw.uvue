@@ -3,14 +3,14 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view>
-      <view ref="draw-text-view" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-line-view" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-circle-view" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-dash-line" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-house" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-style" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-odd" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
-      <view ref="draw-arcto" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-text-view" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-line-view" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-circle-view" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-dash-line" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-house" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-style" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-odd" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
+      <view id="draw-arcto" style="width: 750rpx;height: 550rpx; background-color: lightgray;margin: 30rpx 0rpx;"></view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -57,8 +57,8 @@
     },
     methods: {
       drawText() {
-        let element = (this.$refs['draw-text-view'] as Element)
-        let ctx = element.getDrawableContext()
+        let element = uni.getElementById('draw-text-view')
+        let ctx = element!.getDrawableContext()
         let width = element.getBoundingClientRect().width
         ctx!!.reset()
         ctx!!.font = "15px"
@@ -74,7 +74,7 @@
         ctx!!.update()
       },
       drawLines() {
-        let ctx = (this.$refs['draw-line-view'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-line-view')!.getDrawableContext()
         ctx!!.reset()
         ctx!!.lineWidth = 10;
 
@@ -129,7 +129,7 @@
         y += 15;
       },
       drawCircles() {
-        let ctx = (this.$refs['draw-circle-view'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-circle-view')!.getDrawableContext()
         ctx!!.reset()
         // Draw shapes
         for (var i = 0; i < 4; i++) {
@@ -155,7 +155,7 @@
       },
 
       drawStar() {
-        let ctx = (this.$refs['draw-dash-line'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-dash-line')!.getDrawableContext()
         ctx!!.reset()
         ctx!!.beginPath();
         var horn = 5; // 画5个角
@@ -226,7 +226,7 @@
         return result
       },
       drawhouse() {
-        let ctx = (this.$refs['draw-house'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-house')!.getDrawableContext()
         ctx!!.reset()
         ctx!!.lineWidth = 10;
 
@@ -246,7 +246,7 @@
         ctx!!.update()
       },
       drawPoint() {
-        let ctx = (this.$refs['draw-style'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-style')!.getDrawableContext()
         ctx!!.reset()
         for (let i = 0; i < 6; i++) {
           for (let j = 0; j < 6; j++) {
@@ -265,7 +265,7 @@
         ctx!!.update()
       },
       drawRect() {
-        let ctx = (this.$refs['draw-odd'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-odd')!.getDrawableContext()
         ctx!!.reset()
         // Create path
         ctx!!.moveTo(30, 90);
@@ -283,7 +283,7 @@
 
       },
       drawArcTo() {
-        let ctx = (this.$refs['draw-arcto'] as Element).getDrawableContext()
+        let ctx = uni.getElementById('draw-arcto')!.getDrawableContext()
         ctx!.reset()
         ctx!.beginPath();
         ctx!.moveTo(50, 20);
