@@ -1,0 +1,60 @@
+<template>
+  <view>
+    <page-head id="page-head" title="getElementById"></page-head>
+    <view class="uni-padding-wrap" id="snapshot-content">
+      <text id="text">this is text</text>
+      <view id="view" class="uni-common-mt" style="border: 1px solid red"
+        >this is view</view
+      >
+      <button class="uni-btn" @click="changeViewStyle">
+        修改 view 宽高及背景色
+      </button>
+
+      <button class="uni-btn" type="primary" @click="takeSnapshotClick">
+        点击截图
+      </button>
+    </view>
+    <image style="margin-top: 20px;" :src="snapImage" mode="aspectFit"></image>
+  </view>
+</template>
+
+<script lang="uts">
+export default {
+  data() {
+    return {
+      snapImage:"/static/uni.png"
+    }
+  },
+  methods: {
+
+    changeViewStyle(){
+      const text = uni.getElementById('text')!
+      text.style.setProperty('color', 'red')
+
+      const view = uni.getElementById('view')!
+      view.style.setProperty('width', '90%')
+      view.style.setProperty('height', '50px')
+      view.style.setProperty('backgroundColor', '#007AFF')
+    },
+    takeSnapshotClick(){
+      const view = uni.getElementById('snapshot-content')!
+      view.takeSnapshot({
+        success:function(res:TakeSnapshotSuccess){
+          console.log(res.tempFilePath)
+          this.snapImage = res.tempFilePath
+          uni.showToast({
+            title:'截图成功'
+          })
+        },
+        fail:function(res:TakeSnapshotFail){
+          console.log(res)
+          uni.showToast({
+            icon:'error',
+            title:'截图失败'
+          })
+        }
+      } as TakeSnapshotOptions)
+    }
+  }
+}
+</script>
