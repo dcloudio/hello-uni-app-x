@@ -2,10 +2,10 @@
   <list-view ref="listView" class="list" :rebound="false" :scroll-y="true" :custom-nested-scroll="true"
     @scrolltolower="loadData(null)">
     <list-item class="list-item" v-for="(item, _) in dataList" :key="item.plugin_id">
-      <view class="list-item-icon" v-if="item.plugin_id!=-1">
+      <view class="list-item-icon">
         <image class="list-item-icon-image" :src="item.plugin_img_link"></image>
       </view>
-      <view class="list-item-fill" v-if="item.plugin_id!=-1">
+      <view class="list-item-fill">
         <view class="flex-row">
           <text class="title">{{item.plugin_name}}</text>
         </view>
@@ -22,8 +22,9 @@
           <text class="author">{{item.author_name}}</text>
         </view>
       </view>
-      <!-- TODO 暂时这样写才能保证 loading 在 list 底部 -->
-      <view v-if="item.plugin_id==-1" class="loading">
+    </list-item>
+    <list-item>
+      <view class="loading">
         <text class="loading-text">{{loadingText}}</text>
       </view>
     </list-item>
@@ -81,35 +82,17 @@
         } else {
           return ""
         }
-      },
+      }
     },
     created() {
-      this.insertLoadingData()
-
       if (this.preload) {
         this.loadData(null)
       }
     },
     methods: {
-      // TODO 目前 list-item 不支持注释节点
-      // 暂时在数据末尾插入一条空数据用于显示 loading
-      insertLoadingData() {
-        const loadingData = {
-          plugin_id: -1,
-          plugin_img_link: '',
-          plugin_name: '',
-          plugin_intro: '',
-          score: 0,
-          tags: [],
-          update_date: '',
-          author_name: '',
-        } as ListItem
-        this.dataList.push(loadingData)
-      },
       refreshData(loadComplete : (() => void) | null) {
         this.dataList.length = 0
         this.$currentPage = 1
-        this.insertLoadingData()
         this.loadData(loadComplete)
       },
       loadData(loadComplete : (() => void) | null) {
@@ -131,9 +114,7 @@
               return
             }
 
-            // TODO
-            this.dataList.splice(this.dataList.length - 1, 0, ...responseData.data)
-            // this.dataList.push(...responseData.data)
+            this.dataList.push(...responseData.data)
 
             if (responseData.data.length == 0) {
               this.isEnded = true
@@ -254,20 +235,12 @@
   }
 
   .loading {
-    /* position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0; */
-    flex:1;
-    margin: -10px;
+    padding: 20px;
     background-color: #f8f8f8;
-    margin-bottom: 1px;
     justify-content: center;
   }
 
   .loading-text {
-    padding: 20px;
     text-align: center;
   }
 </style>
