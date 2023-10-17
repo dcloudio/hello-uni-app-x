@@ -1,0 +1,212 @@
+<template>
+  <view class="page">
+    <navbar>
+      <template v-slot:left>
+        <text class="btn-cancel">取消</text>
+      </template>
+      <template v-slot:right>
+        <text class="btn-update" @click="update">保存</text>
+      </template>
+    </navbar>
+    <scroll-view class="scroll-view" :scroll-y="true">
+      <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
+        page-data="replace" loadtime="manual" @load="onQueryLoad">
+        <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+        <view v-if="loading" class="loading">正在加载...</view>
+        <view v-if="data.length>0">
+          <view class="form-item">
+            <text class="form-item-label">姓名</text>
+            <input class="form-item-input" placeholder="姓名" v-model="username" />
+          </view>
+          <view class="form-item">
+            <text class="form-item-label">电话</text>
+            <input class="form-item-input" placeholder="电话" v-model="mobile" />
+          </view>
+          <view class="form-item">
+            <text class="form-item-label">邮箱</text>
+            <input class="form-item-input" placeholder="邮箱地址" v-model="email" />
+          </view>
+          <view class="form-item">
+            <text class="form-item-label">备注</text>
+            <textarea class="form-item-input" placeholder="备注" v-model="comment" />
+          </view>
+          <view class="form-item">
+            <text class="form-item-label">性别</text>
+            <radio-group class="radio-list" @change="radioChange">
+              <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
+                <radio :value="item.value" :checked="item.value == gender" />
+                <text>{{item.text}}</text>
+              </view>
+            </radio-group>
+          </view>
+          <button class="btn-delete" type="warn"
+            @click="remove(data[0].getString('_id'), data[0].getString('username'))">删除联系人</button>
+        </view>
+      </unicloud-db>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
+
+  import navbar from './navbar.uvue'
+
+  export default {
+    components: {
+      navbar
+    },
+    data() {
+      return {
+        collection: COLLECTION_NAME,
+        where: '',
+        username: "",
+        mobile: "",
+        gender: '',
+        comment: "",
+        email: "",
+        genderList: GenderList as GenderType[],
+        $whereID: '',
+        $uniCloudElement: null as UniCloudDBElement | null
+      }
+    },
+    onLoad(options : Map<string, string>) {
+      this.$whereID = options['id'] as string;
+      this.where = `_id=='${this.$whereID}'`;
+    },
+    onReady() {
+      this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
+      this.$uniCloudElement!.loadData()
+    },
+    methods: {
+      radioChange(e : RadioGroupChangeEvent) {
+        this.gender = e.detail.value
+      },
+      update() {
+        const value = {
+          username: this.username,
+          gender: parseInt(this.gender),
+          mobile: this.mobile,
+          comment: this.comment,
+          email: this.email,
+        };
+        this.$uniCloudElement!.update(this.$whereID, value, {
+          showToast: false,
+          needLoading: true,
+          needConfirm: false,
+          loadingTitle: "正在保存...",
+          success: (_ : UniCloudDBUpdateResult) => {
+            // TODO 后续通过 EventChannel 实现
+            uni.$emit(UNICLOUD_DB_CONTACTS_UPDATE, this.$whereID)
+            setTimeout(() => {
+              uni.navigateBack()
+            }, 500)
+          },
+          fail: (err : any | null) => {
+            const error = err as UniCloudError
+            uni.showModal({
+              content: error.errMsg,
+              showCancel: false
+            })
+          }
+        })
+      },
+      remove(id : string | null, name : string | null) {
+        this.$uniCloudElement!.remove(id!, {
+          needConfirm: true,
+          needLoading: true,
+          loadingTitle: "正在删除...",
+          confirmTitle: "确定删除?",
+          confirmContent: name,
+          success: (_ : UniCloudDBRemoveResult) => {
+            // TODO 后续通过 EventChannel 实现
+            uni.$emit(UNICLOUD_DB_CONTACTS_DELETE, this.$whereID)
+            setTimeout(() => {
+              uni.navigateBack({
+                delta: 2
+              })
+            }, 500)
+          },
+          fail: (err : any | null) => {
+            const error = err as UniCloudError
+            uni.showModal({
+              content: error.errMsg,
+              showCancel: false
+            })
+          }
+        })
+      },
+      onQueryLoad(data : Array<UTSJSONObject>, _ : boolean) {
+        if (data.length == 0) {
+          return
+        }
+
+        const data1 = data[0];
+        this.username = data1.getString('username') ?? "";
+        this.mobile = data1.getString('mobile') ?? "";
+        this.gender = data1.getNumber('gender')?.toString() ?? '0';
+        this.comment = data1.getString('comment') ?? "";
+        this.email = data1.getString('email') ?? "";
+      }
+    }
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+
+  .scroll-view {
+    padding: 15px;
+    flex: 1;
+  }
+
+  .loading {
+    align-items: center;
+  }
+
+  .form-item {
+    flex-direction: row;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+
+  .form-item-label {
+    width: 45px;
+    margin-right: 10px;
+  }
+
+  .form-item-input {
+    flex: 1;
+    font-size: 14px;
+    color: #666;
+    border: 1px #e5e5e5 solid;
+    border-radius: 5px;
+    padding: 8px;
+  }
+
+  .radio-list {
+    flex-direction: row;
+  }
+
+  .radio-item {
+    flex-direction: row;
+    margin-right: 30px;
+    align-items: center;
+  }
+
+  .btn-cancel {
+    color: #fff;
+    margin-left: 15px;
+  }
+
+  .btn-update {
+    color: #fff;
+    margin-right: 15px;
+  }
+
+  .btn-delete {
+    margin-top: 350px;
+  }
+</style>

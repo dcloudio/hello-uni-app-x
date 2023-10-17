@@ -34,7 +34,6 @@ const pages = [
   '/pages/component/text/text',
   '/pages/component/textarea/textarea',
   // '/pages/component/video/video',
-  '/pages/component/view/view-draw',
   '/pages/component/view/view',
   // '/pages/component/web-view/web-view', // 动态内容
   '/pages/component/web-view-local/web-view-local',
@@ -120,6 +119,9 @@ const pages = [
   '/pages/template/swiper-list/swiper-list',
   '/pages/template/swiper-list2/swiper-list2',
   // '/pages/template/swiper-vertical-video/swiper-vertical-video'
+  
+  // api
+  '/pages/API/element-draw/element-draw',
 ]
 
 let page;
