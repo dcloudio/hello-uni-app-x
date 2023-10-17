@@ -25,7 +25,7 @@
           <text class="form-item-label">性别</text>
           <text class="form-item-input">{{displayGender(data[0]['gender'])}}</text>
         </view>
-        <button class="btn-update" type="default" @click="updateAt(data[0].getString('_id'))">编辑</button>
+        <button class="btn-update" type="default" @click="gotoUpdatePage(data[0].getString('_id'))">编辑</button>
       </view>
     </unicloud-db>
   </scroll-view>
@@ -66,15 +66,12 @@
           return item.value == str
         })!.text;
       },
-      updateAt(id : string | null) {
+      gotoUpdatePage(id : string | null) {
         // TODO 后续通过 EventChannel 实现
         uni.$on(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
         uni.navigateTo({
           url: './edit?id=' + id
         })
-      },
-      onQueryLoad(data : Array<UTSJSONObject>, _ : boolean, pagination : UTSJSONObject) {
-        const data1 = data[0];
       },
       onDataChange(id : string) {
         this.$uniCloudElement!.loadData()
