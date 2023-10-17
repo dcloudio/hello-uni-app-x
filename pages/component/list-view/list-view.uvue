@@ -18,7 +18,11 @@
         scrollData: [] as Array<string>,
         size_enum: [{ "value": 0, "name": "item---0" }, { "value": 3, "name": "item---3" }] as ItemType[],
         scrollIntoView: "",
-        refresherrefresh: false
+        refresherrefresh: false,
+        refresher_default_style_input: "black",
+        text: ['继续下拉执行刷新', '释放立即刷新', '刷新中', ""],
+        state: 3,
+        reset: true
       }
     },
     onLoad() {
@@ -36,17 +40,30 @@
       list_view_touchend() { console.log("手指触摸动作结束") },
       list_view_tap() { console.log("手指触摸后马上离开") },
       list_view_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
-      list_view_refresherpulling() { console.log("下拉刷新控件被下拉") },
+      list_view_refresherpulling(e : RefresherEvent) {
+        console.log("下拉刷新控件被下拉")
+        if(this.reset) {
+        	if(e.detail.dy > 45) {
+        		this.state = 1
+        	} else {
+        		this.state = 0
+        	}
+        }
+      },
       list_view_refresherrefresh() {
         console.log("下拉刷新被触发 ")
         this.refresherrefresh = true
         this.refresher_triggered_boolean = true
+        this.state = 2
+        this.reset = false;
         setTimeout(function(){
         	this.refresher_triggered_boolean = false
         }, 1500)
       },
       list_view_refresherrestore() {
         this.refresherrefresh = false
+        this.state = 3
+        this.reset = true
         console.log("下拉刷新被复位")
       },
       list_view_refresherabort() { console.log("下拉刷新被中止") },
@@ -90,6 +107,13 @@
           return true
         }
         return false
+      },
+      change_refresher_style_boolean(checked : boolean) {
+        if(checked) {
+          this.refresher_default_style_input = "none"
+        } else {
+          this.refresher_default_style_input = "black"
+        }
       }
     }
   }
@@ -102,6 +126,7 @@
       :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean" :scroll-into-view="scrollIntoView"
       :scroll-with-animation="scroll_with_animation_boolean" :refresher-enabled="refresher_enabled_boolean"
       :refresher-background="refresher_background_input" :refresher-triggered="refresher_triggered_boolean"
+      :refresher-default-style="refresher_default_style_input"
       @click="list_view_click" @touchstart="list_view_touchstart" @touchmove="list_view_touchmove"
       @touchcancel="list_view_touchcancel" @touchend="list_view_touchend" @tap="list_view_tap"
       @longpress="list_view_longpress" @refresherpulling="list_view_refresherpulling"
@@ -115,6 +140,9 @@
         class="list-item">
         <text>{{key}}</text>
       </list-item>
+      <list-item slot="refresher" class="refresh-box">
+        <text class="tip-text">{{text[state]}}</text>
+      </list-item>
     </list-view>
   </view>
 
@@ -125,6 +153,7 @@
       <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
         @change="change_refresher_triggered_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="开启下拉刷新" @change="change_refresher_enabled_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="开启自定义样式" @change="change_refresher_style_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
         @change="change_scroll_with_animation_boolean"></boolean-data>
       <boolean-data :defaultValue="true" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
@@ -162,5 +191,18 @@
     background-color: #66ccff;
     align-items: center;
     justify-content: center;
+  }
+  
+  .tip-text {
+  	color: #888;
+  	font-size: 12px;
+  }
+  
+  .refresh-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
   }
 </style>
