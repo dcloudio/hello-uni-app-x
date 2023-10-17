@@ -1,7 +1,6 @@
 describe('component-native-sticky-header', () => {
   let page
   beforeAll(async () => {
-    //打开list-view测试页
     page = await program.reLaunch('/pages/component/sticky-header/sticky-header')
     await page.waitFor(200)
   })
