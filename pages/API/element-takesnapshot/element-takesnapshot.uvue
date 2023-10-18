@@ -1,16 +1,11 @@
 <template>
-  <view>
-    <page-head id="page-head" title="getElementById"></page-head>
-    <view class="uni-padding-wrap" id="snapshot-content">
+  <view id="snapshot-content">
+    <page-head id="page-head" title="对本页面根view截图"></page-head>
+    <view class="uni-padding-wrap">
       <text id="text">this is text</text>
-      <view id="view" class="uni-common-mt" style="border: 1px solid red">this is view</view>
     </view>
-    <button class="uni-btn" @click="changeViewStyle">
-      修改 view 宽高及背景色
-    </button>
-
     <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
-      点击截图
+      点击截图并替换显示下方图片
     </button>
     <image style="margin-top: 20px;" :src="snapImage" mode="aspectFit" @longpress="saveToAlbum"></image>
   </view>
@@ -24,16 +19,6 @@
       }
     },
     methods: {
-
-      changeViewStyle() {
-        const text = uni.getElementById('text')!
-        text.style.setProperty('color', 'red')
-
-        const view = uni.getElementById('view')!
-        view.style.setProperty('width', '90%')
-        view.style.setProperty('height', '50px')
-        view.style.setProperty('backgroundColor', '#007AFF')
-      },
       takeSnapshotClick() {
         const view = uni.getElementById('snapshot-content')!
         view.takeSnapshot({
