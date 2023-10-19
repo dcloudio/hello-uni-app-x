@@ -1,0 +1,64 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <button @click="switchBtn">{{buttonValue}}</button>
+    <image class="transition-transform" id="transition-transform" @transitionend="onEnd" src="/static/uni.png"></image>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        times: 0,
+        element: null as Element | null,
+        isStart: false,
+        buttonValue: "开启图片旋转",
+        onTransitionEndTriggr: false
+      }
+    },
+    methods: {
+      switchBtn() {
+        if (!this.isStart) {
+          if (this.element == null) {
+            this.element = uni.getElementById('transition-transform')
+          }
+          this.buttonValue = "关闭图片旋转"
+          this.times = this.times + 1
+          this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
+          this.element!.style.setProperty('transition-duration', '2000')
+          this.isStart = true
+        } else {
+          this.isStart = false
+          this.times = 0
+          this.buttonValue = "开启图片旋转"
+          this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
+          this.element!.style.setProperty('transition-duration', '0')
+        }
+      },
+      onEnd() {
+        if (this.isStart) {
+          this.times = this.times + 1
+          this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
+          this.onTransitionEndTriggr = true
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .transition-transform {
+    width: 400rpx;
+    height: 400rpx;
+    margin: 50rpx auto;
+    border-radius: 200rpx;
+    transition-duration: 2000;
+    transition-property: transform;
+    transition-timing-function: linear;
+    transform: rotate(0deg);
+  }
+</style>

@@ -37,6 +37,7 @@ const pages = [
   '/pages/component/view/view',
   // '/pages/component/web-view/web-view', // 动态内容
   '/pages/component/web-view-local/web-view-local',
+  '/pages/component/transition-event/transition-event',
   
   // CSS
   '/pages/CSS/background/background-color',
