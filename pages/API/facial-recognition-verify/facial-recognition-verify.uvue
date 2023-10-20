@@ -6,10 +6,12 @@
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-btn-v uni-common-mt">
-          <input class="uni-input uni-input-default" type="text" v-model="realName" name="real-name" id="real-name" placeholder="姓名" />
+          <input class="uni-input uni-input-default" type="text" v-model="realName" name="real-name" id="real-name"
+            placeholder="姓名" />
         </view>
         <view class="uni-btn-v uni-common-mt">
-          <input class="uni-input uni-input-default" type="text" v-model="idCard" name="id-card" id="id-card" placeholder="身份证号" />
+          <input class="uni-input uni-input-default" type="text" v-model="idCard" name="id-card" id="id-card"
+            placeholder="身份证号" />
         </view>
         <view class="uni-btn-v uni-common-mt">
           <button type="primary" @click="facialRecognition">开始人脸识别</button>
@@ -31,11 +33,6 @@
       }
     },
     onReady() {
-      uni.showModal({
-        title: '提示',
-        content: '注意：目前uni-app x内使用实人认证功能需要打包自定义基座。',
-        showCancel: false
-      })
     },
     methods: {
       facialRecognition() {
@@ -50,7 +47,19 @@
           return
         }
         const testFacialCo = uniCloud.importObject('facial-recognition-co')
-        const metaInfo = uni.getFacialRecognitionMetaInfo();
+        let metaInfo : string
+        try {
+          metaInfo = uni.getFacialRecognitionMetaInfo();
+        } catch (e) {
+          if (e.message!.indexOf('Failed resolution of') > -1) {
+            uni.showModal({
+              title: '提示',
+              content: '注意：目前uni-app x内使用实人认证功能需要打包自定义基座。',
+              showCancel: false
+            })
+          }
+          throw e
+        }
         testFacialCo.getCertifyId({
           realName,
           idCard,
