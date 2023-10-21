@@ -15,6 +15,9 @@
       <button class="uni-btn" @click="changeViewStyle">
         修改 view 宽高及背景色
       </button>
+      <button class="uni-btn" @click="goMultipleRootNode">
+        跳转多根节点示例
+      </button>
     </view>
   </view>
 </template>
@@ -29,24 +32,27 @@ export default {
     }
   },
   methods: {
-    getElementByNotExistId(): Element | null {
+    getElementByNotExistId() : Element | null {
       return uni.getElementById('not-exist-id')
     },
-    changePageHeadBackgroundColor(){
+    changePageHeadBackgroundColor() {
       const pageHead = uni.getElementById('page-head')!
       pageHead.style.setProperty('backgroundColor', 'red')
     },
-    changeTextColor(){
+    changeTextColor() {
       const text = uni.getElementById('text')!
       text.style.setProperty('color', 'red')
     },
-    changeViewStyle(){
+    changeViewStyle() {
       const view = uni.getElementById<UniViewElement>('view')
-      if(view !== null){
+      if (view !== null) {
         view.style.setProperty('width', '90%')
         view.style.setProperty('height', '50px')
         view.style.setProperty('backgroundColor', '#007AFF')
       }
+    },
+    goMultipleRootNode() {
+      uni.navigateTo({ url: '/pages/API/get-element-by-id/get-element-by-id-multiple-root-node' })
     }
   }
 }
