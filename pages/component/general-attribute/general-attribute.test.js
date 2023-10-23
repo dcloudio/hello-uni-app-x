@@ -20,6 +20,7 @@ describe('general attribute', () => {
   it("ref", async () => {
     const button = await page.$(".btn-ref");
     await button.tap();
+    await page.waitFor(1000);
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
   });
