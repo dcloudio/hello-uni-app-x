@@ -4,7 +4,7 @@ let page;
 describe("getElementById", () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH);
-    await page.waitFor(1000);
+    await page.waitFor('view');
   });
   it("getElementByNotExistId", async () => {
     const res = await page.callMethod("getElementByNotExistId");

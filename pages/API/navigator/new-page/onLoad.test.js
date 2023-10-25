@@ -7,50 +7,50 @@ let page;
 describe("onLoad", () => {
   it("adjustData", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor(500);
+    await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
-    await page.waitFor(1000);
+    await page.waitFor(500);
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
   });
   it("navigateTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor(500);
+    await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "navigateTo");
-    await page.waitFor(1000);
+    await page.waitFor(500);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor(500);
+    await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "navigateBack");
-    await page.waitFor(1000);
     page = await program.currentPage();
+    await page.waitFor('view');
     expect(page.path).toBe(INTERMEDIATE_PAGE_PATH.substring(1));
   });
   it("redirectTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor(500);
+    await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "redirectTo");
-    await page.waitFor(1000);
+    await page.waitFor(500);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("reLaunch", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor(500);
+    await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "reLaunch");
-    await page.waitFor(1000);
+    await page.waitFor(500);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("switchTab", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor(500);
+    await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "switchTab");
-    await page.waitFor(1000);
     page = await program.currentPage();
+    await page.waitFor('view');
     expect(page.path).toBe("pages/tabBar/component");
   });
   // toast 出现在 INTERMEDIATE_PAGE_PATH 页面（非 onLoad 生命周期所在页面）
@@ -66,7 +66,7 @@ describe("onLoad", () => {
   // 同 toast
   // it("showLoading", async () => {
   //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
+  //   await page.waitFor('view');
   //   await page.callMethod("navigateToOnLoadWithType", "showLoading");
   //   await page.waitFor(1000);
   //   const image = await program.screenshot();
@@ -75,7 +75,7 @@ describe("onLoad", () => {
   // 同 toast
   // it("showModal", async () => {
   //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
+  //   await page.waitFor('view');
   //   await page.callMethod("navigateToOnLoadWithType", "showModal");
   //   await page.waitFor(1000);
   //   const image = await program.screenshot();
@@ -84,7 +84,7 @@ describe("onLoad", () => {
   // 同 toast
   // it("showActionSheet", async () => {
   //   page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-  //   await page.waitFor(500);
+  //   await page.waitFor('view');
   //   await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
   //   await page.waitFor(1000);
   //   const image = await program.screenshot();
