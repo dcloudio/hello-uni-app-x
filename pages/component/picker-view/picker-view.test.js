@@ -8,7 +8,7 @@ function getData(key = '') {
 let page
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/picker-view/picker-view')
-  await page.waitFor(1000)
+  await page.waitFor('view')
 })
 
 describe('PickerView.uvue', () => {
@@ -44,7 +44,6 @@ describe('PickerView.uvue', () => {
     await page.setData({
       maskTopStyle: 'background: #ffffff;',
     })
-    await page.waitFor(500)
     expect(await el.property('mask-top-style')).toBe('background: #ffffff;')
   })
   it('mask-bottom-style', async () => {
@@ -52,7 +51,6 @@ describe('PickerView.uvue', () => {
     await page.setData({
       maskBottomStyle: 'background: #ffffff;',
     })
-    await page.waitFor(500)
     expect(await el.property('mask-bottom-style')).toBe('background: #ffffff;')
   })
 })

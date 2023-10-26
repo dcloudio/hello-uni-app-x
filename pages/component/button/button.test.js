@@ -4,7 +4,7 @@ describe('Button.uvue', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500)
+    await page.waitFor('view')
   })
   it('click', async () => {
     // TODO 待测试框架支持text的dispatchEvent
@@ -41,12 +41,10 @@ describe('Button.uvue', () => {
     await page.setData({
       type_enum_current: 1,
     })
-    await page.waitFor(500)
     expect(await btn.property('type')).toBe('primary')
     await page.setData({
       type_enum_current: 2,
     })
-    await page.waitFor(500)
     expect(await btn.property('type')).toBe('warn')
   })
   it('size', async () => {
@@ -55,7 +53,6 @@ describe('Button.uvue', () => {
     await page.setData({
       size_enum_current: 1,
     })
-    await page.waitFor(500)
     expect(await btn.property('size')).toBe('mini')
   })
   it('plain', async () => {
@@ -64,7 +61,6 @@ describe('Button.uvue', () => {
     await page.setData({
       plain_boolean: true,
     })
-    await page.waitFor(500)
     expect(await btn.property('plain')).toBe(true)
   })
   it('disabled', async () => {
@@ -73,7 +69,6 @@ describe('Button.uvue', () => {
     await page.setData({
       disabled_boolean: true,
     })
-    await page.waitFor(500)
     expect(await btn.property('disabled')).toBe(true)
   })
 })
