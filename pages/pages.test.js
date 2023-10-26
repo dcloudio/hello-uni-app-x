@@ -98,11 +98,11 @@ const pages = [
   '/pages/CSS/transform/translate',
   '/pages/CSS/transition/transition',
   
-  // tabBar
-  '/pages/tabBar/API',
-  '/pages/tabBar/component',
-  '/pages/tabBar/CSS',
-  '/pages/tabBar/template',
+  // tabBar  //改动频繁，不再测试
+  // '/pages/tabBar/API',
+  // '/pages/tabBar/component',
+  // '/pages/tabBar/CSS',
+  // '/pages/tabBar/template',
   
   // template
   // '/pages/template/calendar/calendar', // 动态内容
