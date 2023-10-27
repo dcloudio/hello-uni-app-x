@@ -1,0 +1,38 @@
+import { InstallApkOptions, InstallApkSuccess } from "../interface.uts"
+import Intent from 'android.content.Intent';
+import Build from 'android.os.Build';
+import File from 'java.io.File';
+import FileProvider from 'androidx.core.content.FileProvider';
+import Context from 'android.content.Context';
+import Uri from 'android.net.Uri';
+
+export function installApk(options : InstallApkOptions) : void {
+	const context = UTSAndroid.getAppContext() as Context
+	const filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
+	const apkFile = new File(filePath)
+	if (!apkFile.exists() && !apkFile.isFile()) {
+		let error = new UniError("uni-installApk", -1, "filePath is illegal");
+		options.fail?.(error)
+		options.complete?.(error)
+		return
+	}
+	const intent = new Intent()
+	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+	intent.setAction(Intent.ACTION_VIEW)
+
+	if (Build.VERSION.SDK_INT >= 24) {
+		const authority = context.getPackageName() + ".dc.fileprovider"
+		const apkUri = FileProvider.getUriForFile(context, authority, apkFile)
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+	} else {
+		intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+	}
+		
+	context.startActivity(intent)
+	const success : InstallApkSuccess = {
+		errMsg: "success"
+	}
+	options.success?.(success)
+	options.complete?.(success)
+}
