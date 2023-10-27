@@ -120,7 +120,7 @@ describe('component-native-input', () => {
 
   it("disable", async () => {
     const input = await page.$('.uni-input-disable');
-    expect(await input.property("disabled")).toBe(true)
+    expect(await input.property("disabled")).toBe("true")
   })
 
   it("confirm-type", async () => {
