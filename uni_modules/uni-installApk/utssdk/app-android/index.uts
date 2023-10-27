@@ -1,4 +1,5 @@
 import { InstallApkOptions, InstallApkSuccess } from "../interface.uts"
+import { InstallApkFailImpl } from "../unierror.uts"
 import Intent from 'android.content.Intent';
 import Build from 'android.os.Build';
 import File from 'java.io.File';
@@ -11,7 +12,7 @@ export function installApk(options : InstallApkOptions) : void {
 	const filePath = UTSAndroid.convert2AbsFullPath(options.filePath)
 	const apkFile = new File(filePath)
 	if (!apkFile.exists() && !apkFile.isFile()) {
-		let error = new UniError("uni-installApk", -1, "filePath is illegal");
+		let error = new InstallApkFailImpl(1300002);
 		options.fail?.(error)
 		options.complete?.(error)
 		return
