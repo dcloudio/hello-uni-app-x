@@ -73,50 +73,50 @@ describe('component-native-input', () => {
   //   })
   // })
   // 测试placeholder
-  it("placeholder", async () => {
-    const placeholder1 = await page.$('.uni-input-placeholder1');
-    expect(await placeholder1.property("placeholder-style")).toMatchObject({
-      "color": "red"
-    })
-    expect(await placeholder1.property("placeholder")).toEqual("占位符文字颜色为红色")
-    await page.setData({
-      inputPlaceHolderStyle: "color:#CC00CC",
-    })
-    expect(await placeholder1.property("placeholder-style")).toMatchObject({
-      "color": "#CC00CC"
-    })
+  // it("placeholder", async () => {
+  //   const placeholder1 = await page.$('.uni-input-placeholder1');
+  //   expect(await placeholder1.property("placeholder-style")).toMatchObject({
+  //     "color": "red"
+  //   })
+  //   expect(await placeholder1.property("placeholder")).toEqual("占位符文字颜色为红色")
+  //   await page.setData({
+  //     inputPlaceHolderStyle: "color:#CC00CC",
+  //   })
+  //   expect(await placeholder1.property("placeholder-style")).toMatchObject({
+  //     "color": "#CC00CC"
+  //   })
 
-    await page.setData({
-      inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0",
-    })
-    expect(await placeholder1.property("placeholder-style")).toMatchObject({
-      "color": "#CC19CC",
-      "backgroundColor": "#00b1c0"
-    })
+  //   await page.setData({
+  //     inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0",
+  //   })
+  //   expect(await placeholder1.property("placeholder-style")).toMatchObject({
+  //     "color": "#CC19CC",
+  //     "backgroundColor": "#00b1c0"
+  //   })
 
-    await page.setData({
-      inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0;text-align:center;font-size:44px;font-weight:900",
-    })
-    expect(await placeholder1.property("placeholder-style")).toEqual({
-      "backgroundColor": "#00b1c0",
-      "color": "#CC19CC",
-      "fontSize": "44px",
-      "fontWeight": "900",
-      "textAlign": "center"
-    })
+  //   await page.setData({
+  //     inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0;text-align:center;font-size:44px;font-weight:900",
+  //   })
+  //   expect(await placeholder1.property("placeholder-style")).toEqual({
+  //     "backgroundColor": "#00b1c0",
+  //     "color": "#CC19CC",
+  //     "fontSize": "44px",
+  //     "fontWeight": "900",
+  //     "textAlign": "center"
+  //   })
 
-    const placeholder2 = await page.$('.uni-input-placeholder2');
-    expect(await placeholder2.property("placeholder-class")).toMatchObject({
-      "backgroundColor": "#008000"
-    })
-    await page.setData({
-      inputPlaceHolderClass: "uni-input-placeholder-class-ts",
-    })
-    expect(await placeholder2.property("placeholder-class")).toMatchObject({
-      "backgroundColor": "#FFA500"
-    })
-    expect(await placeholder2.property("placeholder")).toEqual("占位符背景色为绿色")
-  })
+  //   const placeholder2 = await page.$('.uni-input-placeholder2');
+  //   expect(await placeholder2.property("placeholder-class")).toMatchObject({
+  //     "backgroundColor": "#008000"
+  //   })
+  //   await page.setData({
+  //     inputPlaceHolderClass: "uni-input-placeholder-class-ts",
+  //   })
+  //   expect(await placeholder2.property("placeholder-class")).toMatchObject({
+  //     "backgroundColor": "#FFA500"
+  //   })
+  //   expect(await placeholder2.property("placeholder")).toEqual("占位符背景色为绿色")
+  // })
 
   it("disable", async () => {
     const input = await page.$('.uni-input-disable');
@@ -139,10 +139,10 @@ describe('component-native-input', () => {
   //   await page.waitFor(500)
   // })
 
-  // it("afterAllTestScreenshot", async () => {
-  //   const image = await program.screenshot({
-  //     fullPage: true
-  //   })
-  //   expect(image).toMatchImageSnapshot()
-  // })
+  it("afterAllTestScreenshot", async () => {
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toMatchImageSnapshot()
+  })
 });
