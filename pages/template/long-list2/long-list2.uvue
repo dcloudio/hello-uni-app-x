@@ -1,6 +1,8 @@
 <template>
   <scroll-view ref="pageScrollView" class="page" :scroll-y="true" :rebound="false"
-    @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll">
+    @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
+    :nested-scroll-child="nestedScrollChildId"
+    >
     <swiper ref="header" indicator-dots="true" circular="true">
       <swiper-item  v-for="i in 3" :item-id="i">
         <image src="/static/shuijiao.jpg" style="height: 240px;"></image>
@@ -20,7 +22,7 @@
       <swiper ref="swiper" class="swiper-view" :current="swiperIndex" @transition="onSwiperTransition"
         @animationfinish="onSwiperAnimationfinish">
         <swiper-item class="swiper-item" v-for="(item, index) in swiperList" :key="index">
-          <long-page ref="longPage" :type="item.type" :preload="item.preload"></long-page>
+          <long-page ref="longPage" :id="item.id" :type="item.type" :preload="item.preload"></long-page>
         </swiper-item>
       </swiper>
     </view>
@@ -39,6 +41,7 @@
   type SwiperViewItem = {
     type : string,
     name : string,
+    id: string,
     preload : boolean,
   }
 
@@ -64,19 +67,23 @@
           {
             type: 'UpdatedDate',
             name: '最新上架',
+            id: "list-id-1",
             preload: true
           } as SwiperViewItem,
           {
             type: 'FreeHot',
-            name: '免费热榜'
+            name: '免费热榜',
+            id: "list-id-2"
           } as SwiperViewItem,
           {
             type: 'PaymentHot',
-            name: '付费热榜'
+            name: '付费热榜',
+            id: "list-id-3"
           } as SwiperViewItem,
           {
             type: 'HotList',
-            name: '热门总榜'
+            name: '热门总榜',
+            id: "list-id-4"
           } as SwiperViewItem
         ] as SwiperViewItem[],
         swiperIndex: -1,
@@ -86,7 +93,8 @@
         $tabScrollView: null as null | Element,
         $indicatorNode: null as null | Element,
         $swiperWidth: 0,
-        $swiperTabsRect: [] as SwiperTabsItem[]
+        $swiperTabsRect: [] as SwiperTabsItem[],
+        nestedScrollChildId: ""
       }
     },
     onReady() {
@@ -209,6 +217,10 @@
         if (!this.swiperList[index].preload) {
           this.swiperList[index].preload = true;
           (this.$refs["longPage"]! as ComponentPublicInstance[])[index].$callMethod('loadData', null)
+        }
+        //swiper页面切换需要重新赋值嵌套滚动子元素的id
+        if (this.swiperList[index].id != null) {
+          this.nestedScrollChildId = this.swiperList[index].id
         }
       }
     }
