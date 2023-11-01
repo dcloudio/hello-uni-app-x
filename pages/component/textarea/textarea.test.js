@@ -12,12 +12,12 @@ describe('component-native-textarea', () => {
   });
 
   it('focus', async () => {
-    expect(await textarea.property("focus")).toBe(false)
+    expect(await textarea.property("focus")).toBe("false")
     await page.setData({
       focus_boolean: true,
     })
     await page.waitFor(500)
-    expect(await textarea.property("focus")).toBe(true)
+    expect(await textarea.property("focus")).toBe("true")
   });
   /* it("auto-height", async () => {
     await page.setData({

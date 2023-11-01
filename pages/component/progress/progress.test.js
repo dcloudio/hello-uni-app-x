@@ -8,7 +8,7 @@ function getData(key = '') {
 let page
 beforeAll(async () => {
     page = await program.reLaunch('/pages/component/progress/progress')
-    await page.waitFor(1000)
+    await page.waitFor('view')
 })
 
 describe('Progress.uvue', () => {
@@ -17,14 +17,14 @@ describe('Progress.uvue', () => {
         const p1 = await page.$('.p1')
         const p2 = await page.$('.p2')
         const p3 = await page.$('.p3')
-        page.callMethod('setProgress')
+        await page.callMethod('setProgress')
         await page.waitFor(1000)
         expect(await p.property('percent')).toEqual(20)
         expect(await p1.property('percent')).toEqual(40)
         expect(await p2.property('percent')).toEqual(60)
         expect(await p3.property('percent')).toEqual(80)
         expect(await getData('curPercent')).toEqual(20)
-        page.callMethod('clearProgress')
+        await page.callMethod('clearProgress')
         await page.waitFor(1000)
         expect(await p.property('percent')).toEqual(0)
         expect(await p1.property('percent')).toEqual(0)
@@ -42,7 +42,6 @@ describe('Progress.uvue', () => {
         await page.setData({
             showInfo: false
         })
-        await page.waitFor(500)
         expect(await el.property('show-info')).toEqual(false)
     })
     it('border-radius', async () => {
@@ -51,7 +50,6 @@ describe('Progress.uvue', () => {
         await page.setData({
             borderRadius: 5
         })
-        await page.waitFor(500)
         expect(await el.property('border-radius')).toEqual(5)
     })
     it('font-size', async () => {
@@ -60,7 +58,6 @@ describe('Progress.uvue', () => {
         await page.setData({
             fontSize: 18
         })
-        await page.waitFor(500)
         expect(await el.property('font-size')).toEqual(18)
     })
     it('stroke-width', async () => {
@@ -69,7 +66,6 @@ describe('Progress.uvue', () => {
         await page.setData({
             strokeWidth: 6
         })
-        await page.waitFor(500)
         expect(await el.property('stroke-width')).toEqual(6)
     })
     it('backgroundColor', async () => {
@@ -78,7 +74,6 @@ describe('Progress.uvue', () => {
         await page.setData({
             backgroundColor: "#007aff"
         })
-        await page.waitFor(500)
         expect(await el.property('background-color')).toEqual('#007aff')
     })
 })

@@ -8,7 +8,7 @@ function getData(key = '') {
 let page
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/checkbox/checkbox')
-  await page.waitFor(1000)
+  await page.waitFor('view')
 })
 
 describe('Checkbox.uvue', () => {
@@ -46,7 +46,6 @@ describe('Checkbox.uvue', () => {
     await page.setData({
       checked: false,
     })
-    await page.waitFor(500)
     expect(await cb.property('checked')).toBe(false)
   })
   it('color', async () => {
@@ -55,7 +54,6 @@ describe('Checkbox.uvue', () => {
     await page.setData({
       color: '#63acfc',
     })
-    await page.waitFor(500)
     expect(await cb.property('color')).toBe('#63acfc')
   })
   it('disabled', async () => {
@@ -64,7 +62,6 @@ describe('Checkbox.uvue', () => {
     await page.setData({
       disabled: false,
     })
-    await page.waitFor(500)
     expect(await cb.property('disabled')).toBe(false)
   })
 })

@@ -1,12 +1,19 @@
 const PAGE_PATH = '/pages/API/load-font-face/load-font-face'
+const CHILD_PAGE_PATH = "/pages/API/load-font-face/load-font-face-child";
 
-describe('loadFontFace', () => {
+describe("loadFontFace", () => {
   beforeAll(async () => {
-    const page = await program.navigateTo(PAGE_PATH)
-    await page.waitFor(4000)
-  })
-  it('screenshot', async () => {
-    const image = await program.screenshot()
-    expect(image).toMatchImageSnapshot()
-  })
-})
+    const page = await program.navigateTo(PAGE_PATH);
+    await page.waitFor(3000);
+  });
+  it("parent screenshot", async () => {
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
+  });
+  it("child screenshot", async () => {
+    const page = await program.navigateTo(CHILD_PAGE_PATH);
+    await page.waitFor("view");
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
+  });
+});

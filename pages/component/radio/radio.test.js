@@ -8,7 +8,7 @@ function getData(key = '') {
 let page
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/radio/radio')
-  await page.waitFor(1000)
+  await page.waitFor('view')
 })
 
 describe('Radio.uvue', () => {
@@ -44,7 +44,6 @@ describe('Radio.uvue', () => {
     await page.setData({
       checked: false,
     })
-    await page.waitFor(500)
     expect(await radio.property('checked')).toBe(false)
   })
   it('color', async () => {
@@ -53,7 +52,6 @@ describe('Radio.uvue', () => {
     await page.setData({
       color: '#63acfc',
     })
-    await page.waitFor(500)
     expect(await radio.property('color')).toBe('#63acfc')
   })
   it('disabled', async () => {
@@ -62,7 +60,6 @@ describe('Radio.uvue', () => {
     await page.setData({
       disabled: false,
     })
-    await page.waitFor(500)
     expect(await radio.property('disabled')).toBe(false)
   })
 })

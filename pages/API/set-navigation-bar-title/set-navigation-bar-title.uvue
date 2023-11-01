@@ -1,0 +1,49 @@
+<template>
+  <view>
+    <page-head title="setNavigationBarTitle"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <button @tap="setNavigationBarTitle" class="uni-btn">
+        设置当前页面的标题为 {{ newTitle }}
+      </button>
+    </view>
+  </view>
+</template>
+
+<script lang="uts">
+import { state, setLifeCycleNum } from '@/store/index.uts'
+
+export default {
+  data(){
+    return {
+      newTitle: 'new title'
+    }
+  },
+  methods: {
+    setNavigationBarTitle() {
+      uni.setNavigationBarTitle({
+        title: this.newTitle,
+        success() {
+          console.log('setNavigationBarTitle success')
+          this.setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail() {
+          console.log('setNavigationBarTitle success')
+          this.setLifeCycleNum(state.lifeCycleNum - 1)
+        },
+        complete() {
+          console.log('setNavigationBarTitle complete')
+          this.setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+      })
+    },
+    // 自动化测试
+    getLifeCycleNum(): number {
+      return state.lifeCycleNum
+    },
+    // 自动化测试
+    setLifeCycleNum(num: number) {
+      setLifeCycleNum(num)
+    }
+  },
+}
+</script>

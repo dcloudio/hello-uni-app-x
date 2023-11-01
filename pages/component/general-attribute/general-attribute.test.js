@@ -5,7 +5,7 @@ describe('general attribute', () => {
 
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
-    await page.waitFor(1000)
+    await page.waitFor('view')
   })
   it("class & style", async () => {
     const image = await program.screenshot();
@@ -20,7 +20,7 @@ describe('general attribute', () => {
   it("ref", async () => {
     const button = await page.$(".btn-ref");
     await button.tap();
-    await page.waitFor(1000);
+    await page.waitFor(500);
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
   });

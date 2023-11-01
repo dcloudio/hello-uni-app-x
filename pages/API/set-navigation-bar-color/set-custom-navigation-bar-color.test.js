@@ -24,6 +24,8 @@ describe("setCustomNavigationBarColor", () => {
       area: { x: 880, y: 0, width: 100, height: 60 },
     });
     expect(image).toMatchImageSnapshot();
+    const lifeCycleNum = await page.callMethod("getLifeCycleNum");
+    expect(lifeCycleNum - originLifeCycleNum).toBe(2);
   });
 
   it("setNavigationBarColor1", async () => {
@@ -34,5 +36,7 @@ describe("setCustomNavigationBarColor", () => {
       area: { x: 880, y: 0, width: 100, height: 60 },
     });
     expect(image).toMatchImageSnapshot();
+    const lifeCycleNum = await page.callMethod("getLifeCycleNum");
+    expect(lifeCycleNum - originLifeCycleNum).toBe(4);
   });
 });

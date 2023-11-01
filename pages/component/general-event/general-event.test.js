@@ -5,7 +5,7 @@ describe('event trigger sequence', () => {
   let el
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
-    await page.waitFor(1000)
+    await page.waitFor('view')
     el = await page.$('.target')
   })
 
