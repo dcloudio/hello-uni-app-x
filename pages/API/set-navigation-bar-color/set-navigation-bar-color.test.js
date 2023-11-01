@@ -16,14 +16,18 @@ describe('setNavigationBarColor', () => {
     expect(lifeCycleNum).toBe(originLifeCycleNum)
   })
 
-  it('setNavigationBarColor1', async () => {
-    await page.callMethod('setNavigationBarColor1')
-    const image = await program.screenshot()
-    expect(image).toMatchImageSnapshot()
-  })
-	it('setNavigationBarColor2', async () => {
-	  await page.callMethod('setNavigationBarColor2')
-	  const image = await program.screenshot()
-	  expect(image).toMatchImageSnapshot()
-	})
+  it("setNavigationBarColor1", async () => {
+    await page.callMethod("setNavigationBarColor1");
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
+    const lifeCycleNum = await page.callMethod("getLifeCycleNum");
+    expect(lifeCycleNum - originLifeCycleNum).toBe(2);
+  });
+  it("setNavigationBarColor2", async () => {
+    await page.callMethod("setNavigationBarColor2");
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
+    const lifeCycleNum = await page.callMethod("getLifeCycleNum");
+    expect(lifeCycleNum - originLifeCycleNum).toBe(4);
+  });
 })
