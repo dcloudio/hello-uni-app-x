@@ -15,30 +15,30 @@ describe('component-native-input', () => {
   //   expect(image).toMatchImageSnapshot()
   // })
   // 测试焦点及键盘弹起
-  // it('focus', async () => {
-  //   const input = await page.$('.uni-input-focus');
-  //   expect(await input.property('focus')).toBe(true)
-  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-  //   await page.setData({
-  //     focus: false,
-  //   })
-  //   expect(await input.property('focus')).toBe(false)
-  //   await page.waitFor(1000)
-  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-  //   await page.setData({
-  //     focus: true,
-  //   })
-  //   expect(await input.property('focus')).toBe(true)
-  //   await page.waitFor(1000)
-  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-  //   await page.setData({
-  //     focus: false,
-  //   })
-  //   expect(await input.property('focus')).toBe(false)
-  //   await page.waitFor(1000)
-  //   expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-  //   await page.waitFor(1000)
-  // });
+  it('focus', async () => {
+    const input = await page.$('.uni-input-focus');
+    expect(await input.property('focus')).toBe("true")
+    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
+    await page.setData({
+      focus: false,
+    })
+    expect(await input.property('focus')).toBe("false")
+    // await page.waitFor(1000)
+    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
+    // await page.setData({
+    //   focus: true,
+    // })
+    // expect(await input.property('focus')).toBe(true)
+    // await page.waitFor(1000)
+    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
+    // await page.setData({
+    //   focus: false,
+    // })
+    // expect(await input.property('focus')).toBe(false)
+    // await page.waitFor(1000)
+    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
+    // await page.waitFor(1000)
+  });
 
   // 测试修改value属性
   it("value", async () => {
