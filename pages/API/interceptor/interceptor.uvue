@@ -1,0 +1,62 @@
+<template>
+    <view>
+        <button @click="addInterceptor">添加拦截器</button>
+        <button @click="removeInterceptor">移除拦截器</button>
+        <button @click="navigateTo">跳转到测试页面</button>
+    </view>
+</template>
+
+<script>
+    const interceptor = {
+        invoke: function (options : NavigateToOptions) {
+            console.log('interceptor.invoke:', options)
+            const url = './page2'
+            uni.showToast({
+                title: `重定向到页面:${url}`
+            })
+            options.url = url
+        },
+        success: function (res : NavigateBackSuccess) {
+            console.log('interceptor.success:', res)
+        },
+        fail: function (err : NavigateToFail) {
+            console.log('interceptor.fail:', err)
+        }
+    } as Interceptor
+    export default {
+        data() {
+            return {
+
+            }
+        },
+        methods: {
+            addInterceptor() {
+                uni.addInterceptor('navigateTo', interceptor)
+                uni.showToast({
+                    title: '拦截器已添加'
+                })
+            },
+            removeInterceptor() {
+                uni.removeInterceptor('navigateTo', interceptor)
+                uni.showToast({
+                    title: '拦截器已移除'
+                })
+            },
+            navigateTo() {
+                uni.navigateTo({
+                    url: './page1',
+                    success(res) {
+                        console.log('res:', res)
+                    },
+                    fail(err) {
+                        console.error('err:', err)
+                    }
+                })
+            }
+        }
+    }
+</script>
+
+<style>
+
+</style>
