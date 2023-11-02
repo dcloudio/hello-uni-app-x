@@ -2,8 +2,11 @@
   <view>
     <page-head title="setNavigationBarTitle"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
-      <button @tap="setNavigationBarTitle" class="uni-btn">
-        设置当前页面的标题为 {{ newTitle }}
+      <button @tap="setNavigationBarNewTitle" class="uni-btn">
+        设置当前页面标题为: {{ newTitle }}
+      </button>
+      <button @tap="setNavigationBarLongTitle" class="uni-btn">
+        设置超长标题
       </button>
     </view>
   </view>
@@ -15,11 +18,12 @@ import { state, setLifeCycleNum } from '@/store/index.uts'
 export default {
   data(){
     return {
-      newTitle: 'new title'
+      newTitle: 'new title',
+      longTitle: 'long title long title long title long title long title long title long title long title long title long title'
     }
   },
   methods: {
-    setNavigationBarTitle() {
+    setNavigationBarNewTitle() {
       uni.setNavigationBarTitle({
         title: this.newTitle,
         success() {
@@ -27,12 +31,26 @@ export default {
           this.setLifeCycleNum(state.lifeCycleNum + 1)
         },
         fail() {
-          console.log('setNavigationBarTitle success')
+          console.log('setNavigationBarTitle fail')
           this.setLifeCycleNum(state.lifeCycleNum - 1)
         },
         complete() {
           console.log('setNavigationBarTitle complete')
           this.setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+      })
+    },
+    setNavigationBarLongTitle() {
+      uni.setNavigationBarTitle({
+        title: this.longTitle,
+        success() {
+          console.log('setNavigationBarTitle success')
+        },
+        fail() {
+          console.log('setNavigationBarTitle fail')
+        },
+        complete() {
+          console.log('setNavigationBarTitle complete')
         }
       })
     },
