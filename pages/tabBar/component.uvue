@@ -39,6 +39,8 @@
           </uni-collapse-item>
         </template>
       </uni-collapse>
+
+      <upgradePopup ref="upgradePopup" @close="upgradePopupClose" />
     </view>
     <!-- #ifdef APP -->
   </scroll-view>
@@ -46,6 +48,9 @@
 </template>
 
 <script lang="uts">
+import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
+import upgradePopup from '@/uni_modules/uni-upgrade-center-app/pages/upgrade-popup-uts.uvue'
+
 type Page = {
   name : string
   enable ?: boolean
@@ -267,6 +272,9 @@ export default {
       arrowRightIcon: '/static/icons/arrow-right.png',
     }
   },
+  components: {
+    upgradePopup: upgradePopup
+  },
   methods: {
     goDetailPage(e : Page) {
       if (e.enable == false) {
@@ -282,7 +290,16 @@ export default {
         url,
       })
     },
+    upgradePopupClose() {
+      console.log('upgradePopup close');
+    }
   },
+  onReady() {
+  	checkUpdate(this.$refs['upgradePopup'] as ComponentPublicInstance)
+  },
+  beforeUnmount() {
+    uni.showTabBar()?.catch(_ => {})
+  }
 }
 </script>
 

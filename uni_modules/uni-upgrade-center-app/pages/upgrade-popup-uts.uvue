@@ -1,0 +1,437 @@
+<template>
+	<view v-show="shown" class="mask flex-center">
+		<view class="content">
+
+			<view class="content-top">
+				<text class="content-top-text">{{title}}</text>
+				<image class="content-top-image" mode="widthFix"
+					src="/uni_modules/uni-upgrade-center-app/static/bg_top.png"></image>
+			</view>
+
+			<view class="content-body">
+				<view class="content-body-title">
+					<text class="text title">{{subTitle}}</text>
+					<!-- <text style="padding-left:20rpx;font-size: 0.5em;color: #666;">v.{{version}}</text> -->
+				</view>
+				<view class="body">
+					<scroll-view class="box-des-scroll" scroll-y="true">
+						<text class="text box-des">
+							{{contents}}
+						</text>
+					</scroll-view>
+				</view>
+				<view class="footer flex-center">
+					<template v-if="isiOS">
+						uni-app x 暂不支持 iOS
+						<!-- <button class="content-button" style="border: none;color: #fff;" plain @click="jumpToAppStore">
+							{{downLoadBtnTextiOS}}
+						</button> -->
+					</template>
+					<template v-else>
+						<template v-if="!downloadSuccess">
+							<view class="progress-box flex-column" v-if="downloading">
+								<progress class="progress" style="width: 90%;height: 40rpx;border-radius: 35px;"
+									:percent="downLoadPercent" activeColor="#3DA7FF" :show-info="true"
+									:stroke-width="10" />
+								<view
+									style="width:100%;display: flex;justify-content: space-around;flex-direction: row;">
+									<text class="text" style="font-size: 28rpx;">{{downLoadingText}}</text>
+									<text class="text"
+										style="font-size: 28rpx;">({{downloadedSize}}/{{packageFileSize}}M)</text>
+								</view>
+							</view>
+
+							<button v-else class="content-button"
+								style="border: none; color: #fff;width: 100%;height: 80rpx;line-height: 80rpx;font-size: 30rpx;font-weight: 400;border-radius: 40rpx;text-align: center;background:  #1785ff"
+								:plain="true" @click="updateApp">
+								{{downLoadBtnText}}
+							</button>
+						</template>
+
+						<button v-else-if="downloadSuccess && !installed" class="content-button"
+							style="border: none; color: #fff;width: 100%;height: 80rpx;line-height: 80rpx;font-size: 30rpx;font-weight: 400;border-radius: 40rpx;text-align: center;background:  #1785ff"
+							:plain="true" :loading="installing" :disabled="installing" @click="installPackage">
+							{{installing ? '正在安装……' : '下载完成，立即安装'}}
+						</button>
+
+						<button v-else-if="installed" class="content-button"
+							style="border: none; color: #ccc;width: 100%;height: 80rpx;line-height: 80rpx;font-size: 30rpx;font-weight: 400;border-radius: 40rpx;text-align: center;background:  #1785ff"
+							:plain="true" :disabled="true">
+							安装完成后，请重启应用
+						</button>
+					</template>
+				</view>
+			</view>
+
+			<view class="content-bottom">
+				<image v-if="!is_mandatory" class="close-img" mode="widthFix"
+					src="/uni_modules/uni-upgrade-center-app/static/app_update_close.png" @click="closeUpdate">
+				</image>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import { UniUpgradeCenterResult } from '../utils/call-check-version'
+
+	const localFilePathKey = 'UNI_ADMIN_UPGRADE_CENTER_LOCAL_FILE_PATH'
+	const platform_iOS = 'iOS';
+	const requiredKey = ['version', 'url', 'type']
+	let downloadTask : DownloadTask | null = null;
+
+	/**
+	 * 对比版本号，如需要，请自行修改判断规则
+	 * 支持比对	("3.0.0.0.0.1.0.1", "3.0.0.0.0.1")	("3.0.0.1", "3.0")	("3.1.1", "3.1.1.1") 之类的
+	 * @param {Object} v1
+	 * @param {Object} v2
+	 * v1 > v2 return 1
+	 * v1 < v2 return -1
+	 * v1 == v2 return 0
+	 */
+	function compare(v1 : string = '0', v2 : string = '0') : number {
+		const v1_array = v1.split('.')
+		const v2_array = v2.split('.')
+		const minVersionLens = Math.min(v1.length, v2.length);
+
+		let result = 0;
+		for (let i = 0; i < minVersionLens; i++) {
+			const curV1 = parseInt(v1_array[i])
+			const curV2 = parseInt(v2_array[i])
+
+			if (curV1 > curV2) {
+				result = 1
+				break;
+			} else if (curV1 < curV2) {
+				result = -1
+				break;
+			}
+		}
+
+		if (result === 0 && (v1_array.length !== v2_array.length)) {
+			const v1BiggerThenv2 = v1_array.length > v2_array.length;
+			const maxLensVersion = v1BiggerThenv2 ? v1_array : v2_array;
+			for (let i = minVersionLens; i < maxLensVersion.length; i++) {
+				const curVersion = parseInt(maxLensVersion[i])
+				if (curVersion > 0) {
+					v1BiggerThenv2 ? result = 1 : result = -1
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	export default {
+		data() {
+			return {
+				shown: false,
+				showTabbar: false,
+				// 从之前下载安装
+				installForBeforeFilePath: '',
+
+				// 安装
+				installed: false,
+				installing: false,
+
+				// 下载
+				downloadSuccess: false,
+				downloading: false,
+
+				downLoadPercent: 0,
+				downloadedSize: 0,
+				packageFileSize: 0,
+
+				tempFilePath: '', // 要安装的本地包地址
+
+				// 默认安装包信息
+				title: '更新日志',
+				contents: '',
+				is_mandatory: false,
+
+				// 可自定义属性
+				subTitle: '发现新版本',
+				downLoadBtnTextiOS: '立即跳转更新',
+				downLoadBtnText: '立即下载更新',
+				downLoadingText: '安装包下载中，请稍后',
+
+				url: "",
+				platform: [] as string[]
+			}
+		},
+		computed: {
+			isiOS() : boolean {
+				return this.platform.includes(platform_iOS);
+			}
+		},
+		methods: {
+			show(shown : boolean, localPackageInfo : UniUpgradeCenterResult | null) {
+				if (localPackageInfo === null) return;
+
+				uni.hideTabBar()?.then(_ => { this.showTabbar = true })?.catch(_ => { })
+
+				for (let key in localPackageInfo) {
+					if (requiredKey.indexOf(key) != -1 && localPackageInfo[key] === null) {
+						console.error(`参数 ${key} 必填，请检查后重试`)
+						uni.navigateBack()
+						return;
+					}
+				}
+
+				this.title = localPackageInfo.title
+				this.url = localPackageInfo.url
+				this.contents = localPackageInfo.contents
+				this.is_mandatory = localPackageInfo.is_mandatory
+				this.platform = localPackageInfo.platform
+				this.shown = shown
+			},
+			closeUpdate() {
+				if (this.downloading) {
+					if (this.is_mandatory) {
+						return uni.showToast({
+							title: '下载中，请稍后……',
+							icon: 'none',
+							duration: 500
+						})
+					}
+					uni.showModal({
+						title: '是否取消下载？',
+						cancelText: '否',
+						confirmText: '是',
+						success: res => {
+							if (res.confirm) {
+								if (downloadTask !== null) downloadTask!.abort()
+								this.closePopup()
+							}
+						}
+					});
+					return;
+				}
+				this.closePopup()
+			},
+			closePopup() {
+				this.shown = false
+				if (this.showTabbar) {
+					uni.showTabBar()?.then(_ => { })?.catch(_ => { })
+				}
+
+				this.downloadSuccess = false
+				this.downloading = false
+				this.downLoadPercent = 0
+				this.downloadedSize = 0
+				this.packageFileSize = 0
+				this.tempFilePath = ''
+
+				this.installing = false;
+				this.installed = false
+				this.showTabbar = false
+
+				this.$emit('close')
+			},
+			updateApp() {
+				this.downloadPackage()
+			},
+			downloadPackage() {
+				//下载包
+				downloadTask = uni.downloadFile({
+					url: this.url,
+					success: res => {
+						console.log('downloadFile res: ',res);
+						if (res.statusCode == 200) {
+							this.tempFilePath = res.tempFilePath
+							this.downLoadComplete()
+						}
+					},
+					fail: err => {
+						console.log('downloadFile err: ', err);
+					}
+				});
+				if (downloadTask !== null) {
+					this.downloading = true;
+					downloadTask!.onProgressUpdate(res => {
+						this.downLoadPercent = parseFloat(res.progress.toFixed(0));
+						this.downloadedSize = parseFloat((res.totalBytesWritten / Math.pow(1024, 2)).toFixed(2));
+						this.packageFileSize = parseFloat((res.totalBytesExpectedToWrite / Math.pow(1024, 2)).toFixed(2));
+					});
+				}
+			},
+			downLoadComplete() {
+				this.downloadSuccess = true;
+				this.downloading = false;
+
+				this.downLoadPercent = 0
+				this.downloadedSize = 0
+				this.packageFileSize = 0
+
+				downloadTask = null;
+
+				// 强制更新，直接安装
+				if (this.is_mandatory) {
+					this.installPackage();
+				}
+			},
+			installPackage() {
+				this.installing = true;
+				// #ifdef APP-PLUS
+				uni.installApk({
+					filePath: this.tempFilePath,
+					success: _ => {
+						console.log('installApk success');
+						this.installing = false;
+						this.installed = true;
+					},
+					fail: err => {
+						console.log('installApk fail');
+						// 安装失败需要重新下载安装包
+						this.installing = false;
+						this.installed = false;
+
+						uni.showModal({
+							title: '更新失败，请重新下载',
+							content: `uni.installApk 错误码 ${err.errCode}`,
+							showCancel: false
+						});
+					}
+				});
+
+				// 非wgt包，安装跳出覆盖安装，此处直接返回上一页
+				if (!this.is_mandatory) {
+					uni.navigateBack()
+				}
+				// #endif
+			}
+		}
+	}
+</script>
+
+<style>
+	.flex-center {
+		/* #ifndef APP-NVUE | UNI-APP-X */
+		display: flex;
+		/* #endif */
+		justify-content: center;
+		align-items: center;
+	}
+
+	.mask {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, .65);
+	}
+
+	.content {
+		position: relative;
+		top: 0;
+		width: 600rpx;
+		background-color: transparent;
+	}
+
+	.text {
+		font-family: Source Han Sans CN;
+	}
+
+	.content-top {
+		width: 100%;
+		border-bottom-color: #fff;
+		border-bottom-width: 30rpx;
+		border-bottom-style: solid;
+	}
+
+	.content-top-image {
+		width: 100%;
+		position: relative;
+		bottom: -35rpx;
+	}
+
+	.content-top-text {
+		font-size: 45rpx;
+		font-weight: bold;
+		color: #F8F8FA;
+		position: absolute;
+		width: 65%;
+		top: 155rpx;
+		left: 50rpx;
+		z-index: 1;
+	}
+
+	.content-body {
+		box-sizing: border-box;
+		padding: 0 50rpx;
+		width: 100%;
+		background-color: #fff;
+		border-bottom-left-radius: 30rpx;
+		border-bottom-right-radius: 30rpx;
+	}
+
+	.title {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #3DA7FF;
+		line-height: 38px;
+	}
+
+	.footer {
+		height: 150rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+	}
+
+	.box-des-scroll {
+		box-sizing: border-box;
+		padding: 0 40rpx;
+		height: 200rpx;
+	}
+
+	.box-des {
+		font-size: 26rpx;
+		color: #000000;
+		line-height: 50rpx;
+	}
+
+	.progress-box {
+		width: 100%;
+	}
+
+	.progress {
+		width: 90%;
+		height: 40rpx;
+	}
+
+	.content-bottom {
+		height: 150rpx;
+	}
+
+	.close-img {
+		width: 70rpx;
+		height: 70rpx;
+		z-index: 1000;
+		position: relative;
+		bottom: -50rpx;
+		left: 265rpx;
+	}
+
+	.content-button {
+		width: 100%;
+		height: 80rpx;
+		line-height: 80rpx;
+
+		font-size: 30rpx;
+		font-weight: 400;
+		border-radius: 40rpx;
+
+		text-align: center;
+
+		background-color: #1785ff;
+	}
+
+	.flex-column {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+</style>
