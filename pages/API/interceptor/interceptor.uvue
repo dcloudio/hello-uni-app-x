@@ -1,63 +1,67 @@
 <template>
-    <view>
-        <button @click="addInterceptor">添加路由拦截器</button>
-        <button @click="removeInterceptor">移除路由拦截器</button>
-        <text>点击下方按钮{{msg}}</text>
-        <button @click="navigateTo">跳转到测试页面</button>
-    </view>
+  <view>
+    <button @click="addInterceptor">添加路由拦截器</button>
+    <button @click="removeInterceptor">移除路由拦截器</button>
+    <text>点击下方按钮{{msg}}</text>
+    <button @click="navigateTo">跳转到测试页面</button>
+  </view>
 </template>
 
 <script>
-    const interceptor = {
-        invoke: function (options : NavigateToOptions) {
-            console.log('interceptor.invoke:', options)
-            const url = './page2'
-            uni.showToast({
-                title: `重定向到页面:${url}`
-            })
-            options.url = url
-        },
-        success: function (res : NavigateBackSuccess) {
-            console.log('interceptor.success:', res)
-        },
-        fail: function (err : NavigateToFail) {
-            console.log('interceptor.fail:', err)
-        }
-    } as Interceptor
-    export default {
-        data() {
-            return {
-              msg:"会跳转到测试页面1"
-            }
-        },
-        methods: {
-            addInterceptor() {
-                uni.addInterceptor('navigateTo', interceptor)
-                uni.showToast({
-                    title: '页面跳转已拦截'
-                })
-                this.msg = "，路由被劫持到测试页面2"
-            },
-            removeInterceptor() {
-                uni.removeInterceptor('navigateTo', interceptor)
-                uni.showToast({
-                    title: '拦截器已移除'
-                })
-                this.msg = "会跳转到测试页面1"
-            },
-            navigateTo() {
-                uni.navigateTo({
-                    url: './page1',
-                    success(res) {
-                        console.log('res:', res)
-                    },
-                    fail(err) {
-                        console.error('err:', err)
-                    }
-                })
-            }
-        }
+  const interceptor = {
+    invoke: function (options : NavigateToOptions) {
+      console.log('interceptor.invoke:', options)
+      const url = './page2'
+      uni.showToast({
+        title: `重定向到页面:${url}`
+      })
+      options.url = url
+    },
+    success: function (res : NavigateBackSuccess) {
+      console.log('interceptor.success:', res)
+    },
+    fail: function (err : NavigateToFail) {
+      console.log('interceptor.fail:', err)
     }
+  } as Interceptor
+  export default {
+    data() {
+      return {
+        msg: "会跳转到测试页面1"
+      }
+    },
+    beforeUnmount() {
+      // 移除 navigateTo 所有拦截器
+      uni.removeInterceptor('navigateTo')
+    },
+    methods: {
+      addInterceptor() {
+        uni.addInterceptor('navigateTo', interceptor)
+        uni.showToast({
+          title: '页面跳转已拦截'
+        })
+        this.msg = "，路由被劫持到测试页面2"
+      },
+      removeInterceptor() {
+        uni.removeInterceptor('navigateTo', interceptor)
+        uni.showToast({
+          title: '拦截器已移除'
+        })
+        this.msg = "会跳转到测试页面1"
+      },
+      navigateTo() {
+        uni.navigateTo({
+          url: './page1',
+          success(res) {
+            console.log('res:', res)
+          },
+          fail(err) {
+            console.error('err:', err)
+          }
+        })
+      }
+    }
+  }
 </script>
 
 <style>
