@@ -1,7 +1,8 @@
 <template>
   <view>
-    <button @click="addInterceptor">添加拦截器</button>
-    <button @click="removeInterceptor">移除拦截器</button>
+    <button @click="addInterceptor">添加路由拦截器</button>
+    <button @click="removeInterceptor">移除路由拦截器</button>
+    <text>点击下方按钮{{msg}}</text>
     <button @click="navigateTo">跳转到测试页面</button>
   </view>
 </template>
@@ -9,7 +10,7 @@
 <script>
   const interceptor = {
     invoke: function (options : NavigateToOptions) {
-      console.log('interceptor.invoke:', options)
+      console.log('拦截 navigateTo 接口传入参数为：', options)
       const url = './page2'
       uni.showToast({
         title: `重定向到页面:${url}`
@@ -17,16 +18,19 @@
       options.url = url
     },
     success: function (res : NavigateBackSuccess) {
-      console.log('interceptor.success:', res)
+      console.log('拦截 navigateTo 接口 success 返回参数为：', res)
     },
     fail: function (err : NavigateToFail) {
-      console.log('interceptor.fail:', err)
+      console.log('拦截 navigateTo 接口 fail 返回参数为：', err)
+    },
+    complete: function (res : NavigateToComplete) {
+      console.log('拦截 navigateTo 接口 complete 返回参数为：', res)
     }
   } as Interceptor
   export default {
     data() {
       return {
-
+        msg: "会跳转到测试页面1"
       }
     },
     beforeUnmount() {
@@ -37,14 +41,16 @@
       addInterceptor() {
         uni.addInterceptor('navigateTo', interceptor)
         uni.showToast({
-          title: '拦截器已添加'
+          title: '页面跳转已拦截'
         })
+        this.msg = "，路由被劫持到测试页面2"
       },
       removeInterceptor() {
         uni.removeInterceptor('navigateTo', interceptor)
         uni.showToast({
           title: '拦截器已移除'
         })
+        this.msg = "会跳转到测试页面1"
       },
       navigateTo() {
         uni.navigateTo({
@@ -54,6 +60,9 @@
           },
           fail(err) {
             console.error('err:', err)
+          },
+          complete(res) {
+            console.log('res:', res)
           }
         })
       }
