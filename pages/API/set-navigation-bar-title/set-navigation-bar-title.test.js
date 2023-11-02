@@ -16,11 +16,16 @@ describe("setNavigationBarColor", () => {
     expect(lifeCycleNum).toBe(originLifeCycleNum);
   });
 
-  it("setNavigationBarTitle", async () => {
-    await page.callMethod("setNavigationBarTitle");
+  it("setNavigationBarNewTitle", async () => {
+    await page.callMethod("setNavigationBarNewTitle");
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(2);
+  });
+  it("setNavigationBarLongTitle", async () => {
+    await page.callMethod("setNavigationBarLongTitle");
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
   });
 });
