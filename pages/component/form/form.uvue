@@ -1,0 +1,120 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page">
+  <!-- #endif -->
+    <form @submit="onFormSubmit" @reset="onFormReset">
+      <view class="uni-form-item">
+        <view class="title">姓名</view>
+        <!-- <input class="uni-input" name="nickname" placeholder="请输入姓名" /> -->
+      </view>
+      <view class="uni-form-item">
+        <view class="title">性别</view>
+        <radio-group name="gender" class="flex-row">
+          <view class="group-item">
+            <radio value="0" /><text>男</text>
+          </view>
+          <view class="group-item">
+            <radio value="1" /><text>女</text>
+          </view>
+        </radio-group>
+      </view>
+      <view class="uni-form-item">
+        <view class="title">爱好</view>
+        <checkbox-group name="loves" class="flex-row">
+          <view class="group-item">
+            <checkbox value="0" /><text>读书</text>
+          </view>
+          <view class="group-item">
+            <checkbox value="1" :checked="true" /><text>写字</text>
+          </view>
+        </checkbox-group>
+      </view>
+      <view class="uni-form-item">
+        <view class="title">年龄</view>
+        <slider :value="18" name="age" :show-value="true"></slider>
+      </view>
+      <view class="uni-form-item">
+        <view class="title">保留选项</view>
+        <view>
+          <switch :checked="true" name="switch" />
+        </view>
+      </view>
+      <view class="uni-btn-v flex-row">
+        <button class="btn btn-l" form-type="submit" type="primary">Submit</button>
+        <button class="btn btn-r" type="default" form-type="reset">Reset</button>
+      </view>
+    </form>
+    <view class="result">提交的表单数据</view>
+    <textarea class="textarea" :value="formDataText"></textarea>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        formData: {} as UTSJSONObject
+      }
+    },
+    computed: {
+      formDataText() : string {
+        return JSON.stringify(this.formData)
+      }
+    },
+    methods: {
+      onFormSubmit: function (e : FormSubmitEvent) {
+        this.formData = e.detail.value
+      },
+      onFormReset: function (_ : FormResetEvent) {
+        this.formData = {}
+      }
+    }
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    padding: 15px;
+  }
+
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .uni-form-item {
+    padding: 15px 0;
+  }
+
+  .title {
+    margin-bottom: 10px;
+  }
+
+  .group-item {
+    flex-direction: row;
+    margin-right: 20px;
+  }
+
+  .btn {
+    flex: 1;
+  }
+
+  .btn-l {
+    margin-right: 5px;
+  }
+
+  .btn-r {
+    margin-left: 5px;
+  }
+
+  .result {
+    margin-top: 30px;
+  }
+
+  .textarea {
+    margin-top: 5px;
+    background-color: #fff;
+  }
+</style>
