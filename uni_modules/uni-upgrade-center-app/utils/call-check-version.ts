@@ -30,7 +30,7 @@ export type UniUpgradeCenterResult = {
 }
 
 export default function (): Promise<UniUpgradeCenterResult> {
-	// #ifdef APP-PLUS
+	// #ifdef APP
 	return new Promise<UniUpgradeCenterResult>((resolve, reject) => {
 		const systemInfo = uni.getSystemInfoSync()
 		const appId = systemInfo.appId
@@ -94,7 +94,7 @@ export default function (): Promise<UniUpgradeCenterResult> {
 				reject(e.message)
 			}
 		} else {
-			reject('plus.runtime.appid is EMPTY')
+			reject('invalid appid or appVersion')
 		}
 		// #endif
 	})
