@@ -31,10 +31,10 @@
 				// 开启手风琴效果才回关闭其他
 				if (this.accordion && this.child_nodes.length > 0) {
 					this.child_nodes.forEach((item) => {
-						const is_open = item.$data.get('is_open') as boolean
+						const is_open = item.$data['is_open'] as boolean
 						// TODO 暂时无法获取子组件上的属性和方法，暂时使用绕过方案
 						if (is_open) {
-							item.$data.set('is_open', false)
+							item.$data['is_open'] = false
 							item.$callMethod('oepnOrClose', false)
 						}
 					})
