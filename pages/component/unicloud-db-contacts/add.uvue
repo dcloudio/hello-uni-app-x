@@ -3,32 +3,34 @@
     <unicloud-db ref="udb" v-slot:default="{error}" :collection="collection" loadtime="manual">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
     </unicloud-db>
-    <view class="form-item">
-      <text class="form-item-label">姓名</text>
-      <input class="form-item-input" placeholder="姓名" v-model="username" />
-    </view>
-    <view class="form-item">
-      <text class="form-item-label">电话</text>
-      <input class="form-item-input" placeholder="电话" v-model="mobile" />
-    </view>
-    <view class="form-item">
-      <text class="form-item-label">邮箱</text>
-      <input class="form-item-input" placeholder="邮箱地址" v-model="email" />
-    </view>
-    <view class="form-item">
-      <text class="form-item-label">备注</text>
-      <textarea class="form-item-input" placeholder="备注" v-model="comment" />
-    </view>
-    <view class="form-item">
-      <text class="form-item-label">性别</text>
-      <radio-group class="radio-list" @change="radioChange">
-        <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
-          <radio :value="item.value" :checked="item.value == gender" />
-          <text>{{item.text}}</text>
-        </view>
-      </radio-group>
-    </view>
-    <button class="btn-add" type="primary" @click="submit">保存</button>
+    <form @submit="onFormSubmit">
+      <view class="form-item">
+        <text class="form-item-label">姓名</text>
+        <input class="form-item-input" placeholder="姓名" name="username" />
+      </view>
+      <view class="form-item">
+        <text class="form-item-label">电话</text>
+        <input class="form-item-input" placeholder="电话" name="mobile" />
+      </view>
+      <view class="form-item">
+        <text class="form-item-label">邮箱</text>
+        <input class="form-item-input" placeholder="邮箱地址" name="email" />
+      </view>
+      <view class="form-item">
+        <text class="form-item-label">备注</text>
+        <textarea class="form-item-input" placeholder="备注" name="comment" />
+      </view>
+      <view class="form-item">
+        <text class="form-item-label">性别</text>
+        <radio-group class="radio-list" name="gender">
+          <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
+            <radio :value="item.value" />
+            <text>{{item.text}}</text>
+          </view>
+        </radio-group>
+      </view>
+      <button class="btn-add" type="primary" form-type="submit">保存</button>
+    </form>
   </view>
 </template>
 
@@ -39,11 +41,6 @@
     data() {
       return {
         collection: COLLECTION_NAME,
-        username: "",
-        mobile: "",
-        gender: "",
-        comment: "",
-        email: "",
         genderList: GenderList as GenderType[],
         $uniCloudElement: null as UniCloudDBElement | null
       }
@@ -52,19 +49,14 @@
       this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
     },
     methods: {
-      radioChange(e : RadioGroupChangeEvent) {
-        this.gender = e.detail.value
-      },
-      submit() {
-        const value = {
-          username: this.username,
-          gender: parseInt(this.gender),
-          mobile: this.mobile,
-          comment: this.comment,
-          email: this.email,
-        };
-
-        this.$uniCloudElement!.add(value, {
+      // radioChange(e : RadioGroupChangeEvent) {
+      //   this.gender = e.detail.value
+      // },
+      onFormSubmit: function (e : FormSubmitEvent) {
+        const formData = e.detail.value
+        // TODO 待调整 <radio-group> <radio> value 属性为 any 后可省略此转换
+        formData['gender'] = parseInt(formData['gender'] as string)
+        this.$uniCloudElement!.add(formData, {
           showToast: false,
           needLoading: true,
           loadingTitle: "正在保存...",
