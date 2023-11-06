@@ -1,6 +1,7 @@
 <script lang="uts">
   export default {
     name: "input-data",
+    emits: ['confirm'],
     props: {
       title: {
         type: String,
