@@ -1,5 +1,6 @@
 <script lang="uts">
 	export default {
+    emits: ['change'],
 		props: {
 			title: {
 				type: String,

@@ -4,6 +4,7 @@
   export type ItemType = { value : number; name : string }
 
   export default {
+    emits: ['change'],
     props: {
       title: {
         type: String,
