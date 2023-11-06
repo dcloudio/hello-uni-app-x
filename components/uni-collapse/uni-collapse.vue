@@ -35,7 +35,7 @@
 						// TODO 暂时无法获取子组件上的属性和方法，暂时使用绕过方案
 						if (is_open) {
 							item.$data['is_open'] = false
-							item.$callMethod('oepnOrClose', false)
+							item.$callMethod('openOrClose', false)
 						}
 					})
 				}
