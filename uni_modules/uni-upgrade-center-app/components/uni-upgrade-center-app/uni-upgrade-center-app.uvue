@@ -11,7 +11,7 @@
 			<view class="content-body">
 				<view class="content-body-title">
 					<text class="text title">{{subTitle}}</text>
-					<!-- <text style="padding-left:20rpx;font-size: 0.5em;color: #666;">v.{{version}}</text> -->
+					<text class="text version">v{{version}}</text>
 				</view>
 				<view class="body">
 					<scroll-view class="box-des-scroll" scroll-y="true">
@@ -41,22 +41,16 @@
 								</view>
 							</view>
 
-							<button v-else class="content-button"
-								style="border: none; color: #fff;width: 100%;height: 80rpx;line-height: 80rpx;font-size: 30rpx;font-weight: 400;border-radius: 40rpx;text-align: center;background:  #1785ff"
-								:plain="true" @click="updateApp">
+							<button v-else class="content-button" @click="updateApp">
 								{{downLoadBtnText}}
 							</button>
 						</template>
 
-						<button v-else-if="downloadSuccess && !installed" class="content-button"
-							style="border: none; color: #fff;width: 100%;height: 80rpx;line-height: 80rpx;font-size: 30rpx;font-weight: 400;border-radius: 40rpx;text-align: center;background:  #1785ff"
-							:plain="true" :loading="installing" :disabled="installing" @click="installPackage">
+						<button v-else-if="downloadSuccess && !installed" class="content-button" :loading="installing" :disabled="installing" @click="installPackage">
 							{{installing ? '正在安装……' : '下载完成，立即安装'}}
 						</button>
 
-						<button v-else-if="installed" class="content-button"
-							style="border: none; color: #ccc;width: 100%;height: 80rpx;line-height: 80rpx;font-size: 30rpx;font-weight: 400;border-radius: 40rpx;text-align: center;background:  #1785ff"
-							:plain="true" :disabled="true">
+						<button v-else-if="installed" class="content-button" :disabled="true">
 							安装完成后，请重启应用
 						</button>
 					</template>
@@ -64,8 +58,7 @@
 			</view>
 
 			<view class="content-bottom">
-				<image v-if="!is_mandatory" class="close-img" mode="widthFix"
-					src="/uni_modules/uni-upgrade-center-app/static/app_update_close.png" @click="closeUpdate">
+				<image v-if="!is_mandatory" class="close-img" mode="widthFix" src="/uni_modules/uni-upgrade-center-app/static/app_update_close.png" @click="closeUpdate">
 				</image>
 			</view>
 		</view>
@@ -73,12 +66,14 @@
 </template>
 
 <script>
-	import { UniUpgradeCenterResult } from '../utils/call-check-version'
+	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
+  import { openSchema } from '../../utils/utils.uts'
 
 	const localFilePathKey = 'UNI_ADMIN_UPGRADE_CENTER_LOCAL_FILE_PATH'
 	const platform_iOS = 'iOS';
 	const requiredKey = ['version', 'url', 'type']
 	let downloadTask : DownloadTask | null = null;
+	let openSchemePromise: Promise<boolean> | null = null;
 
 	/**
 	 * 对比版本号，如需要，请自行修改判断规则
@@ -148,6 +143,7 @@
 				// 默认安装包信息
 				title: '更新日志',
 				contents: '',
+				version: '',
 				is_mandatory: false,
 
 				// 可自定义属性
@@ -157,7 +153,8 @@
 				downLoadingText: '安装包下载中，请稍后',
 
 				url: "",
-				platform: [] as string[]
+				platform: [] as string[],
+        store_list: null as StoreListItem[] | null
 			}
 		},
 		computed: {
@@ -184,6 +181,8 @@
 				this.contents = localPackageInfo.contents
 				this.is_mandatory = localPackageInfo.is_mandatory
 				this.platform = localPackageInfo.platform
+				this.version = localPackageInfo.version
+        this.store_list = localPackageInfo.store_list
 				this.shown = shown
 			},
 			closeUpdate() {
@@ -230,14 +229,43 @@
 				this.$emit('close')
 			},
 			updateApp() {
-				this.downloadPackage()
+        const checkStoreScheme = this.checkStoreScheme()
+        if (checkStoreScheme !== null) {
+          checkStoreScheme
+            .then(_ => { })
+            .catch(() => { this.downloadPackage() })
+            .finally(() => {
+              openSchemePromise = null
+            })
+        } else { this.downloadPackage() }
 			},
+      // 跳转应用商店
+      checkStoreScheme(): Promise<boolean> | null {
+        if (this.store_list !== null) {
+          const storeList: StoreListItem[] = this.store_list!.filter((item: StoreListItem): boolean => item.enable)
+          if (storeList.length > 0) {
+            if (openSchemePromise === null) {
+              openSchemePromise = Promise.reject() as Promise<boolean>
+            }
+            storeList
+              .sort((cur: StoreListItem, next: StoreListItem): number => next.priority - cur.priority)
+              .map((item: StoreListItem): string => item.scheme)
+              .reduce((promise: Promise<boolean>, cur: string): Promise<boolean> => {
+                openSchemePromise = promise.catch((): Promise<boolean> => openSchema(cur))
+                return openSchemePromise!
+              }, openSchemePromise!)
+            return openSchemePromise!
+          }
+        }
+
+      	return null
+      },
 			downloadPackage() {
 				//下载包
 				downloadTask = uni.downloadFile({
 					url: this.url,
 					success: res => {
-						console.log('downloadFile res: ',res);
+						console.log('downloadFile res: ', res);
 						if (res.statusCode == 200) {
 							this.tempFilePath = res.tempFilePath
 							this.downLoadComplete()
@@ -367,6 +395,21 @@
 		border-bottom-right-radius: 30rpx;
 	}
 
+	.content-body-title {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.content-body-title .version {
+		padding-left: 20rpx;
+		color: #fff;
+		font-size: 20rpx;
+		margin-left: 10rpx;
+		padding: 4rpx 8rpx;
+		border-radius: 20rpx;
+		background: #50aefd;
+	}
+
 	.title {
 		font-size: 32rpx;
 		font-weight: bold;
@@ -416,6 +459,8 @@
 	}
 
 	.content-button {
+    border: none;
+    color: #fff;
 		width: 100%;
 		height: 80rpx;
 		line-height: 80rpx;
@@ -427,6 +472,7 @@
 		text-align: center;
 
 		background-color: #1785ff;
+
 	}
 
 	.flex-column {

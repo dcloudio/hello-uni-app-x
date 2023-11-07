@@ -22,11 +22,11 @@ export default function () : Promise<UniUpgradeCenterResult> {
 			// const platform = uniUpgradeCenterResult.platform // 安装包平台
 			// const type = uniUpgradeCenterResult.type // 安装包类型
 
-			// 此处逻辑仅为实例，可自行编写
-			if (code > 0) {
-				// 腾讯云和阿里云下载链接不同，需要处理一下，阿里云会原样返回
-				const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
-				if (typeof tcbRes.fileList[0].tempFileURL !== 'undefined') uniUpgradeCenterResult.url = tcbRes.fileList[0].tempFileURL;
+        // 此处逻辑仅为示例，可自行编写
+        if (code > 0) {
+          // 腾讯云和阿里云下载链接不同，需要处理一下，阿里云会原样返回
+          const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
+          if (typeof tcbRes.fileList[0].tempFileURL !== 'undefined') uniUpgradeCenterResult.url = tcbRes.fileList[0].tempFileURL;
 
 				/**
 				 * 提示升级一
@@ -52,21 +52,20 @@ export default function () : Promise<UniUpgradeCenterResult> {
 				component?.$callMethod('show', true, uniUpgradeCenterResult)
 				// #endif
 
-				return resolve(uniUpgradeCenterResult)
-			} else if (code < 0) {
-				// TODO 云函数报错处理
-				console.error(message)
-				return reject(uniUpgradeCenterResult)
-			}
-			return resolve(uniUpgradeCenterResult)
-		}).catch((err) => {
-			// TODO 云函数报错处理
-			console.error(err)
-			reject(err)
-		})
-	});
-	// #endif
-}
+          return resolve(uniUpgradeCenterResult)
+        } else if (code < 0) {
+          // TODO 云函数报错处理
+          console.error(message)
+          return reject(uniUpgradeCenterResult)
+        }
+        return resolve(uniUpgradeCenterResult)
+      }).catch((err) => {
+        // TODO 云函数报错处理
+        reject(err)
+      })
+    });
+    // #endif
+  }
 
 // #ifdef UNI-APP-X
 /**

@@ -245,9 +245,13 @@
 				uni.navigateBack()
 			},
 			updateApp() {
-				this.checkStoreScheme().catch(() => {
-					this.downloadPackage()
-				})
+				this.checkStoreScheme()
+          .catch(() => {
+            this.downloadPackage()
+          })
+          .finally(() => {
+            openSchemePromise = null
+          })
 			},
 			// 跳转应用商店
 			checkStoreScheme() {
