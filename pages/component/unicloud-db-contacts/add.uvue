@@ -1,8 +1,6 @@
 <template>
   <view class="page">
-    <unicloud-db ref="udb" v-slot:default="{error}" :collection="collection" loadtime="manual">
-      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
-    </unicloud-db>
+    <unicloud-db ref="udb" :collection="collection" loadtime="manual"></unicloud-db>
     <form @submit="onFormSubmit">
       <view class="form-item">
         <text class="form-item-label">姓名</text>
@@ -51,7 +49,8 @@
     methods: {
       onFormSubmit: function (e : FormSubmitEvent) {
         const formData = e.detail.value
-        formData['gender'] = parseInt(formData['gender'] as string)
+        const genderString = formData['gender'] as string
+        formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
         this.$uniCloudElement!.add(formData, {
           showToast: false,
           needLoading: true,

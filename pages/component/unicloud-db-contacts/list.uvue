@@ -1,7 +1,7 @@
 <template>
   <view class="page">
-    <unicloud-db ref="udb" v-slot:default="{data, pagination, loading, hasMore, error}" :collection="collection"
-      :page-size="10" :getcount="true" loadtime="manual">
+    <unicloud-db ref="udb" class="udb" v-slot:default="{data, pagination, loading, hasMore, error}"
+      :collection="collection" :page-size="15" :getcount="true" loadtime="manual">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
       <list-view ref="listView" class="list-view" :scroll-y="true" @scrolltolower="loadMore()">
         <list-item class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
@@ -93,6 +93,10 @@
   .loading {
     align-items: center;
     padding: 20px;
+  }
+
+  .udb {
+    flex: 1;
   }
 
   .list-view {

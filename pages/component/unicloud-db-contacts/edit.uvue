@@ -62,7 +62,7 @@
         where: '',
         username: "",
         mobile: "",
-        gender: '',
+        gender: -1,
         comment: "",
         email: "",
         genderList: GenderList as GenderType[],
@@ -80,12 +80,12 @@
     },
     methods: {
       radioChange(e : RadioGroupChangeEvent) {
-        this.gender = e.detail.value
+        this.gender = parseInt(e.detail.value)
       },
       update() {
         const value = {
           username: this.username,
-          gender: parseInt(this.gender),
+          gender: this.gender,
           mobile: this.mobile,
           comment: this.comment,
           email: this.email,
@@ -144,7 +144,7 @@
         const data1 = data[0];
         this.username = data1.getString('username') ?? "";
         this.mobile = data1.getString('mobile') ?? "";
-        this.gender = data1.getNumber('gender')?.toString() ?? '0';
+        this.gender = data1.getNumber('gender') ?? -1;
         this.comment = data1.getString('comment') ?? "";
         this.email = data1.getString('email') ?? "";
       }

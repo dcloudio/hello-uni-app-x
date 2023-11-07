@@ -23,7 +23,7 @@
         </view>
         <view class="form-item">
           <text class="form-item-label">性别</text>
-          <text class="form-item-input">{{displayGender(data[0]['gender'])}}</text>
+          <text class="form-item-input">{{displayGender(data[0].getNumber('gender'))}}</text>
         </view>
         <button class="btn-update" type="default" @click="gotoUpdatePage(data[0].getString('_id'))">编辑</button>
       </view>
@@ -60,8 +60,8 @@
       this.$uniCloudElement!.loadData()
     },
     methods: {
-      displayGender(value : any | null) : string {
-        const str = (value ?? 0).toString()
+      displayGender(value : number | null) : string {
+        const str = value ?? -1
         return (GenderList as GenderType[]).find((item : GenderType) : boolean => {
           return item.value == str
         })!.text;
