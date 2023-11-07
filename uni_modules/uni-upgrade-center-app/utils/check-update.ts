@@ -54,13 +54,11 @@ export default function () : Promise<UniUpgradeCenterResult> {
 
           return resolve(uniUpgradeCenterResult)
         } else if (code < 0) {
-          // TODO 云函数报错处理
           console.error(message)
           return reject(uniUpgradeCenterResult)
         }
         return resolve(uniUpgradeCenterResult)
       }).catch((err) => {
-        // TODO 云函数报错处理
         reject(err)
       })
     });

@@ -69,6 +69,7 @@ export default function (): Promise<UniUpgradeCenterResult> {
 				action: 'checkVersion',
 				appid: appId,
 				appVersion: appVersion,
+        is_uniapp_x: true,
 				wgtVersion: '0.0.0.0.0.1'
 			}
 			try {
