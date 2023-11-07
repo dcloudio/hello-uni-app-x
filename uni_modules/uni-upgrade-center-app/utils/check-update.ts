@@ -22,7 +22,7 @@ export default function (component : ComponentPublicInstance | null = null) : Pr
         // const platform = uniUpgradeCenterResult.platform // 安装包平台
         // const type = uniUpgradeCenterResult.type // 安装包类型
 
-        // 此处逻辑仅为实例，可自行编写
+        // 此处逻辑仅为示例，可自行编写
         if (code > 0) {
           // 腾讯云和阿里云下载链接不同，需要处理一下，阿里云会原样返回
           const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
@@ -61,7 +61,6 @@ export default function (component : ComponentPublicInstance | null = null) : Pr
         return resolve(uniUpgradeCenterResult)
       }).catch((err) => {
         // TODO 云函数报错处理
-        console.error(err)
         reject(err)
       })
     });
