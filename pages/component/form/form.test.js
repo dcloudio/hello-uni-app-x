@@ -32,7 +32,7 @@ describe('form', () => {
       formData
     } = await page.data()
 
-    // expect(formData['nickname']).toBe(CHANGE_NICK_NAME)
+    expect(formData['nickname']).toBe(CHANGE_NICK_NAME)
     expect(formData['gender']).toBe(CHANGE_GENDER)
     expect(formData['loves'][0]).toBe('1')
     expect(formData['age']).toBe(CHANGE_AGE)
