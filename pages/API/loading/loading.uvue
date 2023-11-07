@@ -24,9 +24,8 @@
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
         <button class="uni-btn-v" type="primary" @click="showLoading">显示 loading 提示框</button>
-        <!-- #ifndef MP-ALIPAY -->
         <button class="uni-btn-v" @click="hideLoading">隐藏 loading 提示框</button>
-        <!-- #endif -->
+        <text>为方便演示，loading弹出3秒后自动关闭</text>
       </view>
     </view>
   </view>
@@ -86,28 +85,13 @@
             mask: this.maskSelect
           });
         }
-        // #ifdef MP-ALIPAY
-        this._showTimer && clearTimeout(this._showTimer);
-        this._showTimer = setTimeout(() => {
-          this.hideLoading();
-        }, 3000)
-        // #endif
-        // #ifdef APP-PLUS
         setTimeout(function () {
           this.hideLoading();
         }, 3000);
-        // #endif
       },
       hideLoading: function () {
         uni.hideLoading();
       }
     }
-    // #ifdef MP-ALIPAY
-    ,
-    onUnload() {
-      // 页面卸载的时候，手动关闭loading
-      this._showTimer && clearTimeout(this._showTimer);
-    }
-    // #endif
   }
 </script>
