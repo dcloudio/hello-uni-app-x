@@ -1,48 +1,57 @@
 <template>
-	<list-view :scroll-y="true" ref="list-view" class="page" scroll-x="true" rebound="false">
+  <list-view id="list-view" ref="list-view" class="page" rebound="false">
     <sticky-section v-for="(sectionText) in data" :padding="sectionPadding" :push-pinned-header="true">
-    	<sticky-header :header-id="sectionText">
-    		<text class="sticky-header-text">{{sectionText}}</text>
-    	</sticky-header>
-    	<list-item v-for="i in 10" class="content-item" :type=10>
-    		<text class="text">{{sectionText}}--item--content----{{i}}</text>
-    	</list-item>
+      <sticky-header :header-id="sectionText">
+        <text class="sticky-header-text">{{sectionText}}</text>
+      </sticky-header>
+      <list-item v-for="i in 10" class="content-item" :type=10>
+        <text class="text">{{sectionText}}--item--content----{{i}}</text>
+      </list-item>
     </sticky-section>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;">
+      <!-- <text style="color: #aaa">到底了</text> -->
+      <button @click="toTop" size="mini">回到顶部</button>
+    </list-item>
   </list-view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-          data: ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'],
-          sectionPadding: [0,10,0,10] as Array <number>
-			}
-		},
-		methods: {
+  export default {
+    data() {
+      return {
+        data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
+        sectionPadding: [0, 10, 0, 10] as Array<number>
+      }
+    },
+    methods: {
+      toTop(){
+        uni.getElementById("list-view")!.scrollTop = 0
+      },
       //用于自动化测试
       listViewScrollByY(y : number) {
         const listview = this.$refs["list-view"] as Element
         listview.scrollBy(0, y)
       }
-		}
-	}
+    }
+  }
 </script>
 
 <style>
   .page {
-		flex: 1;
-		background-color: #f5f5f5;
-	}
-  .sticky-header-text {
-  	font-size: 16px;
-  	padding: 8px;
-  	color: #959595;
-  	background-color: #f5f5f5;
+    flex: 1;
+    background-color: #f5f5f5;
   }
+
+  .sticky-header-text {
+    font-size: 16px;
+    padding: 8px;
+    color: #959595;
+    background-color: #f5f5f5;
+  }
+
   .content-item {
-  	padding: 15px;
-  	margin: 5px 0;
-  	background-color: #fff;
+    padding: 15px;
+    margin: 5px 0;
+    background-color: #fff;
   }
 </style>
