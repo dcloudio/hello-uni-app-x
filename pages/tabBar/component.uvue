@@ -40,7 +40,9 @@
         </template>
       </uni-collapse>
 
+      <!-- #ifdef UNI-APP-X -->
       <uni-upgrade-center-app ref="upgradePopup" @close="upgradePopupClose" />
+      <!-- #endif -->
     </view>
     <!-- #ifdef APP -->
   </scroll-view>
@@ -48,7 +50,9 @@
 </template>
 
 <script lang="uts">
+// #ifdef UNI-APP-X
 import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
+// #endif
 
 type Page = {
   name : string
@@ -284,13 +288,17 @@ export default {
       uni.navigateTo({
         url,
       })
-    },
-    upgradePopupClose() {
+    }
+    // #ifdef UNI-APP-X
+    ,upgradePopupClose() {
       console.log('upgradePopup close');
     }
+    // #endif
   },
   onReady() {
+    // #ifdef UNI-APP-X
   	checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+    // #endif
   },
   beforeUnmount() {
     uni.showTabBar()?.catch(_ => {})
