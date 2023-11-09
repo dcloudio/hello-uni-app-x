@@ -63,7 +63,7 @@ export default function (): Promise<UniUpgradeCenterResult> {
 			reject('plus.runtime.appid is EMPTY')
 		}
 		// #endif
-		// // #ifdef UNI-APP-X
+		// #ifdef UNI-APP-X
 		if (typeof appId === 'string' && typeof appVersion === 'string' && appId.length > 0 && appVersion.length > 0) {
 			let data = {
 				action: 'checkVersion',
