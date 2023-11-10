@@ -1,10 +1,13 @@
 import callCheckVersion, { UniUpgradeCenterResult } from "./call-check-version"
 // #ifdef UNI-APP-X
 import { ComponentPublicInstance } from 'vue'
+import { openSchema } from './utils.uts'
 // #endif
 
 // 推荐再App.vue中使用
 const PACKAGE_INFO_KEY = '__package_info__'
+
+// uni-app 项目无法从 vue 中导出 ComponentPublicInstance 类型，故使用条件编译
 // #ifdef UNI-APP-X
 export default function (component : ComponentPublicInstance | null = null) : Promise<UniUpgradeCenterResult> {
 // #endif
@@ -18,9 +21,6 @@ export default function () : Promise<UniUpgradeCenterResult> {
 			const code = uniUpgradeCenterResult.code
 			const message = uniUpgradeCenterResult.message
 			const url = uniUpgradeCenterResult.url // 安装包下载地址
-			// const is_silently = uniUpgradeCenterResult.is_silently // 是否静默更新
-			// const platform = uniUpgradeCenterResult.platform // 安装包平台
-			// const type = uniUpgradeCenterResult.type // 安装包类型
 
         // 此处逻辑仅为示例，可自行编写
         if (code > 0) {
@@ -65,82 +65,29 @@ export default function () : Promise<UniUpgradeCenterResult> {
     // #endif
   }
 
-// #ifdef UNI-APP-X
 /**
  * 使用 uni.showModal 升级
  */
 function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
+	// #ifdef APP
 	const {
 		title, // 标题
 		contents, // 升级内容
 		is_mandatory, // 是否强制更新
 		url, // 安装包下载地址
-	} = packageInfo;
-
-	let confirmText = '立即下载更新'
-
-	return uni.showModal({
-		title,
-		content: contents,
-		showCancel: !is_mandatory,
-		confirmText,
-		success: res => {
-			if (res.cancel) return;
-
-			uni.showToast({
-				title: '后台下载中……',
-				duration: 1000
-			});
-
-			// wgt 和 安卓下载更新
-			uni.downloadFile({
-				url,
-				success: res => {
-					if (res.statusCode !== 200) {
-						console.error('下载安装包失败');
-						return;
-					}
-					// 下载好直接安装，下次启动生效
-					uni.installApk({
-						filePath: res.tempFilePath,
-						success: () => {
-							uni.showModal({
-								title: '安装成功请手动重启'
-							});
-						},
-						fail: err => {
-							uni.showModal({
-								title: '更新失败',
-								content: err
-									.message,
-								showCancel: false
-							});
-						}
-					});
-				}
-			});
-		}
-	});
-}
-// #endif
-
-// #ifndef UNI-APP-X
-/**
- * 使用 uni.showModal 升级
- */
-function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
-	const {
-		title, // 标题
-		contents, // 升级内容
-		is_mandatory, // 是否强制更新
-		url, // 安装包下载地址
-		platform, // 安装包平台
-		type // 安装包类型
+		type,
+		platform
 	} = packageInfo;
 
 	let isWGT = type === 'wgt'
 	let isiOS = !isWGT ? platform.includes('iOS') : false;
+
+	// #ifndef UNI-APP-X
 	let confirmText = isiOS ? '立即跳转更新' : '立即下载更新'
+	// #endif
+	// #ifdef UNI-APP-X
+	let confirmText = '立即下载更新'
+	// #endif
 
 	return uni.showModal({
 		title,
@@ -150,9 +97,14 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 		success: res => {
 			if (res.cancel) return;
 
-			// 安装包下载
 			if (isiOS) {
+				// iOS 平台跳转 AppStore
+				// #ifndef UNI-APP-X
 				plus.runtime.openURL(url);
+				// #endif
+				// #ifdef UNI-APP-X
+				openSchema(url)
+				// #endif
 				return;
 			}
 
@@ -170,6 +122,8 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 						return;
 					}
 					// 下载好直接安装，下次启动生效
+          // uni-app x 项目没有 plus5+ 故使用条件编译
+					// #ifndef UNI-APP-X
 					plus.runtime.install(res.tempFilePath, {
 						force: false
 					}, () => {
@@ -195,9 +149,28 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 							showCancel: false
 						});
 					});
+					// #endif
+
+          // #ifdef UNI-APP-X
+          uni.installApk({
+          	filePath: res.tempFilePath,
+          	success: () => {
+          		uni.showModal({
+          			title: '安装成功请手动重启'
+          		});
+          	},
+          	fail: err => {
+          		uni.showModal({
+          			title: '更新失败',
+          			content: err.message,
+          			showCancel: false
+          		});
+          	}
+          });
+          // #endif
 				}
 			});
 		}
 	});
+	// #endif
 }
-// #endif
