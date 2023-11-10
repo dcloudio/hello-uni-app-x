@@ -1,3 +1,5 @@
+## 0.7.0（2023-11-10）
+- 新增 兼容 uni-app x 项目 [详情](https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html)
 ## 0.6.5（2023-10-27）
 - 修复 安装 wgt 报错 manifest.json 文件不存在的Bug
 ## 0.6.4（2023-09-01）
