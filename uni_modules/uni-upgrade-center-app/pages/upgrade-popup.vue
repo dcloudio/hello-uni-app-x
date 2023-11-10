@@ -3,7 +3,7 @@
 		<view class="content botton-radius">
 			<view class="content-top">
 				<text class="content-top-text">{{title}}</text>
-				<image class="content-top" style="top: 0;" width="100%" height="100%" src="../images/bg_top.png">
+				<image class="content-top" style="top: 0;" width="100%" height="100%" src="/uni_modules/uni-upgrade-center-app/static/bg_top.png">
 				</image>
 			</view>
 			<view class="content-header"></view>
@@ -53,7 +53,7 @@
 				</view>
 			</view>
 
-			<image v-if="!is_mandatory" class="close-img" src="../images/app_update_close.png" @click.stop="closeUpdate">
+			<image v-if="!is_mandatory" class="close-img" src="/uni_modules/uni-upgrade-center-app/static/app_update_close.png" @click.stop="closeUpdate">
 			</image>
 		</view>
 	</view>
@@ -314,11 +314,11 @@
 			},
 			downLoadComplete() {
 				this.downloading = false;
-			
+
 				this.downLoadPercent = 0
 				this.downloadedSize = 0
 				this.packageFileSize = 0
-			
+
 				downloadTask = null;
 
 				// 强制更新，直接安装

@@ -29,25 +29,25 @@ export type UniUpgradeCenterResult = {
 	min_uni_version : string | null  // 升级 wgt 的最低 uni-app 版本
 }
 
-export default function (): Promise<UniUpgradeCenterResult> {
+export default function () : Promise<UniUpgradeCenterResult> {
 	// #ifdef APP
 	return new Promise<UniUpgradeCenterResult>((resolve, reject) => {
 		const systemInfo = uni.getSystemInfoSync()
 		const appId = systemInfo.appId
 		const appVersion = systemInfo.appVersion
 		// #ifndef UNI-APP-X
-		if (plus.runtime.appid && plus.runtime.version) {
-			plus.runtime.getProperty(plus.runtime.appid, function (widgetInfo) {
+		if (typeof appId === 'string' && typeof appVersion === 'string' && appId.length > 0 && appVersion.length > 0) {
+			plus.runtime.getProperty(appId, function (widgetInfo) {
 				if (widgetInfo.version) {
 					let data = {
 						action: 'checkVersion',
-						appid: plus.runtime.appid,
-						appVersion: plus.runtime.version,
+						appid: appId,
+						appVersion: appVersion,
 						wgtVersion: widgetInfo.version
 					}
 					uniCloud.callFunction({
 						name: 'uni-upgrade-center',
-						data: data,
+						data,
 						success: (e) => {
 							resolve(e.result as UniUpgradeCenterResult)
 						},
@@ -69,7 +69,7 @@ export default function (): Promise<UniUpgradeCenterResult> {
 				action: 'checkVersion',
 				appid: appId,
 				appVersion: appVersion,
-        is_uniapp_x: true,
+				is_uniapp_x: true,
 				wgtVersion: '0.0.0.0.0.1'
 			}
 			try {
@@ -77,20 +77,20 @@ export default function (): Promise<UniUpgradeCenterResult> {
 					name: 'uni-upgrade-center',
 					data: data
 				}).then(res => {
-          const code = res.result['code']
-          if (['Int', 'Long', 'number'].includes(typeof code) && (code  as number) < 0) {
+					const code = res.result['code']
+					if (['Int', 'Long', 'number'].includes(typeof code) && (code as number) < 0) {
 						reject({
 							code: res.result['code'],
 							message: res.result['message']
 						})
-          } else {
-            const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
+					} else {
+						const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
 						resolve(result)
 					}
 				}).catch<void>((err : any | null) => {
 					const error = err as UniCloudError
-          if (error.errMsg == '未匹配到云函数[uni-upgrade-center]')
-            error.errMsg = '【uni-upgrade-center-app】未配置uni-upgrade-center，无法升级。参考: https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html'
+					if (error.errMsg == '未匹配到云函数[uni-upgrade-center]')
+						error.errMsg = '【uni-upgrade-center-app】未配置uni-upgrade-center，无法升级。参考: https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html'
 					reject(error.errMsg)
 				})
 			} catch (e) {
@@ -103,10 +103,10 @@ export default function (): Promise<UniUpgradeCenterResult> {
 	})
 	// #endif
 	// #ifndef APP-PLUS
-	/* return new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		reject({
 			message: '请在App中使用'
 		})
-	}) */
+	})
 	// #endif
 }
