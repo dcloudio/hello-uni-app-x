@@ -1,136 +1,122 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="demo">
-          <image
-            v-if="imageSrc"
-            :src="imageSrc"
-            class="image"
-            mode="widthFix"
-          ></image>
-          <text v-else class="uni-hello-addfile" @click="chooseImage"
-            >+ 选择图片</text
-          >
+          <image v-if="imageSrc" :src="imageSrc" class="image" mode="widthFix"></image>
+          <text v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</text>
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 <script>
-export default {
-	data() {
-		return {
-			title: 'uploadFile',
-			imageSrc: '',
-			task: null as UploadTask | null,
-			pageVisible: false,
+  export default {
+    data() {
+      return {
+        title: 'uploadFile',
+        imageSrc: '',
+        task: null as UploadTask | null,
+        //自动化测试例专用
+        jest_result: false,
+      }
+    },
+    onLoad() {
+    },
+    onUnload() {
+      this.imageSrc = '';
+      uni.hideLoading();
+      this.task?.abort();
+    },
+    methods: {
+      chooseImage: function () {
+        uni.chooseImage({
+          count: 1,
+          sizeType: ['compressed'],
+          sourceType: ['album'],
+          success: (res) => {
+            console.log('chooseImage success, temp path is', res.tempFilePaths[0])
+            var imageSrc = res.tempFilePaths[0]
+            uni.showLoading({
+              title: '上传中'
+            })
+            this.task = uni.uploadFile({
+              url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+              filePath: imageSrc,
+              name: 'file',
+              formData: {
+                'user': 'test'
+              },
+              success: (res) => {
+                console.log('uploadImage success, res is:', res)
+                uni.hideLoading();
+                uni.showToast({
+                  title: '上传成功',
+                  icon: 'success',
+                  duration: 1000
+                })
+                this.imageSrc = imageSrc
+              },
+              fail: (err) => {
+                console.log('uploadImage fail', err);
+                uni.hideLoading();
+                uni.showModal({
+                  content: err.errMsg,
+                  showCancel: false
+                });
+              },
+            });
+          },
+          fail: (err) => {
+            console.log('chooseImage fail', err)
+          }
+        })
+      },
       //自动化测试例专用
-      jest_result:false,
-		}
-	},
-	onLoad() {
-		this.pageVisible = true;
-	},
-	onUnload() {
-		this.imageSrc = '';
-		this.pageVisible = false;
-		uni.hideLoading();
-		this.task?.abort();
-	},
-	methods: {
-		chooseImage: function() {
-			uni.chooseImage({
-				count: 1,
-				sizeType: ['compressed'],
-				sourceType: ['album'],
-				success: (res) => {
-					console.log('chooseImage success, temp path is', res.tempFilePaths[0])
-					var imageSrc = res.tempFilePaths[0]
-					uni.showLoading({
-						title: '上传中'
-					})
-					this.task = uni.uploadFile({
-						url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
-						filePath: imageSrc,
-						name: 'file',
-						formData: {
-							'user': 'test'
-						},
-						success: (res) => {
-							if (this.pageVisible) {
-								console.log('uploadImage success, res is:', res)
-								uni.hideLoading();
-								uni.showToast({
-									title: '上传成功',
-									icon: 'success',
-									duration: 1000
-								})
-								this.imageSrc = imageSrc
-							}
-						},
-						fail: (err) => {
-							if (this.pageVisible) {
-								console.log('uploadImage fail', err);
-								uni.hideLoading();
-								uni.showModal({
-									content: err.errMsg,
-									showCancel: false
-								});
-							}
-						},
-					});
-				},
-				fail: (err) => {
-					console.log('chooseImage fail', err)
-				}
-			})
-		},
-    //自动化测试例专用
-    jest_uploadFile(){
-      const imageSrc = "/static/uni.png";
-      this.task = uni.uploadFile({
-      	url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
-      	filePath: imageSrc,
-      	name: 'file',
-      	formData: {
-      		'user': 'test'
-      	},
-      	success: () => {
-          this.jest_result = true;
-      	},
-      	fail: () => {
-          this.jest_result = false;
-      	},
-      })
+      jest_uploadFile() {
+        const imageSrc = "/static/uni.png";
+        this.task = uni.uploadFile({
+          url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+          filePath: imageSrc,
+          name: 'file',
+          formData: {
+            'user': 'test'
+          },
+          success: () => {
+            this.jest_result = true;
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        })
+      }
     }
-	}
-}
+  }
 </script>
 
 <style>
-.image {
-  width: 100%;
-}
+  .image {
+    width: 100%;
+  }
 
-.demo {
-  background: #fff;
-  padding: 50rpx;
-  justify-content: center;
-  align-items: center;
-}
+  .demo {
+    background: #fff;
+    padding: 50rpx;
+    justify-content: center;
+    align-items: center;
+  }
 
-.uni-hello-addfile {
-  text-align: center;
-  background: #fff;
-  padding: 50rpx;
-  margin-top: 10px;
-  font-size: 38rpx;
-  color: #808080;
-}
+  .uni-hello-addfile {
+    text-align: center;
+    background: #fff;
+    padding: 50rpx;
+    margin-top: 10px;
+    font-size: 38rpx;
+    color: #808080;
+  }
 </style>

@@ -87,7 +87,6 @@
         title: 'request',
         res: '',
         task: null as RequestTask | null,
-        pageVisible: false,
         host: "http://request.dcloud.net.cn",
         url: "/api/http/method/get",
         method: "GET" as RequestMethod | null,
@@ -135,10 +134,8 @@
       }
     },
     onLoad() {
-      this.pageVisible = true;
     },
     onUnload() {
-      this.pageVisible = false;
       uni.hideLoading();
       this.task?.abort();
     },
@@ -191,25 +188,21 @@
           withCredentials: false,
           firstIpv4: false,
           success: (res) => {
-            if (this.pageVisible) {
-              console.log('request success', JSON.stringify(res.data))
-              uni.showToast({
-                title: '请求成功',
-                icon: 'success',
-                mask: true,
-                duration: duration
-              });
-              this.res = '请求结果 : ' + JSON.stringify(res);
-            }
+            console.log('request success', JSON.stringify(res.data))
+            uni.showToast({
+              title: '请求成功',
+              icon: 'success',
+              mask: true,
+              duration: duration
+            });
+            this.res = '请求结果 : ' + JSON.stringify(res);
           },
           fail: (err) => {
-            if (this.pageVisible) {
-              console.log('request fail', err);
-              uni.showModal({
-                content: err.errMsg,
-                showCancel: false
-              });
-            }
+            console.log('request fail', err);
+            uni.showModal({
+              content: err.errMsg,
+              showCancel: false
+            });
           },
           complete: () => {
             uni.hideLoading()

@@ -6,7 +6,8 @@
       <text class="banner-title">{{ banner.title }}</text>
     </list-item>
     <sticky-header>
-      <view style="width: 100%;height:44px;background-color: #f5f5f5;flex-direction: row;justify-content:center;align-items:center;">
+      <view
+        style="width: 100%;height:44px;background-color: #f5f5f5;flex-direction: row;justify-content:center;align-items:center;">
         <text v-for="(name,index) in th_item" @click="clickTH(index)" style="margin-right: 20px;">
           {{name}}
         </text>
@@ -52,16 +53,13 @@
         banner: {} as Banner,
         listData: [] as Item[],
         last_id: '',
-        pageVisible: false
       };
     },
     onLoad() {
-      this.pageVisible = true; //设这个变量是为了避免联网结束后页面已经关闭，此时还继续执行回调逻辑的问题。不是必须的
       this.getBanner();
       this.getList();
     },
     onUnload() {
-      this.pageVisible = false;
     },
     methods: {
       getBanner() {
@@ -72,13 +70,11 @@
           url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
           data: data,
           success: data => {
-            if (this.pageVisible) {
-              this.refresherTriggered = false
-              if (data.statusCode == 200) {
-                const result = data.data
-                if (result != null) {
-                  this.banner = result;
-                }
+            this.refresherTriggered = false
+            if (data.statusCode == 200) {
+              const result = data.data
+              if (result != null) {
+                this.banner = result;
               }
             }
           },
@@ -100,24 +96,20 @@
           url: url,
           method: "GET",
           success: (res) => {
-            if (this.pageVisible) {
-              if (res.statusCode == 200) {
-                console.log(res);
-                const result = res.data
-                if (result != null) {
-                  this.listData = result //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
-                  // this.listData.push(...result)
-                  // this.last_id = this.listData[0].id + "";
-                }
-                this.refresherTriggered = false;
+            if (res.statusCode == 200) {
+              console.log(res);
+              const result = res.data
+              if (result != null) {
+                this.listData = result //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
+                // this.listData.push(...result)
+                // this.last_id = this.listData[0].id + "";
               }
+              this.refresherTriggered = false;
             }
           },
           fail: (res) => {
-            if (this.pageVisible) {
-              console.log('fail', res);
-              this.refresherTriggered = false
-            }
+            console.log('fail', res);
+            this.refresherTriggered = false
           }
         });
       },
@@ -139,18 +131,16 @@
           url: '/pages/template/list-news/detail/detail?post_id=' + post_id + "&cover=" + cover + "&title=" + title
         });
       },
-      clickTH(index:number){
+      clickTH(index : number) {
         uni.showModal({
           content: "点击表头项：" + index,
           showCancel: false
         });
       },
       onRefresherrefresh() {
-        if (this.pageVisible) {
-          this.refresherTriggered = true
-          this.getBanner();
-          this.getList();
-        }
+        this.refresherTriggered = true
+        this.getBanner();
+        this.getList();
       }
     }
   };

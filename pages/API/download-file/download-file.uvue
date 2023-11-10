@@ -27,17 +27,14 @@
         title: 'downloadFile',
         imageSrc: '',
         task: null as DownloadTask | null,
-        pageVisible: false,
         //自动化测试例专用
         jest_result: false
       }
     },
     onLoad() {
-      this.pageVisible = true;
     },
     onUnload() {
       this.imageSrc = '';
-      this.pageVisible = false;
       uni.hideLoading();
       this.task?.abort();
     },
@@ -50,23 +47,17 @@
         this.task = uni.downloadFile({
           url: "https://web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
           success: (res) => {
-            if (this.pageVisible) {
-              console.log('downloadFile success, res is', res)
-              self.imageSrc = res.tempFilePath;
-              uni.hideLoading();
-            }
+            console.log('downloadFile success, res is', res)
+            self.imageSrc = res.tempFilePath;
+            uni.hideLoading();
           },
           fail: (err) => {
-            if (this.pageVisible) {
-              console.log('downloadFile fail, err is:', err)
-              uni.hideLoading();
-            }
+            console.log('downloadFile fail, err is:', err)
+            uni.hideLoading();
           }
         });
         this.task?.onProgressUpdate((update) => {
-          if (this.pageVisible) {
-            console.log("progress : ", update.progress);
-          }
+          console.log("progress : ", update.progress);
         })
       },
       //自动化测试例专用
