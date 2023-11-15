@@ -56,15 +56,15 @@
 			// this.openCollapse(this.open)
 		},
 		methods: {
-			// 开启或关闭折叠面板 
+			// 开启或关闭折叠面板
 			openCollapse(open: boolean) {
 				if (this.disabled) return
 				// 关闭其他已打开
 				$dispatch(this, 'UniCollapse', 'cloceAll')
 				this.is_open = open
-				this.oepnOrClose(open)
+				this.openOrClose(open)
 			},
-			oepnOrClose(open: boolean) {
+			openOrClose(open: boolean) {
 				const boxNode = this.boxNode?.style!;
 				const contentNode = this.contentNode?.style!;
 				let hide = open ? 'flex' : 'none';
@@ -91,7 +91,7 @@
 		background-color: #fff;
 	}
 
-	
+
 
 	.down_arrow {
 		width: 8px;
@@ -115,12 +115,12 @@
 		font-size: 14px;
 		font-weight: 400;
 	}
-	
+
 	.open--active {
 		/* background-color: #f0f0f0; */
 		color: #bbb;
 	}
-	
+
 	.is-disabled {
 		color: #999;
 	}

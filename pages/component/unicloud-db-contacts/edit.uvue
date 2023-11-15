@@ -1,70 +1,53 @@
 <template>
-  <view class="page">
-    <navbar>
-      <template v-slot:left>
-        <text class="btn-cancel">取消</text>
-      </template>
-      <template v-slot:right>
-        <text class="btn-update" @click="update">保存</text>
-      </template>
-    </navbar>
-    <scroll-view class="scroll-view" :scroll-y="true">
-      <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
-        page-data="replace" loadtime="manual" @load="onQueryLoad">
-        <view v-if="error!=null" class="error">{{error.errMsg}}</view>
-        <view v-if="loading" class="loading">正在加载...</view>
-        <view v-if="data.length>0">
-          <view class="form-item">
-            <text class="form-item-label">姓名</text>
-            <input class="form-item-input" placeholder="姓名" v-model="username" />
-          </view>
-          <view class="form-item">
-            <text class="form-item-label">电话</text>
-            <input class="form-item-input" placeholder="电话" v-model="mobile" />
-          </view>
-          <view class="form-item">
-            <text class="form-item-label">邮箱</text>
-            <input class="form-item-input" placeholder="邮箱地址" v-model="email" />
-          </view>
-          <view class="form-item">
-            <text class="form-item-label">备注</text>
-            <textarea class="form-item-input" placeholder="备注" v-model="comment" />
-          </view>
-          <view class="form-item">
-            <text class="form-item-label">性别</text>
-            <radio-group class="radio-list" @change="radioChange">
-              <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
-                <radio :value="item.value" :checked="item.value == gender" />
-                <text>{{item.text}}</text>
-              </view>
-            </radio-group>
-          </view>
+  <scroll-view class="scroll-view" :scroll-y="true">
+    <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
+      page-data="replace" loadtime="manual">
+      <view v-if="error!=null" class="error">{{error.errMsg}}</view>
+      <view v-if="loading" class="loading">正在加载...</view>
+      <form v-if="data.length>0" @submit="onFormSubmit">
+        <view class="form-item">
+          <text class="form-item-label">姓名</text>
+          <input class="form-item-input" placeholder="姓名" name="username" :value="data[0].getString('username')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">电话</text>
+          <input class="form-item-input" placeholder="电话" name="mobile" :value="data[0].getString('mobile')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">邮箱</text>
+          <input class="form-item-input" placeholder="邮箱地址" name="email" :value="data[0].getString('email')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">备注</text>
+          <textarea class="form-item-input" placeholder="备注" name="comment" :value="data[0].getString('comment')" />
+        </view>
+        <view class="form-item">
+          <text class="form-item-label">性别</text>
+          <radio-group class="radio-list" name="gender">
+            <view class="radio-item" v-for="(item, _) in genderList" :key="item.value">
+              <radio :value="item.value" :checked="item.value == data[0].getNumber('gender')" />
+              <text>{{item.text}}</text>
+            </view>
+          </radio-group>
+        </view>
+        <view class="btn-group">
+          <button class="btn-submit" type="primary" form-type="submit">保存</button>
           <button class="btn-delete" type="warn"
             @click="remove(data[0].getString('_id'), data[0].getString('username'))">删除联系人</button>
         </view>
-      </unicloud-db>
-    </scroll-view>
-  </view>
+      </form>
+    </unicloud-db>
+  </scroll-view>
 </template>
 
 <script>
   import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
 
-  import navbar from './navbar.uvue'
-
   export default {
-    components: {
-      navbar
-    },
     data() {
       return {
         collection: COLLECTION_NAME,
         where: '',
-        username: "",
-        mobile: "",
-        gender: '',
-        comment: "",
-        email: "",
         genderList: GenderList as GenderType[],
         $whereID: '',
         $uniCloudElement: null as UniCloudDBElement | null
@@ -79,18 +62,11 @@
       this.$uniCloudElement!.loadData()
     },
     methods: {
-      radioChange(e : RadioGroupChangeEvent) {
-        this.gender = e.detail.value
-      },
-      update() {
-        const value = {
-          username: this.username,
-          gender: parseInt(this.gender),
-          mobile: this.mobile,
-          comment: this.comment,
-          email: this.email,
-        };
-        this.$uniCloudElement!.update(this.$whereID, value, {
+      onFormSubmit: function (e : FormSubmitEvent) {
+        const formData = e.detail.value
+        const genderString = formData['gender'] as string
+        formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
+        this.$uniCloudElement!.update(this.$whereID, formData, {
           showToast: false,
           needLoading: true,
           needConfirm: false,
@@ -135,18 +111,6 @@
             })
           }
         })
-      },
-      onQueryLoad(data : Array<UTSJSONObject>, _ : boolean) {
-        if (data.length == 0) {
-          return
-        }
-
-        const data1 = data[0];
-        this.username = data1.getString('username') ?? "";
-        this.mobile = data1.getString('mobile') ?? "";
-        this.gender = data1.getNumber('gender')?.toString() ?? '0';
-        this.comment = data1.getString('comment') ?? "";
-        this.email = data1.getString('email') ?? "";
       }
     }
   }
@@ -196,17 +160,11 @@
     align-items: center;
   }
 
-  .btn-cancel {
-    color: #fff;
-    margin-left: 15px;
-  }
-
-  .btn-update {
-    color: #fff;
-    margin-right: 15px;
+  .btn-group {
+    margin-top: 30px;
   }
 
   .btn-delete {
-    margin-top: 350px;
+    margin-top: 15px;
   }
 </style>

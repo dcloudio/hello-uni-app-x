@@ -28,29 +28,29 @@ export default function () : Promise<UniUpgradeCenterResult> {
           const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
           if (typeof tcbRes.fileList[0].tempFileURL !== 'undefined') uniUpgradeCenterResult.url = tcbRes.fileList[0].tempFileURL;
 
-				/**
-				 * 提示升级一
-				 * 使用 uni.showModal
-				 */
-				// return updateUseModal(uniUpgradeCenterResult)
+          /**
+           * 提示升级一
+           * 使用 uni.showModal
+           */
+          // return updateUseModal(uniUpgradeCenterResult)
 
-				/**
-				 * 提示升级二
-				 * 官方适配的升级弹窗，可自行替换资源适配UI风格
-				 */
-				// #ifndef UNI-APP-X
-				uni.setStorageSync(PACKAGE_INFO_KEY, uniUpgradeCenterResult)
-				uni.navigateTo({
-					url: `/uni_modules/uni-upgrade-center-app/pages/upgrade-popup?local_storage_key=${PACKAGE_INFO_KEY}`,
-					fail: (err) => {
-						console.error('更新弹框跳转失败', err)
-						uni.removeStorageSync(PACKAGE_INFO_KEY)
-					}
-				})
-				// #endif
-				// #ifdef UNI-APP-X
-				component?.$callMethod('show', true, uniUpgradeCenterResult)
-				// #endif
+          /**
+           * 提示升级二
+           * 官方适配的升级弹窗，可自行替换资源适配UI风格
+           */
+          // #ifndef UNI-APP-X
+          uni.setStorageSync(PACKAGE_INFO_KEY, uniUpgradeCenterResult)
+          uni.navigateTo({
+            url: `/uni_modules/uni-upgrade-center-app/pages/upgrade-popup?local_storage_key=${PACKAGE_INFO_KEY}`,
+            fail: (err) => {
+              console.error('更新弹框跳转失败', err)
+              uni.removeStorageSync(PACKAGE_INFO_KEY)
+            }
+          })
+          // #endif
+          // #ifdef UNI-APP-X
+          component?.$callMethod('show', true, uniUpgradeCenterResult)
+          // #endif
 
           return resolve(uniUpgradeCenterResult)
         } else if (code < 0) {
@@ -89,13 +89,13 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 	let confirmText = '立即下载更新'
 	// #endif
 
-	return uni.showModal({
-		title,
-		content: contents,
-		showCancel: !is_mandatory,
-		confirmText,
-		success: res => {
-			if (res.cancel) return;
+    return uni.showModal({
+      title,
+      content: contents,
+      showCancel: !is_mandatory,
+      confirmText,
+      success: res => {
+        if (res.cancel) return;
 
 			if (isiOS) {
 				// iOS 平台跳转 AppStore
@@ -108,10 +108,10 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 				return;
 			}
 
-			uni.showToast({
-				title: '后台下载中……',
-				duration: 1000
-			});
+        uni.showToast({
+          title: '后台下载中……',
+          duration: 1000
+        });
 
 			// wgt 和 安卓下载更新
 			uni.downloadFile({
