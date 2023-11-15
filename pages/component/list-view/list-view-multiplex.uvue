@@ -1,0 +1,42 @@
+<template>
+	<list-view id="listview" style="flex: 1;" @scrolltolower="onScrollTolower">
+    <list-item v-for="index in item_count" class="item">
+      <text >item-------<text>{{index}}</text></text>
+    </list-item>
+  </list-view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				item_count: 20,
+        listViewElement: null as UniListViewElement|null
+			}
+		},
+    onReady() {
+      this.listViewElement = uni.getElementById<UniListViewElement>('listview')
+    },
+		methods: {
+      onScrollTolower(_: ScrollToLowerEvent) {
+        setTimeout(function(){
+          this.item_count += 20
+        }, 300)
+      },
+      //用于自动化测试
+      listViewScrollByY(y : number) {
+        this.listViewElement?.scrollBy(0, y)
+      }
+		}
+	}
+</script>
+
+<style>
+  .item {
+    padding: 15px;
+    margin: 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+</style>
