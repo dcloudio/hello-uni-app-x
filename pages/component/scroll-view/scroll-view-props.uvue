@@ -12,10 +12,11 @@
 					<text class="uni-text">{{item.label}}</text>
 				</view>
 			</scroll-view>
-			<scroll-view v-else :scroll-x="false" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+			<scroll-view v-else :scroll-y="scrollY"  :scroll-top="scrollTop" :scroll-left="scrollLeft"
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
 				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
+				@touchmove="onTouchMove"
 				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY">
 				<view class="item" :id="item.id" v-for="(item,_) in items">
 					<text class="uni-text">{{item.label}}</text>
@@ -38,7 +39,11 @@
 			</view>
 			<view class="uni-option">
 				<text>是否横向滚动</text>
-				<switch :checked="scrollX" @change="changeDirection"></switch>
+				<switch :checked="scrollX" @change="changeDirectionX"></switch>
+			</view>
+			<view class="uni-option">
+				<text>是否竖向滚动</text>
+				<switch :checked="scrollY" @change="changeDirectionY"></switch>
 			</view>
 			<view class="uni-common-pb"></view>
 			<view class="uni-slider">
@@ -87,6 +92,7 @@
 			return {
 				items: [] as Item[],
 				scrollX: false,
+				scrollY: true,
 				rebound: false,
 				scrollTop: 0,
 				scrollLeft: 0,
@@ -115,8 +121,19 @@
 			handleChangeScrollTop(e : SliderChangeEvent) {
 				this.scrollTop = e.detail.value;
 			},
-			changeDirection() {
+			changeDirectionX() {
 				this.scrollX = !this.scrollX;
+				if(this.scrollX) {
+					this.scrollY = false
+				}
+				this.scrollTop = 0;
+				this.scrollLeft = 0;
+			},
+			changeDirectionY() {
+				this.scrollY = !this.scrollY;
+				if(this.scrollY) {
+					this.scrollX = false
+				}
 				this.scrollTop = 0;
 				this.scrollLeft = 0;
 			},
@@ -159,6 +176,9 @@
 			},
 			scrollend() {
 				console.log("滚动停止");
+			},
+			onTouchMove() {
+				console.log("TouchMove");
 			},
       //自动化测试专用
       checkScrollHeight(): Boolean {
