@@ -58,7 +58,14 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "showToast");
     await page.waitFor(500);
-    const image = await program.screenshot({adb: true, area: {x: 0, y: 200}});
+    const image = await program.screenshot({
+      adb: true,
+      area: {
+        x: 0,
+        y: 200,
+        height: 2340
+      }
+    });
     expect(image).toMatchImageSnapshot();
     await page.waitFor('view');
   });
@@ -67,7 +74,14 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "showLoading");
     await page.waitFor(500);
-    const image = await program.screenshot({adb: true, area: {x: 0, y: 200}});
+    const image = await program.screenshot({
+      adb: true,
+      area: {
+        x: 0,
+        y: 200,
+        height: 2340
+      }
+    });
     expect(image).toMatchImageSnapshot();
   });
   it("showModal", async () => {
@@ -75,7 +89,14 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "showModal");
     await page.waitFor(500);
-    const image = await program.screenshot({adb: true, area: {x: 0, y: 200}});
+    const image = await program.screenshot({
+      adb: true,
+      area: {
+        x: 0,
+        y: 200,
+        height: 2340
+      }
+    });
     expect(image).toMatchImageSnapshot();
   });
   it("showActionSheet", async () => {
@@ -83,7 +104,14 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
     await page.waitFor(500);
-    const image = await program.screenshot({adb: true, area: {x: 0, y: 200}});
+    const image = await program.screenshot({
+      adb: true,
+      area: {
+        x: 0,
+        y: 200,
+        height: 2340
+      }
+    });
     expect(image).toMatchImageSnapshot();
   });
 });
