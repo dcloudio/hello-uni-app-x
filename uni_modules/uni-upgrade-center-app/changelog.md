@@ -1,3 +1,5 @@
+## 0.7.1（2023-11-17）
+- 修复 运行至浏览器 ts 语法报错
 ## 0.7.0（2023-11-10）
 - 新增 兼容 uni-app x 项目 [详情](https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html)
 ## 0.6.5（2023-10-27）
