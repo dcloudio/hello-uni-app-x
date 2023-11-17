@@ -8,7 +8,7 @@ describe("setCustomNavigationBarColor", () => {
   const adbScreenShotArea = {
     x: 880,
     y: 0,
-    width: 100,
+    width: 60,
     height: 60
   };
   beforeAll(async () => {
@@ -19,7 +19,7 @@ describe("setCustomNavigationBarColor", () => {
       adbScreenShotArea.height = 50
     } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
       adbScreenShotArea.x = 1160
-      adbScreenShotArea.width = 140
+      adbScreenShotArea.width = 70
       adbScreenShotArea.height = 80
     }
     await page.waitFor(1000);
