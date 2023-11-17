@@ -63,7 +63,7 @@ describe("onLoad", () => {
       area: {
         x: 0,
         y: 200,
-        height: 2340
+        height: 2140
       }
     });
     expect(image).toMatchImageSnapshot();
@@ -79,7 +79,7 @@ describe("onLoad", () => {
       area: {
         x: 0,
         y: 200,
-        height: 2340
+        height: 2140
       }
     });
     expect(image).toMatchImageSnapshot();
@@ -94,7 +94,7 @@ describe("onLoad", () => {
       area: {
         x: 0,
         y: 200,
-        height: 2340
+        height: 2140
       }
     });
     expect(image).toMatchImageSnapshot();
@@ -109,7 +109,7 @@ describe("onLoad", () => {
       area: {
         x: 0,
         y: 200,
-        height: 2340
+        height: 2140
       }
     });
     expect(image).toMatchImageSnapshot();
