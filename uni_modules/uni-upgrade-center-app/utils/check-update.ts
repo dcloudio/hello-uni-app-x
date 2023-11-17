@@ -14,7 +14,6 @@ export default function (component : ComponentPublicInstance | null = null) : Pr
 // #ifndef UNI-APP-X
 export default function () : Promise<UniUpgradeCenterResult> {
 // #endif
-	// #ifdef APP-PLUS
 	return new Promise<UniUpgradeCenterResult>((resolve, reject) => {
 		callCheckVersion().then(async (uniUpgradeCenterResult) => {
 			// NOTE uni-app x 3.96 解构有问题
@@ -62,7 +61,6 @@ export default function () : Promise<UniUpgradeCenterResult> {
         reject(err)
       })
     });
-    // #endif
   }
 
 /**
