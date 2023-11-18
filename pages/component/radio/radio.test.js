@@ -8,7 +8,7 @@ function getData(key = '') {
 let page
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/radio/radio')
-  await page.waitFor('view')
+  await page.waitFor(1000)
 })
 
 describe('Radio.uvue', () => {
