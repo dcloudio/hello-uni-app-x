@@ -125,6 +125,11 @@ const pages = [
   '/pages/API/element-draw/element-draw',
 ]
 
+const needLoadingNetworkResourcesPages = [
+  "/pages/CSS/text/font-family",
+  "/pages/template/list-news/list-news",
+];
+
 let page;
 describe('page screenshot test', () => {
   beforeAll(async () => {
@@ -132,6 +137,9 @@ describe('page screenshot test', () => {
   });
   beforeEach(async () => {
     page = await program.reLaunch(pages[pageIndex]);
+    if (needLoadingNetworkResourcesPages.includes(pages[pageIndex])) {
+      await page.waitFor(2000);
+    }
     await page.waitFor(1000);
   });
   afterEach(() => {
