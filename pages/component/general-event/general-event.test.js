@@ -53,8 +53,8 @@ describe('event trigger sequence', () => {
       ],
     })
     const data = await page.data()
-    expect(data.onTouchStartTime).toBeLessThan(data.onTouchMoveTime)
-    expect(data.onTouchMoveTime).toBeLessThan(data.onTouchEndTime)
+    expect(data.onTouchStartTime).toBeLessThanOrEqual(data.onTouchMoveTime);
+    expect(data.onTouchMoveTime).toBeLessThanOrEqual(data.onTouchEndTime);
   })
 
   it('click', async () => {

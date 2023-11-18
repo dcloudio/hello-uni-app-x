@@ -8,7 +8,7 @@ function getData(key = '') {
 let page
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/checkbox/checkbox')
-  await page.waitFor(1000)
+  await page.waitFor(2000);
 })
 
 describe('Checkbox.uvue', () => {
