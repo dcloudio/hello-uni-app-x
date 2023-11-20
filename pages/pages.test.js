@@ -84,7 +84,7 @@ const pages = [
   '/pages/CSS/padding/padding-top',
   '/pages/CSS/padding/padding',
   '/pages/CSS/text/color',
-  '/pages/CSS/text/font-family',
+  // '/pages/CSS/text/font-family', // 网络资源加载
   '/pages/CSS/text/font-size',
   '/pages/CSS/text/font-style',
   '/pages/CSS/text/font-weight',
@@ -110,8 +110,7 @@ const pages = [
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // '/pages/template/drop-card/drop-card',
   '/pages/template/half-screen/half-screen',
-  '/pages/template/list-news/list-news',
-  '/pages/template/list-news/detail/detail',
+  // '/pages/template/list-news/list-news', // 网络资源加载
   // '/pages/template/long-list/long-list', // 动态内容
   '/pages/template/navbar-lite/navbar-lite',
   '/pages/template/pull-zoom-image/pull-zoom-image',
@@ -125,12 +124,6 @@ const pages = [
   '/pages/API/element-draw/element-draw',
 ]
 
-const needDelayPages = [
-  "/pages/CSS/text/font-family", // load network font
-  "/pages/template/list-news/list-news", // load network image
-  "/pages/component/list-view/list-view", // delay wait scroll to disappear
-];
-
 let page;
 describe("page screenshot test", () => {
   beforeAll(async () => {
@@ -138,9 +131,6 @@ describe("page screenshot test", () => {
   });
   beforeEach(async () => {
     page = await program.reLaunch(pages[pageIndex]);
-    if (needDelayPages.includes(pages[pageIndex])) {
-      await page.waitFor(2000);
-    }
     await page.waitFor(1000);
   });
   afterEach(() => {
