@@ -13,14 +13,14 @@ beforeAll(async () => {
 
 describe('Radio.uvue', () => {
   it('change', async () => {
-    const radio = await page.$('.r')
-    const radio1 = await page.$('.r1')
-    const radio2 = await page.$('.r2')
     expect(await getData('value')).toEqual('')
+    const radio1 = await page.$('.r1')
     await radio1.tap()
     expect(await getData('value')).toEqual('r1')
+    const radio = await page.$('.r')
     await radio.tap()
     expect(await getData('value')).toEqual('r')
+    const radio2 = await page.$('.r2')
     await radio2.tap()
     expect(await getData('value')).toEqual('r')
   })

@@ -13,14 +13,14 @@ beforeAll(async () => {
 
 describe('Checkbox.uvue', () => {
   it('change', async () => {
-    const cb = await page.$('.cb')
-    const cb1 = await page.$('.cb1')
-    const cb2 = await page.$('.cb2')
     expect(await getData('value')).toEqual([])
+    const cb1 = await page.$('.cb1')
     await cb1.tap()
     expect(await getData('value')).toEqual(['cb', 'cb1'])
+    const cb = await page.$('.cb')
     await cb.tap()
     expect(await getData('value')).toEqual(['cb1'])
+    const cb2 = await page.$('.cb2')
     await cb2.tap()
     expect(await getData('value')).toEqual(['cb1'])
     await cb1.tap()
