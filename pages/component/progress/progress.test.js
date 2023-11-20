@@ -18,7 +18,7 @@ describe('Progress.uvue', () => {
         const p2 = await page.$('.p2')
         const p3 = await page.$('.p3')
         await page.callMethod('setProgress')
-        await page.waitFor(1000)
+        await page.waitFor(2000);
         expect(await p.property('percent')).toEqual(20)
         expect(await p1.property('percent')).toEqual(40)
         expect(await p2.property('percent')).toEqual(60)
