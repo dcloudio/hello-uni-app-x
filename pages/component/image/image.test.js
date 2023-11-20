@@ -29,4 +29,13 @@ describe('component-native-image', () => {
       await page.waitFor(300);
       expect(await page.data('loadError')).toBe(true)
     })
+
+    it('path-screenshot', async () => {
+      const page = await program.navigateTo('/pages/component/image/image-path');
+      await page.waitFor(3000);
+      const image = await program.screenshot({
+        fullPage: true
+      })
+      expect(image).toMatchImageSnapshot()
+    });
 });

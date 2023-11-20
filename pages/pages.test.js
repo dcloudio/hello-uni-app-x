@@ -8,7 +8,7 @@ const pages = [
   '/pages/component/image/image-format',
   // '/pages/component/image/image-large', // 截图过大
   '/pages/component/image/image-mode',
-  '/pages/component/image/image-path',
+  // '/pages/component/image/image-path', // 网络资源加载
   '/pages/component/image/image',
   '/pages/component/input/input',
   '/pages/component/list-view/list-view',
