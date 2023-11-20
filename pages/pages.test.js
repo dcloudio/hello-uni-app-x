@@ -125,19 +125,20 @@ const pages = [
   '/pages/API/element-draw/element-draw',
 ]
 
-const needLoadingNetworkResourcesPages = [
-  "/pages/CSS/text/font-family",
-  "/pages/template/list-news/list-news",
+const needDelayPages = [
+  "/pages/CSS/text/font-family", // load network font
+  "/pages/template/list-news/list-news", // load network image
+  "/pages/component/list-view/list-view", // delay wait scroll to disappear
 ];
 
 let page;
-describe('page screenshot test', () => {
+describe("page screenshot test", () => {
   beforeAll(async () => {
     console.log("page screenshot test start");
   });
   beforeEach(async () => {
     page = await program.reLaunch(pages[pageIndex]);
-    if (needLoadingNetworkResourcesPages.includes(pages[pageIndex])) {
+    if (needDelayPages.includes(pages[pageIndex])) {
       await page.waitFor(2000);
     }
     await page.waitFor(1000);
@@ -148,11 +149,11 @@ describe('page screenshot test', () => {
   afterAll(() => {
     console.log("page screenshot test finish");
   });
-  test.each(pages)('%s', async () => {
+  test.each(pages)("%s", async () => {
     const image = await program.screenshot({
-      fullPage: true
+      fullPage: true,
     });
     expect(image).toMatchImageSnapshot();
     await page.waitFor(500);
-  })
-})
+  });
+});
