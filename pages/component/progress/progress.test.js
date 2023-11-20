@@ -13,15 +13,15 @@ beforeAll(async () => {
 
 describe('Progress.uvue', () => {
     it('percent', async () => {
-        const p = await page.$('.p')
-        const p1 = await page.$('.p1')
-        const p2 = await page.$('.p2')
-        const p3 = await page.$('.p3')
         await page.callMethod('setProgress')
-        await page.waitFor(2000);
+        await page.waitFor(1000);
+        const p = await page.$('.p')
         expect(await p.property('percent')).toEqual(20)
+        const p1 = await page.$('.p1')
         expect(await p1.property('percent')).toEqual(40)
+        const p2 = await page.$('.p2')
         expect(await p2.property('percent')).toEqual(60)
+        const p3 = await page.$('.p3')
         expect(await p3.property('percent')).toEqual(80)
         expect(await getData('curPercent')).toEqual(20)
         await page.callMethod('clearProgress')
