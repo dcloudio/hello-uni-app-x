@@ -55,62 +55,62 @@ describe("onLoad", () => {
   });
   it("showToast", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor('view');
+    await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showToast");
-    await page.waitFor(500);
+    await page.waitFor(1000);
     const image = await program.screenshot({
       adb: true,
       area: {
         x: 0,
         y: 200,
-        height: 2140
-      }
+        height: 2140,
+      },
     });
     expect(image).toMatchImageSnapshot();
-    await page.waitFor('view');
+    await page.waitFor("view");
   });
   it("showLoading", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor('view');
+    await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showLoading");
-    await page.waitFor(500);
+    await page.waitFor(1000);
     const image = await program.screenshot({
       adb: true,
       area: {
         x: 0,
         y: 200,
-        height: 2140
-      }
+        height: 2140,
+      },
     });
     expect(image).toMatchImageSnapshot();
   });
   it("showModal", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor('view');
+    await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showModal");
-    await page.waitFor(500);
+    await page.waitFor(1000);
     const image = await program.screenshot({
       adb: true,
       area: {
         x: 0,
         y: 200,
-        height: 2140
-      }
+        height: 2140,
+      },
     });
     expect(image).toMatchImageSnapshot();
   });
   it("showActionSheet", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor('view');
+    await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
-    await page.waitFor(500);
+    await page.waitFor(1000);
     const image = await program.screenshot({
       adb: true,
       area: {
         x: 0,
         y: 200,
-        height: 2140
-      }
+        height: 2140,
+      },
     });
     expect(image).toMatchImageSnapshot();
   });
