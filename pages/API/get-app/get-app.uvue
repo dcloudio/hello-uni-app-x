@@ -2,15 +2,14 @@
   <view>
     <page-head title="getApp"></page-head>
     <view class="uni-padding-wrap">
-      <button @click="getGlobalData">
-        get globalData
-      </button>
+      <button @click="getGlobalData">get globalData</button>
+      <button @click="setGlobalData"  class="uni-common-mt">set globalData</button>
       <template v-if="globalDataStr">
-      <text class="uni-common-mt">globalData str: {{ globalDataStr }}</text>
-      <text class="uni-common-mt">globalData num: {{ globalDataNum }}</text>
-      <text class="uni-common-mt">globalData boolean: {{ globalDataBool }}</text>
+        <text class="uni-common-mt">globalData str: {{ globalDataStr }}</text>
+        <text class="uni-common-mt">globalData num: {{ globalDataNum }}</text>
+        <text class="uni-common-mt">globalData boolean: {{ globalDataBool }}</text>
       </template>
-      <text  class="uni-common-mt">点击按钮调用 App.uvue methods</text>
+      <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
       <text class="margin-top:6px;">increasetLifeCycleNum 方法</text>
       <button class="uni-common-mt" @click="_increasetLifeCycleNum">
         increase lifeCycleNum
@@ -41,6 +40,12 @@
         this.globalDataStr = app.globalData.str
         this.globalDataNum = app.globalData.num
         this.globalDataBool = app.globalData.bool
+      },
+      setGlobalData() {
+        const app = getApp()
+        app.globalData.str = 'new global data str'
+        app.globalData.num = 456
+        app.globalData.bool = false
       },
       _increasetLifeCycleNum: function () {
         const app = getApp()

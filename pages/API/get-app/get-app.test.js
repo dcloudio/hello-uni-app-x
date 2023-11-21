@@ -8,10 +8,16 @@ describe('getApp', () => {
   })
   it('globalData', async () => {
     await page.callMethod('getGlobalData')
-    const data = await page.data()
+    let data = await page.data()
     expect(data.globalDataStr).toBe('global data str')
     expect(data.globalDataNum).toBe(123)
     expect(data.globalDataBool).toBe(true)
+    await page.callMethod('setGlobalData')
+    await page.callMethod('getGlobalData')
+    data = await page.data()
+    expect(data.globalDataStr).toBe('new global data str')
+    expect(data.globalDataNum).toBe(456)
+    expect(data.globalDataBool).toBe(false)
   })
   it('method', async () => {
     const oldLifeCycleNum = await page.data('lifeCycleNum')
