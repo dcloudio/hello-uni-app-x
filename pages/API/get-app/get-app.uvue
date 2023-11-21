@@ -2,7 +2,15 @@
   <view>
     <page-head title="getApp"></page-head>
     <view class="uni-padding-wrap">
-      <text>点击按钮调用 App.uvue methods</text>
+      <button @click="getGlobalData">
+        get globalData
+      </button>
+      <template v-if="globalDataStr">
+      <text class="uni-common-mt">globalData str: {{ globalDataStr }}</text>
+      <text class="uni-common-mt">globalData num: {{ globalDataNum }}</text>
+      <text class="uni-common-mt">globalData boolean: {{ globalDataBool }}</text>
+      </template>
+      <text  class="uni-common-mt">点击按钮调用 App.uvue methods</text>
       <text class="margin-top:6px;">increasetLifeCycleNum 方法</text>
       <button class="uni-common-mt" @click="_increasetLifeCycleNum">
         increase lifeCycleNum
@@ -13,27 +21,36 @@
 </template>
 
 <script lang="uts">
-import { State, state, setLifeCycleNum } from '@/store/index.uts'
+  import { state, setLifeCycleNum } from '@/store/index.uts'
 
-export default {
-  data() {
-    return {
-      lifeCycleNum: 0,
-    }
-  },
-  onReady() {
-    this.lifeCycleNum = state.lifeCycleNum
-  },
-  methods: {
-    _increasetLifeCycleNum: function () {
-      const app = getApp()
-      app.increasetLifeCycleNum()
+  export default {
+    data() {
+      return {
+        globalDataStr: '',
+        globalDataNum: 0,
+        globalDataBool: false,
+        lifeCycleNum: 0,
+      }
+    },
+    onReady() {
       this.lifeCycleNum = state.lifeCycleNum
     },
-    // 自动化测试
-    setLifeCycleNum(num: number) {
-      setLifeCycleNum(num)
+    methods: {
+      getGlobalData() {
+        const app = getApp()
+        this.globalDataStr = app.globalData.str
+        this.globalDataNum = app.globalData.num
+        this.globalDataBool = app.globalData.bool
+      },
+      _increasetLifeCycleNum: function () {
+        const app = getApp()
+        app.increasetLifeCycleNum()
+        this.lifeCycleNum = state.lifeCycleNum
+      },
+      // 自动化测试
+      setLifeCycleNum(num : number) {
+        setLifeCycleNum(num)
+      }
     },
-  },
-}
+  }
 </script>
