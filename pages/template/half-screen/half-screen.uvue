@@ -39,7 +39,7 @@
 				if(this.bAnimation){//容错处理
 					return;
 				}
-				let top:number = this.scrollNode?.getAttribute('scrollTop') as number
+				let top:number = this.scrollNode?.scrollTop??0;
 				let p = e.touches[0];
 				this.lastY2 = this.lastY;
 				this.lastY = p.screenY;
@@ -67,7 +67,7 @@
 				if(this.bAnimation){//容错处理
 					return;
 				}
-				let top:number = this.scrollNode?.getAttribute('scrollTop') as number
+				let top:number = this.scrollNode?.scrollTop??0;
 				let bHide = (this.halfHeight-this.halfOffset)<this.halfHeight/4;
 				if(bHide){
 					bHide = this.lastY2>0&&this.lastY2<=this.lastY;
@@ -134,7 +134,7 @@
 			this.halfNode = this.$refs['halfScreen'] as Element;
 			this.halfHeight = this.halfNode!.getBoundingClientRect().height;
 			this.scrollNode = this.$refs['halfScroll'] as Element;
-			
+
 			this.totalHeight = uni.getWindowInfo().windowHeight;
 			this.halfNode?.style?.setProperty('top', this.totalHeight.toString());
 		},
