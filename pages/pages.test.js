@@ -8,9 +8,9 @@ const pages = [
   '/pages/component/image/image-format',
   // '/pages/component/image/image-large', // 截图过大
   '/pages/component/image/image-mode',
-  // '/pages/component/image/image-path', // 网络资源加载
+  // '/pages/component/image/image-path', // 网络资源加载，单独测试例截图
   '/pages/component/image/image',
-  '/pages/component/input/input',
+  // '/pages/component/input/input', // 自动获取焦点，单独测试例截图
   '/pages/component/list-view/list-view',
   '/pages/component/navigator/navigate',
   '/pages/component/navigator/navigator',
@@ -36,7 +36,7 @@ const pages = [
   // '/pages/component/video/video',
   '/pages/component/view/view',
   // '/pages/component/web-view/web-view', // 动态内容
-  '/pages/component/web-view-local/web-view-local',
+  // '/pages/component/web-view-local/web-view-local', // 依赖加载完成回调，单独测试例截图
   '/pages/component/general-event/transition-event',
   
   // CSS
@@ -84,7 +84,7 @@ const pages = [
   '/pages/CSS/padding/padding-top',
   '/pages/CSS/padding/padding',
   '/pages/CSS/text/color',
-  // '/pages/CSS/text/font-family', // 网络资源加载
+  // '/pages/CSS/text/font-family', // 网络资源加载，单独测试例截图
   '/pages/CSS/text/font-size',
   '/pages/CSS/text/font-style',
   '/pages/CSS/text/font-weight',
@@ -110,7 +110,7 @@ const pages = [
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // '/pages/template/drop-card/drop-card',
   '/pages/template/half-screen/half-screen',
-  // '/pages/template/list-news/list-news', // 网络资源加载
+  // '/pages/template/list-news/list-news', // 网络资源加载，单独测试例截图
   // '/pages/template/long-list/long-list', // 动态内容
   '/pages/template/navbar-lite/navbar-lite',
   '/pages/template/pull-zoom-image/pull-zoom-image',
