@@ -1,7 +1,6 @@
 <script lang="uts">
-  import {type PropType} from 'vue'
-
-  export type ItemType = { value : number; name : string }
+  import { PropType } from 'vue'
+  import { ItemType } from './enum-data'
 
   export default {
     emits: ['change'],
@@ -24,9 +23,9 @@
       // @ts-ignore
       _change(e : RadioGroupChangeEvent) {
         const selected = this.items.find((item: ItemType) : boolean => {
-          return item.name === e.detail.value
+          return item.name == e.detail.value
         })
-        if (selected !== null) {
+        if (selected != null) {
           this.current = selected.value
           this.$emit('change', this.current)
           uni.showToast({
