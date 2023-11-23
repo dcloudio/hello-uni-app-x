@@ -42,7 +42,7 @@
 				state: ["unPlay", "unPlay", "unPlay"] as string[]
 			}
 		},
-		beforeCreate() {
+		created() {
 			this.list = this.getData()
 			this.visibleList = this.list.slice(0, 3)
 		},
@@ -111,10 +111,10 @@
         console.error("onLoadstart  video" + index );
       },
       getVideoContext(index : number) : VideoContext{
-        let videoContext : VideoContext | null = this.$videoContextMap.get('video-'+index)
+        let videoContext : VideoContext | null = this.$data.$videoContextMap.get('video-'+index)
         if(videoContext == null){
           videoContext = uni.createVideoContext('video-'+index, this) as VideoContext
-          this.$videoContextMap.set('video-'+index,videoContext)
+          this.$data.$videoContextMap.set('video-'+index,videoContext)
         }
         return videoContext
       },
