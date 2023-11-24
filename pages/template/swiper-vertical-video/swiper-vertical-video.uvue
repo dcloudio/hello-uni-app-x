@@ -34,7 +34,7 @@
 		components: {},
 		data() {
 			return {
-        $videoContextMap:new Map<string, VideoContext>(),
+        $videoContextMap: new Map<string, VideoContext>(),
 				list: [] as ListItem[],
 				visibleList: [] as ListItem[],// 提高性能 可见的只有3个
 				current: 0 as number,
@@ -42,7 +42,7 @@
 				state: ["unPlay", "unPlay", "unPlay"] as string[]
 			}
 		},
-		beforeCreate() {
+		created() {
 			this.list = this.getData()
 			this.visibleList = this.list.slice(0, 3)
 		},
@@ -73,7 +73,7 @@
 					this.visibleList = visibleList
 				}
 
-				this.state.forEach((val : string, index : number) => {
+				this.state.forEach((_ : string, index : number) => {
 					if (index === current) {
 						this.doPlay(current)
 					} else {
@@ -110,11 +110,12 @@
       onLoadstart(index : number) {
         console.error("onLoadstart  video" + index );
       },
-      getVideoContext(index : number) : VideoContext{
-        let videoContext : VideoContext | null = this.$videoContextMap.get('video-'+index)
+      getVideoContext(index : number) : VideoContext {
+        const videoContextMap = this.$data['$videoContextMap'] as Map<string, VideoContext>
+        let videoContext : VideoContext | null = videoContextMap['video-'+index]
         if(videoContext == null){
           videoContext = uni.createVideoContext('video-'+index, this) as VideoContext
-          this.$videoContextMap.set('video-'+index,videoContext)
+          videoContextMap['video-'+index] = videoContext
         }
         return videoContext
       },

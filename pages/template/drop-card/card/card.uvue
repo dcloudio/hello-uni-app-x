@@ -80,10 +80,11 @@
       },
       // 工具方法，用于快速设置 Element 的 style
       setElementStyle(refName:string,propertyName : string, propertyStyle : any) : void {
-        let element : Element | null = this.$elementMap.get(refName)
+        const elementMap = this.$data['$elementMap'] as Map<string, Element>
+        let element : Element | null = elementMap[refName]
         if(element == null){
           element = this.$refs[refName] as Element;
-          this.$elementMap.set(refName,element)
+          elementMap[refName] = element
         }else{
           // console.log('直接拿');
         }
