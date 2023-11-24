@@ -140,6 +140,7 @@ describe("page screenshot test", () => {
     console.log("page screenshot test finish");
   });
   test.each(pages)("%s", async () => {
+    console.log("Taking screenshot: ", pageIndex, pages[pageIndex]);
     const image = await program.screenshot({
       fullPage: true,
     });
