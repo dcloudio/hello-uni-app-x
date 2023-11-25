@@ -1,0 +1,33 @@
+<template>
+	<view>
+		<button class="button" @click="shareText('https://uniapp.dcloud.io/uni-app-x','分享到')">分享</button>
+	</view>
+</template>
+
+<script>
+import Intent from 'android.content.Intent';
+
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			shareText(text:string,title:string){
+			    const context = UTSAndroid.getUniActivity()!;
+			    const intent = new Intent(Intent.ACTION_SEND)
+					intent.setType("text/plain");
+					intent.putExtra(Intent.EXTRA_TEXT, text);
+					context.startActivity(Intent.createChooser(intent, title));
+          // 这里是简单的文本分享示例，如需分享文件图片，需要使用fileProvider
+			},
+		}
+	}
+</script>
+
+<style>
+.button {
+	margin: 30rpx;
+}
+</style>
