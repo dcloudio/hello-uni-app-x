@@ -11,7 +11,7 @@ const pages = [
   // '/pages/component/image/image-path', // 网络资源加载，单独测试例截图
   '/pages/component/image/image',
   // '/pages/component/input/input', // 自动获取焦点，单独测试例截图
-  '/pages/component/list-view/list-view',
+  // '/pages/component/list-view/list-view',
   '/pages/component/navigator/navigate',
   '/pages/component/navigator/navigator',
   '/pages/component/navigator/redirect',
@@ -38,7 +38,7 @@ const pages = [
   // '/pages/component/web-view/web-view', // 动态内容
   // '/pages/component/web-view-local/web-view-local', // 依赖加载完成回调，单独测试例截图
   '/pages/component/general-event/transition-event',
-  
+
   // CSS
   '/pages/CSS/background/background-color',
   '/pages/CSS/background/background-image',
@@ -96,14 +96,14 @@ const pages = [
   '/pages/CSS/transform/rotate',
   '/pages/CSS/transform/scale',
   '/pages/CSS/transform/translate',
-  '/pages/CSS/transition/transition',
-  
+  // '/pages/CSS/transition/transition',
+
   // tabBar  //改动频繁，不再测试
   // '/pages/tabBar/API',
   // '/pages/tabBar/component',
   // '/pages/tabBar/CSS',
   // '/pages/tabBar/template',
-  
+
   // template
   // '/pages/template/calendar/calendar', // 动态内容
   '/pages/template/custom-refresher/custom-refresher',
@@ -116,13 +116,24 @@ const pages = [
   '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
   '/pages/template/scroll-sticky/scroll-sticky',
-  '/pages/template/swiper-list/swiper-list',
-  '/pages/template/swiper-list2/swiper-list2',
+  // '/pages/template/swiper-list/swiper-list',
+  // '/pages/template/swiper-list2/swiper-list2',
   // '/pages/template/swiper-vertical-video/swiper-vertical-video'
-  
+
   // api
-  '/pages/API/element-draw/element-draw',
+  // '/pages/API/element-draw/element-draw',
 ]
+
+if (process.env.uniTestPlatformInfo.startsWith('android')) {
+  // 规避 web 端不支持页面
+  pages.push(
+    "/pages/component/list-view/list-view",
+    "/pages/CSS/transition/transition",
+    '/pages/template/swiper-list/swiper-list',
+    '/pages/template/swiper-list2/swiper-list2',
+    '/pages/API/element-draw/element-draw',
+  )
+}
 
 let page;
 describe("page screenshot test", () => {

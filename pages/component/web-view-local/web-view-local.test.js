@@ -12,12 +12,14 @@ describe('component-native-web-view', () => {
   });
 
   it('screenshot', async () => {
-    await page.waitFor(async () => {
-      return await page.data('loadFinish') === true;
-    });
-    const image = await program.screenshot({
-      fullPage: true
-    });
-    expect(image).toMatchImageSnapshot();
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      await page.waitFor(async () => {
+        return await page.data('loadFinish') === true;
+      });
+      const image = await program.screenshot({
+        fullPage: true
+      });
+      expect(image).toMatchImageSnapshot();
+    }
   });
 });
