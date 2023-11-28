@@ -1,5 +1,4 @@
 <script lang="uts">
-  import { PropType } from 'vue'
   import { ItemType } from './enum-data'
 
   export default {

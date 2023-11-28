@@ -6,7 +6,6 @@
 </template>
 
 <script lang="uts">
-	import { ComponentPublicInstance } from 'vue'
 	export default {
 		name: "UniCollapse",
 		props: {

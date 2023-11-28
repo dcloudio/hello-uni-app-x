@@ -1,6 +1,5 @@
 import callCheckVersion, { UniUpgradeCenterResult } from "./call-check-version"
 // #ifdef UNI-APP-X
-import { ComponentPublicInstance } from 'vue'
 import { openSchema } from './utils.uts'
 // #endif
 
