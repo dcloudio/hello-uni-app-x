@@ -51,6 +51,7 @@ describe('globalProperties', () => {
       expect(data.globalPropertiesFnRes).toBe('globalPropertiesStr: new string, globalPropertiesNum: 100')
     })
     it('screenshot', async () => {
+      await page.waitFor(500)
       const image = await program.screenshot({
         fullPage: true
       });
