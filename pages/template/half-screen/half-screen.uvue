@@ -1,6 +1,6 @@
 <template>
 	<view id="page" class="page">
-		<text>半屏弹窗效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
+		<text style="margin: 10px">半屏弹窗效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
 		<button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
 		<view id="halfScreen" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove" @touchend="onHalfTouchEnd">
 			<view class="halfTitle" >半屏弹窗标题</view>
@@ -144,12 +144,18 @@
 		},
 		onReady() {
 			this.halfNode = uni.getElementById('halfScreen');
-			this.halfHeight = this.halfNode!.getBoundingClientRect().height;
 			this.scrollNode = uni.getElementById('halfScroll');
 
-			this.totalHeight = uni.getWindowInfo().windowHeight;//uni.getElementById('page')?.getBoundingClientRect()?.height??0;
-			this.halfNode?.style?.setProperty('top', this.totalHeight.toString());
+			this.halfHeight = this.halfNode!.getBoundingClientRect().height;
+			this.totalHeight = uni.getElementById('page')?.getBoundingClientRect()?.height??0;//uni.getWindowInfo().windowHeight;
+			this.halfNode?.style?.setProperty('top', this.totalHeight.toFixed(2));
 		},
+    onResize() {
+      this.halfHeight = this.halfNode?.getBoundingClientRect()?.height??0;
+      this.totalHeight = uni.getElementById('page')?.getBoundingClientRect()?.height??0;
+      this.halfNode?.style?.setProperty('top', this.totalHeight.toFixed(2));
+      this.halfNode?.style?.setProperty('visibility','hidden');
+    }
 	}
 </script>
 
