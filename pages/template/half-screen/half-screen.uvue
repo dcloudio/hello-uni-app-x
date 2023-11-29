@@ -1,6 +1,6 @@
 <template>
 	<view id="page" class="page">
-		<text>TouchEvent还有细节需要优化，需支持拦截事件分发逻辑解决拖拽半屏窗口引起内容滚动的问题</text>
+		<text>半屏弹窗效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
 		<button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
 		<view id="halfScreen" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove" @touchend="onHalfTouchEnd">
 			<view class="halfTitle" >半屏弹窗标题</view>
@@ -147,7 +147,7 @@
 			this.halfHeight = this.halfNode!.getBoundingClientRect().height;
 			this.scrollNode = uni.getElementById('halfScroll');
 
-			this.totalHeight = uni.getElementById('page')?.getBoundingClientRect()?.height??0;//uni.getWindowInfo().windowHeight;
+			this.totalHeight = uni.getWindowInfo().windowHeight;//uni.getElementById('page')?.getBoundingClientRect()?.height??0;
 			this.halfNode?.style?.setProperty('top', this.totalHeight.toString());
 		},
 	}
