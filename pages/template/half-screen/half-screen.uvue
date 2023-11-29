@@ -1,10 +1,10 @@
 <template>
-	<view class="page">
+	<view id="page" class="page">
 		<text>TouchEvent还有细节需要优化，需支持拦截事件分发逻辑解决拖拽半屏窗口引起内容滚动的问题</text>
 		<button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
-		<view ref="halfScreen" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove" @touchend="onHalfTouchEnd">
+		<view id="halfScreen" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove" @touchend="onHalfTouchEnd">
 			<view class="halfTitle" >半屏弹窗标题</view>
-			<scroll-view ref="halfScroll" class="halfScroll" @scroll="onScroll" bounce="true">
+			<scroll-view id="halfScroll" class="halfScroll" @scroll="onScroll" rebound="true">
 				<view v-for="(item,index) in list" :key="index" class="item">
 					half screen content-{{item}}
 				</view>
@@ -48,22 +48,32 @@
 						this.halfScreenY = p.screenY;
 					}
 					let offset = p.screenY-this.halfScreenY;
-					if(offset > 0){
+					if(offset > 0){//向下滚动
 						this.halfMove = true;
+            this.scrollNode?.setAttribute('scroll-y', 'false');
 						this.halfNode?.style?.setProperty('transform','translateY('+offset+'px)');
+            if(offset==0){
+              console.log('translateY(0px)', this.halfOffset)
+            }
 						this.halfOffset = offset;
-					}else if(this.lastY2>this.lastY && this.halfOffset>0){//容错触发向下滚动的误差
+					}else if(this.halfOffset>0){//向上滚动
 						offset = this.halfScreenY-p.screenY;
 						if(offset>this.halfOffset){
-							offset = this.halfOffset;
+							offset = 0;
+              this.halfMove = false;
+              this.scrollNode?.setAttribute('scroll-y', 'true');
 						}
 						this.halfNode?.style?.setProperty('transform','translateY('+offset+'px)');
+            if(offset==0){
+              console.log('translateY(0px)', this.halfOffset)
+            }
 						this.halfOffset = offset;
 					}
 				}
 				//console.log('TouchMove', e.target);
 			},
 			onHalfTouchEnd(_:TouchEvent) {
+        this.halfScreenY = 0;
 				if(this.bAnimation){//容错处理
 					return;
 				}
@@ -76,7 +86,7 @@
 				}
 				if(bHide){
 					this.switchHalfScreen(false);
-				}else{
+				}else if(this.halfOffset>0){
 					this.resumeHalfScreen();
 				}
 			},
@@ -89,6 +99,7 @@
 					return;
 				}
 				this.halfMove = false;
+        this.scrollNode?.setAttribute('scroll-y', 'true');
 				this.halfScreenY = 0;
 				this.halfOffset = 0;
 				let top = this.totalHeight;
@@ -103,7 +114,7 @@
 				}
 				this.halfNode?.style?.setProperty('transitionDuration', time.toFixed(0));
 				this.halfNode?.style?.setProperty('transitionProperty','top');
-				this.halfNode?.style?.setProperty('top', top.toFixed(0));
+				this.halfNode?.style?.setProperty('top', top.toFixed(2));
 				setTimeout(()=>{
 					if(!show){
 						this.halfNode?.style?.setProperty('visibility','hidden');
@@ -122,6 +133,7 @@
 				this.halfNode?.style?.setProperty('transitionProperty','transform');
 				this.halfNode?.style?.setProperty('transform','translateY(0px)');
 				this.halfMove = false;
+        this.scrollNode?.setAttribute('scroll-y', 'true');
 				this.halfScreenY = 0;
 				this.halfOffset = 0;
 				setTimeout(()=>{
@@ -131,17 +143,13 @@
 			}
 		},
 		onReady() {
-			this.halfNode = this.$refs['halfScreen'] as Element;
+			this.halfNode = uni.getElementById('halfScreen');
 			this.halfHeight = this.halfNode!.getBoundingClientRect().height;
-			this.scrollNode = this.$refs['halfScroll'] as Element;
+			this.scrollNode = uni.getElementById('halfScroll');
 
-			this.totalHeight = uni.getWindowInfo().windowHeight;
+			this.totalHeight = uni.getElementById('page')?.getBoundingClientRect()?.height??0;//uni.getWindowInfo().windowHeight;
 			this.halfNode?.style?.setProperty('top', this.totalHeight.toString());
 		},
-		// onResize() {
-		// 	this.halfHeight = this.halfNode!.getBoundingClientRect().height;
-		//  this.totalHeight = uni.getWindowInfo().windowHeight;
-		// }
 	}
 </script>
 
@@ -169,11 +177,11 @@
 	align-items: center;
 	justify-content: center;
 	height: 48px;
-	background-color: cornflowerblue;
+	background-color: ghostwhite;
 	border-radius: 10px 10px 0 0;
 }
 .halfScroll {
-	background-color: ghostwhite;
+	background-color: white;
 }
 .item {
 	height: 100px;
