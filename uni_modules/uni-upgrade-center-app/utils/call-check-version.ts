@@ -90,10 +90,10 @@ export default function () : Promise<UniUpgradeCenterResult> {
 					      code: res.result['code'],
 					      message: res.result['message']
 					    })
-					  }
-					} else {
-						const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
-						resolve(result)
+					  } else {
+              const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
+              resolve(result)
+            }
 					}
 				}).catch<void>((err : any | null) => {
 					const error = err as UniCloudError
