@@ -12,6 +12,16 @@ describe('component-native-sticky-section', () => {
       const image = await program.screenshot();
       expect(image).toMatchImageSnapshot();
     })
+
+    it('check_goto_sticky_header', async () => {
+      //滚动回顶部
+      await page.callMethod('toTop')
+      page.waitFor(100)
+      //跳转到id为C的StickyHeader位置
+      await page.callMethod('gotoStickyHeader', 'C')
+      const image = await program.screenshot();
+      expect(image).toMatchImageSnapshot();
+    })
   } else {
     // TODO: web 端暂不支持
     it('web', async () => {
