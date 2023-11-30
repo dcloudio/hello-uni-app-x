@@ -78,14 +78,22 @@ export default function () : Promise<UniUpgradeCenterResult> {
 					data: data
 				}).then(res => {
 					const code = res.result['code']
-					if (['Int', 'Long', 'number'].includes(typeof code) && (code as number) < 0) {
-						reject({
-							code: res.result['code'],
-							message: res.result['message']
-						})
-					} else {
-						const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
-						resolve(result)
+					const codeIsNumber = ['Int', 'Long', 'number'].includes(typeof code)
+					if (codeIsNumber) {
+					  if ((code as number) == 0) {
+					    reject({
+					      code: res.result['code'],
+					      message: res.result['message']
+					    })
+					  } else if (code < 0) {
+					    reject({
+					      code: res.result['code'],
+					      message: res.result['message']
+					    })
+					  } else {
+              const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
+              resolve(result)
+            }
 					}
 				}).catch<void>((err : any | null) => {
 					const error = err as UniCloudError
