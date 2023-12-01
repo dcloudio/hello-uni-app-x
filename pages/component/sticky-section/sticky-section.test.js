@@ -17,8 +17,14 @@ describe('component-native-sticky-section', () => {
       //滚动回顶部
       await page.callMethod('toTop')
       page.waitFor(100)
+      await page.setData({
+          scrolling: 'true'
+      })
       //跳转到id为C的StickyHeader位置
       await page.callMethod('gotoStickyHeader', 'C')
+      await page.waitFor(async () => {
+        return await page.data('scrolling') === false;
+      });
       const image = await program.screenshot();
       expect(image).toMatchImageSnapshot();
     })

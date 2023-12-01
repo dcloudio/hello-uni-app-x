@@ -1,6 +1,6 @@
 <template>
   <list-view id="list-view" ref="list-view" show-scrollbar=false class="page" :scroll-into-view="scrollIntoView"
-  @scroll="onScroll" rebound="false">
+  @scroll="onScroll" @scrollend="onScrollEnd" rebound="false">
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" type = 20>
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
     </list-item>
@@ -25,7 +25,8 @@
       return {
         data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
         sectionPadding: [0, 10, 0, 10] as Array<number>,
-        scrollIntoView: ""
+        scrollIntoView: "",
+        scrolling: false
       }
     },
     methods: {
@@ -42,6 +43,10 @@
         this.scrollIntoView = id
       },
       onScroll() {
+        this.scrolling = true
+      },
+      onScrollEnd() {
+        this.scrolling = false
         //滚动后重置scrollIntoView = ""
         if(this.scrollIntoView != "") {
           this.scrollIntoView = ""
