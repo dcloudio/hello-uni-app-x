@@ -1,0 +1,318 @@
+<template>
+	<scroll-view>
+		<view>
+			<button type="primary"  @tap="readDirTest" class="btn-read-dir">读取文件夹</button>
+			<button type="primary"  @tap="readFileTest" class="btn-read-file">读取文件</button>
+			<button type="primary"  @tap="rmdirTest" class="btn-remove-dir">删除文件夹</button>
+			<button type="primary"  @tap="unlinkTest" class="btn-unlink-file">删除文件</button>
+			<button type="primary"  @tap="mkdirTest" class="btn-mkdir">创建文件夹</button>
+			<button type="primary"  @tap="writeFileTest" class="btn-write-file">写入文件</button>
+			<button type="primary"  @tap="renameFileTest" class="btn-rename-file">重命名文件</button>
+			<button type="primary"  @tap="copyFileTest" class="btn-copy-file">复制文件</button>
+      <button type="primary"  @tap="accessFileTest" class="btn-access-file">判断文件是否存在</button>
+			<button type="primary"  @tap="getFileInfoTest" class="btn-get-file-info">获取文件信息</button>
+		</view>
+	</scroll-view>
+</template>
+
+<script>
+
+	export default {
+
+		data() {
+			return {
+				fileListSuccess:[] as string[],
+        fileListComplete:[] as string[],
+        accessFileRet:'',
+        lastFailError:UniError("uni-file-manager",1300000,"mock error"),
+        lastCompleteError:UniError("uni-file-manager",1300000,"mock error"),
+        readDir:'a',
+        readFileFlag:"utf-8",
+        readFileRet:"",
+        writeFileContent:"锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦",
+        getFileInfoAlgorithm:"md5",
+        getFileInfoSize:-1,
+        getFileInfoDigest:"",
+        unlinkFile:'a/1.txt',
+        accessFile:'a/1.txt',
+        writeFile:'a/1.txt',
+        copyFromFile:'a/1.txt',
+        copyToFile:'a/2.txt',
+        renameFromFile:'a/2.txt',
+        renameToFile:'a/3.txt',
+        getFileInfoFile:'a/1.txt',
+        rmDirFile:'a',
+        mkdirFile:'a',
+        readFile:'a/1.txt',
+        recursiveVal:true,
+        done: false,
+        /**
+         * 待测试的全局环境变量
+         */
+        basePath: uni.env.USER_DATA_PATH,
+        copyToBasePath: uni.env.USER_DATA_PATH,
+        globalTempPath:uni.env.TEMP_PATH,
+        globalRootPath:uni.env.ROOT_PATH,
+        globalAppResourcePath:uni.env.APP_RESOURCE_PATH,
+        globalUserDataPath:uni.env.USER_DATA_PATH
+
+			}
+		},
+    onLoad() {
+    },
+
+		methods: {
+
+
+			getFileInfoTest:function(e:any){
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.getFileInfo({
+					filePath:`${this.basePath}${this.getFileInfoFile}`,
+					digestAlgorithm:this.getFileInfoAlgorithm,
+					success:function(res:GetFileInfoSuccessResult){
+						console.log('success',res)
+            this.getFileInfoSize = res.size
+            this.getFileInfoDigest = res.digest
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            console.log("complete",res)
+            this.done = true
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as GetFileInfoOptions)
+			},
+
+
+			copyFileTest:function(e:any){
+
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.copyFile({
+					srcPath:`${this.basePath}${this.copyFromFile}`,
+					destPath:`${this.copyToBasePath}${this.copyToFile}`,
+					success:function(res:FileManagerSuccessResult){
+						console.log('success',res)
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+						console.log("complete",res)
+            this.done = true
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as CopyFileOptions)
+			},
+
+			renameFileTest:function(e:any){
+
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.rename({
+					oldPath:`${this.basePath}${this.renameFromFile}`,
+					newPath:`${this.basePath}${this.renameToFile}`,
+					success:function(res:FileManagerSuccessResult){
+						console.log('success',res)
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            this.done = true
+						console.log("complete",res)
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as RenameOptions)
+			},
+
+			readDirTest:function(e:any){
+				let fileManager = uni.getFileSystemManager()
+				fileManager.readdir({
+					dirPath:`${this.basePath}${this.readDir}`,
+					success:function(res:ReadDirSuccessResult){
+            console.log("success",res)
+            this.fileListSuccess = res.files
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            console.log("complete",res)
+            this.done = true
+            if(res instanceof ReadDirSuccessResult){
+              this.fileListComplete = res.files
+            }
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as ReadDirOptions)
+			},
+
+
+			writeFileTest:function(e:any){
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.writeFile({
+					filePath:`${this.basePath}${this.writeFile}`,
+					data:this.writeFileContent,
+					success:function(res){
+						console.log('success',res)
+					},
+					fail:function(res){
+						console.log('fail')
+            this.lastFailError = res
+					},
+					complete:function(res){
+            this.done = true
+						console.log("complete")
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as WriteFileOptions)
+
+			},
+
+
+			readFileTest:function(e:any){
+
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.readFile({
+					filePath:`${this.basePath}${this.readFile}`,
+					encoding:this.readFileFlag,
+					success:function(res:ReadFileSuccessResult){
+						console.log('success',res)
+            this.readFileRet = res.data
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+						console.log("complete",res)
+            this.done = true
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as ReadFileOptions)
+			},
+
+			rmdirTest:function(e:any){
+				let fileManager = uni.getFileSystemManager()
+				fileManager.rmdir({
+					dirPath:`${this.basePath}${this.rmDirFile}`,
+					recursive:this.recursiveVal,
+					success:function(res:FileManagerSuccessResult){
+						console.log('success',res)
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+						console.log("complete",res)
+            this.done = true
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as RmDirOptions)
+			},
+
+			mkdirTest:function(e:any){
+        // 准备测试数据
+
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.mkdir({
+					dirPath:`${this.basePath}${this.mkdirFile}`,
+					recursive:this.recursiveVal,
+					success:function(res:FileManagerSuccessResult){
+						console.log('success',res)
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+            this.done = true
+						console.log("complete",res)
+					}
+				} as MkDirOptions)
+
+			},
+      accessFileTest:function(e:any){
+        this.accessFileRet = ''
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.access({
+					path:`${this.basePath}${this.accessFile}`,
+					success:function(res:FileManagerSuccessResult){
+						console.log('success',res)
+            this.accessFileRet = res.errMsg
+					},
+					fail:function(res:UniError){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+						console.log("complete",res)
+            this.done = true
+					}
+				} as AccessOptions)
+
+			},
+			unlinkTest:function(e:any){
+
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.unlink({
+					filePath:`${this.basePath}${this.unlinkFile}`,
+					success:function(res:FileManagerSuccessResult){
+						console.log('success',res)
+					},
+					fail:function(res:UniError){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+						console.log("complete",res)
+            this.done = true
+					}
+				} as UnLinkOptions)
+			},
+
+		}
+	}
+</script>
+
+<style>
+
+
+</style>
