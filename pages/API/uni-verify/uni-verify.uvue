@@ -3,7 +3,10 @@
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-btn-v uni-common-mt">
-        <button type="primary" @click="verify">一键登录</button>
+        <button type="primary" @click="verify(false)">一键登录（半屏）</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="verify(true)">一键登录（全屏）</button>
       </view>
     </view>
   </view>
@@ -30,18 +33,18 @@
       } as PreLoginOptions);
     },
     methods: {
-      verify() {
+      verify(fullScreen : boolean) {
         // 校验预登录是否有效
         const isPreLoginValid = this.univerifyManager?.isPreLoginValid() ?? false;
         if (isPreLoginValid) {
           // 预登录有效，执行登录
-          this.login();
+          this.login(fullScreen);
         } else {
           // 预登录无效，执行预登录
           this.univerifyManager?.preLogin({
             success() {
               console.log("pre login success");
-              this.login();
+              this.login(fullScreen);
             },
             fail(err : PreLoginFail) {
               console.error("pre login fail => " + JSON.stringify(err));
@@ -49,11 +52,11 @@
           } as PreLoginOptions);
         }
       },
-      login() {
+      login(fullScreen : boolean) {
         this.univerifyManager?.login({
           // 登录页样式
           univerifyStyle: {
-            fullScreen: false,
+            fullScreen: fullScreen,
             backgroundColor: "#FFFFFF",
             loginBtnText: "一键登录",
             logoPath: "/static/logo.png"
