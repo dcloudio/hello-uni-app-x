@@ -7,7 +7,7 @@
     <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
       点击截图并替换显示下方图片
     </button>
-    <image style="margin-top: 20px;" :src="snapImage" mode="aspectFit" @longpress="saveToAlbum"></image>
+    <image style="margin-left:auto;margin-right:auto;margin-top:20px;width:90%;" :src="snapImage" :mode="mode" @longpress="saveToAlbum"></image>
   </view>
 </template>
 
@@ -15,6 +15,7 @@
   export default {
     data() {
       return {
+        mode: "center",//aspectFit
         snapImage: "/static/uni.png"
       }
     },
@@ -25,6 +26,7 @@
           success: function (res) {
             console.log(res.tempFilePath)
             this.snapImage = res.tempFilePath
+            this.mode = 'widthFix'
             uni.showToast({
               title: '截图成功，路径：' + res.tempFilePath,
               icon: "none"
