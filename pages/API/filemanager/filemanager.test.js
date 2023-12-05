@@ -291,7 +291,7 @@ describe('ExtApi-FileManagerTest', () => {
 
       basePath: globalAppResourcePath,
       readFile:'static/list-mock/safe.png',
-      readFileFlag:'base64'
+      readFileEncoding:'base64'
     })
 
 
@@ -561,5 +561,143 @@ describe('ExtApi-FileManagerTest', () => {
   });
 
 
+  it('write and read', async () => {
+    /**
+     * 测试writefile readfile 各个参数是否符合预期
+     */
+    let globalTempPath = await getData('globalTempPath')
+    await page.setData({
+      recursiveVal: true,
+      basePath: globalTempPath,
+      readDir:'d',
+      rmDirFile:'d',
+      mkdirFile:'d',
+      writeFileContent:"我爱北京天安门，天安门前太阳升",
+      writeFileEncoding:"utf-8",
+      readFileEncoding:"utf-8",
+      unlinkFile:'d/write.bing',
+      writeFile:'d/write.bing',
+      readFile:'d/write.bing',
+      getFileInfoFile:'d/write.bing',
+      getFileInfoAlgorithm:"sha1"
+    })
+
+    // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
+    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    await btnUnLinkFileButton.tap()
+    await isDone()
+
+    // 清除文件夹
+    const btnRmDirButton = await page.$('.btn-remove-dir')
+    await btnRmDirButton.tap()
+    await isDone()
+
+    // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
+    const btnMkdDirButton = await page.$('.btn-mkdir')
+    await btnMkdDirButton.tap()
+    await isDone()
+
+    const btnReadDirButton = await page.$('.btn-read-dir')
+    await btnReadDirButton.tap()
+    await isDone()
+
+    let fileListComplete = await getData('fileListComplete')
+    expect(JSON.stringify(fileListComplete)).toEqual('[]')
+    let fileListSuccess = await getData('fileListSuccess')
+    expect(JSON.stringify(fileListSuccess)).toEqual('[]')
+
+    // 先用utf-8 写入内容
+    const btnWriteFileButton = await page.$('.btn-write-file')
+    await btnWriteFileButton.tap()
+    await isDone()
+
+    const btnReadFileButton = await page.$('.btn-read-file')
+    await btnReadFileButton.tap()
+    await isDone()
+    let readFileRet = await getData('readFileRet')
+    expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升")
+
+    const btnGetFileInfoButton = await page.$('.btn-get-file-info')
+    await btnGetFileInfoButton.tap()
+    await isDone()
+
+    let getFileInfoSize = await getData('getFileInfoSize')
+    expect(getFileInfoSize).toEqual(45)
+    let getFileInfoDigest = await getData('getFileInfoDigest')
+    expect(getFileInfoDigest).toEqual("2ae9c7672ff6c1e7c7e6a0bb4e74a6f06b39350b")
+
+    // 尝试读取base64 信息
+    await page.setData({
+      readFileEncoding:"base64",
+    })
+
+    await btnReadFileButton.tap()
+    await isDone()
+    readFileRet = await getData('readFileRet')
+    expect(readFileRet).toEqual("5oiR54ix5YyX5Lqs5aSp5a6J6Zeo77yM5aSp5a6J6Zeo5YmN5aSq6Ziz5Y2H")
+    // 测试ascii，需要特别测试 ascii 写入非法字符的情况，因为微信的常量字符编码和android原生有差异。
+
+    await page.setData({
+      writeFileContent:"丙辰中秋，欢饮达旦，大醉，作此篇，兼怀子由。明月几时有？把酒问青天。不知天上宫阙，今夕是何年。我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间",
+      writeFileEncoding:"ascii",
+      readFileEncoding:"base64",
+    })
+
+    await btnWriteFileButton.tap()
+    await isDone()
+
+    await btnGetFileInfoButton.tap()
+    await isDone()
+
+    getFileInfoSize = await getData('getFileInfoSize')
+    expect(getFileInfoSize).toEqual(78)
+    getFileInfoDigest = await getData('getFileInfoDigest')
+    expect(getFileInfoDigest).toEqual("4ac7a65055628818341c2ad86ddc4205d8503801")
+
+    await btnReadFileButton.tap()
+    await isDone()
+    readFileRet = await getData('readFileRet')
+    expect(readFileRet).toEqual("GbAtywwibr7mDCeJDFxkxwx8AFAxAg4I4PYJH4pS7lIpAg3lKQqrGQzKFS9VdAIRMljOUrsMyFA8fImHDNgEDdzSAnceBAVxDFU8KLr0")
+
+    // 尝试写入合法ascii
+    await page.setData({
+      writeFileContent:"hello jack.hello marry.",
+      writeFileEncoding:"ascii",
+      readFileEncoding:"ascii",
+    })
+
+    await btnWriteFileButton.tap()
+    await isDone()
+
+    await btnReadFileButton.tap()
+    await isDone()
+    readFileRet = await getData('readFileRet')
+    expect(readFileRet).toEqual("hello jack.hello marry.")
+
+    // 写入base64 获取 中文
+    await page.setData({
+      writeFileContent:"5LiZ6L6w5Lit56eL77yM5qyi6aWu6L6+5pem77yM5aSn6YaJ77yM5L2c5q2k56+H77yM5YW85oCA5a2Q55Sx44CC5piO5pyI5Yeg5pe25pyJ77yf5oqK6YWS6Zeu6Z2S5aSp44CC5LiN55+l5aSp5LiK5a6r6ZiZ77yM5LuK5aSV5piv5L2V5bm044CC5oiR5qyy5LmY6aOO5b2S5Y6777yM5Y+I5oGQ55C85qW8546J5a6H77yM6auY5aSE5LiN6IOc5a+S44CC6LW36Iie5byE5riF5b2x77yM5L2V5Ly85Zyo5Lq66Ze0",
+      writeFileEncoding:"base64",
+      readFileEncoding:"utf-8",
+    })
+
+    await btnWriteFileButton.tap()
+    await isDone()
+
+    await btnReadFileButton.tap()
+    await isDone()
+    readFileRet = await getData('readFileRet')
+    expect(readFileRet).toEqual("丙辰中秋，欢饮达旦，大醉，作此篇，兼怀子由。明月几时有？把酒问青天。不知天上宫阙，今夕是何年。我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间")
+
+    await page.setData({
+      readFileEncoding:"base64",
+    })
+
+    await btnReadFileButton.tap()
+    await isDone()
+    readFileRet = await getData('readFileRet')
+    expect(readFileRet).toEqual("5LiZ6L6w5Lit56eL77yM5qyi6aWu6L6+5pem77yM5aSn6YaJ77yM5L2c5q2k56+H77yM5YW85oCA5a2Q55Sx44CC5piO5pyI5Yeg5pe25pyJ77yf5oqK6YWS6Zeu6Z2S5aSp44CC5LiN55+l5aSp5LiK5a6r6ZiZ77yM5LuK5aSV5piv5L2V5bm044CC5oiR5qyy5LmY6aOO5b2S5Y6777yM5Y+I5oGQ55C85qW8546J5a6H77yM6auY5aSE5LiN6IOc5a+S44CC6LW36Iie5byE5riF5b2x77yM5L2V5Ly85Zyo5Lq66Ze0")
+
+  });
 
 });

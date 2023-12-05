@@ -27,7 +27,6 @@
         lastFailError:UniError("uni-file-manager",1300000,"mock error"),
         lastCompleteError:UniError("uni-file-manager",1300000,"mock error"),
         readDir:'a',
-        readFileFlag:"utf-8",
         readFileRet:"",
         writeFileContent:"锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦",
         getFileInfoAlgorithm:"md5",
@@ -46,6 +45,8 @@
         readFile:'a/1.txt',
         recursiveVal:true,
         done: false,
+        writeFileEncoding:"utf-8",
+        readFileEncoding:"utf-8",
         /**
          * 待测试的全局环境变量
          */
@@ -170,6 +171,7 @@
 				fileManager.writeFile({
 					filePath:`${this.basePath}${this.writeFile}`,
 					data:this.writeFileContent,
+          encoding:this.writeFileEncoding,
 					success:function(res){
 						console.log('success',res)
 					},
@@ -195,7 +197,7 @@
 
 				fileManager.readFile({
 					filePath:`${this.basePath}${this.readFile}`,
-					encoding:this.readFileFlag,
+					encoding:this.readFileEncoding,
 					success:function(res:ReadFileSuccessResult){
 						console.log('success',res)
             this.readFileRet = res.data
