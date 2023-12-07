@@ -135,6 +135,12 @@ if (process.env.uniTestPlatformInfo.startsWith('android')) {
   )
 }
 
+// 设置position: fixed的页面不能截取完整内容
+const notFullPages = [
+  '/pages/CSS/layout/position',
+  '/pages/CSS/layout/z-index'
+]
+
 let page;
 describe("page screenshot test", () => {
   beforeAll(async () => {
@@ -152,8 +158,12 @@ describe("page screenshot test", () => {
   });
   test.each(pages)("%s", async () => {
     console.log("Taking screenshot: ", pageIndex, pages[pageIndex]);
+    let fullPage = true;
+    if (notFullPages.includes(pages[pageIndex])) {
+      fullPage = false;
+    }
     const image = await program.screenshot({
-      fullPage: true,
+      fullPage: fullPage
     });
     expect(image).toMatchImageSnapshot();
     await page.waitFor(500);
