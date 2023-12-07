@@ -81,10 +81,10 @@
       // 工具方法，用于快速设置 Element 的 style
       setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
         const elementMap = this.$data['$elementMap'] as Map<string, Element>
-        let element : Element | null = elementMap[refName]
+        let element : Element | null = elementMap.get(refName)
         if (element == null) {
           element = this.$refs[refName] as Element;
-          elementMap[refName] = element
+          elementMap.set(refName, element)
         } else {
           // console.log('直接拿');
         }
@@ -129,6 +129,7 @@
           k = -1
         }
 
+        const _this = this
         function cardTo(x : number, y : number, callback : () => void, speed : number = 10) {
           let interval : number = 0
           let acceleration : number = 1
@@ -136,22 +137,22 @@
             // 加速度
             acceleration += 0.2
 
-            const dx = x - this.x
+            const dx = x - _this.x
             if (Math.abs(dx) < 1) {
-              this.x = x
+              _this.x = x
             } else {
-              this.x += dx / speed * acceleration
+              _this.x += dx / speed * acceleration
             }
 
-            const dy = y - this.y
+            const dy = y - _this.y
             if (Math.abs(dy) < 1) {
-              this.y = y
+              _this.y = y
             } else {
-              this.y += dy / speed * acceleration
+              _this.y += dy / speed * acceleration
             }
 
-            this.moveCard()
-            if (this.x == x && this.y == y) {
+            _this.moveCard()
+            if (_this.x == x && _this.y == y) {
               clearInterval(interval)
               callback()
             }

@@ -17,7 +17,7 @@
 		},
 		data() {
 			return {
-				child_nodes: [] as Array < ComponentPublicInstance >
+				child_nodes: [] as Array<ComponentPublicInstance>
 			};
 		},
 

@@ -51,7 +51,7 @@
         try {
           metaInfo = uni.getFacialRecognitionMetaInfo();
         } catch (e) {
-          if (e.message!.indexOf('Failed resolution of') > -1) {
+          if ((e as Error).message!.indexOf('Failed resolution of') > -1) {
             uni.showModal({
               title: '提示',
               content: '注意：目前uni-app x内使用实人认证功能需要打包自定义基座。',
@@ -65,7 +65,7 @@
           idCard,
           metaInfo
         })
-          .then<string>((res : UTSJSONObject) : Promise<string> => {
+          .then((res : UTSJSONObject) : Promise<string> => {
             const certifyId = res['certifyId'] as string
             return new Promise((
               resolve : (res : string) => void,
@@ -82,13 +82,13 @@
               })
             })
           })
-          .then<UTSJSONObject>((certifyId : string) : Promise<UTSJSONObject> => {
+          .then((certifyId : string) : Promise<UTSJSONObject> => {
             return testFacialCo.getAuthResult(certifyId)
           })
-          .then<void>((res : UTSJSONObject) => {
+          .then((res : UTSJSONObject) => {
             console.log('res', res)
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             console.error('error', err)
           })
       }
