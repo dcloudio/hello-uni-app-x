@@ -9,7 +9,6 @@ const pages = [
   // '/pages/component/image/image-large', // 截图过大
   '/pages/component/image/image-mode',
   // '/pages/component/image/image-path', // 网络资源加载，单独测试例截图
-  // '/pages/component/image/image-path', // 网络资源加载
   '/pages/component/image/image',
   // '/pages/component/input/input', // 自动获取焦点，单独测试例截图
   // '/pages/component/list-view/list-view',
@@ -112,7 +111,6 @@ const pages = [
   // '/pages/template/drop-card/drop-card',
   '/pages/template/half-screen/half-screen',
   // '/pages/template/list-news/list-news', // 网络资源加载，单独测试例截图
-  // '/pages/template/list-news/list-news', // 网络资源加载
   // '/pages/template/long-list/long-list', // 动态内容
   '/pages/template/navbar-lite/navbar-lite',
   '/pages/template/pull-zoom-image/pull-zoom-image',
@@ -145,7 +143,6 @@ const notFullPages = [
 
 let page;
 describe("page screenshot test", () => {
-describe("page screenshot test", () => {
   beforeAll(async () => {
     console.log("page screenshot test start");
   });
@@ -165,13 +162,10 @@ describe("page screenshot test", () => {
     if (notFullPages.includes(pages[pageIndex])) {
       fullPage = false;
     }
-  test.each(pages)("%s", async () => {
     const image = await program.screenshot({
       fullPage: fullPage
     });
     expect(image).toMatchImageSnapshot();
     await page.waitFor(500);
-  });
-});
   });
 });
