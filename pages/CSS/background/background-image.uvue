@@ -1,15 +1,23 @@
 <template>
-	<view style="flex-grow: 1;">
+	<scroll-view>
 		<view>
 			<text>不支持背景图片，仅支持linear-gradient方法</text>
-			<text>background-image: linear-gradient(to right, red, yellow)</text>
-			<view class="common" style="background-image: linear-gradient(to right, red, yellow);"></view>
+				<view v-for="(direction) in directionData">
+					<text>background-image: linear-gradient({{direction}}, red, yellow)</text>
+				<view class="common" :style="{'background-image': 'linear-gradient('+direction+', red, yellow)'}"></view>
+      </view>
 		</view>
-	</view>
+	</scroll-view>
 </template>
 
 <script>
-
+  export default {
+    data(){
+      return {
+        directionData: ['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right']
+      }
+    }
+  }
 </script>
 
 <style>
