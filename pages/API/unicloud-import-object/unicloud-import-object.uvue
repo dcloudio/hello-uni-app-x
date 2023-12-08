@@ -63,11 +63,11 @@
         })
         const title = this.todoTitle
         const content = this.todoContent
-        todo.add(title, content).then<void>((res : UTSJSONObject) : void => {
+        todo.add(title, content).then((res : UTSJSONObject) : void => {
           this.returnTodoTitle = res['title'] as string
           this.returnTodoContent = res['content'] as string
           this.notify(res['showMessage'] as string, '提示')
-        }).catch<void>((err : any | null) : void => {
+        }).catch((err : any | null) : void => {
           const error = err as UniCloudError
           console.error(error)
         })
@@ -78,9 +78,9 @@
             retry: true
           }
         })
-        todoObj.randomFail().then<void>((res : UTSJSONObject) : void => {
+        todoObj.randomFail().then((res : UTSJSONObject) : void => {
           this.notify(res['showMessage'] as string, '提示')
-        }).catch<void>((err : any | null) : void => {
+        }).catch((err : any | null) : void => {
           const error = err as UniCloudError
           console.error(error)
         })
@@ -89,16 +89,16 @@
         const todo = uniCloud.importObject('todo', {
           customUI: this.isUniTest
         })
-        todo.fail().then<void>((res : UTSJSONObject) : void => {
+        todo.fail().then((res : UTSJSONObject) : void => {
           this.notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
           console.log('todo.fail: ', res);
-        }).catch<void>((err : any | null) : void => {
+        }).catch((err : any | null) : void => {
           const error = err as UniCloudError
           this.failErrCode = error.errCode as string
           console.error(error)
           if (this.isUniTest) {
             uni.showToast({
-              title: err.errMsg
+              title: error.errMsg
             })
           }
         })
@@ -107,10 +107,10 @@
         const todo = uniCloud.importObject('todo', {
           customUI: this.isUniTest
         })
-        todo.success().then<void>((res : UTSJSONObject) : void => {
+        todo.success().then((res : UTSJSONObject) : void => {
           this.successErrCode = res['errCode'] as number
           this.notify(res['showMessage'] as string, '提示')
-        }).catch<void>((err : any | null) : void => {
+        }).catch((err : any | null) : void => {
           const error = err as UniCloudError
           console.error(error)
         })

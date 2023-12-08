@@ -1,72 +1,77 @@
 <template>
   <page-head title="view"></page-head>
   <view class="main" :hover-class="hover_class ? 'is-parent-hover' : 'none'">
-    <view class="test-view" :hover-class="hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="stop_propagation" :hover-start-time="start_time" :hover-stay-time="stay_time">
+    <view class="test-view" :hover-class="hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="stop_propagation"
+      :hover-start-time="start_time" :hover-stay-time="stay_time">
     </view>
   </view>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view class="content">
       <boolean-data :defaultValue="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
-      <boolean-data :defaultValue="false" title="是否阻止本节点的祖先节点出现点击态" @change="change_stop_propagation_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="是否阻止本节点的祖先节点出现点击态"
+        @change="change_stop_propagation_boolean"></boolean-data>
       <enum-data :items="start_time_enum" title="按住后多久出现点击态" @change="radio_change_start_time_enum"></enum-data>
       <enum-data :items="stay_time_enum" title="手指松开后点击态保留时间" @change="radio_change_stay_time_enum"></enum-data>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 <script>
-import { type ItemType } from '@/components/enum-data/enum-data.vue'
-export default {
-  data() {
-    return {
-      hover_class: false,
-      stop_propagation: false,
-      start_time: 50,
-      stay_time: 400,
-      start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
-      stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[]
-    }
-  },
-  methods: {
-    change_hover_class_boolean(checked : boolean) {
-      this.hover_class = checked
+  import { ItemType } from '@/components/enum-data/enum-data'
+  export default {
+    data() {
+      return {
+        hover_class: false,
+        stop_propagation: false,
+        start_time: 50,
+        stay_time: 400,
+        start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
+        stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[]
+      }
     },
-    change_stop_propagation_boolean(checked : boolean) {
-      this.stop_propagation = checked
+    methods: {
+      change_hover_class_boolean(checked : boolean) {
+        this.hover_class = checked
+      },
+      change_stop_propagation_boolean(checked : boolean) {
+        this.stop_propagation = checked
+      },
+      radio_change_start_time_enum(time : number) {
+        this.start_time = time
+      },
+      radio_change_stay_time_enum(time : number) {
+        this.stay_time = time
+      },
     },
-    radio_change_start_time_enum(time : number) {
-      this.start_time = time
-    },
-    radio_change_stay_time_enum(time : number) {
-      this.stay_time = time
-    },
-  },
-}
+  }
 </script>
 
 <style>
-.main {
+  .main {
     padding: 10rpx 0;
     flex-direction: row;
     justify-content: center;
-}
-.test-view {
-  height: 200px;
-  width: 200px;
-  background-color: white;
-}
-.text {
-  color: #777;
-  font-size: 26rpx;
-}
-.is-hover {
-    background-color: #179b16;
-}
+  }
 
-.is-parent-hover {
+  .test-view {
+    height: 200px;
+    width: 200px;
+    background-color: white;
+  }
+
+  .text {
+    color: #777;
+    font-size: 26rpx;
+  }
+
+  .is-hover {
+    background-color: #179b16;
+  }
+
+  .is-parent-hover {
     background-color: #aa0000;
-}
+  }
 </style>

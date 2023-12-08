@@ -1,8 +1,30 @@
 import App from './App.uvue'
 
-import { createSSRApp } from 'vue'
+import { createSSRApp, reactive } from 'vue'
 export function createApp() {
   const app = createSSRApp(App)
+  app.config.globalProperties.globalPropertiesStr = 'default string'
+  app.config.globalProperties.globalPropertiesNum = 0
+  app.config.globalProperties.globalPropertiesBool = false
+  app.config.globalProperties.globalPropertiesObj = {
+    str: 'default globalProperties obj string',
+    num: 0,
+    bool: false,
+  }
+  app.config.globalProperties.globalPropertiesNull = null as string | null
+  app.config.globalProperties.globalPropertiesArr = [] as number[]
+  app.config.globalProperties.globalPropertiesSet = new Set<string>()
+  app.config.globalProperties.globalPropertiesMap = new Map<string, number>()
+  app.config.globalProperties.globalPropertiesReactiveObj = reactive({
+    str: 'default reactive string',
+    num: 0,
+    bool: false,
+  })
+  app.config.globalProperties.globalPropertiesFn = () : string => {
+    console.log('this.globalPropertiesStr', this.globalPropertiesStr)
+    console.log('this.globalPropertiesNum', this.globalPropertiesNum)
+    return `globalPropertiesStr: ${this.globalPropertiesStr}, globalPropertiesNum: ${this.globalPropertiesNum}`
+  }
 
   return {
     app

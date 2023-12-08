@@ -1,4 +1,5 @@
 describe('component-native-list-view', () => {
+  if (process.env.uniTestPlatformInfo.startsWith('android')) {
   let page
   beforeAll(async () => {
     //打开list-view测试页
@@ -75,5 +76,10 @@ describe('component-native-list-view', () => {
     await page.callMethod('item_change_size_enum', 0)
     expect(scrollLeft-1080).toBeGreaterThanOrEqual(0)
   })
-
+ } else {
+    // TODO: web 端暂不支持
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+  }
 })

@@ -1,14 +1,18 @@
 <template>
-  <list-view id="list-view" ref="list-view" show-scrollbar=false class="page" rebound="false">
+  <list-view id="list-view" ref="list-view" show-scrollbar=false class="page" :scroll-into-view="scrollIntoView"
+  @scroll="onScroll" @scrollend="onScrollEnd" rebound="false">
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" type = 20>
+      <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
+    </list-item>
     <sticky-section v-for="(sectionText) in data" :padding="sectionPadding" :push-pinned-header="true">
-      <sticky-header :header-id="sectionText">
+      <sticky-header :header-id="sectionText" :id="sectionText">
         <text class="sticky-header-text">{{sectionText}}</text>
       </sticky-header>
       <list-item v-for="i in 10" class="content-item" :type=10>
         <text class="text">{{sectionText}}--item--content----{{i}}</text>
       </list-item>
     </sticky-section>
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;">
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" type= 30>
       <!-- <text style="color: #aaa">到底了</text> -->
       <button @click="toTop" size="mini">回到顶部</button>
     </list-item>
@@ -20,17 +24,33 @@
     data() {
       return {
         data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
-        sectionPadding: [0, 10, 0, 10] as Array<number>
+        sectionPadding: [0, 10, 0, 10] as Array<number>,
+        scrollIntoView: "",
+        scrolling: false
       }
     },
     methods: {
       toTop(){
+        this.scrollIntoView = ""
         uni.getElementById("list-view")!.scrollTop = 0
       },
       //用于自动化测试
       listViewScrollByY(y : number) {
         const listview = this.$refs["list-view"] as Element
         listview.scrollBy(0, y)
+      },
+      gotoStickyHeader(id : string) {
+        this.scrollIntoView = id
+      },
+      onScroll() {
+        this.scrolling = true
+      },
+      onScrollEnd() {
+        this.scrolling = false
+        //滚动后重置scrollIntoView = ""
+        if(this.scrollIntoView != "") {
+          this.scrollIntoView = ""
+        }
       }
     }
   }

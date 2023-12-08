@@ -1,7 +1,5 @@
 <script lang="uts">
-  import {type PropType} from 'vue'
-
-  export type ItemType = { value : number; name : string }
+  import { ItemType } from './enum-data'
 
   export default {
     emits: ['change'],
@@ -24,9 +22,9 @@
       // @ts-ignore
       _change(e : RadioGroupChangeEvent) {
         const selected = this.items.find((item: ItemType) : boolean => {
-          return item.name === e.detail.value
+          return item.name == e.detail.value
         })
-        if (selected !== null) {
+        if (selected != null) {
           this.current = selected.value
           this.$emit('change', this.current)
           uni.showToast({
@@ -46,7 +44,7 @@
     </view>
   </view>
   <view class="uni-list uni-common-pl">
-    <radio-group @change="_change" class="radio-group">
+    <radio-group @change="_change">
       <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.name"
         :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.name" :checked="index === current">
         {{ item.name }}

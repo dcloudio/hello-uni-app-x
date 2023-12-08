@@ -1,94 +1,94 @@
 <template>
-	<view class="page">
+  <view class="page">
     <view @click="back" class="nav-back">
-    	<image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
+      <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
     </view>
-    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange" @transition="onTransition">
-			<swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
-				<video @click="changeState(i)" ref="video" class="video-box" objectFit="cover" :id="'video-'+i"
-          @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src"
-          :autoplay="false" :show-center-play-btn="false"
-          :loop="true" @play="onPlay(i)" @pause="onPause(i)"
-        ></video>
-				<view class="video-cover" @click="changeState(i)">
-					<image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png" mode="widthFix"></image>
-				</view>
-				<view class="video-info" v-if="0">
-					<text class="video-info-text">容器：第 {{i}} 个</text>
-					<text class="video-info-text">内容：{{item.content}}</text>
-				</view>
-			</swiper-item>
-		</swiper>
+    <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
+      @transition="onTransition">
+      <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
+        <video @click="changeState(i)" ref="video" class="video-box" objectFit="cover" :id="'video-'+i"
+          @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :autoplay="false"
+          :show-center-play-btn="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)"></video>
+        <view class="video-cover" @click="changeState(i)">
+          <image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png"
+            mode="widthFix"></image>
+        </view>
+        <view class="video-info" v-if="0">
+          <text class="video-info-text">容器：第 {{i}} 个</text>
+          <text class="video-info-text">内容：{{item.content}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
     <view class="debug-info" v-if="0">
       <text class="status-text">debug-info 播放状态:</text>
       <text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{ value }}</text>
     </view>
-	</view>
+  </view>
 </template>
 <script>
-	type ListItem = { _id : string, content : string, src : string, poster_src : string }
-	let page : number = 0,
-  currentPageIsShow : boolean = true;
+  type ListItem = { _id : string, content : string, src : string, poster_src : string }
+  let page : number = 0,
+    currentPageIsShow : boolean = true;
 
-	export default {
-		components: {},
-		data() {
-			return {
-        $videoContextMap:new Map<string, VideoContext>(),
-				list: [] as ListItem[],
-				visibleList: [] as ListItem[],// 提高性能 可见的只有3个
-				current: 0 as number,
-				index: 0,
-				state: ["unPlay", "unPlay", "unPlay"] as string[]
-			}
-		},
-		beforeCreate() {
-			this.list = this.getData()
-			this.visibleList = this.list.slice(0, 3)
-		},
-		watch: {
-			current(current : number, oldCurrent : number) {
-				let changeNumber = current - oldCurrent
-				if (changeNumber == 1 || changeNumber == -2) {
-					// console.error('向右');
-					this.index++
-				} else {
-					// console.error('向左');
-					this.index--
-				}
-				// //翻页（3项为一页）
-				if (Math.abs(changeNumber) == 2) {
-					// console.log('翻页');
-					page = Math.floor(this.index / 3);
-					// console.log(this.index);
-					// console.log('page',page);
-					// console.log('slice',3*page,3*page+3);
-					if (this.list.length < 3 * page + 3) {
-						let list : ListItem[] = this.getData()
-						this.list.push(...list)
-					}
+  export default {
+    components: {},
+    data() {
+      return {
+        $videoContextMap: new Map<string, VideoContext>(),
+        list: [] as ListItem[],
+        visibleList: [] as ListItem[],// 提高性能 可见的只有3个
+        current: 0 as number,
+        index: 0,
+        state: ["unPlay", "unPlay", "unPlay"] as string[]
+      }
+    },
+    created() {
+      this.list = this.getData()
+      this.visibleList = this.list.slice(0, 3)
+    },
+    watch: {
+      current(current : number, oldCurrent : number) {
+        let changeNumber = current - oldCurrent
+        if (changeNumber == 1 || changeNumber == -2) {
+          // console.error('向右');
+          this.index++
+        } else {
+          // console.error('向左');
+          this.index--
+        }
+        // //翻页（3项为一页）
+        if (Math.abs(changeNumber) == 2) {
+          // console.log('翻页');
+          page = Math.floor(this.index / 3);
+          // console.log(this.index);
+          // console.log('page',page);
+          // console.log('slice',3*page,3*page+3);
+          if (this.list.length < 3 * page + 3) {
+            let list : ListItem[] = this.getData()
+            this.list.push(...list)
+          }
 
-					let visibleList = this.list.slice(3 * page, 3 * page + 3)
-					// 换数据
-					this.visibleList = visibleList
-				}
+          let visibleList = this.list.slice(3 * page, 3 * page + 3)
+          // 换数据
+          this.visibleList = visibleList
+        }
 
-				this.state.forEach((val : string, index : number) => {
-					if (index === current) {
-						this.doPlay(current)
-					} else {
-						// 除了选中的其他已经播放的都需要停止
-						this.doStop(index)
-						console.log('index:' + index + '已被执行停止');
-					}
-				})
-			}
-		},
-		onReady() {
-			// 一启动完成，就播放第一个
-			this.doPlay(0)
-		},
-    onShow(){
+        this.state.forEach((_ : string, index : number) => {
+          if (index === current) {
+            this.doPlay(current)
+          } else {
+            // 除了选中的其他已经播放的都需要停止
+            this.doStop(index)
+            console.log('index:' + index + '已被执行停止');
+          }
+        })
+      }
+    },
+    onReady() {
+      // 一启动完成，就播放第一个
+      this.doPlay(0)
+    },
+    onShow() {
       currentPageIsShow = true
     },
     onHide() {
@@ -99,165 +99,167 @@
     onUnload() {
       this.doPause(this.current)
     },
-		methods: {
-			changeState(index : number) {
-				if (this.state[index] === 'play') {
-					this.doPause(index)
-				} else {
-					this.doPlay(this.current)
-				}
-			},
-      onLoadstart(index : number) {
-        console.error("onLoadstart  video" + index );
+    methods: {
+      changeState(index : number) {
+        if (this.state[index] === 'play') {
+          this.doPause(index)
+        } else {
+          this.doPlay(this.current)
+        }
       },
-      getVideoContext(index : number) : VideoContext{
-        let videoContext : VideoContext | null = this.$videoContextMap.get('video-'+index)
-        if(videoContext == null){
-          videoContext = uni.createVideoContext('video-'+index, this) as VideoContext
-          this.$videoContextMap.set('video-'+index,videoContext)
+      onLoadstart(index : number) {
+        console.error("onLoadstart  video" + index);
+      },
+      getVideoContext(index : number) : VideoContext {
+        const videoContextMap = this.$data['$videoContextMap'] as Map<string, VideoContext>
+        let videoContext : VideoContext | null = videoContextMap.get('video-' + index)
+        if (videoContext == null) {
+          videoContext = uni.createVideoContext('video-' + index, this) as VideoContext
+          videoContextMap.set('video-' + index, videoContext)
         }
         return videoContext
       },
-			doPlay(index : number) {
-        console.log("doPlay  video" + index );
-				this.getVideoContext(index).play()
-			},
-			doStop(index : number) {
-				console.log("doStop  video-" + index);
+      doPlay(index : number) {
+        console.log("doPlay  video" + index);
+        this.getVideoContext(index).play()
+      },
+      doStop(index : number) {
+        console.log("doStop  video-" + index);
         this.getVideoContext(index).stop();
         // TODO 临时方案：解决.stop()时触发了doPause的问题
-        setTimeout(()=>{
+        setTimeout(() => {
           this.state[index] = 'unPlay'
-        },1000)
-			},
-      doPause(index : number) {
-      	this.getVideoContext(index).pause()
-      	console.log("doPause  video-" + index);
+        }, 1000)
       },
-			onPause(index : number) {
-				this.state[index] = 'pause'
-				console.log('onPause', index);
-			},
-			onPlay(index : number) {
-        if(this.current != index || !currentPageIsShow){
+      doPause(index : number) {
+        this.getVideoContext(index).pause()
+        console.log("doPause  video-" + index);
+      },
+      onPause(index : number) {
+        this.state[index] = 'pause'
+        console.log('onPause', index);
+      },
+      onPlay(index : number) {
+        if (this.current != index || !currentPageIsShow) {
           this.onPause(index)
-        }else{
+        } else {
           this.state[index] = 'play'
           console.log('onPlay', index);
         }
-			},
-			getData() : ListItem[] {
-				let videoUrlList = [
-					'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uts.mp4',
-					'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uni-ai.mp4',
-					'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uni-verify.mp4'
-				] as string[]
+      },
+      getData() : ListItem[] {
+        let videoUrlList = [
+          'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uts.mp4',
+          'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uni-ai.mp4',
+          'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uni-verify.mp4'
+        ] as string[]
 
-				let posterSrcList = [
-					'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/images/swiper-vertical-video-poster/uni-uts.jpg',
-					'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/images/swiper-vertical-video-poster/uni-ai.jpg',
-					'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/images/swiper-vertical-video-poster/uni-verify.jpg'
-				] as string[]
+        let posterSrcList = [
+          'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/images/swiper-vertical-video-poster/uni-uts.jpg',
+          'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/images/swiper-vertical-video-poster/uni-ai.jpg',
+          'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/images/swiper-vertical-video-poster/uni-verify.jpg'
+        ] as string[]
 
-				let list = [] as ListItem[];
-				for (let i = 0; i < 6; i++) {
-					let index = this.list.length + i;
-					let listItem : ListItem = {
-						"_id": "a00" + index,
-						"content": "这是第" + index + "条数据，url地址" + videoUrlList[i % 3],
-						"src": videoUrlList[i % 3],
-						"poster_src": posterSrcList[i % 3]
-					}
-					list.push(listItem)
-				}
-				return list
-			},
-			onSwiperChange(e : SwiperChangeEvent) {
-				// console.error('SwiperChangeEvent',e.detail.current);
-				this.current = e.detail.current;
-			},
-			onTransition(/*e : SwiperTransitionEvent*/) {
-				// console.log('onTransition e.detail.dx', e.detail.dx);
-			},
+        let list = [] as ListItem[];
+        for (let i = 0; i < 6; i++) {
+          let index = this.list.length + i;
+          let listItem : ListItem = {
+            "_id": "a00" + index,
+            "content": "这是第" + index + "条数据，url地址" + videoUrlList[i % 3],
+            "src": videoUrlList[i % 3],
+            "poster_src": posterSrcList[i % 3]
+          }
+          list.push(listItem)
+        }
+        return list
+      },
+      onSwiperChange(e : SwiperChangeEvent) {
+        // console.error('SwiperChangeEvent',e.detail.current);
+        this.current = e.detail.current;
+      },
+      onTransition(/*e : SwiperTransitionEvent*/) {
+        // console.log('onTransition e.detail.dx', e.detail.dx);
+      },
       back() {
-      	uni.navigateBack({
-      		success(result) {
-      			console.log('navigateBack success', result.errMsg)
-      		},
-      		fail(error) {
-      			console.log('navigateBack fail', error.errMsg)
-      		},
-      		complete(result) {
-      			console.log('navigateBack complete', result.errMsg)
-      		}
-      	})
+        uni.navigateBack({
+          success(result) {
+            console.log('navigateBack success', result.errMsg)
+          },
+          fail(error) {
+            console.log('navigateBack fail', error.errMsg)
+          },
+          complete(result) {
+            console.log('navigateBack complete', result.errMsg)
+          }
+        })
       }
-		}
-	}
+    }
+  }
 </script>
 
 <style>
-	.page {
+  .page {
     width: 750rpx;
     flex: 1;
-	}
+  }
 
-	.swiper,
-	.swiper-item,
-	.video-box,
-	.video-cover {
-		width:750rpx;
+  .swiper,
+  .swiper-item,
+  .video-box,
+  .video-cover {
+    width: 750rpx;
     flex: 1;
     height: 100%;
-	}
+  }
 
-	.swiper-item {
-		position: relative;
-	}
+  .swiper-item {
+    position: relative;
+  }
 
-	.video-box {
+  .video-box {
     width: 750rpx;
   }
 
-	.video-cover {
+  .video-cover {
     position: absolute;
-		justify-content: center;
-		align-items: center;
-		align-content: center;
-	}
-
-  .play-btn {
-  	width: 80rpx;
-  	height: 80rpx;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
   }
 
-	.video-info {
+  .play-btn {
+    width: 80rpx;
+    height: 80rpx;
+  }
+
+  .video-info {
     position: absolute;
     bottom: 0;
     padding: 15px;
-	}
+  }
 
-	.video-info-text {
-		font-size: 14px;
-		color: red;
-		line-height: 20px;
-	}
+  .video-info-text {
+    font-size: 14px;
+    color: red;
+    line-height: 20px;
+  }
 
-  .debug-info{
+  .debug-info {
     position: fixed;
-    top:15px;
+    top: 15px;
     width: 750rpx;
     background-color: rgba(255, 255, 255, 0.3);
   }
-  .status-text{
-    color:red;
+
+  .status-text {
+    color: red;
     padding: 15px;
   }
 
   .nav-back {
-  	position: absolute;
-  	top: 20px;
-  	left: 8px;
+    position: absolute;
+    top: 20px;
+    left: 8px;
     background-color: rgba(220, 220, 220, 0.8);
     border-radius: 100px;
     width: 28px;
@@ -268,7 +270,7 @@
   }
 
   .nav-back .back-img {
-  	width: 18px;
+    width: 18px;
     height: 18px;
   }
 </style>
