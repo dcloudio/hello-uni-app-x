@@ -1,0 +1,145 @@
+export type uni = {
+	/**
+	  * createNotificationProgress()
+	  * @description 
+	  * 创建通知栏下载进度消息
+	  * @param {CreateNotificationProgressOptions} 
+	  * @return {void} 
+	  * @uniPlatform {
+	  *    "app": {
+	  *        "android": {
+	  *            "osVer": "4.4",
+	  *  		  	 "uniVer": "3.9+",
+	  * 			 "unixVer": "3.9+"
+	  *        },
+	  *        "ios": {
+	  *            "osVer": "x",
+	  *  		  	 "uniVer": "x",
+	  * 			 "unixVer": "x"
+	  *        }
+	  *    }
+	  * }
+	  * @example
+	   ```typescript
+		uni.createNotificationProgress({
+			title: "正在下载升级包",
+			content: "进度 50%",
+			progress: 50,
+			onClick:()=>{
+				console.log("正在下载");
+			}
+		}
+	   ```
+	  */
+	createNotificationProgress : (options : CreateNotificationProgressOptions) => void,
+	/**
+	  * finishNotificationProgress()
+	  * @description 
+	  * 通知栏显示下载完成，并且传入点击通知栏消息的回调。
+	  * @param {FinishNotificationProgressOptions} 
+	  * @return {void} 
+	  * @uniPlatform {
+	  *    "app": {
+	  *        "android": {
+	  *            "osVer": "4.4",
+	  *  		  	 "uniVer": "3.9+",
+	  * 			 "unixVer": "3.9+"
+	  *        },
+	  *        "ios": {
+	  *            "osVer": "x",
+	  *  		  	 "uniVer": "x",
+	  * 			 "unixVer": "x"
+	  *        }
+	  *    }
+	  * }
+	  * @example
+	   ```typescript
+		uni.finishNotificationProgress({
+			title: "安装升级包",
+			content: "下载完成。",
+			onClick: () => {
+				uni.installApk({
+					filePath: e.tempFilePath,
+					complete(res) {
+						console.log(res);
+					}
+				})
+			}
+		}
+	   ```
+	   */
+	finishNotificationProgress : (options: FinishNotificationProgressOptions) => void,
+	/**
+	  * cancelNotificationProgress()
+	  * @description 
+	  * 取消通知消息显示
+	  * @param {void} 
+	  * @return {void} 
+	  * @uniPlatform {
+	  *    "app": {
+	  *        "android": {
+	  *            "osVer": "4.4",
+	  *  		  	 "uniVer": "3.9+",
+	  * 			 "unixVer": "3.9+"
+	  *        },
+	  *        "ios": {
+	  *            "osVer": "x",
+	  *  		  	 "uniVer": "x",
+	  * 			 "unixVer": "x"
+	  *        }
+	  *    }
+	  * }
+	  * @example
+	   ```typescript
+		uni.cancelNotificationProgress()
+	   ```
+	   */
+	cancelNotificationProgress : () => void
+}
+
+export type CreateNotificationProgressOptions = {
+	/**
+	 * 通知标题
+	 * @defaultValue 应用名称
+	 */
+	title ?: string | null
+	/**
+	 * 通知内容
+	 */
+	content : string,
+	/**
+	 * 进度
+	 */
+	progress : number,
+	/**
+	 * 点击通知消息回调
+	 * @defaultValue null
+	 */
+	onClick? : (() => void) | null
+}
+
+
+export type FinishNotificationProgressOptions = {
+	/**
+	 * 通知标题
+	 * @defaultValue 应用名称
+	 */
+	title ?: string | null
+	/**
+	 * 通知内容
+	 */
+	content : string,
+	/**
+	 * 点击通知消息回调
+	 */
+	onClick : () => void
+}
+
+
+export type CreateNotificationProgress = (options : CreateNotificationProgressOptions) => void;
+
+
+export type CancelNotificationProgress = () => void;
+
+
+export type FinishNotificationProgress = (options: FinishNotificationProgressOptions) => void
