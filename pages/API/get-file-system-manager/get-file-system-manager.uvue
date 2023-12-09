@@ -1,17 +1,19 @@
 <template>
 	<scroll-view>
 		<view>
-			<button type="primary"  @tap="readDirTest" class="btn-read-dir">读取文件夹</button>
-			<button type="primary"  @tap="readFileTest" class="btn-read-file">读取文件</button>
-			<button type="primary"  @tap="rmdirTest" class="btn-remove-dir">删除文件夹</button>
-			<button type="primary"  @tap="unlinkTest" class="btn-unlink-file">删除文件</button>
-			<button type="primary"  @tap="mkdirTest" class="btn-mkdir">创建文件夹</button>
-			<button type="primary"  @tap="writeFileTest" class="btn-write-file">写入文件</button>
-			<button type="primary"  @tap="renameFileTest" class="btn-rename-file">重命名文件</button>
-			<button type="primary"  @tap="copyFileTest" class="btn-copy-file">复制文件</button>
-      <button type="primary"  @tap="accessFileTest" class="btn-access-file">判断文件是否存在</button>
-			<button type="primary"  @tap="getFileInfoTest" class="btn-get-file-info">获取文件信息</button>
-      <button type="primary"  @tap="statFileInfoTest" class="btn-stat-file">获取文件Stats </button>
+      <text>点击按钮后需在真机运行控制台看执行结果</text>
+			<button type="primary"  @tap="mkdirTest" class="btn-mkdir">创建文件夹{{mkdirFile}}</button>
+			<button type="primary"  @tap="writeFileTest" class="btn-write-file">写入文件{{writeFile}}</button>
+			<button type="primary"  @tap="readDirTest" class="btn-read-dir">读取文件夹{{readDir}}</button>
+			<button type="primary"  @tap="readFileTest" class="btn-read-file">读取文件{{readFile}}</button>
+			<button type="primary"  @tap="copyFileTest" class="btn-copy-file">复制文件{{copyFromFile}}到{{copyToFile}}</button>
+			<button type="primary"  @tap="renameFileTest" class="btn-rename-file">重命名文件{{renameFromFile}}到{{renameToFile}}</button>
+      <button type="primary"  @tap="accessFileTest" class="btn-access-file">判断文件{{accessFile}}是否存在</button>
+			<button type="primary"  @tap="getFileInfoTest" class="btn-get-file-info">获取文件信息{{getFileInfoFile}}</button>
+      <button type="primary"  @tap="statFileInfoTest" class="btn-stat-file">获取文件Stats{{statFile}}</button>
+			<button type="primary"  @tap="unlinkTest" class="btn-unlink-file">删除文件{{unlinkFile}}</button>
+			<button type="primary"  @tap="unlinkAllFileTest" class="btn-clear-file">删除文件夹{{rmDirFile}}下的所有文件</button>
+			<button type="primary"  @tap="rmdirTest" class="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
 		</view>
 	</scroll-view>
 </template>
@@ -337,6 +339,49 @@
 					}
 				} as UnLinkOptions)
 			},
+      unlinkAllFileTest:function(e:any){
+      	let fileManager = uni.getFileSystemManager()
+        fileManager.readdir({
+        	dirPath:`${this.basePath}${this.rmDirFile}`,
+        	success:function(res:ReadDirSuccessResult){
+            console.log("success to readdir",res)
+            res.files.forEach(element => {
+            	console.log(element)
+            	fileManager.unlink({
+            		filePath:`${this.basePath}${this.rmDirFile}/${element}`,
+            		success:function(res:FileManagerSuccessResult){
+            			console.log('success unlink',res)
+            		},
+            		fail:function(res:UniError){
+            			console.log('fail unlink',res)
+            	    this.lastFailError = res
+            		},
+            		complete:function(res:any){
+            	    if(res instanceof UniError){
+            	      this.lastCompleteError = res
+            	    }
+            			console.log("complete unlink",res)
+            	    this.done = true
+            		}
+            	} as UnLinkOptions)
+            });
+        	},
+        	fail:function(res:any){
+        		console.log('fail to readdir',res)
+            this.lastFailError = res
+        	},
+        	complete:function(res:any){
+            console.log("complete readdir",res)
+            this.done = true
+            if(res instanceof ReadDirSuccessResult){
+              this.fileListComplete = res.files
+            }
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+        	}
+        } as ReadDirOptions)
+      },
 
 		}
 	}
