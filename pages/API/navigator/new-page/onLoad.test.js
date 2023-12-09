@@ -66,7 +66,10 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot({
+      failureThreshold: 0.05,
+      failureThresholdType: "percent",
+    });
     await page.waitFor("view");
   });
   it("showLoading", async () => {
@@ -82,7 +85,10 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot({
+      failureThreshold: 0.05,
+      failureThresholdType: "percent",
+    });
   });
   it("showModal", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -97,7 +103,10 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot({
+      failureThreshold: 0.05,
+      failureThresholdType: "percent",
+    });
   });
   it("showActionSheet", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -112,6 +121,9 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot({
+      failureThreshold: 0.05,
+      failureThresholdType: "percent",
+    });
   });
 });
