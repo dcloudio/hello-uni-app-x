@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/filemanager/filemanager'
+const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
 describe('ExtApi-FileManagerTest', () => {
@@ -699,5 +699,99 @@ describe('ExtApi-FileManagerTest', () => {
     expect(readFileRet).toEqual("5LiZ6L6w5Lit56eL77yM5qyi6aWu6L6+5pem77yM5aSn6YaJ77yM5L2c5q2k56+H77yM5YW85oCA5a2Q55Sx44CC5piO5pyI5Yeg5pe25pyJ77yf5oqK6YWS6Zeu6Z2S5aSp44CC5LiN55+l5aSp5LiK5a6r6ZiZ77yM5LuK5aSV5piv5L2V5bm044CC5oiR5qyy5LmY6aOO5b2S5Y6777yM5Y+I5oGQ55C85qW8546J5a6H77yM6auY5aSE5LiN6IOc5a+S44CC6LW36Iie5byE5riF5b2x77yM5L2V5Ly85Zyo5Lq66Ze0")
 
   });
+
+//   it('stat and asset test', async () => {
+//     // 测试 USER_DATA_PATH
+//     let globalInnerRootPath = await getData('globalInnerRootPath')
+
+//     await page.setData({
+//       recursiveVal: true,
+//       copyToBasePath:globalInnerRootPath,
+//       basePath: globalInnerRootPath,
+//       rmDirFile:'a',
+//       mkdirFile:'a',
+//       unlinkFile:'a/1.txt',
+//     })
+
+//     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
+//     const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+//     await btnUnLinkFileButton.tap()
+//     await isDone()
+
+//     await page.setData({
+//       unlinkFile:'a/2.txt',
+//     })
+//     await btnUnLinkFileButton.tap()
+//     await isDone()
+
+//     await page.setData({
+//       unlinkFile:'a/m/3.txt',
+//     })
+//     await btnUnLinkFileButton.tap()
+//     await isDone()
+
+//     // // 清除文件夹
+//     const btnRmDirButton = await page.$('.btn-remove-dir')
+//     await btnRmDirButton.tap()
+//     await isDone()
+//     // // 重新创建测试目录
+//     const btnMkdDirButton = await page.$('.btn-mkdir')
+//     await btnMkdDirButton.tap()
+//     await isDone()
+
+//     const btnReadDirButton = await page.$('.btn-read-dir')
+//     await btnReadDirButton.tap()
+//     await isDone()
+
+
+//     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
+//     let fileListComplete = await getData('fileListComplete')
+//     expect(JSON.stringify(fileListComplete)).toEqual('[]')
+//     let fileListSuccess = await getData('fileListSuccess')
+//     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
+
+//     // 写入一个文件
+//     await page.setData({
+//       writeFileContent: "锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦",
+//       writeFileEncoding:"utf-8",
+//       writeFile:'a/1.txt',
+//       recursiveVal:false,
+//       statFile:'a/1.txt',
+//     })
+
+
+
+// let lastFailError = await getData('lastFailError')
+// console.log(lastFailError)
+
+//     // const btnWriteFileButton = await page.$('.btn-write-file')
+//     // await btnWriteFileButton.tap()
+//     // await isDone()
+
+//     // const btnStatFileButton = await page.$('.btn-stat-file')
+//     // await btnStatFileButton.tap()
+//     // await isDone()
+
+//     // // 读取单个文件信息
+//     // let statsRet = await getData('statsRet')
+//     // console.log(statsRet)
+//     // expect(statsRet.path).toEqual('')
+
+//     // await page.setData({
+//     //   recursiveVal:true,
+//     //   statFile:'a/1.txt',
+//     // })
+
+//     // await btnStatFileButton.tap()
+//     // await isDone()
+
+//     // // 读取单个文件信息
+//     // statsRet = await getData('statsRet')
+//     // console.log(statsRet)
+//     // expect(statsRet.path).toEqual('')
+
+
+
+//   });
 
 });

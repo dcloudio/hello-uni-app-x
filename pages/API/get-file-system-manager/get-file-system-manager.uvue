@@ -11,6 +11,7 @@
 			<button type="primary"  @tap="copyFileTest" class="btn-copy-file">复制文件</button>
       <button type="primary"  @tap="accessFileTest" class="btn-access-file">判断文件是否存在</button>
 			<button type="primary"  @tap="getFileInfoTest" class="btn-get-file-info">获取文件信息</button>
+      <button type="primary"  @tap="statFileInfoTest" class="btn-stat-file">获取文件Stats </button>
 		</view>
 	</scroll-view>
 </template>
@@ -40,6 +41,7 @@
         renameFromFile:'a/2.txt',
         renameToFile:'a/3.txt',
         getFileInfoFile:'a/1.txt',
+        statFile:'a/1.txt',
         rmDirFile:'a',
         mkdirFile:'a',
         readFile:'a/1.txt',
@@ -47,6 +49,7 @@
         done: false,
         writeFileEncoding:"utf-8",
         readFileEncoding:"utf-8",
+        statsRet:[] as Array<FileStats>,
         /**
          * 待测试的全局环境变量
          */
@@ -65,6 +68,30 @@
 
 		methods: {
 
+      statFileInfoTest:function(e:any){
+				let fileManager = uni.getFileSystemManager()
+
+				fileManager.stat({
+					path:`${this.basePath}${this.statFile}`,
+          recursive:this.recursiveVal,
+					success:function(res:StatSuccessResult){
+						console.log('success',res)
+            this.statsRet = res.stats
+            console.log('this.statsRet',this.statsRet)
+					},
+					fail:function(res:any){
+						console.log('fail',res)
+            this.lastFailError = res
+					},
+					complete:function(res:any){
+            console.log("complete",res)
+            this.done = true
+            if(res instanceof UniError){
+              this.lastCompleteError = res
+            }
+					}
+				} as StatOptions)
+			},
 
 			getFileInfoTest:function(e:any){
 				let fileManager = uni.getFileSystemManager()
