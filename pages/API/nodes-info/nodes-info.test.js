@@ -23,13 +23,6 @@ describe('nodes-info', () => {
     expect(Math.round(nodeInfo.left)).toBe(RECT_LEFT)
     expect(Math.round(nodeInfo.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo.height)).toBe(RECT_HEIGHT)
-    // android 6 分辨率为 720*1280，需要调整期望数值
-    if (!process.env.uniTestPlatformInfo.startsWith('android 6')) {
-      const nodeInfo = data.nodeInfoList[0]
-      expect(nodeInfo.left > 15).toBe(true)
-      expect(nodeInfo.width == 150).toBe(true)
-      expect(nodeInfo.height == 100).toBe(true)
-    }
   })
   it('get-all-node-info', async () => {
     const btnGetAllNodeInfo = await page.$('.btn-get-all-node-info')
@@ -44,23 +37,11 @@ describe('nodes-info', () => {
     expect(nodeInfo1.top > 220).toBe(true)
     expect(Math.round(nodeInfo1.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo1.height)).toBe(RECT_HEIGHT)
-    if (!process.env.uniTestPlatformInfo.startsWith('android 6')) {
-      const nodeInfo1 = data.nodeInfoList[0]
-      expect(nodeInfo1.left > 15).toBe(true)
-      expect(nodeInfo1.top > 220).toBe(true)
-      expect(nodeInfo1.width == 150).toBe(true)
-      expect(nodeInfo1.height == 100).toBe(true)
 
     const nodeInfo2 = data.nodeInfoList[1]
     expect(nodeInfo2.left > 200).toBe(true)
     expect(nodeInfo2.top > 220).toBe(true)
     expect(Math.round(nodeInfo2.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo2.height)).toBe(RECT_HEIGHT)
-      const nodeInfo2 = data.nodeInfoList[1]
-      expect(nodeInfo2.left > 200).toBe(true)
-      expect(nodeInfo2.top > 220).toBe(true)
-      expect(nodeInfo2.width == 150).toBe(true)
-      expect(nodeInfo2.height == 100).toBe(true)
-    }
   })
 })
