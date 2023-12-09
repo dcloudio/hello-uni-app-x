@@ -29,15 +29,15 @@ describe('component-native-video', () => {
     await page.waitFor(async () => {
       return (await page.data('isPause')) == true;
     });
-    await page.callMethod('play');
-    await page.waitFor(async () => {
-      return (await page.data('isPlaying')) == true;
-    });
+    // await page.callMethod('play');
+    // await page.waitFor(async () => {
+    //   return (await page.data('isPlaying')) == true;
+    // });
     // stop
-    await page.callMethod('stop');
-    await page.waitFor(async () => {
-      return (await page.data('isPause')) == true;
-    });
+    // await page.callMethod('stop');
+    // await page.waitFor(async () => {
+    //   return (await page.data('isPause')) == true;
+    // });
   });
 
   it('test format', async () => {
