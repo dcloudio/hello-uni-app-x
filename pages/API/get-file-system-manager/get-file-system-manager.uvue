@@ -86,7 +86,7 @@
             this.statsRet = res.stats
             console.log('this.statsRet', this.statsRet)
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'statFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('statFileInfoTest fail', res)
             this.lastFailError = res
@@ -113,7 +113,7 @@
             this.getFileInfoSize = res.size
             this.getFileInfoDigest = res.digest
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'getFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -140,7 +140,7 @@
             this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
             console.log('success', res)
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -166,7 +166,7 @@
             this.log += 'renameFileTest success:' + JSON.stringify(res) + '\n\n'
             console.log('success', res)
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'renameFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -190,7 +190,7 @@
             console.log("success", res)
             this.fileListSuccess = res.files
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'readDirTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -216,16 +216,16 @@
           filePath: `${this.basePath}${this.writeFile}`,
           data: this.writeFileContent,
           encoding: this.writeFileEncoding,
-          success: function (res) {
+          success: function (res : FileManagerSuccessResult) {
             this.log += 'writeFileTest success:' + JSON.stringify(res) + '\n\n'
             console.log('success', res)
           },
-          fail: function (res) {
+          fail: function (res : UniError) {
             this.log += 'writeFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail')
             this.lastFailError = res
           },
-          complete: function (res) {
+          complete: function (res : any) {
             this.done = true
             console.log("complete")
             if (res instanceof UniError) {
@@ -249,7 +249,7 @@
             console.log('success', res)
             this.readFileRet = res.data
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -273,7 +273,7 @@
             this.log += 'rmdirTest success:' + JSON.stringify(res) + '\n\n'
             console.log('success', res)
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'rmdirTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -300,7 +300,7 @@
             this.log += 'mkdirTest success:' + JSON.stringify(res) + '\n\n'
             console.log('success', res)
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'mkdirTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
@@ -394,7 +394,7 @@
               } as UnLinkOptions)
             });
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail to readdir', res)
             this.lastFailError = res
@@ -422,7 +422,7 @@
             this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
             console.log('success', res)
           },
-          fail: function (res : any) {
+          fail: function (res : UniError) {
             this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail', res)
             this.lastFailError = res
