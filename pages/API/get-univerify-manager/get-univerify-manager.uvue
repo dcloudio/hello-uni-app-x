@@ -42,11 +42,11 @@
         } else {
           // 预登录无效，执行预登录
           this.univerifyManager?.preLogin({
-            success() {
+            success: () => {
               console.log("pre login success");
               this.login(fullScreen);
             },
-            fail(err : PreLoginFail) {
+            fail: (err : PreLoginFail) => {
               console.error("pre login fail => " + JSON.stringify(err));
             }
           } as PreLoginOptions);
@@ -61,7 +61,7 @@
             loginBtnText: "一键登录",
             logoPath: "/static/logo.png"
           } as UniverifyStyle,
-          success(res : LoginSuccess) {
+          success: (res : LoginSuccess) => {
             console.log("login success => " + JSON.stringify(res));
             // 云函数取号
             uniCloud.callFunction({
@@ -75,7 +75,7 @@
                 title: '取号成功',
                 content: res.result.getJSON("res")?.getString("phoneNumber"),
                 showCancel: false,
-                success(_) {
+                success: (_) => {
                   // 关闭登录页
                   this.univerifyManager?.close();
                 }
@@ -86,7 +86,7 @@
               this.univerifyManager?.close();
             });
           },
-          fail(err : LoginFail) {
+          fail: (err : LoginFail) => {
             console.error("login fail => " + err);
             uni.showToast({
               title: "登录失败",
