@@ -62,6 +62,8 @@
 </template>
 
 <script>
+  import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
+  import { type CreateNotificationProgressOptions, type FinishNotificationProgressOptions } from '@/uni_modules/uts-progressNotification/utssdk/interface.uts'
 	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
   import { openSchema } from '../../utils/utils.uts'
 
@@ -168,7 +170,7 @@
 		},
     beforeUnmount() {
       if (this.needNotificationProgress) {
-        uni.cancelNotificationProgress()
+        cancelNotificationProgress()
       }
     },
 		methods: {
@@ -240,7 +242,7 @@
 				this.installed = false
 				this.showTabbar = false
 
-        if (this.needNotificationProgress) uni.cancelNotificationProgress()
+        if (this.needNotificationProgress) cancelNotificationProgress()
 
 				if (!notificationAbortDownload) this.$emit('close')
 
@@ -303,7 +305,7 @@
 						this.packageFileSize = parseFloat((res.totalBytesExpectedToWrite / Math.pow(1024, 2)).toFixed(2));
 
             if (this.needNotificationProgress) {
-              uni.createNotificationProgress({
+              createNotificationProgress({
               	title: "升级中心正在下载安装包……",
               	content: `${this.downLoadPercent}%`,
               	progress: this.downLoadPercent,
@@ -313,7 +315,7 @@
                     notificationAbortDownload = true
                   }
                 }
-              })
+              } as CreateNotificationProgressOptions)
             }
 					});
 				}
@@ -329,11 +331,11 @@
 				downloadTask = null;
 
         if (this.needNotificationProgress) {
-          uni.finishNotificationProgress({
+          finishNotificationProgress({
             title: "安装升级包",
             content: "下载完成",
             onClick(){}
-          })
+          } as FinishNotificationProgressOptions)
 
           this.installPackage();
           return

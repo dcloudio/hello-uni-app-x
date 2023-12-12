@@ -34,7 +34,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
 	return new Promise<UniUpgradeCenterResult>((resolve, reject) => {
 		const systemInfo = uni.getSystemInfoSync()
 		const appId = systemInfo.appId
-		const appVersion = '1.0.15' //systemInfo.appVersion
+		const appVersion = systemInfo.appVersion //systemInfo.appVersion
 		// #ifndef UNI-APP-X
 		if (typeof appId === 'string' && typeof appVersion === 'string' && appId.length > 0 && appVersion.length > 0) {
 			plus.runtime.getProperty(appId, function (widgetInfo) {

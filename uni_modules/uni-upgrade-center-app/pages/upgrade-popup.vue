@@ -64,6 +64,7 @@
 </template>
 
 <script>
+  import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
 	const localFilePathKey = 'UNI_ADMIN_UPGRADE_CENTER_LOCAL_FILE_PATH'
 	const platform_iOS = 'iOS';
 	const platform_Android = 'Android';
@@ -228,6 +229,7 @@
 					success: res => {
 						if (res.confirm) {
 							downloadTask && downloadTask.abort()
+              cancelNotificationProgress()
 							uni.navigateBack()
 						}
 					}
@@ -257,12 +259,12 @@
 			},
 			updateApp() {
 				this.checkStoreScheme()
-			.catch(() => {
-				this.downloadPackage()
-			})
-			.finally(() => {
-				openSchemePromise = null
-			})
+          .catch(() => {
+            this.downloadPackage()
+          })
+          .finally(() => {
+            openSchemePromise = null
+          })
 			},
 			// 跳转应用商店
 			checkStoreScheme() {
@@ -322,7 +324,7 @@
 					this.packageFileSize = (res.totalBytesExpectedToWrite / Math.pow(1024, 2)).toFixed(2);
 
 					if (this.needNotificationProgress && !this.downloadSuccess) {
-						uni.createNotificationProgress({
+						createNotificationProgress({
 							title: "升级中心正在下载安装包……",
 							content: `${this.downLoadPercent}%`,
 							progress: this.downLoadPercent,
@@ -347,7 +349,7 @@
 				downloadTask = null;
 
 				if (this.needNotificationProgress) {
-					uni.finishNotificationProgress({
+					finishNotificationProgress({
 						title: "安装升级包",
 						content: "下载完成"
 					})
