@@ -4,7 +4,7 @@ describe('component-native-video', () => {
   let page;
 
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/component/video/video-all');
+    page = await program.reLaunch('/pages/component/video/video');
     await page.waitFor('video');
   });
 
