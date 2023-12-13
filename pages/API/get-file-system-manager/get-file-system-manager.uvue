@@ -15,7 +15,7 @@
     <button type="primary" @tap="accessFileTest" class="btn-access-file">判断文件{{accessFile}}是否存在</button>
     <button type="primary" @tap="getFileInfoTest" class="btn-get-file-info">获取文件信息{{getFileInfoFile}}</button>
     <button type="primary" @tap="unlinkTest" class="btn-unlink-file">删除文件{{unlinkFile}}</button>
-    <button type="primary" @tap="copyStaticToFilesTest" class="btn-remove-dir">从static目录复制文件到a目录</button>
+    <button type="primary" @tap="copyStaticToFilesTest" class="btn-copyStatic-file">从static目录复制文件到a目录</button>
     <button type="primary" @tap="unlinkAllFileTest" class="btn-clear-file">删除文件夹{{rmDirFile}}下的所有文件</button>
     <button type="primary" @tap="rmdirTest" class="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
   <!-- #ifdef APP -->
@@ -29,11 +29,15 @@
     data() {
       return {
         log: "",
+        /**
+         * 自动化测试需要关闭log
+         */
+        logAble:true,
         fileListSuccess: [] as string[],
         fileListComplete: [] as string[],
         accessFileRet: '',
-        lastFailError: UniError("uni-file-manager", 1300000, "mock error"),
-        lastCompleteError: UniError("uni-file-manager", 1300000, "mock error"),
+        lastFailError: new UniError("uni-file-manager", 1300000, "mock error"),
+        lastCompleteError: new UniError("uni-file-manager", 1300000, "mock error"),
         readDir: 'a',
         readFileRet: "",
         writeFileContent: "中文 en.\r\n\t换行",
@@ -64,8 +68,6 @@
         copyToBasePath: uni.env.USER_DATA_PATH,
         globalTempPath: uni.env.CACHE_PATH,
         globalRootPath: uni.env.SANDBOX_PATH,
-        globalInnerRootPath: uni.env.ANDROID_INTERNAL_SANDBOX_PATH,
-        globalAppResourcePath: uni.env.APP_RESOURCE_PATH,
         globalUserDataPath: uni.env.USER_DATA_PATH
       }
     },
@@ -81,13 +83,17 @@
           path: `${this.basePath}${this.statFile}`,
           recursive: this.recursiveVal,
           success: function (res : StatSuccessResult) {
-            this.log += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('statFileInfoTest success', res)
             this.statsRet = res.stats
             console.log('this.statsRet', this.statsRet)
           },
           fail: function (res : UniError) {
-            this.log += 'statFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'statFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('statFileInfoTest fail', res)
             this.lastFailError = res
           },
@@ -108,13 +114,17 @@
           filePath: `${this.basePath}${this.getFileInfoFile}`,
           digestAlgorithm: this.getFileInfoAlgorithm,
           success: function (res : GetFileInfoSuccessResult) {
-            this.log += 'getFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'getFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
             this.getFileInfoSize = res.size
             this.getFileInfoDigest = res.digest
           },
           fail: function (res : UniError) {
-            this.log += 'getFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'getFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -137,11 +147,15 @@
           srcPath: `${this.basePath}${this.copyFromFile}`,
           destPath: `${this.copyToBasePath}${this.copyToFile}`,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -163,11 +177,15 @@
           oldPath: `${this.basePath}${this.renameFromFile}`,
           newPath: `${this.basePath}${this.renameToFile}`,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'renameFileTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'renameFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'renameFileTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'renameFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -186,12 +204,16 @@
         fileManager.readdir({
           dirPath: `${this.basePath}${this.readDir}`,
           success: function (res : ReadDirSuccessResult) {
-            this.log += 'readDirTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'readDirTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log("success", res)
             this.fileListSuccess = res.files
           },
           fail: function (res : UniError) {
-            this.log += 'readDirTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'readDirTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -217,11 +239,15 @@
           data: this.writeFileContent,
           encoding: this.writeFileEncoding,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'writeFileTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'writeFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'writeFileTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'writeFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail')
             this.lastFailError = res
           },
@@ -245,12 +271,16 @@
           filePath: `${this.basePath}${this.readFile}`,
           encoding: this.readFileEncoding,
           success: function (res : ReadFileSuccessResult) {
-            this.log += 'readFileTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'readFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
             this.readFileRet = res.data
           },
           fail: function (res : UniError) {
-            this.log += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -270,11 +300,15 @@
           dirPath: `${this.basePath}${this.rmDirFile}`,
           recursive: this.recursiveVal,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'rmdirTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'rmdirTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'rmdirTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'rmdirTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -297,11 +331,15 @@
           dirPath: `${this.basePath}${this.mkdirFile}`,
           recursive: this.recursiveVal,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'mkdirTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'mkdirTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'mkdirTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'mkdirTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -318,16 +356,19 @@
       accessFileTest: function (e : any) {
         this.accessFileRet = ''
         let fileManager = uni.getFileSystemManager()
-
         fileManager.access({
           path: `${this.basePath}${this.accessFile}`,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'accessFileTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'accessFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
             this.accessFileRet = res.errMsg
           },
           fail: function (res : UniError) {
-            this.log += 'accessFileTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'accessFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -348,11 +389,15 @@
         fileManager.unlink({
           filePath: `${this.basePath}${this.unlinkFile}`,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'unlinkTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'unlinkTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'unlinkTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'unlinkTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
@@ -376,11 +421,15 @@
               fileManager.unlink({
                 filePath: `${this.basePath}${this.rmDirFile}/${element}`,
                 success: function (res : FileManagerSuccessResult) {
-                  this.log += 'unlinkAllFileTest success:' + JSON.stringify(res) + '\n\n'
+                  if(this.logAble){
+                    this.log += 'unlinkAllFileTest success:' + JSON.stringify(res) + '\n\n'
+                  }
                   console.log('success unlink', res)
                 },
                 fail: function (res : UniError) {
-                  this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
+                  if(this.logAble){
+                    this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
+                  }
                   console.log('fail unlink', res)
                   this.lastFailError = res
                 },
@@ -419,11 +468,15 @@
           srcPath: UTSAndroid.getResourcePath("static/list-mock/mock.json"),
           destPath: `${this.copyToBasePath}/a/mock.json`,
           success: function (res : FileManagerSuccessResult) {
-            this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('success', res)
           },
           fail: function (res : UniError) {
-            this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
+            if(this.logAble){
+              this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
             console.log('fail', res)
             this.lastFailError = res
           },
