@@ -12,8 +12,6 @@ export default {
 			auto_focus_boolean: false,
       default_value:"",
       maxlength:-1,
-			confirm_type_enum: [{"value":0,"name":"send"},{"value":1,"name":"search"},{"value":2,"name":"next"},{"value":3,"name":"go"},{"value":4,"name":"done"}] as ItemType[],
-			confirm_type_enum_current: 0,
 			inputmode_enum: [{"value":0,"name":"none"},{"value":1,"name":"text"},{"value":2,"name":"decimal"},{"value":3,"name":"numeric"},{"value":4,"name":"tel"},{"value":5,"name":"search"},{"value":6,"name":"email"},{"value":7,"name":"url"}] as ItemType[],
 			inputmode_enum_current: 0
 		}
@@ -40,7 +38,6 @@ export default {
 		change_confirm_hold_boolean(checked : boolean) { this.confirm_hold_boolean = checked },
 		change_focus_boolean(checked : boolean) { this.focus_boolean = checked },
 		change_auto_focus_boolean(checked : boolean) { this.auto_focus_boolean = checked },
-		radio_change_confirm_type_enum(checked : number) { this.confirm_type_enum_current = checked },
 		radio_change_inputmode_enum(checked : number) { this.inputmode_enum_current = checked }
 	}
 }
@@ -53,7 +50,6 @@ export default {
       class="uni-textarea"
       :auto-focus="auto_focus_boolean"
       :focus="focus_boolean"
-      :confirm-type="confirm_type_enum[confirm_type_enum_current].name"
       :confirm-hold="confirm_hold_boolean"
       :auto-height="auto_height_boolean"
       :fixed="fixed_boolean"
@@ -119,11 +115,6 @@ export default {
         title="自动获取焦点"
         @change="change_auto_focus_boolean"
       ></boolean-data>
-      <enum-data
-        :items="confirm_type_enum"
-        title="设置键盘右下角按钮的文字"
-        @change="radio_change_confirm_type_enum"
-      ></enum-data>
       <enum-data
         :items="inputmode_enum"
         title="是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。"
