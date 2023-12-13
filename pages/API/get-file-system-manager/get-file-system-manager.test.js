@@ -30,29 +30,23 @@ describe('ExtApi-FileManagerTest', () => {
     let globalUserDataPath = await getData('globalUserDataPath')
 
     await page.setData({
+      logAble:false,
       recursiveVal: true,
       copyToBasePath:globalUserDataPath,
       basePath: globalUserDataPath,
       rmDirFile:'a',
-      unlinkFile:'a/1.txt'
+      readDir:'a',
+      writeFile:'a/1.txt',
+      readFile:'a/1.txt',
+      unlinkFile:'a/1.txt',
+      writeFileContent:'锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦'
     })
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    const btnUnLinkFileButton = await page.$('.btn-clear-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
-    await page.setData({
-      unlinkFile:'a/2.txt'
-    })
-    await btnUnLinkFileButton.tap()
-    await isDone()
-
-    await page.setData({
-      unlinkFile:'a/3.txt'
-    })
-    await btnUnLinkFileButton.tap()
-    await isDone()
 
     // 清除文件夹
     const btnRmDirButton = await page.$('.btn-remove-dir')
@@ -200,29 +194,24 @@ describe('ExtApi-FileManagerTest', () => {
     fileListSuccess = await getData('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"1.txt\",\"3.txt\"]")
 
-
   });
 
   it('TEMP_PATH test', async () => {
     // 测试 TEMP_PATH
     let globalTempPath = await getData('globalTempPath')
     await page.setData({
+      logAble:false,
       recursiveVal: true,
       basePath: globalTempPath,
       copyToBasePath:globalTempPath,
       rmDirFile:'a',
+      mkdirFile: 'a',
       unlinkFile:'a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name/中文文件.mock'
     })
 
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
     const btnUnLinkFileButton = await page.$('.btn-unlink-file')
-    await btnUnLinkFileButton.tap()
-    await isDone()
-
-    await page.setData({
-      unlinkFile:'a/提前创建的目录/4.txt'
-    })
     await btnUnLinkFileButton.tap()
     await isDone()
 
@@ -244,9 +233,9 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
     let fileListComplete = await getData('fileListComplete')
-    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\"]")
+    expect(JSON.stringify(fileListComplete)).toEqual("[]")
     let fileListSuccess = await getData('fileListSuccess')
-    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\"]")
+    expect(JSON.stringify(fileListSuccess)).toEqual("[]")
 
     // 测试 创建多层级文件目录
     await page.setData({
@@ -286,10 +275,8 @@ describe('ExtApi-FileManagerTest', () => {
      * 从资源文件中读取图片为base64，测试写入较大文件场景
      * 'static/list-mock/safe.png' 注意，依赖这个资源文件，不能删除
      */
-    let globalAppResourcePath = await getData('globalAppResourcePath')
     await page.setData({
-
-      basePath: globalAppResourcePath,
+      basePath: "",
       readFile:'static/list-mock/safe.png',
       readFileEncoding:'base64'
     })
@@ -434,7 +421,8 @@ describe('ExtApi-FileManagerTest', () => {
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"4.txt\"]")
 
     await page.setData({
-      unlinkFile:'a/提前创建的目录/4.txt'
+      unlinkFile:'a/提前创建的目录/4.txt',
+      rmDirFile:'a/提前创建的目录'
     })
     await btnUnLinkFileButton.tap()
     await isDone()
@@ -447,9 +435,7 @@ describe('ExtApi-FileManagerTest', () => {
     fileListSuccess = await getData('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[]")
 
-
   });
-
 
 
 
@@ -460,6 +446,7 @@ describe('ExtApi-FileManagerTest', () => {
     let globalRootPath = await getData('globalRootPath')
     await page.setData({
       recursiveVal: true,
+      logAble:false,
       basePath: globalRootPath,
       readDir:'a',
       rmDirFile:'a',
@@ -470,8 +457,8 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
-    await btnUnLinkFileButton.tap()
+    const btnClearFileButton = await page.$('.btn-clear-file')
+    await btnClearFileButton.tap()
     await isDone()
 
 
@@ -505,9 +492,8 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 准备从资源目录拷贝png
-    let globalAppResourcePath = await getData('globalAppResourcePath')
     await page.setData({
-      basePath: globalAppResourcePath,
+      basePath: "",
       unlinkFile:'static/list-mock/safe.png',
       accessFile:'static/list-mock/safe.png',
     })
@@ -519,6 +505,7 @@ describe('ExtApi-FileManagerTest', () => {
     expect(accessFileRet).toEqual('access:ok')
 
     // 尝试删除资源，期望失败
+    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
@@ -542,12 +529,14 @@ describe('ExtApi-FileManagerTest', () => {
       basePath:globalRootPath,
       unlinkFile:'a/从代码目录拷贝的资源.png',
       accessFile:'a/从代码目录拷贝的资源.png',
+      rmDirFile:'a',
     })
     await btnAccessFileButton.tap()
     await isDone()
 
     accessFileRet = await getData("accessFileRet")
     expect(accessFileRet).toEqual('access:ok')
+
 
     await btnUnLinkFileButton.tap()
     await isDone()
@@ -557,6 +546,31 @@ describe('ExtApi-FileManagerTest', () => {
 
     accessFileRet = await getData("accessFileRet")
     expect(accessFileRet).toEqual('')
+
+    // 从页面的按钮触发一次文件复制
+    const btnCopyStaticFileButton = await page.$('.btn-copyStatic-file')
+    await btnCopyStaticFileButton.tap()
+    await isDone()
+
+    await btnReadDirButton.tap()
+    await isDone()
+
+    fileListComplete = await getData('fileListComplete')
+    expect(JSON.stringify(fileListComplete)).toEqual("[\"mock.json\"]")
+    fileListSuccess = await getData('fileListSuccess')
+    expect(JSON.stringify(fileListSuccess)).toEqual("[\"mock.json\"]")
+
+    // 从页面的按钮触发一次文件清空
+    await btnClearFileButton.tap()
+    await isDone()
+
+    await btnReadDirButton.tap()
+    await isDone()
+
+    fileListComplete = await getData('fileListComplete')
+    expect(JSON.stringify(fileListComplete)).toEqual("[]")
+    fileListSuccess = await getData('fileListSuccess')
+    expect(JSON.stringify(fileListSuccess)).toEqual("[]")
 
   });
 
@@ -568,6 +582,7 @@ describe('ExtApi-FileManagerTest', () => {
     let globalTempPath = await getData('globalTempPath')
     await page.setData({
       recursiveVal: true,
+      logAble:false,
       basePath: globalTempPath,
       readDir:'d',
       rmDirFile:'d',
@@ -700,98 +715,172 @@ describe('ExtApi-FileManagerTest', () => {
 
   });
 
-//   it('stat and asset test', async () => {
-//     // 测试 USER_DATA_PATH
-//     let globalInnerRootPath = await getData('globalInnerRootPath')
+  it('stat and asset test', async () => {
+    // 测试 USER_DATA_PATH //globalTempPath
+    let globalRootPath = await getData('globalRootPath')
 
-//     await page.setData({
-//       recursiveVal: true,
-//       copyToBasePath:globalInnerRootPath,
-//       basePath: globalInnerRootPath,
-//       rmDirFile:'a',
-//       mkdirFile:'a',
-//       unlinkFile:'a/1.txt',
-//     })
+    await page.setData({
+      recursiveVal: true,
+      copyToBasePath:globalRootPath,
+      basePath: globalRootPath,
+      rmDirFile:'a',
+      mkdirFile:'a',
+      unlinkFile:'a/1.txt',
+    })
 
-//     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-//     const btnUnLinkFileButton = await page.$('.btn-unlink-file')
-//     await btnUnLinkFileButton.tap()
-//     await isDone()
+    // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
+    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    await btnUnLinkFileButton.tap()
+    await isDone()
 
-//     await page.setData({
-//       unlinkFile:'a/2.txt',
-//     })
-//     await btnUnLinkFileButton.tap()
-//     await isDone()
+    await page.setData({
+      unlinkFile:'a/2.txt',
+    })
+    await btnUnLinkFileButton.tap()
+    await isDone()
 
-//     await page.setData({
-//       unlinkFile:'a/m/3.txt',
-//     })
-//     await btnUnLinkFileButton.tap()
-//     await isDone()
+    await page.setData({
+      unlinkFile:'a/m/3.txt',
+    })
+    await btnUnLinkFileButton.tap()
+    await isDone()
 
-//     // // 清除文件夹
-//     const btnRmDirButton = await page.$('.btn-remove-dir')
-//     await btnRmDirButton.tap()
-//     await isDone()
-//     // // 重新创建测试目录
-//     const btnMkdDirButton = await page.$('.btn-mkdir')
-//     await btnMkdDirButton.tap()
-//     await isDone()
+    // // 清除文件夹
+    const btnRmDirButton = await page.$('.btn-remove-dir')
+    await btnRmDirButton.tap()
+    await isDone()
+    // // 重新创建测试目录
+    const btnMkdDirButton = await page.$('.btn-mkdir')
+    await btnMkdDirButton.tap()
+    await isDone()
 
-//     const btnReadDirButton = await page.$('.btn-read-dir')
-//     await btnReadDirButton.tap()
-//     await isDone()
-
-
-//     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-//     let fileListComplete = await getData('fileListComplete')
-//     expect(JSON.stringify(fileListComplete)).toEqual('[]')
-//     let fileListSuccess = await getData('fileListSuccess')
-//     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
-
-//     // 写入一个文件
-//     await page.setData({
-//       writeFileContent: "锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦",
-//       writeFileEncoding:"utf-8",
-//       writeFile:'a/1.txt',
-//       recursiveVal:false,
-//       statFile:'a/1.txt',
-//     })
+    const btnReadDirButton = await page.$('.btn-read-dir')
+    await btnReadDirButton.tap()
+    await isDone()
 
 
+    // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
+    let fileListComplete = await getData('fileListComplete')
+    expect(JSON.stringify(fileListComplete)).toEqual('[]')
+    let fileListSuccess = await getData('fileListSuccess')
+    expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
-// let lastFailError = await getData('lastFailError')
-// console.log(lastFailError)
+    // 写入一个文件
+    await page.setData({
+      writeFileContent: "锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦",
+      writeFileEncoding:"utf-8",
+      writeFile:'a/1.txt',
+      recursiveVal:false,
+      statFile:'a/1.txt',
+    })
 
-//     // const btnWriteFileButton = await page.$('.btn-write-file')
-//     // await btnWriteFileButton.tap()
-//     // await isDone()
+    let lastFailError = await getData('lastFailError')
+    console.log(lastFailError)
 
-//     // const btnStatFileButton = await page.$('.btn-stat-file')
-//     // await btnStatFileButton.tap()
-//     // await isDone()
+    const btnWriteFileButton = await page.$('.btn-write-file')
+    await btnWriteFileButton.tap()
+    await isDone()
 
-//     // // 读取单个文件信息
-//     // let statsRet = await getData('statsRet')
-//     // console.log(statsRet)
-//     // expect(statsRet.path).toEqual('')
+    const btnStatFileButton = await page.$('.btn-stat-file')
+    await btnStatFileButton.tap()
+    await isDone()
 
-//     // await page.setData({
-//     //   recursiveVal:true,
-//     //   statFile:'a/1.txt',
-//     // })
+    // 读取单个文件信息
+    let statsRet = await getData('statsRet')
+    expect(statsRet.length).toEqual(1)
+    expect(statsRet[0].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a/1.txt')
+    expect(statsRet[0].stats.size).toEqual(69)
 
-//     // await btnStatFileButton.tap()
-//     // await isDone()
+    /**
+     * 创建子目录和子目录文件，测试recursive参数
+     */
+    await page.setData({
+      writeFileContent: "1234567890",
+      writeFileEncoding:"ascii",
+      writeFile:'a/2.txt',
+      basePath: globalRootPath,
+      recursiveVal:false,
+      statFile:'a',
+      mkdirFile:'a/m',
+    })
 
-//     // // 读取单个文件信息
-//     // statsRet = await getData('statsRet')
-//     // console.log(statsRet)
-//     // expect(statsRet.path).toEqual('')
+
+    await btnWriteFileButton.tap()
+    await isDone()
+
+    // 创建子目录
+    await btnMkdDirButton.tap()
+    await isDone()
+
+    // 复制一份文件到 /a/m/3.txt
+    await page.setData({
+      //  asset 只能正式版测试，这里只能模拟返回路径
+      basePath:'',
+      copyFromFile:'file:///android_asset/uni-uts/uni-prompt/toast_error.png',
+      copyToFile:'a/m/3.txt',
+    })
+    const btnCopyFileButton = await page.$('.btn-copy-file')
+    await btnCopyFileButton.tap()
+    await isDone()
 
 
+    await page.setData({
+      basePath: globalRootPath,
+      recursiveVal:true,
+      statFile:'a',
+    })
 
-//   });
+    await btnStatFileButton.tap()
+    await isDone()
+
+    // 读取全部文件信息
+    statsRet = await getData('statsRet')
+    console.log(statsRet)
+    expect(statsRet.length).toEqual(5)
+    expect(statsRet[0].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a')
+    expect(statsRet[0].stats.size).toEqual(0)
+
+    expect(statsRet[2].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a/2.txt')
+    expect(statsRet[2].stats.size).toEqual(10)
+
+    expect(statsRet[4].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a/m/3.txt')
+    expect(statsRet[4].stats.size).toEqual(5842)
+
+
+    // 清理文件，避免影响其他测试用例
+    await page.setData({
+      unlinkFile:'a/1.txt',
+    })
+    await btnUnLinkFileButton.tap()
+    await isDone()
+
+    await page.setData({
+      unlinkFile:'a/2.txt',
+    })
+    await btnUnLinkFileButton.tap()
+    await isDone()
+
+    await page.setData({
+      unlinkFile:'a/m/3.txt',
+      rmDirFile:'a',
+      readDir:'a',
+      recursiveVal:true,
+    })
+    await btnUnLinkFileButton.tap()
+    await isDone()
+
+    await btnRmDirButton.tap()
+    await isDone()
+
+    await btnReadDirButton.tap()
+    await isDone()
+
+    // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
+    fileListComplete = await getData('fileListComplete')
+    expect(JSON.stringify(fileListComplete)).toEqual('[]')
+    fileListSuccess = await getData('fileListSuccess')
+    expect(JSON.stringify(fileListSuccess)).toEqual('[]')
+
+  });
 
 });
