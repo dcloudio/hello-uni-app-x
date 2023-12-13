@@ -49,8 +49,8 @@ describe("onLoad", () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "switchTab");
-    page = await program.currentPage();
     await page.waitFor(100);
+    page = await program.currentPage();
     expect(page.path).toBe("pages/tabBar/component");
   });
   it("showToast", async () => {
