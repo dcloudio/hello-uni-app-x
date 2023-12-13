@@ -61,6 +61,13 @@ describe('component-native-textarea', () => {
     } = await textarea.size()
     expect(height).toBeLessThanOrEqual(150)
   }) */
+  it("cursor-color", async () => {
+    await page.setData({
+      cursor_color: "transparent",
+    })
+    await page.waitFor(500)
+    expect(await textarea.property("cursor-color")).toBe("transparent")
+  })
 
   it("inputmode", async () => {
     const inputmodeEnum = await page.data("inputmode_enum")

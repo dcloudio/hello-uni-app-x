@@ -13,6 +13,7 @@ export default {
       default_value:"",
       maxlength:-1,
 			inputmode_enum: [{"value":0,"name":"none"},{"value":1,"name":"text"},{"value":2,"name":"decimal"},{"value":3,"name":"numeric"},{"value":4,"name":"tel"},{"value":5,"name":"search"},{"value":6,"name":"email"},{"value":7,"name":"url"}] as ItemType[],
+      cursor_color: "#3393E2",
 			inputmode_enum_current: 0
 		}
 	},
@@ -38,6 +39,7 @@ export default {
 		change_confirm_hold_boolean(checked : boolean) { this.confirm_hold_boolean = checked },
 		change_focus_boolean(checked : boolean) { this.focus_boolean = checked },
 		change_auto_focus_boolean(checked : boolean) { this.auto_focus_boolean = checked },
+    change_cursor_color_boolean(checked : boolean) { if(checked){ this.cursor_color = "transparent"} else {this.cursor_color = "#3393E2"}},
 		radio_change_inputmode_enum(checked : number) { this.inputmode_enum_current = checked }
 	}
 }
@@ -55,6 +57,7 @@ export default {
       :fixed="fixed_boolean"
       :show-confirm-bar="show_confirm_bar_boolean"
       :adjust-position="adjust_position_boolean"
+      :cursor-color="cursor_color"
       :inputmode="inputmode_enum[inputmode_enum_current].name"
       :maxlength="maxlength"
       @click="textarea_click"
@@ -114,6 +117,11 @@ export default {
         :defaultValue="false"
         title="自动获取焦点"
         @change="change_auto_focus_boolean"
+      ></boolean-data>
+      <boolean-data
+        :defaultValue="false"
+        title="改变光标颜色为透明"
+        @change="change_cursor_color_boolean"
       ></boolean-data>
       <enum-data
         :items="inputmode_enum"
