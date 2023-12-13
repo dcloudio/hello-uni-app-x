@@ -8,7 +8,7 @@ describe('mixin-datacom', () => {
   })
   it('mixinDatacomGet', async () => {
     const datacom = await page.$('.datacom')
-    const childCount = await datacom.$$('.list-item')
-    expect(childCount > 0).toBe(true)
+    const children = await datacom.$$('.list-item')
+    expect(children.length > 0).toBe(true)
   })
 })
