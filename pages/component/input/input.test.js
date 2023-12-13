@@ -139,6 +139,14 @@ describe('component-native-input', () => {
   //   await page.waitFor(500)
   // })
 
+  it("cursor-color", async () => {
+    await page.setData({
+      cursor_color: "transparent",
+    })
+    await page.waitFor(500)
+    expect(await (await page.$('.uni-input-cursor-color')).property("cursor-color")).toBe("transparent")
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
