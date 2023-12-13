@@ -29,6 +29,11 @@
         },
         fail(err : PreLoginFail) {
           console.error("pre login fail => " + JSON.stringify(err));
+          uni.showModal({
+            title: '预登录失败',
+            content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+            showCancel: false
+          });
         }
       } as PreLoginOptions);
     },
@@ -48,6 +53,11 @@
             },
             fail: (err : PreLoginFail) => {
               console.error("pre login fail => " + JSON.stringify(err));
+              uni.showModal({
+                title: '预登录失败',
+                content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+                showCancel: false
+              });
             }
           } as PreLoginOptions);
         }
@@ -71,26 +81,34 @@
                 openid: res.openId // 客户端一键登录接口返回的openid
               }
             }).then(res => {
-              uni.showModal({
-                title: '取号成功',
-                content: res.result.getJSON("res")?.getString("phoneNumber"),
-                showCancel: false,
-                success: (_) => {
-                  // 关闭登录页
-                  this.univerifyManager?.close();
-                }
-              });
+              // 关闭登录页
+              this.univerifyManager?.close();
+              setTimeout(() => {
+                uni.showModal({
+                  title: '取号成功',
+                  content: res.result.getJSON("res")?.getString("phoneNumber"),
+                  showCancel: false
+                });
+              }, 100);
             }).catch(err => {
               console.error(JSON.stringify(err));
               // 关闭登录页
               this.univerifyManager?.close();
+              setTimeout(() => {
+                uni.showModal({
+                  title: '取号失败',
+                  content: (err as Error).message,
+                  showCancel: false
+                });
+              }, 100);
             });
           },
           fail: (err : LoginFail) => {
             console.error("login fail => " + err);
-            uni.showToast({
-              title: "登录失败",
-              icon: "error"
+            uni.showModal({
+              title: '登录失败',
+              content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+              showCancel: false
             });
           }
         } as LoginOptions);
