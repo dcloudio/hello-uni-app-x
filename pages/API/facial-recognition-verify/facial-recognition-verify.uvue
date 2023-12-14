@@ -47,19 +47,7 @@
           return
         }
         const testFacialCo = uniCloud.importObject('facial-recognition-co')
-        let metaInfo : string
-        try {
-          metaInfo = uni.getFacialRecognitionMetaInfo();
-        } catch (e) {
-          if ((e as Error).message!.indexOf('Failed resolution of') > -1) {
-            uni.showModal({
-              title: '提示',
-              content: '注意：目前uni-app x内使用实人认证功能需要打包自定义基座。',
-              showCancel: false
-            })
-          }
-          throw e
-        }
+        let metaInfo = uni.getFacialRecognitionMetaInfo();
         testFacialCo.getCertifyId({
           realName,
           idCard,
