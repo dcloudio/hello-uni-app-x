@@ -13,8 +13,7 @@ describe('unicloud-import-object', () => {
     await page.callMethod('addTodo')
     await page.callMethod('fail')
     await page.callMethod('success')
-    await page.waitFor(3000)
-    
+
     const {
       todoTitle,
       todoContent,
@@ -23,11 +22,11 @@ describe('unicloud-import-object', () => {
       failErrCode,
       successErrCode,
     } = await page.data()
-    
+
     expect(returnTodoTitle).toBe(todoTitle)
     expect(returnTodoContent).toBe(todoContent)
     expect(failErrCode).toBe('TEST_ERROR_CODE')
     expect(successErrCode).toBe(0)
-    
+
   })
 });

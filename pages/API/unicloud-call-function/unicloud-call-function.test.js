@@ -12,7 +12,6 @@ describe('unicloud-call-function', () => {
 
   it('callFunction', async () => {
     await page.callMethod('callFunction')
-    await page.waitFor(3000)
     const {
       callFunctionResult,
       callFunctionError
