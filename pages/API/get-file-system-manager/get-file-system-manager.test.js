@@ -43,21 +43,21 @@ describe('ExtApi-FileManagerTest', () => {
     })
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('.btn-clear-file')
+    const btnUnLinkFileButton = await page.$('#btn-clear-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
 
     // 清除文件夹
-    const btnRmDirButton = await page.$('.btn-remove-dir')
+    const btnRmDirButton = await page.$('#btn-remove-dir')
     await btnRmDirButton.tap()
     await isDone()
     // 重新创建测试目录
-    const btnMkdDirButton = await page.$('.btn-mkdir')
+    const btnMkdDirButton = await page.$('#btn-mkdir')
     await btnMkdDirButton.tap()
     await isDone()
 
-    const btnReadDirButton = await page.$('.btn-read-dir')
+    const btnReadDirButton = await page.$('#btn-read-dir')
     await btnReadDirButton.tap()
     await isDone()
 
@@ -104,7 +104,7 @@ describe('ExtApi-FileManagerTest', () => {
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\"]")
 
     // 测试写入文件
-    const btnWriteFileButton = await page.$('.btn-write-file')
+    const btnWriteFileButton = await page.$('#btn-write-file')
     await btnWriteFileButton.tap()
     await isDone()
     // 检查目录列表数量
@@ -115,7 +115,7 @@ describe('ExtApi-FileManagerTest', () => {
     fileListSuccess = await getData('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"1.txt\"]")
     // 获取和对比 文件内容
-    const btnReadFileButton = await page.$('.btn-read-file')
+    const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
     let readFileRet = await getData('readFileRet')
@@ -134,7 +134,7 @@ describe('ExtApi-FileManagerTest', () => {
     readFileRet = await getData('readFileRet')
     expect(readFileRet).toEqual("If you were a teardrop;In my eye,For fear of losing you,I would never cry.And if the golden sun,Should cease to shine its light,Just one smile from you,Would make my whole world bright.")
 
-    const btnGetFileInfoButton = await page.$('.btn-get-file-info')
+    const btnGetFileInfoButton = await page.$('#btn-get-file-info')
     await btnGetFileInfoButton.tap()
     await isDone()
 
@@ -161,7 +161,7 @@ describe('ExtApi-FileManagerTest', () => {
       copyFromFile:"a/1.txt",
       copyToFile:"a/2.txt"
     })
-    const btnCopyFileButton = await page.$('.btn-copy-file')
+    const btnCopyFileButton = await page.$('#btn-copy-file')
     await btnCopyFileButton.tap()
     await isDone()
 
@@ -181,7 +181,7 @@ describe('ExtApi-FileManagerTest', () => {
       renameToFile:"a/3.txt"
     })
 
-    const btnRenameFileButton = await page.$('.btn-rename-file')
+    const btnRenameFileButton = await page.$('#btn-rename-file')
     await btnRenameFileButton.tap()
     await isDone()
 
@@ -211,22 +211,22 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    const btnUnLinkFileButton = await page.$('#btn-unlink-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
 
     // 清除文件夹
-    const btnRmDirButton = await page.$('.btn-remove-dir')
+    const btnRmDirButton = await page.$('#btn-remove-dir')
     await btnRmDirButton.tap()
     await isDone()
 
     // 重新创建测试目录
-    const btnMkdDirButton = await page.$('.btn-mkdir')
+    const btnMkdDirButton = await page.$('#btn-mkdir')
     await btnMkdDirButton.tap()
     await isDone()
 
-    const btnReadDirButton = await page.$('.btn-read-dir')
+    const btnReadDirButton = await page.$('#btn-read-dir')
     await btnReadDirButton.tap()
     await isDone()
 
@@ -283,7 +283,7 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 获取和对比 文件内容
-    const btnReadFileButton = await page.$('.btn-read-file')
+    const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
     let readFileRet = await getData('readFileRet')
@@ -299,7 +299,7 @@ describe('ExtApi-FileManagerTest', () => {
     })
 
 
-    const btnWriteFileButton = await page.$('.btn-write-file')
+    const btnWriteFileButton = await page.$('#btn-write-file')
     await btnWriteFileButton.tap()
     await isDone()
 
@@ -325,7 +325,7 @@ describe('ExtApi-FileManagerTest', () => {
       getFileInfoAlgorithm:"md5",
     })
 
-    const btnGetFileInfoButton = await page.$('.btn-get-file-info')
+    const btnGetFileInfoButton = await page.$('#btn-get-file-info')
     await btnGetFileInfoButton.tap()
     await isDone()
 
@@ -367,7 +367,7 @@ describe('ExtApi-FileManagerTest', () => {
       renameToFile:"a/没有提前创建的目录/3.txt"
     })
 
-    const btnRenameFileButton = await page.$('.btn-rename-file')
+    const btnRenameFileButton = await page.$('#btn-rename-file')
     await btnRenameFileButton.tap()
     await isDone()
 
@@ -404,7 +404,7 @@ describe('ExtApi-FileManagerTest', () => {
       copyToFile:"a/提前创建的目录/4.txt"
     })
 
-      const btnCopyFileButton = await page.$('.btn-copy-file')
+      const btnCopyFileButton = await page.$('#btn-copy-file')
       await btnCopyFileButton.tap()
       await isDone()
 
@@ -457,22 +457,22 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnClearFileButton = await page.$('.btn-clear-file')
+    const btnClearFileButton = await page.$('#btn-clear-file')
     await btnClearFileButton.tap()
     await isDone()
 
 
     // 清除文件夹
-    const btnRmDirButton = await page.$('.btn-remove-dir')
+    const btnRmDirButton = await page.$('#btn-remove-dir')
     await btnRmDirButton.tap()
     await isDone()
 
     // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    const btnMkdDirButton = await page.$('.btn-mkdir')
+    const btnMkdDirButton = await page.$('#btn-mkdir')
     await btnMkdDirButton.tap()
     await isDone()
 
-    const btnReadDirButton = await page.$('.btn-read-dir')
+    const btnReadDirButton = await page.$('#btn-read-dir')
     await btnReadDirButton.tap()
     await isDone()
 
@@ -483,7 +483,7 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 检查资源文件，此时不存在
-    const btnAccessFileButton = await page.$('.btn-access-file')
+    const btnAccessFileButton = await page.$('#btn-access-file')
     await btnAccessFileButton.tap()
     await isDone()
 
@@ -505,7 +505,7 @@ describe('ExtApi-FileManagerTest', () => {
     expect(accessFileRet).toEqual('access:ok')
 
     // 尝试删除资源，期望失败
-    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    const btnUnLinkFileButton = await page.$('#btn-unlink-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
@@ -520,7 +520,7 @@ describe('ExtApi-FileManagerTest', () => {
       copyFromFile:"static/list-mock/safe.png",
       copyToFile:"a/从代码目录拷贝的资源.png"
     })
-    const btnCopyFileButton = await page.$('.btn-copy-file')
+    const btnCopyFileButton = await page.$('#btn-copy-file')
     await btnCopyFileButton.tap()
     await isDone()
 
@@ -548,7 +548,7 @@ describe('ExtApi-FileManagerTest', () => {
     expect(accessFileRet).toEqual('')
 
     // 从页面的按钮触发一次文件复制
-    const btnCopyStaticFileButton = await page.$('.btn-copyStatic-file')
+    const btnCopyStaticFileButton = await page.$('#btn-copyStatic-file')
     await btnCopyStaticFileButton.tap()
     await isDone()
 
@@ -598,21 +598,21 @@ describe('ExtApi-FileManagerTest', () => {
     })
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    const btnUnLinkFileButton = await page.$('#btn-unlink-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
     // 清除文件夹
-    const btnRmDirButton = await page.$('.btn-remove-dir')
+    const btnRmDirButton = await page.$('#btn-remove-dir')
     await btnRmDirButton.tap()
     await isDone()
 
     // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    const btnMkdDirButton = await page.$('.btn-mkdir')
+    const btnMkdDirButton = await page.$('#btn-mkdir')
     await btnMkdDirButton.tap()
     await isDone()
 
-    const btnReadDirButton = await page.$('.btn-read-dir')
+    const btnReadDirButton = await page.$('#btn-read-dir')
     await btnReadDirButton.tap()
     await isDone()
 
@@ -622,17 +622,17 @@ describe('ExtApi-FileManagerTest', () => {
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
     // 先用utf-8 写入内容
-    const btnWriteFileButton = await page.$('.btn-write-file')
+    const btnWriteFileButton = await page.$('#btn-write-file')
     await btnWriteFileButton.tap()
     await isDone()
 
-    const btnReadFileButton = await page.$('.btn-read-file')
+    const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
     let readFileRet = await getData('readFileRet')
     expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升")
 
-    const btnGetFileInfoButton = await page.$('.btn-get-file-info')
+    const btnGetFileInfoButton = await page.$('#btn-get-file-info')
     await btnGetFileInfoButton.tap()
     await isDone()
 
@@ -729,7 +729,7 @@ describe('ExtApi-FileManagerTest', () => {
     })
 
     // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('.btn-unlink-file')
+    const btnUnLinkFileButton = await page.$('#btn-unlink-file')
     await btnUnLinkFileButton.tap()
     await isDone()
 
@@ -746,15 +746,15 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // // 清除文件夹
-    const btnRmDirButton = await page.$('.btn-remove-dir')
+    const btnRmDirButton = await page.$('#btn-remove-dir')
     await btnRmDirButton.tap()
     await isDone()
     // // 重新创建测试目录
-    const btnMkdDirButton = await page.$('.btn-mkdir')
+    const btnMkdDirButton = await page.$('#btn-mkdir')
     await btnMkdDirButton.tap()
     await isDone()
 
-    const btnReadDirButton = await page.$('.btn-read-dir')
+    const btnReadDirButton = await page.$('#btn-read-dir')
     await btnReadDirButton.tap()
     await isDone()
 
@@ -777,11 +777,11 @@ describe('ExtApi-FileManagerTest', () => {
     let lastFailError = await getData('lastFailError')
     console.log(lastFailError)
 
-    const btnWriteFileButton = await page.$('.btn-write-file')
+    const btnWriteFileButton = await page.$('#btn-write-file')
     await btnWriteFileButton.tap()
     await isDone()
 
-    const btnStatFileButton = await page.$('.btn-stat-file')
+    const btnStatFileButton = await page.$('#btn-stat-file')
     await btnStatFileButton.tap()
     await isDone()
 
@@ -819,7 +819,7 @@ describe('ExtApi-FileManagerTest', () => {
       copyFromFile:'file:///android_asset/uni-uts/uni-prompt/toast_error.png',
       copyToFile:'a/m/3.txt',
     })
-    const btnCopyFileButton = await page.$('.btn-copy-file')
+    const btnCopyFileButton = await page.$('#btn-copy-file')
     await btnCopyFileButton.tap()
     await isDone()
 
