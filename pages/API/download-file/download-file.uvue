@@ -4,15 +4,13 @@
   <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <view v-if="imageSrc" class="image-container">
-          <image class="img" :src="imageSrc" mode="center" />
+      <view>
+        <view v-if="imageSrc">
+          <image class="img" :src="imageSrc" mode="aspectFit" />
         </view>
-        <view v-else style="margin-top: 50px">
+        <view v-else style="margin: 10px;">
           <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
-          <view class="uni-btn-v">
-            <button type="primary" @tap="downloadImage">下载</button>
-          </view>
+          <button type="primary" @tap="downloadImage">下载</button>
         </view>
       </view>
     </view>
@@ -34,7 +32,7 @@
     onLoad() {
     },
     onUnload() {
-      this.imageSrc = '';
+      // this.imageSrc = '';
       uni.hideLoading();
       this.task?.abort();
     },
@@ -47,7 +45,7 @@
         this.task = uni.downloadFile({
           url: "https://web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
           success: (res) => {
-            console.log('downloadFile success, res is', res)
+            console.log('downloadFile success, res is', res.tempFilePath)
             self.imageSrc = res.tempFilePath;
             uni.hideLoading();
           },
@@ -78,14 +76,6 @@
 
 <style>
   .img {
-    width: 500rpx;
-    height: 500rpx;
     margin: 0 auto;
-  }
-
-  .image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 </style>
