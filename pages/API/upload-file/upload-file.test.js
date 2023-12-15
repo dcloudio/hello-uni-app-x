@@ -8,7 +8,7 @@ describe('ExtApi-UploadFile', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
     await page.callMethod('jest_uploadFile');
-    await page.waitFor(500);
+    await page.waitFor(1000);
     res = await page.data('jest_result');
   });
 

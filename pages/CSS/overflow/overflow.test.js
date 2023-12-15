@@ -1,4 +1,4 @@
-describe('component-native-list-view', () => {
+describe('component-native-overflow', () => {
   let page
   beforeAll(async () => {
     //打开list-view测试页

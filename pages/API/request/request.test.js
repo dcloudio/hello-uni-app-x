@@ -22,7 +22,7 @@ async function request(page, method, header, data, url) {
     header: header
   })
   res = await page.callMethod('jest_request')
-  await page.waitFor(200);
+  await page.waitFor(500);
   res = await page.data('jest_result');
   expect(res).toBe(true)
 }

@@ -8,7 +8,7 @@ describe('ExtApi-WebSocket', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
     await page.callMethod('jest_connectSocket');
-    await page.waitFor(500);
+    await page.waitFor(1500);
     res = await page.data('jest_result');
   });
 

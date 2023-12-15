@@ -22,8 +22,16 @@
         <view class="base-style transition-background" id="styleBackground" @click="changeBackground"></view>
       </view>
       <view class="container">
+        <text class="text">动态修改Background</text>
+        <view class="base-style" id="propertyStyleBackground" @click="propertyChangeBackground"></view>
+      </view>
+      <view class="container">
         <text class="text">点击修改Transform</text>
         <view class="base-style transition-transform" id="styleTransform" @click="changeTransform"></view>
+      </view>
+      <view class="container">
+        <text class="text">点击修改Transform（含transform-origin）</text>
+        <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin" @click="changeTransformWithOrigin"></view>
       </view>
       <view class="container">
         <text class="text">点击修改Border</text>
@@ -57,6 +65,11 @@
         styleBorder: null as Element | null,
         isTransitionstylePosition: false,
         stylePosition: null as Element | null,
+        isSetTransition: false,
+        isTransitionpropertystyleBackground: false,
+        propertyStyleBackground: null as Element | null,
+        isTransitionStyleTransformWithOrigin: false,
+        styleTransformWithOrigin: null as Element | null,
       }
     },
     onReady() {
@@ -67,6 +80,8 @@
       this.styleTransform = uni.getElementById("styleTransform")
       this.styleBorder = uni.getElementById("styleBorder")
       this.stylePosition = uni.getElementById("stylePosition")
+      this.propertyStyleBackground = uni.getElementById("propertyStyleBackground")
+      this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
     },
     methods: {
       changeWidthOrHeight() {
@@ -107,12 +122,31 @@
         )
         this.isTransitionstyleBackground = !this.isTransitionstyleBackground
       },
+      propertyChangeBackground() {
+        if (!this.isSetTransition) {
+          this.propertyStyleBackground?.style?.setProperty("transition-property", "background-color")
+          this.propertyStyleBackground?.style?.setProperty("transition-duration", "1000")
+          this.isSetTransition = true
+        }
+        this.propertyStyleBackground?.style?.setProperty("background-color", this.isTransitionpropertystyleBackground
+          ? 'brown'
+          : 'black'
+        )
+        this.isTransitionpropertystyleBackground = !this.isTransitionpropertystyleBackground
+      },
       changeTransform() {
         this.styleTransform?.style?.setProperty("transform", this.isTransitionStyleTransform
           ? 'rotate(0deg)'
           : 'rotate(135deg)'
         )
         this.isTransitionStyleTransform = !this.isTransitionStyleTransform
+      },
+      changeTransformWithOrigin() {
+        this.styleTransformWithOrigin?.style?.setProperty("transform", this.isTransitionStyleTransformWithOrigin
+          ? 'scaleX(1)'
+          : 'scaleX(0)'
+        )
+        this.isTransitionStyleTransformWithOrigin = !this.isTransitionStyleTransformWithOrigin
       },
       changeBorder() {
         this.styleBorder?.style?.setProperty("border-color", this.isTransitionstyleBorder

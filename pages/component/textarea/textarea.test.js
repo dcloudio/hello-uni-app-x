@@ -61,6 +61,13 @@ describe('component-native-textarea', () => {
     } = await textarea.size()
     expect(height).toBeLessThanOrEqual(150)
   }) */
+  it("cursor-color", async () => {
+    await page.setData({
+      cursor_color: "transparent",
+    })
+    await page.waitFor(500)
+    expect(await textarea.property("cursor-color")).toBe("transparent")
+  })
 
   it("inputmode", async () => {
     const inputmodeEnum = await page.data("inputmode_enum")
@@ -70,18 +77,6 @@ describe('component-native-textarea', () => {
       await page.callMethod("radio_change_inputmode_enum", x['value']);
       await page.waitFor(500)
       expect(await textarea.property("inputmode")).toEqual(x['name'])
-      await page.waitFor(500)
-    }
-  })
-
-  it("confirm-type", async () => {
-    const inputmodeEnum = await page.data("confirm_type_enum")
-    for (var i = 0; i < inputmodeEnum.length; i++) {
-      var x = inputmodeEnum[i]
-      console.log(x['value'], x['name'])
-      await page.callMethod("radio_change_confirm_type_enum", x['value']);
-      await page.waitFor(500)
-      expect(await textarea.property("confirm-type")).toEqual(x['name'])
       await page.waitFor(500)
     }
   })

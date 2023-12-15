@@ -1,33 +1,60 @@
 <template>
-	<view>
-		<button class="button" @click="shareText('https://uniapp.dcloud.io/uni-app-x','分享到')">分享</button>
-	</view>
+  <view id="viewshot">
+    <button class="button" @click="shareText('https://uniapp.dcloud.io/uni-app-x','分享到')">分享文本</button>
+    <button class="button" @click="shareSnapShot">指定view截图并分享</button>
+  </view>
 </template>
 
 <script>
-import Intent from 'android.content.Intent';
+  import Intent from 'android.content.Intent';
+	import File from 'java.io.File';
 
-	export default {
-		data() {
-			return {
+  export default {
+    data() {
+      return {
 
-			}
-		},
-		methods: {
-			shareText(text:string,title:string){
-			    const context = UTSAndroid.getUniActivity()!;
-			    const intent = new Intent(Intent.ACTION_SEND)
-					intent.setType("text/plain");
-					intent.putExtra(Intent.EXTRA_TEXT, text);
-					context.startActivity(Intent.createChooser(intent, title));
-          // 这里是简单的文本分享示例，如需分享文件图片，需要使用fileProvider
-			},
-		}
-	}
+      }
+    },
+    methods: {
+      shareText(text : string, title : string) {
+        const context = UTSAndroid.getUniActivity()!;
+        const intent = new Intent(Intent.ACTION_SEND)
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        context.startActivity(Intent.createChooser(intent, title));
+        // 这里是简单的文本分享示例，如需分享文件图片，需要使用fileProvider
+      },
+      shareSnapShot() {
+        uni.getElementById("viewshot")?.takeSnapshot(
+          {
+            success: function (res) {
+              // 打印截图文件临时路径
+              console.log(res.tempFilePath)
+              const context = UTSAndroid.getUniActivity()!;
+              const intent = new Intent(Intent.ACTION_SEND)
+              intent.setType("image/*");
+              let file = new File(res.tempFilePath)
+              const uri = UTSAndroid.getFileProviderUri(file) //3.99支持
+              intent.putExtra(Intent.EXTRA_STREAM, uri);
+              context.startActivity(Intent.createChooser(intent, "分享到"));
+            },
+            fail: function (res) {
+              console.log(res)
+              uni.showToast({
+                icon: 'error',
+                title: '截图失败'
+              })
+            }
+          }
+        )
+      },
+
+    }
+  }
 </script>
 
 <style>
-.button {
-	margin: 30rpx;
-}
+  .button {
+    margin: 30rpx;
+  }
 </style>
