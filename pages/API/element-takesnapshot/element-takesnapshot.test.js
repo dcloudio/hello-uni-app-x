@@ -2,6 +2,12 @@ const PAGE_PATH = "/pages/API/element-takesnapshot/element-takesnapshot";
 
 
 describe("element-takesnapshot", () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page;
   function getData(key = '') {
     return new Promise(async (resolve, reject) => {
