@@ -1,7 +1,7 @@
 <template>
   <scroll-view class="scroll-view" :scroll-y="true">
     <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
-      page-data="replace" loadtime="manual">
+      page-data="replace">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
       <view v-if="loading" class="loading">正在加载...</view>
       <form v-if="data.length>0" @submit="onFormSubmit">
@@ -46,7 +46,7 @@
   export default {
     data() {
       return {
-        collection: COLLECTION_NAME,
+        collection: '',
         where: '',
         genderList: GenderList as GenderType[],
         $whereID: '',
@@ -54,12 +54,12 @@
       }
     },
     onLoad(options : Map<string, string>) {
+      this.collection = COLLECTION_NAME;
       this.$whereID = options.get('id') as string;
       this.where = `_id=='${this.$whereID}'`;
     },
     onReady() {
       this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
-      this.$uniCloudElement!.loadData()
     },
     methods: {
       onFormSubmit: function (e : FormSubmitEvent) {
