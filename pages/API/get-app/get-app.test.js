@@ -19,11 +19,11 @@ describe('getApp', () => {
     })
     expect(data.originGlobalData.arr).toEqual([])
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      expect(data.originGlobalData.set).toEqual([])
+      expect(data.originGlobalData.mySet).toEqual([])
     } else {
-      expect(data.originGlobalData.set).toEqual({})
+      expect(data.originGlobalData.mySet).toEqual({})
     }
-    expect(data.originGlobalData.map).toEqual({})
+    expect(data.originGlobalData.myMap).toEqual({})
     expect(data.originGlobalDataFuncRes).toBe('globalData func')
     await page.callMethod('setGlobalData')
     data = await page.data()
@@ -37,18 +37,18 @@ describe('getApp', () => {
     })
     expect(data.newGlobalData.arr).toEqual([1, 2, 3])
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      expect(data.newGlobalData.set).toEqual(['a', 'b', 'c'])
+      expect(data.newGlobalData.mySet).toEqual(['a', 'b', 'c'])
     } else {
-      expect(data.originGlobalData.set).toEqual({})
+      expect(data.originGlobalData.mySet).toEqual({})
     }
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      expect(data.newGlobalData.map).toEqual({
+      expect(data.newGlobalData.myMap).toEqual({
         'a': 1,
         'b': 2,
         'c': 3
       })
     } else {
-      expect(data.originGlobalData.map).toEqual({})
+      expect(data.originGlobalData.myMap).toEqual({})
     }
     expect(data.newGlobalDataFuncRes).toBe('new globalData func')
   })

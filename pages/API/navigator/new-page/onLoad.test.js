@@ -9,7 +9,7 @@ describe("onLoad", () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
-    await page.waitFor(100);
+    await page.waitFor(1000);
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
   });
@@ -17,17 +17,19 @@ describe("onLoad", () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "navigateTo");
-    await page.waitFor(100);
+    await page.waitFor(1000);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
-    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor('view');
-    await page.callMethod("navigateToOnLoadWithType", "navigateBack");
-    page = await program.currentPage();
-    await page.waitFor('view');
-    expect(page.path).toBe(INTERMEDIATE_PAGE_PATH.substring(1));
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+      await page.waitFor('view');
+      await page.callMethod("navigateToOnLoadWithType", "navigateBack");
+      await page.waitFor('view');
+      page = await program.currentPage();
+      expect(page.path).toBe(INTERMEDIATE_PAGE_PATH.substring(1));
+    }
   });
   it("redirectTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);

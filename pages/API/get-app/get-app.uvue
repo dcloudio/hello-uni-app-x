@@ -14,11 +14,11 @@
           <text class="uni-common-mt">globalData object: {{ originGlobalData.obj }}</text>
           <text class="uni-common-mt">globalData null: {{ originGlobalData.null }}</text>
           <text class="uni-common-mt">globalData array: {{ originGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ originGlobalData.set }}</text>
-          <text class="uni-common-mt">globalData Map: {{ originGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData Set: {{ originGlobalData.mySet }}</text>
+          <text class="uni-common-mt">globalData Map: {{ originGlobalData.myMap }}</text>
           <text class="uni-common-mt">globalData func 返回值: {{ originGlobalDataFuncRes }}</text>
         </template>
-        <button @click="setGlobalData" class="uni-common-mt">set globalData</button>
+        <button @click="setGlobalData" class="uni-common-mt">mySet globalData</button>
         <template v-if="newGlobalData.bool">
           <text class="uni-common-mt bold">更新后的 globalData:</text>
           <text class="uni-common-mt">globalData string: {{ newGlobalData.str }}</text>
@@ -27,8 +27,8 @@
           <text class="uni-common-mt">globalData object: {{ newGlobalData.obj }}</text>
           <text class="uni-common-mt">globalData null: {{ newGlobalData.null }}</text>
           <text class="uni-common-mt">globalData array: {{ newGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ newGlobalData.set }}</text>
-          <text class="uni-common-mt">globalData Map: {{ newGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData Set: {{ newGlobalData.mySet }}</text>
+          <text class="uni-common-mt">globalData Map: {{ newGlobalData.myMap }}</text>
           <text class="uni-common-mt">globalData func 返回值: {{ newGlobalDataFuncRes }}</text>
         </template>
         <view class="uni-common-mt hr"></view>
@@ -53,8 +53,8 @@
     obj : UTSJSONObject,
     null : string | null,
     arr : number[],
-    set : Set<string>,
-    map : Map<string, any>,
+    mySet : Set<string>,
+    myMap : Map<string, any>,
     func : () => string
   }
   import { state, setLifeCycleNum } from '@/store/index.uts'
@@ -73,8 +73,8 @@
           } as UTSJSONObject,
           null: null,
           arr: [] as number[],
-          set: new Set<string>(),
-          map: new Map<string, any>(),
+          mySet: new Set<string>(),
+          myMap: new Map<string, any>(),
           func: () : string => ''
         } as MyGlobalData,
         originGlobalDataFuncRes: '',
@@ -89,8 +89,8 @@
           } as UTSJSONObject,
           null: null,
           arr: [] as number[],
-          set: new Set<string>(),
-          map: new Map<string, any>(),
+          mySet: new Set<string>(),
+          myMap: new Map<string, any>(),
           func: () : string => ''
         } as MyGlobalData,
         newGlobalDataFuncRes: '',
@@ -109,8 +109,8 @@
         this.originGlobalData.obj = app.globalData.obj
         this.originGlobalData.null = app.globalData.null
         this.originGlobalData.arr = app.globalData.arr
-        this.originGlobalData.set = app.globalData.set
-        this.originGlobalData.map = app.globalData.map
+        this.originGlobalData.mySet = app.globalData.mySet
+        this.originGlobalData.myMap = app.globalData.myMap
         this.originGlobalData.func = app.globalData.func
         this.originGlobalDataFuncRes = this.originGlobalData.func()
       },
@@ -127,8 +127,8 @@
         }
         app.globalData.null = 'not null'
         app.globalData.arr = [1, 2, 3]
-        app.globalData.set = new Set(['a', 'b', 'c'])
-        app.globalData.map = new Map([
+        app.globalData.mySet = new Set(['a', 'b', 'c'])
+        app.globalData.myMap = new Map([
           ['a', 1],
           ['b', 2],
           ['c', 3]
@@ -143,8 +143,8 @@
         this.newGlobalData.obj = app.globalData.obj
         this.newGlobalData.null = app.globalData.null
         this.newGlobalData.arr = app.globalData.arr
-        this.newGlobalData.set = app.globalData.set
-        this.newGlobalData.map = app.globalData.map
+        this.newGlobalData.mySet = app.globalData.mySet
+        this.newGlobalData.myMap = app.globalData.myMap
         this.newGlobalData.func = app.globalData.func
         this.newGlobalDataFuncRes = this.newGlobalData.func()
       },

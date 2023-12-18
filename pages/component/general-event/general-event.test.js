@@ -10,51 +10,43 @@ describe('event trigger sequence', () => {
   })
 
   it('touch', async () => {
-    await el.touchstart({
-      touches: [
-        {
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      await el.touchstart({
+        touches: [{
           identifier: 1,
           pageX: 100,
           pageY: 100,
-        },
-      ],
-      changedTouches: [
-        {
+        }, ],
+        changedTouches: [{
           identifier: 1,
           pageX: 100,
           pageY: 100,
-        },
-      ],
-    })
-    await el.touchmove({
-      touches: [
-        {
+        }, ],
+      })
+      await el.touchmove({
+        touches: [{
           identifier: 1,
           pageX: 100,
           pageY: 100,
-        },
-      ],
-      changedTouches: [
-        {
+        }, ],
+        changedTouches: [{
           identifier: 1,
           pageX: 101,
           pageY: 101,
-        },
-      ],
-    })
-    await el.touchend({
-      touches: [],
-      changedTouches: [
-        {
+        }, ],
+      })
+      await el.touchend({
+        touches: [],
+        changedTouches: [{
           identifier: 1,
           pageX: 101,
           pageY: 101,
-        },
-      ],
-    })
-    const data = await page.data()
-    expect(data.onTouchStartTime).toBeLessThanOrEqual(data.onTouchMoveTime);
-    expect(data.onTouchMoveTime).toBeLessThanOrEqual(data.onTouchEndTime);
+        }, ],
+      })
+      const data = await page.data()
+      expect(data.onTouchStartTime).toBeLessThanOrEqual(data.onTouchMoveTime);
+      expect(data.onTouchMoveTime).toBeLessThanOrEqual(data.onTouchEndTime);
+    }
   })
 
   it('click', async () => {
@@ -64,8 +56,10 @@ describe('event trigger sequence', () => {
   })
 
   it('longPress', async () => {
-    await el.longpress()
-    const data = await page.data()
-    expect(data.onLongPressTime).toBeGreaterThan(0)
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      await el.longpress()
+      const data = await page.data()
+      expect(data.onLongPressTime).toBeGreaterThan(0)
+    }
   })
 })

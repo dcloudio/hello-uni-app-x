@@ -18,8 +18,8 @@ export default {
       msg: 'default msg'
     }
   },
-  onLoad(options: OnLoadOptions) {
-    const type = options.get('type')
+  onLoad(options : OnLoadOptions) {
+    const type = options['type']
     switch (type) {
       case 'adjustData':
         this.adjustData()
@@ -53,54 +53,67 @@ export default {
         break;
     }
   },
+  // #ifdef WEB
+  onUnload() {
+    // web 端页面销毁前,关闭 modal 和 actionsheet
+    const modalBtn = document.querySelector('.uni-modal__btn')
+    if (modalBtn) {
+      modalBtn.click()
+    }
+    const actionSheetBtn = document.querySelector('.uni-actionsheet__action .uni-actionsheet__cell')
+    if (actionSheetBtn) {
+      actionSheetBtn.click()
+    }
+  },
+  // #endif
   methods: {
-    adjustData(){
+    adjustData() {
       this.isTrue = true
       this.isFalse = false
       this.msg = 'new msg'
     },
-    navigateTo(){
+    navigateTo() {
       uni.navigateTo({
         url: '/pages/API/navigator/new-page/new-page-3'
       })
     },
-    navigateBack(){
+    navigateBack() {
       uni.navigateBack()
     },
-    redirectTo(){
+    redirectTo() {
       uni.redirectTo({
         url: '/pages/API/navigator/new-page/new-page-3'
       })
     },
-    reLaunch(){
+    reLaunch() {
       uni.reLaunch({
         url: '/pages/API/navigator/new-page/new-page-3'
       })
     },
-    switchTab(){
+    switchTab() {
       uni.switchTab({
         url: '/pages/tabBar/component'
       })
     },
-    showToast(){
+    showToast() {
       uni.showToast({
         title: 'test title',
         icon: 'success',
         duration: 2000
       })
     },
-    showLoading(){
+    showLoading() {
       uni.showLoading({
         title: 'test title',
       })
     },
-    showModal(){
+    showModal() {
       uni.showModal({
         title: 'test title',
-        content: 'test content',
+        content: 'test content'
       })
     },
-    showActionSheet(){
+    showActionSheet() {
       uni.showActionSheet({
         title: 'test title',
         itemList: ['1', '2', '3']
