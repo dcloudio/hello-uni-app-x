@@ -16,7 +16,7 @@ describe('component-native-input', () => {
   // })
   // 测试焦点及键盘弹起
   it('focus', async () => {
-    const input = await page.$('.uni-input-focus');
+    const input = await page.$('#uni-input-focus');
     expect(await input.property('focus')).toBe("true")
     // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
     await page.setData({
@@ -42,16 +42,16 @@ describe('component-native-input', () => {
 
   // 测试修改value属性
   it("value", async () => {
-    const input = await page.$('.uni-input-default');
+    const input = await page.$('#uni-input-default');
     expect(await input.property('value')).toEqual("hello uni-app x")
   })
 
   //测试input的类型
   it("type", async () => {
-    const text = await page.$('.uni-input-type-text');
-    const number = await page.$('.uni-input-type-number');
-    const digit = await page.$('.uni-input-type-digit');
-    const tel = await page.$('.uni-input-type-tel');
+    const text = await page.$('#uni-input-type-text');
+    const number = await page.$('#uni-input-type-number');
+    const digit = await page.$('#uni-input-type-digit');
+    const tel = await page.$('#uni-input-type-tel');
     expect(await text.property('type')).toEqual("text")
     expect(await number.property('type')).toEqual("number")
     expect(await digit.property('type')).toEqual("digit")
@@ -119,16 +119,16 @@ describe('component-native-input', () => {
   // })
 
   it("disable", async () => {
-    const input = await page.$('.uni-input-disable');
+    const input = await page.$('#uni-input-disable');
     expect(await input.property("disabled")).toBe("true")
   })
 
   it("confirm-type", async () => {
-    expect(await (await page.$('.uni-input-confirm-send')).property("confirmType")).toEqual("send")
-    expect(await (await page.$('.uni-input-confirm-search')).property("confirmType")).toEqual("search")
-    expect(await (await page.$('.uni-input-confirm-next')).property("confirmType")).toEqual("next")
-    expect(await (await page.$('.uni-input-confirm-go')).property("confirmType")).toEqual("go")
-    expect(await (await page.$('.uni-input-confirm-done')).property("confirmType")).toEqual("done")
+    expect(await (await page.$('#uni-input-confirm-send')).property("confirmType")).toEqual("send")
+    expect(await (await page.$('#uni-input-confirm-search')).property("confirmType")).toEqual("search")
+    expect(await (await page.$('#uni-input-confirm-next')).property("confirmType")).toEqual("next")
+    expect(await (await page.$('#uni-input-confirm-go')).property("confirmType")).toEqual("go")
+    expect(await (await page.$('#uni-input-confirm-done')).property("confirmType")).toEqual("done")
   })
 
   // it("maxlength", async () => {
@@ -144,7 +144,7 @@ describe('component-native-input', () => {
       cursor_color: "transparent",
     })
     await page.waitFor(500)
-    expect(await (await page.$('.uni-input-cursor-color')).property("cursor-color")).toBe("transparent")
+    expect(await (await page.$('#uni-input-cursor-color')).property("cursor-color")).toBe("transparent")
   })
 
   it("afterAllTestScreenshot", async () => {
