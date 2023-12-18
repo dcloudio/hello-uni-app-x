@@ -72,7 +72,7 @@ describe("onLoad", () => {
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
-    await page.waitFor("view");
+    await program.callUniMethod('hideToast')
   });
   it("showLoading", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -91,6 +91,7 @@ describe("onLoad", () => {
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
+    await program.callUniMethod('hideLoading')
   });
   it("showModal", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
