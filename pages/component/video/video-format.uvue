@@ -8,7 +8,7 @@
       <view v-for="(item,index) in supportFormats" :key="index">
         <text class="uni-subtitle-text">{{item.format}}</text>
         <video :id="'video-' + item.format" class="video" :src="item.src" :controls="true" :direction="-90"
-          @error="onError"></video>
+          @error="onError(item.format, $event as VideoErrorEvent)"></video>
       </view>
       <view class="uni-title">
         <text class="uni-title-text">暂不支持的格式</text>
@@ -78,10 +78,9 @@
       }
     },
     methods: {
-      onError: function (e : VideoErrorEvent) {
-        const id = e.target?.getAttribute("id");
-        console.log(id + ":" + e.detail);
-        if (id != "video-错误路径") {
+      onError: function (format: string, e : VideoErrorEvent) {
+        console.log(format + ":" + e.detail);
+        if (format != "video-错误路径") {
           this.isError = true;
         }
       }
