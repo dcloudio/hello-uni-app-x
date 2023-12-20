@@ -1,0 +1,89 @@
+<template>
+	<view :ref="elId" class="block" :style="{width:size+'px',height:size+'px'}"></view>
+</template>
+<script>
+	import { hexToRgba } from './util'
+	export default {
+		name: "uni-snow",
+		props: {
+			speed: {
+				type: Number,
+				default: 16,
+			},
+			size: {
+				type: Number,
+				default: 20,
+			},
+			color: {
+				type: String,
+				default: '',
+			}
+		},
+		data() {
+			const elId = `Uni_${(Math.random() * 10e5).toInt().toString(36)}`
+			return {
+				elId: elId,
+				timer: 0,
+			};
+		},
+		mounted() {
+			const refs = this.$refs[this.elId] as Element
+			let ctx = refs.getDrawableContext()!
+			this.spinner(ctx)
+		},
+		unmounted() {
+			clearInterval(this.timer)
+		},
+		methods: {
+			spinner(ctx : DrawableContext) {
+				const steps = 12;
+				let step = 0;
+				const width = this.size;
+				const lineWidth = width / 12;
+				// 线长度和距离圆心距离
+				const length = width / 4 - lineWidth;
+				const offset = width / 4;
+
+				function draw() {
+					ctx.reset();
+					for (let i = 0; i < steps; i++) {
+						const stepAngle = 360 / steps;
+						const angle = stepAngle * i;
+						// 计算透明度
+						const opacity = ((steps - (step % steps)) * stepAngle + angle) % 360 + 30;
+						// 计算正余弦值
+						const sin = Math.sin((angle / 180) * Math.PI);
+						const cos = Math.cos((angle / 180) * Math.PI);
+						// 开始绘制线条
+						ctx.lineWidth = lineWidth;
+						ctx.lineCap = 'round';
+						ctx.beginPath();
+						ctx.moveTo(width / 2 + offset * cos, width / 2 + offset * sin);
+						ctx.lineTo(
+							width / 2 + (offset + length) * cos,
+							width / 2 + (offset + length) * sin
+						);
+						// 获取填充颜色
+						const fillColor = this.color !== '' ? this.color : '#333333';
+						// 转换透明度并设置颜色
+						ctx.strokeStyle = hexToRgba(fillColor, Math.round((opacity / 360) * 255));
+						ctx.stroke();
+					}
+					step += 1;
+					ctx.update();
+				}
+				draw()
+				// 每隔一段时间执行绘制函数
+				this.timer = setInterval(() => draw(), this.speed + 76);
+			}
+
+		}
+	}
+</script>
+
+<style scoped>
+	.block {
+		width: 50px;
+		height: 50px;
+	}
+</style>

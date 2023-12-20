@@ -1,0 +1,113 @@
+<template>
+	<view :ref="elId" class="block" :style="{width:size+'px',height:size+'px'}"></view>
+</template>
+<script>
+	import { easeInOutCubic } from './util'
+	export default {
+		name: "uni-loading",
+		props: {
+
+			speed: {
+				type: Number,
+				default: 16,
+			},
+			size: {
+				type: Number,
+				default: 20,
+			},
+			color: {
+				type: String,
+				default: '',
+			}
+		},
+		data() {
+			const elId = `Uni_${(Math.random() * 10e5).toInt().toString(36)}`
+			return {
+				elId: elId,
+				timer: 0,
+			};
+		},
+		mounted() {
+			this.init()
+		},
+		unmounted() {
+			clearInterval(this.timer)
+		},
+		methods: {
+			init() {
+				const refs = this.$refs[this.elId] as Element
+				let ctx = refs.getDrawableContext()!
+				this.circular(ctx)
+			},
+			circular(ctx : DrawableContext) {
+				let startAngle = 0;
+				let rotate = 0;
+				const ARC_LENGTH = 359;
+				const center = this.size / 2;
+				const lineWidth = this.size / 10;
+				const duration = 1200; // 动画持续时间
+				const interval = this.speed; // 定时器间隔（大约 60 帧每秒）
+
+
+				const ARC_MAX = 358
+				let startTime = 0;
+				let foreward_end = 0 // 正传
+				let reversal_end = ARC_MAX // 反转
+				function pogress_time() : number {
+					const currentTime = Date.now();
+					const elapsedTime = currentTime - startTime;
+					const progress = elapsedTime / duration;
+					const easedProgress = easeInOutCubic(progress);
+					return easedProgress
+				}
+				function draw() {
+
+					ctx.reset();
+					ctx.beginPath();
+
+					if (reversal_end == ARC_MAX) {
+						foreward_end = Math.min(pogress_time() * ARC_LENGTH, ARC_LENGTH); // 限制 end 的最大值为 ARC_LENGTH
+						if (foreward_end >= ARC_MAX) {
+							reversal_end = 0
+							foreward_end = ARC_MAX
+							startTime = Date.now();
+						}
+					}
+
+					if (foreward_end == ARC_MAX) {
+						reversal_end = Math.min(pogress_time() * ARC_LENGTH, ARC_LENGTH);
+						if (reversal_end >= ARC_MAX) {
+							reversal_end = ARC_MAX
+							foreward_end = 0
+							startTime = Date.now();
+						}
+					}
+
+					ctx.arc(
+						center,
+						center,
+						center - lineWidth,
+						startAngle + rotate + (reversal_end * Math.PI / 180),
+						startAngle + rotate + (foreward_end * Math.PI / 180)
+					);
+					ctx.lineWidth = lineWidth;
+					const fillColor = (this.color !== '' ? this.color : '#666').toString();
+					ctx.strokeStyle = fillColor;
+					ctx.stroke();
+					ctx.update();
+					rotate += 0.05; // 旋转速度
+				}
+
+				this.timer = setInterval(() => draw(), interval);
+			}
+
+		}
+	}
+</script>
+
+<style scoped>
+	.block {
+		width: 50px;
+		height: 50px;
+	}
+</style>
