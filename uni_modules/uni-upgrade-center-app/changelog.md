@@ -1,3 +1,5 @@
+## 0.7.6（2023-12-21）
+- 修复 iOS使用升级中心云打包时报错（使用新版的 [uts-progressNotification](https://ext.dcloud.net.cn/plugin?name=uts-progressNotification) 插件，如果之前下载过请删除 `uts-progressNotification\utssdk\app-ios` 文件夹）
 ## 0.7.5（2023-12-12）
 - 新增 通知栏进度条使用 uts-progressNotification 插件
 - 新增 依赖 uni-installApk、uts-progressNotification。使用前要安装插件三方依赖
