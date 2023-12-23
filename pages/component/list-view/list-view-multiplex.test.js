@@ -18,4 +18,15 @@ describe('component-native-list-view', () => {
     await page.waitFor(400)
     await page.callMethod('listViewScrollByY', 100)
   })
+
+  //检测延迟显示listv-view后list-item是否正常显示
+  it('check_list_item_v_show', async () => {
+    await page.callMethod('delayShow')
+    await page.waitFor(async () => {
+      return await page.data('list_show') === true;
+    });
+    await page.waitFor(200)
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
+  })
 })
