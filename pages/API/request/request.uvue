@@ -189,6 +189,7 @@
           firstIpv4: false,
           success: (res) => {
             console.log('request success', JSON.stringify(res.data))
+            console.log('request success header is :', JSON.stringify(res.header))
             uni.showToast({
               title: '请求成功',
               icon: 'success',
@@ -229,7 +230,61 @@
             this.jest_result = false;
           },
         });
-      }
+      },
+      jest_set_cookie() {
+        uni.request({
+          url: this.host + "/api/http/header/setCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_request(true)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_delete_cookie() {
+        uni.request({
+          url: this.host + "/api/http/header/deleteCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_request(false)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_cookie_request(needCookie: boolean) {
+        uni.request({
+          url: this.host + "/api/http/header/requestCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: (res) => {
+            const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+            console.log("requestCookie ", requestCookie);
+            if(requestCookie instanceof Array<unknown>){
+              this.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
+            }else{
+              this.jest_result = needCookie ? (requestCookie as UTSJSONObject).toMap().size > 0 : (requestCookie as UTSJSONObject).toMap().size == 0
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
     }
   }
 </script>
