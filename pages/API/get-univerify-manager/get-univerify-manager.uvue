@@ -1,0 +1,122 @@
+<template>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="verify(false)">一键登录（半屏）</button>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <button type="primary" @click="verify(true)">一键登录（全屏）</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: '一键登录',
+        univerifyManager: null as UniverifyManager | null
+      }
+    },
+    onLoad() {
+      this.univerifyManager = uni.getUniverifyManager();
+      // 预登录
+      this.univerifyManager?.preLogin({
+        success: () => {
+          console.log("pre login success");
+        },
+        fail: (err : PreLoginFail) => {
+          console.error("pre login fail => " + JSON.stringify(err));
+          uni.showModal({
+            title: '预登录失败',
+            content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+            showCancel: false
+          });
+        }
+      } as PreLoginOptions);
+    },
+    methods: {
+      verify(fullScreen : boolean) {
+        // 校验预登录是否有效
+        const isPreLoginValid = this.univerifyManager?.isPreLoginValid() ?? false;
+        if (isPreLoginValid) {
+          // 预登录有效，执行登录
+          this.login(fullScreen);
+        } else {
+          // 预登录无效，执行预登录
+          this.univerifyManager?.preLogin({
+            success: () => {
+              console.log("pre login success");
+              this.login(fullScreen);
+            },
+            fail: (err : PreLoginFail) => {
+              console.error("pre login fail => " + JSON.stringify(err));
+              uni.showModal({
+                title: '预登录失败',
+                content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+                showCancel: false
+              });
+            }
+          } as PreLoginOptions);
+        }
+      },
+      login(fullScreen : boolean) {
+        this.univerifyManager?.login({
+          // 登录页样式
+          univerifyStyle: {
+            fullScreen: fullScreen,
+            backgroundColor: "#FFFFFF",
+            loginBtnText: "一键登录",
+            logoPath: "/static/logo.png"
+          } as UniverifyStyle,
+          success: (res : LoginSuccess) => {
+            console.log("login success => " + JSON.stringify(res));
+            // 云函数取号
+            uniCloud.callFunction({
+              name: 'univerify',
+              data: {
+                access_token: res.accessToken, // 客户端一键登录接口返回的access_token
+                openid: res.openId // 客户端一键登录接口返回的openid
+              }
+            }).then(res => {
+              // 关闭登录页
+              this.univerifyManager?.close();
+              setTimeout(() => {
+                uni.showModal({
+                  title: '取号成功',
+                  content: res.result.getJSON("res")?.getString("phoneNumber"),
+                  showCancel: false
+                });
+              }, 100);
+            }).catch(err => {
+              console.error(JSON.stringify(err));
+              // 关闭登录页
+              this.univerifyManager?.close();
+              setTimeout(() => {
+                uni.showModal({
+                  title: '取号失败',
+                  content: (err as Error).message,
+                  showCancel: false
+                });
+              }, 100);
+            });
+          },
+          fail: (err : LoginFail) => {
+            console.error("login fail => " + err);
+            uni.showModal({
+              title: '登录失败',
+              content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+              showCancel: false
+            });
+          }
+        } as LoginOptions);
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>

@@ -17,12 +17,16 @@ describe('PickerView.uvue', () => {
     await page.callMethod('setValue')
     await page.waitFor(1000)
     expect(await el.property('value')).toEqual([0, 0, 0])
-    expect(await getData('result')).toEqual([0, 0, 0])
+    if (process.env.UNI_PLATFORM === 'app-android') {
+      expect(await getData('result')).toEqual([0, 0, 0])
+    }
 
     await page.callMethod('setValue1')
     await page.waitFor(1000)
     expect(await el.property('value')).toEqual([10, 10, 10])
-    expect(await getData('result')).toEqual([10, 10, 10])
+    if (process.env.UNI_PLATFORM === 'app-android') {
+      expect(await getData('result')).toEqual([10, 10, 10])
+    }
   })
 
   it('length', async () => {

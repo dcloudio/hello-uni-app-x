@@ -12,6 +12,11 @@
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+      <view class="uni-btn-v">
+        <navigator url="/pages/component/video/video-format">
+          <button type="primary">视频格式示例</button>
+        </navigator>
+      </view>
       <view class="uni-title">
         <text class="uni-title-text">API示例</text>
       </View>
@@ -230,7 +235,7 @@
         console.log("seek -> " + pos);
         this.videoContext?.seek(pos);
       },
-      requestFullScreen: function (options : RequestFullScreenOptions) {
+      requestFullScreen: function (options : RequestFullScreenOptions | null) {
         console.log("requestFullScreen -> " + options);
         this.videoContext?.requestFullScreen(options);
       },
@@ -395,25 +400,6 @@
       },
       onControlsToggle: function (res : VideoControlsToggleEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
-      },
-      // 自动化测试
-      playTest: function () {
-        this.videoContext?.play();
-      },
-      pauseTest: function () {
-        this.videoContext?.pause();
-      },
-      requestFullScreenTest: function () {
-        const options : RequestFullScreenOptions = {
-          direction: -90
-        };
-        this.videoContext?.requestFullScreen(options);
-      },
-      exitFullScreenTest: function () {
-        this.videoContext?.exitFullScreen();
-      },
-      stopTest: function () {
-        this.videoContext?.stop();
       }
     }
   }

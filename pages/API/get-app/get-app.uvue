@@ -1,39 +1,169 @@
 <template>
-  <view>
-    <page-head title="getApp"></page-head>
-    <view class="uni-padding-wrap">
-      <text>点击按钮调用 App.uvue methods</text>
-      <text class="margin-top:6px;">increasetLifeCycleNum 方法</text>
-      <button class="uni-common-mt" @click="_increasetLifeCycleNum">
-        increase lifeCycleNum
-      </button>
-      <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1;padding-bottom: 20px;">
+  <!-- #endif -->
+    <view>
+      <page-head title="getApp"></page-head>
+      <view class="uni-padding-wrap">
+        <button @click="getGlobalData">get globalData</button>
+        <template v-if="originGlobalData.str.length">
+          <text class="uni-common-mt bold">初始的 globalData:</text>
+          <text class="uni-common-mt">globalData string: {{ originGlobalData.str }}</text>
+          <text class="uni-common-mt">globalData number: {{ originGlobalData.num }}</text>
+          <text class="uni-common-mt">globalData boolean: {{ originGlobalData.bool }}</text>
+          <text class="uni-common-mt">globalData object: {{ originGlobalData.obj }}</text>
+          <text class="uni-common-mt">globalData null: {{ originGlobalData.null }}</text>
+          <text class="uni-common-mt">globalData array: {{ originGlobalData.arr }}</text>
+          <text class="uni-common-mt">globalData Set: {{ originGlobalData.set }}</text>
+          <text class="uni-common-mt">globalData Map: {{ originGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData func 返回值: {{ originGlobalDataFuncRes }}</text>
+        </template>
+        <button @click="setGlobalData" class="uni-common-mt">set globalData</button>
+        <template v-if="newGlobalData.bool">
+          <text class="uni-common-mt bold">更新后的 globalData:</text>
+          <text class="uni-common-mt">globalData string: {{ newGlobalData.str }}</text>
+          <text class="uni-common-mt">globalData number: {{ newGlobalData.num }}</text>
+          <text class="uni-common-mt">globalData boolean: {{ newGlobalData.bool }}</text>
+          <text class="uni-common-mt">globalData object: {{ newGlobalData.obj }}</text>
+          <text class="uni-common-mt">globalData null: {{ newGlobalData.null }}</text>
+          <text class="uni-common-mt">globalData array: {{ newGlobalData.arr }}</text>
+          <text class="uni-common-mt">globalData Set: {{ newGlobalData.set }}</text>
+          <text class="uni-common-mt">globalData Map: {{ newGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData func 返回值: {{ newGlobalDataFuncRes }}</text>
+        </template>
+        <view class="uni-common-mt hr"></view>
+        <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
+        <text class="margin-top:6px;">increasetLifeCycleNum 方法</text>
+        <button class="uni-common-mt" @click="_increasetLifeCycleNum">
+          increase lifeCycleNum
+        </button>
+        <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
+      </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script lang="uts">
-import { State, state, setLifeCycleNum } from '@/store/index.uts'
+  type MyGlobalData = {
+    str : string,
+    num : number,
+    bool : boolean,
+    obj : UTSJSONObject,
+    null : string | null,
+    arr : number[],
+    set : Set<string>,
+    map : Map<string, any>,
+    func : () => string
+  }
+  import { state, setLifeCycleNum } from '@/store/index.uts'
 
-export default {
-  data() {
-    return {
-      lifeCycleNum: 0,
-    }
-  },
-  onReady() {
-    this.lifeCycleNum = state.lifeCycleNum
-  },
-  methods: {
-    _increasetLifeCycleNum: function () {
-      const app = getApp()
-      app.increasetLifeCycleNum()
+  export default {
+    data() {
+      return {
+        originGlobalData: {
+          str: '',
+          num: 0,
+          bool: false,
+          obj: {
+            str: '',
+            num: 0,
+            bool: false
+          } as UTSJSONObject,
+          null: null,
+          arr: [] as number[],
+          set: new Set<string>(),
+          map: new Map<string, any>(),
+          func: () : string => ''
+        } as MyGlobalData,
+        originGlobalDataFuncRes: '',
+        newGlobalData: {
+          str: '',
+          num: 0,
+          bool: false,
+          obj: {
+            str: '',
+            num: 0,
+            bool: false
+          } as UTSJSONObject,
+          null: null,
+          arr: [] as number[],
+          set: new Set<string>(),
+          map: new Map<string, any>(),
+          func: () : string => ''
+        } as MyGlobalData,
+        newGlobalDataFuncRes: '',
+        lifeCycleNum: 0,
+      }
+    },
+    onReady() {
       this.lifeCycleNum = state.lifeCycleNum
     },
-    // 自动化测试
-    setLifeCycleNum(num: number) {
-      setLifeCycleNum(num)
+    methods: {
+      getGlobalData() {
+        const app = getApp()
+        this.originGlobalData.str = app.globalData.str
+        this.originGlobalData.num = app.globalData.num
+        this.originGlobalData.bool = app.globalData.bool
+        this.originGlobalData.obj = app.globalData.obj
+        this.originGlobalData.null = app.globalData.null
+        this.originGlobalData.arr = app.globalData.arr
+        this.originGlobalData.set = app.globalData.set
+        this.originGlobalData.map = app.globalData.map
+        this.originGlobalData.func = app.globalData.func
+        this.originGlobalDataFuncRes = this.originGlobalData.func()
+      },
+      setGlobalData() {
+        const app = getApp()
+
+        app.globalData.str = 'new globalData str'
+        app.globalData.num = 100
+        app.globalData.bool = true
+        app.globalData.obj = {
+          str: 'new globalData obj str',
+          num: 200,
+          bool: true
+        }
+        app.globalData.null = 'not null'
+        app.globalData.arr = [1, 2, 3]
+        app.globalData.set = new Set(['a', 'b', 'c'])
+        app.globalData.map = new Map([
+          ['a', 1],
+          ['b', 2],
+          ['c', 3]
+        ])
+        app.globalData.func = () : string => {
+          return 'new globalData func'
+        }
+
+        this.newGlobalData.str = app.globalData.str
+        this.newGlobalData.num = app.globalData.num
+        this.newGlobalData.bool = app.globalData.bool
+        this.newGlobalData.obj = app.globalData.obj
+        this.newGlobalData.null = app.globalData.null
+        this.newGlobalData.arr = app.globalData.arr
+        this.newGlobalData.set = app.globalData.set
+        this.newGlobalData.map = app.globalData.map
+        this.newGlobalData.func = app.globalData.func
+        this.newGlobalDataFuncRes = this.newGlobalData.func()
+      },
+      _increasetLifeCycleNum: function () {
+        const app = getApp()
+        app.increasetLifeCycleNum()
+        this.lifeCycleNum = state.lifeCycleNum
+      },
+      // 自动化测试
+      setLifeCycleNum(num : number) {
+        setLifeCycleNum(num)
+      }
     },
-  },
-}
+  }
 </script>
+
+<style>
+  .bold {
+    font-weight: bold;
+  }
+  .hr{border-bottom: 1px solid #ccc;}
+</style>

@@ -1,6 +1,5 @@
 import callCheckVersion, { UniUpgradeCenterResult } from "./call-check-version"
 // #ifdef UNI-APP-X
-import { ComponentPublicInstance } from 'vue'
 import { openSchema } from './utils.uts'
 // #endif
 
@@ -32,6 +31,24 @@ export default function () : Promise<UniUpgradeCenterResult> {
            * 使用 uni.showModal
            */
           // return updateUseModal(uniUpgradeCenterResult)
+
+          // #ifndef UNI-APP-X
+          // 静默更新，只有wgt有
+          if (uniUpgradeCenterResult.is_silently) {
+            uni.downloadFile({
+              url,
+              success: res => {
+                if (res.statusCode == 200) {
+                  // 下载好直接安装，下次启动生效
+                  plus.runtime.install(res.tempFilePath, {
+                    force: false
+                  });
+                }
+              }
+            });
+            return;
+          }
+          // #endif
 
           /**
            * 提示升级二

@@ -1,0 +1,101 @@
+<template>
+  <scroll-view>
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-title">
+        <text class="uni-title-text">支持的视频格式示例</text>
+      </view>
+      <view v-for="(item,index) in supportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}</text>
+        <video :id="'video-' + item.format" class="video" :src="item.src" :controls="true" :direction="-90"
+          @error="onError"></video>
+      </view>
+      <view class="uni-title">
+        <text class="uni-title-text">暂不支持的格式</text>
+      </view>
+      <view v-for="(item,index) in notSupportFormats" :key="index">
+        <text class="uni-subtitle-text">{{item.format}}</text>
+        <video :id="'video-' + item.format" class="video" :src="item.src" :controls="true" :direction="-90"></video>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'video-format',
+        supportFormats: [
+          {
+            format: 'mp4',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4'
+          },
+          {
+            format: 'm4v',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.m4v'
+          },
+          {
+            format: 'mov',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mov'
+          },
+          {
+            format: 'webm',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.webm'
+          },
+          {
+            format: '3gp',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.3gp'
+          },
+          {
+            format: 'flv',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.flv'
+          },
+          {
+            format: 'm3u8',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.m3u8'
+          },
+          {
+            format: '本地m3u8',
+            src: '/static/test-video/2minute-demo.m3u8'
+          },
+          {
+            format: '错误路径',
+            src: 'https://www.dcloud.net.cn/errorpath.mp4'
+          },
+        ] as Array<VideoFormat>,
+        notSupportFormats: [
+          {
+            format: 'ogg',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.ogg'
+          },
+          {
+            format: 'avi',
+            src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.avi'
+          }
+        ] as Array<VideoFormat>,
+        isError: false
+      }
+    },
+    methods: {
+      onError: function (e : VideoErrorEvent) {
+        const id = e.target?.getAttribute("id");
+        console.log(id + ":" + e.detail);
+        if (id != "video-错误路径") {
+          this.isError = true;
+        }
+      }
+    }
+  }
+
+  type VideoFormat = {
+    format : string
+    src : string
+  }
+</script>
+
+<style>
+  .video {
+    height: 400rpx;
+  }
+</style>

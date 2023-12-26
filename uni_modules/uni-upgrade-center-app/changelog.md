@@ -1,3 +1,6 @@
+## 0.7.5（2023-12-12）
+- 新增 通知栏进度条使用 uts-progressNotification 插件
+- 新增 依赖 uni-installApk、uts-progressNotification。使用前要安装插件三方依赖
 ## 0.7.4（2023-11-29）
 - 修复 uni-app-x 项目中由上版引发的无法升级的Bug
 ## 0.7.3（2023-11-27）

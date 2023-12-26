@@ -40,8 +40,13 @@
     onLoad() {
     },
     onUnload() {
-      if(this.isUniTest){
+      if (this.isUniTest) {
         uni.hideToast()
+      }
+    },
+    computed: {
+      dataTag() : string {
+        return this.isUniTest ? 'default-tag' + Date.now() : 'default-tag'
       }
     },
     methods: {
@@ -56,46 +61,46 @@
           uni.showToast({
             title: content
           })
+          console.error(title, content)
         }
       },
-      dbAdd: function () {
+      async dbAdd() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('type')
+        await db.collection('type')
           .add({
             num: 1,
-            tag: 'default-tag',
-            date: new Date(),
-            point: new db.Geo.Point(116, 38)
+            tag: this.dataTag,
+            date: new Date()
           })
-          .then<void>(res => {
+          .then(res => {
             uni.hideLoading()
             console.log(res)
             this.addId = res.id
             this.notify(`新增成功，id: ${res.id}`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbBatchAdd() {
+      async dbBatchAdd() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('type')
+        await db.collection('type')
           .add([{
             num: 2,
-            tag: 'default-tag',
+            tag: this.dataTag,
           }, {
             num: 3,
-            tag: 'default-tag',
+            tag: this.dataTag,
           }])
-          .then<void>((res) => {
+          .then((res) => {
             uni.hideLoading()
             console.log(res)
             console.log('JSON.stringify(res.inserted)', JSON.stringify(res.inserted))
@@ -103,121 +108,122 @@
             this.batchAddinserted = res.inserted
             this.notify(`新增成功条数${res.inserted}, id列表: ${res.ids.join(',')}`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbGet() {
+      async dbGet() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('type')
+        await db.collection('type')
           .where(
-            'tag == "default-tag"'
+            `tag == "${this.dataTag}"`
           )
           .field('num, tag')
           .orderBy('num desc')
           .skip(1)
           .limit(2)
           .get()
-          .then<void>(res => {
+          .then(res => {
             uni.hideLoading()
             console.log(res)
             this.getData = res.data
             this.notify(`获取成功，取到了${res.data.length}条数据`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbGetWithCommand() {
+      async dbGetWithCommand() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('type')
+        await db.collection('type')
           .where({
-            num: db.command.gt(1)
+            num: db.command.gt(1),
+            tag: this.dataTag
           })
           .field('num, tag')
           .orderBy('num desc')
           .skip(1)
           .limit(2)
           .get()
-          .then<void>(res => {
+          .then(res => {
             uni.hideLoading()
             console.log(res)
             this.getWithCommandData = res.data
             this.notify(`获取成功，取到了${res.data.length}条数据`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbUpdate() {
+      async dbUpdate() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('type')
+        await db.collection('type')
           .where(
-            'tag == "default-tag"'
+            `tag == "${this.dataTag}"`
           )
           .update({
             num: 4
           })
-          .then<void>(res => {
+          .then(res => {
             uni.hideLoading()
             console.log(res)
             this.updateUpdated = res.updated
             this.notify(`更新成功，更新了${res.updated}条数据`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbRemove() {
+      async dbRemove() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('type')
+        await db.collection('type')
           .where(
-            'tag == "default-tag"'
+            `tag == "${this.dataTag}"`
           )
           .remove()
-          .then<void>(res => {
+          .then(res => {
             uni.hideLoading()
             console.log(res)
             this.removeDeleted = res.deleted
             this.notify(`删除成功，删掉了${res.deleted}条数据`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbLookupInit() {
+      async dbLookupInit() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
-        db.collection('local')
-          .where('tag == "default-tag"')
+        await db.collection('local')
+          .where(`tag == "${this.dataTag}"`)
           .remove()
           .then(() : Promise<UniCloudDBRemoveResult> => {
             return db.collection('foreign')
-              .where('tag == "default-tag"')
+              .where(`tag == "${this.dataTag}"`)
               .remove()
           })
           .then(() : Promise<UniCloudDBBatchAddResult> => {
@@ -225,12 +231,12 @@
               .add([{
                 id: "local_1",
                 name: "local_1_name",
-                tag: "default-tag",
+                tag: this.dataTag,
                 foreign_id: "foreign_1"
               }, {
                 id: "local_2",
                 name: "local_2_name",
-                tag: "default-tag",
+                tag: this.dataTag,
                 foreign_id: "foreign_2"
               }])
           })
@@ -239,44 +245,44 @@
               .add([{
                 id: "foreign_1",
                 name: "foreign_1_name",
-                tag: "default-tag"
+                tag: this.dataTag
               }, {
                 id: "foreign_2",
                 name: "foreign_2_name",
-                tag: "default-tag"
+                tag: this.dataTag
               }])
           })
-          .then<void>((_) : void => {
+          .then((_) : void => {
             uni.hideLoading()
             this.notify('数据初始化成功', '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             console.error(err)
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')
           })
       },
-      dbLookup() {
+      async dbLookup() : Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
         const db = uniCloud.databaseForJQL()
         const local = db.collection('local')
-          .where('tag == "default-tag"')
+          .where(`tag == "${this.dataTag}"`)
           .getTemp()
         const foreign = db.collection('foreign')
-          .where('tag == "default-tag"')
+          .where(`tag == "${this.dataTag}"`)
           .getTemp()
-        db.collection(local, foreign)
+        await db.collection(local, foreign)
           .get()
-          .then<void>(res => {
+          .then(res => {
             uni.hideLoading()
             console.log(res)
             this.lookupData = res.data
             this.notify(`联表查询成功，取到了${res.data.length}条数据`, '提示')
           })
-          .catch<void>((err : any | null) => {
+          .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
             this.notify(error.errMsg, '错误')

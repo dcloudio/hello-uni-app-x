@@ -6,7 +6,6 @@
 </template>
 
 <script lang="uts">
-	import { ComponentPublicInstance } from 'vue'
 	export default {
 		name: "UniCollapse",
 		props: {
@@ -18,7 +17,7 @@
 		},
 		data() {
 			return {
-				child_nodes: [] as Array < ComponentPublicInstance >
+				child_nodes: [] as Array<ComponentPublicInstance>
 			};
 		},
 
