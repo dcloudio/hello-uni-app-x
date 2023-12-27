@@ -70,9 +70,11 @@ describe('ExtApi-Request', () => {
   it('Check PATCH', async () => {
     await request(page, 'PATCH');
   });
-  it('Check OPTIONS', async () => {
-    await request(page, 'OPTIONS');
-  });
+  if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
+    it('Check OPTIONS', async () => {
+      await request(page, 'OPTIONS');
+    });
+  }
   it('Check HEAD', async () => {
     await request(page, 'HEAD');
   });

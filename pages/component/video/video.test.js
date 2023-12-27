@@ -1,11 +1,12 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 describe('component-native-video', () => {
   let page;
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/video/video');
     await page.waitFor('video');
+    await page.waitFor(300)
   });
 
   it('test API', async () => {

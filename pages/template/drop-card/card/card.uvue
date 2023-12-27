@@ -21,7 +21,7 @@
   export default {
     data() {
       return {
-        $elementMap: new Map<string, Element>(),
+        $elementMap: new Map<string, UniElement>(),
         x: 0 as number,
         y: 0 as number,
         // 飘走的卡片计数
@@ -78,12 +78,12 @@
         this.setElementStyle('card', 'margin-top', screenHeight * 0.15 - 30 * _index + 'px');
         this.setElementStyle('card', 'transform', 'scale(' + (0.9 + 0.05 * _index) + ')')
       },
-      // 工具方法，用于快速设置 Element 的 style
+      // 工具方法，用于快速设置 UniElement 的 style
       setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        const elementMap = this.$data['$elementMap'] as Map<string, Element>
-        let element : Element | null = elementMap.get(refName)
+        const elementMap = this.$data['$elementMap'] as Map<string, UniElement>
+        let element : UniElement | null = elementMap.get(refName)
         if (element == null) {
-          element = this.$refs[refName] as Element;
+          element = this.$refs[refName] as UniElement;
           elementMap.set(refName, element)
         } else {
           // console.log('直接拿');

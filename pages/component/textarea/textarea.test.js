@@ -12,12 +12,12 @@ describe('component-native-textarea', () => {
   });
 
   it('focus', async () => {
-    expect(await textarea.property("focus")).toBe("false")
+    expect(await textarea.attribute("focus")).toBe("false")
     await page.setData({
       focus_boolean: true,
     })
     await page.waitFor(500)
-    expect(await textarea.property("focus")).toBe("true")
+    expect(await textarea.attribute("focus")).toBe("true")
   });
   /* it("auto-height", async () => {
     await page.setData({
@@ -66,7 +66,7 @@ describe('component-native-textarea', () => {
       cursor_color: "transparent",
     })
     await page.waitFor(500)
-    expect(await textarea.property("cursor-color")).toBe("transparent")
+    expect(await textarea.attribute("cursor-color")).toBe("transparent")
   })
 
   it("inputmode", async () => {
@@ -76,7 +76,7 @@ describe('component-native-textarea', () => {
       console.log(x['value'], x['name'])
       await page.callMethod("radio_change_inputmode_enum", x['value']);
       await page.waitFor(500)
-      expect(await textarea.property("inputmode")).toEqual(x['name'])
+      expect(await textarea.attribute("inputmode")).toEqual(x['name'])
       await page.waitFor(500)
     }
   })

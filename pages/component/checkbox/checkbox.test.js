@@ -42,26 +42,26 @@ describe('Checkbox.uvue', () => {
   })
   it('checked', async () => {
     const cb = await page.$('.cb')
-    expect(await cb.property('checked')).toBe(true)
+    expect(await cb.attribute('checked')).toBe(true)
     await page.setData({
       checked: false,
     })
-    expect(await cb.property('checked')).toBe(false)
+    expect(await cb.attribute('checked')).toBe(false)
   })
   it('color', async () => {
     const cb = await page.$('.cb')
-    expect(await cb.property('color')).toBe('#007aff')
+    expect(await cb.attribute('color')).toBe('#007aff')
     await page.setData({
       color: '#63acfc',
     })
-    expect(await cb.property('color')).toBe('#63acfc')
+    expect(await cb.attribute('color')).toBe('#63acfc')
   })
   it('disabled', async () => {
     const cb = await page.$('.cb2')
-    expect(await cb.property('disabled')).toBe(true)
+    expect(await cb.attribute('disabled')).toBe(true)
     await page.setData({
       disabled: false,
     })
-    expect(await cb.property('disabled')).toBe(false)
+    expect(await cb.attribute('disabled')).toBe(false)
   })
 })

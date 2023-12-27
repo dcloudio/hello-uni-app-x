@@ -16,14 +16,14 @@ describe('PickerView.uvue', () => {
     const el = await page.$('.picker-view')
     await page.callMethod('setValue')
     await page.waitFor(1000)
-    expect(await el.property('value')).toEqual([0, 0, 0])
+    expect(await el.attribute('value')).toEqual([0, 0, 0])
     if (process.env.UNI_PLATFORM === 'app-android') {
       expect(await getData('result')).toEqual([0, 0, 0])
     }
 
     await page.callMethod('setValue1')
     await page.waitFor(1000)
-    expect(await el.property('value')).toEqual([10, 10, 10])
+    expect(await el.attribute('value')).toEqual([10, 10, 10])
     if (process.env.UNI_PLATFORM === 'app-android') {
       expect(await getData('result')).toEqual([10, 10, 10])
     }
@@ -41,20 +41,20 @@ describe('PickerView.uvue', () => {
       indicatorStyle: 'height: 100px;',
     })
     await page.waitFor(500)
-    expect(await el.property('indicatorStyle')).toBe('height: 100px;')
+    expect(await el.attribute('indicatorStyle')).toBe('height: 100px;')
   })
   it('mask-top-style', async () => {
     const el = await page.$('.picker-view')
     await page.setData({
       maskTopStyle: 'background: #ffffff;',
     })
-    expect(await el.property('mask-top-style')).toBe('background: #ffffff;')
+    expect(await el.attribute('mask-top-style')).toBe('background: #ffffff;')
   })
   it('mask-bottom-style', async () => {
     const el = await page.$('.picker-view')
     await page.setData({
       maskBottomStyle: 'background: #ffffff;',
     })
-    expect(await el.property('mask-bottom-style')).toBe('background: #ffffff;')
+    expect(await el.attribute('mask-bottom-style')).toBe('background: #ffffff;')
   })
 })

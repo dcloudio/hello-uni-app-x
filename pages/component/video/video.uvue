@@ -220,6 +220,11 @@
         isFullScreen: false
       }
     },
+    onLoad() {
+      // #ifdef WEB
+      this.muted = true // web端非静音视频不可自动播放
+      // #endif
+    },
     methods: {
       // API
       play: function () {
@@ -228,7 +233,7 @@
       },
       pause: function () {
         console.log("pause");
-        (uni.getElementById("video") as UniVideoElement).pause(); //as写法测试。注意id不对时as会崩溃
+        (uni.getElementById("video") as unknown as UniVideoElement).pause(); //as写法测试。注意id不对时as会崩溃
         // this.videoContext?.pause();
       },
       seek: function (pos : number) {

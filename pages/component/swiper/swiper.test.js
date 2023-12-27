@@ -39,7 +39,7 @@ describe('test swiper', () => {
         expect(await getData('currentValChange')).toEqual(1)
         await page.waitFor(5000)
         expect(await getData('currentValChange')).toEqual(2)
-
+        await page.waitFor(300)
         await page.setData({
           circularSelect: true
         })
@@ -50,6 +50,7 @@ describe('test swiper', () => {
           circularSelect: false,
           autoplaySelect: false
         })
+        await page.waitFor(300)
     });
 
 

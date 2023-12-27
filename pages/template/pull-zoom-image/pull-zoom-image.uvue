@@ -36,7 +36,7 @@
   export default {
     data() {
       return {
-        $elementMap: new Map<string, Element>()
+        $elementMap: new Map<string, UniElement>()
       }
     },
     methods: {
@@ -60,12 +60,12 @@
         this.setElementStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
         this.setElementStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
       },
-      // 工具方法，用于快速设置 Element 的 style
+      // 工具方法，用于快速设置 UniElement 的 style
       setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let element : Element | null = (this.$data['$elementMap'] as Map<string, Element>).get(refName)
+        let element : UniElement | null = (this.$data['$elementMap'] as Map<string, UniElement>).get(refName)
         if (element == null) {
-          element = this.$refs[refName] as Element;
-          (this.$data['$elementMap'] as Map<string, Element>).set(refName, element)
+          element = this.$refs[refName] as UniElement;
+          (this.$data['$elementMap'] as Map<string, UniElement>).set(refName, element)
         }
         element.style.setProperty(propertyName, propertyStyle);
       },

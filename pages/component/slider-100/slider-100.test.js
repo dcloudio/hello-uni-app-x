@@ -15,12 +15,12 @@ describe('slider', () => {
 
     // TODO 暂时仅获取第一个
     const slider1 = await page.$('.slider')
-    expect(await slider1.property('value')).toBe(sliderValue)
+    expect(await slider1.attribute('value')).toBe(sliderValue)
 
     // const slider100 = await page.$$('.slider')
     // for (let i = 0; i < slider100.length; i++) {
     //   const slider = slider100[i];
-    //   expect(await slider.property('value')).toBe(sliderValue)
+    //   expect(await slider.attribute('value')).toBe(sliderValue)
     // }
   })
 })
