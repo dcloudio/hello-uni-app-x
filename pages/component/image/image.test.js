@@ -38,4 +38,14 @@ describe('component-native-image', () => {
       })
       expect(image).toMatchImageSnapshot()
     });
+
+    it('mode-screenshot', async () => {
+      if (process.env.android_cpu_type === 'x86_64') return
+      const page = await program.navigateTo('/pages/component/image/image-mode');
+      await page.waitFor(1000);
+      const image = await program.screenshot({
+        fullPage: true
+      })
+      expect(image).toMatchImageSnapshot()
+    });
 });

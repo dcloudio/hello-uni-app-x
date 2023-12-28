@@ -7,7 +7,7 @@ const pages = [
   '/pages/component/general-event/general-event',
   '/pages/component/image/image-format',
   // '/pages/component/image/image-large', // 截图过大
-  '/pages/component/image/image-mode',
+  // '/pages/component/image/image-mode', // 判断CPU类型，单独测试例截图
   // '/pages/component/image/image-path', // 网络资源加载，单独测试例截图
   '/pages/component/image/image',
   // '/pages/component/input/input', // 自动获取焦点，单独测试例截图
