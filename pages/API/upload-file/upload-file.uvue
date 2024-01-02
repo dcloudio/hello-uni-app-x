@@ -94,7 +94,61 @@
             this.jest_result = false;
           },
         })
+      },
+      jest_set_cookie(){
+        uni.request({
+          url: "http://request.dcloud.net.cn/api/http/header/setCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_upload(true)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+
+      jest_delete_cookie(){
+        uni.request({
+          url: "http://request.dcloud.net.cn/api/http/header/deleteCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_upload(false)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_cookie_upload(needCookie: boolean){
+        const imageSrc = "/static/uni.png";
+        this.task = uni.uploadFile({
+          url: 'http://request.dcloud.net.cn/api/http/header/upload',
+          filePath: imageSrc,
+          name: 'file',
+          success: (res:UploadFileSuccess) => {
+            const data = JSON.parseObject(res.data)
+            const errCode = data?.getNumber("errCode")
+            if(errCode != null && errCode == 1000){
+              this.jest_result = needCookie ? false : true;
+            }else{
+              this.jest_result = needCookie ? true : false;
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        })
       }
+
     }
   }
 </script>
