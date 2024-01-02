@@ -1,19 +1,19 @@
 <template>
-  <view>
+  <view class="page">
     <page-head :title="title"></page-head>
-    <view class="uni-common-mt">
-      <canvas class="canvas-element" canvas-id="canvas" id="canvas"></canvas>
-      <scroll-view class="canvas-buttons" scroll-y="true">
-        <block v-for="(name, index) in names" :key="index">
+    <canvas class="canvas-element" canvas-id="canvas" id="canvas"></canvas>
+    <scroll-view class="scroll-view" :scroll-y="true">
+      <view class="grid-list">
+        <view class="grid-item" v-for="(name, index) in names" :key="index">
           <button class="canvas-button" @click="handleCanvasButton(name)">{{name}}</button>
-        </block>
-        <button class="canvas-button" @click="toTempFilePath" type="primary">toTempFilePath</button>
-      </scroll-view>
-    </view>
+        </view>
+      </view>
+      <button class="canvas-drawing-button" @click="toTempFilePath" type="primary">toTempFilePath</button>
+    </scroll-view>
   </view>
 </template>
+
 <script>
-  var context = null;
   export default {
     data() {
       return {
@@ -22,322 +22,418 @@
           "stroke", "clearRect", "beginPath", "closePath", "moveTo", "lineTo", "rect", "arc",
           "quadraticCurveTo", "bezierCurveTo", "setFillStyle", "setStrokeStyle", "setGlobalAlpha",
           "setShadow", "setFontSize", "setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit"
-        ]
+        ],
+        // TODO 缺失 CanvasContext
+        canvasContext: null as any | null
       }
     },
-    onReady: function () {
-      context = uni.createCanvasContext('canvas', this)
+    onReady() {
+      // @ts-ignore
+      this.canvasContext = uni.createCanvasContext('canvas', this)
     },
     methods: {
-      toTempFilePath: function () {
-        uni.canvasToTempFilePath({
-          canvasId: 'canvas',
-          success: function (res) {
-            console.log(res.tempFilePath)
-          },
-          fail: function (err) {
-            console.error(JSON.stringify(err))
-          }
-        })
+      toTempFilePath() {
+        // TODO 缺失
+        // uni.canvasToTempFilePath({
+        //   canvasId: 'canvas',
+        //   success: (res) => {
+        //     console.log(res.tempFilePath)
+        //   },
+        //   fail: (err) => {
+        //     console.error(JSON.stringify(err))
+        //   }
+        // })
       },
-      handleCanvasButton: function (name) {
-        this[name] && this[name]();
+      handleCanvasButton(name : string) {
+        switch (name) {
+          case "rotate":
+            this.rotate();
+            break;
+          case "scale":
+            this.scale();
+            break;
+          case "reset":
+            this.reset();
+            break;
+          case "translate":
+            this.translate();
+            break;
+          case "save":
+            this.save();
+            break;
+          case "restore":
+            this.restore();
+            break;
+          case "drawImage":
+            this.drawImage();
+            break;
+          case "fillText":
+            this.fillText();
+            break;
+          case "fill":
+            this.fill();
+            break;
+          case "stroke":
+            this.stroke();
+            break;
+          case "clearRect":
+            this.clearRect();
+            break;
+          case "beginPath":
+            this.beginPath();
+            break;
+          case "closePath":
+            this.closePath();
+            break;
+          case "moveTo":
+            this.moveTo();
+            break;
+          case "lineTo":
+            this.lineTo();
+            break;
+          case "rect":
+            this.rect();
+            break;
+          case "arc":
+            this.arc();
+            break;
+          case "quadraticCurveTo":
+            this.quadraticCurveTo();
+            break;
+          case "bezierCurveTo":
+            this.bezierCurveTo();
+            break;
+          case "setFillStyle":
+            this.setFillStyle();
+            break;
+          case "setStrokeStyle":
+            this.setStrokeStyle();
+            break;
+          case "setGlobalAlpha":
+            this.setGlobalAlpha();
+            break;
+          case "setShadow":
+            this.setShadow();
+            break;
+          case "setFontSize":
+            this.setFontSize();
+            break;
+          case "setLineCap":
+            this.setLineCap();
+            break;
+          case "setLineJoin":
+            this.setLineJoin();
+            break;
+          case "setLineWidth":
+            this.setLineWidth();
+            break;
+          case "setMiterLimit":
+            this.setMiterLimit();
+            break;
+          default:
+            break;
+        }
       },
-      rotate: function () {
-        context.beginPath()
-        context.rotate(10 * Math.PI / 180)
-        context.rect(225, 75, 20, 10)
-        context.fill()
-        context.draw()
+      rotate() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rotate(10 * Math.PI / 180)
+        this.canvasContext!.rect(225, 75, 20, 10)
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
       },
-      scale: function () {
-        context.beginPath()
-        context.rect(25, 25, 50, 50)
-        context.stroke()
+      scale() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(25, 25, 50, 50)
+        this.canvasContext!.stroke()
 
-        context.scale(2, 2)
+        this.canvasContext!.scale(2, 2)
 
-        context.beginPath()
-        context.rect(25, 25, 50, 50)
-        context.stroke()
-        context.draw()
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(25, 25, 50, 50)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      reset: function () {
-        context.beginPath()
+      reset() {
+        this.canvasContext!.beginPath()
 
-        context.setFillStyle('#000000')
-        context.setStrokeStyle('#000000')
-        context.setFontSize(10)
-        context.setGlobalAlpha(1)
-        context.setShadow(0, 0, 0, 'rgba(0, 0, 0, 0)')
+        this.canvasContext!.setFillStyle('#000000')
+        this.canvasContext!.setStrokeStyle('#000000')
+        this.canvasContext!.setFontSize(10)
+        this.canvasContext!.setGlobalAlpha(1)
+        this.canvasContext!.setShadow(0, 0, 0, 'rgba(0, 0, 0, 0)')
 
-        context.setLineCap('butt')
-        context.setLineJoin('miter')
-        context.setLineWidth(1)
-        context.setMiterLimit(10)
-        context.draw()
+        this.canvasContext!.setLineCap('butt')
+        this.canvasContext!.setLineJoin('miter')
+        this.canvasContext!.setLineWidth(1)
+        this.canvasContext!.setMiterLimit(10)
+        this.canvasContext!.draw()
       },
-      translate: function () {
-        context.beginPath()
-        context.rect(10, 10, 100, 50)
-        context.fill()
+      translate() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(10, 10, 100, 50)
+        this.canvasContext!.fill()
 
-        context.translate(70, 70)
+        this.canvasContext!.translate(70, 70)
 
-        context.beginPath()
-        context.fill()
-        context.draw()
+        this.canvasContext!.beginPath()
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
       },
-      save: function () {
-        context.beginPath()
-        context.setStrokeStyle('#00ff00')
-        context.save()
+      save() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setStrokeStyle('#00ff00')
+        this.canvasContext!.save()
 
-        context.scale(2, 2)
-        context.setStrokeStyle('#ff0000')
-        context.rect(0, 0, 100, 100)
-        context.stroke()
-        context.restore()
+        this.canvasContext!.scale(2, 2)
+        this.canvasContext!.setStrokeStyle('#ff0000')
+        this.canvasContext!.rect(0, 0, 100, 100)
+        this.canvasContext!.stroke()
+        this.canvasContext!.restore()
 
-        context.rect(0, 0, 50, 50)
-        context.stroke()
-        context.draw()
+        this.canvasContext!.rect(0, 0, 50, 50)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      restore: function () {
-        [3, 2, 1].forEach(function (item) {
-          context.beginPath()
-          context.save()
-          context.scale(item, item)
-          context.rect(10, 10, 100, 100)
-          context.stroke()
-          context.restore()
+      restore() {
+        [3, 2, 1].forEach((item) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.save()
+          this.canvasContext!.scale(item, item)
+          this.canvasContext!.rect(10, 10, 100, 100)
+          this.canvasContext!.stroke()
+          this.canvasContext!.restore()
         });
-        context.draw()
+        this.canvasContext!.draw()
       },
-      drawImage: function () {
+      drawImage() {
         // #ifdef APP-PLUS
-        context.drawImage('../../../static/app-plus/uni@2x.png', 0, 0)
+        this.canvasContext!.drawImage('../../../static/app-plus/uni@2x.png', 0, 0)
         // #endif
         // #ifndef APP-PLUS
-        context.drawImage('../../../static/uni.png', 0, 0)
+        this.canvasContext!.drawImage('../../../static/uni.png', 0, 0)
         // #endif
-        context.draw()
+        this.canvasContext!.draw()
       },
-      fillText: function () {
-        context.setStrokeStyle('#ff0000')
+      fillText() {
+        this.canvasContext!.setStrokeStyle('#ff0000')
 
-        context.beginPath()
-        context.moveTo(0, 10)
-        context.lineTo(300, 10)
-        context.stroke()
-        // context.save()
-        // context.scale(1.5, 1.5)
-        // context.translate(20, 20)
-        context.setFontSize(10)
-        context.fillText('Hello World', 0, 30)
-        context.setFontSize(20)
-        context.fillText('Hello World', 100, 30)
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(0, 10)
+        this.canvasContext!.lineTo(300, 10)
+        this.canvasContext!.stroke()
+        // this.canvasContext!.save()
+        // this.canvasContext!.scale(1.5, 1.5)
+        // this.canvasContext!.translate(20, 20)
+        this.canvasContext!.setFontSize(10)
+        this.canvasContext!.fillText('Hello World', 0, 30)
+        this.canvasContext!.setFontSize(20)
+        this.canvasContext!.fillText('Hello World', 100, 30)
 
-        // context.restore()
+        // this.canvasContext!.restore()
 
-        context.beginPath()
-        context.moveTo(0, 30)
-        context.lineTo(300, 30)
-        context.stroke()
-        context.draw()
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(0, 30)
+        this.canvasContext!.lineTo(300, 30)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      fill: function () {
-        context.beginPath()
-        context.rect(20, 20, 150, 100)
-        context.setStrokeStyle('#00ff00')
-        context.fill()
-        context.draw()
+      fill() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(20, 20, 150, 100)
+        this.canvasContext!.setStrokeStyle('#00ff00')
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
       },
-      stroke: function () {
-        context.beginPath()
-        context.moveTo(20, 20)
-        context.lineTo(20, 100)
-        context.lineTo(70, 100)
-        context.setStrokeStyle('#00ff00')
-        context.stroke()
-        context.draw()
+      stroke() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.lineTo(20, 100)
+        this.canvasContext!.lineTo(70, 100)
+        this.canvasContext!.setStrokeStyle('#00ff00')
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      clearRect: function () {
-        context.setFillStyle('#ff0000')
-        context.beginPath()
-        context.rect(0, 0, 300, 150)
-        context.fill()
-        context.clearRect(20, 20, 100, 50)
-        context.draw()
+      clearRect() {
+        this.canvasContext!.setFillStyle('#ff0000')
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(0, 0, 300, 150)
+        this.canvasContext!.fill()
+        this.canvasContext!.clearRect(20, 20, 100, 50)
+        this.canvasContext!.draw()
       },
-      beginPath: function () {
-        context.beginPath()
-        context.setLineWidth(5)
-        context.setStrokeStyle('#ff0000')
-        context.moveTo(0, 75)
-        context.lineTo(250, 75)
-        context.stroke()
-        context.beginPath()
-        context.setStrokeStyle('#0000ff')
-        context.moveTo(50, 0)
-        context.lineTo(150, 130)
-        context.stroke()
-        context.draw()
+      beginPath() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setLineWidth(5)
+        this.canvasContext!.setStrokeStyle('#ff0000')
+        this.canvasContext!.moveTo(0, 75)
+        this.canvasContext!.lineTo(250, 75)
+        this.canvasContext!.stroke()
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setStrokeStyle('#0000ff')
+        this.canvasContext!.moveTo(50, 0)
+        this.canvasContext!.lineTo(150, 130)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      closePath: function () {
-        context.beginPath()
-        context.setLineWidth(1)
-        context.moveTo(20, 20)
-        context.lineTo(20, 100)
-        context.lineTo(70, 100)
-        context.closePath()
-        context.stroke()
-        context.draw()
+      closePath() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setLineWidth(1)
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.lineTo(20, 100)
+        this.canvasContext!.lineTo(70, 100)
+        this.canvasContext!.closePath()
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      moveTo: function () {
-        context.beginPath()
-        context.moveTo(0, 0)
-        context.lineTo(300, 150)
-        context.stroke()
-        context.draw()
+      moveTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(0, 0)
+        this.canvasContext!.lineTo(300, 150)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      lineTo: function () {
-        context.beginPath()
-        context.moveTo(20, 20)
-        context.lineTo(20, 100)
-        context.lineTo(70, 100)
-        context.stroke()
-        context.draw()
+      lineTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.lineTo(20, 100)
+        this.canvasContext!.lineTo(70, 100)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      rect: function () {
-        context.beginPath()
-        context.rect(20, 20, 150, 100)
-        context.stroke()
-        context.draw()
+      rect() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(20, 20, 150, 100)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      arc: function () {
-        context.beginPath()
-        context.setLineWidth(2)
-        context.arc(75, 75, 50, 0, Math.PI * 2, true)
-        context.moveTo(110, 75)
-        context.arc(75, 75, 35, 0, Math.PI, false)
-        context.moveTo(65, 65)
-        context.arc(60, 65, 5, 0, Math.PI * 2, true)
-        context.moveTo(95, 65)
-        context.arc(90, 65, 5, 0, Math.PI * 2, true)
-        context.stroke()
-        context.draw()
+      arc() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setLineWidth(2)
+        this.canvasContext!.arc(75, 75, 50, 0, Math.PI * 2, true)
+        this.canvasContext!.moveTo(110, 75)
+        this.canvasContext!.arc(75, 75, 35, 0, Math.PI, false)
+        this.canvasContext!.moveTo(65, 65)
+        this.canvasContext!.arc(60, 65, 5, 0, Math.PI * 2, true)
+        this.canvasContext!.moveTo(95, 65)
+        this.canvasContext!.arc(90, 65, 5, 0, Math.PI * 2, true)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      quadraticCurveTo: function () {
-        context.beginPath()
-        context.moveTo(20, 20)
-        context.quadraticCurveTo(20, 100, 200, 20)
-        context.stroke()
-        context.draw()
+      quadraticCurveTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.quadraticCurveTo(20, 100, 200, 20)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      bezierCurveTo: function () {
-        context.beginPath()
-        context.moveTo(20, 20)
-        context.bezierCurveTo(20, 100, 200, 100, 200, 20)
-        context.stroke()
-        context.draw()
+      bezierCurveTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.bezierCurveTo(20, 100, 200, 100, 200, 20)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
       },
-      setFillStyle: function () {
-        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach(function (item, index) {
-          context.setFillStyle(item)
-          context.beginPath()
-          context.rect(0 + 75 * index, 0, 50, 50)
-          context.fill()
+      setFillStyle() {
+        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+          this.canvasContext!.setFillStyle(item)
+          this.canvasContext!.beginPath()
+          this.canvasContext!.rect(0 + 75 * index, 0, 50, 50)
+          this.canvasContext!.fill()
         })
-        context.draw()
+        this.canvasContext!.draw()
       },
-      setStrokeStyle: function () {
-        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach(function (item, index) {
-          context.setStrokeStyle(item)
-          context.beginPath()
-          context.rect(0 + 75 * index, 0, 50, 50)
-          context.stroke()
+      setStrokeStyle() {
+        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+          this.canvasContext!.setStrokeStyle(item)
+          this.canvasContext!.beginPath()
+          this.canvasContext!.rect(0 + 75 * index, 0, 50, 50)
+          this.canvasContext!.stroke()
         })
-        context.draw()
+        this.canvasContext!.draw()
       },
-      setGlobalAlpha: function () {
-        context.setFillStyle('#000000');
-        [1, 0.5, 0.1].forEach(function (item, index) {
-          context.setGlobalAlpha(item)
-          context.beginPath()
-          context.rect(0 + 75 * index, 0, 50, 50)
-          context.fill()
+      setGlobalAlpha() {
+        this.canvasContext!.setFillStyle('#000000');
+        [1, 0.5, 0.1].forEach((item : number, index : number) => {
+          this.canvasContext!.setGlobalAlpha(item)
+          this.canvasContext!.beginPath()
+          this.canvasContext!.rect(0 + 75 * index, 0, 50, 50)
+          this.canvasContext!.fill()
         })
-        context.draw()
-        context.setGlobalAlpha(1)
+        this.canvasContext!.draw()
+        this.canvasContext!.setGlobalAlpha(1)
       },
-      setShadow: function () {
-        context.beginPath()
-        context.setShadow(10, 10, 10, 'rgba(0, 0, 0, 199)')
-        context.rect(10, 10, 100, 100)
-        context.fill()
-        context.draw()
+      setShadow() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setShadow(10, 10, 10, 'rgba(0, 0, 0, 199)')
+        this.canvasContext!.rect(10, 10, 100, 100)
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
       },
-      setFontSize: function () {
-        [10, 20, 30, 40].forEach(function (item, index) {
-          context.setFontSize(item)
-          context.fillText('Hello, world', 20, 20 + 40 * index)
+      setFontSize() {
+        [10, 20, 30, 40].forEach((item : number, index : number) => {
+          this.canvasContext!.setFontSize(item)
+          this.canvasContext!.fillText('Hello, world', 20, 20 + 40 * index)
         })
-        context.draw()
+        this.canvasContext!.draw()
       },
-      setLineCap: function () {
-        context.setLineWidth(10);
-        ['butt', 'round', 'square'].forEach(function (item, index) {
-          context.beginPath()
-          context.setLineCap(item)
-          context.moveTo(20, 20 + 20 * index)
-          context.lineTo(100, 20 + 20 * index)
-          context.stroke()
+      setLineCap() {
+        this.canvasContext!.setLineWidth(10);
+        ['butt', 'round', 'square'].forEach((item : string, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setLineCap(item)
+          this.canvasContext!.moveTo(20, 20 + 20 * index)
+          this.canvasContext!.lineTo(100, 20 + 20 * index)
+          this.canvasContext!.stroke()
         })
-        context.draw()
+        this.canvasContext!.draw()
       },
-      setLineJoin: function () {
-        context.setLineWidth(10);
-        ['bevel', 'round', 'miter'].forEach(function (item, index) {
-          context.beginPath()
-          context.setLineJoin(item)
-          context.moveTo(20 + 80 * index, 20)
-          context.lineTo(100 + 80 * index, 50)
-          context.lineTo(20 + 80 * index, 100)
-          context.stroke()
+      setLineJoin() {
+        this.canvasContext!.setLineWidth(10);
+        ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setLineJoin(item)
+          this.canvasContext!.moveTo(20 + 80 * index, 20)
+          this.canvasContext!.lineTo(100 + 80 * index, 50)
+          this.canvasContext!.lineTo(20 + 80 * index, 100)
+          this.canvasContext!.stroke()
         })
-        context.draw()
+        this.canvasContext!.draw()
       },
-      setLineWidth: function () {
-        [2, 4, 6, 8, 10].forEach(function (item, index) {
-          context.beginPath()
-          context.setLineWidth(item)
-          context.moveTo(20, 20 + 20 * index)
-          context.lineTo(100, 20 + 20 * index)
-          context.stroke()
+      setLineWidth() {
+        [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setLineWidth(item)
+          this.canvasContext!.moveTo(20, 20 + 20 * index)
+          this.canvasContext!.lineTo(100, 20 + 20 * index)
+          this.canvasContext!.stroke()
         })
-        context.draw()
+        this.canvasContext!.draw()
       },
-      setMiterLimit: function () {
-        context.setLineWidth(4);
-        [2, 4, 6, 8, 10].forEach(function (item, index) {
-          context.beginPath()
-          context.setMiterLimit(item)
-          context.moveTo(20 + 80 * index, 20)
-          context.lineTo(100 + 80 * index, 50)
-          context.lineTo(20 + 80 * index, 100)
-          context.stroke()
+      setMiterLimit() {
+        this.canvasContext!.setLineWidth(4);
+        [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setMiterLimit(item)
+          this.canvasContext!.moveTo(20 + 80 * index, 20)
+          this.canvasContext!.lineTo(100 + 80 * index, 50)
+          this.canvasContext!.lineTo(20 + 80 * index, 100)
+          this.canvasContext!.stroke()
         })
-        context.draw()
+        this.canvasContext!.draw()
       }
     }
   }
 </script>
 
 <style>
-  .canvas-element-wrapper {
-    display: block;
-    margin-bottom: 100rpx;
+  .page {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .scroll-view {
+    flex: 1;
   }
 
   .canvas-element {
@@ -346,21 +442,16 @@
     background-color: #ffffff;
   }
 
-  .canvas-buttons {
-    padding: 30rpx 50rpx 10rpx;
-    width: 100%;
-    height: 360rpx;
+  .grid-list {
+    padding: 15px;
+    flex-direction: row;
+    flex-wrap: wrap;
     box-sizing: border-box;
   }
 
-  .canvas-button {
-    float: left;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    line-height: 1;
-    width: 300rpx;
-    margin: 15rpx 12rpx;
+  .grid-item {
+    box-sizing: border-box;
+    width: 50%;
+    padding: 5px;
   }
 </style>
