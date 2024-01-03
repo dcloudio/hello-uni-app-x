@@ -43,7 +43,7 @@ describe('component-native-input', () => {
   // 测试修改value属性
   it("value", async () => {
     const input = await page.$('#uni-input-default');
-    expect(await input.attribute('value')).toEqual("hello uni-app x")
+    expect(await input.property('value')).toEqual("hello uni-app x")
   })
 
   //测试input的类型

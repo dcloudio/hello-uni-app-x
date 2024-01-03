@@ -15,7 +15,7 @@ describe('slider', () => {
       sliderValue: sliderValue,
     })
     await page.waitFor(100)
-    expect(await slider.attribute('value')).toBe(sliderValue)
+    expect(await slider.property('value')).toBe(sliderValue)
   })
   it('color', async () => {
     const slider = await page.$('.slider-custom-color-and-size')
@@ -39,13 +39,13 @@ describe('slider', () => {
   })
   it('block-size', async () => {
     const slider = await page.$('.slider-custom-color-and-size')
-    expect(await slider.attribute('blockSize')).toBe(20)
+    expect(await slider.attribute('blockSize')).toBe(20 + '')
 
     const blockSize = 18
     await page.setData({
       sliderBlockSize: blockSize,
     })
     await page.waitFor(100)
-    expect(await slider.attribute('blockSize')).toBe(blockSize)
+    expect(await slider.attribute('blockSize')).toBe(blockSize + '')
   })
 })

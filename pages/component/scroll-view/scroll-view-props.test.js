@@ -25,7 +25,7 @@ describe('component-native-scroll-view', () => {
         })
         await page.waitFor(600)
         const element = await page.$('#scrollViewY')
-        const scrollTop = await element.attribute("scrollTop")
+        const scrollTop = await element.property("scrollTop")
         console.log("check_scroll_top---"+scrollTop)
         expect(scrollTop-600).toBeGreaterThanOrEqual(0)
     })
@@ -37,7 +37,7 @@ describe('component-native-scroll-view', () => {
         })
         await page.waitFor(600)
         const element = await page.$('#scrollViewY')
-        const scrollTop = await element.attribute("scrollTop")
+        const scrollTop = await element.property("scrollTop")
         console.log("check_scroll_into_view_top--"+scrollTop)
         await page.setData({
             scrollIntoView: ""
@@ -54,7 +54,7 @@ describe('component-native-scroll-view', () => {
       const value = await page.callMethod('checkScrollWidth')
       expect(value).toBe(true)
     })
-    
+
     //检测横向scrollLeft属性赋值
     it('check_scroll_left', async () => {
       await page.setData({
@@ -62,11 +62,11 @@ describe('component-native-scroll-view', () => {
       })
       await page.waitFor(600)
       const element = await page.$('#scrollViewX')
-      const scrollLeft = await element.attribute("scrollLeft")
+      const scrollLeft = await element.property("scrollLeft")
       console.log("check_scroll_left---"+scrollLeft)
       expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
     })
-    
+
     //检测横向scroll_into_view属性赋值
     it('check_scroll_into_view_left', async () => {
       await page.setData({
@@ -74,7 +74,7 @@ describe('component-native-scroll-view', () => {
       })
       await page.waitFor(600)
       const element = await page.$('#scrollViewX')
-      const scrollLeft = await element.attribute("scrollLeft")
+      const scrollLeft = await element.property("scrollLeft")
       console.log("check_scroll_into_view_left--"+scrollLeft)
       await page.setData({
           scrollIntoView: ""
