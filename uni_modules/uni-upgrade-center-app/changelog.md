@@ -1,3 +1,7 @@
+## 0.7.8（2024-01-04）
+- 新增 移除无用代码
+## 0.7.7（2024-01-04）
+- 新增 uni-app x 项目中新增 @show 回调
 ## 0.7.6（2023-12-21）
 - 修复 iOS使用升级中心云打包时报错（使用新版的 [uts-progressNotification](https://ext.dcloud.net.cn/plugin?name=uts-progressNotification) 插件，如果之前下载过请删除 `uts-progressNotification\utssdk\app-ios` 文件夹）
 ## 0.7.5（2023-12-12）

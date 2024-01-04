@@ -67,63 +67,17 @@
 	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
   import { openSchema } from '../../utils/utils.uts'
 
-	const localFilePathKey = 'UNI_ADMIN_UPGRADE_CENTER_LOCAL_FILE_PATH'
 	const platform_iOS = 'iOS';
 	const platform_Android = 'Android';
 	const requiredKey = ['version', 'url', 'type']
 	let downloadTask : DownloadTask | null = null;
 	let openSchemePromise: Promise<boolean> | null = null;
-  let notificationAbortDownload: boolean = false
-
-	/**
-	 * 对比版本号，如需要，请自行修改判断规则
-	 * 支持比对	("3.0.0.0.0.1.0.1", "3.0.0.0.0.1")	("3.0.0.1", "3.0")	("3.1.1", "3.1.1.1") 之类的
-	 * @param {Object} v1
-	 * @param {Object} v2
-	 * v1 > v2 return 1
-	 * v1 < v2 return -1
-	 * v1 == v2 return 0
-	 */
-	function compare(v1 : string = '0', v2 : string = '0') : number {
-		const v1_array = v1.split('.')
-		const v2_array = v2.split('.')
-		const minVersionLens = Math.min(v1.length, v2.length);
-
-		let result = 0;
-		for (let i = 0; i < minVersionLens; i++) {
-			const curV1 = parseInt(v1_array[i])
-			const curV2 = parseInt(v2_array[i])
-
-			if (curV1 > curV2) {
-				result = 1
-				break;
-			} else if (curV1 < curV2) {
-				result = -1
-				break;
-			}
-		}
-
-		if (result === 0 && (v1_array.length !== v2_array.length)) {
-			const v1BiggerThenv2 = v1_array.length > v2_array.length;
-			const maxLensVersion = v1BiggerThenv2 ? v1_array : v2_array;
-			for (let i = minVersionLens; i < maxLensVersion.length; i++) {
-				const curVersion = parseInt(maxLensVersion[i])
-				if (curVersion > 0) {
-					v1BiggerThenv2 ? result = 1 : result = -1
-					break;
-				}
-			}
-		}
-
-		return result;
-	}
 
 	export default {
-    emits: ['close'],
+    emits: ['close', 'show'],
 		data() {
 			return {
 				shown: false,
-				showTabbar: false,
 				// 从之前下载安装
 				installForBeforeFilePath: '',
 
@@ -177,8 +131,6 @@
 			show(shown : boolean, localPackageInfo : UniUpgradeCenterResult | null) {
 				if (localPackageInfo === null) return;
 
-				uni.hideTabBar()?.then(_ => { this.showTabbar = true })?.catch(_ => { })
-
 				for (let key in localPackageInfo) {
 					if (requiredKey.indexOf(key) != -1 && localPackageInfo[key] === null) {
 						console.error(`参数 ${key} 必填，请检查后重试`)
@@ -195,6 +147,8 @@
 				this.version = localPackageInfo.version
         this.store_list = localPackageInfo.store_list
 				this.shown = shown
+
+        this.$emit('show')
 			},
       askAbortDownload() {
         uni.showModal({
@@ -227,10 +181,6 @@
 			},
 			closePopup() {
 				this.shown = false
-				if (this.showTabbar) {
-					uni.showTabBar()?.then(_ => { })?.catch(_ => { })
-				}
-
 				this.downloadSuccess = false
 				this.downloading = false
 				this.downLoadPercent = 0
@@ -238,15 +188,11 @@
 				this.packageFileSize = 0
 				this.tempFilePath = ''
 
-				this.installing = false;
+				this.installing = false
 				this.installed = false
-				this.showTabbar = false
 
         if (this.needNotificationProgress) cancelNotificationProgress()
-
-				if (!notificationAbortDownload) this.$emit('close')
-
-        notificationAbortDownload = false
+        this.$emit('close')
 			},
 			updateApp() {
         const checkStoreScheme = this.checkStoreScheme()
@@ -312,7 +258,6 @@
                 onClick: () => {
                   if (!this.downloadSuccess) {
                     this.askAbortDownload()
-                    notificationAbortDownload = true
                   }
                 }
               } as CreateNotificationProgressOptions)
