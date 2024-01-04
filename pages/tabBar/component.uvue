@@ -41,7 +41,7 @@
       </uni-collapse>
 
       <!-- #ifdef UNI-APP-X && APP -->
-      <uni-upgrade-center-app ref="upgradePopup" @close="upgradePopupClose" />
+      <uni-upgrade-center-app ref="upgradePopup" @show="upgradePopupShow" @close="upgradePopupClose" />
       <!-- #endif -->
     </view>
     <!-- #ifdef APP -->
@@ -288,6 +288,7 @@ export default {
       arrowUpIcon: '/static/icons/arrow-up.png',
       arrowDownIcon: '/static/icons/arrow-down.png',
       arrowRightIcon: '/static/icons/arrow-right.png',
+      pageHiden: false
     }
   },
   methods: {
@@ -306,15 +307,28 @@ export default {
       })
     }
     // #ifdef UNI-APP-X && APP
+    ,upgradePopupShow() {
+      console.log('upgradePopup show');
+      if (!this.pageHiden) {
+				uni.hideTabBar()?.catch(_ => { })
+      }
+    }
     ,upgradePopupClose() {
       console.log('upgradePopup close');
+      uni.showTabBar()?.catch(_ => {})
     }
     // #endif
   },
   onReady() {
     // #ifdef UNI-APP-X && APP
-  	checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+    checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
     // #endif
+  },
+  onShow() {
+    this.pageHiden = false
+  },
+  onHide() {
+    this.pageHiden = true
   },
   beforeUnmount() {
     uni.showTabBar()?.catch(_ => {})
