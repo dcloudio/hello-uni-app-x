@@ -27,6 +27,7 @@
       return {
         title: 'video-format',
         supportFormats: [
+          // TODO web本地运行时本地服务返回的content-type不对，导致本地视频无法播放。此外web端原生video不支持flv、m3u8、avi格式，但是和app端相比多了ogg格式的支持
           {
             format: 'mp4',
             src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4'
@@ -47,6 +48,7 @@
             format: '3gp',
             src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.3gp'
           },
+          // #ifndef WEB
           {
             format: 'flv',
             src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.flv'
@@ -59,16 +61,19 @@
             format: '本地m3u8',
             src: '/static/test-video/2minute-demo.m3u8'
           },
+          // #endif
           {
             format: '错误路径',
             src: 'https://www.dcloud.net.cn/errorpath.mp4'
           },
         ] as Array<VideoFormat>,
         notSupportFormats: [
+          // #ifndef WEB
           {
             format: 'ogg',
             src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.ogg'
           },
+          // #endif
           {
             format: 'avi',
             src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.avi'
@@ -79,7 +84,7 @@
     },
     methods: {
       onError: function (format: string, e : VideoErrorEvent) {
-        console.log(format + ":" + e.detail);
+        console.log(format + ":" + JSON.stringify(e));
         if (format != "错误路径") {
           this.isError = true;
         }

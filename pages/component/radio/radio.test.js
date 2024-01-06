@@ -48,18 +48,18 @@ describe('Radio.uvue', () => {
   })
   it('color', async () => {
     const radio = await page.$('.r')
-    expect(await radio.property('color')).toBe('#007aff')
+    expect(await radio.attribute('color')).toBe('#007aff')
     await page.setData({
       color: '#63acfc',
     })
-    expect(await radio.property('color')).toBe('#63acfc')
+    expect(await radio.attribute('color')).toBe('#63acfc')
   })
   it('disabled', async () => {
     const radio = await page.$('.r2')
-    expect(await radio.property('disabled')).toBe(true)
+    expect(await radio.attribute('disabled')).toBe(true + '')
     await page.setData({
       disabled: false,
     })
-    expect(await radio.property('disabled')).toBe(false)
+    expect(await radio.attribute('disabled')).toBe(false + '')
   })
 })

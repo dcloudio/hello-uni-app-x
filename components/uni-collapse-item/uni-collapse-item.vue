@@ -68,7 +68,7 @@
 				const boxNode = this.boxNode?.style!;
 				const contentNode = this.contentNode?.style!;
 				let hide = open ? 'flex' : 'none';
-				const opacity = open ? 1 : 0
+				const opacity = open ? "1" : "0"
 				let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
 				boxNode.setProperty('display', hide);
 				this.$nextTick(() => {

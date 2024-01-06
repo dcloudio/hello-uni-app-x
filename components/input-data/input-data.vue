@@ -81,7 +81,7 @@
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-input-wrapper input-wrapper">
+  <view class="input-wrapper">
     <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" @input="input" @blur="blur" @focus="focus" />
     <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
     </image>
@@ -90,20 +90,15 @@
 
 
 <style>
-  .uni-input-wrapper {
-    padding: 8px 13px;
-    margin: 10rpx 0;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    background-color: #ffffff;
-  }
-
   .input-wrapper {
     border: 1px solid rgba(0, 0, 0, .08);
     flex-direction: row;
     justify-content: center;
     padding: 0;
     margin: 0 20rpx;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background-color: #ffffff;
   }
 
   .input-wrapper_image {

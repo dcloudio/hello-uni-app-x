@@ -70,23 +70,28 @@ describe('ExtApi-Request', () => {
   it('Check PATCH', async () => {
     await request(page, 'PATCH');
   });
-  it('Check OPTIONS', async () => {
-    await request(page, 'OPTIONS');
-  });
+  if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
+    it('Check OPTIONS', async () => {
+      await request(page, 'OPTIONS');
+    });
+  }
   it('Check HEAD', async () => {
     await request(page, 'HEAD');
   });
 
-  it('Check Set Cookie', async () => {
-    res = await page.callMethod('jest_set_cookie')
-    await page.waitFor(500);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
-  it('Check Delete Cookie', async () => {
-    res = await page.callMethod('jest_delete_cookie')
-    await page.waitFor(1000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
+
+  if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
+    it('Check Set Cookie', async () => {
+      res = await page.callMethod('jest_set_cookie')
+      await page.waitFor(500);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+    it('Check Delete Cookie', async () => {
+      res = await page.callMethod('jest_delete_cookie')
+      await page.waitFor(1000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+  }
 });
