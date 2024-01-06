@@ -1,0 +1,59 @@
+<template>
+  <web-view id="webview-screenshot" class="webview-screenshot" :src="src" @loaded="loaded" @error="error">
+  </web-view>
+  <text style="display: none"></text>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        // example baseSrc: 'http://ip:port/#/',
+        baseSrc: '',
+        src: '',
+        webviewContext: null as WebviewContext | null,
+        isLoaded: false,
+        needRemoveWebHead: false,
+      }
+    },
+    onReady() {
+      this.webviewContext = uni.createWebviewContext('webview-screenshot', this)
+    },
+    methods: {
+      removeWebHead() {
+        this.webviewContext?.evalJS(`document.querySelector('uni-page-head').style.display='none'`);
+      },
+      appendWebHeadPlaceholder() {
+        this.webviewContext?.evalJS(`
+    const hasWebHeadPlaceholder = document.querySelector('.web-head-placeholder-for-screenshot-comparison');
+    if (hasWebHeadPlaceholder) {
+      return;
+    }
+    const webHeadPlaceholder = document.createElement('div');
+    webHeadPlaceholder.style.height = '52px';
+    webHeadPlaceholder.style.backgroundColor = '#007aff';
+    webHeadPlaceholder.classList.add('web-head-placeholder-for-screenshot-comparison');
+    const uniPage = document.querySelector('uni-page');
+    const uniPageHead = document.querySelector('uni-page-head');
+    uniPage.insertBefore(webHeadPlaceholder, uniPageHead);
+    `);
+      },
+      loaded() {
+        this.isLoaded = true
+        if (this.needRemoveWebHead) {
+          this.removeWebHead();
+        } else {
+          this.appendWebHeadPlaceholder();
+        }
+      },
+      error(event : WebViewErrorEvent) {
+        console.log('webview load error', JSON.stringify(event.detail));
+      }
+    }
+  }
+</script>
+<style>
+  .webview-screenshot {
+    flex: 1;
+  }
+</style>
