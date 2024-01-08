@@ -80,6 +80,9 @@ const pages = [
   "pages/API/unicloud-database/unicloud-database",
   "pages/API/get-window-info/get-window-info",
   "pages/API/element-takesnapshot/element-takesnapshot",
+  "pages/API/get-element-by-id/get-element-by-id",
+  "pages/API/get-element-by-id/get-element-by-id-multiple-root-node",
+  "pages/API/navigator/new-page/onLoad",
   "pages/tabBar/CSS",
   "pages/CSS/background/background-color",
   "pages/CSS/background/background-image",
@@ -152,14 +155,11 @@ const pages = [
 
   // web 暂不支持
   // "pages/component/list-view/list-view",
+  // "pages/component/list-view/list-view-multiplex",
+  // "pages/API/element-draw/element-draw",
   // "pages/template/swiper-list/swiper-list",
   // "pages/template/swiper-list2/swiper-list2",
-  // "pages/API/element-draw/element-draw",
-  // "pages/API/get-element-by-id/get-element-by-id",
-  // "pages/API/get-element-by-id/get-element-by-id-multiple-root-node",
-  // "pages/API/navigator/new-page/onLoad",
   // "pages/template/long-list2/long-list2",
-  // "pages/component/list-view/list-view-multiplex",
 
   // 动态内容
   // "pages/component/web-view/web-view"
@@ -201,6 +201,13 @@ const pages = [
   // pages/template/schema/schema
   // pages/template/share/share
 ];
+const childToParentPagesMap = new Map([
+  [
+    "pages/API/load-font-face/load-font-face-child",
+    "pages/API/load-font-face/load-font-face",
+  ],
+]);
+
 const needAdbScreenshotPages = [
   "pages/tabBar/component",
   "pages/tabBar/API",
@@ -249,6 +256,20 @@ describe("shot-compare", () => {
       const screenshotPath = pages[pageIndex].replace(/\//g, "-");
 
       // web in webview screenshot
+      // 加载依赖页面
+      if (childToParentPagesMap.get(pages[pageIndex])) {
+        await page.setData({
+          src: `${baseSrc}${childToParentPagesMap.get(pages[pageIndex])}`,
+          isLoaded: false,
+          needRemoveWebHead: !isNeedAdbScreenshot,
+        });
+        await page.waitFor(async () => {
+          const isLoaded = page.data("isLoaded");
+          return isLoaded || Date.now() - startTime > 10000;
+        });
+        // 这个等待无法保证 web 页面加载完成，可以等 web 服务调整为发行服务后进行优化
+        await page.waitFor(4000);
+      }
       await page.setData({
         src: `${baseSrc}${pages[pageIndex]}`,
         isLoaded: false,
@@ -262,9 +283,17 @@ describe("shot-compare", () => {
       });
       // 这个等待无法保证 web 页面加载完成，可以等 web 服务调整为发行服务后进行优化
       await page.waitFor(4000);
+      if (pages[pageIndex].includes("load-font-face")) {
+        await page.waitFor(3000);
+      }
 
       const webSnapshot = await program.screenshot({
         fullPage: isNeedAdbScreenshot ? false : true,
+        adb: isNeedAdbScreenshot ? true : false,
+        area: {
+          x: 0,
+          y: 100,
+        },
       });
       expect(webSnapshot).toMatchImageSnapshot({
         customSnapshotIdentifier() {
@@ -273,14 +302,21 @@ describe("shot-compare", () => {
       });
 
       // app-android page screenshot comparison
-      const navigateMethod = pages[pageIndex].startsWith("pages/tabBar")
-        ? "switchTab"
-        : "navigateTo";
+      const navigateMethod = pages[pageIndex].startsWith("pages/tabBar") ?
+        "switchTab" :
+        "navigateTo";
       page = await program[navigateMethod](`/${pages[pageIndex]}`);
       await page.waitFor(500);
+      if (pages[pageIndex].includes("load-font-face")) {
+        await page.waitFor(2000);
+      }
       const appAndroidSnapshot = await program.screenshot({
         fullPage: isNeedAdbScreenshot ? false : true,
         adb: isNeedAdbScreenshot ? true : false,
+        area: {
+          x: 0,
+          y: 100,
+        },
       });
       expect(appAndroidSnapshot).toMatchImageSnapshot({
         customSnapshotIdentifier() {
