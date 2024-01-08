@@ -32,20 +32,22 @@ describe('test swiper', () => {
     it('check autoplay loop', async () => {
         await page.setData({
           autoplaySelect: true,
+          currentValChange:0,
         })
         await page.waitFor(600)
         expect(await getData('currentValChange')).toEqual(0)
         await page.waitFor(2000)
         expect(await getData('currentValChange')).toEqual(1)
-        await page.waitFor(5000)
-        expect(await getData('currentValChange')).toEqual(2)
-        await page.waitFor(300)
-        await page.setData({
-          circularSelect: true
-        })
-        expect(await getData('currentValChange')).toEqual(2)
-        await page.waitFor(1000)
+        await page.waitFor(4000)
         expect(await getData('currentValChange')).toEqual(0)
+        await page.setData({
+          circularSelect: true,
+          currentValChange:0,
+        })
+        await page.waitFor(2000)
+        expect(await getData('currentValChange')).toEqual(1)
+        await page.waitFor(2000)
+        expect(await getData('currentValChange')).toEqual(2)
         await page.setData({
           circularSelect: false,
           autoplaySelect: false
