@@ -234,13 +234,13 @@ describe("shot-compare", () => {
       page = await program.reLaunch(PAGE_PATH);
       await page.waitFor(500);
 
-      // pre check webview-screenshot-comparison page baseSrc
-      const data = await page.data();
-      const _baseSrc = data["baseSrc"];
-      if (!_baseSrc) {
-        throw new Error("webview-screenshot-comparison page baseSrc is null");
-      }
-      baseSrc = _baseSrc;
+      // set webview-screenshot-comparison page baseSrc
+      baseSrc =
+        process.env.UNI_WEB_SERVICE_URL ||
+        "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
+      page.setData({
+        baseSrc,
+      });
     });
 
     beforeEach(async () => {
@@ -267,8 +267,7 @@ describe("shot-compare", () => {
           const isLoaded = page.data("isLoaded");
           return isLoaded || Date.now() - startTime > 10000;
         });
-        // 这个等待无法保证 web 页面加载完成，可以等 web 服务调整为发行服务后进行优化
-        await page.waitFor(4000);
+        await page.waitFor(200);
       }
       await page.setData({
         src: `${baseSrc}${pages[pageIndex]}`,
@@ -279,10 +278,9 @@ describe("shot-compare", () => {
       const startTime = Date.now();
       await page.waitFor(async () => {
         const isLoaded = page.data("isLoaded");
-        return isLoaded || Date.now() - startTime > 10000;
+        return isLoaded || Date.now() - startTime > 3000;
       });
-      // 这个等待无法保证 web 页面加载完成，可以等 web 服务调整为发行服务后进行优化
-      await page.waitFor(4000);
+      await page.waitFor(200);
       if (pages[pageIndex].includes("load-font-face")) {
         await page.waitFor(3000);
       }
@@ -308,7 +306,7 @@ describe("shot-compare", () => {
       page = await program[navigateMethod](`/${pages[pageIndex]}`);
       await page.waitFor(500);
       if (pages[pageIndex].includes("load-font-face")) {
-        await page.waitFor(2000);
+        await page.waitFor(3000);
       }
       const appAndroidSnapshot = await program.screenshot({
         fullPage: isNeedAdbScreenshot ? false : true,
