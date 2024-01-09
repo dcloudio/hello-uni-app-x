@@ -12,7 +12,7 @@ export default {
 			auto_focus_boolean: false,
       default_value:"",
       maxlength:-1,
-			inputmode_enum: [{"value":0,"name":"none"},{"value":1,"name":"text"},{"value":2,"name":"decimal"},{"value":3,"name":"numeric"},{"value":4,"name":"tel"},{"value":5,"name":"search"},{"value":6,"name":"email"},{"value":7,"name":"url"}] as ItemType[],
+			inputmode_enum: [{"value":1,"name":"text"},{"value":2,"name":"decimal"},{"value":3,"name":"numeric"},{"value":4,"name":"tel"},{"value":5,"name":"search"},{"value":6,"name":"email"},{"value":7,"name":"url"},{"value":0,"name":"none"}] as ItemType[],
       cursor_color: "#3393E2",
 			inputmode_enum_current: 0
 		}
@@ -46,45 +46,46 @@ export default {
 </script>
 
 <template>
-  <view class="main">
-    <textarea
-    :value="default_value"
-      class="uni-textarea"
-      :auto-focus="auto_focus_boolean"
-      :focus="focus_boolean"
-      :confirm-hold="confirm_hold_boolean"
-      :auto-height="auto_height_boolean"
-      :fixed="fixed_boolean"
-      :show-confirm-bar="show_confirm_bar_boolean"
-      :adjust-position="adjust_position_boolean"
-      :cursor-color="cursor_color"
-      :inputmode="inputmode_enum[inputmode_enum_current].name"
-      :maxlength="maxlength"
-      @click="textarea_click"
-      @touchstart="textarea_touchstart"
-      @touchmove="textarea_touchmove"
-      @touchcancel="textarea_touchcancel"
-      @touchend="textarea_touchend"
-      @tap="textarea_tap"
-      @longpress="textarea_longpress"
-      @confirm="textarea_confirm"
-      @input="textarea_input"
-      @linechange="textarea_linechange"
-      @blur="textarea_blur"
-      @keyboardheightchange="textarea_keyboardheightchange"
-      @focus="textarea_focus"
-      style="padding: 20rpx; border: 1px solid #666"
-    />
-  </view>
-
   <scroll-view style="flex: 1" :scroll-y="true">
+    <view class="main">
+      <textarea
+      :value="default_value"
+        class="uni-textarea"
+        :auto-focus="true"
+        :focus="focus_boolean"
+        :confirm-hold="confirm_hold_boolean"
+        :auto-height="auto_height_boolean"
+        :fixed="fixed_boolean"
+        :show-confirm-bar="show_confirm_bar_boolean"
+        :adjust-position="adjust_position_boolean"
+        :cursor-color="cursor_color"
+        :inputmode="inputmode_enum[inputmode_enum_current].name"
+        :maxlength="maxlength"
+        @click="textarea_click"
+        @touchstart="textarea_touchstart"
+        @touchmove="textarea_touchmove"
+        @touchcancel="textarea_touchcancel"
+        @touchend="textarea_touchend"
+        @tap="textarea_tap"
+        @longpress="textarea_longpress"
+        @confirm="textarea_confirm"
+        @input="textarea_input"
+        @linechange="textarea_linechange"
+        @blur="textarea_blur"
+        @keyboardheightchange="textarea_keyboardheightchange"
+        @focus="textarea_focus"
+        style="padding: 20rpx; border: 1px solid #666"
+      />
+    </view>
     <view class="content">
+      <!-- #ifndef WEB -->
       <boolean-data
         :defaultValue="false"
         title="键盘弹起时，是否自动上推页面"
         @change="change_adjust_position_boolean"
       ></boolean-data>
-      <!-- #ifdef !APP -->
+      <!-- #endif -->
+      <!-- #ifdef MP -->
       <boolean-data
         :defaultValue="false"
         title="是否显示键盘上方带有“完成”按钮那一栏"
@@ -112,8 +113,8 @@ export default {
         @change="change_focus_boolean"
       ></boolean-data>
       <boolean-data
-        :defaultValue="false"
-        title="自动获取焦点"
+        :defaultValue="true"
+        title="首次自动获取焦点"
         @change="change_auto_focus_boolean"
       ></boolean-data>
       <boolean-data
@@ -121,18 +122,20 @@ export default {
         title="改变光标颜色为透明"
         @change="change_cursor_color_boolean"
       ></boolean-data>
+      <!-- #ifdef WEB -->
       <enum-data
         :items="inputmode_enum"
         title="是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。在符合条件的高版本webview里，uni-app的 web 和 app-vue 平台中可使用本属性。"
         @change="radio_change_inputmode_enum"
       ></enum-data>
+      <!-- #endif -->
     </view>
   </scroll-view>
 </template>
 
 <style>
 .main {
-  max-height: 500rpx;
+  min-height: 200rpx;
   padding: 10rpx 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   flex-direction: row;
