@@ -2,20 +2,20 @@
 	<view style="flex:1;">
 		<page-head title="非下拉刷新的scroll-view属性示例"></page-head>
 		<view class="uni-margin-wrap">
-			<!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-x或scroll-y属性一经设置不能动态改变。 -->
-			<scroll-view v-if="scrollX" :scroll-x="true" :scroll-y="false" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+			<!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
+			<scroll-view v-if="scrollX" direction="x" :scroll-top="scrollTop" :scroll-left="scrollLeft"
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation" style="flex-direction: row;width: 100%;height: 100%;"
-				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
+				:show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper"
 				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewX" id="scrollViewX">
 				<view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
 					<text class="uni-text">{{item.label}}</text>
 				</view>
 			</scroll-view>
-			<scroll-view v-else :scroll-y="scrollY"  :scroll-top="scrollTop" :scroll-left="scrollLeft"
+			<scroll-view v-else direction="y" :scroll-top="scrollTop" :scroll-left="scrollLeft"
 				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
 				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
-				:show-scrollbar="showScrollbar" :rebound="rebound" @scrolltoupper="scrolltoupper"
+				:show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper"
 				@touchmove="onTouchMove"
 				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY" style="width: 100%;height: 100%;">
 				<view class="item" :id="item.id" v-for="(item,_) in items">
@@ -31,7 +31,7 @@
 			</view>
 			<view class="uni-option">
 				<text>是否有反弹效果</text>
-				<switch :checked="rebound" @change="rebound=!rebound"></switch>
+				<switch :checked="bounces" @change="bounces=!bounces"></switch>
 			</view>
 			<view class="uni-option">
 				<text>是否开启滚动时使用动画过渡</text>
@@ -93,7 +93,7 @@
 				items: [] as Item[],
 				scrollX: false,
 				scrollY: true,
-				rebound: false,
+				bounces: false,
 				scrollTop: 0,
 				scrollLeft: 0,
 				scrollIntoView: "",

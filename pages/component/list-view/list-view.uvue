@@ -7,9 +7,10 @@
         refresher_enabled_boolean: false,
         scroll_with_animation_boolean: false,
         show_scrollbar_boolean: false,
-        rebound_boolean: true,
+        bounces_boolean: true,
         scroll_y_boolean: true,
         scroll_x_boolean: false,
+        scroll_direction: "y",
         upper_threshold_input: 50,
         lower_threshold_input: 50,
         scroll_top_input: 0,
@@ -81,9 +82,24 @@
       change_refresher_enabled_boolean(checked : boolean) { this.refresher_enabled_boolean = checked },
       change_scroll_with_animation_boolean(checked : boolean) { this.scroll_with_animation_boolean = checked },
       change_show_scrollbar_boolean(checked : boolean) { this.show_scrollbar_boolean = checked },
-      change_rebound_boolean(checked : boolean) { this.rebound_boolean = checked },
-      change_scroll_y_boolean(checked : boolean) { this.scroll_y_boolean = checked },
-      change_scroll_x_boolean(checked : boolean) { this.scroll_x_boolean = checked },
+      change_bounces_boolean(checked : boolean) { this.bounces_boolean = checked },
+      change_scroll_y_boolean(checked : boolean) {
+        this.scroll_y_boolean = checked
+        change_scroll_direction()
+      },
+      change_scroll_x_boolean(checked : boolean) {
+        this.scroll_x_boolean = checked
+        change_scroll_direction()
+      },
+      change_scroll_direction() {
+        if(this.scroll_y_boolean && this.scroll_x_boolean || this.scroll_y_boolean) {
+          this.scroll_direction = "y"
+        } else if(!this.scroll_y_boolean && !this.scroll_x_boolean) {
+          this.scroll_direction = "none"
+        } else if(!this.scroll_y_boolean && this.scroll_x_boolean){
+          this.scroll_direction = "x"
+        }
+      },
       confirm_upper_threshold_input(value : number) { this.upper_threshold_input = value },
       confirm_lower_threshold_input(value : number) { this.lower_threshold_input = value },
       confirm_scroll_top_input(value : number) { this.scroll_top_input = value },
@@ -121,7 +137,7 @@
 
 <template>
   <view class="main">
-    <list-view :scroll-x="scroll_x_boolean" :scroll-y="scroll_y_boolean" :rebound="rebound_boolean"
+    <list-view :direction="scroll_direction" :rebound="bounces_boolean"
       :upper-threshold="upper_threshold_input" :lower-threshold="lower_threshold_input" :scroll-top="scroll_top_input"
       :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean" :scroll-into-view="scrollIntoView"
       :scroll-with-animation="scroll_with_animation_boolean" :refresher-enabled="refresher_enabled_boolean"
@@ -131,7 +147,7 @@
       @touchcancel="list_view_touchcancel" @touchend="list_view_touchend" @tap="list_view_tap"
       @longpress="list_view_longpress" @refresherpulling="list_view_refresherpulling"
       @refresherrefresh="list_view_refresherrefresh" @refresherrestore="list_view_refresherrestore"
-      @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper" ref="listview" 
+      @refresherabort="list_view_refresherabort" @scrolltoupper="list_view_scrolltoupper" ref="listview"
       @scrolltolower="list_view_scrolltolower" @scroll="list_view_scroll" style="width:100%;" id="listview">
       <list-item
         v-for="key in scrollData" :key="key" :id="key" @click="list_item_click" @touchstart="list_item_touchstart"
@@ -146,7 +162,7 @@
     </list-view>
   </view>
 
-  <scroll-view style="flex:1" :scroll-y="true">
+  <scroll-view style="flex:1" direction="y">
     <view class="content">
       <boolean-data :defaultValue="false" title="设置当前下拉刷新状态，true 表示下拉刷新已经被触发，false 表示下拉刷新未被触发"
         @change="change_refresher_triggered_boolean"></boolean-data>
@@ -155,7 +171,7 @@
       <boolean-data :defaultValue="false" title="是否在设置滚动条位置时使用滚动动画，设置false没有滚动动画"
         @change="change_scroll_with_animation_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="控制是否出现滚动条" @change="change_show_scrollbar_boolean"></boolean-data>
-      <boolean-data :defaultValue="true" title="控制是否回弹效果" @change="change_rebound_boolean"></boolean-data>
+      <boolean-data :defaultValue="true" title="控制是否回弹效果" @change="change_bounces_boolean"></boolean-data>
       <boolean-data :defaultValue="true" title="允许纵向滚动" @change="change_scroll_y_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="允许横向滚动" @change="change_scroll_x_boolean"></boolean-data>
       <input-data defaultValue="50" title="距顶部/左边多远时（单位px），触发 scrolltoupper 事件" type="number"
