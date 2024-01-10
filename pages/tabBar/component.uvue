@@ -1,39 +1,23 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
-        <image
-          class="uni-header-image"
-          src="/static/componentIndex.png"
-        ></image>
+        <image class="uni-header-image" src="/static/componentIndex.png"></image>
       </view>
       <view class="uni-text-box">
-        <text class="hello-text"
-          >uni-app内置组件，展示样式仅供参考，文档详见：</text
-        >
-        <u-link
-          :href="'https://uniapp.dcloud.io/uni-app-x/component/'"
-          :text="'https://uniapp.dcloud.io/uni-app-x/component/'"
-          :inWhiteList="true"
-        ></u-link>
+        <text class="hello-text">uni-app内置组件，展示样式仅供参考，文档详见：</text>
+        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/component/'"
+          :text="'https://uniapp.dcloud.io/uni-app-x/component/'" :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
         <template v-for="item in list" :key="item.id">
           <uni-collapse-item :title="item.name" class="item">
-            <view
-              class="uni-navigate-item"
-              :hover-class="page.enable == false ? '' : 'is--active'"
-              v-for="(page, key) in item.pages"
-              :key="key"
-              @click="goDetailPage(page)"
-            >
-              <text
-                class="uni-navigate-text"
-                :class="page.enable == false ? 'text-disabled' : ''"
-                >{{ page.name }}</text
-              >
+            <view class="uni-navigate-item" :hover-class="page.enable == false ? '' : 'is--active'"
+              v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
+              <text class="uni-navigate-text"
+                :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
               <image :src="arrowRightIcon" class="uni-icon"></image>
             </view>
           </uni-collapse-item>
@@ -44,172 +28,173 @@
       <uni-upgrade-center-app ref="upgradePopup" @show="upgradePopupShow" @close="upgradePopupClose" />
       <!-- #endif -->
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script lang="uts">
-// #ifdef UNI-APP-X && APP
-import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
-// #endif
+  // #ifdef UNI-APP-X && APP
+  import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
+  // #endif
 
-type Page = {
-  name : string
-  enable ?: boolean
-  url ?: string
-}
-type ListItem = {
-  id : string
-  name : string
-  pages : Page[]
-  url ?: string
-  enable ?: boolean
-}
-export default {
-  data() {
-    return {
-      list: [
-        {
-          id: 'view',
-          name: '视图容器',
-          pages: [
-            {
-              name: 'view',
-            },
-            {
-              name: 'scroll-view',
-            },
-            {
-              name: 'swiper',
-            },
-            /*
-              {
-                name: 'movable-view',
-                enable: false
-              },
-              {
-                name: 'cover-view',
-                enable: false
-              },
-              */
-            // #ifdef APP
-            // TODO web 实现list-view
-            {
-              name: 'list-view',
-            },
-            // #endif
-            {
-              name: 'sticky-header',
-            },
-            {
-              name: 'sticky-section',
-            }
-          ] as Page[],
-        },
-        {
-          id: 'content',
-          name: '基础内容',
-          pages: [
-            {
-              name: 'text',
-            },
-            {
-              name: 'rich-text',
-              enable: true,
-            },
-            {
-              name: 'progress',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'form',
-          name: '表单组件',
-          pages: [
-            {
-              name: 'button',
-            },
-            {
-              name: 'checkbox',
-            },
-            {
-              name: 'form',
-            },
-            {
-              name: 'input',
-              /* }, {
-                  name: 'label',
-                  enable: false
-                }, {
-                  name: 'picker',
-                  enable: false */
-            },
-            {
-              name: 'picker-view',
-            },
-            {
-              name: 'radio',
-            },
-            {
-              name: 'slider',
-            },
-            {
-              name: 'slider-100',
-            },
-            {
-              name: 'switch',
-            },
-            {
-              name: 'textarea',
-            },
-            /*
-              {
-                name: 'editor',
-                enable: false
-              },
-              */
-          ] as Page[],
-        },
-        {
-          id: 'nav',
-          name: '导航',
-          pages: [{
-            name: 'navigator',
-            enable: true
-          }] as Page[],
-        },
-        {
-          id: 'media',
-          name: '媒体组件',
-          pages: [
-            {
-              name: 'image',
-              enable: true,
-            },
-            {
-              name: 'video',
-              enable: true,
-            },
-            {
-              name: 'animation-view',
-              enable: false,
-            },
-          ] as Page[],
-        },
-        /*
+  type Page = {
+    name : string
+    enable ?: boolean
+    url ?: string
+  }
+  type ListItem = {
+    id : string
+    name : string
+    pages : Page[]
+    url ?: string
+    enable ?: boolean
+  }
+  export default {
+    data() {
+      return {
+        list: [
           {
-            id: 'map',
-            name: '地图',
+            id: 'view',
+            name: '视图容器',
             pages: [
               {
-                name: 'map',
-                enable: false
-              }
-            ] as Page[]
+                name: 'view',
+              },
+              {
+                name: 'scroll-view',
+              },
+              {
+                name: 'swiper',
+              },
+              /*
+                {
+                  name: 'movable-view',
+                  enable: false
+                },
+                {
+                  name: 'cover-view',
+                  enable: false
+                },
+                */
+              // #ifdef APP
+              // TODO web 实现list-view
+              {
+                name: 'list-view',
+              },
+              {
+                name: 'sticky-header',
+              },
+              {
+                name: 'sticky-section',
+              },
+              // #endif
+            ] as Page[],
           },
-          */
-         // #ifdef WEB
+          {
+            id: 'content',
+            name: '基础内容',
+            pages: [
+              {
+                name: 'text',
+              },
+              {
+                name: 'rich-text',
+                enable: true,
+              },
+              {
+                name: 'progress',
+              },
+            ] as Page[],
+          },
+          {
+            id: 'form',
+            name: '表单组件',
+            pages: [
+              {
+                name: 'button',
+              },
+              {
+                name: 'checkbox',
+              },
+              {
+                name: 'form',
+              },
+              {
+                name: 'input',
+              },
+              /*
+              {
+                name: 'label',
+              }, {
+                name: 'picker',
+              },
+              */
+              {
+                name: 'picker-view',
+              },
+              {
+                name: 'radio',
+              },
+              {
+                name: 'slider',
+              },
+              {
+                name: 'slider-100',
+              },
+              {
+                name: 'switch',
+              },
+              {
+                name: 'textarea',
+              },
+              /*
+                {
+                  name: 'editor',
+                  enable: false
+                },
+                */
+            ] as Page[],
+          },
+          {
+            id: 'nav',
+            name: '导航',
+            pages: [{
+              name: 'navigator',
+              enable: true
+            }] as Page[],
+          },
+          {
+            id: 'media',
+            name: '媒体组件',
+            pages: [
+              {
+                name: 'image',
+                enable: true,
+              },
+              {
+                name: 'video',
+                enable: true,
+              },
+              /* {
+                name: 'animation-view',
+                enable: false,
+              }, */
+            ] as Page[],
+          },
+          /*
+            {
+              id: 'map',
+              name: '地图',
+              pages: [
+                {
+                  name: 'map',
+                  enable: false
+                }
+              ] as Page[]
+            },
+            */
+          // #ifdef WEB
           {
             id: 'canvas',
             name: '画布',
@@ -220,129 +205,129 @@ export default {
             ] as Page[]
           },
           // #endif
-        {
-          id: 'web-view',
-          name: '网页',
-          pages: [
-            {
-              name: '网络网页',
-              enable: true,
-              url: '/pages/component/web-view/web-view',
-            },
-            {
-              name: '本地网页',
-              enable: true,
-              url: '/pages/component/web-view-local/web-view-local',
-            },
-          ] as Page[],
-        },
-        {
-          id: 'unicloud-db',
-          name: 'unicloud-db',
-          pages: [
-            {
-              name: '联系人',
-              enable: true,
-              url: '/pages/component/unicloud-db-contacts/list'
-            },
-            {
-              name: 'mixinDatacom',
-              enable: true,
-              url: '/pages/component/mixin-datacom/mixin-datacom'
-            }
-          ] as Page[],
-        },
-        /*
           {
-            id: 'ad',
-            url: 'ad',
-            name: 'AD组件',
-            enable: false,
-            pages: [] as Page[]
+            id: 'web-view',
+            name: '网页',
+            pages: [
+              {
+                name: '网络网页',
+                enable: true,
+                url: '/pages/component/web-view/web-view',
+              },
+              {
+                name: '本地网页',
+                enable: true,
+                url: '/pages/component/web-view-local/web-view-local',
+              },
+            ] as Page[],
+          },
+          {
+            id: 'unicloud-db',
+            name: 'unicloud-db',
+            pages: [
+              {
+                name: '联系人',
+                enable: true,
+                url: '/pages/component/unicloud-db-contacts/list'
+              },
+              {
+                name: 'mixinDatacom',
+                enable: true,
+                url: '/pages/component/mixin-datacom/mixin-datacom'
+              }
+            ] as Page[],
+          },
+          /*
+            {
+              id: 'ad',
+              url: 'ad',
+              name: 'AD组件',
+              enable: false,
+              pages: [] as Page[]
+            }
+            */
+          {
+            id: 'general-attr-event',
+            name: '通用属性和事件',
+            pages: [
+              {
+                name: '通用属性',
+                url: '/pages/component/general-attribute/general-attribute',
+                enable: true,
+              },
+              {
+                name: '通用事件',
+                url: '/pages/component/general-event/general-event',
+                enable: true,
+              },
+              {
+                name: 'touch事件',
+                url: '/pages/component/general-event/touch-event',
+                enable: true,
+              },
+              {
+                name: 'Transition事件',
+                url: '/pages/component/general-event/transition-event',
+                enable: true,
+              },
+            ] as Page[],
           }
-          */
-           {
-         id: 'general-attr-event',
-         name: '通用属性和事件',
-         pages: [
-           {
-             name: '通用属性',
-             url: '/pages/component/general-attribute/general-attribute',
-             enable: true,
-           },
-           {
-             name: '通用事件',
-             url: '/pages/component/general-event/general-event',
-             enable: true,
-           },
-           {
-             name: 'touch事件',
-             url: '/pages/component/general-event/touch-event',
-             enable: true,
-           },
-           {
-             name: 'Transition事件',
-             url: '/pages/component/general-event/transition-event',
-             enable: true,
-           },
-         ] as Page[],
-       }
-      ] as ListItem[],
-      arrowUpIcon: '/static/icons/arrow-up.png',
-      arrowDownIcon: '/static/icons/arrow-down.png',
-      arrowRightIcon: '/static/icons/arrow-right.png',
-      pageHiden: false
-    }
-  },
-  methods: {
-    goDetailPage(e : Page) {
-      if (e.enable == false) {
-        uni.showToast({
-          title: '暂不支持',
-          icon: 'none',
+        ] as ListItem[],
+        arrowUpIcon: '/static/icons/arrow-up.png',
+        arrowDownIcon: '/static/icons/arrow-down.png',
+        arrowRightIcon: '/static/icons/arrow-right.png',
+        pageHiden: false
+      }
+    },
+    methods: {
+      goDetailPage(e : Page) {
+        if (e.enable == false) {
+          uni.showToast({
+            title: '暂不支持',
+            icon: 'none',
+          })
+          return
+        }
+        const url =
+          e.url != null ? e.url! : `/pages/component/${e.name}/${e.name}`
+        uni.navigateTo({
+          url,
         })
-        return
       }
-      const url =
-        e.url != null ? e.url! : `/pages/component/${e.name}/${e.name}`
-      uni.navigateTo({
-        url,
-      })
-    }
-    // #ifdef UNI-APP-X && APP
-    ,upgradePopupShow() {
-      console.log('upgradePopup show');
-      if (!this.pageHiden) {
-				uni.hideTabBar()?.catch(_ => { })
+      // #ifdef UNI-APP-X && APP
+      , upgradePopupShow() {
+        console.log('upgradePopup show');
+        if (!this.pageHiden) {
+          uni.hideTabBar()?.catch(_ => { })
+        }
       }
+      , upgradePopupClose() {
+        console.log('upgradePopup close');
+        uni.showTabBar()?.catch(_ => { })
+      }
+      // #endif
+    },
+    onReady() {
+      // #ifdef UNI-APP-X && APP
+      checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+      // #endif
+    },
+    onShow() {
+      this.pageHiden = false
+    },
+    onHide() {
+      this.pageHiden = true
+    },
+    beforeUnmount() {
+      uni.showTabBar()?.catch(_ => { })
     }
-    ,upgradePopupClose() {
-      console.log('upgradePopup close');
-      uni.showTabBar()?.catch(_ => {})
-    }
-    // #endif
-  },
-  onReady() {
-    // #ifdef UNI-APP-X && APP
-    checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
-    // #endif
-  },
-  onShow() {
-    this.pageHiden = false
-  },
-  onHide() {
-    this.pageHiden = true
-  },
-  beforeUnmount() {
-    uni.showTabBar()?.catch(_ => {})
   }
-}
 </script>
 
 <style>
-@import "../../common/uni-uvue.css";
+  @import "../../common/uni-uvue.css";
 
-.item {
-  margin-bottom: 12px;
-}
+  .item {
+    margin-bottom: 12px;
+  }
 </style>
