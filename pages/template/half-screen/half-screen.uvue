@@ -34,7 +34,7 @@
     },
     methods: {
       onHalfTouchStart(_ : TouchEvent) {
-        this.halfNode?.style?.setProperty('transitionDuration', 0);
+        this.halfNode?.style?.setProperty('transition-duration', 0);
       },
       onHalfTouchMove(e : TouchEvent) {
         if (this.bAnimation) {//容错处理
@@ -98,30 +98,30 @@
         if (show) {
           top = this.totalHeight * 30 / 100;	//计算显示的位置
           this.halfNode?.style?.setProperty('visibility', 'visible');
-          this.halfNode?.style?.setProperty('transitionTimingFunction', 'ease-in-out');
+          this.halfNode?.style?.setProperty('transition-timing-function', 'ease-in-out');
         } else {
-          this.halfNode?.style?.setProperty('transitionTimingFunction', 'linear');
+          this.halfNode?.style?.setProperty('transition-timing-function', 'linear');
           time *= (this.halfHeight / this.totalHeight);		//计算关闭动画时间
         }
-        this.halfNode?.style?.setProperty('transitionDuration', time.toFixed(0)+"ms");
-        this.halfNode?.style?.setProperty('transitionProperty', 'top');
+        this.halfNode?.style?.setProperty('transition-duration', time.toFixed(0)+"ms");
+        this.halfNode?.style?.setProperty('transition-property', 'top');
         this.halfNode?.style?.setProperty('top', top.toFixed(2));
         setTimeout(() => {
           if (!show) {
             this.halfNode?.style?.setProperty('visibility', 'hidden');
-            this.halfNode?.style?.setProperty('transitionDuration', 0);
+            this.halfNode?.style?.setProperty('transition-duration', 0);
             this.halfNode?.style?.setProperty('transform', '');
           }
-          this.halfNode?.style?.setProperty('transitionProperty', '');
+          this.halfNode?.style?.setProperty('transition-property', '');
           this.bAnimation = false;
         }, time)
         this.bAnimation = true;
       },
       resumeHalfScreen() {
         let time = 300;//(500*this.halfOffset/this.halfHeight).toFixed(0); //回弹动画时间
-        this.halfNode?.style?.setProperty('transitionDuration', time.toFixed(0)+"ms");
-        this.halfNode?.style?.setProperty('transitionTimingFunction', 'ease-in-out');
-        this.halfNode?.style?.setProperty('transitionProperty', 'transform');
+        this.halfNode?.style?.setProperty('transition-duration', time.toFixed(0)+"ms");
+        this.halfNode?.style?.setProperty('transition-timing-function', 'ease-in-out');
+        this.halfNode?.style?.setProperty('transition-property', 'transform');
         this.halfNode?.style?.setProperty('transform', 'translateY(0px)');
         this.halfMove = false;
         this.scrollNode?.setAttribute('scroll-y', 'true');
@@ -129,7 +129,7 @@
         this.halfOffset = 0;
         setTimeout(() => {
           this.bAnimation = false;
-          this.halfNode?.style?.setProperty('transitionProperty', '');
+          this.halfNode?.style?.setProperty('transition-property', '');
         }, time)
         this.bAnimation = true;
       }
