@@ -39,14 +39,14 @@
       return {
         collection: '',
         where: '',
-        $whereID: '',
-        $uniCloudElement: null as UniCloudDBElement | null
+        whereID: '',
+        uniCloudElement: null as UniCloudDBElement | null
       }
     },
-    onLoad(options : Map<string, string>) {
+    onLoad(options) {
       this.collection = COLLECTION_NAME;
-      this.$whereID = options.get('id') as string;
-      this.where = `_id=='${this.$whereID}'`;
+      this.whereID = options['id'] as string;
+      this.where = `_id=='${this.whereID}'`;
     },
     onShow() {
       // TODO 后续通过 EventChannel 实现
@@ -57,7 +57,7 @@
       uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
     },
     onReady() {
-      this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
+      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
     },
     methods: {
       displayGender(value : number | null) : string {
@@ -74,7 +74,7 @@
         })
       },
       onDataChange(_ : string) {
-        this.$uniCloudElement!.loadData()
+        this.uniCloudElement!.loadData()
       }
     }
   }

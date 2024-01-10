@@ -49,31 +49,31 @@
         collection: '',
         where: '',
         genderList: GenderList as GenderType[],
-        $whereID: '',
-        $uniCloudElement: null as UniCloudDBElement | null
+        whereID: '',
+        uniCloudElement: null as UniCloudDBElement | null
       }
     },
-    onLoad(options : Map<string, string>) {
+    onLoad(options) {
       this.collection = COLLECTION_NAME;
-      this.$whereID = options.get('id') as string;
-      this.where = `_id=='${this.$whereID}'`;
+      this.whereID = options['id'] as string;
+      this.where = `_id=='${this.whereID}'`;
     },
     onReady() {
-      this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
+      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
     },
     methods: {
       onFormSubmit: function (e : FormSubmitEvent) {
         const formData = e.detail.value
         const genderString = formData['gender'] as string
         formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
-        this.$uniCloudElement!.update(this.$whereID, formData, {
+        this.uniCloudElement!.update(this.whereID, formData, {
           showToast: false,
           needLoading: true,
           needConfirm: false,
           loadingTitle: "正在保存...",
           success: (_ : UniCloudDBUpdateResult) => {
             // TODO 后续通过 EventChannel 实现
-            uni.$emit(UNICLOUD_DB_CONTACTS_UPDATE, this.$whereID)
+            uni.$emit(UNICLOUD_DB_CONTACTS_UPDATE, this.whereID)
             setTimeout(() => {
               uni.navigateBack()
             }, 500)
@@ -88,7 +88,7 @@
         })
       },
       remove(id : string | null, name : string | null) {
-        this.$uniCloudElement!.remove(id!, {
+        this.uniCloudElement!.remove(id!, {
           needConfirm: true,
           needLoading: true,
           loadingTitle: "正在删除...",
@@ -96,7 +96,7 @@
           confirmContent: name,
           success: (_ : UniCloudDBRemoveResult) => {
             // TODO 后续通过 EventChannel 实现
-            uni.$emit(UNICLOUD_DB_CONTACTS_DELETE, this.$whereID)
+            uni.$emit(UNICLOUD_DB_CONTACTS_DELETE, this.whereID)
             setTimeout(() => {
               uni.navigateBack({
                 delta: 2
