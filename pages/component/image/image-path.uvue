@@ -8,13 +8,14 @@
       <view v-for="(item,index) in data" :key="index">
         <text class="uni-subtitle-text">{{item.description}}</text>
         <view class="uni-center" style="background:#FFFFFF;">
-          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage" @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+            @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
         </view>
       </view>
       <view>
         <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
         <view class="uni-center" style="background:#FFFFFF;">
-          <image class="image" mode="widthFix" :src="outsideStaticErrorPath == null ? outsideStaticPath : outsideStaticErrorPath" @error="imageOutsideStaticErrorEvent"></image>
+          <image class="image" mode="widthFix" src="./logo.png"></image>
         </view>
       </view>
     </view>
@@ -93,14 +94,10 @@
       }
     },
     methods: {
-      imageErrorEvent(index: number, e : ImageErrorEvent) {
+      imageErrorEvent(index : number, e : ImageErrorEvent) {
         console.log("图片加载错误", e.detail);
         // 图片加载失败，加载本地占位图
         this.data[index].errorImage = '/static/template/drop-card/dislike.png'
-      },
-      imageOutsideStaticErrorEvent(e: ImageErrorEvent) {
-        console.log("图片加载错误", e.detail);
-        this.outsideStaticErrorPath = '/static/template/drop-card/dislike.png'
       }
     },
   }
