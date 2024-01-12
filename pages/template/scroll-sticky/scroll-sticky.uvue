@@ -1,5 +1,5 @@
 <template>
-	<scroll-view @scroll="onScroll" class="page" rebound="false">
+	<scroll-view ref="scroll" @scroll="onScroll" class="page" rebound="false">
 		<view class="content-item">
 			<text class="text">向上滑动页面，体验元素吸顶效果。</text>
 		</view>
@@ -71,8 +71,9 @@
 			// let rect = this.stickyNode?.getBoundingClientRect();
 			// this.stickyTop = rect?.top;
 			//this.stickyTop = this.stickyNode?.getBoundingClientRect()?.top;
-			let rect = (this.$refs['sticky'] as Element).getBoundingClientRect();
-			this.stickyTop = rect.top;
+			const stickyRect = (this.$refs['sticky'] as Element).getBoundingClientRect();
+      const scrollRect = (this.$refs['scroll'] as Element).getBoundingClientRect();
+			this.stickyTop = stickyRect.top - scrollRect.top;
 		}
 	}
 </script>
