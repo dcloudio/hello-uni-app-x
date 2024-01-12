@@ -3,14 +3,14 @@
     <unicloud-db ref="udb" class="udb" v-slot:default="{data, pagination, loading, hasMore, error}"
       :collection="collection" :page-size="15" :getcount="true" loadtime="manual">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
-      <list-view ref="listView" class="list-view" :scroll-y="true" @scrolltolower="loadMore()">
-        <list-item class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
+      <scroll-view ref="listView" class="list-view" @scrolltolower="loadMore()">
+        <view class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
           <view class="list-item-fill">
             <text class="name">{{item['username']}}</text>
             <text class="mobile">{{item['mobile']}}</text>
           </view>
-        </list-item>
-      </list-view>
+        </view>
+      </scroll-view>
       <uni-loading v-if="loading" class="loading" color="#999" text="正在加载..."></uni-loading>
       <view v-if="data.length>0" class="pagination">
         <text class="pagination-item">{{data.length}} / {{pagination.count}}</text>
