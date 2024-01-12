@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
         <image class="uni-header-image" src="/static/apiIndex.png"></image>
@@ -26,11 +26,10 @@
       </uni-collapse>
 
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
-  <view ref="pop" @click="hidePop()"
-    style="width: 100%; height: 100%; position: absolute;align-items: center;justify-content: center; display: none;background-color: rgba(16, 16, 16, 0.5);">
+  <view ref="pop" @click="hidePop()" class="popup">
     <view style="width: 90%;background-color: white;" @click="stopClickPop">
       <api-set-tabbar></api-set-tabbar>
     </view>
@@ -160,7 +159,7 @@
                 name: 'element draw',
                 url: 'element-draw',
                 api: ["Element.getDrawableContext"]
-              },{
+              }, {
                 name: 'element截图',
                 url: 'element-takesnapshot',
                 api: ["Element.takeSnapshot"]
@@ -550,5 +549,21 @@
 
   .item {
     margin-bottom: 12px;
+  }
+
+  .popup {
+    width: 100%;
+    /* #ifdef APP */
+    position: absolute;
+    height: 100%;
+    /* #else */
+    position: fixed;
+    top: var(--window-top);
+    bottom: var(--window-bottom);
+    /* #endif */
+    align-items: center;
+    justify-content: center;
+    display: none;
+    background-color: rgba(16, 16, 16, 0.5);
   }
 </style>
