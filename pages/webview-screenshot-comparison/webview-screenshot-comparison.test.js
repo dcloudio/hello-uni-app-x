@@ -253,7 +253,7 @@ describe("shot-compare", () => {
 
     test.each(pages)("%s", async () => {
       const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
-      const screenshotPath = pages[pageIndex].replace(/\//g, "-");
+      const screenshotPath = `screenshot-contrast/${pages[pageIndex].replace(/\//g, "-")}`;
 
       // web in webview screenshot
       // 加载依赖页面
