@@ -17,12 +17,12 @@ describe('component-native-input', () => {
   // 测试焦点及键盘弹起
   it('focus', async () => {
     const input = await page.$('#uni-input-focus');
-    expect(await input.attribute('focus')).toBe(true)
+    expect(await input.attribute('focus')).toBe("true")
     // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
     await page.setData({
       focus: false,
     })
-    expect(await input.attribute('focus')).toBe(false)
+    expect(await input.attribute('focus')).toBe("false")
     // await page.waitFor(1000)
     // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
     // await page.setData({
@@ -141,10 +141,10 @@ describe('component-native-input', () => {
 
   it("cursor-color", async () => {
     await page.setData({
-      cursor_color: "transparent",
+      cursor_color: "red",
     })
     await page.waitFor(500)
-    expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("transparent")
+    expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
   })
 
   it("afterAllTestScreenshot", async () => {

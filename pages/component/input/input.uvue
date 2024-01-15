@@ -137,8 +137,9 @@
       </view>
 
       <view>
-        <view class="uni-title" @click="changeCursorColor">
-          <text class="uni-title-text">设置光标颜色为透明（点击本行文字生效，再点复位）</text>
+        <view class="uni-title" style="flex-direction: row;align-items: center;">
+          <text class="uni-title-text">设置光标颜色为红色</text>
+          <switch style="margin-left: 10px;" @change="changeCursorColor" :checked="cursor_color=='red'"></switch>
         </view>
         <view class="input-wrapper">
           <input id="uni-input-cursor-color" class="uni-input" :cursor-color="cursor_color" value="光标颜色" />
@@ -301,13 +302,16 @@
       test_check_input_value():number {
         return this.onMaxLengthInputValue.length
       },
-      changeCursorColor(){
-        if(this.cursor_color == "#3393E2"){
-          this.cursor_color = "transparent"
+      changeCursorColor(event: SwitchChangeEvent){
+        const transparent = event.detail.value;
+        if(transparent){
+          this.cursor_color = "red"
         }else{
           this.cursor_color = "#3393E2"
         }
-      }
+        const input = uni.getElementById<UniInputElement>("uni-input-cursor-color")
+        input?.focus()
+      },
     }
   }
 </script>
