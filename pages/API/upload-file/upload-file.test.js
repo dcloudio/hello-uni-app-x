@@ -34,4 +34,10 @@ describe('ExtApi-UploadFile', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
+  it('Check files upload', async () => {
+    res = await page.callMethod('jest_files_upload')
+    await page.waitFor(1000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  });
 });
