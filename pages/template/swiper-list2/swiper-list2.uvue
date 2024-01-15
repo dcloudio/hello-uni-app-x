@@ -39,10 +39,10 @@
     data() {
       return {
         swiperList: [] as SwiperViewItem[],
-        swiperIndex: -1,
-        $tabScrollView: null as null | UniElement,
-        $animationFinishIndex: 0,
-        $swiperWidth: 0
+        swiperIndex: 0,
+        tabScrollView: null as null | UniElement,
+        animationFinishIndex: 0,
+        swiperWidth: 0
       }
     },
     onLoad() {
@@ -53,9 +53,9 @@
       }
     },
     onReady() {
-      this.$tabScrollView = this.$refs['tabScroll'] as UniElement
-      this.$swiperWidth = (this.$refs["swiper"] as UniElement).getBoundingClientRect().width
-      this.setSwiperIndex(0, true)
+      this.tabScrollView = this.$refs['tabScroll'] as UniElement
+      this.swiperWidth = (this.$refs["swiper"] as UniElement).getBoundingClientRect().width
+      this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
     },
     methods: {
       onTabClick(index : number) {
@@ -65,9 +65,9 @@
         const offset_x = e.detail.dx
 
         // 计算当前索引并重置差异
-        const current_offset_x = offset_x % this.$swiperWidth
-        const current_offset_i = offset_x / this.$swiperWidth
-        const current_index = this.$animationFinishIndex + Math.floor(current_offset_i)
+        const current_offset_x = offset_x % this.swiperWidth
+        const current_offset_i = offset_x / this.swiperWidth
+        const current_index = this.animationFinishIndex + parseInt(current_offset_i + '')
 
         // 计算目标索引及边界检查
         let move_to_index = current_index
@@ -78,14 +78,14 @@
         }
 
         // 计算偏移百分比
-        const percentage = Math.abs(current_offset_x) / this.$swiperWidth
+        const percentage = Math.abs(current_offset_x) / this.swiperWidth
 
         // 通知更新指示线
         this.updateTabIndicator(current_index, move_to_index, percentage)
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
-        this.$animationFinishIndex = e.detail.current
+        this.animationFinishIndex = e.detail.current
       },
       setSwiperIndex(index : number, updateIndicator : boolean) {
         if (this.swiperIndex == index) {
@@ -99,8 +99,7 @@
         }
       },
       updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-        // TODO 0.0 != 0
-        if (percentage.toDouble() == 0.0) {
+        if (percentage == 0) {
           return
         }
 
@@ -122,10 +121,8 @@
 
         // 滚动到水平中心位置
         const target_x = lerpNumber(current_node.offsetLeft, move_to_node.offsetLeft, percentage)
-        const center_x = target_x + move_to_node.offsetWidth / 2 - this.$swiperWidth / 2
-        if(this.$tabScrollView !== null){
-          this.$tabScrollView!.scrollLeft = center_x
-        }
+        const center_x = target_x + move_to_node.offsetWidth / 2 - this.swiperWidth / 2
+        this.tabScrollView!.scrollLeft = center_x
       }
     }
   }
