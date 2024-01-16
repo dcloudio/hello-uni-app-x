@@ -236,8 +236,7 @@ describe("shot-compare", () => {
 
       // set webview-screenshot-comparison page baseSrc
       baseSrc =
-        process.env.UNI_WEB_SERVICE_URL ||
-        "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
+        process.env.UNI_WEB_SERVICE_URL ? `${process.env.UNI_WEB_SERVICE_URL}/#/` : "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
       page.setData({
         baseSrc,
       });
