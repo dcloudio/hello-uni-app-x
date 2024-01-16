@@ -81,7 +81,9 @@
         const percentage = Math.abs(current_offset_x) / this.swiperWidth
 
         // 通知更新指示线
-        this.updateTabIndicator(current_index, move_to_index, percentage)
+        if (current_index != move_to_index) {
+          this.updateTabIndicator(current_index, move_to_index, percentage)
+        }
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
@@ -108,8 +110,8 @@
         const max_ratio = 1.3
 
         const tabs = this.$refs['swipertab'] as UniElement[]
-        const current_node = tabs[current_index]!
-        const move_to_node = tabs[move_to_index]!
+        const current_node = tabs[current_index]
+        const move_to_node = tabs[move_to_index]
 
         // 当前
         const current_scale = lerpNumber(min_ratio, max_ratio, 1 - percentage)
