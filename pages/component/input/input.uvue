@@ -155,6 +155,18 @@
         </view>
       </view>
 
+
+      <view>
+        <view class="uni-title" style="flex-direction: row;align-items: center;">
+          <text class="uni-title-text">设置hold-keyboard</text>
+          <switch style="margin-left: 10px;" @change="changeHoldKeyboard" :checked="holdKeyboard"></switch>
+        </view>
+        <view class="input-wrapper">
+          <input class="uni-input" :hold-keyboard="holdKeyboard" value="hold-keyboard" />
+        </view>
+      </view>
+
+
       <view>
         <view class="uni-title">
           <text class="uni-title-text">input事件</text>
@@ -245,7 +257,8 @@
         onMaxLengthInputValue:"",
         inputMaxLengthFocus:false,
         inputPasswordValue:"",
-        inputFocusKeyBoardChangeValue:true
+        inputFocusKeyBoardChangeValue:true,
+        holdKeyboard:false
       }
     },
     methods: {
@@ -303,8 +316,8 @@
         return this.onMaxLengthInputValue.length
       },
       changeCursorColor(event: SwitchChangeEvent){
-        const transparent = event.detail.value;
-        if(transparent){
+        const checked = event.detail.value;
+        if(checked){
           this.cursor_color = "red"
         }else{
           this.cursor_color = "#3393E2"
@@ -312,6 +325,10 @@
         const input = uni.getElementById<UniInputElement>("uni-input-cursor-color")
         input?.focus()
       },
+      changeHoldKeyboard(event: SwitchChangeEvent){
+        const checked = event.detail.value;
+        this.holdKeyboard = checked
+      }
     }
   }
 </script>
