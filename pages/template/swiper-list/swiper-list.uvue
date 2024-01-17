@@ -2,7 +2,7 @@
   <view class="swiper-list">
     <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
       <view class="flex-row">
-        <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
+        <text ref="swipertab" space="nbsp" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
           v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
           {{item.title}}
         </text>
@@ -103,7 +103,9 @@
         const percentage = Math.abs(current_offset_x) / this.swiperWidth
 
         // 通知更新指示线
-        this.updateTabIndicator(current_index, move_to_index, percentage)
+        if (current_index != move_to_index) {
+          this.updateTabIndicator(current_index, move_to_index, percentage)
+        }
       },
       /**
        * Swiper滑动动画结束事件.
