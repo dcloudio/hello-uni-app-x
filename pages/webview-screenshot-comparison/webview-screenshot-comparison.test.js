@@ -37,7 +37,6 @@ const pages = [
   "pages/component/scroll-view/scroll-view-refresher",
   "pages/tabBar/API",
   "pages/API/get-app/get-app",
-  "pages/API/exit/exit",
   "pages/API/get-current-pages/get-current-pages",
   "pages/API/get-launch-options-sync/get-launch-options-sync",
   "pages/API/navigator/navigator",
@@ -79,7 +78,6 @@ const pages = [
   "pages/API/unicloud-file-api/unicloud-file-api",
   "pages/API/unicloud-database/unicloud-database",
   "pages/API/get-window-info/get-window-info",
-  "pages/API/element-takesnapshot/element-takesnapshot",
   "pages/API/get-element-by-id/get-element-by-id",
   "pages/API/get-element-by-id/get-element-by-id-multiple-root-node",
   "pages/API/navigator/new-page/onLoad",
@@ -148,7 +146,6 @@ const pages = [
   "pages/template/navbar-lite/navbar-lite",
   "pages/template/pull-zoom-image/pull-zoom-image",
   "pages/template/scroll-fold-nav/scroll-fold-nav",
-  "pages/template/scroll-sticky/scroll-sticky",
 
   // 自动获取焦点
   // "pages/component/input/input",
@@ -163,7 +160,6 @@ const pages = [
 
   // 动态内容
   // "pages/component/web-view/web-view"
-  // "pages/template/calendar/calendar",
   // "pages/template/custom-refresher/custom-refresher",
   // "pages/component/picker-view/picker-view",
   // "pages/template/long-list/long-list",
@@ -184,6 +180,7 @@ const pages = [
   // "pages/API/websocket-global/websocket-global"
 
   // 仅 app
+  // "pages/template/calendar/calendar",
   // pages/component/unicloud-db-contacts/list
   // pages/component/unicloud-db-contacts/add
   // pages/component/unicloud-db-contacts/edit
@@ -196,8 +193,12 @@ const pages = [
   // pages/API/facial-recognition-verify/facial-recognition-verify
   // pages/API/get-file-system-manager/get-file-system-manager
   // "pages/API/install-apk/install-apk",
+  // "pages/template/scroll-sticky/scroll-sticky",
+  // "pages/API/exit/exit",
+  // "pages/API/element-takesnapshot/element-takesnapshot",
 
   // 仅 web
+  // pages/template/browser-canvas/browser-canvas
   // pages/template/schema/schema
   // pages/template/share/share
 ];
@@ -207,6 +208,12 @@ const childToParentPagesMap = new Map([
     "pages/API/load-font-face/load-font-face",
   ],
 ]);
+
+const customNavigationPages = [
+  "pages/template/navbar-lite/navbar-lite",
+  "pages/template/pull-zoom-image/pull-zoom-image",
+  "pages/template/scroll-fold-nav/scroll-fold-nav"
+]
 
 const needAdbScreenshotPages = [
   "pages/tabBar/component",
@@ -218,6 +225,7 @@ const needAdbScreenshotPages = [
   "pages/API/loading/loading",
   "pages/API/toast/toast",
 ];
+
 const needAdbScreenshot = (url) => {
   return needAdbScreenshotPages.includes(url);
 };
@@ -231,12 +239,19 @@ describe("shot-compare", () => {
     let pageIndex = 0;
     let baseSrc = "";
     beforeAll(async () => {
+      // 获取导航栏+状态栏高度
+      page = await program.reLaunch('/pages/API/get-window-info/get-window-info')
+      await page.callMethod('getWindowInfo')
+      // 获取设备像素比
+      page = await program.reLaunch('/pages/API/get-device-info/get-device-info')
+      await page.callMethod('getDeviceInfo')
       page = await program.reLaunch(PAGE_PATH);
       await page.waitFor(500);
 
       // set webview-screenshot-comparison page baseSrc
       baseSrc =
-        process.env.UNI_WEB_SERVICE_URL ? `${process.env.UNI_WEB_SERVICE_URL}/#/` : "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
+        process.env.UNI_WEB_SERVICE_URL ? `${process.env.UNI_WEB_SERVICE_URL}/#/` :
+        "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
       page.setData({
         baseSrc,
       });
@@ -252,6 +267,20 @@ describe("shot-compare", () => {
 
     test.each(pages)("%s", async () => {
       const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
+      const isCustomNavigation = customNavigationPages.includes(pages[pageIndex]);
+      const {
+        headerHeight,
+        devicePixelRatio
+      } = await page.data();
+      const screenshotParams = {
+        fullPage: true,
+        adb: isNeedAdbScreenshot,
+        // adb 截图时跳过状态栏
+        area: {
+          x: 0,
+          y: (headerHeight - 44) * devicePixelRatio,
+        },
+      }
       const screenshotPath = `__webview__${pages[pageIndex].replace(/\//g, "-")}`;
 
       // web in webview screenshot
@@ -259,11 +288,10 @@ describe("shot-compare", () => {
       if (childToParentPagesMap.get(pages[pageIndex])) {
         await page.setData({
           src: `${baseSrc}${childToParentPagesMap.get(pages[pageIndex])}`,
-          isLoaded: false,
-          needRemoveWebHead: !isNeedAdbScreenshot,
+          isLoaded: false
         });
         await page.waitFor(async () => {
-          const isLoaded = page.data("isLoaded");
+          const isLoaded = await page.data("isLoaded");
           return isLoaded || Date.now() - startTime > 10000;
         });
         await page.waitFor(200);
@@ -276,21 +304,18 @@ describe("shot-compare", () => {
 
       const startTime = Date.now();
       await page.waitFor(async () => {
-        const isLoaded = page.data("isLoaded");
+        const isLoaded = await page.data("isLoaded");
         return isLoaded || Date.now() - startTime > 3000;
       });
-      await page.waitFor(200);
+      await page.waitFor(800);
       if (pages[pageIndex].includes("load-font-face")) {
         await page.waitFor(3000);
       }
 
+      // web 端非 adb 截图时设置 offsetY 移除导航栏
       const webSnapshot = await program.screenshot({
-        fullPage: isNeedAdbScreenshot ? false : true,
-        adb: isNeedAdbScreenshot ? true : false,
-        area: {
-          x: 0,
-          y: 100,
-        },
+        ...screenshotParams,
+        offsetY: `${isCustomNavigation ? 0 : headerHeight}`
       });
       expect(webSnapshot).toMatchImageSnapshot({
         customSnapshotIdentifier() {
@@ -307,14 +332,7 @@ describe("shot-compare", () => {
       if (pages[pageIndex].includes("load-font-face")) {
         await page.waitFor(3000);
       }
-      const appAndroidSnapshot = await program.screenshot({
-        fullPage: isNeedAdbScreenshot ? false : true,
-        adb: isNeedAdbScreenshot ? true : false,
-        area: {
-          x: 0,
-          y: 100,
-        },
-      });
+      const appAndroidSnapshot = await program.screenshot(screenshotParams);
       expect(appAndroidSnapshot).toMatchImageSnapshot({
         customSnapshotIdentifier() {
           return screenshotPath;
