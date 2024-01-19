@@ -1,4 +1,5 @@
 <template>
+  <view v-if="!isCustomNavigationBar" :style="placeholderStyle"></view>
   <web-view id="webview-screenshot-comparison" class="webview-screenshot-comparison" :webview-styles="webviewStyles"
     :src="src" @loaded="loaded" @error="error">
   </web-view>
@@ -15,6 +16,12 @@
         webviewContext: null as WebviewContext | null,
         isLoaded: false,
         headerHeight: state.headerHeight,
+        isCustomNavigationBar: false,
+        placeholderStyle: {
+          display: 'block',
+          height: `${state.headerHeight - 44}px`,
+          backgroundColor: '#007aff'
+        },
         devicePixelRatio: state.devicePixelRatio,
         webviewStyles: {
           progress: false
@@ -25,41 +32,25 @@
       this.webviewContext = uni.createWebviewContext('webview-screenshot-comparison', this)
     },
     methods: {
-      appendWebHeadPlaceholder() {
+      customNavigationBarPageAppendWebHeadPlaceholder() {
         if (this.src.indexOf('pages/template/navbar-lite/navbar-lite') > -1) {
           this.webviewContext?.evalJS(`
-          const uniNavbar = document.querySelector('.uni-navbar');
-          uniNavbar.style.paddingTop = '${state.headerHeight - 44}px';
-        `)
+            const uniNavbar = document.querySelector('.uni-navbar');
+            uniNavbar.style.paddingTop = '${state.headerHeight - 44}px';
+          `)
         } else if (this.src.indexOf('pages/template/scroll-fold-nav/scroll-fold-nav') > -1) {
           this.webviewContext?.evalJS(`
-          const heightSeat = document.querySelector('.height-seat');
-          heightSeat.style.height = '125px';
-          heightSeat.style.backgroundColor = '#f0f8ff';
-          const topBox = document.querySelector('.top-box');
-          topBox.style.top = '35px';
-        `)
-        } else if (this.src.indexOf('pages/template/pull-zoom-image/pull-zoom-image') > -1) {
-          return
-        } else {
-          this.webviewContext?.evalJS(`
-const hasWebHeadPlaceholder = document.querySelector('.web-head-placeholder-for-screenshot-comparison');
-if (hasWebHeadPlaceholder) {
-  return;
-}
-const webHeadPlaceholder = document.createElement('div');
-webHeadPlaceholder.style.height = '${state.headerHeight - 44}px';
-webHeadPlaceholder.style.backgroundColor = '#007aff';
-webHeadPlaceholder.classList.add('web-head-placeholder-for-screenshot-comparison');
-const uniPage = document.querySelector('uni-page');
-const uniPageHead = document.querySelector('uni-page-head');
-uniPage.insertBefore(webHeadPlaceholder, uniPageHead);
-`);
+        const heightSeat = document.querySelector('.height-seat');
+        heightSeat.style.height = '125px';
+        heightSeat.style.backgroundColor = '#f0f8ff';
+        const topBox = document.querySelector('.top-box');
+        topBox.style.top = '35px';
+      `)
         }
       },
       loaded() {
         this.isLoaded = true
-        this.appendWebHeadPlaceholder();
+        this.customNavigationBarPageAppendWebHeadPlaceholder();
       },
       error(event : WebViewErrorEvent) {
         console.log('webview load error', JSON.stringify(event.detail));

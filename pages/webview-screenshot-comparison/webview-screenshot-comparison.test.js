@@ -267,7 +267,7 @@ describe("shot-compare", () => {
 
     test.each(pages)("%s", async () => {
       const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
-      const isCustomNavigation = customNavigationPages.includes(pages[pageIndex]);
+      const isCustomNavigationBar = customNavigationPages.includes(pages[pageIndex]);
       const {
         headerHeight,
         devicePixelRatio
@@ -299,7 +299,7 @@ describe("shot-compare", () => {
       await page.setData({
         src: `${baseSrc}${pages[pageIndex]}`,
         isLoaded: false,
-        needRemoveWebHead: !isNeedAdbScreenshot,
+        isCustomNavigationBar,
       });
 
       const startTime = Date.now();
@@ -315,7 +315,8 @@ describe("shot-compare", () => {
       // web 端非 adb 截图时设置 offsetY 移除导航栏
       const webSnapshot = await program.screenshot({
         ...screenshotParams,
-        offsetY: `${isCustomNavigation ? 0 : headerHeight}`
+        id: 'webview-screenshot-comparison',
+        offsetY: `${isCustomNavigationBar ? 0 : 44}`
       });
       expect(webSnapshot).toMatchImageSnapshot({
         customSnapshotIdentifier() {
