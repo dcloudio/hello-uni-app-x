@@ -78,6 +78,16 @@
             >
               填充浮点型
             </button>
+
+          </view>
+          <view class="uni-flex uni-row">
+            <button
+              type="default"
+              style="width:750rpx"
+              @tap="jsonLikeMock"
+            >
+              填充符合json格式的字符串
+            </button>
           </view>
         </view>
         <view class="uni-padding-wrap">
@@ -147,6 +157,14 @@ export default {
         console.log(e)
       }
     },
+    jsonLikeMock(){
+      this.key = 'key_' + Math.random()
+      this.data = JSON.stringify({
+          name: "james",
+          age: 12,
+          from:"american"
+      });
+    },
     strMock() {
       this.key = 'key_' + Math.random()
       this.data = '测试字符串数据，长度为16个字符'
@@ -197,8 +215,8 @@ export default {
         uni.getStorage({
           key: key,
           success: (res) => {
-            that.apiGetData = res.data
 
+            that.apiGetData = res.data
             let desc:string = typeof this.apiGetData
             if("object" == desc){
               desc = desc  + ": " + JSON.stringify(this.apiGetData)
