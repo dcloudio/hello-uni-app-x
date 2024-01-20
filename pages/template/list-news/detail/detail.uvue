@@ -1,75 +1,75 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1">
-	<!-- #endif -->
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
     <view class="banner">
       <image class="banner-img" :src="cover"></image>
       <text class="banner-title">{{title}}</text>
     </view>
     <rich-text :nodes="htmlNodes" style="padding: 3px"></rich-text>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				htmlNodes: "",
-				title: '',
-				cover: "",
-				post_id: "",
-			}
-		},
-		onLoad(event: OnLoadOptions) {
+  export default {
+    data() {
+      return {
+        htmlNodes: "",
+        title: '',
+        cover: "",
+        post_id: "",
+      }
+    },
+    onLoad(event : OnLoadOptions) {
       this.post_id = event["post_id"] ?? "";
       this.cover = event["cover"] ?? "";
       this.title = event["title"] ?? "";
-			this.getDetail();
-		},
-		methods: {
-			getDetail() {
-				uni.request({
-					url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.post_id,
-					success: (data) => {
+      this.getDetail();
+    },
+    methods: {
+      getDetail() {
+        uni.request({
+          url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.post_id,
+          success: (data) => {
             if (data.statusCode == 200) {
               const result = data.data as UTSJSONObject
               // console.log(result["content"]);
               this.htmlNodes = result["content"] as string;
             }
-					},
-					fail: () => {
-						console.log('fail');
-					}
-				});
-			},
-		}
-	}
+          },
+          fail: () => {
+            console.log('fail');
+          }
+        });
+      },
+    }
+  }
 </script>
 
 <style>
-	.banner {
-		height: 360rpx;
-		overflow: hidden;
-		position: relative;
-		background-color: #ccc;
-	}
+  .banner {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background-color: #ccc;
+  }
 
-	.banner-img {
-		width: 100%;
-	}
+  .banner-img {
+    width: 100%;
+  }
 
-	.banner-title {
-		max-height: 84rpx;
-		overflow: hidden;
-		position: absolute;
-		left: 30rpx;
-		bottom: 30rpx;
-		width: 90%;
-		font-size: 32rpx;
-		font-weight: 400;
-		line-height: 42rpx;
-		color: white;
-	}
+  .banner-title {
+    max-height: 42px;
+    overflow: hidden;
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+    width: 90%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 21px;
+    color: white;
+  }
 </style>
