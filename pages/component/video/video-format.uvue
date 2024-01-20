@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-    <!-- #endif -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
@@ -20,12 +20,17 @@
         <video :id="'video-' + item.format" class="video" :src="item.src" :controls="true" :direction="-90"></video>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script>
+  type VideoFormat = {
+    format : string
+    src : string
+  }
+
   export default {
     data() {
       return {
@@ -87,7 +92,7 @@
       }
     },
     methods: {
-      onError: function (format: string, e : VideoErrorEvent) {
+      onError: function (format : string, e : VideoErrorEvent) {
         console.log(format + ":" + JSON.stringify(e));
         if (format != "错误路径") {
           this.isError = true;
@@ -95,15 +100,10 @@
       }
     }
   }
-
-  type VideoFormat = {
-    format : string
-    src : string
-  }
 </script>
 
 <style>
   .video {
-    height: 400rpx;
+    height: 200px;
   }
 </style>

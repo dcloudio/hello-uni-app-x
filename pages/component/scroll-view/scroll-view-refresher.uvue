@@ -1,96 +1,92 @@
 <template>
-	<view class="container">
-		<page-head title="scroll-view 下拉刷新"></page-head>
-		<scroll-view class="scroll" refresher-enabled = true :refresher-triggered = "refresherTriggered"
-		@refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort" @refresherrestore="onRefresherrestore"
-		@refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower">
-			<view v-for="key in scrollData" :key="key">
-				<view class="scroll-item">
-					<text class="scroll-item-title">{{key}}</text>
-				</view>
-			</view>
-		</scroll-view>
-	</view>
+  <view class="container">
+    <page-head title="scroll-view 下拉刷新"></page-head>
+    <scroll-view class="scroll" refresher-enabled=true :refresher-triggered="refresherTriggered"
+      @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort" @refresherrestore="onRefresherrestore"
+      @refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower">
+      <view v-for="key in scrollData" :key="key">
+        <view class="scroll-item">
+          <text class="scroll-item-title">{{key}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
 </template>
 <script>
-	export default {
+  export default {
+    data() {
+      return {
+        scrollData: [] as Array<string>,
+        refresherTriggered: false,
+        refresherrefresh: false
+      };
+    },
+    onLoad() {
+      let lists : Array<string> = []
+      for (let i = 0; i < 20; i++) {
+        lists.push("item---" + i)
+      }
+      this.scrollData = lists
+    },
 
-		data() {
-			return {
-				scrollData: [] as Array <string>,
-				refresherTriggered: false,
-				refresherrefresh: false
-			};
-		},
-		onLoad() {
-			let lists: Array < string > = []
-			for (let i = 0; i < 20; i++) {
-				lists.push("item---"+i)
-			}
-			this.scrollData = lists
-		},
+    methods: {
+      onRefresherrefresh(_ : RefresherEvent) {
+        this.refresherrefresh = true
+        console.log("onRefresherrefresh--------------下拉刷新触发")
+        this.refresherTriggered = true
+        setTimeout(() => {
+          this.refresherTriggered = false
+        }, 1500)
 
-		methods: {
-			onRefresherrefresh(_: RefresherEvent) {
-				this.refresherrefresh = true
-				console.log("onRefresherrefresh--------------下拉刷新触发")
-				this.refresherTriggered = true
-				setTimeout(() => {
-					this.refresherTriggered = false
-				}, 1500)
-
-			},
-			onRefresherabort(_: RefresherEvent) {
-				console.log("onRefresherabort------下拉刷新被中止")
-			},
-			onRefresherrestore(_: RefresherEvent) {
-				this.refresherrefresh = false
-				console.log("onRefresherrestore------下拉刷新被复位")
-			},
-			onRefresherpulling(e: RefresherEvent) {
-				console.log("onRefresherrestore------拉刷新控件被下拉-dy="+e.detail.dy)
-			},
-			onScrolltolower(e: ScrollToLowerEvent) {
-				console.log("onScrolltolower 滚动到底部-----"+e.detail.direction)
-			}
-		}
-	};
+      },
+      onRefresherabort(_ : RefresherEvent) {
+        console.log("onRefresherabort------下拉刷新被中止")
+      },
+      onRefresherrestore(_ : RefresherEvent) {
+        this.refresherrefresh = false
+        console.log("onRefresherrestore------下拉刷新被复位")
+      },
+      onRefresherpulling(e : RefresherEvent) {
+        console.log("onRefresherrestore------拉刷新控件被下拉-dy=" + e.detail.dy)
+      },
+      onScrolltolower(e : ScrollToLowerEvent) {
+        console.log("onScrolltolower 滚动到底部-----" + e.detail.direction)
+      }
+    }
+  };
 </script>
 
 <style>
-	.container{
-		display: flex;
-		flex-direction: column;
-		border:dashed;
-		flex: 1;
-	}
+  .container {
+    display: flex;
+    flex-direction: column;
+    border: dashed;
+    flex: 1;
+  }
 
-	.scroll {
-		background-color: #eee;
-		position: relative;
-		width: 100%;
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		border-color: red;
-	}
+  .scroll {
+    background-color: #eee;
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-color: red;
+  }
 
-	.scroll-item {
-	    margin-left: 12rpx;
-	    margin-right: 12rpx;
-	    margin-top: 12rpx;
-		background-color: #fff;
-	    border-radius: 8rpx;
-	}
+  .scroll-item {
+    margin-left: 6px;
+    margin-right: 6px;
+    margin-top: 6px;
+    background-color: #fff;
+    border-radius: 4px;
+  }
 
-	.scroll-item-title {
-	    width:100%;
-	    height: 120rpx;
-	    line-height: 120rpx;
-	    text-align: center;
-	    color: #555;
-	}
-
-
-
+  .scroll-item-title {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    color: #555;
+  }
 </style>
