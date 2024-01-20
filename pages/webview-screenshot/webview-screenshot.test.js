@@ -224,6 +224,7 @@ const needAdbScreenshotPages = [
   "pages/API/modal/modal",
   "pages/API/loading/loading",
   "pages/API/toast/toast",
+  "pages/API/pull-down-refresh/pull-down-refresh",
 ];
 
 const needAdbScreenshot = (url) => {
