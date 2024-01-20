@@ -82,7 +82,8 @@
     </view>
   </view>
   <view class="input-wrapper">
-    <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" @input="input" @blur="blur" @focus="focus" />
+    <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" @input="input" @blur="blur"
+      @focus="focus" />
     <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
     </image>
   </view>
@@ -95,7 +96,7 @@
     flex-direction: row;
     justify-content: center;
     padding: 0;
-    margin: 0 20rpx;
+    margin: 0 10px;
     flex-direction: row;
     flex-wrap: nowrap;
     background-color: #ffffff;
@@ -105,6 +106,6 @@
     width: 22px;
     height: 22px;
     align-self: center;
-    margin-right: 10rpx;
+    margin-right: 5px;
   }
 </style>

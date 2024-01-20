@@ -21,7 +21,7 @@
     methods: {
       // @ts-ignore
       _change(e : RadioGroupChangeEvent) {
-        const selected = this.items.find((item: ItemType) : boolean => {
+        const selected = this.items.find((item : ItemType) : boolean => {
           return item.name == e.detail.value
         })
         if (selected != null) {
