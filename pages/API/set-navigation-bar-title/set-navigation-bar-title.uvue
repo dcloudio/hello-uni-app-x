@@ -12,56 +12,56 @@
   </view>
 </template>
 
-<script lang="uts">
-import { state, setLifeCycleNum } from '@/store/index.uts'
+<script>
+  import { state, setLifeCycleNum } from '@/store/index.uts'
 
-export default {
-  data(){
-    return {
-      newTitle: 'new title',
-      longTitle: 'long title long title long title long title long title long title long title long title long title long title'
-    }
-  },
-  methods: {
-    setNavigationBarNewTitle() {
-      uni.setNavigationBarTitle({
-        title: this.newTitle,
-        success: () => {
-          console.log('setNavigationBarTitle success')
-          this.setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail: () => {
-          console.log('setNavigationBarTitle fail')
-          this.setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete: () => {
-          console.log('setNavigationBarTitle complete')
-          this.setLifeCycleNum(state.lifeCycleNum + 1)
-        }
-      })
+  export default {
+    data() {
+      return {
+        newTitle: 'new title',
+        longTitle: 'long title long title long title long title long title long title long title long title long title long title'
+      }
     },
-    setNavigationBarLongTitle() {
-      uni.setNavigationBarTitle({
-        title: this.longTitle,
-        success() {
-          console.log('setNavigationBarTitle success')
-        },
-        fail() {
-          console.log('setNavigationBarTitle fail')
-        },
-        complete() {
-          console.log('setNavigationBarTitle complete')
-        }
-      })
+    methods: {
+      setNavigationBarNewTitle() {
+        uni.setNavigationBarTitle({
+          title: this.newTitle,
+          success: () => {
+            console.log('setNavigationBarTitle success')
+            this.setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail: () => {
+            console.log('setNavigationBarTitle fail')
+            this.setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete: () => {
+            console.log('setNavigationBarTitle complete')
+            this.setLifeCycleNum(state.lifeCycleNum + 1)
+          }
+        })
+      },
+      setNavigationBarLongTitle() {
+        uni.setNavigationBarTitle({
+          title: this.longTitle,
+          success() {
+            console.log('setNavigationBarTitle success')
+          },
+          fail() {
+            console.log('setNavigationBarTitle fail')
+          },
+          complete() {
+            console.log('setNavigationBarTitle complete')
+          }
+        })
+      },
+      // 自动化测试
+      getLifeCycleNum() : number {
+        return state.lifeCycleNum
+      },
+      // 自动化测试
+      setLifeCycleNum(num : number) {
+        setLifeCycleNum(num)
+      }
     },
-    // 自动化测试
-    getLifeCycleNum(): number {
-      return state.lifeCycleNum
-    },
-    // 自动化测试
-    setLifeCycleNum(num: number) {
-      setLifeCycleNum(num)
-    }
-  },
-}
+  }
 </script>

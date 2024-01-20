@@ -52,8 +52,8 @@
         <text>请求不同content-type的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in contentTypeUrls"
-            :key="index" @click="changeUrl(item)">{{item}}</button>
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in contentTypeUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
 
@@ -263,7 +263,7 @@
           },
         });
       },
-      jest_cookie_request(needCookie: boolean) {
+      jest_cookie_request(needCookie : boolean) {
         uni.request({
           url: this.host + "/api/http/header/requestCookie",
           method: "GET",
@@ -274,9 +274,9 @@
           success: (res) => {
             const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
             console.log("requestCookie ", requestCookie);
-            if(requestCookie instanceof Array){
+            if (requestCookie instanceof Array) {
               this.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
-            }else{
+            } else {
               this.jest_result = needCookie ? (requestCookie as UTSJSONObject).toMap().size > 0 : (requestCookie as UTSJSONObject).toMap().size == 0
             }
           },
