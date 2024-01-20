@@ -1,251 +1,242 @@
 <template>
-	<view style="flex:1;">
-		<page-head title="非下拉刷新的scroll-view属性示例"></page-head>
-		<view class="uni-margin-wrap">
-			<!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
-			<scroll-view v-if="scrollX" direction="horizontal" :scroll-top="scrollTop" :scroll-left="scrollLeft"
-				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
-				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation" style="flex-direction: row;width: 100%;height: 100%;"
-				:show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper"
-				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewX" id="scrollViewX">
-				<view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
-					<text class="uni-text">{{item.label}}</text>
-				</view>
-			</scroll-view>
-			<scroll-view v-else direction="vertical" :scroll-top="scrollTop" :scroll-left="scrollLeft"
-				:upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
-				:enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
-				:show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper"
-				@touchmove="onTouchMove"
-				@scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY" style="width: 100%;height: 100%;">
-				<view class="item" :id="item.id" v-for="(item,_) in items">
-					<text class="uni-text">{{item.label}}</text>
-				</view>
-			</scroll-view>
-		</view>
+  <view class="page-scroll-view">
+    <page-head title="非下拉刷新的scroll-view属性示例"></page-head>
+    <view class="uni-margin-wrap">
+      <!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
+      <scroll-view v-if="scrollX" direction="horizontal" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+        :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
+        :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
+        style="flex-direction: row;width: 100%;height: 100%;" :show-scrollbar="showScrollbar" :bounces="bounces"
+        @scrolltoupper="scrolltoupper" @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend"
+        ref="scrollViewX" id="scrollViewX">
+        <view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
+          <text class="uni-text">{{item.label}}</text>
+        </view>
+      </scroll-view>
+      <scroll-view v-else direction="vertical" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+        :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
+        :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
+        :show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper" @touchmove="onTouchMove"
+        @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY"
+        style="width: 100%;height: 100%;">
+        <view class="item" :id="item.id" v-for="(item,_) in items">
+          <text class="uni-text">{{item.label}}</text>
+        </view>
+      </scroll-view>
+    </view>
 
-		<scroll-view class="uni-list" showScrollbar="true" scroll-y="true">
-			<view class="uni-option">
-				<text>是否显示滚动条</text>
-				<switch :checked="showScrollbar" @change="showScrollbar=!showScrollbar"></switch>
-			</view>
-			<view class="uni-option">
-				<text>是否有反弹效果</text>
-				<switch :checked="bounces" @change="bounces=!bounces"></switch>
-			</view>
-			<view class="uni-option">
-				<text>是否开启滚动时使用动画过渡</text>
-				<switch :checked="scrollWithAnimation" @change="scrollWithAnimation=!scrollWithAnimation"></switch>
-			</view>
-			<view class="uni-option">
-				<text>是否横向滚动</text>
-				<switch :checked="scrollX" @change="changeDirectionX"></switch>
-			</view>
-			<view class="uni-option">
-				<text>是否竖向滚动</text>
-				<switch :checked="scrollY" @change="changeDirectionY"></switch>
-			</view>
-			<view class="uni-common-pb"></view>
-			<view class="uni-slider">
-				<text>拖动设置scroll-top</text>
-				<slider :max="1000" :min="0" :step="10" :value="scrollTop" :show-value="true"
-					@change="handleChangeScrollTop" style="margin-top: 10rpx;" />
-			</view>
-			<view class="uni-common-pb"></view>
-			<view class="uni-slider">
-				<text>拖动设置scroll-left</text>
-				<slider :max="1000" :min="0" :step="10" :value="scrollLeft" :show-value="true"
-					@change="handleChangeScrollLeft" style="margin-top: 10rpx;" />
-			</view>
-
-			<view class="uni-option">
-				<text>设置触发scrolltoupper的距离</text>
-				<input style="width: 100rpx;border-width: 2rpx;text-align: center;border-style: solid; " :value="upperThreshold"
-					type="number" @input="handleUpperThresholdInput" />
-			</view>
-
-			<view class="uni-option">
-				<text>设置触发scrolltolower的距离</text>
-				<input style="width: 100rpx;border-width: 2rpx;text-align: center;border-style: solid; " :value="lowerThreshold"
-					type="number" @input="handleLowerThresholdInput" />
-			</view>
-
-			<view class="uni-common-pb"></view>
-			<view class="uni-slider">
-				<button type="primary" class="button" @click="handleScrollIntoView">
-					滚动到id为`item3`的子视图
-				</button>
-			</view>
-			<view class="uni-common-pb"></view>
-		</scroll-view>
-
-	</view>
+    <scroll-view class="uni-list" :showScrollbar="true" :scroll-y="true">
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>是否显示滚动条</text>
+        <switch :checked="showScrollbar" @change="showScrollbar=!showScrollbar"></switch>
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>是否有反弹效果</text>
+        <switch :checked="bounces" @change="bounces=!bounces"></switch>
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>是否开启滚动时使用动画过渡</text>
+        <switch :checked="scrollWithAnimation" @change="scrollWithAnimation=!scrollWithAnimation"></switch>
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>是否横向滚动</text>
+        <switch :checked="scrollX" @change="changeDirectionX"></switch>
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>是否竖向滚动</text>
+        <switch :checked="scrollY" @change="changeDirectionY"></switch>
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <text>拖动设置scroll-top</text>
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <slider :max="1000" :min="0" :step="10" :value="scrollTop" :show-value="true" @change="handleChangeScrollTop" />
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <text>拖动设置scroll-left</text>
+      </view>
+      <view class="uni-slider uni-list-cell-padding">
+        <slider :max="1000" :min="0" :step="10" :value="scrollLeft" :show-value="true"
+          @change="handleChangeScrollLeft" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>设置触发scrolltoupper的距离</text>
+        <input class="uni-list-cell-input" type="number" :value="upperThreshold" @input="handleUpperThresholdInput" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>设置触发scrolltolower的距离</text>
+        <input class="uni-list-cell-input" type="number" :value="lowerThreshold" @input="handleLowerThresholdInput" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <button type="primary" class="button" @click="handleScrollIntoView">
+          滚动到id为`item3`的子视图
+        </button>
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+      </view>
+    </scroll-view>
+  </view>
 </template>
 
 <script>
-	type Item = {
-		id : string,
-		label : string,
-	}
-	export default {
-		data() {
-			return {
-				items: [] as Item[],
-				scrollX: false,
-				scrollY: true,
-				bounces: false,
-				scrollTop: 0,
-				scrollLeft: 0,
-				scrollIntoView: "",
-				enableBackToTop: false,
-				scrollWithAnimation: false,
-				showScrollbar: true,
-				upperThreshold: 50,
-				lowerThreshold: 50,
-			}
-		},
+  type Item = {
+    id : string,
+    label : string,
+  }
+  export default {
+    data() {
+      return {
+        items: [] as Item[],
+        scrollX: false,
+        scrollY: true,
+        bounces: false,
+        scrollTop: 0,
+        scrollLeft: 0,
+        scrollIntoView: "",
+        enableBackToTop: false,
+        scrollWithAnimation: false,
+        showScrollbar: true,
+        upperThreshold: 50,
+        lowerThreshold: 50,
+      }
+    },
 
-		onLoad() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					id: "item" + i,
-					label: "item" + i,
-				} as Item;
-				this.items.push(item);
-			}
-		},
-		methods: {
-			handleChangeScrollLeft(e : SliderChangeEvent) {
-				this.scrollLeft = e.detail.value;
-			},
-			handleChangeScrollTop(e : SliderChangeEvent) {
-				this.scrollTop = e.detail.value;
-			},
-			changeDirectionX() {
-				this.scrollX = !this.scrollX;
-				if(this.scrollX) {
-					this.scrollY = false
-				}
-				this.scrollTop = 0;
-				this.scrollLeft = 0;
-			},
-			changeDirectionY() {
-				this.scrollY = !this.scrollY;
-				if(this.scrollY) {
-					this.scrollX = false
-				}
-				this.scrollTop = 0;
-				this.scrollLeft = 0;
-			},
-			handleScrollIntoView() {
-				if (this.scrollX) {
-					this.scrollIntoView = "horizontal_item3";
-				} else {
-					this.scrollIntoView = "item3";
-				}
-				//重置状态，由于响应式的原因，设置的值与当前值相同，会导致再次设置无效果。
-				setTimeout(() => {
-					this.scrollIntoView = "";
-				}, 0);
-			},
-			handleUpperThresholdInput(e : InputEvent) {
-				const value = e.detail.value;
-				if (value == "") {
-					this.upperThreshold = 50;
-				} else {
-					this.upperThreshold = parseInt(e.detail.value);
-				}
-			},
-			handleLowerThresholdInput(e : InputEvent) {
-				const value = e.detail.value;
-				if (value == "") {
-					this.lowerThreshold = 50;
-				} else {
-					this.lowerThreshold = parseInt(e.detail.value);
-				}
-			},
-			//事件监听
-			scrolltoupper() {
-				console.log("滚动到顶部");
-			},
-			scrolltolower() {
-				console.log("滚动到底部");
-			},
-			scroll(e : ScrollEvent) {
-				console.log("scroll-top : " + e.detail.scrollTop + " scroll-left : " + e.detail.scrollLeft);
-			},
-			scrollend() {
-				console.log("滚动停止");
-			},
-			onTouchMove() {
-				console.log("TouchMove");
-			},
+    onLoad() {
+      for (let i = 0; i < 10; i++) {
+        const item = {
+          id: "item" + i,
+          label: "item" + i,
+        } as Item;
+        this.items.push(item);
+      }
+    },
+    methods: {
+      handleChangeScrollLeft(e : SliderChangeEvent) {
+        this.scrollLeft = e.detail.value;
+      },
+      handleChangeScrollTop(e : SliderChangeEvent) {
+        this.scrollTop = e.detail.value;
+      },
+      changeDirectionX() {
+        this.scrollX = !this.scrollX;
+        if (this.scrollX) {
+          this.scrollY = false
+        }
+        this.scrollTop = 0;
+        this.scrollLeft = 0;
+      },
+      changeDirectionY() {
+        this.scrollY = !this.scrollY;
+        if (this.scrollY) {
+          this.scrollX = false
+        }
+        this.scrollTop = 0;
+        this.scrollLeft = 0;
+      },
+      handleScrollIntoView() {
+        if (this.scrollX) {
+          this.scrollIntoView = "horizontal_item3";
+        } else {
+          this.scrollIntoView = "item3";
+        }
+        //重置状态，由于响应式的原因，设置的值与当前值相同，会导致再次设置无效果。
+        setTimeout(() => {
+          this.scrollIntoView = "";
+        }, 0);
+      },
+      handleUpperThresholdInput(e : InputEvent) {
+        const value = e.detail.value;
+        if (value == "") {
+          this.upperThreshold = 50;
+        } else {
+          this.upperThreshold = parseInt(e.detail.value);
+        }
+      },
+      handleLowerThresholdInput(e : InputEvent) {
+        const value = e.detail.value;
+        if (value == "") {
+          this.lowerThreshold = 50;
+        } else {
+          this.lowerThreshold = parseInt(e.detail.value);
+        }
+      },
+      //事件监听
+      scrolltoupper() {
+        console.log("滚动到顶部");
+      },
+      scrolltolower() {
+        console.log("滚动到底部");
+      },
+      scroll(e : ScrollEvent) {
+        console.log("scroll-top : " + e.detail.scrollTop + " scroll-left : " + e.detail.scrollLeft);
+      },
+      scrollend() {
+        console.log("滚动停止");
+      },
+      onTouchMove() {
+        console.log("TouchMove");
+      },
       //自动化测试专用
-      checkScrollHeight(): Boolean {
+      checkScrollHeight() : Boolean {
         var element = this.$refs["scrollViewY"]
-        if(element != null) {
-           var scrollHeight = (element as Element).scrollHeight
-           console.log("checkScrollHeight"+scrollHeight)
-           if(scrollHeight > 1900) {
-             return true
-           }
+        if (element != null) {
+          var scrollHeight = (element as Element).scrollHeight
+          console.log("checkScrollHeight" + scrollHeight)
+          if (scrollHeight > 1900) {
+            return true
+          }
         }
         return false
       },
       //自动化测试专用
-      checkScrollWidth(): Boolean {
+      checkScrollWidth() : Boolean {
         var element = this.$refs["scrollViewX"]
-        if(element != null) {
-           var scrollWidth = (element as Element).scrollWidth
-           console.log("checkScrollWidth---"+scrollWidth)
-           if(scrollWidth > 1900) {
-             return true
-           }
+        if (element != null) {
+          var scrollWidth = (element as Element).scrollWidth
+          console.log("checkScrollWidth---" + scrollWidth)
+          if (scrollWidth > 1900) {
+            return true
+          }
         }
         return false
       }
-		}
-	}
+    }
+  }
 </script>
 
 <style>
-	.uni-margin-wrap {
-		height: 400rpx;
-		margin-left: 50rpx;
-		margin-right: 50rpx;
-	}
+  .uni-margin-wrap {
+    height: 200px;
+    margin: 0 25px 25px 25px;
+  }
 
-	.item {
-		justify-content: center;
-		align-items: center;
-		height: 400rpx;
-		width: 100%;
-		background-color: azure;
-		border-width: 2rpx;
+  .item {
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    width: 100%;
+    background-color: azure;
+    border-width: 1px;
     border-style: solid;
-		border-color: chocolate;
-	}
+    border-color: chocolate;
+  }
 
-	.uni-text {
-		color: black;
-		font-size: 50px;
-	}
+  .uni-text {
+    color: black;
+    font-size: 50px;
+  }
 
-	.uni-list {
-		flex: 1;
-		margin: 50rpx 50rpx 0rpx 50rpx;
-	}
+  .uni-slider {
+    justify-content: center;
+  }
 
-	.uni-option {
-		height: 100rpx;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		padding: 20rpx;
-	}
+  .uni-list-cell-input {
+    width: 50px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
 
-	.uni-slider {
-		padding: 30rpx;
-		justify-content: center;
-	}
+  .button {
+    flex: 1;
+  }
 </style>
