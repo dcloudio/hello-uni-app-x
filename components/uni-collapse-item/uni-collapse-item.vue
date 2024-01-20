@@ -36,8 +36,8 @@
       return {
         height: 0,
         is_open: this.open as boolean,
-        boxNode: null as Element | null,
-        contentNode: null as Element | null,
+        boxNode: null as UniElement | null,
+        contentNode: null as UniElement | null,
       };
     },
     watch: {
@@ -52,8 +52,8 @@
       $dispatch(this, 'UniCollapse', 'init', this)
     },
     mounted() {
-      this.boxNode = this.$refs['boxRef'] as Element;
-      this.contentNode = this.$refs['contentRef'] as Element;
+      this.boxNode = this.$refs['boxRef'] as UniElement;
+      this.contentNode = this.$refs['contentRef'] as UniElement;
       // this.openCollapse(this.open)
     },
     methods: {
