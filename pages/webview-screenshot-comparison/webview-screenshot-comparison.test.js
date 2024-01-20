@@ -269,7 +269,7 @@ describe("shot-compare", () => {
       const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
       const isCustomNavigationBar = customNavigationPages.includes(pages[pageIndex]);
       const {
-        headerHeight,
+        statusBarHeight,
         devicePixelRatio
       } = await page.data();
       const screenshotParams = {
@@ -278,7 +278,7 @@ describe("shot-compare", () => {
         // adb 截图时跳过状态栏
         area: {
           x: 0,
-          y: (headerHeight - 44) * devicePixelRatio,
+          y: statusBarHeight * devicePixelRatio,
         },
       }
       const screenshotPath = `__webview__${pages[pageIndex].replace(/\//g, "-")}`;
