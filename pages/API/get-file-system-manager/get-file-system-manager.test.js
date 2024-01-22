@@ -278,11 +278,11 @@ describe('ExtApi-FileManagerTest', () => {
 
     /**
      * 从资源文件中读取图片为base64，测试写入较大文件场景
-     * 'static/list-mock/safe.png' 注意，依赖这个资源文件，不能删除
+     * 'static/test-image/logo.ico' 注意，依赖这个资源文件，不能删除
      */
     await page.setData({
       basePath: "",
-      readFile:'static/list-mock/safe.png',
+      readFile:'static/test-image/logo.ico',
       readFileEncoding:'base64'
     })
 
@@ -292,10 +292,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadFileButton.tap()
     await isDone()
     let readFileRet = await getData('readFileRet')
-
-    expect(readFileRet.length).toEqual(426128)
+    expect(readFileRet.length).toEqual(208544)
     let endStr = readFileRet.substring(readFileRet.length - 10)
-    expect(endStr).toEqual("lFTkSuQmCC")
+    expect(endStr).toEqual("///////w==")
 
     await page.setData({
       basePath: globalTempPath,
@@ -335,9 +334,9 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     let getFileInfoSize = await getData('getFileInfoSize')
-    expect(getFileInfoSize).toEqual(426128)
+    expect(getFileInfoSize).toEqual(208544)
     let getFileInfoDigest = await getData('getFileInfoDigest')
-    expect(getFileInfoDigest).toEqual("795fd5a20b4f0a63504330e9132dcd30")
+    expect(getFileInfoDigest).toEqual("486f75ea76625f8c103cac4bc9c49511")
 
     // 切换为 sha1
     await page.setData({
@@ -348,9 +347,9 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     getFileInfoSize = await getData('getFileInfoSize')
-    expect(getFileInfoSize).toEqual(426128)
+    expect(getFileInfoSize).toEqual(208544)
     getFileInfoDigest = await getData('getFileInfoDigest')
-    expect(getFileInfoDigest).toEqual("74877928eddd0351bd8b3b1c677b56f25db682fc")
+    expect(getFileInfoDigest).toEqual("1830169a16e7c860beff4a3b0975ba0b6f775f9e")
 
     // 测试不支持的摘要算法，期望返回错误
     await page.setData({
@@ -499,8 +498,8 @@ describe('ExtApi-FileManagerTest', () => {
     // 准备从资源目录拷贝png
     await page.setData({
       basePath: "",
-      unlinkFile:'static/list-mock/safe.png',
-      accessFile:'static/list-mock/safe.png',
+      unlinkFile:'static/test-image/logo.ico',
+      accessFile:'static/test-image/logo.ico',
     })
     // 检查资源文件，期望存在
     await btnAccessFileButton.tap()
@@ -522,7 +521,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 复制资源到 root目录
     await page.setData({
       copyToBasePath:globalRootPath,
-      copyFromFile:"static/list-mock/safe.png",
+      copyFromFile:"static/test-image/logo.ico",
       copyToFile:"a/从代码目录拷贝的资源.png"
     })
     const btnCopyFileButton = await page.$('#btn-copy-file')
@@ -542,12 +541,11 @@ describe('ExtApi-FileManagerTest', () => {
     accessFileRet = await getData("accessFileRet")
     expect(accessFileRet).toEqual('access:ok')
 
-
     await btnUnLinkFileButton.tap()
     await isDone()
 
-   await btnAccessFileButton.tap()
-   await isDone()
+    await btnAccessFileButton.tap()
+    await isDone()
 
     accessFileRet = await getData("accessFileRet")
     expect(accessFileRet).toEqual('')
