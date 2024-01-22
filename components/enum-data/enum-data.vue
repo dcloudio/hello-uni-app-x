@@ -22,11 +22,10 @@
       // @ts-ignore
       _change(e : RadioGroupChangeEvent) {
         const selected = this.items.find((item : ItemType) : boolean => {
-          return item.name == e.detail.value
+          return item.value.toString() == e.detail.value
         })
         if (selected != null) {
-          this.current = selected.value
-          this.$emit('change', this.current)
+          this.$emit('change', selected.value)
           uni.showToast({
             icon: 'none',
             title: '当前选中:' + selected.name,
@@ -46,7 +45,7 @@
   <view class="uni-list uni-common-pl">
     <radio-group @change="_change">
       <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.name"
-        :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.name" :checked="index === current">
+        :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value">
         {{ item.name }}
       </radio>
     </radio-group>
