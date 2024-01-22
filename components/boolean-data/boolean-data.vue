@@ -21,7 +21,7 @@
     },
     methods: {
       // @ts-ignore
-      _change(e : SwitchChangeEvent) {
+      _change(e : UniSwitchChangeEvent) {
         this._checked = e.detail.value;
         this.$emit('change', this._checked)
       }
