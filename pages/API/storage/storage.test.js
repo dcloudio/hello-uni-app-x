@@ -233,7 +233,12 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageButtonInfo.tap()
     await page.waitFor(600)
     let jsonStr = await getData('apiGetData')
-    expect(jsonStr).toEqual('{"age":12,"from":"american","name":"james"}')
+    // 顺序不能保证，验证长度和各个属性来区分
+    let parseObj = JSON.parse(jsonStr)
+    expect(jsonStr.length).toEqual(43)
+    expect(parseObj['age']).toEqual(12)
+    expect(parseObj['from']).toEqual('american')
+    expect(parseObj['name']).toEqual('james')
 
 
   });
