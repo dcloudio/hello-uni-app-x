@@ -44,4 +44,10 @@ describe('nodes-info', () => {
     expect(Math.round(nodeInfo2.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo2.height)).toBe(RECT_HEIGHT)
   })
+
+  //检测onResize获取BoundingClientRect信息是否有效
+  it('check_resizeRectValid', async () => {
+    const resizeRectValid = await page.data('resizeRectValid')
+    expect(resizeRectValid).toBe(true)
+  })
 })
