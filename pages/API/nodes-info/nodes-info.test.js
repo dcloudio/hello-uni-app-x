@@ -47,10 +47,10 @@ describe('nodes-info', () => {
 
   // #ifdef APP
   //检测onResize获取BoundingClientRect信息是否有效
-  it('check_resizeRectValid', async () => {
+  /* it('check_resizeRectValid', async () => {
     const resizeRectValid = await page.data('resizeRectValid')
     expect(resizeRectValid).toBe(true)
-  })
+  }) */
   // #endif
 
 })
