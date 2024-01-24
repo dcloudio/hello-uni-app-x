@@ -53,7 +53,7 @@
           text: '接口',
           iconPath: '/static/api.png',
           selectedIconPath: '/static/apiHL.png'
-        }
+        } as SetTabBarItemOptions
         uni.setTabBarItem(tabBarOptions)
       }
     },
