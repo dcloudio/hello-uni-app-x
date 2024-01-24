@@ -29,6 +29,10 @@
         <text class="text">点击修改Transform</text>
         <view class="base-style transition-transform" id="styleTransform" @click="changeTransform"></view>
       </view>
+      <view class="container">
+        <text class="text">点击修改Transform和宽</text>
+        <view class="base-style transition-transform-width" id="styleTransformWithWidth" @click="changeTransformWithWidth"></view>
+      </view>
       <view class="container" @click="changeTransformWithOrigin">
         <text class="text">点击修改Transform（含transform-origin）</text>
         <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin"></view>
@@ -61,6 +65,8 @@
         styleBackground: null as UniElement | null,
         isTransitionStyleTransform: false,
         styleTransform: null as UniElement | null,
+        isTransitionStyleTransformWithWidth:false,
+        styleTransformWithWidth: null as UniElement | null,
         isTransitionstyleBorder: false,
         styleBorder: null as UniElement | null,
         isTransitionstylePosition: false,
@@ -82,6 +88,7 @@
       this.stylePosition = uni.getElementById("stylePosition")
       this.propertyStyleBackground = uni.getElementById("propertyStyleBackground")
       this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
+      this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
     },
     methods: {
       changeWidthOrHeight() {
@@ -140,6 +147,17 @@
           : 'rotate(135deg)'
         )
         this.isTransitionStyleTransform = !this.isTransitionStyleTransform
+      },
+      changeTransformWithWidth() {
+        this.styleTransformWithWidth?.style?.setProperty("transform", this.isTransitionStyleTransformWithWidth
+          ? 'rotate(0deg)'
+          : 'rotate(135deg)'
+        )
+        this.styleTransformWithWidth?.style?.setProperty("width", this.isTransitionStyleTransformWithWidth
+          ? '200px'
+          : '100px'
+        )
+        this.isTransitionStyleTransformWithWidth = !this.isTransitionStyleTransformWithWidth
       },
       changeTransformWithOrigin() {
         this.styleTransformWithOrigin?.style?.setProperty("transform", this.isTransitionStyleTransformWithOrigin
@@ -219,6 +237,10 @@
   .transition-position {
     left: 0px;
     transition-property: left;
+    transition-duration: 1s;
+  }
+  .transition-transform-width {
+    transition-property: transform, width;
     transition-duration: 1s;
   }
 </style>
