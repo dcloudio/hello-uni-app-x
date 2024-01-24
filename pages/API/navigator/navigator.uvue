@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view>
       <page-head title="navigate"></page-head>
       <view class="uni-padding-wrap uni-common-mt uni-common-mb">
@@ -45,321 +45,322 @@
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script lang="uts">
-import { state, setLifeCycleNum } from '@/store/index.uts'
+  import { state, setLifeCycleNum } from '@/store/index.uts'
 
-export default {
-  data() {
-    return {
-      onLoadTime: 0,
-      onShowTime: 0,
-      onReadyTime: 0,
-      onHideTime: 0,
-    }
-  },
-  onLoad() {
-    this.onLoadTime = Date.now()
-    console.log('onLoad', this.onLoadTime)
-  },
-  onShow() {
-    this.onShowTime = Date.now()
-    console.log('onShow', this.onShowTime)
-  },
-  onReady() {
-    this.onReadyTime = Date.now()
-    console.log('onReady', this.onReadyTime)
-  },
-  onHide() {
-    this.onHideTime = Date.now()
-    console.log('onHide', this.onHideTime)
-  },
-  onBackPress(options: OnBackPressOptions): boolean | null {
-    console.log('onBackPress', Date.now())
-    console.log('onBackPress from', options.from)
-    return null
-  },
-  onUnload() {
-    console.log('onUnload', Date.now())
-  },
-  methods: {
-    reLaunch() {
-      uni.reLaunch({
-        url: '/pages/tabBar/component',
-        success(result) {
-          console.log('reLaunch success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail(error) {
-          console.log('reLaunch fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete(result) {
-          console.log('reLaunch complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+  export default {
+    data() {
+      return {
+        onLoadTime: 0,
+        onShowTime: 0,
+        onReadyTime: 0,
+        onHideTime: 0,
+      }
     },
-    navigateTo() {
-      uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
-        success(result) {
-          console.log('navigateTo success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail(error) {
-          console.log('navigateTo fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete(result) {
-          console.log('navigateTo complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    onLoad() {
+      this.onLoadTime = Date.now()
+      console.log('onLoad', this.onLoadTime)
     },
-    navigateToErrorPage() {
-      uni.navigateTo({
-        url: '/pages/error-page/error-page',
-        success(result) {
-          console.log('navigateTo success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        fail(error) {
-          console.log('navigateTo fail', error.errMsg)
-          uni.showToast({
-            title: error.errMsg,
-            icon: 'none',
-          })
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        complete(result) {
-          console.log('navigateTo complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    onShow() {
+      this.onShowTime = Date.now()
+      console.log('onShow', this.onShowTime)
     },
-    navigateToDebounce() {
-      uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
-        success(result) {
-          console.log('navigateTo success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail(error) {
-          console.log('navigateTo fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete(result) {
-          console.log('navigateTo complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
-      uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
-        success(result) {
-          console.log('navigateTo success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        fail(error) {
-          console.log('navigateTo fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        complete(result) {
-          console.log('navigateTo complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    onReady() {
+      this.onReadyTime = Date.now()
+      console.log('onReady', this.onReadyTime)
     },
-    // 自动化测试
-    navigateToRelativePath1() {
-      uni.navigateTo({
-        url: 'new-page/new-page-1?data=new-page/new-page-1',
-        success() {
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail() {
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete() {
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    onHide() {
+      this.onHideTime = Date.now()
+      console.log('onHide', this.onHideTime)
     },
-    // 自动化测试
-    navigateToRelativePath2() {
-      uni.navigateTo({
-        url: './new-page/new-page-1?data=./new-page/new-page-1',
-        success() {
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail() {
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete() {
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    onBackPress(options : OnBackPressOptions) : boolean | null {
+      console.log('onBackPress', Date.now())
+      console.log('onBackPress from', options.from)
+      return null
     },
-    // 自动化测试
-    navigateToRelativePath3() {
-      uni.navigateTo({
-        url: '../navigator/new-page/new-page-1?data=../navigator/new-page/new-page-1',
-        success() {
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail() {
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete() {
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    onUnload() {
+      console.log('onUnload', Date.now())
     },
-    navigateBack() {
-      uni.navigateBack({
-        success(result) {
-          console.log('navigateBack success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail(error) {
-          console.log('navigateBack fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete(result) {
-          console.log('navigateBack complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
+    methods: {
+      reLaunch() {
+        uni.reLaunch({
+          url: '/pages/tabBar/component',
+          success(result) {
+            console.log('reLaunch success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('reLaunch fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('reLaunch complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateTo() {
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          success(result) {
+            console.log('navigateTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateTo fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateToErrorPage() {
+        uni.navigateTo({
+          url: '/pages/error-page/error-page',
+          success(result) {
+            console.log('navigateTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          fail(error) {
+            console.log('navigateTo fail', error.errMsg)
+            uni.showToast({
+              title: error.errMsg,
+              icon: 'none',
+            })
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          complete(result) {
+            console.log('navigateTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateToDebounce() {
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+          success(result) {
+            console.log('navigateTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateTo fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+          success(result) {
+            console.log('navigateTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          fail(error) {
+            console.log('navigateTo fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          complete(result) {
+            console.log('navigateTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      // 自动化测试
+      navigateToRelativePath1() {
+        uni.navigateTo({
+          url: 'new-page/new-page-1?data=new-page/new-page-1',
+          success() {
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail() {
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete() {
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      // 自动化测试
+      navigateToRelativePath2() {
+        uni.navigateTo({
+          url: './new-page/new-page-1?data=./new-page/new-page-1',
+          success() {
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail() {
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete() {
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      // 自动化测试
+      navigateToRelativePath3() {
+        uni.navigateTo({
+          url: '../navigator/new-page/new-page-1?data=../navigator/new-page/new-page-1',
+          success() {
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail() {
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete() {
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateBack() {
+        uni.navigateBack({
+          success(result) {
+            console.log('navigateBack success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateBack fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateBack complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateBackWithDelta1() {
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1',
+          success() {
+            uni.navigateBack({
+              delta: 1,
+              success(result) {
+                console.log('navigateBack success', result.errMsg)
+                // 自动化测试
+                setLifeCycleNum(state.lifeCycleNum + 1)
+              },
+              fail(error) {
+                console.log('navigateBack fail', error.errMsg)
+                // 自动化测试
+                setLifeCycleNum(state.lifeCycleNum - 1)
+              },
+              complete(result) {
+                console.log('navigateBack complete', result.errMsg)
+                // 自动化测试
+                setLifeCycleNum(state.lifeCycleNum + 1)
+              },
+            })
+          },
+        })
+      },
+      navigateBackWithDelta100() {
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1',
+          success() {
+            uni.navigateBack({
+              delta: 100,
+              success(result) {
+                console.log('navigateBack success', result.errMsg)
+                // 自动化测试
+                setLifeCycleNum(state.lifeCycleNum + 1)
+              },
+              fail(error) {
+                console.log('navigateBack fail', error.errMsg)
+                // 自动化测试
+                setLifeCycleNum(state.lifeCycleNum - 1)
+              },
+              complete(result) {
+                console.log('navigateBack complete', result.errMsg)
+                // 自动化测试
+                setLifeCycleNum(state.lifeCycleNum + 1)
+              },
+            })
+          },
+        })
+      },
+      redirectTo() {
+        uni.redirectTo({
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          success(result) {
+            console.log('redirectTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('redirectTo fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('redirectTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      switchTab() {
+        uni.switchTab({
+          url: '/pages/tabBar/template',
+          success(result) {
+            console.log('switchTab success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('switchTab fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('switchTab complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      // 自动化测试
+      getLifeCycleNum() : number {
+        return state.lifeCycleNum
+      },
+      // 自动化测试
+      setLifeCycleNum(num : number) {
+        setLifeCycleNum(num)
+      },
     },
-    navigateBackWithDelta1() {
-      uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page-1',
-        success() {
-          uni.navigateBack({
-            delta: 1,
-            success(result) {
-              console.log('navigateBack success', result.errMsg)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum + 1)
-            },
-            fail(error) {
-              console.log('navigateBack fail', error.errMsg)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum - 1)
-            },
-            complete(result) {
-              console.log('navigateBack complete', result.errMsg)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum + 1)
-            },
-          })
-        },
-      })
-    },
-    navigateBackWithDelta100() {
-      uni.navigateTo({
-        url: '/pages/API/navigator/new-page/new-page-1',
-        success() {
-          uni.navigateBack({
-            delta: 100,
-            success(result) {
-              console.log('navigateBack success', result.errMsg)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum + 1)
-            },
-            fail(error) {
-              console.log('navigateBack fail', error.errMsg)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum - 1)
-            },
-            complete(result) {
-              console.log('navigateBack complete', result.errMsg)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum + 1)
-            },
-          })
-        },
-      })
-    },
-    redirectTo() {
-      uni.redirectTo({
-        url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
-        success(result) {
-          console.log('redirectTo success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail(error) {
-          console.log('redirectTo fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete(result) {
-          console.log('redirectTo complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
-    },
-    switchTab() {
-      uni.switchTab({
-        url: '/pages/tabBar/template',
-        success(result) {
-          console.log('switchTab success', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-        fail(error) {
-          console.log('switchTab fail', error.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum - 1)
-        },
-        complete(result) {
-          console.log('switchTab complete', result.errMsg)
-          // 自动化测试
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        },
-      })
-    },
-    // 自动化测试
-    getLifeCycleNum(): number {
-      return state.lifeCycleNum
-    },
-    // 自动化测试
-    setLifeCycleNum(num: number) {
-      setLifeCycleNum(num)
-    },
-  },
-}
+  }
 </script>
 
 <style>
-.direction-row {
-  flex-direction: row;
-}
-.label {
-  width: 190px;
-}
+  .direction-row {
+    flex-direction: row;
+  }
+
+  .label {
+    width: 190px;
+  }
 </style>

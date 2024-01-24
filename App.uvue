@@ -14,9 +14,9 @@
       },
       null: null as string | null,
       arr: [] as number[],
-      set: new Set<string>(),
-      map: new Map<string, any>(),
-      func: (): string => {
+      mySet: new Set<string>(),
+      myMap: new Map<string, any>(),
+      func: () : string => {
         return 'globalData func'
       }
     },
@@ -46,6 +46,7 @@
       setLifeCycleNum(state.lifeCycleNum - 100)
       console.log('App Hide')
     },
+    // #ifdef APP-ANDROID
     onLastPageBackPress: function () {
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum - 1000)
@@ -64,6 +65,7 @@
         uni.exit()
       }
     },
+    // #endif
     onExit() {
       console.log('App Exit')
     },
@@ -79,4 +81,10 @@
 <style>
   /*每个页面公共css */
   @import "./common/uni.css";
+  /* #ifdef WEB */
+  /* web版暂未支持backgroundColorContent使用此样式替代 */
+  page {
+    background-color: #efeff4;
+  }
+  /* #endif */
 </style>

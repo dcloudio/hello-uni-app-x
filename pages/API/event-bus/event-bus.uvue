@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
     <view>
       <button @click="on">开始监听</button>
       <button @click="once">监听一次</button>
@@ -15,43 +15,43 @@
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script lang="uts">
-export default {
-  data() {
-    return {
-      log: [] as string[],
-    }
-  },
-  methods: {
-    fn(res: string) {
-      this.log.push(res)
+<script>
+  export default {
+    data() {
+      return {
+        log: [] as string[],
+      }
     },
-    on() {
-      uni.$on('test', this.fn)
+    methods: {
+      fn(res : string) {
+        this.log.push(res)
+      },
+      on() {
+        uni.$on('test', this.fn)
+      },
+      once() {
+        uni.$once('test', this.fn)
+      },
+      off() {
+        uni.$off('test', this.fn)
+      },
+      emit() {
+        uni.$emit('test', 'msg:' + Date.now())
+      },
+      clear() {
+        this.log.length = 0
+      },
     },
-    once() {
-      uni.$once('test', this.fn)
-    },
-    off() {
-      uni.$off('test', this.fn)
-    },
-    emit() {
-      uni.$emit('test', 'msg:' + Date.now())
-    },
-    clear() {
-      this.log.length = 0
-    },
-  },
-}
+  }
 </script>
 
 <style>
-.box {
-  padding: 10px;
-}
+  .box {
+    padding: 10px;
+  }
 </style>

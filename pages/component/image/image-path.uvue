@@ -1,5 +1,5 @@
 <template>
-  <scroll-view>
+  <scroll-view style="flex: 1;">
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
@@ -8,13 +8,14 @@
       <view v-for="(item,index) in data" :key="index">
         <text class="uni-subtitle-text">{{item.description}}</text>
         <view class="uni-center" style="background:#FFFFFF;">
-          <image class="image" mode="widthFix" :src="item.src" @error="imageErrorEvent"></image>
+          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+            @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
         </view>
       </view>
       <view>
         <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
         <view class="uni-center" style="background:#FFFFFF;">
-          <image class="image" mode="widthFix" src="./logo.png" @error="imageErrorEvent"></image>
+          <image class="image" mode="widthFix" src="./logo.png"></image>
         </view>
       </view>
     </view>
@@ -27,6 +28,8 @@
     data() {
       return {
         title: 'image-path',
+        outsideStaticPath: './logo.png',
+        outsideStaticErrorPath: null as string | null,
         data: [
           {
             src: '/static/test-image/logo.png',
@@ -45,11 +48,9 @@
             description: 'import方式'
           },
           {
-            // #ifdef APP-ANDROID
             src: 'file:///storage/emulated/0/Android/data/io.dcloud.uniappx/apps/__UNI__3584C99/www/static/test-image/logo.png',
-            // #endif
             // TODO iOS发版时还需再补路径
-            description: '本地绝对路径file://方式（需注意打包后包名appid匹配）'
+            description: '本地绝对路径file://方式（仅限Android平台，需注意打包后包名appid匹配）'
           },
           {
             src: 'testerror.jpg',
@@ -91,23 +92,24 @@
       }
     },
     methods: {
-      imageErrorEvent(e : ImageErrorEvent) {
+      imageErrorEvent(index : number, e : ImageErrorEvent) {
         console.log("图片加载错误", e.detail);
         // 图片加载失败，加载本地占位图
-        e.target?.setAttribute('src', '/static/template/drop-card/dislike.png')
+        this.data[index].errorImage = '/static/template/drop-card/dislike.png'
       }
     },
   }
 
   type ImagePath = {
     src : string
+    errorImage ?: string | null
     description : string
   }
 </script>
 
 <style>
   .image {
-    margin: 40rpx auto;
-    width: 200rpx;
+    margin: 20px auto;
+    width: 100px;
   }
 </style>

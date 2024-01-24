@@ -1,5 +1,5 @@
 const CURRENT_PAGE_PATH =
-  "/pages/API/set-navigation-bar-color/set-custom-navigation-bar-color";
+  "/pages/template/navbar-lite/navbar-lite";
 
 describe("setCustomNavigationBarColor", () => {
   let page;

@@ -3,15 +3,15 @@
     <unicloud-db ref="udb" class="udb" v-slot:default="{data, pagination, loading, hasMore, error}"
       :collection="collection" :page-size="15" :getcount="true" loadtime="manual">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
-      <list-view ref="listView" class="list-view" :scroll-y="true" @scrolltolower="loadMore()">
-        <list-item class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
+      <scroll-view ref="listView" class="list-view" @scrolltolower="loadMore()">
+        <view class="list-item" v-for="(item, _) in data" @click="gotoDetailPage(item['_id'] as string)">
           <view class="list-item-fill">
             <text class="name">{{item['username']}}</text>
             <text class="mobile">{{item['mobile']}}</text>
           </view>
-        </list-item>
-      </list-view>
-      <view v-if="loading" class="loading">正在加载...</view>
+        </view>
+      </scroll-view>
+      <uni-loading v-if="loading" class="loading" color="#999" text="正在加载..."></uni-loading>
       <view v-if="data.length>0" class="pagination">
         <text class="pagination-item">{{data.length}} / {{pagination.count}}</text>
       </view>
@@ -29,14 +29,14 @@
     data() {
       return {
         collection: COLLECTION_NAME,
-        $uniCloudElement: null as UniCloudDBElement | null
+        uniCloudElement: null as UniCloudDBElement | null
       }
     },
     onReady() {
       // TODO 后续通过 EventChannel 实现
       uni.$on(UNICLOUD_DB_CONTACTS_DELETE, this.onDataChange);
-      this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
-      this.$uniCloudElement!.loadData()
+      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
+      this.uniCloudElement!.loadData()
     },
     onUnload() {
       // TODO 后续通过 EventChannel 实现
@@ -50,7 +50,7 @@
       uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
     },
     onPullDownRefresh() {
-      this.$uniCloudElement!.loadData({
+      this.uniCloudElement!.loadData({
         clear: true,
         success: (_ : UniCloudDBGetResult) => {
           uni.stopPullDownRefresh()
@@ -59,7 +59,7 @@
     },
     methods: {
       loadMore() {
-        this.$uniCloudElement!.loadMore()
+        this.uniCloudElement!.loadMore()
       },
       gotoAddPage() {
         // TODO 后续通过 EventChannel 实现
@@ -75,8 +75,8 @@
           url: './detail?id=' + id
         })
       },
-      onDataChange(id : string) {
-        this.$uniCloudElement!.loadData({
+      onDataChange(_ : string) {
+        this.uniCloudElement!.loadData({
           clear: true
         })
       }
@@ -91,12 +91,17 @@
   }
 
   .loading {
-    align-items: center;
-    padding: 20px;
+    margin: 20px;
+    align-self: center;
   }
 
   .udb {
     flex: 1;
+    /* TODO */
+    /* #ifdef WEB */
+    display: flex;
+    /* #endif */
+    flex-direction: column;
   }
 
   .list-view {

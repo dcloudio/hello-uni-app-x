@@ -41,20 +41,20 @@ describe('PickerView.uvue', () => {
       indicatorStyle: 'height: 100px;',
     })
     await page.waitFor(500)
-    expect(await el.property('indicatorStyle')).toBe('height: 100px;')
+    expect(await el.attribute('indicatorStyle')).toBe('height: 100px;')
   })
   it('mask-top-style', async () => {
     const el = await page.$('.picker-view')
     await page.setData({
       maskTopStyle: 'background: #ffffff;',
     })
-    expect(await el.property('mask-top-style')).toBe('background: #ffffff;')
+    expect(await el.attribute('mask-top-style')).toBe('background: #ffffff;')
   })
   it('mask-bottom-style', async () => {
     const el = await page.$('.picker-view')
     await page.setData({
       maskBottomStyle: 'background: #ffffff;',
     })
-    expect(await el.property('mask-bottom-style')).toBe('background: #ffffff;')
+    expect(await el.attribute('mask-bottom-style')).toBe('background: #ffffff;')
   })
 })

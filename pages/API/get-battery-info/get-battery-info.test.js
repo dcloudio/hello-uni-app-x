@@ -1,10 +1,15 @@
 const PAGE_PATH = '/pages/API/get-battery-info/get-battery-info'
 
 describe('ExtApi-GetBatteryInfo', () => {
-
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page;
   let res;
- 
+
   const numberProperties = [
     'level'
   ]

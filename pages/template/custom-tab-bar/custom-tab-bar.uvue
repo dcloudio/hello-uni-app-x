@@ -65,7 +65,7 @@
         ] as TabItem[],
         selectedIndex: -1,
         displayArrow: false,
-        $tabViewHeight: 0
+        tabViewHeight: 0
       }
     },
     onLoad() {
@@ -73,7 +73,7 @@
     },
     onReady() {
       this.setSelectedIndex(0)
-      this.$tabViewHeight = (this.$refs["tabview"] as Element).getBoundingClientRect().height
+      this.tabViewHeight = (this.$refs["tabview"] as UniElement).getBoundingClientRect().height
     },
     onUnload() {
       uni.$off('tabchange', this.onTabPageEvent)
@@ -86,7 +86,7 @@
         }
       },
       onTabPageEvent(top : number) {
-        this.displayArrow = top > this.$tabViewHeight
+        this.displayArrow = top > this.tabViewHeight
       },
       setSelectedIndex(index : number) {
         if (this.selectedIndex === index) {

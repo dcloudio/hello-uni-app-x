@@ -1,10 +1,10 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex:1;padding: 10px;">
+  <scroll-view style="flex:1;">
   <!-- #endif -->
-    <button @click="switchBtn">{{buttonValue}}</button>
     <image class="transition-transform" id="transition-transform" @transitionend="onEnd" src="/static/uni.png"></image>
-    <text>对图片设置transform进行旋转，在旋转完成的transitionend事件后，继续旋转</text>
+    <text class="adjust">对图片设置transform进行旋转，在旋转完成的transitionend事件后，继续旋转</text>
+    <button class="adjust" @click="switchBtn">{{buttonValue}}</button>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -15,7 +15,7 @@
     data() {
       return {
         times: 0,
-        element: null as Element | null,
+        element: null as UniElement | null,
         isStart: false,
         buttonValue: "开启图片旋转",
         onTransitionEndTriggr: false
@@ -30,14 +30,14 @@
           this.buttonValue = "关闭图片旋转"
           this.times = this.times + 1
           this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
-          this.element!.style.setProperty('transition-duration', '2000')
+          this.element!.style.setProperty('transition-duration', '2000ms')
           this.isStart = true
         } else {
           this.isStart = false
           this.times = 0
           this.buttonValue = "开启图片旋转"
           this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
-          this.element!.style.setProperty('transition-duration', '0')
+          this.element!.style.setProperty('transition-duration', '0ms')
         }
       },
       onEnd() {
@@ -52,14 +52,17 @@
 </script>
 
 <style>
-  .transition-transform {
-    width: 400rpx;
-    height: 400rpx;
-    margin: 50rpx auto;
-    border-radius: 200rpx;
-    transition-duration: 2000;
-    transition-property: transform;
-    transition-timing-function: linear;
-    transform: rotate(0deg);
-  }
+.adjust {
+  margin: 10px;
+}
+.transition-transform {
+  width: 200px;
+  height: 200px;
+  margin: 25px auto;
+  border-radius: 100px;
+  transition-duration: 2000ms;
+  transition-property: transform;
+  transition-timing-function: linear;
+  transform: rotate(0deg);
+}
 </style>

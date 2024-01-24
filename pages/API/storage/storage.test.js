@@ -168,18 +168,18 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageButtonInfo.tap()
     await page.waitFor(600)
     expect(await getData('apiGetData')).toEqual(12345789.235689)
-    
-    
+
+
     // 测试 remove
     await btnGetStorageInfoSyncButton.tap()
     await page.waitFor(600)
     storageInfoRet = await getData('apiGetData')
     expect(storageInfoRet.keys[0]).toEqual("autotest_key_mock")
-    
+
     const btnRemoveStorageInfoSyncButton = await page.$('.btn-removeStorageInfoSync')
     await btnRemoveStorageInfoSyncButton.tap()
     page.waitFor(600)
-    
+
     await btnGetStorageInfoSyncButton.tap()
     await page.waitFor(600)
     storageInfoRet = await getData('apiGetData')
@@ -217,7 +217,28 @@ describe('ExtApi-StorageInfoTest', () => {
     let objRet = await getData('apiGetData')
     expect(objRet.name).toEqual("tom")
 
-
+    await page.setData({
+      key: "autotest_key_mock",
+      data:JSON.stringify({
+          name: "james",
+          age: 12,
+          from:"american"
+      })
+    })
+    await page.waitFor(600)
+    btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
+    await btnSetStorageButtonInfo.tap()
+    await page.waitFor(600)
+    btnGetStorageButtonInfo = await page.$('.btn-getstorageSync')
+    await btnGetStorageButtonInfo.tap()
+    await page.waitFor(600)
+    let jsonStr = await getData('apiGetData')
+    // 顺序不能保证，验证长度和各个属性来区分
+    let parseObj = JSON.parse(jsonStr)
+    expect(jsonStr.length).toEqual(43)
+    expect(parseObj['age']).toEqual(12)
+    expect(parseObj['from']).toEqual('american')
+    expect(parseObj['name']).toEqual('james')
 
 
   });

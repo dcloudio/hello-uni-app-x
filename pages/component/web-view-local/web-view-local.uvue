@@ -1,9 +1,7 @@
 <template>
-  <view class="uni-flex-item">
-    <web-view ref="web-view" class="uni-flex-item" src="/hybrid/html/local.html" @message="message" @error="error"
-      @loading="loading" @loaded="loaded">
-    </web-view>
-  </view>
+  <web-view ref="web-view" class="web-view" src="/hybrid/html/local.html" @message="message" @error="error"
+    @loading="loading" @load="load">
+  </web-view>
 </template>
 
 <script>
@@ -15,28 +13,30 @@
       }
     },
     methods: {
-      message(event : WebViewMessageEvent) {
-        console.log(JSON.stringify(event.detail));
+      message(event : UniWebViewMessageEvent) {
+        console.log(JSON.stringify(event));
         uni.showModal({
           content: JSON.stringify(event.detail),
           showCancel: false
         });
       },
-      error(event : WebViewErrorEvent) {
+      error(event : UniWebViewErrorEvent) {
         this.loadError = true
-        console.log(JSON.stringify(event.detail));
+        console.log(JSON.stringify(event));
       },
-      loading(event : WebViewLoadingEvent) {
-        console.log(JSON.stringify(event.type));
+      loading(event : UniWebViewLoadingEvent) {
+        console.log(JSON.stringify(event));
       },
-      loaded(event : WebViewLoadedEvent) {
+      load(event : UniWebViewLoadEvent) {
         this.loadFinish = true;
-        console.log(JSON.stringify(event.type));
+        console.log(JSON.stringify(event));
       }
     }
   }
 </script>
 
 <style>
-
+.web-view {
+  flex: 1;
+}
 </style>

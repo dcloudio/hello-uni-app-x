@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
@@ -94,6 +94,83 @@
             this.jest_result = false;
           },
         })
+      },
+      jest_set_cookie() {
+        uni.request({
+          url: "http://request.dcloud.net.cn/api/http/header/setCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_upload(true)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+
+      jest_delete_cookie() {
+        uni.request({
+          url: "http://request.dcloud.net.cn/api/http/header/deleteCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_upload(false)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_cookie_upload(needCookie : boolean) {
+        const imageSrc = "/static/uni.png";
+        this.task = uni.uploadFile({
+          url: 'http://request.dcloud.net.cn/api/http/header/upload',
+          filePath: imageSrc,
+          name: 'file',
+          success: (res : UploadFileSuccess) => {
+            const data = JSON.parseObject(res.data)
+            const errCode = data?.getNumber("errCode")
+            if (errCode != null && errCode == 1000) {
+              this.jest_result = needCookie ? false : true;
+            } else {
+              this.jest_result = needCookie ? true : false;
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        })
+      },
+      jest_files_upload() {
+        const imageSrc = "/static/uni.png";
+        this.task = uni.uploadFile({
+          url: 'https://unidemo.dcloud.net.cn/upload',
+          files: [
+            {
+              name: "file1",
+              uri: imageSrc
+            } as UploadFileOptionFiles,
+            {
+              name: "file2",
+              uri: imageSrc
+            } as UploadFileOptionFiles
+          ],
+          success: (res : UploadFileSuccess) => {
+            if (res.statusCode == 200) {
+              this.jest_result = true;
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        })
       }
     }
   }
@@ -106,7 +183,7 @@
 
   .demo {
     background: #fff;
-    padding: 50rpx;
+    padding: 25px;
     justify-content: center;
     align-items: center;
   }
@@ -114,9 +191,9 @@
   .uni-hello-addfile {
     text-align: center;
     background: #fff;
-    padding: 50rpx;
+    padding: 25px;
     margin-top: 10px;
-    font-size: 38rpx;
+    font-size: 19px;
     color: #808080;
   }
 </style>

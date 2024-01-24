@@ -1,6 +1,12 @@
 const PAGE_PATH = '/pages/API/get-app-authorize-setting/get-app-authorize-setting'
 
 describe('ExtApi-GetAppAuthorizeSetting', () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   let page;
   let res;

@@ -10,10 +10,9 @@ describe('page-scroll-to', () => {
     const btnScrollTo = await page.$('.btn-scrollTo')
 
     await btnScrollTo.tap()
-    await page.waitFor(300)
+    await page.waitFor(600)
 
     const scrollTop = await page.scrollTop()
-
     // 设备精度问题，允许上下浮动 1px
     expect(scrollTop > 99 && scrollTop < 101).toBe(true)
   })
@@ -22,7 +21,7 @@ describe('page-scroll-to', () => {
     const scrollToElement = await page.$('.custom-element')
 
     await btnScrollTo.tap()
-    await page.waitFor(300)
+    await page.waitFor(600)
 
     const offset = await scrollToElement.offset()
     // android 6 分辨率为 720*1280，需要调整期望数值

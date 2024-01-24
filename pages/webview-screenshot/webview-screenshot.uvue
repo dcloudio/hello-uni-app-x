@@ -1,0 +1,37 @@
+<template>
+  <web-view id="webview-screenshot" class="webview-screenshot" :webview-styles='webviewStyles' :src="src"
+    @loaded="loaded" @error="error">
+  </web-view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        baseSrc: '',
+        src: '',
+        webviewContext: null as WebviewContext | null,
+        isLoaded: false,
+        webviewStyles: {
+          progress: false
+        }
+      }
+    },
+    onReady() {
+      this.webviewContext = uni.createWebviewContext('webview-screenshot', this)
+    },
+    methods: {
+      loaded() {
+        this.isLoaded = true
+      },
+      error(event : WebViewErrorEvent) {
+        console.log('webview load error', JSON.stringify(event.detail));
+      }
+    }
+  }
+</script>
+<style>
+  .webview-screenshot {
+    flex: 1;
+  }
+</style>

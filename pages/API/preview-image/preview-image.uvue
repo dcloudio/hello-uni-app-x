@@ -1,20 +1,12 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
-    <view style="padding-left: 16rpx; padding-right: 16rpx">
+  <!-- #endif -->
+    <view style="padding-left: 8px; padding-right: 8px">
       <view>
         <text class="text-desc">图片指示器样式</text>
-        <radio-group
-          class="cell-ct"
-          style="background-color: white"
-          @change="onIndicatorChanged"
-        >
-          <view
-            class="indicator-it"
-            v-for="(item, index) in indicator"
-            :key="item.value"
-          >
+        <radio-group class="cell-ct" style="background-color: white" @change="onIndicatorChanged">
+          <view class="indicator-it" v-for="(item, index) in indicator" :key="item.value">
             <radio :checked="index == 0" :value="item.value">{{
               item.name
             }}</radio>
@@ -22,125 +14,108 @@
         </radio-group>
       </view>
       <view>
-        <checkbox-group
-          @change="onCheckboxChange"
-          style="margin-top: 32rpx; margin-bottom: 32rpx; margin-left: 16rpx"
-        >
-          <checkbox :checked="isLoop" style="margin-right: 30rpx"
-            >循环播放</checkbox
-          >
+        <checkbox-group @change="onCheckboxChange" style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
+          <checkbox :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
         </checkbox-group>
       </view>
       <view style="background-color: white">
         <text class="text-desc">点击图片开始预览</text>
-        <view class="cell-ct" style="background-color: #eeeeee; padding: 16rpx">
-          <view
-            class="cell cell-choose-image"
-            v-for="(image, index) in imageList"
-            :key="index"
-          >
-            <image
-              style="width: 210rpx; height: 210rpx"
-              mode="aspectFit"
-              :src="image"
-              @click="previewImage(index)"
-            ></image>
+        <view class="cell-ct" style="background-color: #eeeeee; padding: 8px">
+          <view class="cell cell-choose-image" v-for="(image, index) in imageList" :key="index">
+            <image style="width: 105px; height: 105px" mode="aspectFit" :src="image" @click="previewImage(index)">
+            </image>
           </view>
-          <image
-            class="cell cell-choose-image"
-            src="/static/plus.png"
-            @click="chooseImage"
-          >
+          <image class="cell cell-choose-image" src="/static/plus.png" @click="chooseImage">
             <view></view>
           </image>
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script>
-type ItemType = {
-	value: string,
-	name: string
-}
+  type ItemType = {
+    value : string,
+    name : string
+  }
 
-export default {
-	data() {
-		return {
-			imageList: ["https://web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", "/static/uni.png"],
-			indicator: [{
-				value: "default",
-				name: "圆点"
-			}, {
-				value: "number",
-				name: "数字"
-			}, {
-				value: "none",
-				name: "不显示"
-			}] as ItemType[],
-			currentIndicator: "default",
-			isLoop: true
-		}
-	},
-	methods: {
-		previewImage(index: number) {
-			uni.previewImage({
-				urls: this.imageList,
-				current: index,
-				indicator: this.currentIndicator,
-				loop: this.isLoop
-			})
-		},
-		chooseImage() {
-			uni.chooseImage({
-				sourceType: ['album'],
-				success: (e) => {
-					this.imageList = this.imageList.concat(e.tempFilePaths)
-				},
-				fail(_) {
-				}
-			})
-		},
-		onIndicatorChanged(e: RadioGroupChangeEvent) {
-			this.currentIndicator = e.detail.value
-		},
-		onCheckboxChange(_: CheckboxGroupChangeEvent) {
-			this.isLoop = !this.isLoop
-		}
-	}
-}
+  export default {
+    data() {
+      return {
+        imageList: ["https://web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", "/static/uni.png"],
+        indicator: [{
+          value: "default",
+          name: "圆点"
+        }, {
+          value: "number",
+          name: "数字"
+        }, {
+          value: "none",
+          name: "不显示"
+        }] as ItemType[],
+        currentIndicator: "default",
+        isLoop: true
+      }
+    },
+    methods: {
+      previewImage(index : number) {
+        uni.previewImage({
+          urls: this.imageList,
+          current: index,
+          indicator: this.currentIndicator,
+          loop: this.isLoop
+        })
+      },
+      chooseImage() {
+        uni.chooseImage({
+          sourceType: ['album'],
+          success: (e) => {
+            this.imageList = this.imageList.concat(e.tempFilePaths)
+          },
+          fail(_) {
+          }
+        })
+      },
+      onIndicatorChanged(e : UniRadioGroupChangeEvent) {
+        this.currentIndicator = e.detail.value
+      },
+      onCheckboxChange(_ : UniCheckboxGroupChangeEvent) {
+        this.isLoop = !this.isLoop
+      }
+    }
+  }
 </script>
 
 <style>
-.text-desc {
-  margin-top: 32rpx;
-  margin-left: 16rpx;
-  margin-bottom: 32rpx;
-  font-weight: bold;
-}
+  .text-desc {
+    margin-top: 16px;
+    margin-left: 8px;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
 
-.cell-ct {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-}
+  .cell-ct {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
 
-.cell {
-  margin-left: 14rpx;
-  width: 210rpx;
-  height: 210rpx;
-}
+  .cell {
+    margin-left: 7px;
+    width: 105px;
+    height: 105px;
+  }
 
-.cell-choose-image {
-  border-width: 1px;
-  border-style: solid;
-  border-color: lightgray;
-}
+  .cell-choose-image {
+    border-width: 1px;
+    border-style: solid;
+    border-color: lightgray;
+  }
 
-.indicator-it {
-  margin: 16rpx;
-}
+  .indicator-it {
+    margin: 8px;
+  }
 </style>

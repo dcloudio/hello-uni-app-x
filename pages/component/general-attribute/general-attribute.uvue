@@ -70,13 +70,18 @@ export default {
   },
   methods: {
     validateGeneralAttributes() {
-      const generalTarget = this.$refs['general-target'] as Element
+      const generalTarget = this.$refs['general-target'] as UniElement
       const generalId = generalTarget.getAttribute('id')
       if (generalId != this.generalId) {
         this.validateGeneralAttrText = '基础属性 id 验证失败'
         return
       }
+      // #ifdef APP
       if (!generalTarget.classList.includes('general-class')) {
+      // #endif
+      // #ifdef WEB
+      if (!Array.from(generalTarget.classList).includes('general-class')) {
+      // #endif
         this.validateGeneralAttrText = '基础属性 class 验证失败'
         return
       }
@@ -98,7 +103,7 @@ export default {
       this.validateGeneralAttrText = '基础属性验证成功'
     },
     changeHeight(){
-      const generalTarget = this.$refs['general-target'] as Element
+      const generalTarget = this.$refs['general-target'] as UniElement
       this.changeHeightByRefText = '已通过 ref 修改高度'
       generalTarget.style.setProperty('height', '200px')
     }

@@ -1,16 +1,16 @@
 <template>
-  <scroll-view ref="pageScrollView" class="page" :scroll-y="true" :rebound="false"
+  <scroll-view ref="pageScrollView" class="page" :rebound="false"
     @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
     :nested-scroll-child="nestedScrollChildId"
     >
     <swiper ref="header" indicator-dots="true" circular="true">
       <swiper-item  v-for="i in 3" :item-id="i">
-        <image src="/static/shuijiao.jpg" style="height: 240px;"></image>
+        <image src="/static/shuijiao.jpg" style="width:100% ;height: 240px;"></image>
         <text style="position: absolute;">{{i}}</text>
       </swiper-item>
     </swiper>
     <view class="swiper-list">
-      <scroll-view ref="tabScroll" class="swiper-tabs" :scroll-x="true" :show-scrollbar="false">
+      <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
         <view class="flex-row" style="align-self: flex-start;">
           <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
             v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
@@ -89,22 +89,22 @@
           } as SwiperViewItem
         ] as SwiperViewItem[],
         swiperIndex: -1,
-        $pageScrollView: null as null | Element,
+        $pageScrollView: null as null | UniElement,
         $headerHeight: 0,
         $animationFinishIndex: 0,
-        $tabScrollView: null as null | Element,
-        $indicatorNode: null as null | Element,
+        $tabScrollView: null as null | UniElement,
+        $indicatorNode: null as null | UniElement,
         $swiperWidth: 0,
         $swiperTabsRect: [] as SwiperTabsItem[],
         nestedScrollChildId: ""
       }
     },
     onReady() {
-      this.$pageScrollView = this.$refs['pageScrollView'] as Element;
-      this.$headerHeight = (this.$refs['header'] as Element).offsetHeight
-      this.$swiperWidth = (this.$refs['swiper'] as Element).getBoundingClientRect().width
-      this.$tabScrollView = this.$refs['tabScroll'] as Element
-      this.$indicatorNode = this.$refs['indicator'] as Element
+      this.$pageScrollView = this.$refs['pageScrollView'] as UniElement;
+      this.$headerHeight = (this.$refs['header'] as UniElement).offsetHeight
+      this.$swiperWidth = (this.$refs['swiper'] as UniElement).getBoundingClientRect().width
+      this.$tabScrollView = this.$refs['tabScroll'] as UniElement
+      this.$indicatorNode = this.$refs['indicator'] as UniElement
       this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
@@ -151,7 +151,7 @@
         // 计算当前索引并重置差异
         const current_offset_x = offset_x % this.$swiperWidth
         const current_offset_i = offset_x / this.$swiperWidth
-        const current_index = this.$animationFinishIndex + current_offset_i.toInt()
+        const current_index = this.$animationFinishIndex + Math.floor(current_offset_i)
 
         // 计算目标索引及边界检查
         let move_to_index = current_index
@@ -176,7 +176,7 @@
       },
       cacheTabItemsSize() {
         this.$swiperTabsRect.length = 0
-        const tabs = this.$refs["swipertab"] as Element[]
+        const tabs = this.$refs["swipertab"] as UniElement[]
         tabs.forEach((node) => {
           this.$swiperTabsRect.push({
             x: node.offsetLeft,
@@ -221,9 +221,7 @@
           (this.$refs["longPage"]! as ComponentPublicInstance[])[index].$callMethod('loadData', null)
         }
         //swiper页面切换需要重新赋值嵌套滚动子元素的id
-        if (this.swiperList[index].id != null) {
-          this.nestedScrollChildId = this.swiperList[index].id
-        }
+        this.nestedScrollChildId = this.swiperList[index].id
       }
     }
   }

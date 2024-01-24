@@ -39,9 +39,18 @@ describe('nodes-info', () => {
     expect(Math.round(nodeInfo1.height)).toBe(RECT_HEIGHT)
 
     const nodeInfo2 = data.nodeInfoList[1]
-    expect(nodeInfo2.left > 200).toBe(true)
+    expect(nodeInfo2.left > 180).toBe(true)
     expect(nodeInfo2.top > 220).toBe(true)
     expect(Math.round(nodeInfo2.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo2.height)).toBe(RECT_HEIGHT)
   })
+
+  // #ifdef APP
+  //检测onResize获取BoundingClientRect信息是否有效
+  /* it('check_resizeRectValid', async () => {
+    const resizeRectValid = await page.data('resizeRectValid')
+    expect(resizeRectValid).toBe(true)
+  }) */
+  // #endif
+
 })

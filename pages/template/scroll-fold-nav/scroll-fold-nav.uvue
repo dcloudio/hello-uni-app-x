@@ -1,8 +1,16 @@
 <template>
-  <scroll-view :scroll-y="true" @scroll="onScroll" class="scroll-view" rebound="false">
+  <scroll-view @scroll="onScroll" class="scroll-view" rebound="false">
+    <!--#ifdef APP-->
     <view class="height-seat" style="height: 125px;">
       <!-- 垫高专用 -->
     </view>
+    <!--#endif-->
+    <!--#ifdef WEB-->
+    <view class="height-seat" style="height: 90px;">
+      <!-- 垫高专用 -->
+    </view>
+    <!--#endif-->
+
     <view class="content">
       <view class="content-item">
         <text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
@@ -41,23 +49,28 @@
         statusBarHeight: 35,
         scrollTop: 0,
         searchWidth: 700,
-        searchNode: null as Element | null,
-        boxNode: null as Element | null,
-        navNode: null as Element | null
+        searchNode: null as UniElement | null,
+        boxNode: null as UniElement | null,
+        navNode: null as UniElement | null
       }
     },
     onLoad() { },
     onReady() {
       this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight ?? 35;
-      this.searchNode = this.$refs['search'] as Element;
-      this.boxNode = this.$refs['top-box'] as Element;
-      this.navNode = this.$refs['scroll-fold-nav'] as Element;
+      this.searchNode = this.$refs['search'] as UniElement;
+      this.boxNode = this.$refs['top-box'] as UniElement;
+      this.navNode = this.$refs['scroll-fold-nav'] as UniElement;
     },
     methods: {
       onScroll(e : ScrollEvent) {
         let scrollTop = e.detail.scrollTop
-        this.boxNode?.style?.setProperty('height', (125 - (scrollTop > this.statusBarHeight ? this.statusBarHeight : scrollTop)) + 'px');
-        this.boxNode?.style?.setProperty('backgroundColor', 'rgba(255, 255, 255, ' + (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0 + ')');
+        // #ifdef APP
+        const originalBoxHeight = 125
+        // #else
+        const originalBoxHeight = 90
+        // #endif
+        this.boxNode?.style?.setProperty('height', (originalBoxHeight - (scrollTop > 35 ? 35 : scrollTop)) + 'px');
+        this.boxNode?.style?.setProperty('background-color', 'rgba(255, 255, 255, ' + (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0 + ')');
         this.navNode?.style?.setProperty('opacity', 1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0);
         this.searchNode?.style?.setProperty('width', 700 - (scrollTop > 40 ? 40 : scrollTop) + 'rpx');
         this.searchNode?.style?.setProperty('top', 0 - (scrollTop > 40 ? 40 : scrollTop) + 'px');
@@ -130,17 +143,21 @@
   .top-box {
     position: fixed;
     top: 0;
-    padding-top: 35px;
     align-items: flex-end;
     border-bottom: 1px solid #efefef;
+    /* #ifdef APP */
     height: 125px;
+    padding-top: 35px;
+    /* #else */
+    height: 90px;
+    /* #endif */
     background-color: rgba(255, 255, 255, 0);
     background-color: aliceblue;
   }
 
   .scroll-fold-nav {
     height: 44px;
-    width: 750rpx;
+    width: 375px;
     justify-content: center;
   }
 
@@ -150,7 +167,11 @@
 
   .nav-back {
     position: absolute;
+    /* #ifdef APP */
     top: 46px;
+    /* #else */
+    top: 11px;
+    /* #endif */
     left: 8px;
   }
 
@@ -164,12 +185,12 @@
     border: 1px solid #fbdf0d;
     height: 35px;
     border-radius: 100px;
-    margin: 0 25rpx;
+    margin: 0 12px;
     padding: 8px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 700rpx;
+    width: 350px;
     top: 0px;
   }
 

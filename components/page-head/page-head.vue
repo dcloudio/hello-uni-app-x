@@ -18,20 +18,17 @@
 </script>
 <style>
   .common-page-head {
-    padding: 35rpx;
-    flex-direction: row;
-    justify-content: center;
+    padding: 20px;
+    align-items: center;
   }
 
   .common-page-head-title-box {
-    padding: 0 40rpx;
-    height: 88rpx;
-    border-bottom: 2rpx solid #D8D8D8;
+    padding: 0 20px;
+    border-bottom: 1px solid #D8D8D8;
   }
 
   .common-page-head-title {
-    line-height: 88rpx;
-    font-size: 30rpx;
+    line-height: 40px;
     color: #BEBEBE;
   }
 </style>

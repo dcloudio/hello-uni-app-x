@@ -1,7 +1,7 @@
 <template>
   <scroll-view class="page">
     <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
-      loadtime="manual" page-data="replace">
+      page-data="replace">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
       <view v-if="loading" class="loading">正在加载...</view>
       <view v-if="data.length>0">
@@ -37,15 +37,16 @@
   export default {
     data() {
       return {
-        collection: COLLECTION_NAME,
+        collection: '',
         where: '',
-        $whereID: '',
-        $uniCloudElement: null as UniCloudDBElement | null
+        whereID: '',
+        uniCloudElement: null as UniCloudDBElement | null
       }
     },
-    onLoad(options : Map<string, string>) {
-      this.$whereID = options.get('id') as string;
-      this.where = `_id=='${this.$whereID}'`;
+    onLoad(options) {
+      this.collection = COLLECTION_NAME;
+      this.whereID = options['id'] as string;
+      this.where = `_id=='${this.whereID}'`;
     },
     onShow() {
       // TODO 后续通过 EventChannel 实现
@@ -56,8 +57,7 @@
       uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
     },
     onReady() {
-      this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
-      this.$uniCloudElement!.loadData()
+      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
     },
     methods: {
       displayGender(value : number | null) : string {
@@ -73,8 +73,8 @@
           url: './edit?id=' + id
         })
       },
-      onDataChange(id : string) {
-        this.$uniCloudElement!.loadData()
+      onDataChange(_ : string) {
+        this.uniCloudElement!.loadData()
       }
     }
   }
@@ -82,6 +82,7 @@
 
 <style>
   .page {
+    flex: 1;
     padding: 15px;
   }
 

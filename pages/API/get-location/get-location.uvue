@@ -1,40 +1,38 @@
 <template>
-  <view>
-    <page-head :title="title"></page-head>
-    <view style="padding: 4px;">
-    	<text class="hello-text">
-        真机运行标准基座仅包含系统定位，即system。\n
-        部分手机因gms兼容不好可能导致无法定位。\n
-        gcj国标、逆地理信息等功能需三方sdk定位。如果需要类似能力可以下载腾讯定位插件，打包自定义基座。参考示例：</text>
-    	<u-link :href="'https://ext.dcloud.net.cn/plugin?id=14569'" :text="'https://ext.dcloud.net.cn/plugin?id=14569'" :inWhiteList="true"></u-link>
-    </view>
+  <page-head :title="title"></page-head>
+  <view style="padding: 4px;">
+    <text class="hello-text">
+      真机运行标准基座仅包含系统定位，即system。\n
+      部分手机因gms兼容不好可能导致无法定位。\n
+      gcj国标、逆地理信息等功能需三方sdk定位。如果需要类似能力可以下载腾讯定位插件，打包自定义基座。参考示例：</text>
+    <u-link :href="'https://ext.dcloud.net.cn/plugin?id=14569'" :text="'https://ext.dcloud.net.cn/plugin?id=14569'" :inWhiteList="true"></u-link>
+  </view>
 
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-list">
-        <radio-group @change="radioChange">
-          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-            :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
-            :checked="index === current">
-            {{item.name}}
-          </radio>
-        </radio-group>
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">高度信息</view>
-        <switch :checked="altitudeSelect" @change="altitudeChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">开启高精度定位</view>
-        <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
-      </view>
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">是否解析地址信息</view>
-        <switch :checked="geocodeSelect" @change="geocodeChange" />
-      </view>
-      <text>{{exeRet}}</text>
-      <view class="uni-btn-v">
-        <button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
-      </view>
+  <view class="uni-padding-wrap uni-common-mt">
+    <view class="uni-list">
+      <radio-group @change="radioChange">
+        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+          :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
+          :checked="index === current">
+          {{item.name}}
+        </radio>
+      </radio-group>
+    </view>
+    <view class="uni-list-cell uni-list-cell-pd">
+      <view class="uni-list-cell-db">高度信息</view>
+      <switch :checked="altitudeSelect" @change="altitudeChange" />
+    </view>
+    <view class="uni-list-cell uni-list-cell-pd">
+      <view class="uni-list-cell-db">开启高精度定位</view>
+      <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
+    </view>
+    <view class="uni-list-cell uni-list-cell-pd">
+      <view class="uni-list-cell-db">是否解析地址信息</view>
+      <switch :checked="geocodeSelect" @change="geocodeChange" />
+    </view>
+    <text>{{exeRet}}</text>
+    <view class="uni-btn-v">
+      <button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
     </view>
   </view>
 </template>
@@ -65,16 +63,16 @@
       }
     },
     methods: {
-      altitudeChange: function (e : SwitchChangeEvent) {
+      altitudeChange: function (e : UniSwitchChangeEvent) {
         this.altitudeSelect = e.detail.value
       },
-      geocodeChange: function (e : SwitchChangeEvent) {
+      geocodeChange: function (e : UniSwitchChangeEvent) {
         this.geocodeSelect = e.detail.value
       },
-      highAccuracySelectChange: function (e : SwitchChangeEvent) {
+      highAccuracySelectChange: function (e : UniSwitchChangeEvent) {
         this.isHighAccuracySelect = e.detail.value
       },
-      radioChange(e : RadioGroupChangeEvent) {
+      radioChange(e : UniRadioGroupChangeEvent) {
         for (let i = 0; i < this.items.length; i++) {
           if (this.items[i].value === e.detail.value) {
             this.current = i;
@@ -114,6 +112,3 @@
     }
   }
 </script>
-<style>
-@import '@/common/uni-uvue.css';
-</style>

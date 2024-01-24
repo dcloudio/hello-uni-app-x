@@ -1,0 +1,460 @@
+<template>
+  <view class="page">
+    <page-head :title="title"></page-head>
+    <canvas class="canvas-element" canvas-id="canvas" id="canvas"></canvas>
+    <scroll-view class="scroll-view">
+      <view class="grid-view">
+        <view class="grid-item" v-for="(name, index) in names" :key="index">
+          <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
+        </view>
+      </view>
+      <button class="btn-to-image" @click="toTempFilePath" type="primary">toTempFilePath</button>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'createContext',
+        names: ["rotate", "scale", "reset", "translate", "save", "restore", "drawImage", "fillText", "fill",
+          "stroke", "clearRect", "beginPath", "closePath", "moveTo", "lineTo", "rect", "arc",
+          "quadraticCurveTo", "bezierCurveTo", "setFillStyle", "setStrokeStyle", "setGlobalAlpha",
+          "setShadow", "setFontSize", "setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit"
+        ],
+        // TODO 缺失 CanvasContext
+        canvasContext: null as any | null
+      }
+    },
+    onReady() {
+      // @ts-ignore
+      this.canvasContext = uni.createCanvasContext('canvas', this)
+    },
+    methods: {
+      toTempFilePath() {
+        // TODO 缺失
+        // uni.canvasToTempFilePath({
+        //   canvasId: 'canvas',
+        //   success: (res) => {
+        //     console.log(res.tempFilePath)
+        //   },
+        //   fail: (err) => {
+        //     console.error(JSON.stringify(err))
+        //   }
+        // })
+      },
+      handleCanvasButton(name : string) {
+        switch (name) {
+          case "rotate":
+            this.rotate();
+            break;
+          case "scale":
+            this.scale();
+            break;
+          case "reset":
+            this.reset();
+            break;
+          case "translate":
+            this.translate();
+            break;
+          case "save":
+            this.save();
+            break;
+          case "restore":
+            this.restore();
+            break;
+          case "drawImage":
+            this.drawImage();
+            break;
+          case "fillText":
+            this.fillText();
+            break;
+          case "fill":
+            this.fill();
+            break;
+          case "stroke":
+            this.stroke();
+            break;
+          case "clearRect":
+            this.clearRect();
+            break;
+          case "beginPath":
+            this.beginPath();
+            break;
+          case "closePath":
+            this.closePath();
+            break;
+          case "moveTo":
+            this.moveTo();
+            break;
+          case "lineTo":
+            this.lineTo();
+            break;
+          case "rect":
+            this.rect();
+            break;
+          case "arc":
+            this.arc();
+            break;
+          case "quadraticCurveTo":
+            this.quadraticCurveTo();
+            break;
+          case "bezierCurveTo":
+            this.bezierCurveTo();
+            break;
+          case "setFillStyle":
+            this.setFillStyle();
+            break;
+          case "setStrokeStyle":
+            this.setStrokeStyle();
+            break;
+          case "setGlobalAlpha":
+            this.setGlobalAlpha();
+            break;
+          case "setShadow":
+            this.setShadow();
+            break;
+          case "setFontSize":
+            this.setFontSize();
+            break;
+          case "setLineCap":
+            this.setLineCap();
+            break;
+          case "setLineJoin":
+            this.setLineJoin();
+            break;
+          case "setLineWidth":
+            this.setLineWidth();
+            break;
+          case "setMiterLimit":
+            this.setMiterLimit();
+            break;
+          default:
+            break;
+        }
+      },
+      rotate() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rotate(10 * Math.PI / 180)
+        this.canvasContext!.rect(225, 75, 20, 10)
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
+      },
+      scale() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(25, 25, 50, 50)
+        this.canvasContext!.stroke()
+
+        this.canvasContext!.scale(2, 2)
+
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(25, 25, 50, 50)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      reset() {
+        this.canvasContext!.beginPath()
+
+        this.canvasContext!.setFillStyle('#000000')
+        this.canvasContext!.setStrokeStyle('#000000')
+        this.canvasContext!.setFontSize(10)
+        this.canvasContext!.setGlobalAlpha(1)
+        this.canvasContext!.setShadow(0, 0, 0, 'rgba(0, 0, 0, 0)')
+
+        this.canvasContext!.setLineCap('butt')
+        this.canvasContext!.setLineJoin('miter')
+        this.canvasContext!.setLineWidth(1)
+        this.canvasContext!.setMiterLimit(10)
+        this.canvasContext!.draw()
+      },
+      translate() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(10, 10, 100, 50)
+        this.canvasContext!.fill()
+
+        this.canvasContext!.translate(70, 70)
+
+        this.canvasContext!.beginPath()
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
+      },
+      save() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setStrokeStyle('#00ff00')
+        this.canvasContext!.save()
+
+        this.canvasContext!.scale(2, 2)
+        this.canvasContext!.setStrokeStyle('#ff0000')
+        this.canvasContext!.rect(0, 0, 100, 100)
+        this.canvasContext!.stroke()
+        this.canvasContext!.restore()
+
+        this.canvasContext!.rect(0, 0, 50, 50)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      restore() {
+        [3, 2, 1].forEach((item) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.save()
+          this.canvasContext!.scale(item, item)
+          this.canvasContext!.rect(10, 10, 100, 100)
+          this.canvasContext!.stroke()
+          this.canvasContext!.restore()
+        });
+        this.canvasContext!.draw()
+      },
+      drawImage() {
+        // #ifdef APP-PLUS
+        this.canvasContext!.drawImage('../../../static/app-plus/uni@2x.png', 0, 0)
+        // #endif
+        // #ifndef APP-PLUS
+        this.canvasContext!.drawImage('../../../static/uni.png', 0, 0)
+        // #endif
+        this.canvasContext!.draw()
+      },
+      fillText() {
+        this.canvasContext!.setStrokeStyle('#ff0000')
+
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(0, 10)
+        this.canvasContext!.lineTo(300, 10)
+        this.canvasContext!.stroke()
+        // this.canvasContext!.save()
+        // this.canvasContext!.scale(1.5, 1.5)
+        // this.canvasContext!.translate(20, 20)
+        this.canvasContext!.setFontSize(10)
+        this.canvasContext!.fillText('Hello World', 0, 30)
+        this.canvasContext!.setFontSize(20)
+        this.canvasContext!.fillText('Hello World', 100, 30)
+
+        // this.canvasContext!.restore()
+
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(0, 30)
+        this.canvasContext!.lineTo(300, 30)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      fill() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(20, 20, 150, 100)
+        this.canvasContext!.setStrokeStyle('#00ff00')
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
+      },
+      stroke() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.lineTo(20, 100)
+        this.canvasContext!.lineTo(70, 100)
+        this.canvasContext!.setStrokeStyle('#00ff00')
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      clearRect() {
+        this.canvasContext!.setFillStyle('#ff0000')
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(0, 0, 300, 150)
+        this.canvasContext!.fill()
+        this.canvasContext!.clearRect(20, 20, 100, 50)
+        this.canvasContext!.draw()
+      },
+      beginPath() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setLineWidth(5)
+        this.canvasContext!.setStrokeStyle('#ff0000')
+        this.canvasContext!.moveTo(0, 75)
+        this.canvasContext!.lineTo(250, 75)
+        this.canvasContext!.stroke()
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setStrokeStyle('#0000ff')
+        this.canvasContext!.moveTo(50, 0)
+        this.canvasContext!.lineTo(150, 130)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      closePath() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setLineWidth(1)
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.lineTo(20, 100)
+        this.canvasContext!.lineTo(70, 100)
+        this.canvasContext!.closePath()
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      moveTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(0, 0)
+        this.canvasContext!.lineTo(300, 150)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      lineTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.lineTo(20, 100)
+        this.canvasContext!.lineTo(70, 100)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      rect() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.rect(20, 20, 150, 100)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      arc() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setLineWidth(2)
+        this.canvasContext!.arc(75, 75, 50, 0, Math.PI * 2, true)
+        this.canvasContext!.moveTo(110, 75)
+        this.canvasContext!.arc(75, 75, 35, 0, Math.PI, false)
+        this.canvasContext!.moveTo(65, 65)
+        this.canvasContext!.arc(60, 65, 5, 0, Math.PI * 2, true)
+        this.canvasContext!.moveTo(95, 65)
+        this.canvasContext!.arc(90, 65, 5, 0, Math.PI * 2, true)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      quadraticCurveTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.quadraticCurveTo(20, 100, 200, 20)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      bezierCurveTo() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.moveTo(20, 20)
+        this.canvasContext!.bezierCurveTo(20, 100, 200, 100, 200, 20)
+        this.canvasContext!.stroke()
+        this.canvasContext!.draw()
+      },
+      setFillStyle() {
+        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+          this.canvasContext!.setFillStyle(item)
+          this.canvasContext!.beginPath()
+          this.canvasContext!.rect(0 + 75 * index, 0, 50, 50)
+          this.canvasContext!.fill()
+        })
+        this.canvasContext!.draw()
+      },
+      setStrokeStyle() {
+        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+          this.canvasContext!.setStrokeStyle(item)
+          this.canvasContext!.beginPath()
+          this.canvasContext!.rect(0 + 75 * index, 0, 50, 50)
+          this.canvasContext!.stroke()
+        })
+        this.canvasContext!.draw()
+      },
+      setGlobalAlpha() {
+        this.canvasContext!.setFillStyle('#000000');
+        [1, 0.5, 0.1].forEach((item : number, index : number) => {
+          this.canvasContext!.setGlobalAlpha(item)
+          this.canvasContext!.beginPath()
+          this.canvasContext!.rect(0 + 75 * index, 0, 50, 50)
+          this.canvasContext!.fill()
+        })
+        this.canvasContext!.draw()
+        this.canvasContext!.setGlobalAlpha(1)
+      },
+      setShadow() {
+        this.canvasContext!.beginPath()
+        this.canvasContext!.setShadow(10, 10, 10, 'rgba(0, 0, 0, 199)')
+        this.canvasContext!.rect(10, 10, 100, 100)
+        this.canvasContext!.fill()
+        this.canvasContext!.draw()
+      },
+      setFontSize() {
+        [10, 20, 30, 40].forEach((item : number, index : number) => {
+          this.canvasContext!.setFontSize(item)
+          this.canvasContext!.fillText('Hello, world', 20, 20 + 40 * index)
+        })
+        this.canvasContext!.draw()
+      },
+      setLineCap() {
+        this.canvasContext!.setLineWidth(10);
+        ['butt', 'round', 'square'].forEach((item : string, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setLineCap(item)
+          this.canvasContext!.moveTo(20, 20 + 20 * index)
+          this.canvasContext!.lineTo(100, 20 + 20 * index)
+          this.canvasContext!.stroke()
+        })
+        this.canvasContext!.draw()
+      },
+      setLineJoin() {
+        this.canvasContext!.setLineWidth(10);
+        ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setLineJoin(item)
+          this.canvasContext!.moveTo(20 + 80 * index, 20)
+          this.canvasContext!.lineTo(100 + 80 * index, 50)
+          this.canvasContext!.lineTo(20 + 80 * index, 100)
+          this.canvasContext!.stroke()
+        })
+        this.canvasContext!.draw()
+      },
+      setLineWidth() {
+        [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setLineWidth(item)
+          this.canvasContext!.moveTo(20, 20 + 20 * index)
+          this.canvasContext!.lineTo(100, 20 + 20 * index)
+          this.canvasContext!.stroke()
+        })
+        this.canvasContext!.draw()
+      },
+      setMiterLimit() {
+        this.canvasContext!.setLineWidth(4);
+        [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+          this.canvasContext!.beginPath()
+          this.canvasContext!.setMiterLimit(item)
+          this.canvasContext!.moveTo(20 + 80 * index, 20)
+          this.canvasContext!.lineTo(100 + 80 * index, 50)
+          this.canvasContext!.lineTo(20 + 80 * index, 100)
+          this.canvasContext!.stroke()
+        })
+        this.canvasContext!.draw()
+      }
+    }
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .scroll-view {
+    flex: 1;
+    padding-bottom: 50px;
+  }
+
+  .canvas-element {
+    width: 100%;
+    height: 250px;
+    background-color: #ffffff;
+  }
+
+  .grid-view {
+    padding: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .grid-item {
+    width: 50%;
+    padding: 5px;
+  }
+
+  .btn-to-image {
+    margin: 10px;
+  }
+</style>
