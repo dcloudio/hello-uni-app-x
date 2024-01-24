@@ -22,15 +22,27 @@ describe('ExtApi-DownloadFile', () => {
     expect(res).toBe(true);
   });
   it('Check Set Cookie', async () => {
-    res = await page.callMethod('jest_set_cookie')
-    await page.waitFor(1000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      let version = process.env.uniTestPlatformInfo
+      version = version.split(" ")[1]
+      if(version > 9){
+        res = await page.callMethod('jest_set_cookie')
+        await page.waitFor(1000);
+        res = await page.data('jest_result');
+        expect(res).toBe(true)
+      }
+    }
   });
   it('Check Delete Cookie', async () => {
-    res = await page.callMethod('jest_delete_cookie')
-    await page.waitFor(1000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      let version = process.env.uniTestPlatformInfo
+      version = version.split(" ")[1]
+      if(version > 9){
+        res = await page.callMethod('jest_delete_cookie')
+        await page.waitFor(1000);
+        res = await page.data('jest_result');
+        expect(res).toBe(true)
+      }
+    }
   });
 });

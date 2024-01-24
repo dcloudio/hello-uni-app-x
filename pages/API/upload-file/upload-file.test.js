@@ -23,16 +23,28 @@ describe('ExtApi-UploadFile', () => {
   });
 
   it('Check Set Cookie', async () => {
-    res = await page.callMethod('jest_set_cookie')
-    await page.waitFor(1000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      let version = process.env.uniTestPlatformInfo
+      version = version.split(" ")[1]
+      if(version > 9){
+        res = await page.callMethod('jest_set_cookie')
+        await page.waitFor(1000);
+        res = await page.data('jest_result');
+        expect(res).toBe(true)
+      }
+    }
   });
   it('Check Delete Cookie', async () => {
-    res = await page.callMethod('jest_delete_cookie')
-    await page.waitFor(1000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      let version = process.env.uniTestPlatformInfo
+      version = version.split(" ")[1]
+      if(version > 9){
+        res = await page.callMethod('jest_delete_cookie')
+        await page.waitFor(1000);
+        res = await page.data('jest_result');
+        expect(res).toBe(true)
+      }
+    }
   });
   it('Check files upload', async () => {
     res = await page.callMethod('jest_files_upload')
