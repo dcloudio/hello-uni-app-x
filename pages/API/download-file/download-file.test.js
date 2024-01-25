@@ -21,28 +21,33 @@ describe('ExtApi-DownloadFile', () => {
   it('Check ', async () => {
     expect(res).toBe(true);
   });
+
+  let shouldTestCookie = false
+  if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    let version = process.env.uniTestPlatformInfo
+    version = version.split(" ")[1]
+    shouldTestCookie = version > 9
+  } else if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    // TODO 测试网址调整后放开此测试
+    shouldTestCookie = false
+  }
+
   it('Check Set Cookie', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      let version = process.env.uniTestPlatformInfo
-      version = version.split(" ")[1]
-      if(version > 9){
-        res = await page.callMethod('jest_set_cookie')
-        await page.waitFor(1000);
-        res = await page.data('jest_result');
-        expect(res).toBe(true)
-      }
+    if (!shouldTestCookie) {
+      return
     }
+    res = await page.callMethod('jest_set_cookie')
+    await page.waitFor(1000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
   });
   it('Check Delete Cookie', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      let version = process.env.uniTestPlatformInfo
-      version = version.split(" ")[1]
-      if(version > 9){
-        res = await page.callMethod('jest_delete_cookie')
-        await page.waitFor(1000);
-        res = await page.data('jest_result');
-        expect(res).toBe(true)
-      }
+    if (!shouldTestCookie) {
+      return
     }
+    res = await page.callMethod('jest_delete_cookie')
+    await page.waitFor(1000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
   });
 });
