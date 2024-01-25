@@ -241,6 +241,42 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(parseObj['name']).toEqual('james')
 
 
+
+    await page.setData({
+      key: "autotest_key_mock",
+      data:"1234567890"
+    })
+    await page.waitFor(600)
+    btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
+    await btnSetStorageButtonInfo.tap()
+    await page.waitFor(600)
+    btnGetStorageButtonInfo = await page.$('.btn-getstorageSync')
+    await btnGetStorageButtonInfo.tap()
+    await page.waitFor(600)
+    let strRet = await getData('apiGetData')
+    // 顺序不能保证，验证长度和各个属性来区分
+    expect(typeof strRet).toEqual("string")
+    expect(strRet).toEqual("1234567890")
+
+
+    await page.setData({
+      key: "autotest_key_mock",
+      data:"1234567.890"
+    })
+    await page.waitFor(600)
+    btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
+    await btnSetStorageButtonInfo.tap()
+    await page.waitFor(600)
+    btnGetStorageButtonInfo = await page.$('.btn-getstorageSync')
+    await btnGetStorageButtonInfo.tap()
+    await page.waitFor(600)
+    let strRet2 = await getData('apiGetData')
+    // 顺序不能保证，验证长度和各个属性来区分
+    expect(typeof strRet2).toEqual("string")
+    expect(strRet2).toEqual("1234567.890")
+
+
+
   });
 
 });
