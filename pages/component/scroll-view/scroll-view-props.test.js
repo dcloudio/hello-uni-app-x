@@ -1,6 +1,6 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
-describe('component-native-scroll-view', () => {
+describe('component-native-scroll-view-props', () => {
 
     let page;
     beforeAll(async () => {
@@ -80,6 +80,17 @@ describe('component-native-scroll-view', () => {
           scrollIntoView: ""
       })
       expect(scrollLeft-930).toBeGreaterThanOrEqual(0)
+    })
+
+    //截图对比
+    it('scroll-view-props-screenshot', async () => {
+      //禁止滚动条
+      await page.setData({
+          showScrollbar: false
+      })
+      await page.waitFor(300);
+      const image = await program.screenshot();
+      expect(image).toMatchImageSnapshot();
     })
 
 });

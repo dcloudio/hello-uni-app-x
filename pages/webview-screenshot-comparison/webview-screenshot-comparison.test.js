@@ -67,8 +67,6 @@ const pages = [
   "pages/API/get-system-info/get-system-info",
   "pages/API/get-device-info/get-device-info",
   "pages/API/get-app-base-info/get-app-base-info",
-  "pages/API/get-system-setting/get-system-setting",
-  "pages/API/get-app-authorize-setting/get-app-authorize-setting",
   "pages/API/preview-image/preview-image",
   "pages/API/save-image-to-photos-album/save-image-to-photos-album",
   "pages/API/choose-image/choose-image",
@@ -196,6 +194,8 @@ const pages = [
   // "pages/template/scroll-sticky/scroll-sticky",
   // "pages/API/exit/exit",
   // "pages/API/element-takesnapshot/element-takesnapshot",
+  // "pages/API/get-system-setting/get-system-setting",
+  // "pages/API/get-app-authorize-setting/get-app-authorize-setting",
 
   // 仅 web
   // pages/template/browser-canvas/browser-canvas
