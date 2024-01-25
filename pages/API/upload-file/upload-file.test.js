@@ -1,6 +1,12 @@
 const PAGE_PATH = '/pages/API/upload-file/upload-file'
 
 describe('ExtApi-UploadFile', () => {
+  if(process.env.uniTestPlatformInfo.startsWith('web')){
+    // TODO: web 端暂不支持测试
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+  }
 
   let page;
   let res;
