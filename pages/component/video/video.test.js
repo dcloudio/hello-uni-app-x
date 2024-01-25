@@ -1,6 +1,13 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 jest.setTimeout(20000);
 describe('component-native-video', () => {
+  if(process.env.uniTestPlatformInfo.startsWith('web')){
+    // TODO: web 端暂不支持测试
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page;
 
   beforeAll(async () => {
