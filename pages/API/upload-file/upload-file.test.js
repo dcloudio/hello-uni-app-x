@@ -15,7 +15,7 @@ describe('ExtApi-UploadFile', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
     await page.callMethod('jest_uploadFile');
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     res = await page.data('jest_result');
   });
 
@@ -35,7 +35,7 @@ describe('ExtApi-UploadFile', () => {
       version = version.split(" ")[1]
       if(version > 9){
         res = await page.callMethod('jest_set_cookie')
-        await page.waitFor(1000);
+        await page.waitFor(2000);
         res = await page.data('jest_result');
         expect(res).toBe(true)
       }
@@ -47,7 +47,7 @@ describe('ExtApi-UploadFile', () => {
       version = version.split(" ")[1]
       if(version > 9){
         res = await page.callMethod('jest_delete_cookie')
-        await page.waitFor(1000);
+        await page.waitFor(2000);
         res = await page.data('jest_result');
         expect(res).toBe(true)
       }
@@ -55,7 +55,7 @@ describe('ExtApi-UploadFile', () => {
   });
   it('Check files upload', async () => {
     res = await page.callMethod('jest_files_upload')
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
