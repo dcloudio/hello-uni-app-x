@@ -5,10 +5,8 @@
       @refresherrefresh="onRefresherrefresh"
       :refresher-threshold="refresherThreshold"
   >
-    <view class="content">
-      <view v-for="i in 20" class="content-item">
-        <text class="text">item-{{i}}</text>
-      </view>
+    <view v-for="i in 20" class="content-item">
+      <text class="text">item-{{i}}</text>
     </view>
     <refresh-box slot="refresher" :state="state" :pullingDistance="pullingDistance"></refresh-box>
   </scroll-view>
@@ -23,14 +21,14 @@
         refresherTriggered:false,
         refresherThreshold:40,
         pullingDistance:0,
-		resetting: false
+        resetting: false
       }
     },
     computed:{
       state():number{
-		if (this.resetting) {
-		  return 3;
-		}
+        if (this.resetting) {
+          return 3;
+        }
         if(this.refresherTriggered){
           return 2
         }
@@ -45,9 +43,9 @@
       onRefresherpulling(e:RefresherEvent){
         // console.log('onRefresherpulling',e.detail.dy)
         this.pullingDistance = e.detail.dy
-		if (this.pullingDistance.toDouble() == 0.0) {
-			this.resetting = false;
-		}
+        if (this.pullingDistance.toDouble() == 0.0) {
+          this.resetting = false;
+        }
       },
       onRefresherrefresh(){
         this.refresherTriggered = true
@@ -66,26 +64,23 @@
 </script>
 
 <style>
-  .scroll-view {
-    flex: 1;
-		background-color: #f5f5f5;
-  }
+.scroll-view {
+  flex: 1;
+  padding: 5px 15px;
+  background-color: #f5f5f5;
+}
 
-  .content {
-		padding: 5px 15px;
-  }
+.content-item {
+  padding: 15px;
+  margin: 5px 0;
+  background-color: #fff;
+  border-radius: 5px;
+}
 
-	.content-item {
-		padding: 15px;
-		margin: 5px 0;
-		background-color: #fff;
-		border-radius: 5px;
-	}
-
-	.text {
-		font-size: 14px;
-		color: #666;
-		line-height: 20px;
-	}
+.text {
+  font-size: 14px;
+  color: #666;
+  line-height: 20px;
+}
 
 </style>
