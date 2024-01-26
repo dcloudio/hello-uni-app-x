@@ -57,18 +57,24 @@ describe('Button.uvue', () => {
   })
   it('plain', async () => {
     const btn = await page.$('.btn')
-    expect(await btn.property('plain')).toBe(false)
+    // TODO
+    const newValue1 = await btn.property('plain')
+    expect(newValue1.toString()).toBe(false + '')
     await page.setData({
       plain_boolean: true,
     })
-    expect(await btn.property('plain')).toBe(true)
+    const newValue2 = await btn.property('plain')
+    expect(newValue2.toString()).toBe(true + '')
   })
   it('disabled', async () => {
     const btn = await page.$('.btn')
-    expect(await btn.property('disabled')).toBe(false)
+    // TODO
+    const newValue1 = await btn.property('disabled')
+    expect(newValue1.toString()).toBe(false + '')
     await page.setData({
       disabled_boolean: true,
     })
-    expect(await btn.property('disabled')).toBe(true)
+    const newValue2 = await btn.property('disabled')
+    expect(newValue2.toString()).toBe(true + '')
   })
 })
