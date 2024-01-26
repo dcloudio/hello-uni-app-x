@@ -235,92 +235,99 @@ const PAGE_PATH =
   "/pages/webview-screenshot/webview-screenshot";
 
 describe("shot-compare", () => {
-  if (process.env.uniTestPlatformInfo.startsWith("android")) {
-    let page = null;
-    let pageIndex = 0;
-    let baseSrc = "";
-    beforeAll(async () => {
-      page = await program.reLaunch(PAGE_PATH);
-      await page.waitFor(500);
+  let shouldCompareScreenShot = false
+  if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    let version = process.env.uniTestPlatformInfo
+    version = parseInt(version.split(" ")[1])
+    shouldCompareScreenShot = version > 9
+  }
 
-      // set webview-screenshot page baseSrc
-      baseSrc =
-        process.env.UNI_WEB_SERVICE_URL ? `${process.env.UNI_WEB_SERVICE_URL}/#/` :
-        "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
-      page.setData({
-        baseSrc,
-      });
-    });
-
-    beforeEach(async () => {
-      page = await program.reLaunch(PAGE_PATH);
-      await page.waitFor(500);
-    });
-    afterEach(() => {
-      pageIndex++;
-    });
-
-    test.each(pages)("%s", async () => {
-      const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
-      const isCustomNavigation = customNavigationPages.includes(pages[pageIndex]);
-      const {
-        headerHeight,
-        devicePixelRatio
-      } = await page.data();
-      const screenshotParams = {
-        fullPage: true,
-        adb: isNeedAdbScreenshot,
-        // adb 截图时跳过状态栏
-        area: {
-          x: 0,
-          y: (headerHeight - 44) * devicePixelRatio,
-        },
-      }
-      const screenshotPath = `webview-shot__${pages[pageIndex].replace(/\//g, "-")}`;
-
-      // web in webview screenshot
-      // 加载依赖页面
-      if (childToParentPagesMap.get(pages[pageIndex])) {
-        await page.setData({
-          src: `${baseSrc}${childToParentPagesMap.get(pages[pageIndex])}`,
-          isLoaded: false
-        });
-        await page.waitFor(async () => {
-          const isLoaded = await page.data("isLoaded");
-          return isLoaded || Date.now() - startTime > 10000;
-        });
-        await page.waitFor(200);
-      }
-      await page.setData({
-        src: `${baseSrc}${pages[pageIndex]}`,
-        isLoaded: false,
-        needRemoveWebHead: !isNeedAdbScreenshot,
-      });
-
-      const startTime = Date.now();
-      await page.waitFor(async () => {
-        const isLoaded = await page.data("isLoaded");
-        return isLoaded || Date.now() - startTime > 3000;
-      });
-      await page.waitFor(1000);
-      if (pages[pageIndex].includes("load-font-face")) {
-        await page.waitFor(3000);
-      }
-
-      // web 端非 adb 截图时设置 offsetY 移除导航栏
-      const webSnapshot = await program.screenshot({
-        ...screenshotParams,
-        offsetY: `${isCustomNavigation ? 0 : headerHeight}`
-      });
-      expect(webSnapshot).toMatchImageSnapshot({
-        customSnapshotIdentifier() {
-          return screenshotPath;
-        },
-      });
-    });
-  } else {
+  if (!shouldCompareScreenShot) {
     it("other platform not support", async () => {
       expect(1).toBe(1);
     });
+    return
   }
+  let page = null;
+  let pageIndex = 0;
+  let baseSrc = "";
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH);
+    await page.waitFor(500);
+
+    // set webview-screenshot page baseSrc
+    baseSrc =
+      process.env.UNI_WEB_SERVICE_URL ? `${process.env.UNI_WEB_SERVICE_URL}/#/` :
+      "http://test.dcloud.io/unix_h5_build/98_dev_hello-uni-app-x/#/";
+    page.setData({
+      baseSrc,
+    });
+  });
+
+  beforeEach(async () => {
+    page = await program.reLaunch(PAGE_PATH);
+    await page.waitFor(500);
+  });
+  afterEach(() => {
+    pageIndex++;
+  });
+
+  test.each(pages)("%s", async () => {
+    const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
+    const isCustomNavigation = customNavigationPages.includes(pages[pageIndex]);
+    const {
+      headerHeight,
+      devicePixelRatio
+    } = await page.data();
+    const screenshotParams = {
+      fullPage: true,
+      adb: isNeedAdbScreenshot,
+      // adb 截图时跳过状态栏
+      area: {
+        x: 0,
+        y: (headerHeight - 44) * devicePixelRatio,
+      },
+    }
+    const screenshotPath = `webview-shot__${pages[pageIndex].replace(/\//g, "-")}`;
+
+    // web in webview screenshot
+    // 加载依赖页面
+    if (childToParentPagesMap.get(pages[pageIndex])) {
+      await page.setData({
+        src: `${baseSrc}${childToParentPagesMap.get(pages[pageIndex])}`,
+        isLoaded: false
+      });
+      await page.waitFor(async () => {
+        const isLoaded = await page.data("isLoaded");
+        return isLoaded || Date.now() - startTime > 10000;
+      });
+      await page.waitFor(200);
+    }
+    await page.setData({
+      src: `${baseSrc}${pages[pageIndex]}`,
+      isLoaded: false,
+      needRemoveWebHead: !isNeedAdbScreenshot,
+    });
+
+    const startTime = Date.now();
+    await page.waitFor(async () => {
+      const isLoaded = await page.data("isLoaded");
+      return isLoaded || Date.now() - startTime > 3000;
+    });
+    await page.waitFor(1000);
+    if (pages[pageIndex].includes("load-font-face")) {
+      await page.waitFor(3000);
+    }
+
+    // web 端非 adb 截图时设置 offsetY 移除导航栏
+    const webSnapshot = await program.screenshot({
+      ...screenshotParams,
+      offsetY: `${isCustomNavigation ? 0 : headerHeight}`
+    });
+    expect(webSnapshot).toMatchImageSnapshot({
+      customSnapshotIdentifier() {
+        return screenshotPath;
+      },
+    });
+  });
 });
