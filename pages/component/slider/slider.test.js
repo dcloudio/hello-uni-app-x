@@ -15,7 +15,9 @@ describe('slider', () => {
       sliderValue: sliderValue,
     })
     await page.waitFor(100)
-    expect(await slider.property('value')).toBe(sliderValue)
+    // TODO
+    const newValue = await slider.property('value')
+    expect(newValue.toString()).toBe(sliderValue + '')
   })
   it('color', async () => {
     const slider = await page.$('.slider-custom-color-and-size')

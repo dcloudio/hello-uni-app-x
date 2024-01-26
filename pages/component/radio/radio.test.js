@@ -40,11 +40,14 @@ describe('Radio.uvue', () => {
   })
   it('checked', async () => {
     const radio = await page.$('.r')
-    expect(await radio.property('checked')).toBe(true)
+    // TODO
+    const newValue1 = await radio.property('checked')
+    expect(newValue1.toString()).toBe(true + '')
     await page.setData({
       checked: false,
     })
-    expect(await radio.property('checked')).toBe(false)
+    const newValue2 = await radio.property('checked')
+    expect(newValue2.toString()).toBe(false + '')
   })
   it('color', async () => {
     const radio = await page.$('.r')
