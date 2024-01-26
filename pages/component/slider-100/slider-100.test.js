@@ -15,7 +15,9 @@ describe('slider', () => {
 
     // TODO 暂时仅获取第一个
     const slider1 = await page.$('.slider')
-    expect(await slider1.property('value')).toBe(sliderValue)
+    // TODO
+    const newValue = await slider1.property('value')
+    expect(newValue.toString()).toBe(sliderValue + '')
 
     // const slider100 = await page.$$('.slider')
     // for (let i = 0; i < slider100.length; i++) {

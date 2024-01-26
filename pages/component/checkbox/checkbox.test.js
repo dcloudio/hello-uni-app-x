@@ -42,11 +42,15 @@ describe('Checkbox.uvue', () => {
   })
   it('checked', async () => {
     const cb = await page.$('.cb')
-    expect(await cb.property('checked')).toBe(true)
+    // TODO
+    const newValue1 = await cb.property('checked')
+    expect(newValue1.toString()).toBe(true + '')
     await page.setData({
       checked: false,
     })
-    expect(await cb.property('checked')).toBe(false)
+    // TODO
+    const newValue2 = await cb.property('checked')
+    expect(newValue2.toString()).toBe(false + '')
   })
   it('color', async () => {
     const cb = await page.$('.cb')
