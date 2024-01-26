@@ -22,7 +22,7 @@ async function request(page, method, header, data, url) {
     header: header
   })
   res = await page.callMethod('jest_request')
-  await page.waitFor(500);
+  await page.waitFor(2000);
   res = await page.data('jest_result');
   expect(res).toBe(true)
 }
@@ -87,7 +87,7 @@ describe('ExtApi-Request', () => {
         version = version.split(" ")[1]
         if(version > 9){
           res = await page.callMethod('jest_set_cookie')
-          await page.waitFor(500);
+          await page.waitFor(2000);
           res = await page.data('jest_result');
           expect(res).toBe(true)
         }
@@ -99,7 +99,7 @@ describe('ExtApi-Request', () => {
         version = version.split(" ")[1]
         if(version > 9){
           res = await page.callMethod('jest_delete_cookie')
-          await page.waitFor(1000);
+          await page.waitFor(2000);
           res = await page.data('jest_result');
           expect(res).toBe(true)
         }

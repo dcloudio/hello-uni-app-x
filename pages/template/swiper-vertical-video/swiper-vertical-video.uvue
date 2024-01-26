@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <view @click="back" class="nav-back">
+    <view ref="back" @click="back" class="nav-back">
       <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
     </view>
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
@@ -86,7 +86,12 @@
     },
     onReady() {
       // 一启动完成，就播放第一个
-      this.doPlay(0)
+      this.doPlay(0);
+      // #ifdef APP
+      //App端适配不同状态栏高度
+      let backElement = this.$refs['back'] as UniElement;
+      backElement.style.setProperty('top', uni.getSystemInfoSync().statusBarHeight+'px');
+      // #endif
     },
     onShow() {
       currentPageIsShow = true
@@ -257,12 +262,14 @@
 
   .nav-back {
     position: absolute;
-    top: 20px;
-    left: 8px;
+/* #ifdef APP */
+    top: 35px;
+/* #endif */
     background-color: rgba(220, 220, 220, 0.8);
     border-radius: 100px;
-    width: 28px;
-    height: 28px;
+    margin: 6px;
+    width: 32px;
+    height: 32px;
     justify-content: center;
     align-items: center;
     z-index: 10;

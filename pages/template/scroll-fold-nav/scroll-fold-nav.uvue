@@ -1,15 +1,6 @@
 <template>
-  <scroll-view @scroll="onScroll" class="scroll-view" rebound="false">
-    <!--#ifdef APP-->
-    <view class="height-seat" style="height: 125px;">
-      <!-- 垫高专用 -->
-    </view>
-    <!--#endif-->
-    <!--#ifdef WEB-->
-    <view class="height-seat" style="height: 90px;">
-      <!-- 垫高专用 -->
-    </view>
-    <!--#endif-->
+  <scroll-view @scroll="onScroll" class="page" show-scrollbar="false">
+    <view ref="seatbar" class="seatbar"></view>
 
     <view class="content">
       <view class="content-item">
@@ -23,197 +14,161 @@
       </view>
     </view>
 
-    <view ref="top-box" class="top-box">
-      <view ref="scroll-fold-nav" class="scroll-fold-nav">
-        <view class="nav-title">DCloud 为开发者而生</view>
-      </view>
-      <view @click="back" class="nav-back">
-        <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
-      </view>
-      <view ref="search" class="search" @click="toSearchPage">
-        <view class="search-inner">
-          <image class="search-img" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
-          <text class="search-tip-text">请输入你要搜索的内容</text>
+    <view ref="navigatorbar" class="navigatorbar">
+      <view class="titlebar">
+        <view class="backview" @tap="back">
+          <image class="back" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
         </view>
-        <text class="search-btn">搜索</text>
+        <text ref="title" class="title">DCloud 为开发者而生</text>
+      </view>
+      <view ref="searchbar" class="searchbar" @tap="search">
+        <image class="searchimg" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
+        <text class="searchinput">请输入你要搜索的内容</text>
+        <text class="searchbutton">搜索</text>
       </view>
     </view>
-
   </scroll-view>
 </template>
 
 <script>
+  //导航栏高度
+  const NAVIBARHEIGHT = 88;
+  //搜索栏高度
+  const SEARCHBARHEIGHT = 40;
+  //返回键按钮宽度
+  const BACKWIDTH = 32;
   export default {
     data() {
       return {
-        statusBarHeight: 35,
-        scrollTop: 0,
-        searchWidth: 700,
-        searchNode: null as UniElement | null,
-        boxNode: null as UniElement | null,
-        navNode: null as UniElement | null
+        statusBarHeight: 0,
+        nviBarHeight: 0,
+        naviElement: null as UniElement | null,
+        titleElement: null as UniElement | null,
+        searchElement: null as UniElement | null
       }
     },
-    onLoad() { },
+    onLoad() {
+      // #ifdef APP
+      this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
+      // #endif
+      this.nviBarHeight = NAVIBARHEIGHT + this.statusBarHeight;
+    },
     onReady() {
-      this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight ?? 35;
-      this.searchNode = this.$refs['search'] as UniElement;
-      this.boxNode = this.$refs['top-box'] as UniElement;
-      this.navNode = this.$refs['scroll-fold-nav'] as UniElement;
+      this.naviElement = this.$refs['navigatorbar'] as UniElement;
+      this.searchElement = this.$refs['searchbar'] as UniElement;
+      this.titleElement = this.$refs['title'] as UniElement;
+      //适配不同状态栏高度
+      this.naviElement?.style?.setProperty('padding-top', this.statusBarHeight+'px');
+      this.naviElement?.style?.setProperty('height', (NAVIBARHEIGHT+this.statusBarHeight)+'px');
+      let seatElement = this.$refs['seatbar'] as UniElement;
+      seatElement.style.setProperty('height', (NAVIBARHEIGHT+this.statusBarHeight)+'px');
     },
     methods: {
       onScroll(e : ScrollEvent) {
-        let scrollTop = e.detail.scrollTop
-        // #ifdef APP
-        const originalBoxHeight = 125
-        // #else
-        const originalBoxHeight = 90
-        // #endif
-        this.boxNode?.style?.setProperty('height', (originalBoxHeight - (scrollTop > 35 ? 35 : scrollTop)) + 'px');
-        this.boxNode?.style?.setProperty('background-color', 'rgba(255, 255, 255, ' + (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0 + ')');
-        this.navNode?.style?.setProperty('opacity', 1 - (scrollTop * 3 > 100 ? 100 : scrollTop * 3) / 100.0);
-        this.searchNode?.style?.setProperty('width', 700 - (scrollTop > 40 ? 40 : scrollTop) + 'rpx');
-        this.searchNode?.style?.setProperty('top', 0 - (scrollTop > 40 ? 40 : scrollTop) + 'px');
-        this.scrollTop = scrollTop;
+        let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;
+        this.naviElement?.style?.setProperty('height', (this.nviBarHeight -offset)+'px');
+        this.searchElement?.style?.setProperty('left', BACKWIDTH*offset/SEARCHBARHEIGHT+'px');
+        this.titleElement?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT));
       },
       back() {
-        // uni.navigateBack()  // 这么写用不了
-        // 这么写可以用
-        uni.navigateBack({
-          success(result) {
-            console.log('navigateBack success', result.errMsg)
-          },
-          fail(error) {
-            console.log('navigateBack fail', error.errMsg)
-          },
-          complete(result) {
-            console.log('navigateBack complete', result.errMsg)
-          },
-        })
-
-        // uni.switchTab({
-        //   url:'/pages/tabBar/template'
-        // })
-
+        uni.navigateBack();
       },
-      toSearchPage() {
+      search() {
         uni.showToast({
           title: '暂不支持',
           icon: 'none'
         });
       }
-    },
-
+    }
   }
 </script>
 
 <style>
-  .page {
-    flex: 1;
-    background-color: #fbdf0d;
-  }
+.page {
+  flex: 1;
+  background-color: #f5f5f5;
+}
+.navigatorbar {
+  position: fixed;
+/* #ifdef APP */
+  padding-top: 35px;
+  height: 124px;
+/* #endif */
+/* #ifdef WEB */
+  height: 88px;
+/* #endif */
+  border-bottom: 1px solid #efefef;
+  width: 100%;
+  background-color: #f5f5f5;
+}
+.titlebar {
+  flex-direction: row;
+  align-items: center;
+  height: 44px;
+}
+.backview {
+  width: 44px;
+  height: 44px;
+  justify-content: center;
+  align-items: center;
+}
+.back {
+  width: 20px;
+}
+.title {
+  margin: 0px 2px;
+}
+.searchbar {
+  position: absolute;
+  bottom: 2px;
+  left: 0px;
+  right: 0px;
+  background-color: #FFFFFF;
+  border: 1px solid #fbdf0d;
+  height: 32px;
+  border-radius: 100px;
+  margin: 6px 12px;
+  padding: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.searchimg {
+  width: 15px;
+}
+.searchinput {
+  flex-grow: 1;
+  font-size: 12px;
+  color: #666;
+}
+.searchbutton {
+  font-size: 12px;
+  background-color: #ff6900;
+  color: #FFF;
+  padding: 5px 8px;
+  border-radius: 100px;
+}
+.seatbar {
+/* #ifdef APP */
+  height: 124px;
+/* #endif */
+/* #ifdef WEB */
+  height: 88px;
+/* #endif */
+}
+.content {
+  padding: 5px 15px;
+}
+.content-item {
+  padding: 15px;
+  margin: 5px 0;
+  background-color: #fff;
+  border-radius: 5px;
+}
+.text {
+  font-size: 14px;
+  color: #666;
+  line-height: 20px;
+}
 
-  .scroll-view {
-    flex: 1;
-  }
-
-  .height-seat {
-    height: 110px;
-    /* background-color: #fbdf0d; */
-  }
-
-  .content {
-    padding: 5px 15px;
-    background-color: #f5f5f5;
-  }
-
-  .content-item {
-    padding: 15px;
-    margin: 5px 0;
-    background-color: #fff;
-    border-radius: 5px;
-  }
-
-  .text {
-    font-size: 14px;
-    color: #666;
-    line-height: 20px;
-  }
-
-  .top-box {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    align-items: flex-end;
-    border-bottom: 1px solid #efefef;
-    /* #ifdef APP */
-    height: 125px;
-    padding-top: 35px;
-    /* #else */
-    height: 90px;
-    /* #endif */
-    background-color: rgba(255, 255, 255, 0);
-    background-color: aliceblue;
-  }
-
-  .scroll-fold-nav {
-    height: 44px;
-    width: 375px;
-    justify-content: center;
-  }
-
-  .nav-title {
-    margin-left: 30px;
-  }
-
-  .nav-back {
-    position: absolute;
-    /* #ifdef APP */
-    top: 46px;
-    /* #else */
-    top: 11px;
-    /* #endif */
-    left: 8px;
-  }
-
-  .nav-back .back-img {
-    width: 18px;
-    margin-top: 2px;
-  }
-
-  .search {
-    background-color: #FFFFFF;
-    border: 1px solid #fbdf0d;
-    height: 35px;
-    border-radius: 100px;
-    margin: 0 12px;
-    padding: 8px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 350px;
-    top: 0px;
-  }
-
-  .search-inner {
-    margin-top: 2px;
-    flex-direction: row;
-  }
-
-  .search-inner .search-img {
-    width: 15px;
-  }
-
-  .search-tip-text {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .search-btn {
-    font-size: 12px;
-    background-color: #ff6900;
-    color: #FFF;
-    padding: 5px 8px;
-    border-radius: 100px;
-  }
 </style>

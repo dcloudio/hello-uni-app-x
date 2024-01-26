@@ -8,7 +8,7 @@ describe('ExtApi-DownloadFile', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
     await page.callMethod('jest_downloadFile');
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     res = await page.data('jest_result');
   });
 
@@ -37,7 +37,7 @@ describe('ExtApi-DownloadFile', () => {
       return
     }
     res = await page.callMethod('jest_set_cookie')
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
@@ -46,7 +46,7 @@ describe('ExtApi-DownloadFile', () => {
       return
     }
     res = await page.callMethod('jest_delete_cookie')
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
