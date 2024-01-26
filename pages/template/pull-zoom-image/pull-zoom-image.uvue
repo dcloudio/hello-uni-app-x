@@ -38,7 +38,7 @@
   export default {
     data() {
       return {
-        $elementMap: new Map<string, Element>()
+        $elementMap: new Map<string, UniElement>()
       }
     },
     methods: {
@@ -64,10 +64,10 @@
       },
       // 工具方法，用于快速设置 Element 的 style
       setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let element : Element | null = (this.$data['$elementMap'] as Map<string, Element>).get(refName)
+        let element : UniElement | null = (this.$data['$elementMap'] as Map<string, UniElement>).get(refName)
         if (element == null) {
           element = this.$refs[refName] as UniElement;
-          (this.$data['$elementMap'] as Map<string, Element>).set(refName, element)
+          (this.$data['$elementMap'] as Map<string, UniElement>).set(refName, element)
         }
         element.style.setProperty(propertyName, propertyStyle);
       },
