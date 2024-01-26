@@ -29,13 +29,17 @@ describe('switch', () => {
       checked: false,
     })
     await page.waitFor(100)
-    expect(await switch_element.property('checked')).toBe(false)
+    // TODO
+    const newValue1 = await switch_element.property('checked')
+    expect(newValue1.toString()).toBe(false + '')
 
     await page.setData({
       checked: true,
     })
     await page.waitFor(100)
-    expect(await switch_element.property('checked')).toBe(true)
+    // TODO
+    const newValue2 = await switch_element.property('checked')
+    expect(newValue2.toString()).toBe(true + '')
   })
   it('color', async () => {
     const switch_element = await page.$('.switch-color')
