@@ -43,8 +43,13 @@
     <!-- uni 的 SDK -->
     <script type="text/javascript" src="uni.webview.1.5.5.js"></script>
     <script type="text/javascript">
+      const isWeb = location.href && /^https?:/.test(location.href)
       // document.addEventListener('UniAppJSBridgeReady', function() {
       document.querySelector('.btn-list').addEventListener('click', function(evt) {
+        if(isWeb) {
+          alert('web端暂不支持此功能')
+          return
+        }
         var target = evt.target;
         if (target.tagName === 'BUTTON') {
           var action = target.getAttribute('data-action');
@@ -82,6 +87,10 @@
       })
       // });
       document.querySelector("#postMessage").addEventListener('click', function() {
+        if(isWeb) {
+          alert('web端暂不支持此功能')
+          return
+        }
         uni.webView.postMessage({
           data: {
             action: 'message'
