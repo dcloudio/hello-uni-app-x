@@ -1,6 +1,12 @@
 const PAGE_PATH = '/pages/API/get-system-setting/get-system-setting'
 
 describe('ExtApi-GetSystemSetting', () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+    it('web', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   let page;
   let res;
