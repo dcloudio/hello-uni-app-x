@@ -8,6 +8,7 @@ describe('component-native-overflow', () => {
 
   //检测overflow设置hidden，visible
   it('check_view_overflow', async () => {
+    await page.waitFor(600)
     const image = await program.screenshot({
       fullPage: true,
     });
