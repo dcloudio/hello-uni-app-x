@@ -3,12 +3,6 @@ const PAGE_PATH =
 let page;
 
 describe("getElementByIdForMultipleRootNode", () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
-    it('dummyTest', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH);
     await page.waitFor('view');
