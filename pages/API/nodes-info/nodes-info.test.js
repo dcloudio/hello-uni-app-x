@@ -10,6 +10,14 @@ describe('nodes-info', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
   })
+  it('get-root-node-info', async () => {
+    const page = await program.currentPage()
+    await page.callMethod('getRootNodeInfo')
+    await page.waitFor(100)
+
+    const data = await page.data()
+    expect(data.rootNodeInfo != null).toBe(true)
+  })
   it('get-node-info', async () => {
     const btnGetNodeInfo = await page.$('.btn-get-node-info')
 
