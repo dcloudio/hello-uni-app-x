@@ -11,12 +11,14 @@ describe('nodes-info', () => {
     await page.waitFor(500)
   })
   it('get-root-node-info', async () => {
-    const page = await program.currentPage()
-    await page.callMethod('getRootNodeInfo')
-    await page.waitFor(100)
+    // 测试 class 选择器
+    await getRootNode('.page')
 
-    const data = await page.data()
-    expect(data.rootNodeInfo != null).toBe(true)
+    // 测试 id 选择器
+    await getRootNode('#page')
+
+    // 测试 标签 选择器
+    // await getRootNode('page')
   })
   it('get-node-info', async () => {
     const btnGetNodeInfo = await page.$('.btn-get-node-info')
@@ -62,3 +64,18 @@ describe('nodes-info', () => {
   // #endif
 
 })
+
+async function getRootNode(selector) {
+  const page = await program.currentPage()
+
+  await page.setData({
+    rootNodeInfo: null,
+  })
+  await page.waitFor(100)
+
+  await page.callMethod('getRootNodeInfo', selector)
+  await page.waitFor(100)
+
+  const data = await page.data()
+  expect(data.rootNodeInfo != null).toBe(true)
+}

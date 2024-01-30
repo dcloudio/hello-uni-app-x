@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <view class="page" id="page">
     <page-head :title="title"></page-head>
     <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
     <button class="btn btn-get-all-node-info" @click="getAllNodeInfo">getAllNodeInfo</button>
@@ -71,8 +71,8 @@
     },
     methods: {
       // 仅用于自动化测试
-      getRootNodeInfo() {
-        uni.createSelectorQuery().select('.page').boundingClientRect().exec((ret) => {
+      getRootNodeInfo(selector: string) {
+        uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
           if (ret.length == 1) {
             const nodeInfo = ret[0] as NodeInfo;
             const nodeType = {
