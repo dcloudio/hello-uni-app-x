@@ -25,7 +25,7 @@
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
-        <button class="uni-btn-v" type="default" @tap="actionSheetTap">弹出action sheet</button>
+        <button class="uni-btn-v" type="default" @tap="actionSheetTap" id="btn-action-sheet-show">弹出action sheet</button>
       </view>
     </view>
   </view>
@@ -42,6 +42,7 @@
         itemColorCustom: false,
         itemContentLarge: false,
         itemNumLargeSelect: false,
+        showErrorToast:true,
         items: [{
           value: '标题',
           name: '有标题'
@@ -65,6 +66,10 @@
       })
     },
     methods: {
+      //自动化测试例专用
+      jest_getWindowInfo() : GetWindowInfoResult {
+        return uni.getWindowInfo();
+      },
       radioChange(e : UniRadioGroupChangeEvent) {
         for (let i = 0; i < this.items.length; i++) {
           if (this.items[i].value === e.detail.value) {
@@ -128,10 +133,12 @@
             },
             fail: (e) => {
               console.log(e);
-              uni.showToast({
-                title: e.errMsg,
-                icon: "none"
-              })
+              if(this.showErrorToast){
+                uni.showToast({
+                  title: e.errMsg,
+                  icon: "none"
+                })
+              }
             }
           })
         }
