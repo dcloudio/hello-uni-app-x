@@ -21,7 +21,7 @@ const pages = [
   "pages/component/swiper/swiper",
   "pages/component/image/image",
   "pages/component/image/image-format",
-  "pages/component/image/image-mode",
+  ...(process.env.android_cpu_type !== 'x86_64' ? ["pages/component/image/image-mode"] : []), // x86_64 模拟器 image-model 截图崩溃
   "pages/component/video/video-format",
   "pages/component/navigator/navigator",
   "pages/component/navigator/navigate",
