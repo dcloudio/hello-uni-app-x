@@ -204,6 +204,15 @@ describe('ExtApi-FileManagerTest', () => {
   it('TEMP_PATH test', async () => {
     // 测试 TEMP_PATH
     let globalTempPath = await getData('globalTempPath')
+
+    let version = process.env.uniTestPlatformInfo
+    version = parseInt(version.split(" ")[1])
+    let testDirName = "我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,"
+    if(version < 6){
+      // android 6 以下文件名不能包含特殊字符
+      testDirName = "我们经历了一场兵慌马乱的战争"
+    }
+
     await page.setData({
       logAble:false,
       recursiveVal: true,
@@ -211,7 +220,7 @@ describe('ExtApi-FileManagerTest', () => {
       copyToBasePath:globalTempPath,
       rmDirFile:'a',
       mkdirFile: 'a',
-      unlinkFile:'a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name/中文文件.mock'
+      unlinkFile:'a/'+ testDirName +'/中文路径/张三/name/中文文件.mock'
     })
 
 
@@ -262,7 +271,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 测试 创建包含中文特殊符号的目录
     await page.setData({
       recursiveVal: true,
-      mkdirFile:'a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name',
+      mkdirFile:'a/'+ testDirName + '/中文路径/张三/name',
     })
     await btnMkdDirButton.tap()
     await isDone()
@@ -272,9 +281,9 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
     fileListComplete = await getData('fileListComplete')
-    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,\"]")
+    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"" + testDirName + "\"]")
     fileListSuccess = await getData('fileListSuccess')
-    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,\"]")
+    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"" + testDirName + "\"]")
 
     /**
      * 从资源文件中读取图片为base64，测试写入较大文件场景
@@ -298,7 +307,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     await page.setData({
       basePath: globalTempPath,
-      writeFile:'a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name/中文文件.mock',
+      writeFile:'a/' + testDirName + '/中文路径/张三/name/中文文件.mock',
       writeFileContent:readFileRet
     })
 
@@ -309,7 +318,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 获取文件列表，判断是否写入成功，同时置空base64内容 避免影响实时查看状态
     await page.setData({
-      readDir:'a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name',
+      readDir:'a/' + testDirName + '/中文路径/张三/name',
       readFileRet:'',
       writeFileContent:''
     })
@@ -325,7 +334,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 更换文件内容 获取和对比 文件md5和sha1
     await page.setData({
-      getFileInfoFile:'a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name/中文文件.mock',
+      getFileInfoFile:'a/' + testDirName + '/中文路径/张三/name/中文文件.mock',
       getFileInfoAlgorithm:"md5",
     })
 
@@ -367,7 +376,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     // rename 到一个没有提前创建过的目录，期望返回错误
     await page.setData({
-      renameFromFile:"a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name/中文文件.mock",
+      renameFromFile:"a/" + testDirName + "/中文路径/张三/name/中文文件.mock",
       renameToFile:"a/没有提前创建的目录/3.txt"
     })
 
@@ -397,14 +406,14 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     fileListComplete = await getData('fileListComplete')
-    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,\",\"提前创建的目录\"]")
+    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"" + testDirName + "\",\"提前创建的目录\"]")
     fileListSuccess = await getData('fileListSuccess')
-    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,\",\"提前创建的目录\"]")
+    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"" + testDirName + "\",\"提前创建的目录\"]")
 
 
     await page.setData({
 
-      copyFromFile:"a/我们经历了一场兵慌马乱的战争.1@2#3$4%5^6&7*8(9)0+-qwertyuiopasdfghjklzxcvbnm;,/中文路径/张三/name/中文文件.mock",
+      copyFromFile:"a/" + testDirName + "/中文路径/张三/name/中文文件.mock",
       copyToFile:"a/提前创建的目录/4.txt"
     })
 
@@ -791,7 +800,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 读取单个文件信息
     let statsRet = await getData('statsRet')
     expect(statsRet.length).toEqual(1)
-    expect(statsRet[0].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a/1.txt')
+    expect(statsRet[0].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a/1.txt'))
     expect(statsRet[0].stats.size).toEqual(69)
 
     /**
@@ -840,13 +849,13 @@ describe('ExtApi-FileManagerTest', () => {
     statsRet = await getData('statsRet')
     console.log(statsRet)
     expect(statsRet.length).toEqual(5)
-    expect(statsRet[0].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a')
+    expect(statsRet[0].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a'))
     expect(statsRet[0].stats.size).toEqual(0)
 
-    expect(statsRet[2].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a/2.txt')
+    expect(statsRet[2].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a/2.txt'))
     expect(statsRet[2].stats.size).toEqual(10)
 
-    expect(statsRet[4].path).toEqual('/storage/emulated/0/Android/data/io.dcloud.uniappx/a/m/3.txt')
+    expect(statsRet[4].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a/m/3.txt'))
     expect(statsRet[4].stats.size).toEqual(5842)
 
 
