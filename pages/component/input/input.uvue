@@ -127,7 +127,7 @@
           <text class="uni-title-text">设置输入框聚焦时光标的位置（点击生效）</text>
         </view>
         <view class="input-wrapper">
-          <input ref="input" class="uni-input" value="0123456789" :cursor="cursor" />
+          <input ref="input" class="uni-input" value="0123456789" :cursor="cursor" @blur="onCursorBlurChange"/>
         </view>
       </view>
 
@@ -137,7 +137,7 @@
         </view>
         <view class="input-wrapper">
           <input ref="input2" class="uni-input" value="0123456789" :selection-start="selectionStart"
-            :selection-end="selectionEnd" />
+            :selection-end="selectionEnd" @blur="onSelectionBlurChange"/>
         </view>
       </view>
 
@@ -279,10 +279,16 @@
         (this.$refs['input'] as UniInputElement).focus();
         this.cursor = cursor;
       },
+      onCursorBlurChange(){
+        this.cursor = 0
+      },
       setSelection: function (selectionStart : number, selectionEnd : number) {
         (this.$refs['input2'] as UniInputElement).focus();
         this.selectionStart = selectionStart;
         this.selectionEnd = selectionEnd;
+      },
+      onSelectionBlurChange(){
+        this.selectionEnd = 0;
       },
       clearInput: function (event : UniInputEvent) {
         this.inputClearValue = event.detail.value
