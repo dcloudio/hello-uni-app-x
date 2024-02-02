@@ -127,7 +127,7 @@
           <text class="uni-title-text">设置输入框聚焦时光标的位置（点击生效）</text>
         </view>
         <view class="input-wrapper">
-          <input ref="input" class="uni-input" value="0123456789" :cursor="cursor" />
+          <input ref="input" class="uni-input" value="0123456789" :cursor="cursor" @blur="onCursorBlurChange"/>
         </view>
       </view>
 
@@ -137,7 +137,7 @@
         </view>
         <view class="input-wrapper">
           <input ref="input2" class="uni-input" value="0123456789" :selection-start="selectionStart"
-            :selection-end="selectionEnd" />
+            :selection-end="selectionEnd" @blur="onSelectionBlurChange"/>
         </view>
       </view>
 
@@ -269,22 +269,28 @@
       }
     },
     methods: {
-      inputFocusKeyBoardChange(e : InputKeyboardHeightChangeEvent) {
+      inputFocusKeyBoardChange(e : UniInputKeyboardHeightChangeEvent) {
         this.inputFocusKeyBoardChangeValue = e.detail.height > 50
       },
-      onMaxLengthInput(event : InputEvent) {
+      onMaxLengthInput(event : UniInputEvent) {
         this.onMaxLengthInputValue = event.detail.value
       },
       setCursor: function (cursor : number) {
         (this.$refs['input'] as UniInputElement).focus();
         this.cursor = cursor;
       },
+      onCursorBlurChange(){
+        this.cursor = 0
+      },
       setSelection: function (selectionStart : number, selectionEnd : number) {
         (this.$refs['input2'] as UniInputElement).focus();
         this.selectionStart = selectionStart;
         this.selectionEnd = selectionEnd;
       },
-      clearInput: function (event : InputEvent) {
+      onSelectionBlurChange(){
+        this.selectionEnd = 0;
+      },
+      clearInput: function (event : UniInputEvent) {
         this.inputClearValue = event.detail.value
         if (event.detail.value.length > 0) {
           this.showClearIcon = true
@@ -299,23 +305,23 @@
       changePassword: function () {
         this.showPassword = !this.showPassword
       },
-      onInput: function (event : InputEvent) {
+      onInput: function (event : UniInputEvent) {
         console.log("键盘输入", JSON.stringify(event.detail));
         this.inputEventDetail = JSON.stringify(event.detail)
       },
-      onFocus: function (event : InputFocusEvent) {
+      onFocus: function (event : UniInputFocusEvent) {
         console.log("输入框聚焦", JSON.stringify(event.detail));
         this.focusAndBlurEventDetail = JSON.stringify(event.detail);
       },
-      onBlur: function (event : InputBlurEvent) {
+      onBlur: function (event : UniInputBlurEvent) {
         console.log("输入框失去焦点", JSON.stringify(event.detail));
         this.focusAndBlurEventDetail = JSON.stringify(event.detail);
       },
-      onConfirm: function (event : InputConfirmEvent) {
+      onConfirm: function (event : UniInputConfirmEvent) {
         console.log("点击完成按钮", JSON.stringify(event.detail));
         this.confirmEventDetail = JSON.stringify(event.detail);
       },
-      onKeyborardHeightChange: function (event : InputKeyboardHeightChangeEvent) {
+      onKeyborardHeightChange: function (event : UniInputKeyboardHeightChangeEvent) {
         console.log("键盘高度发生变化", JSON.stringify(event.detail));
         this.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
       },
