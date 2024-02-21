@@ -29,4 +29,15 @@ describe('component-native-list-view', () => {
     const image = await program.screenshot();
     expect(image).toMatchImageSnapshot();
   })
+
+  //检测修改item子元素后，item是否正常调整高度
+  it('check_switch_item_content', async () => {
+    await page.callMethod('switchItemContent')
+    await page.waitFor(async () => {
+      return await page.data('displayArrow') === true;
+    });
+    await page.waitFor(600)
+    const image = await program.screenshot();
+    expect(image).toMatchImageSnapshot();
+  })
 })
