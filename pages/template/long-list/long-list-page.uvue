@@ -70,7 +70,7 @@
         dataList: [] as ListItem[],
         isEnded: false,
         loadingError: '',
-        $currentPage: 1
+        currentPage: 1
       }
     },
     computed: {
@@ -94,7 +94,7 @@
     methods: {
       refreshData(loadComplete : (() => void) | null) {
         this.dataList.length = 0
-        this.$currentPage = 1
+        this.currentPage = 1
         this.loadData(loadComplete)
       },
       loadData(loadComplete : (() => void) | null) {
@@ -107,7 +107,7 @@
           url: SERVER_URL,
           data: {
             type: this.type,
-            page: this.$currentPage,
+            page: this.currentPage,
             page_size: PAGE_SIZE
           },
           success: (res) => {
@@ -121,7 +121,7 @@
             if (responseData.data.length == 0) {
               this.isEnded = true
             } else {
-              this.$currentPage++
+              this.currentPage++
             }
           },
           fail: (err) => {

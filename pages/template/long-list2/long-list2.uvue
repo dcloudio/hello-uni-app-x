@@ -89,22 +89,22 @@
           } as SwiperViewItem
         ] as SwiperViewItem[],
         swiperIndex: -1,
-        $pageScrollView: null as null | UniElement,
-        $headerHeight: 0,
-        $animationFinishIndex: 0,
-        $tabScrollView: null as null | UniElement,
-        $indicatorNode: null as null | UniElement,
-        $swiperWidth: 0,
-        $swiperTabsRect: [] as SwiperTabsItem[],
+        pageScrollView: null as null | UniElement,
+        headerHeight: 0,
+        animationFinishIndex: 0,
+        tabScrollView: null as null | UniElement,
+        indicatorNode: null as null | UniElement,
+        swiperWidth: 0,
+        swiperTabsRect: [] as SwiperTabsItem[],
         nestedScrollChildId: ""
       }
     },
     onReady() {
-      this.$pageScrollView = this.$refs['pageScrollView'] as UniElement;
-      this.$headerHeight = (this.$refs['header'] as UniElement).offsetHeight
-      this.$swiperWidth = (this.$refs['swiper'] as UniElement).getBoundingClientRect().width
-      this.$tabScrollView = this.$refs['tabScroll'] as UniElement
-      this.$indicatorNode = this.$refs['indicator'] as UniElement
+      this.pageScrollView = this.$refs['pageScrollView'] as UniElement;
+      this.headerHeight = (this.$refs['header'] as UniElement).offsetHeight
+      this.swiperWidth = (this.$refs['swiper'] as UniElement).getBoundingClientRect().width
+      this.tabScrollView = this.$refs['tabScroll'] as UniElement
+      this.indicatorNode = this.$refs['indicator'] as UniElement
       this.cacheTabItemsSize()
       this.setSwiperIndex(0, true)
     },
@@ -120,19 +120,19 @@
       },
       onNestedPreScroll(event : NestedPreScrollEvent) {
         const deltaY = event.deltaY
-        const scrollTop = this.$pageScrollView!.scrollTop
+        const scrollTop = this.pageScrollView!.scrollTop
 
         if (deltaY > 0) {
           // 向上滚动，如果父容器 header scrollTop < offsetHeight，先滚动父容器
-          if (scrollTop < this.$headerHeight) {
-            const difference = this.$headerHeight - scrollTop - deltaY
+          if (scrollTop < this.headerHeight) {
+            const difference = this.headerHeight - scrollTop - deltaY
             if (difference > 0) {
-              this.$pageScrollView!.scrollBy(event.deltaX, deltaY)
+              this.pageScrollView!.scrollBy(event.deltaX, deltaY)
               event.consumed(event.deltaX, deltaY)
             } else {
               const top : number = deltaY + difference
               event.consumed(event.deltaX, top.toFloat())
-              this.$pageScrollView!.scrollBy(event.deltaX, top.toFloat())
+              this.pageScrollView!.scrollBy(event.deltaX, top.toFloat())
             }
           }
         }
@@ -149,9 +149,9 @@
         const offset_x = e.detail.dx
 
         // 计算当前索引并重置差异
-        const current_offset_x = offset_x % this.$swiperWidth
-        const current_offset_i = offset_x / this.$swiperWidth
-        const current_index = this.$animationFinishIndex + parseInt(current_offset_i + '')
+        const current_offset_x = offset_x % this.swiperWidth
+        const current_offset_i = offset_x / this.swiperWidth
+        const current_index = this.animationFinishIndex + parseInt(current_offset_i + '')
 
         // 计算目标索引及边界检查
         let move_to_index = current_index
@@ -162,7 +162,7 @@
         }
 
         // 计算偏移百分比
-        const percentage = Math.abs(current_offset_x) / this.$swiperWidth
+        const percentage = Math.abs(current_offset_x) / this.swiperWidth
 
         // 通知更新指示线
         this.updateTabIndicator(current_index, move_to_index, percentage)
@@ -172,13 +172,13 @@
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
-        this.$animationFinishIndex = e.detail.current
+        this.animationFinishIndex = e.detail.current
       },
       cacheTabItemsSize() {
-        this.$swiperTabsRect.length = 0
+        this.swiperTabsRect.length = 0
         const tabs = this.$refs["swipertab"] as UniElement[]
         tabs.forEach((node) => {
-          this.$swiperTabsRect.push({
+          this.swiperTabsRect.push({
             x: node.offsetLeft,
             w: node.offsetWidth
           } as SwiperTabsItem)
@@ -198,8 +198,8 @@
         }
       },
       updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-        const current_size = this.$swiperTabsRect[current_index]
-        const move_to_size = this.$swiperTabsRect[move_to_index]
+        const current_size = this.swiperTabsRect[current_index]
+        const move_to_size = this.swiperTabsRect[move_to_index]
 
         // 计算指示线 左边距 和 宽度 在移动过程中的线性值
         const indicator_line_x = lerpNumber(current_size.x, move_to_size.x, percentage)
@@ -207,12 +207,12 @@
 
         // 更新指示线
         const x = indicator_line_x + indicator_line_w / 2
-        this.$indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
+        this.indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
 
         // 滚动到水平中心位置
-        const scroll_x = x - this.$swiperWidth / 2
-        if(this.$tabScrollView !== null){
-          this.$tabScrollView!.scrollLeft = scroll_x
+        const scroll_x = x - this.swiperWidth / 2
+        if(this.tabScrollView !== null){
+          this.tabScrollView!.scrollLeft = scroll_x
         }
       },
       initSwiperItemData(index : number) {
