@@ -1,3 +1,4 @@
+// 自动化测试
 module.exports = {
   testTimeout: 30000,
   reporters: ['default'],
