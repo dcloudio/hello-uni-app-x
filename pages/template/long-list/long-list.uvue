@@ -78,7 +78,7 @@
             preload: false
           } as SwiperViewItem
         ] as SwiperViewItem[],
-        swiperIndex: -1,
+        swiperIndex: 0,
         pageScrollView: null as null | UniElement,
         headerHeight: 0,
         animationFinishIndex: 0,
@@ -95,7 +95,7 @@
       this.tabScrollView = this.$refs['tabScroll'] as UniElement
       this.indicatorNode = this.$refs['indicator'] as UniElement
       this.cacheTabItemsSize()
-      this.setSwiperIndex(0, true)
+      this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
     },
     onPullDownRefresh() {
       (this.$refs["longPage"]! as ComponentPublicInstance[])[this.swiperIndex].$callMethod('refreshData', () => {
@@ -259,6 +259,10 @@
     width: 1px;
     height: 2px;
     background-color: #007AFF;
+  }
+
+  .swiper-list {
+    flex: 1;
   }
 
   .swiper-view {
