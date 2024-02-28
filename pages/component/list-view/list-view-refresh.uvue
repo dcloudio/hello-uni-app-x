@@ -1,0 +1,49 @@
+<template>
+  <list-view v-if="list_show" id="listview" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
+    :refresher-triggered="refresherTriggered" @refresherrefresh="onRefresherrefresh">
+    <list-item class="item">
+      <text>向下滑动触发下拉刷新</text>
+    </list-item>
+    <list-item v-for="index in item_count" class="item">
+      <text>item-------{{index}}</text>
+    </list-item>
+  </list-view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        item_count: 20,
+        list_show: false,
+        refresherTriggered: true
+      }
+    },
+    onLoad() {
+      //延迟显示list-view
+      setTimeout(() => {
+        this.list_show = true;
+      }, 500)
+    },
+    methods: {
+      onRefresherrefresh() {
+        this.refresherTriggered = true;
+        setTimeout(() => {
+          this.refresherTriggered = false;
+        }, 1000)
+      }
+    }
+  }
+</script>
+<style>
+  .item {
+    padding: 15px;
+    margin: 0 0 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+  .button_item {
+    width: 200px;
+  }
+</style>

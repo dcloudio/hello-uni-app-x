@@ -7,7 +7,7 @@
     <view class="swiper-list">
       <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
         <view class="flex-row" style="align-self: flex-start;">
-          <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
+          <text ref="swipertab" space="nbsp" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
             v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
             {{item.name}}
           </text>
@@ -209,7 +209,7 @@
 
         // 滚动到水平中心位置
         const scroll_x = x - this.swiperWidth / 2
-        if(this.tabScrollView !== null){
+        if(this.tabScrollView != null){
           this.tabScrollView!.scrollLeft = scroll_x
         }
       },
@@ -238,6 +238,9 @@
 
   .swiper-list {
     height: 100%;
+    /* #ifdef WEB */
+    flex: 1;
+    /* #endif */
   }
 
   .swiper-tabs {
@@ -249,6 +252,7 @@
     color: #555;
     font-size: 16px;
     padding: 12px 25px;
+    white-space: nowrap;
   }
 
   .swiper-tabs-item-active {
