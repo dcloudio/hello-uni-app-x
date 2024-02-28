@@ -165,7 +165,9 @@
         const percentage = Math.abs(current_offset_x) / this.swiperWidth
 
         // 通知更新指示线
-        this.updateTabIndicator(current_index, move_to_index, percentage)
+        if (current_index != move_to_index) {
+          this.updateTabIndicator(current_index, move_to_index, percentage)
+        }
 
         // 首次可见时初始化数据
         this.initSwiperItemData(move_to_index)
@@ -242,6 +244,9 @@
 
   .swiper-list {
     height: 100%;
+    /* #ifdef WEB */
+    flex: 1;
+    /* #endif */
   }
 
   .swiper-tabs {
@@ -253,6 +258,7 @@
     color: #555;
     font-size: 16px;
     padding: 12px 25px;
+    white-space: nowrap;
   }
 
   .swiper-tabs-item-active {
