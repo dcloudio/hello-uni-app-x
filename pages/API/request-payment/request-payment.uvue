@@ -49,6 +49,20 @@
             uni.hideLoading()
           },
         });
+      },
+      //自动化测试使用
+      jest_pay() {
+        uni.requestPayment({
+          provider: "alipay",
+          orderInfo: this.orderInfo,
+          fail: (res : RequestPaymentFail) => {
+            console.log(JSON.stringify(res))
+            this.errorCode = res.errCode
+          },
+          success: (res : RequestPaymentSuccess) => {
+            console.log(JSON.stringify(res))
+          }
+        } as RequestPaymentOptions)
       }
     }
   }

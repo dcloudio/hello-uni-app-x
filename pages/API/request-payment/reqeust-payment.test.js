@@ -13,7 +13,7 @@ describe("payment", () => {
     await page.setData({
       orderinfo: orderInfo,
     })
-    await page.callMethod('pay')
+    await page.callMethod('jest_pay')
     await page.waitFor(10000);
     expect((await page.data())['errorCode']).toEqual(700711)
   });
@@ -25,7 +25,7 @@ describe("payment", () => {
       await page.setData({
         orderinfo: orderInfo,
       })
-    await page.callMethod('pay')
+    await page.callMethod('jest_pay')
     await page.waitFor(6000);
     expect((await page.data())['errorCode']).toEqual(700712)
   });
