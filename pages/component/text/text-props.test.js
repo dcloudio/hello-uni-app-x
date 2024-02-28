@@ -20,4 +20,12 @@ describe('text-props', () => {
         expect(height).toBe(0)
       }
   })
+
+  it('text nested', async () => {
+      page.callMethod("setTextNested")
+      const element = await page.$('#text-nested')
+      if (element != null) {
+        expect(await element.text()).toBe("二级节点文字红色且背景色黄色")
+      }
+  })
 })
