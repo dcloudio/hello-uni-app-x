@@ -11,7 +11,8 @@
         btnType: "primary",
         orderInfo: "",
         errorCode: 0,
-        errorMsg: ""
+        errorMsg: "",
+        complete: false
       }
     },
     methods: {
@@ -49,6 +50,21 @@
             uni.hideLoading()
           },
         });
+      },
+      //自动化测试使用
+      jest_pay() {
+        uni.requestPayment({
+          provider: "alipay",
+          orderInfo: this.orderInfo,
+          fail: (res : RequestPaymentFail) => {
+            this.errorCode = res.errCode
+            this.complete = true
+          },
+          success: (res : RequestPaymentSuccess) => {
+            console.log(JSON.stringify(res))
+             this.complete = true
+          }
+        } as RequestPaymentOptions)
       }
     }
   }
