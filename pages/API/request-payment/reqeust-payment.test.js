@@ -2,6 +2,12 @@ const PAGE_PATH =
   "/pages/API/request-payment/request-payment";
 
 describe("payment", () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+    it('web', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600)

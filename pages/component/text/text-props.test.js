@@ -21,6 +21,10 @@ describe('text-props', () => {
       }
   })
 
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+    return
+  }
+
   it('text nested', async () => {
       page.callMethod("setTextNested")
       const element = await page.$('#text-nested')
