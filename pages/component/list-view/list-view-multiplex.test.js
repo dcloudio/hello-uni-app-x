@@ -1,10 +1,4 @@
 describe('component-native-list-view', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
-    it('dummyTest', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   let page
   beforeAll(async () => {
     //打开list-view-multiplex测试页
