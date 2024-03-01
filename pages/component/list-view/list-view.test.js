@@ -28,6 +28,11 @@ describe('component-native-list-view', () => {
 
   //检测横向scrollLeft属性赋值
   it('check_scroll_left', async () => {
+    if(await page.data('scroll_x_boolean') === false) {
+        await page.callMethod('change_scroll_x_boolean', true)
+        await page.callMethod('change_scroll_y_boolean', false)
+        await page.waitFor(600)
+    }
     await page.callMethod('confirm_scroll_left_input', 600)
     await page.waitFor(600)
     const listElement = await page.$('#listview')
@@ -42,6 +47,11 @@ describe('component-native-list-view', () => {
 
   //检测横向可滚动区域
   it('check_scroll_width', async () => {
+    if(await page.data('scroll_x_boolean') === false) {
+        await page.callMethod('change_scroll_x_boolean', true)
+        await page.callMethod('change_scroll_y_boolean', false)
+        await page.waitFor(600)
+    }
     await page.callMethod('change_scroll_y_boolean', false)
     await page.callMethod('change_scroll_x_boolean', true)
     await page.waitFor(600)
@@ -51,6 +61,11 @@ describe('component-native-list-view', () => {
 
   //检测下拉刷新
   it('check_refresher', async () => {
+    if(await page.data('scroll_y_boolean') === false) {
+        await page.callMethod('change_scroll_y_boolean', true)
+        await page.callMethod('change_scroll_x_boolean', false)
+        await page.waitFor(600)
+    }
     await page.setData({
         refresher_enabled_boolean: true,
         refresher_triggered_boolean: true
@@ -61,6 +76,11 @@ describe('component-native-list-view', () => {
 
   //检测竖向scroll_into_view属性赋值
   it('check_scroll_into_view_top', async () => {
+    if(await page.data('scroll_y_boolean') === false) {
+        await page.callMethod('change_scroll_y_boolean', true)
+        await page.callMethod('change_scroll_x_boolean', false)
+        await page.waitFor(600)
+    }
     await page.callMethod('item_change_size_enum', 3)
     await page.waitFor(600)
     const listElement = await page.$('#listview')
@@ -72,6 +92,11 @@ describe('component-native-list-view', () => {
 
   //检测横向scroll_into_view属性赋值
   it('check_scroll_into_view_left', async () => {
+    if(await page.data('scroll_x_boolean') === false) {
+        await page.callMethod('change_scroll_x_boolean', true)
+        await page.callMethod('change_scroll_y_boolean', false)
+        await page.waitFor(600)
+    }
     await page.callMethod('item_change_size_enum', 3)
     await page.waitFor(600)
     const listElement = await page.$('#listview')
