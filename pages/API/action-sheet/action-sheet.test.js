@@ -23,7 +23,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -64,7 +64,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -106,7 +106,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -147,7 +147,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -188,7 +188,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -229,7 +229,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -273,7 +273,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -314,7 +314,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -355,7 +355,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -396,7 +396,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -438,7 +438,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -479,7 +479,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -520,7 +520,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });

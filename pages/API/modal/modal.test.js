@@ -16,13 +16,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -54,13 +56,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -93,13 +97,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -132,13 +138,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -171,13 +179,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -210,13 +220,14 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
-
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -249,13 +260,14 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
-
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -288,13 +300,14 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
-
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -327,13 +340,14 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
-
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -366,13 +380,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -405,13 +421,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -444,13 +462,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -483,13 +503,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -522,13 +544,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -561,13 +585,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -601,13 +627,14 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
-
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -640,13 +667,15 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -679,13 +708,14 @@ describe('API-loading', () => {
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
-
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
