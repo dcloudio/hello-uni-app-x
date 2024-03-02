@@ -136,7 +136,7 @@ describe('API-toast', () => {
 
     const btnToastHideButton = await page.$('#btn-toast-hide')
     await btnToastHideButton.tap()
-    await page.waitFor(200)
+    await page.waitFor(1000)
 
     if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')

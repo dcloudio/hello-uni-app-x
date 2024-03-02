@@ -27,8 +27,8 @@
       <view class="uni-title">
         <text class="uni-subtitle-text">截断（clip）</text>
       </view>
-      <view class="text-box" style="height: 100px">
-        <text class="uni-flex-item" style="text-overflow: clip">{{
+      <view class="text-box">
+        <text class="uni-flex-item" style="text-overflow: clip;white-space: nowrap;">{{
           multiLineText
         }}</text>
       </view>
@@ -36,8 +36,8 @@
       <view class="uni-title">
         <text class="uni-subtitle-text">截断（ellipsis）</text>
       </view>
-      <view class="text-box" style="height: 100px">
-        <text class="uni-flex-item" style="text-overflow: ellipsis">{{
+      <view class="text-box">
+        <text class="uni-flex-item" style="text-overflow: ellipsis;white-space: nowrap;">{{
           multiLineText
         }}</text>
       </view>
@@ -78,8 +78,8 @@
       <view class="text-box">
         <text
           >一级节点黑色
-          <text style="color: red"
-            >二级节点红色
+          <text id="text-nested" ref="text-nested" style="color: red;background-color: yellow;"
+            >二级节点红色且背景色黄色
             <text>三级节点不继承二级的颜色</text>
           </text>
           <text style="font-size: 50px">二级节点大字体</text>
@@ -96,6 +96,10 @@
         <text class="text-padding" style="width: 200px;height: 100px;">hello uni-app x</text>
       </view>
 
+      <view class="uni-row">
+        <text id="empty-text"></text>
+      </view>
+
     </view>
   </scroll-view>
 </template>
@@ -110,7 +114,12 @@ export default {
       singleLineText: 'uni-app x，终极跨平台方案',
     }
   },
-  methods: {},
+  methods: {
+    // 自动化测试
+    setTextNested() {
+      (this.$refs["text-nested"] as UniTextElement).value = "二级节点文字红色且背景色黄色";
+    }
+  }
 }
 </script>
 
