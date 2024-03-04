@@ -7,8 +7,7 @@ describe('API-loading', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/action-sheet/action-sheet')
-    await page.waitFor(200);
-
+    await page.waitFor(500);
   });
 
 
@@ -23,7 +22,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -64,7 +63,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -106,7 +105,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -147,7 +146,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -188,7 +187,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -229,7 +228,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -273,7 +272,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -314,7 +313,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -355,7 +354,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -396,7 +395,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -438,7 +437,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -479,7 +478,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });
@@ -520,7 +519,7 @@ describe('API-loading', () => {
         area: {
           x: 0,
           y: 200,
-          height: windowHeight,
+          height: windowHeight - 100,
           width:windowWidth
         },
       });

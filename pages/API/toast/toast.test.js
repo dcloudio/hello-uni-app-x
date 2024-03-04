@@ -5,6 +5,7 @@ describe('API-toast', () => {
   let page;
   const isAndroid = process.env.UNI_OS_NAME === "android";
 
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/toast/toast')
     await page.waitFor(600);
@@ -13,12 +14,21 @@ describe('API-toast', () => {
 
 
   it("onload-toast-test", async () => {
+
+
     if (isAndroid) {
+
+      const res = await page.callMethod('jest_getWindowInfo')
+      const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
+
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -38,11 +48,18 @@ describe('API-toast', () => {
     await btnToastDefaultButton.tap()
     await page.waitFor(200)
     if (isAndroid) {
+
+      const res = await page.callMethod('jest_getWindowInfo')
+      const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
+
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -62,11 +79,16 @@ describe('API-toast', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(2000)
     if (isAndroid) {
+      const res = await page.callMethod('jest_getWindowInfo')
+      const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -84,11 +106,16 @@ describe('API-toast', () => {
     await btnToastErrorIconButton.tap()
     await page.waitFor(200)
     if (isAndroid) {
+      const res = await page.callMethod('jest_getWindowInfo')
+      const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
@@ -112,11 +139,16 @@ describe('API-toast', () => {
     await page.waitFor(1000)
 
     if (isAndroid) {
+      const res = await page.callMethod('jest_getWindowInfo')
+      const windowHeight = res.windowHeight * res.pixelRatio;
+      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         adb: true,
         area: {
           x: 0,
           y: 200,
+          height: windowHeight - 200,
+          width:windowWidth
         },
       });
       expect(image).toMatchImageSnapshot();
