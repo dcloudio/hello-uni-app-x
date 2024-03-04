@@ -31,6 +31,12 @@ module.exports = {
       errMsg: '[预期内的报错]执行失败',
     }
   },
+  async failWithNumberErrCode() {
+    return {
+      errCode: -1,
+      errMsg: '[预期内的报错]执行失败',
+    }
+  },
   async success() {
     return {
       errCode: 0,
