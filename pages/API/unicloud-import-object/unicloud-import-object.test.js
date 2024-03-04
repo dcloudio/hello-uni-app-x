@@ -21,14 +21,14 @@ describe('unicloud-import-object', () => {
       returnTodoTitle,
       returnTodoContent,
       failErrCode,
-      failWithNumberErrCode,
+      failNumberErrCode,
       successErrCode,
     } = await page.data()
 
     expect(returnTodoTitle).toBe(todoTitle)
     expect(returnTodoContent).toBe(todoContent)
     expect(failErrCode).toBe('TEST_ERROR_CODE')
-    expect(failWithNumberErrCode).toBe(-1)
+    expect(failNumberErrCode).toBe(-1)
     expect(successErrCode).toBe(0)
 
   })
