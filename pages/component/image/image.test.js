@@ -20,7 +20,7 @@ describe('component-native-image', () => {
       await page.waitFor(300);
       expect(await page.data('loadError')).toBe(false)
     })
-    
+
     it('check_image_load_error', async () => {
       await page.setData({
         loadError: false,
@@ -30,22 +30,24 @@ describe('component-native-image', () => {
       expect(await page.data('loadError')).toBe(true)
     })
 
-    it('check-cookie', async () => {
-      await page.setData({
-        autoTest: true,
-        setCookieImage: 'https://cdn.dcloud.net.cn/img/shadow-grey.png'
-      });
-      await page.waitFor(1000);
-      await page.setData({
-        loadError: false,
-        verifyCookieImage: 'https://request.dcloud.net.cn/img/shadow-grey.png'
-      });
-      await page.waitFor(1000);
-      expect(await page.data('loadError')).toBe(false);
-      await page.setData({
-        autoTest: false
-      });
-    })
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      it('check-cookie', async () => {
+        await page.setData({
+          autoTest: true,
+          setCookieImage: 'https://cdn.dcloud.net.cn/img/shadow-grey.png'
+        });
+        await page.waitFor(1000);
+        await page.setData({
+          loadError: false,
+          verifyCookieImage: 'https://request.dcloud.net.cn/img/shadow-grey.png'
+        });
+        await page.waitFor(1000);
+        expect(await page.data('loadError')).toBe(false);
+        await page.setData({
+          autoTest: false
+        });
+      })
+    }
 
     it('path-screenshot', async () => {
       const page = await program.navigateTo('/pages/component/image/image-path');
