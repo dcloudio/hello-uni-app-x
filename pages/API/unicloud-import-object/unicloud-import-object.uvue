@@ -42,11 +42,6 @@
         isUniTest: false
       }
     },
-    onUnload() {
-      if (this.isUniTest) {
-        uni.hideToast()
-      }
-    },
     methods: {
       notify(content : string, title : string) {
         if (!this.isUniTest) {
@@ -56,9 +51,6 @@
             showCancel: false
           })
         } else {
-          uni.showToast({
-            title: content
-          })
           console.log(title, content)
         }
       },
@@ -101,11 +93,6 @@
           const error = err as UniCloudError
           this.failErrCode = error.errCode as string
           console.error(error)
-          if (this.isUniTest) {
-            uni.showToast({
-              title: error.errMsg
-            })
-          }
         })
       },
       async failWithNumberErrCode() : Promise<void> {
@@ -119,11 +106,6 @@
           const error = err as UniCloudError
           this.failNumberErrCode = error.errCode as number
           console.error(error)
-          if (this.isUniTest) {
-            uni.showToast({
-              title: error.errMsg
-            })
-          }
         })
       },
       async success() : Promise<void> {
