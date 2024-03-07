@@ -147,6 +147,22 @@ describe('component-native-input', () => {
     expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
   })
 
+  it("maxlength default", async () => {
+    const input = await page.$('#uni-input-disable');
+    let str = "";
+    for(let i = 0;i < 200;i++){
+      str += `${i}`
+    }
+    await page.setData({
+      disableValue: str
+    })
+    let length = (await input.attribute("value")).length
+    expect(length).toBe(140)
+    await page.setData({
+      disableValue: ""
+    })
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
