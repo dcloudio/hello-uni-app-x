@@ -77,4 +77,9 @@ describe('Button.uvue', () => {
     const newValue2 = await btn.property('disabled')
     expect(newValue2.toString()).toBe(true + '')
   })
+
+  it(checkUniButtonElement, async () => {
+    const value = await page.callMethod('checkUniButtonElement')
+    expect(value).toBe(true)
+  })
 })

@@ -36,13 +36,21 @@
           url: 'buttonstatus',
         })
       },
+      //用于自动化测试
+      checkUniButtonElement(): boolean {
+        const button = uni.getElementById("testButton")
+        if(button != null && button instanceof UniButtonElement) {
+          return true
+        }
+        return false
+      }
     }
   }
 </script>
 
 <template>
   <view class="main">
-    <button :disabled="disabled_boolean" :size="size_enum[size_enum_current].name"
+    <button id="testButton" :disabled="disabled_boolean" :size="size_enum[size_enum_current].name"
       :type="type_enum[type_enum_current].name" :plain="plain_boolean" @click="button_click"
       @touchstart="button_touchstart" @touchmove="button_touchmove" @touchcancel="button_touchcancel"
       @touchend="button_touchend" @tap="button_tap" @longpress="button_longpress" class="btn"
