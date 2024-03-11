@@ -108,4 +108,10 @@ describe('ExtApi-Request', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
+  it('Check Get With Data', async () => {
+    res = await page.callMethod('jest_get_with_data')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
 });
