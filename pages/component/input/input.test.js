@@ -147,19 +147,19 @@ describe('component-native-input', () => {
     expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
   })
 
-  it("maxlength default", async () => {
-    const input = await page.$('#uni-input-disable');
+  it("maxlength", async () => {
+    const input = await page.$('#uni-input-maxlength');
     let str = "";
     for(let i = 0;i < 200;i++){
       str += `${i}`
     }
     await page.setData({
-      disableValue: str
+      inputMaxLengthValue: str
     })
     let length = (await input.attribute("value")).length
-    expect(length).toBe(140)
+    expect(length).toBe(10)
     await page.setData({
-      disableValue: ""
+      inputMaxLengthValue: ""
     })
   })
 
