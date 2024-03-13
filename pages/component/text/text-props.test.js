@@ -13,12 +13,25 @@ describe('text-props', () => {
   })
 
   it('empty text', async () => {
+      await page.setData({
+        autoTest: true
+      })
       const element = await page.$('#empty-text')
       if (element != null) {
         const { width, height } = await element.size()
         expect(width).toBe(0)
         expect(height).toBe(0)
       }
+      page.callMethod("setTextEmpty")
+      const element2 = await page.$('#empty-text2')
+      if (element2 != null) {
+        const { width, height } = await element2.size()
+        expect(width).toBe(0)
+        expect(height).toBe(0)
+      }
+      await page.setData({
+        autoTest: false
+      })
   })
 
   if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {

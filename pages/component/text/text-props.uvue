@@ -96,10 +96,12 @@
         <text class="text-padding" style="width: 200px;height: 100px;">hello uni-app x</text>
       </view>
 
-      <view class="uni-row">
+      <view class="uni-row" v-if="autoTest">
         <text id="empty-text"></text>
       </view>
-
+      <view class="uni-row" v-if="autoTest">
+        <text id="empty-text2" ref="empty-text2">test</text>
+      </view>
     </view>
   </scroll-view>
 </template>
@@ -112,12 +114,17 @@ export default {
       multiLineText:
         'HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言',
       singleLineText: 'uni-app x，终极跨平台方案',
+      // 自动化测试
+      autoTest: false
     }
   },
   methods: {
     // 自动化测试
     setTextNested() {
-      (this.$refs["text-nested"] as UniTextElement).value = "二级节点文字红色且背景色黄色";
+      (this.$refs["text-nested"] as UniElement).setAttribute("value", "二级节点文字红色且背景色黄色");
+    },
+    setTextEmpty() {
+      (this.$refs["empty-text2"] as UniElement).setAttribute("value", "");
     }
   }
 }
