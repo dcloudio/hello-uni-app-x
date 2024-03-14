@@ -86,7 +86,7 @@ describe('ExtApi-Request', () => {
   });
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android')) {
+  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9

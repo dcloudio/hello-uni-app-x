@@ -236,7 +236,7 @@ const PAGE_PATH =
 
 describe("shot-compare", () => {
   let shouldCompareScreenShot = false
-  if (process.env.uniTestPlatformInfo.startsWith('android')) {
+  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldCompareScreenShot = version > 9
