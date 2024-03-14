@@ -4,12 +4,10 @@
   <!-- #endif -->
     <view class="page">
       <page-head :title="title"></page-head>
-      <view>
-        <view class="service-item" v-for="(item, index) in serviceList" :key="index">
-          <text class="item-k">{{item.name}}</text>
-          <view class="item-v">
-            <text v-for="(item2, index2) in item.provider" :key="index2">{{item2}}</text>
-          </view>
+      <view class="service-item" v-for="(item, index) in serviceList" :key="index">
+        <text class="service-name">{{item.name}}:</text>
+        <view class="provider-list">
+          <text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">{{item2}}</text>
         </view>
       </view>
       <button class="btn-get-provider" type="primary" @click="getProvider">getProvider</button>
@@ -18,6 +16,7 @@
   </scroll-view>
   <!-- #endif -->
 </template>
+
 <script>
   type ProviderItem = {
     service : string,
@@ -50,7 +49,7 @@
         })
       },
       updateProvider(service : string, provider : string[]) {
-        const item = this.serviceList.find((item : ProviderItem) => {
+        const item : ProviderItem | null = this.serviceList.find((item : ProviderItem) : boolean => {
           return item.service == service
         });
         if (item != null) {
@@ -66,16 +65,23 @@
     padding: 15px;
   }
 
-  .item-k {
-    line-height: 2;
+  .service-item {
+    margin-top: 10px;
   }
 
-  .item-v {
+  .service-name {
     font-weight: bold;
-    line-height: 2;
+  }
+
+  .provider-list {
+    margin-left: 32px;
+  }
+
+  .provider-item {
+    line-height: 1.5;
   }
 
   .btn-get-provider {
-    margin-top: 50px;
+    margin-top: 30px;
   }
 </style>
