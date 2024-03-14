@@ -78,7 +78,7 @@
       <view class="text-box">
         <text
           >一级节点黑色
-          <text id="text-nested" ref="text-nested" style="color: red;background-color: yellow;"
+          <text style="color: red;background-color: yellow;"
             >二级节点红色且背景色黄色
             <text>三级节点不继承二级的颜色</text>
           </text>
@@ -96,11 +96,20 @@
         <text class="text-padding" style="width: 200px;height: 100px;">hello uni-app x</text>
       </view>
 
-      <view class="uni-row" v-if="autoTest">
-        <text id="empty-text"></text>
-      </view>
-      <view class="uni-row" v-if="autoTest">
-        <text id="empty-text2" ref="empty-text2">test</text>
+      <view v-if="autoTest">
+        <view class="uni-row">
+          <text id="empty-text"></text>
+        </view>
+        <view class="uni-row">
+          <text id="empty-text2">{{emptyText}}</text>
+        </view>
+        <text
+          >一级节点
+          <text
+            >二级节点
+            <text id="text-nested">{{nestedText}}</text>
+          </text>
+        </text>
       </view>
     </view>
   </scroll-view>
@@ -115,16 +124,18 @@ export default {
         'HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言',
       singleLineText: 'uni-app x，终极跨平台方案',
       // 自动化测试
-      autoTest: false
+      autoTest: false,
+      nestedText: '三级节点',
+      emptyText: 'empty'
     }
   },
   methods: {
     // 自动化测试
     setTextNested() {
-      (this.$refs["text-nested"] as UniElement).setAttribute("value", "二级节点文字红色且背景色黄色");
+      this.nestedText = "修改三级节点";
     },
     setTextEmpty() {
-      (this.$refs["empty-text2"] as UniElement).setAttribute("value", "");
+      this.emptyText = "";
     }
   }
 }

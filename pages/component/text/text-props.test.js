@@ -22,7 +22,8 @@ describe('text-props', () => {
         expect(width).toBe(0)
         expect(height).toBe(0)
       }
-      page.callMethod("setTextEmpty")
+      await page.callMethod("setTextEmpty")
+      await page.waitFor(100)
       const element2 = await page.$('#empty-text2')
       if (element2 != null) {
         const { width, height } = await element2.size()
@@ -34,15 +35,18 @@ describe('text-props', () => {
       })
   })
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
-    return
-  }
-
   it('text nested', async () => {
-      page.callMethod("setTextNested")
+      await page.setData({
+        autoTest: true
+      })
+      await page.callMethod("setTextNested")
+      await page.waitFor(100)
       const element = await page.$('#text-nested')
       if (element != null) {
-        expect(await element.text()).toBe("二级节点文字红色且背景色黄色")
+        expect(await element.text()).toBe("修改三级节点")
       }
+      await page.setData({
+        autoTest: false
+      })
   })
 })
