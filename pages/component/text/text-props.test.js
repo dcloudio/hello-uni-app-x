@@ -13,23 +13,55 @@ describe('text-props', () => {
   })
 
   it('empty text', async () => {
+      await page.setData({
+        autoTest: true
+      })
       const element = await page.$('#empty-text')
       if (element != null) {
         const { width, height } = await element.size()
         expect(width).toBe(0)
         expect(height).toBe(0)
       }
+      await page.callMethod("setEmptyText")
+      await page.waitFor(100)
+      const element2 = await page.$('#empty-text2')
+      if (element2 != null) {
+        const { width, height } = await element2.size()
+        expect(width).toBe(0)
+        expect(height).toBe(0)
+      }
+      await page.setData({
+        autoTest: false
+      })
   })
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
-    return
-  }
-
-  it('text nested', async () => {
-      page.callMethod("setTextNested")
-      const element = await page.$('#text-nested')
+  it('nested text', async () => {
+      await page.setData({
+        autoTest: true
+      })
+      await page.callMethod("setNestedText")
+      await page.waitFor(100)
+      const element = await page.$('#nested-text')
       if (element != null) {
-        expect(await element.text()).toBe("二级节点文字红色且背景色黄色")
+        expect(await element.text()).toBe("修改三级节点文本")
       }
+      await page.setData({
+        autoTest: false
+      })
+  })
+
+  it('height text', async () => {
+      await page.setData({
+        autoTest: true
+      })
+      await page.callMethod("setHeightText")
+      await page.waitFor(100)
+      const element = await page.$('#height-text')
+      if (element != null) {
+        expect(await element.text()).toBe("修改设置高度文本")
+      }
+      await page.setData({
+        autoTest: false
+      })
   })
 })

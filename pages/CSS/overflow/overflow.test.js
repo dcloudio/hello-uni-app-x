@@ -8,7 +8,7 @@ describe('component-native-overflow', () => {
 
   //检测overflow设置hidden，visible
   it('check_view_overflow', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
         let version = process.env.uniTestPlatformInfo
         version = parseInt(version.split(" ")[1])
         //安卓7模拟器不截图 导致闪退

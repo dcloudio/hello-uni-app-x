@@ -22,7 +22,7 @@ describe("onLoad", () => {
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
       await page.waitFor('view');
       await page.callMethod("navigateToOnLoadWithType", "navigateBack");

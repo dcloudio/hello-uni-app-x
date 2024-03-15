@@ -86,4 +86,11 @@ describe('Button.uvue', () => {
     const value = await page.callMethod('checkUniButtonElement')
     expect(value).toBe(true)
   })
+  it("setbuttonEmpty", async () => {
+    const textBtn = await page.$('.btn')
+    await page.setData({
+      text: '',
+    })
+    expect(await textBtn.text()).toEqual('')
+  })
 })

@@ -121,7 +121,7 @@ const pages = [
   // '/pages/API/element-draw/element-draw',
 ]
 
-if (process.env.uniTestPlatformInfo.startsWith('android')) {
+if (process.env.uniTestPlatformInfo.startsWith('android')&& !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
   // 规避 web 端不支持页面
   pages.push(
     "/pages/component/list-view/list-view",

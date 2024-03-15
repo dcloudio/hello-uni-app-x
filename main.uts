@@ -3,12 +3,16 @@ import App from './App.uvue'
 import { createSSRApp } from 'vue'
 export function createApp() {
   const app = createSSRApp(App)
-
+  app.config.errorHandler = (err, vm, info) => {
+    console.log(err, vm, info)
+  }
   app.mixin({
     onReady() {
+      // #ifdef APP-ANDROID
       setTimeout(() => {
         console.log((this as BasePage).$nativePage!.getDomJson())
       }, 100)
+      // #endif
     }
   })
   return {
