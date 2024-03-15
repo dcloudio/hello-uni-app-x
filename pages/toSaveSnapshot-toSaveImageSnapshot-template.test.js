@@ -24,7 +24,7 @@ describe('toSaveSnapshot & toSaveImageSnapshot template', () => {
     
     const text3 = 'test-toSaveSnapshot-2-3-' + Date.now()
     expect(text3).toSaveSnapshot({
-      fileName: 'test-toSaveSnapshot-2-3.txt'
+      fileName: 'test-toSaveSnapshot-2-3.json'
     })
   })
   
