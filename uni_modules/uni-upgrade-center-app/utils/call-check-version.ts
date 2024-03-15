@@ -33,8 +33,8 @@ export default function () : Promise<UniUpgradeCenterResult> {
 	// #ifdef APP
 	return new Promise<UniUpgradeCenterResult>((resolve, reject) => {
 		const systemInfo = uni.getSystemInfoSync()
-		const appId = '__UNI__3584C99'
-		const appVersion = '1.0.17' //systemInfo.appVersion
+		const appId = systemInfo.appId
+		const appVersion = systemInfo.appVersion //systemInfo.appVersion
 		// #ifndef UNI-APP-X
 		if (typeof appId === 'string' && typeof appVersion === 'string' && appId.length > 0 && appVersion.length > 0) {
 			plus.runtime.getProperty(appId, function (widgetInfo) {
@@ -77,7 +77,6 @@ export default function () : Promise<UniUpgradeCenterResult> {
 					name: 'uni-upgrade-center',
 					data: data
 				}).then(res => {
-          console.log('res: ',res);
 					const code = res.result['code']
 					const codeIsNumber = ['Int', 'Long', 'number'].includes(typeof code)
 					if (codeIsNumber) {
@@ -97,7 +96,6 @@ export default function () : Promise<UniUpgradeCenterResult> {
             }
 					}
 				}).catch<void>((err : any | null) => {
-          console.log('err: ',err);
 					const error = err as UniCloudError
 					if (error.errMsg == '未匹配到云函数[uni-upgrade-center]')
 						error.errMsg = '【uni-upgrade-center-app】未配置uni-upgrade-center，无法升级。参考: https://uniapp.dcloud.net.cn/uniCloud/upgrade-center.html'
