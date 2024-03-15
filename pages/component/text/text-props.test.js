@@ -22,7 +22,7 @@ describe('text-props', () => {
         expect(width).toBe(0)
         expect(height).toBe(0)
       }
-      await page.callMethod("setTextEmpty")
+      await page.callMethod("setEmptyText")
       await page.waitFor(100)
       const element2 = await page.$('#empty-text2')
       if (element2 != null) {
@@ -35,15 +35,30 @@ describe('text-props', () => {
       })
   })
 
-  it('text nested', async () => {
+  it('nested text', async () => {
       await page.setData({
         autoTest: true
       })
-      await page.callMethod("setTextNested")
+      await page.callMethod("setNestedText")
       await page.waitFor(100)
-      const element = await page.$('#text-nested')
+      const element = await page.$('#nested-text')
       if (element != null) {
-        expect(await element.text()).toBe("修改三级节点")
+        expect(await element.text()).toBe("修改三级节点文本")
+      }
+      await page.setData({
+        autoTest: false
+      })
+  })
+
+  it('height text', async () => {
+      await page.setData({
+        autoTest: true
+      })
+      await page.callMethod("setHeightText")
+      await page.waitFor(100)
+      const element = await page.$('#height-text')
+      if (element != null) {
+        expect(await element.text()).toBe("修改设置高度文本")
       }
       await page.setData({
         autoTest: false
