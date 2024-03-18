@@ -28,8 +28,29 @@ expect.extend({
   toSaveImageSnapshot,
 });
 
+const testCaseToSnapshotFilePath =
+  process.env.testCaseToSnapshotFilePath || "./testCaseToSnapshotFilePath.json";
+
+if (!fs.existsSync(testCaseToSnapshotFilePath)) {
+  fs.writeFileSync(testCaseToSnapshotFilePath, "{}");
+}
+
+function writeTestCaseToSnapshotFile(testCaseName, snapshotFilePath) {
+  const data = JSON.parse(fs.readFileSync(testCaseToSnapshotFilePath));
+  if (!data[testCaseName]) {
+    data[testCaseName] = [snapshotFilePath];
+  } else {
+    data[testCaseName].push(snapshotFilePath);
+  }
+  fs.writeFileSync(testCaseToSnapshotFilePath, JSON.stringify(data, null, 2));
+}
+
 function toSaveSnapshot(received, { customSnapshotsDir, fileName } = {}) {
-  const { testPath, currentTestName } = this;
+  const {
+    snapshotState: { _rootDir },
+    testPath,
+    currentTestName,
+  } = this;
   const SNAPSHOTS_DIR = "__file_snapshots__";
   const snapshotDir =
     process.env.saveSnapshotDir ||
@@ -50,6 +71,7 @@ function toSaveSnapshot(received, { customSnapshotsDir, fileName } = {}) {
   try {
     checkSnapshotDir(snapshotDir);
     fs.writeFileSync(filePath, received);
+    writeTestCaseToSnapshotFile(testPath.replace(`${_rootDir}/`, ""), filePath);
   } catch (e) {
     console.log("toSaveSnapshot fail", e);
     message = () => e.message;
@@ -66,7 +88,11 @@ function toSaveImageSnapshot(
   received,
   { customSnapshotsDir, customSnapshotIdentifier } = {}
 ) {
-  const { testPath, currentTestName } = this;
+  const {
+    snapshotState: { _rootDir },
+    testPath,
+    currentTestName,
+  } = this;
   const SNAPSHOTS_DIR = "__image_snapshots__";
   const snapshotDir =
     process.env.saveImageSnapshotDir ||
@@ -88,6 +114,7 @@ function toSaveImageSnapshot(
   try {
     checkSnapshotDir(snapshotDir);
     fs.writeFileSync(filePath, Buffer.from(received, "base64"));
+    writeTestCaseToSnapshotFile(testPath.replace(`${_rootDir}/`, ""), filePath);
   } catch (e) {
     console.log("toSaveImageSnapshot fail", e);
     message = () => e.message;
