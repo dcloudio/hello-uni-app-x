@@ -5,9 +5,11 @@ function getData(key = '') {
   })
 }
 
+const PAGE_PATH = '/pages/component/picker-view/picker-view'
+
 let page
 beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/picker-view/picker-view')
+  page = await program.reLaunch(PAGE_PATH)
   await page.waitFor('view')
 })
 
@@ -60,5 +62,20 @@ describe('PickerView.uvue', () => {
       maskBottomStyle: 'background: #ffffff;',
     })
     expect(await el.attribute('mask-bottom-style')).toBe('background: #ffffff;')
+  })
+
+  it('reopen-picker-view-page', async () => {
+    await program.navigateBack()
+    page = await program.navigateTo(PAGE_PATH)
+    await page.waitFor(500)
+    const date = new Date()
+    const {
+      year,
+      month,
+      day
+    } = await page.data()
+    expect(year).toEqual(date.getFullYear())
+    expect(month).toEqual(date.getMonth() + 1)
+    expect(day).toEqual(date.getDate())
   })
 })
