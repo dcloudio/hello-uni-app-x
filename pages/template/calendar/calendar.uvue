@@ -87,7 +87,9 @@ export default {
     // 点击具体的日历格子
     clickGrid (x: number, y: number) {
       // 小格子数组
-      const gridArray = this.$data.$coords
+      // const gridArray = this.$data.$coords
+      const calendar = this.$data['$calendar'] as Calendar
+      const gridArray = this.$data['$coords'] as Array<CoordsType>
 
       // 遍历小格子数组，找到最接近点击坐标的小格子
       for (let i = 0; i < gridArray.length; i++) {
@@ -103,7 +105,7 @@ export default {
 
         if (is_select) {
           const data = grid.data
-          this.timeData = this.$data.$calendar.getDateInfo(data.fullDate)
+          this.timeData = calendar.getDateInfo(data.fullDate)
           this.drawWeek(this.weeks, grid.data.fullDate)
         }
       }
@@ -111,10 +113,11 @@ export default {
     // 切换上个月
     preDate () {
       const fulldate = this.timeData.fullDate
-      const time = this.$data.$calendar.getDate(fulldate, -1, 'month')
-      this.timeData = this.$data.$calendar.getDateInfo(time.fullDate)
+      const calendar = this.$data['$calendar'] as Calendar
+      const time = calendar.getDate(fulldate, -1, 'month')
+      this.timeData = calendar.getDateInfo(time.fullDate)
 
-      this.weeks = this.$data.$calendar.getWeeks(time.fullDate)
+      this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
@@ -123,20 +126,22 @@ export default {
     // 切换下个他
     nextDate () {
       const fulldate = this.timeData.fullDate
-      const time = this.$data.$calendar.getDate(fulldate, 1, 'month')
-      this.timeData = this.$data.$calendar.getDateInfo(time.fullDate)
+      const calendar = this.$data['$calendar'] as Calendar
+      const time = calendar.getDate(fulldate, 1, 'month')
+      this.timeData = calendar.getDateInfo(time.fullDate)
 
-      this.weeks = this.$data.$calendar.getWeeks(time.fullDate)
+      this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
     },
     // 回到今天
     gotoToday () {
-      const time = this.$data.$calendar.getDate()
-      this.timeData = this.$data.$calendar.getDateInfo(time.fullDate)
+      const calendar = this.$data['$calendar'] as Calendar
+      const time = calendar.getDate()
+      this.timeData = calendar.getDateInfo(time.fullDate)
 
-      this.weeks = this.$data.$calendar.getWeeks(time.fullDate)
+      this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
@@ -183,7 +188,7 @@ export default {
       const one_height = height / week_len
 
       if (time !== '') {
-        this.$data.$coords = []
+        this.$data['$coords'] = [] as Array<CoordsType>
         ctx.reset()
       }
 
@@ -232,7 +237,10 @@ export default {
               height: day_height,
               data: day_item
             }
-            this.$data.$coords.push(coords)
+
+            // TODO 兼容安卓data内$开头的属性的赋值问题
+            let gridArr = this.$data['$coords'] as Array<CoordsType>
+            gridArr.push(coords)
             // }
           }
 
