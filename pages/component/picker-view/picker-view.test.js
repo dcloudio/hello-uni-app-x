@@ -65,7 +65,8 @@ describe('PickerView.uvue', () => {
   })
 
   it('reopen-picker-view-page', async () => {
-    await program.navigateBack()
+    await program.switchTab('/')
+    await page.waitFor(500)
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(500)
     const date = new Date()
