@@ -17,7 +17,7 @@ describe('API-toast', () => {
 
 
     if (isAndroid) {
-
+      await page.waitFor(500);
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
