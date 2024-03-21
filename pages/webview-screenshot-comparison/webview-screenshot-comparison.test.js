@@ -243,6 +243,10 @@ describe("shot-compare", () => {
     shouldCompareScreenShot = version > 9
   }
 
+  if(process.env.uniTestPlatformInfo.startsWith('IOS') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    shouldCompareScreenShot = true
+  }
+
   if (!shouldCompareScreenShot) {
     it("other platform not support", async () => {
       expect(1).toBe(1);
@@ -299,6 +303,7 @@ describe("shot-compare", () => {
     const screenshotPath = `__webview__${pages[pageIndex].replace(/\//g, "-")}`;
 
     // web in webview screenshot
+    let startTime = Date.now();
     // 加载依赖页面
     if (childToParentPagesMap.get(pages[pageIndex])) {
       await page.setData({
@@ -316,8 +321,7 @@ describe("shot-compare", () => {
       isLoaded: false,
       isCustomNavigationBar,
     });
-
-    const startTime = Date.now();
+    startTime = Date.now();
     await page.waitFor(async () => {
       const isLoaded = await page.data("isLoaded");
       return isLoaded || Date.now() - startTime > 3000;
