@@ -215,11 +215,10 @@
           complete: (res : any) => {
             console.log("complete", res)
             this.done = true
-            if (res instanceof ReadDirSuccessResult) {
-              this.fileListComplete = res.files
-            }
             if (res instanceof UniError) {
               this.lastCompleteError = res
+            } else {
+              this.fileListComplete = (res as ReadDirSuccessResult).files
             }
           }
         } as ReadDirOptions)
@@ -440,11 +439,10 @@
           complete : (res : any) => {
             console.log("complete readdir", res)
             this.done = true
-            if (res instanceof ReadDirSuccessResult) {
-              this.fileListComplete = res.files
-            }
             if (res instanceof UniError) {
               this.lastCompleteError = res
+            } else {
+              this.fileListComplete = (res as ReadDirSuccessResult).files
             }
           }
         } as ReadDirOptions)
