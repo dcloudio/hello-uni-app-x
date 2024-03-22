@@ -1,4 +1,11 @@
 describe('component-native-nested-scroll-header', () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     //打开lnested-scroll-header测试页
@@ -12,4 +19,3 @@ describe('component-native-nested-scroll-header', () => {
     expect(image).toMatchImageSnapshot();
   })
 })
-

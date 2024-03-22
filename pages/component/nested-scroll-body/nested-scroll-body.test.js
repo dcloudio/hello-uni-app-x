@@ -1,4 +1,11 @@
 describe('component-native-nested-scroll-body', () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     //打开lnested-scroll-body测试页
