@@ -1,0 +1,36 @@
+<template>
+  <view ref="box" class="custom-list-item-box">
+    <slot></slot>
+  </view>
+</template>
+
+<script>
+  export default {
+    name: "custom-list-item",
+    props: {
+      item: {
+        type: Object as PropType<any>,
+        required: true
+      }
+    },
+    inject: {
+      cachedSize: {
+        type: Map as PropType<Map<any, number>>,
+        default: () : Map<any, number> => {
+          return new Map<any, number>()
+        }
+      },
+    },
+    mounted() {
+      nextTick(() => {
+        uni.createSelectorQuery().in(this).select('.custom-list-item-box').boundingClientRect().exec((ret) => {
+          (this.cachedSize as Map<any, number>).set(this.item, (ret[0] as NodeInfo).height!)
+        })
+      })
+    }
+  }
+</script>
+
+<style>
+
+</style>

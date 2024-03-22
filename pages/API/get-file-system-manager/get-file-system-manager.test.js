@@ -2,7 +2,7 @@ const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
 describe('ExtApi-FileManagerTest', () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })

@@ -1,0 +1,52 @@
+<template>
+  <custom-list-view style="flex: 1;" :list="list" @scrolltoupper="scrolltoupper" @scroll="scroll">
+    <template v-slot:default="{items}">
+      <custom-list-item v-for="item in (items as Item[])" :item="item" :key="item.id" style="padding: 5px; 10px">
+        <view style="background-color: aqua;">{{item.title}}</view>
+        <view>{{item.content}}</view>
+      </custom-list-item>
+    </template>
+  </custom-list-view>
+</template>
+
+<script>
+  type Item = {
+    id : number
+    title : string
+    content : string
+  }
+  import CustomListView from "./custom-list-view"
+  import CustomListItem from "./custom-list-item"
+  export default {
+    components: {
+      CustomListView,
+      CustomListItem
+    },
+    data() {
+      return {
+        list: [] as Item[]
+      }
+    },
+    created() {
+      for (let i = 0; i < 1000; i++) {
+        this.list.push({
+          id: i,
+          title: `title-` + i,
+          content: `Content-${i}: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`
+        } as Item)
+      }
+    },
+    methods: {
+      scrolltoupper() {
+        console.log('scroll top upper')
+      },
+      scroll(e : UniScrollEvent) {
+        console.log('scroll', e)
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>
