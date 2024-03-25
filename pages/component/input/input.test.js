@@ -163,6 +163,15 @@ describe('component-native-input', () => {
     })
   })
 
+  it("password and value order", async () => {
+    const input = await page.$('#uni-input-password');
+    let length = (await input.attribute("value")).length
+    expect(length).toBe(6)
+    await page.setData({
+      inputPasswordValue: ""
+    })
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
