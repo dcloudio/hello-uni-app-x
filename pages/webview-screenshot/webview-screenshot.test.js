@@ -42,7 +42,6 @@ const pages = [
   "pages/API/navigator/navigator",
   "pages/API/set-navigation-bar-color/set-navigation-bar-color",
   "pages/API/set-navigation-bar-title/set-navigation-bar-title",
-  "pages/API/set-navigation-bar-color/set-custom-navigation-bar-color",
   "pages/API/navigator/new-page/new-page-1",
   "pages/API/navigator/new-page/new-page-3",
   "pages/API/pull-down-refresh/pull-down-refresh",
@@ -67,10 +66,7 @@ const pages = [
   "pages/API/get-system-info/get-system-info",
   "pages/API/get-device-info/get-device-info",
   "pages/API/get-app-base-info/get-app-base-info",
-  "pages/API/get-system-setting/get-system-setting",
-  "pages/API/get-app-authorize-setting/get-app-authorize-setting",
   "pages/API/preview-image/preview-image",
-  "pages/API/save-image-to-photos-album/save-image-to-photos-album",
   "pages/API/choose-image/choose-image",
   "pages/API/get-network-type/get-network-type",
   "pages/API/page-scroll-to/page-scroll-to",
@@ -196,6 +192,9 @@ const pages = [
   // "pages/template/scroll-sticky/scroll-sticky",
   // "pages/API/exit/exit",
   // "pages/API/element-takesnapshot/element-takesnapshot",
+  // "pages/API/get-app-authorize-setting/get-app-authorize-setting",
+  // "pages/API/get-system-setting/get-system-setting",
+  // "pages/API/save-image-to-photos-album/save-image-to-photos-album",
 
   // 仅 web
   // pages/template/browser-canvas/browser-canvas
