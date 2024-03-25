@@ -1,19 +1,25 @@
 <template>
-  <custom-list-view style="flex: 1;" :list="list" @scrolltoupper="scrolltoupper" @scroll="scroll">
-    <template v-slot:default="{items}">
-      <custom-list-item v-for="item in (items as Item[])" :item="item" :key="item.id" style="padding: 5px 10px;">
-        <view style="background-color: aqua;">{{item.title}}</view>
-        <view>{{item.content}}</view>
-      </custom-list-item>
-    </template>
-  </custom-list-view>
+  <view style="flex: 1;background-color: aliceblue;">
+    <page-head :title="title"></page-head>
+    <view class="tips">使用部分渲染优化列表初始元素较多时加载卡顿的问题，此示例中仅渲染滚动容器上下5屏的内容。适用于仅使用一个for循环创建所有列表项的场景。</view>
+    <custom-list-view style="flex: 1;" :list="list" @scrolltoupper="scrolltoupper" @scroll="scroll">
+      <template v-slot:default="{items}">
+        <custom-list-item class="item" v-for="item in (items as Item[])" :item="item" :key="item.id">
+          <view class="item-wrapper">
+            <view class="name"><text style="font-size: 14px;">{{item.name}}</text></view>
+            <view class="info"><text style="font-size: 12px; color: #999999;">{{item.info}}</text></view>
+          </view>
+        </custom-list-item>
+      </template>
+    </custom-list-view>
+  </view>
 </template>
 
 <script>
   type Item = {
     id : number
-    title : string
-    content : string
+    name : string
+    info : string
   }
   import CustomListView from "./custom-list-view"
   import CustomListItem from "./custom-list-item"
@@ -24,15 +30,16 @@
     },
     data() {
       return {
+        title: '自行实现长列表组件',
         list: [] as Item[]
       }
     },
     created() {
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < 2000; i++) {
         this.list.push({
           id: i,
-          title: `title-` + i,
-          content: `Content-${i}: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`
+          name: `Wifi_` + i,
+          info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
         } as Item)
       }
     },
@@ -40,13 +47,28 @@
       scrolltoupper() {
         console.log('scroll top upper')
       },
-      scroll(e : UniScrollEvent) {
-        console.log('scroll', e)
+      scroll() {
+        // console.log('scroll')
       }
     }
   }
 </script>
 
 <style>
+  .tips {
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+  }
 
+  .item {
+    padding: 5px 10px;
+  }
+
+  .item-wrapper {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+  }
 </style>

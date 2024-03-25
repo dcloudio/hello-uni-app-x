@@ -34,6 +34,9 @@
           })
         },
         deep: true
+      },
+      defaultItemSize() {
+        this.rearrange(this.lastScrollTop)
       }
     },
     data() {
@@ -47,11 +50,18 @@
         initialized: false,
         hasDefaultSize: false,
         defaultItemSize: 40,
+        lastScrollTop: 0,
       };
     },
     provide() {
       return {
-        cachedSize: this.cachedSize
+        setCachedSize: (item : any, size : number) => {
+          if (!this.hasDefaultSize) {
+            this.defaultItemSize = size
+            this.hasDefaultSize = true
+          }
+          this.cachedSize.set(item, size)
+        }
       }
     },
     created() {
@@ -72,6 +82,7 @@
           return
         }
         const scrollTop = e.detail.scrollTop
+        this.lastScrollTop = 0
         if (scrollTop < this.offsetThreshold[1] || scrollTop > this.offsetThreshold[2]) {
           this.rearrange(scrollTop)
         }
@@ -90,10 +101,6 @@
           const cachedItemSize = this.cachedSize.get(item)
           if (cachedItemSize != null) {
             itemSize = cachedItemSize
-            if (!this.hasDefaultSize) {
-              this.defaultItemSize = itemSize
-              this.hasDefaultSize = true
-            }
           }
           tempTotalHeight += itemSize
           if (tempTotalHeight >= this.offsetThreshold[0] && tempTotalHeight <= this.offsetThreshold[3]) {

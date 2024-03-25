@@ -14,18 +14,13 @@
       }
     },
     inject: {
-      cachedSize: {
-        type: Map as PropType<Map<any, number>>,
-        default: () : Map<any, number> => {
-          return new Map<any, number>()
-        }
+      setCachedSize: {
+        type: Function as PropType<(item : any, size : number) => void>
       },
     },
     mounted() {
-      nextTick(() => {
-        uni.createSelectorQuery().in(this).select('.custom-list-item-box').boundingClientRect().exec((ret) => {
-          (this.cachedSize as Map<any, number>).set(this.item, (ret[0] as NodeInfo).height!)
-        })
+      uni.createSelectorQuery().in(this).select('.custom-list-item-box').boundingClientRect().exec((ret) => {
+        this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
       })
     }
   }
