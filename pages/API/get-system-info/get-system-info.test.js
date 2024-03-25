@@ -7,14 +7,14 @@ describe('ExtApi-GetSystemInfo', () => {
   const stringProperties = [
     'appId', 'appLanguage', 'appName', 'appVersion', 'appVersionCode',
     'brand', 'deviceId', 'deviceBrand', 'deviceModel', 'deviceType', 'language',
-    'model', 'osName', 'osVersion', 'osLanguage', 'platform', 'system', 'ua', 'uniCompileVersion',
+    'model', 'osName', 'osVersion', 'osLanguage', 'platform', 'system', 'ua', 'uniCompilerVersion',
     'uniPlatform', 'uniRuntimeVersion', 'romName', 'romVersion',
   ]
   const numberProperties = [
     'osAndroidAPILevel', 'devicePixelRatio', 'pixelRatio', 'screenWidth', 'screenHeight', 'statusBarHeight',
     'windowWidth',
     'windowHeight', 'windowTop', 'windowBottom', 'screenTop',
-    'uniCompileVersionCode', 'uniRuntimeVersionCode'
+    'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]
 
 

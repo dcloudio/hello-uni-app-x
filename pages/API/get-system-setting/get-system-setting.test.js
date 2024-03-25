@@ -18,7 +18,7 @@ describe('ExtApi-GetSystemSetting', () => {
   it('Check GetSystemSetting', async () => {
     for (const key in res) {
       const value = res[key];
-      if (res['bluetoothEnabled'] == undefined) {
+      if (res['bluetoothEnabled'] == undefined || res['bluetoothEnabled'] === false) {
         expect(res['bluetoothError']).not.toBe("")
       } else {
         expect(res['bluetoothError'] == undefined).toBe(true)
