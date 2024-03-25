@@ -4,7 +4,13 @@ const PAGE_PATH_REDIRECT = '/pages/component/navigator/redirect'
 
 describe('navigator', () => {
   let page
-  beforeAll(async () => {})
+  beforeAll(async () => {
+    if(process.env.uniTestPlatformInfo.startsWith('web')) {
+      // 由于开发期间跳转页面需要编译，web端先跳转一次
+      await program.reLaunch(PAGE_PATH_NAVIGATE)
+      await program.reLaunch(PAGE_PATH_REDIRECT)
+    }
+  })
   it('navigate', async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)

@@ -1,36 +1,32 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
         <image class="uni-header-image" src="/static/apiIndex.png"></image>
       </view>
       <view class="uni-text-box">
         <text class="hello-text">以下将演示uni-app接口能力，详细文档见：</text>
-        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'"
-          :inWhiteList="true"></u-link>
+        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'" :inWhiteList="true"></u-link>
       </view>
 
       <uni-collapse>
         <template v-for="item in list" :key="item.id">
           <uni-collapse-item :title="item.name" class="item">
-            <view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'"
-              v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
-              <text class="uni-navigate-text"
-                :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
-              <image :src="arrowRightIcon" class="uni-icon"></image>
+            <view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'" v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
+              <text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
+              <image :src="arrowRightIcon" class="uni-icon-size"></image>
             </view>
           </uni-collapse-item>
         </template>
       </uni-collapse>
 
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
-  <view ref="pop" @click="hidePop()"
-    style="width: 100%; height: 100%; position: absolute;align-items: center;justify-content: center; display: none;background-color: rgba(16, 16, 16, 0.5);">
+  <view ref="pop" @click="hidePop()" class="popup">
     <view style="width: 90%;background-color: white;" @click="stopClickPop">
       <api-set-tabbar></api-set-tabbar>
     </view>
@@ -66,10 +62,6 @@
               {
                 name: 'getCurrentPages',
                 url: 'get-current-pages',
-              },
-              {
-                name: 'globalProperties',
-                url: 'globalProperties',
               }
             ] as Page[],
           },
@@ -91,10 +83,12 @@
                 name: '获取启动参数',
                 url: 'get-launch-options-sync',
               },
+              // #ifdef APP-ANDROID
               {
                 name: '退出应用',
                 url: 'exit',
               },
+              // #endif
             ] as Page[],
           },
           {
@@ -135,35 +129,37 @@
             id: 'ui',
             name: '界面',
             pages: [
-              /* {
-                name: "创建动画",
-                url: "animation",
-                enable: false
-              },
-              {
-                name: "创建绘画",
-                url: "canvas",
-                enable: false
-              },
-              {
-                name: "节点布局交互状态",
-                url: "intersection-observer",
-                enable: false
-              }, */
+              // {
+              //   name: "创建动画",
+              //   url: "animation",
+              //   enable: false
+              // },
+              // {
+              //   name: "创建绘画",
+              //   url: "canvas",
+              //   enable: true
+              // },
+              // {
+              //   name: "节点布局交互状态",
+              //   url: "intersection-observer",
+              //   enable: false
+              // },
               {
                 name: 'element元素',
                 url: 'get-element-by-id',
-                api: ["getElementById"]
+                api: ["getElementById"],
               },
+              // #ifdef APP
               {
                 name: 'element draw',
                 url: 'element-draw',
                 api: ["Element.getDrawableContext"]
-              },{
+              }, {
                 name: 'element截图',
                 url: 'element-takesnapshot',
                 api: ["Element.takeSnapshot"]
               },
+              // #endif
               {
                 name: 'node节点',
                 url: 'nodes-info',
@@ -172,6 +168,10 @@
               {
                 name: '动态加载字体',
                 url: 'load-font-face',
+              },
+              {
+                name: 'rpx2px',
+                url: 'rpx2px'
               },
               {
                 name: 'actionSheet操作菜单',
@@ -190,6 +190,10 @@
                 name: 'showToast轻提示框',
                 url: 'toast',
                 api: ["showToast"]
+              },
+              {
+                name: 'rpx2px',
+                url: 'rpx2px'
               }
             ] as Page[],
           },
@@ -245,6 +249,7 @@
                 name: '获取APP基础信息',
                 url: 'get-app-base-info',
               },
+              // #ifdef APP
               {
                 name: '获取APP授权设置',
                 url: 'get-app-authorize-setting',
@@ -253,14 +258,17 @@
                 name: '获取系统设置',
                 url: 'get-system-setting',
               },
+              // #endif
               {
                 name: '电量',
                 url: 'get-battery-info',
               },
+              // #ifdef APP-ANDROID
               {
                 name: '安装Apk',
                 url: 'install-apk'
-              }
+              },
+              // #endif
               /* {
                 name: "打电话",
                 url: "make-phone-call",
@@ -328,10 +336,12 @@
                 url: 'preview-image',
                 api: ["previewImage", "closePreviewImage"]
               },
+              // #ifdef APP
               {
                 name: "保存图片到相册",
                 url: 'save-image-to-photos-album'
-              }
+              },
+              // #endif
               /* {
                 name: "图片选择和拍照",
                 url: "image",
@@ -399,7 +409,9 @@
                 api: ["getStorageInfo", "getStorageInfoSync", "getStorage", "getStorageSync", "setStorage", "setStorageSync", "removeStorage", "removeStorageSync", "clearStorage", "clearStorageSync"]
               }
             ] as Page[],
-          },{
+          },
+          // #ifdef APP-ANDROID
+          {
             id: 'file',
             name: '文件',
             pages: [
@@ -409,6 +421,7 @@
               },
             ] as Page[],
           },
+          // #endif
           {
             id: 'unicloud',
             name: 'uniCloud',
@@ -447,13 +460,39 @@
             ] as Page[],
           },
           // #endif
-          /* {
-            id: "rewarded-video-ad",
-            url: "rewarded-video-ad",
-            name: "激励视频广告",
-            enable: false,
-            pages: [] as Page[]
+          // #ifdef APP-ANDROID
+          {
+            id: 'ad',
+            name: '广告',
+            pages: [
+              {
+                name: '激励视频广告',
+                url: 'rewarded-video-ad',
+              }
+            ] as Page[],
           },
+          {
+            id: "payment",
+            name: "支付",
+            pages: [
+              {
+                name: "发起支付",
+                url: "request-payment",
+              },
+            ] as Page[],
+          },
+          {
+            id: 'permission-listener',
+            name: '权限申请监听',
+            pages: [
+              {
+                name: '权限申请监听',
+                url: 'create-request-permission-listener',
+              }
+            ] as Page[]
+          },
+          // #endif
+          /*
           {
             id: "full-screen-video-ad",
             url: "full-screen-video-ad",
@@ -485,16 +524,6 @@
               },
             ] as Page[],
           },
-          {
-            id: "payment",
-            name: "支付",
-            pages: [
-              {
-                name: "发起支付",
-                url: "request-payment",
-              },
-            ] as Page[],
-          },
           */
         ] as ListItem[],
         arrowUpIcon: '/static/icons/arrow-up.png',
@@ -522,12 +551,12 @@
         })
       },
       showPop: function () {
-        (this.$refs["pop"] as Element).style.setProperty("display", "flex")
+        (this.$refs["pop"] as UniElement).style.setProperty("display", "flex")
       },
       hidePop: function () {
-        (this.$refs["pop"] as Element).style.setProperty("display", "none")
+        (this.$refs["pop"] as UniElement).style.setProperty("display", "none")
       },
-      stopClickPop: function (e : MouseEvent) {
+      stopClickPop: function (e : PointerEvent) {
         e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
       }
     },
@@ -535,9 +564,23 @@
 </script>
 
 <style>
-  @import '../../common/uni-uvue.css';
-
   .item {
     margin-bottom: 12px;
+  }
+
+  .popup {
+    width: 100%;
+    /* #ifdef APP */
+    position: absolute;
+    height: 100%;
+    /* #else */
+    position: fixed;
+    top: var(--window-top);
+    bottom: var(--window-bottom);
+    /* #endif */
+    align-items: center;
+    justify-content: center;
+    display: none;
+    background-color: rgba(16, 16, 16, 0.5);
   }
 </style>

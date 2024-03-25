@@ -21,7 +21,7 @@
   export default {
     data() {
       return {
-        $elementMap: new Map<string, Element>(),
+        $elementMap: new Map<string, UniElement>(),
         x: 0 as number,
         y: 0 as number,
         // 飘走的卡片计数
@@ -80,15 +80,15 @@
       },
       // 工具方法，用于快速设置 Element 的 style
       setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        const elementMap = this.$data['$elementMap'] as Map<string, Element>
-        let element : Element | null = elementMap.get(refName)
+        const elementMap = this.$data['$elementMap'] as Map<string, UniElement>
+        let element : UniElement | null = elementMap.get(refName)
         if (element == null) {
-          element = this.$refs[refName] as Element;
+          element = this.$refs[refName] as UniElement;
           elementMap.set(refName, element)
         } else {
           // console.log('直接拿');
         }
-        element?.style?.setProperty(propertyName, propertyStyle);
+        element.style.setProperty(propertyName, propertyStyle);
       },
       touchstart(e : TouchEvent) {
         // console.log('touchstart')
@@ -112,6 +112,10 @@
         sX = e.touches[0].screenX;
         sY = e.touches[0].screenY;
         this.moveCard()
+        // #ifdef WEB
+        //阻止默认行为
+        e.preventDefault()
+        // #endif
       },
       touchend() {
         // console.log('touchend')
@@ -159,7 +163,7 @@
           }, 16)
         }
 
-        if (k.toInt() != 0) {
+        if (Math.floor(k) != 0) {
           cardTo(k * screenWidth * 1.3, this.y * 3, () => {
             //  状态图标变回透明
             this.setElementStyle("state-icon-like", 'opacity', 0)
@@ -178,7 +182,7 @@
         } else {
           const _x : number = this.x
           const _y : number = this.y
-          cardTo((_x * -0.05).toInt(), (_y * -0.05).toInt(), () => {
+          cardTo(Math.floor(_x * -0.05), Math.floor(_y * -0.05), () => {
             cardTo(0, 0, () => {
               console.log('bounce')
               floating = false
@@ -200,12 +204,12 @@
 
 <style>
   .card {
-    width: 700rpx;
-    height: 750rpx;
+    width:95%;
+    height: 375px;
     position: absolute;
-    top: 0;
-    left: 0;
-    margin: 0 25rpx;
+    top: 0px;
+    /* left: 0px; */
+    margin: 0 12px;
     margin-top: 50px;
     border-radius: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -215,15 +219,15 @@
   }
 
   .card-img {
-    width: 700rpx;
-    height: 750rpx;
+    width: 100%;
+    height: 375px;
     border-radius: 10px;
   }
 
   .state {
-    top: 20rpx;
-    left: 20rpx;
-    width: 650rpx;
+    top: 10px;
+    left: 10px;
+    width: 86%;
     padding: 4px;
     position: absolute;
     flex-direction: row;

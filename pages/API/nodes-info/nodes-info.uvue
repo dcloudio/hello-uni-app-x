@@ -1,9 +1,9 @@
 <template>
-  <view class="page">
+  <view class="page" id="page">
     <page-head :title="title"></page-head>
     <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
     <button class="btn btn-get-all-node-info" @click="getAllNodeInfo">getAllNodeInfo</button>
-    <view class="rect-1-2">
+    <view id="rect-1-2" class="rect-1-2">
       <view class="rect rect1"></view>
       <view class="rect rect2"></view>
     </view>
@@ -53,9 +53,40 @@
       return {
         title: 'createSelectorQuery',
         nodeInfoList: [] as NodeInfoType[],
+        // 仅用于自动化测试
+        rootNodeInfo: null as NodeInfoType | null,
+        //供自动化测试使用
+        // resizeRectValid: false
       }
     },
+    onResize() {
+      //供自动化测试使用
+      /* var rect12Element = uni.getElementById("rect-1-2")
+      if(rect12Element != null) {
+        var domRect = rect12Element.getBoundingClientRect()
+        if(domRect.width > 100) {
+          this.resizeRectValid = true
+        }
+      } */
+    },
     methods: {
+      // 仅用于自动化测试
+      getRootNodeInfo(selector: string) {
+        uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
+          if (ret.length == 1) {
+            const nodeInfo = ret[0] as NodeInfo;
+            const nodeType = {
+              left: nodeInfo.left,
+              top: nodeInfo.top,
+              right: nodeInfo.right,
+              bottom: nodeInfo.bottom,
+              width: nodeInfo.width,
+              height: nodeInfo.height,
+            } as NodeInfoType;
+            this.rootNodeInfo = nodeType
+          }
+        })
+      },
       getNodeInfo() {
         uni.createSelectorQuery().select('.rect1').boundingClientRect().exec((ret) => {
           this.nodeInfoList.length = 0
@@ -93,6 +124,7 @@
 <style>
   .page {
     padding: 15px;
+    flex: 1;
   }
 
   .btn {

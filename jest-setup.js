@@ -1,3 +1,4 @@
+// 自动化测试
 const path = require('path');
 const {
 	configureToMatchImageSnapshot

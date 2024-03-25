@@ -1,0 +1,41 @@
+<template>
+  <view>
+    <page-head :title="title"></page-head>
+    <view class="page-body">
+      <!-- 如何使用浏览器内置 canvas -->
+      <view ref="drawing" class="drawing"></view>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: '浏览器 canvas',
+        drawing: null as HTMLElement | null,
+        canvasElement: null as HTMLCanvasElement | null,
+        canvasContext: null as CanvasRenderingContext2D | null,
+      }
+    },
+    onReady() {
+      this.drawing = this.$refs['drawing'] as HTMLElement;
+      this.canvasElement = document.createElement('canvas') as HTMLCanvasElement;
+      this.canvasElement.className = 'canvas'
+      this.drawing!.appendChild(this.canvasElement)
+
+      this.canvasContext = this.canvasElement!.getContext('2d')
+      this.canvasContext!.fillRect(100, 50, 100, 50)
+    }
+  }
+</script>
+
+<style>
+  .drawing>>>.canvas {
+    width: 300px;
+    height: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px dashed #000;
+  }
+</style>

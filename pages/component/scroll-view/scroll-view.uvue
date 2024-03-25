@@ -1,128 +1,132 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex: 1">
-		<!-- #endif -->
-		<view>
-			<page-head title="scroll-view,区域滚动视图"></page-head>
-			<view class="uni-padding-wrap uni-common-mt">
-				<view class="uni-title uni-common-mt">
-					<text class="uni-title-text">Vertical Scroll</text>
-					<text class="uni-subtitle-text">纵向滚动</text>
-				</view>
-				<view>
-					<scroll-view :scroll-top="scrollTop" :scroll-y="true" class="scroll-Y" scroll-with-animation="true"
-						@scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
-						<view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
-						<view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
-						<view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
-					</scroll-view>
-				</view>
-				<view @tap="goTop" class="uni-center uni-common-mt">
-					<text class="uni-link">点击这里返回顶部</text>
-				</view>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view>
+      <page-head title="scroll-view,区域滚动视图"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text">Vertical Scroll</text>
+          <text class="uni-subtitle-text">纵向滚动</text>
+        </view>
+        <view>
+          <scroll-view :scroll-top="scrollTop" direction="vertical" class="scroll-Y" scroll-with-animation="true"
+            @scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll" :show-scrollbar="showScrollbar">
+            <view class="scroll-view-item uni-bg-red"><text class="text">A</text></view>
+            <view class="scroll-view-item uni-bg-green"><text class="text">B</text></view>
+            <view class="scroll-view-item uni-bg-blue"><text class="text">C</text></view>
+          </scroll-view>
+        </view>
+        <view @tap="goTop" class="uni-center uni-common-mt">
+          <text class="uni-link">点击这里返回顶部</text>
+        </view>
 
-				<view class="uni-title uni-common-mt">
-					<text class="uni-title-text">Horizontal Scroll</text>
-					<text class="uni-subtitle-text">横向滚动</text>
-				</view>
-				<view>
-					<scroll-view class="scroll-view_H" :scroll-x="true" @scroll="scroll" :scroll-left="120">
-						<view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
-						<view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
-						<view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
-					</scroll-view>
-				</view>
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text">Horizontal Scroll</text>
+          <text class="uni-subtitle-text">横向滚动</text>
+        </view>
+        <view>
+          <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" :scroll-left="120" :show-scrollbar="showScrollbar">
+            <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+            <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+            <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+          </scroll-view>
+        </view>
 
-				<navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
-				<button type="primary" class="button">
-					非下拉刷新的属性示例
-				</button>
-				</navigator>
-				<view class="uni-common-pb"></view>
-				<navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
-				<button type="primary" class="button">
-					下拉刷新的属性示例
-				</button>
-				</navigator>
-				<view class="uni-common-pb"></view>
-				<navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
-				<button type="primary" class="button"> 默认下拉刷新示例 </button>
-				</navigator>
-				<view class="uni-common-pb"></view>
-				<navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
-				<button type="primary" class="button">
-					自定义下拉刷新示例
-				</button>
-				</navigator>
-				<view class="uni-common-pb"></view>
-			</view>
-		</view>
-		<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+        <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
+          <button type="primary" class="button">
+            非下拉刷新的属性示例
+          </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+
+        <!-- #ifdef APP -->
+        <navigator url="/pages/component/scroll-view/scroll-view-refresher-props" hover-class="none">
+          <button type="primary" class="button">
+            下拉刷新的属性示例
+          </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+        <navigator url="/pages/component/scroll-view/scroll-view-refresher" hover-class="none">
+          <button type="primary" class="button"> 默认下拉刷新示例 </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+        <navigator url="/pages/component/scroll-view/scroll-view-custom-refresher-props" hover-class="none">
+          <button type="primary" class="button">
+            自定义下拉刷新示例
+          </button>
+        </navigator>
+        <view class="uni-common-pb"></view>
+        <!-- #endif -->
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="uts">
-	export default {
-		data() {
-			return {
-				scrollTop: 0,
-				oldScrollTop: 0,
-			}
-		},
-		methods: {
-			upper: function (e : ScrollToUpperEvent) {
-				console.log(e)
-			},
-			lower: function (e : ScrollToLowerEvent) {
-				console.log(e)
-			},
-			scroll: function (e : ScrollEvent) {
-				this.oldScrollTop = e.detail.scrollTop
-			},
-			goTop: function () {
-				// 解决view层不同步的问题
-				this.scrollTop = this.oldScrollTop
-				this.$nextTick(function () {
-					this.scrollTop = 0
-				})
-				uni.showToast({
-					icon: 'none',
-					title: '纵向滚动 scrollTop 值已被修改为 0',
-				})
-			}
-		},
-	}
+  export default {
+    data() {
+      return {
+        scrollTop: 0,
+        oldScrollTop: 0,
+        showScrollbar: true
+      }
+    },
+    methods: {
+      upper: function (e : ScrollToUpperEvent) {
+        console.log(e)
+      },
+      lower: function (e : ScrollToLowerEvent) {
+        console.log(e)
+      },
+      scroll: function (e : ScrollEvent) {
+        this.oldScrollTop = e.detail.scrollTop
+      },
+      goTop: function () {
+        // 解决view层不同步的问题
+        this.scrollTop = this.oldScrollTop
+        this.$nextTick(function () {
+          this.scrollTop = 0
+        })
+        uni.showToast({
+          icon: 'none',
+          title: '纵向滚动 scrollTop 值已被修改为 0',
+        })
+      }
+    },
+  }
 </script>
 
 <style>
-	.scroll-Y {
-		height: 300rpx;
-	}
+  .scroll-Y {
+    height: 150px;
+  }
 
-	.scroll-view_H {
-		width: 100%;
-		flex-direction: row;
-	}
+  .scroll-view_H {
+    width: 100%;
+    flex-direction: row;
+  }
 
-	.scroll-view-item {
-		height: 300rpx;
-		justify-content: center;
-		align-items: center;
-	}
+  .scroll-view-item {
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+  }
 
-	.scroll-view-item_H {
-		width: 690rpx;
-		height: 300rpx;
-		justify-content: center;
-		align-items: center;
-	}
+  .scroll-view-item_H {
+    width: 100%;
+    height: 150px;
+    justify-content: center;
+    align-items: center;
+  }
 
-	.text {
-		font-size: 36rpx;
-		color: #ffffff;
-	}
+  .text {
+    font-size: 18px;
+    color: #ffffff;
+  }
 
-	.button {
-		margin-top: 30rpx;
-	}
+  .button {
+    margin-top: 15px;
+  }
 </style>

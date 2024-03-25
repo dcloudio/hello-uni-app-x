@@ -2,7 +2,7 @@
   <view @click="back" class="nav-back">
     <image class="back-img" src="/static/template/pull-zoom-image/back.png" mode="widthFix"></image>
   </view>
-  <scroll-view :scroll-y="true" style="flex:1;" :refresher-enabled="true"
+  <scroll-view style="flex:1;" :refresher-enabled="true"
     refresher-default-style="none" @refresherpulling="onRefresherpulling"
     :refresher-threshold="300" :refresher-max-drag-distance="299"
     @scroll="onScroll" :rebound="false"
@@ -23,11 +23,13 @@
       </view>
     </view>
 
+    <!--#ifdef APP -->
     <view slot="refresher">
       <view class="head-img-box-1">
         <image class="img" ref="head-img-1" src="/static/template/pull-zoom-image/head-img.jpg" mode="scaleToFill"></image>
       </view>
     </view>
+    <!--#endif-->
 
   </scroll-view>
 </template>
@@ -36,7 +38,7 @@
   export default {
     data() {
       return {
-        $elementMap: new Map<string, Element>()
+        $elementMap: new Map<string, UniElement>()
       }
     },
     methods: {
@@ -51,7 +53,7 @@
           s = 0.7
         }
         let x : number = (1 - s) * -100
-        this.setElementStyle("user-info", "transform", `translate(${x},${y + (s-1)* -50}px) scale(${s})`)
+        this.setElementStyle("user-info", "transform", `translate(${x}px, ${y + (s-1)* -50}px) scale(${s})`)
         this.setElementStyle("head-img-box-2", "transform", `translateY(${y}px)`)
       },
       onRefresherpulling(e : RefresherEvent) {
@@ -62,10 +64,10 @@
       },
       // 工具方法，用于快速设置 Element 的 style
       setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let element : Element | null = this.$elementMap.get(refName)
+        let element : UniElement | null = (this.$data['$elementMap'] as Map<string, UniElement>).get(refName)
         if (element == null) {
-          element = this.$refs[refName] as Element;
-          this.$elementMap.set(refName, element)
+          element = this.$refs[refName] as UniElement;
+          (this.$data['$elementMap'] as Map<string, UniElement>).set(refName, element)
         }
         element.style.setProperty(propertyName, propertyStyle);
       },
@@ -125,8 +127,8 @@
   }
 
   .user-info .user-avatar {
-    width: 150rpx;
-    height: 150rpx;
+    width: 75px;
+    height: 75px;
     border-radius: 100px;
     border: 3px solid #FFF;
   }

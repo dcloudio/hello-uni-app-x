@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
@@ -13,6 +13,9 @@
         </view>
         <view class="uni-btn-v uni-common-mt">
           <button type="primary" @tap="fail">云对象失败调用</button>
+        </view>
+        <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @tap="failWithNumberErrCode">云对象数字错误码</button>
         </view>
         <view class="uni-btn-v uni-common-mt">
           <button type="primary" @tap="success">云对象成功调用</button>
@@ -34,13 +37,9 @@
         returnTodoTitle: '',
         returnTodoContent: '',
         failErrCode: '',
+        failNumberErrCode: 0,
         successErrCode: -1,
         isUniTest: false
-      }
-    },
-    onUnload() {
-      if (this.isUniTest) {
-        uni.hideToast()
       }
     },
     methods: {
@@ -52,9 +51,6 @@
             showCancel: false
           })
         } else {
-          uni.showToast({
-            title: content
-          })
           console.log(title, content)
         }
       },
@@ -97,11 +93,19 @@
           const error = err as UniCloudError
           this.failErrCode = error.errCode as string
           console.error(error)
-          if (this.isUniTest) {
-            uni.showToast({
-              title: error.errMsg
-            })
-          }
+        })
+      },
+      async failWithNumberErrCode() : Promise<void> {
+        const todo = uniCloud.importObject('todo', {
+          customUI: this.isUniTest
+        })
+        await todo.failWithNumberErrCode().then((res : UTSJSONObject) => {
+          this.notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
+          console.log('todo.fail: ', res);
+        }).catch((err : any | null) => {
+          const error = err as UniCloudError
+          this.failNumberErrCode = error.errCode as number
+          console.error(error)
         })
       },
       async success() : Promise<void> {

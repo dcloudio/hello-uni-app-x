@@ -19,14 +19,14 @@
                   ? arrowUpIcon
                   : arrowDownIcon
                 : arrowRightIcon
-            " class="uni-icon">
+            " class="uni-icon-size">
           </image>
         </view>
         <view v-if="item.open">
-          <view class="uni-navigate-item" :hover-class="page.enable == false ? '' : 'is--active'"
+          <view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'"
             v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
             <text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
-            <image :src="arrowRightIcon" class="uni-icon"></image>
+            <image :src="arrowRightIcon" class="uni-icon-size"></image>
           </view>
         </view>
       </view>
@@ -102,6 +102,7 @@
               },
             ] as Page[],
           },
+          // #ifdef APP
           {
             id: 'custom-refresher',
             url: 'custom-refresher',
@@ -116,6 +117,7 @@
             open: false,
             pages: [] as Page[],
           },
+          // #endif
           {
             id: 'swiper-vertical-video',
             url: 'swiper-vertical-video',
@@ -123,6 +125,7 @@
             open: false,
             pages: [] as Page[],
           },
+          // #ifdef APP
           {
             id: 'scroll-sticky',
             url: 'scroll-sticky',
@@ -130,6 +133,7 @@
             open: false,
             pages: [] as Page[],
           },
+          // #endif
           {
             id: 'half-screen',
             url: 'half-screen',
@@ -159,6 +163,7 @@
             enable: true,
             pages: [] as Page[],
           },
+          // #ifdef APP
           {
             id: 'calendar',
             url: 'calendar',
@@ -171,7 +176,23 @@
             name: '打开外部链接',
             open: false,
             pages: [] as Page[],
+          }, {
+            id: 'share',
+            url: 'share',
+            name: '分享示例',
+            open: false,
+            pages: [] as Page[],
           },
+          // #endif
+          // #ifdef WEB
+          {
+            id: 'browser-canvas',
+            url: 'browser-canvas',
+            name: '如何使用浏览器 canvas',
+            open: false,
+            pages: [] as Page[],
+          },
+          // #endif
         ] as ListItem[],
         arrowUpIcon: '/static/icons/arrow-up.png',
         arrowDownIcon: '/static/icons/arrow-down.png',
@@ -216,7 +237,3 @@
     },
   }
 </script>
-
-<style>
-  @import "../../common/uni-uvue.css";
-</style>

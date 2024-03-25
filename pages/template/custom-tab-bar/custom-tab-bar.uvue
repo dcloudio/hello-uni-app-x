@@ -65,7 +65,7 @@
         ] as TabItem[],
         selectedIndex: -1,
         displayArrow: false,
-        $tabViewHeight: 0
+        tabViewHeight: 0
       }
     },
     onLoad() {
@@ -73,20 +73,21 @@
     },
     onReady() {
       this.setSelectedIndex(0)
-      this.$tabViewHeight = (this.$refs["tabview"] as Element).getBoundingClientRect().height
+      this.tabViewHeight = (this.$refs["tabview"] as UniElement).getBoundingClientRect().height
     },
     onUnload() {
       uni.$off('tabchange', this.onTabPageEvent)
     },
     methods: {
       onTabClick(index : number) {
-        this.setSelectedIndex(index);
-        if (index == 0) {
+        if (this.selectedIndex == index && index == 0) {
+          this.displayArrow = false;
           (this.$refs["tab1"]! as ComponentPublicInstance).$callMethod('scrollTop', 0)
         }
+        this.setSelectedIndex(index);
       },
       onTabPageEvent(top : number) {
-        this.displayArrow = top > this.$tabViewHeight
+        this.displayArrow = top > this.tabViewHeight
       },
       setSelectedIndex(index : number) {
         if (this.selectedIndex === index) {

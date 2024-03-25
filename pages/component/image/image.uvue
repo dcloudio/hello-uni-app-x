@@ -1,69 +1,76 @@
 <template>
-	<view>
-		<page-head :title="title"></page-head>
-		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-center" style="background:#FFFFFF;">
-				<image class="image" :fade-show="true" mode="widthFix" :src="imageSrc" @error="error"
-					@load="load"></image>
-			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @tap="imageFormat">图片格式示例</button>
-			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @tap="imageMode">图片缩放模式示例</button>
-			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @tap="imagePath">图片路径示例</button>
-			</view>
-			<view class="uni-btn-v">
-				<button type="primary" @tap="imageLarge">大图示例</button>
-			</view>
-		</view>
-	</view>
+  <view style="flex: 1;">
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-center" style="background:#FFFFFF;">
+        <image class="image" :fade-show="true" mode="widthFix" :src="imageSrc" @error="error" @load="load"></image>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @tap="imageFormat">图片格式示例</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @tap="imageMode">图片缩放模式示例</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @tap="imagePath">图片路径示例</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @tap="imageLarge">大图示例</button>
+      </view>
+    </view>
+    <view v-if="autoTest">
+      <image :src="setCookieImage"></image>
+      <image :src="verifyCookieImage" @error="error"></image>
+    </view>
+  </view>
 </template>
 <script>
-	export default {
-		data() {
-			return {
-				title: 'image',
-				imageSrc: "/static/test-image/logo.png",
-				loadError: false
-			}
-		},
-		methods: {
-			error(event : ImageErrorEvent) {
-				this.loadError = true
-				console.log(event.type, event.detail);
-			},
-			load(event : ImageLoadEvent) {
-				console.log(event.type, event.detail);
-			},
-			imageFormat() {
-				uni.navigateTo({
-					url: '/pages/component/image/image-format'
-				});
-			},
-			imageMode() {
-				uni.navigateTo({
-					url: '/pages/component/image/image-mode'
-				});
-			},
-			imagePath() {
-				uni.navigateTo({
-					url: '/pages/component/image/image-path'
-				});
-			},
-			imageLarge() {
-				uni.navigateTo({
-					url: '/pages/component/image/image-large'
-				});
-			}
-		}
-	}
+  export default {
+    data() {
+      return {
+        title: 'image',
+        imageSrc: "/static/test-image/logo.png" as string.ImageURIString,
+        loadError: false,
+        // 自动化测试
+        autoTest: false,
+        setCookieImage: "",
+        verifyCookieImage: ""
+      }
+    },
+    methods: {
+      error(event : ImageErrorEvent) {
+        this.loadError = true
+        console.log(event.type, event.detail);
+      },
+      load(event : ImageLoadEvent) {
+        console.log(event.type, event.detail);
+      },
+      imageFormat() {
+        uni.navigateTo({
+          url: '/pages/component/image/image-format'
+        });
+      },
+      imageMode() {
+        uni.navigateTo({
+          url: '/pages/component/image/image-mode'
+        });
+      },
+      imagePath() {
+        uni.navigateTo({
+          url: '/pages/component/image/image-path'
+        });
+      },
+      imageLarge() {
+        uni.navigateTo({
+          url: '/pages/component/image/image-large'
+        });
+      }
+    }
+  }
 </script>
 <style>
-	.image {
-		margin: 40rpx auto;
-		width: 200rpx;
-	}
+  .image {
+    margin: 20px auto;
+    width: 100px;
+  }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex:1">
+  <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
@@ -40,7 +40,7 @@
               <switch :checked="isCrop" @change="switchCrop"></switch>
             </view>
           </view>
-          <view ref="cropOptionNode" class="crop-option" :style="{'height':isCrop?'200px':'0px'}">
+          <view ref="cropOptionNode" class="crop-option" :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
             <view class="uni-list-cell cell-pd">
               <view class="uni-list-cell-left item_width">
                 图片质量(%)
@@ -76,16 +76,17 @@
           </view>
         </view>
 
-        <view class="uni-list list-pd" style="padding: 30rpx;">
-          <view class="uni-flex" style="margin-bottom: 20rpx;">
+        <view class="uni-list list-pd" style="padding: 15px;">
+          <view class="uni-flex" style="margin-bottom: 10px;">
             <view class="uni-list-cell-left">点击可预览选好的图片</view>
             <view style="margin-left: auto;">
               <text class="click-t">{{imageList.length}}/{{countIndex+1}}</text>
             </view>
           </view>
           <view class="uni-flex" style="flex-wrap: wrap;">
-            <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0rpx;">
-              <image style="width: 208rpx; height: 208rpx;" :src="image" :data-src="image" @tap="previewImage(index)"></image>
+            <view v-for="(image,index) in imageList" :key="index" class="uni-uploader__input-box" style="border: 0;">
+              <image style="width: 104px; height: 104px;" :src="image" :data-src="image" @tap="previewImage(index)">
+              </image>
               <image src="/static/plus.png" class="image-remove" @click="removeImage(index)"></image>
             </view>
             <image class="uni-uploader__input-box" @tap="chooseImage" src="/static/plus.png"></image>
@@ -169,10 +170,10 @@
           })
         }
       },
-      cropResizeChange(e : SwitchChangeEvent) {
+      cropResizeChange(e : UniSwitchChangeEvent) {
         this.cropResize = e.detail.value
       },
-      switchCrop(e : SwitchChangeEvent) {
+      switchCrop(e : UniSwitchChangeEvent) {
         this.isCrop = e.detail.value
       },
       removeImage(index : number) {
@@ -239,7 +240,7 @@
 
 <style>
   .cell-pd {
-    padding: 22rpx 30rpx;
+    padding: 11px 15px;
   }
 
   .click-t {
@@ -247,14 +248,14 @@
   }
 
   .list-pd {
-    margin-top: 50rpx;
+    margin-top: 25px;
   }
 
   .uni-uploader__input-box {
-    margin: 10rpx;
-    width: 208rpx;
-    height: 208rpx;
-    border: 2rpx solid #D9D9D9;
+    margin: 5px;
+    width: 104px;
+    height: 104px;
+    border: 1px solid #D9D9D9;
   }
 
   .uni-uploader__input {
@@ -269,25 +270,25 @@
 
   .image-remove {
     transform: rotate(45deg);
-    width: 50rpx;
-    height: 50rpx;
+    width: 25px;
+    height: 25px;
     position: absolute;
     top: 0;
     right: 0;
-    border-radius: 25rpx;
+    border-radius: 13px;
     background-color: rgba(200, 200, 200, 0.8);
   }
 
   .item_width {
-    width: 260rpx;
+    width: 130px;
   }
 
   .crop-option {
-    border-top-color: lightgray;
-    border-width: 1rpx;
-    border-style: solid;
-    padding: 20rpx;
-    transition: height;
-    transition-duration: 300;
+    margin-left: 11px;
+    margin-right: 11px;
+    border-radius: 11px;
+    background-color: #eee;
+    transition-property: height, margin-bottom;
+    transition-duration: 200ms;
   }
 </style>

@@ -12,15 +12,10 @@
         </view>
       </view>
       <view class="uni-list uni-common-pl">
-        <radio-group @change="radioChange" class="radio-group">
-          <radio
-            class="uni-list-cell uni-list-cell-pd radio"
-            v-for="(item, index) in items"
-            :key="item.value"
-            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''"
-            :value="item.value"
-            :checked="index === current"
-          >
+        <radio-group @change="radioChange">
+          <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.value"
+            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
+            :checked="index === current">
             {{ item.name }}
           </radio>
         </radio-group>
@@ -28,79 +23,87 @@
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
-        <button class="uni-btn-v" type="primary" @click="showLoading">
-          显示 loading 提示框
-        </button>
-        <button class="uni-btn-v" @click="hideLoading">
-          隐藏 loading 提示框
-        </button>
+        <button class="uni-btn-v" type="primary" @click="showLoading">显示 loading 提示框</button>
+        <button class="uni-btn-v" @click="hideLoading">隐藏 loading 提示框</button>
         <text>为方便演示，loading弹出3秒后自动关闭</text>
       </view>
     </view>
   </view>
 </template>
 <script lang="uts">
-type ItemType = {
-  value : string
-  name : string
-}
-export default {
-  data() {
-    return {
-      title: 'loading',
-      items: [
-        {
-          value: 'null',
-          name: '无标题',
-        },
-        {
-          value: '三秒后自动关闭',
-          name: '普通标题',
-        },
-        {
-          value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
-          name: '长标题',
-        },
-      ] as ItemType[],
-      current: 0,
-      maskSelect: false,
-      titleSelect: "null"
-    }
-  },
-  methods: {
-
-    radioChange(e : RadioGroupChangeEvent) {
-      const selected = this.items.find((item) : boolean => {
-        return item.value == e.detail.value
+  type ItemType = {
+    value : string
+    name : string
+  }
+  export default {
+    data() {
+      return {
+        title: 'loading',
+        items: [
+          {
+            value: 'null',
+            name: '无标题',
+          },
+          {
+            value: '三秒后自动关闭',
+            name: '普通标题',
+          },
+          {
+            value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
+            name: '长标题',
+          },
+        ] as ItemType[],
+        current: 0,
+        maskSelect: false,
+        titleSelect: "null"
+      }
+    },
+    onLoad(){
+      uni.showLoading({
+      	title:'onLoad 调用示例,2秒后消失'
       })
-      if (selected != null) {
-        this.titleSelect = selected.value
-      }
+      setTimeout(function() {
+        uni.hideLoading()
+      }, 2000);
     },
-    maskChange: function (e : SwitchChangeEvent) {
-      this.maskSelect = e.detail.value
-    },
-    showLoading: function () {
+    methods: {
+      //自动化测试例专用
+      jest_getWindowInfo() : GetWindowInfoResult {
+        return uni.getWindowInfo();
+      },
 
-      console.log(this.titleSelect)
-      if (this.titleSelect == "null") {
-        uni.showLoading({
-          title: "",
-          mask: this.maskSelect
-        });
-      } else {
-        uni.showLoading({
-          title: this.titleSelect,
-          mask: this.maskSelect
-        });
+      radioChange(e : UniRadioGroupChangeEvent) {
+        const selected = this.items.find((item) : boolean => {
+          return item.value == e.detail.value
+        })
+        if (selected != null) {
+          this.titleSelect = selected.value
+        }
+      },
+      maskChange: function (e : UniSwitchChangeEvent) {
+        this.maskSelect = e.detail.value
+      },
+      showLoading: function () {
+
+        console.log(this.titleSelect)
+        if (this.titleSelect == "null") {
+          uni.showLoading({
+            title: "",
+            mask: this.maskSelect
+          });
+        } else {
+          uni.showLoading({
+            title: this.titleSelect,
+            mask: this.maskSelect
+          });
+        }
+        setTimeout(() => {
+          this.hideLoading();
+        }, 3000);
+      },
+      hideLoading: function () {
+        uni.hideLoading();
       }
-      setTimeout(() => {
-        this.hideLoading();
-      }, 3000);
-    },
-    hideLoading: function () {
-      uni.hideLoading();
     }
   }
-}
 </script>

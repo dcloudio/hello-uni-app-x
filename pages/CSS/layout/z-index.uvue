@@ -1,25 +1,29 @@
 <template>
   <view style="flex-grow: 1;">
-    <view>
-      <view class="common fixed" style="background-color: red;z-index: 10;">
+    <view style="position:absolute;z-index:0;">
+      <view class="common fixed default">
         <text>position: fixed</text>
         <text>z-index: 10</text>
       </view>
-      <view class="common fixed" style="background-color: green;z-index: 5;top: 175rpx;left: 175rpx;">
+      <view class="common fixed specified">
         <text>position: fixed</text>
         <text>z-index: 5</text>
       </view>
+      <view class="common fixed floor">
+        <text>position: fixed</text>
+        <text>z-index: -1</text>
+      </view>
     </view>
-    <view style="top: 500rpx;">
+    <view style="top: 250px;">
       <view class="common" style="background-color: red;z-index: 10;">
         <text>z-index: 10</text>
       </view>
-      <view ref="view" class="common" style="background-color: green;z-index: 5;top: -75rpx;left: 175rpx;"
+      <view ref="view" class="common" style="background-color: green;z-index: 5;top: -37px;left: 87px;"
         @click="changeZIndex(20)">
         <text>z-index: {{zIndex}}</text>
         <text>点击修改z-index</text>
       </view>
-      <view class="common" style="background-color: blue;top: -150rpx;left: 350rpx;">
+      <view class="common" style="background-color: blue;top: -75px;left: 175px;">
         <text>z-index: 0</text>
       </view>
     </view>
@@ -36,21 +40,48 @@
     methods: {
       changeZIndex(zIndex : number) {
         this.zIndex = 20;
-        (this.$refs['view'] as Element).style.setProperty('z-index', zIndex);
+        (this.$refs['view'] as UniElement).style.setProperty('z-index', zIndex);
       }
     }
   }
 </script>
 
 <style>
-  .common {
-    width: 250rpx;
-    height: 250rpx;
-    justify-content: center;
-    align-items: center;
-  }
+.common {
+  width: 125px;
+  height: 125px;
+  justify-content: center;
+  align-items: center;
+}
+.fixed {
+  position: fixed;
+}
+.default {
+  background-color: red;
+  z-index: 10;
+  top: var(--window-top);
+}
+.specified {
+  background-color: green;
+  z-index: 5;
+  left: 87px;
+  /* #ifdef APP */
+  top: 87px;
+  /* #endif */
+  /* #ifdef H5 */
+  top: calc(var(--window-top) + 87px);
+  /* #endif */
+}
 
-  .fixed {
-    position: fixed;
-  }
+.floor {
+  background-color: chocolate;
+  /* #ifdef APP */
+  top: 250px;
+  /* #endif */
+  /* #ifdef H5 */
+  top: calc(var(--window-top) + 250px);
+  /* #endif */
+  left: 175px;
+  z-index: -1;
+}
 </style>

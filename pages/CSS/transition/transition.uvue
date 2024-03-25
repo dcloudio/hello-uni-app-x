@@ -30,8 +30,12 @@
         <view class="base-style transition-transform" id="styleTransform" @click="changeTransform"></view>
       </view>
       <view class="container">
+        <text class="text">点击修改Transform和宽</text>
+        <view class="base-style transition-transform-width" id="styleTransformWithWidth" @click="changeTransformWithWidth"></view>
+      </view>
+      <view class="container" @click="changeTransformWithOrigin">
         <text class="text">点击修改Transform（含transform-origin）</text>
-        <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin" @click="changeTransformWithOrigin"></view>
+        <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin"></view>
       </view>
       <view class="container">
         <text class="text">点击修改Border</text>
@@ -52,24 +56,26 @@
     data() {
       return {
         isTranstionWidthOrHeight: false,
-        widthOrHeight: null as Element | null,
+        widthOrHeight: null as UniElement | null,
         isTranstionChangeMargin: false,
-        styleMargin: null as Element | null,
+        styleMargin: null as UniElement | null,
         isTransitionStylePadding: false,
-        stylePadding: null as Element | null,
+        stylePadding: null as UniElement | null,
         isTransitionstyleBackground: false,
-        styleBackground: null as Element | null,
+        styleBackground: null as UniElement | null,
         isTransitionStyleTransform: false,
-        styleTransform: null as Element | null,
+        styleTransform: null as UniElement | null,
+        isTransitionStyleTransformWithWidth:false,
+        styleTransformWithWidth: null as UniElement | null,
         isTransitionstyleBorder: false,
-        styleBorder: null as Element | null,
+        styleBorder: null as UniElement | null,
         isTransitionstylePosition: false,
-        stylePosition: null as Element | null,
+        stylePosition: null as UniElement | null,
         isSetTransition: false,
         isTransitionpropertystyleBackground: false,
-        propertyStyleBackground: null as Element | null,
+        propertyStyleBackground: null as UniElement | null,
         isTransitionStyleTransformWithOrigin: false,
-        styleTransformWithOrigin: null as Element | null,
+        styleTransformWithOrigin: null as UniElement | null,
       }
     },
     onReady() {
@@ -82,33 +88,34 @@
       this.stylePosition = uni.getElementById("stylePosition")
       this.propertyStyleBackground = uni.getElementById("propertyStyleBackground")
       this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
+      this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
     },
     methods: {
       changeWidthOrHeight() {
         this.widthOrHeight?.style?.setProperty("width", this.isTranstionWidthOrHeight
-          ? '400rpx'
-          : '600rpx')
+          ? '190px'
+          : '300px')
         this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
       },
       changeMargin() {
         this.styleMargin?.style?.setProperty("margin-top", this.isTranstionChangeMargin
-          ? '0rpx'
-          : '100rpx'
+          ? '0px'
+          : '50px'
         )
         this.styleMargin?.style?.setProperty("margin-left", this.isTranstionChangeMargin
-          ? '0rpx'
-          : '100rpx'
+          ? '0px'
+          : '50px'
         )
         this.isTranstionChangeMargin = !this.isTranstionChangeMargin
       },
 
       changePadding() {
         this.stylePadding?.style?.setProperty("padding-top", this.isTransitionStylePadding
-          ? '0rpx'
-          : '100rpx')
+          ? '0px'
+          : '50px')
         this.stylePadding?.style?.setProperty("padding-left", this.isTransitionStylePadding
-          ? '0rpx'
-          : '100rpx')
+          ? '0px'
+          : '50px')
         this.isTransitionStylePadding = !this.isTransitionStylePadding
       },
       changeBackground() {
@@ -125,7 +132,7 @@
       propertyChangeBackground() {
         if (!this.isSetTransition) {
           this.propertyStyleBackground?.style?.setProperty("transition-property", "background-color")
-          this.propertyStyleBackground?.style?.setProperty("transition-duration", "1000")
+          this.propertyStyleBackground?.style?.setProperty("transition-duration", "1000ms")
           this.isSetTransition = true
         }
         this.propertyStyleBackground?.style?.setProperty("background-color", this.isTransitionpropertystyleBackground
@@ -140,6 +147,17 @@
           : 'rotate(135deg)'
         )
         this.isTransitionStyleTransform = !this.isTransitionStyleTransform
+      },
+      changeTransformWithWidth() {
+        this.styleTransformWithWidth?.style?.setProperty("transform", this.isTransitionStyleTransformWithWidth
+          ? 'rotate(0deg)'
+          : 'rotate(135deg)'
+        )
+        this.styleTransformWithWidth?.style?.setProperty("width", this.isTransitionStyleTransformWithWidth
+          ? '200px'
+          : '100px'
+        )
+        this.isTransitionStyleTransformWithWidth = !this.isTransitionStyleTransformWithWidth
       },
       changeTransformWithOrigin() {
         this.styleTransformWithOrigin?.style?.setProperty("transform", this.isTransitionStyleTransformWithOrigin
@@ -157,8 +175,8 @@
       },
       changestylePosition() {
         this.stylePosition?.style?.setProperty("left", this.isTransitionstylePosition
-          ? '0rpx'
-          : '150rpx'
+          ? '0px'
+          : '100px'
         )
         this.isTransitionstylePosition = !this.isTransitionstylePosition
       },
@@ -168,44 +186,44 @@
 
 <style>
   .container {
-    margin: 15rpx;
+    margin: 7px;
     background-color: white;
   }
 
   .text {
-    margin-top: 20rpx;
-    margin-bottom: 32rpx;
+    margin-top: 10px;
+    margin-bottom: 16px;
   }
 
   .base-style {
-    width: 400rpx;
-    height: 400rpx;
+    width: 200px;
+    height: 200px;
     background-color: brown;
   }
 
   .transition-width {
     transition-property: width;
-    transition-duration: 1000;
+    transition-duration: 1s;
   }
 
   .transition-margin {
     transition-property: margin-left, margin-top;
-    transition-duration: 1000;
+    transition-duration: 1s;
   }
 
   .transition-padding {
     transition-property: padding-left, padding-top;
-    transition-duration: 1000;
+    transition-duration: 1s;
   }
 
   .transition-background {
     transition-property: background-color, opacity;
-    transition-duration: 1000;
+    transition-duration: 1s;
   }
 
   .transition-transform {
     transition-property: transform;
-    transition-duration: 1000;
+    transition-duration: 1s;
   }
 
   .transition-border {
@@ -213,11 +231,16 @@
     border-color: brown;
     border-style: solid;
     transition-property: border-color;
-    transition-duration: 1000;
+    transition-duration: 1s;
   }
 
   .transition-position {
+    left: 0px;
     transition-property: left;
-    transition-duration: 1000;
+    transition-duration: 1s;
+  }
+  .transition-transform-width {
+    transition-property: transform, width;
+    transition-duration: 1s;
   }
 </style>

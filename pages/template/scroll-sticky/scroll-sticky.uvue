@@ -1,5 +1,5 @@
 <template>
-	<scroll-view :scroll-y="true" @scroll="onScroll" class="page" rebound="false">
+	<scroll-view ref="scroll" @scroll="onScroll" class="page" rebound="false">
 		<view class="content-item">
 			<text class="text">向上滑动页面，体验元素吸顶效果。</text>
 		</view>
@@ -34,7 +34,7 @@
 				stickyTop: 0,
 				stickyTran: 0,
 				scrollTop: 0,
-				stickyNode: null as Element | null
+				stickyNode: null as UniElement | null
 			}
 		},
 		methods: {
@@ -67,12 +67,13 @@
 		onLoad() {
 		},
 		onReady() {
-			this.stickyNode = this.$refs['sticky'] as Element;
+			this.stickyNode = this.$refs['sticky'] as UniElement;
 			// let rect = this.stickyNode?.getBoundingClientRect();
 			// this.stickyTop = rect?.top;
 			//this.stickyTop = this.stickyNode?.getBoundingClientRect()?.top;
-			let rect = (this.$refs['sticky'] as Element).getBoundingClientRect();
-			this.stickyTop = rect.top;
+			const stickyRect = (this.$refs['sticky'] as UniElement).getBoundingClientRect();
+      const scrollRect = (this.$refs['scroll'] as UniElement).getBoundingClientRect();
+			this.stickyTop = stickyRect.top - scrollRect.top;
 		}
 	}
 </script>
@@ -80,7 +81,7 @@
 <style>
 	.page {
 		flex: 1;
-		padding: 5px 15px;
+		padding: 0 15px;
 		background-color: #f5f5f5;
 	}
 
@@ -103,7 +104,7 @@
 		border: 1px solid #fbdf0d;
 		height: 35px;
 		border-radius: 100px;
-		margin: 0 25rpx;
+		margin: 0 12px;
 		padding: 8px;
 		flex-direction: row;
 		align-items: center;

@@ -64,7 +64,9 @@
 </template>
 
 <script>
+	// #ifdef APP
   import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
+	// #endif
 	const localFilePathKey = 'UNI_ADMIN_UPGRADE_CENTER_LOCAL_FILE_PATH'
 	const platform_iOS = 'iOS';
 	const platform_Android = 'Android';
@@ -187,16 +189,16 @@
 				return this.type === 'wgt'
 			},
 			isiOS() {
-				return !this.isWGT ? this.platform.includes(platform_iOS) : false;
+				return !this.isWGT ? this.platform.indexOf(platform_iOS) !== -1 : false;
 			},
 			isAndroid() {
-				return this.platform.includes(platform_Android)
+				return this.platform.indexOf(platform_Android) !== -1
 			},
 			isAppStore() {
 				return this.isiOS || (!this.isiOS && !this.isWGT && this.url.indexOf('.apk') === -1)
 			},
 			needNotificationProgress() {
-				return this.isAndroid && !this.is_mandatory
+				return this.platform.indexOf(platform_iOS) === -1 && !this.is_mandatory
 			}
 		},
 		methods: {

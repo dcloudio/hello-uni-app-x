@@ -1,51 +1,53 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page">
+  <scroll-view class="scroll-view">
   <!-- #endif -->
-    <form @submit="onFormSubmit" @reset="onFormReset">
-      <view class="uni-form-item">
-        <view class="title">姓名</view>
-        <input class="uni-input" name="nickname" :value="nickname" placeholder="请输入姓名" />
-      </view>
-      <view class="uni-form-item">
-        <view class="title">性别</view>
-        <radio-group name="gender" class="flex-row">
-          <view class="group-item">
-            <radio :value="0" :checked="gender=='0'" /><text>男</text>
-          </view>
-          <view class="group-item">
-            <radio :value="1" :checked="gender=='1'" /><text>女</text>
-          </view>
-        </radio-group>
-      </view>
-      <view class="uni-form-item">
-        <view class="title">爱好</view>
-        <checkbox-group name="loves" class="flex-row">
-          <view class="group-item">
-            <checkbox value="0" :checked="loves.indexOf('0')>-1" /><text>读书</text>
-          </view>
-          <view class="group-item">
-            <checkbox value="1" :checked="loves.indexOf('1')>-1" /><text>写字</text>
-          </view>
-        </checkbox-group>
-      </view>
-      <view class="uni-form-item">
-        <view class="title">年龄</view>
-        <slider name="age" :value="age" :show-value="true"></slider>
-      </view>
-      <view class="uni-form-item">
-        <view class="title">保留选项</view>
-        <view>
-          <switch name="switch" :checked="switch" />
+    <view class="page">
+      <form @submit="onFormSubmit" @reset="onFormReset">
+        <view class="uni-form-item">
+          <view class="title">姓名</view>
+          <input class="uni-input" name="nickname" :value="nickname" placeholder="请输入姓名" />
         </view>
-      </view>
-      <view class="uni-btn-v flex-row">
-        <button class="btn btn-submit" form-type="submit" type="primary">Submit</button>
-        <button class="btn btn-reset" type="default" form-type="reset">Reset</button>
-      </view>
-    </form>
-    <view class="result">提交的表单数据</view>
-    <textarea class="textarea" :value="formDataText"></textarea>
+        <view class="uni-form-item">
+          <view class="title">性别</view>
+          <radio-group name="gender" class="flex-row">
+            <view class="group-item">
+              <radio value="0" :checked="gender=='0'" /><text>男</text>
+            </view>
+            <view class="group-item">
+              <radio value="1" :checked="gender=='1'" /><text>女</text>
+            </view>
+          </radio-group>
+        </view>
+        <view class="uni-form-item">
+          <view class="title">爱好</view>
+          <checkbox-group name="loves" class="flex-row">
+            <view class="group-item">
+              <checkbox value="0" :checked="loves.indexOf('0')>-1" /><text>读书</text>
+            </view>
+            <view class="group-item">
+              <checkbox value="1" :checked="loves.indexOf('1')>-1" /><text>写字</text>
+            </view>
+          </checkbox-group>
+        </view>
+        <view class="uni-form-item">
+          <view class="title">年龄</view>
+          <slider name="age" :value="age" :show-value="true"></slider>
+        </view>
+        <view class="uni-form-item">
+          <view class="title">保留选项</view>
+          <view>
+            <switch name="switch" :checked="switch" />
+          </view>
+        </view>
+        <view class="uni-btn-v flex-row">
+          <button class="btn btn-submit" form-type="submit" type="primary">Submit</button>
+          <button class="btn btn-reset" type="default" form-type="reset">Reset</button>
+        </view>
+      </form>
+      <view class="result">提交的表单数据</view>
+      <textarea class="textarea" :value="formDataText" :maxlength="-1" :auto-height="true"></textarea>
+    </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -69,10 +71,10 @@
       }
     },
     methods: {
-      onFormSubmit: function (e : FormSubmitEvent) {
+      onFormSubmit: function (e : UniFormSubmitEvent) {
         this.formData = e.detail.value
       },
-      onFormReset: function (_ : FormResetEvent) {
+      onFormReset: function (_ : UniFormResetEvent) {
         this.formData = {}
       }
     }
@@ -80,8 +82,11 @@
 </script>
 
 <style>
-  .page {
+  .scroll-view {
     flex: 1;
+  }
+
+  .page {
     padding: 15px;
   }
 
@@ -120,6 +125,7 @@
 
   .textarea {
     margin-top: 5px;
+    padding: 5px;
     background-color: #fff;
   }
 </style>

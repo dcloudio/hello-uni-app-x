@@ -1,7 +1,6 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('transition event', () => {
-
     let page;
     beforeAll(async () => {
         page = await program.reLaunch('/pages/component/general-event/transition-event')

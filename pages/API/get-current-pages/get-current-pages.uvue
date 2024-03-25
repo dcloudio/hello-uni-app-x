@@ -1,48 +1,44 @@
 <template>
-  <view>
-    <page-head title="getCurrentPages"></page-head>
-    <view class="uni-padding-wrap">
-      <button @click="_getCurrentPages">getCurrentPages</button>
-      <view v-if="pages.length" style="padding: 15px 0px">
-        <text>当前页面栈中 {{ pages.length }} 个页面，列表如下：</text>
-        <template v-for="(page, index) in pages" :key="page.route">
-          <text style="margin-top: 5px"
-            >index: {{ index }}, route: {{ page.route }}</text
-          >
-        </template>
-      </view>
+  <page-head title="getCurrentPages"></page-head>
+  <view class="uni-padding-wrap">
+    <button @click="_getCurrentPages">getCurrentPages</button>
+    <view v-if="pages.length" style="padding: 15px 0px">
+      <text>当前页面栈中 {{ pages.length }} 个页面，列表如下：</text>
+      <template v-for="(page, index) in pages" :key="page.route">
+        <text style="margin-top: 5px">index: {{ index }}, route: {{ page.route }}</text>
+      </template>
     </view>
   </view>
 </template>
 
-<script lang="uts">
-class Page {
-  constructor(public route : string) {
-  }
-}
-
-export default {
-  data() {
-    return {
-      checked: false,
-      pages: [] as Page[],
+<script>
+  class Page {
+    constructor(public route : string) {
     }
-  },
-  methods: {
-    _getCurrentPages: function () {
-      this.pages.length = 0
-      const pages = getCurrentPages()
-      this.pages.push(new Page(pages[0].route))
-      if (this.pages[0].route.includes('/tabBar/')) {
-        this.checked = true
-      }
-      for (let i = 1; i < pages.length; i++) {
-        this.pages.push(new Page(pages[i].route))
-        if (pages[i].route.includes('/tabBar/')) {
-          this.checked = false
-        }
+  }
+
+  export default {
+    data() {
+      return {
+        checked: false,
+        pages: [] as Page[],
       }
     },
-  },
-}
+    methods: {
+      _getCurrentPages: function () {
+        this.pages.length = 0
+        const pages = getCurrentPages()
+        this.pages.push(new Page(pages[0].route))
+        if (this.pages[0].route.includes('/tabBar/')) {
+          this.checked = true
+        }
+        for (let i = 1; i < pages.length; i++) {
+          this.pages.push(new Page(pages[i].route))
+          if (pages[i].route.includes('/tabBar/')) {
+            this.checked = false
+          }
+        }
+      },
+    },
+  }
 </script>

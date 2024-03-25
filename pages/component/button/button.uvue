@@ -11,8 +11,7 @@
         type_enum: [{ "value": 0, "name": "default" }, { "value": 1, "name": "primary" }, { "value": 2, "name": "warn" }] as ItemType[],
         type_enum_current: 0,
         count: 0,
-        text: 'uni-app-x',
-        style: 'color:#ffffff;backgroundColor:#1AAD19;borderColor:#1AAD19;'
+        text: 'uni-app-x'
       }
     },
     methods: {
@@ -31,24 +30,35 @@
       change_default_style(checked : boolean) { this.default_style = checked },
       radio_change_size_enum(checked : number) { this.size_enum_current = checked },
       radio_change_type_enum(checked : number) { this.type_enum_current = checked },
-      confirm_text_input(value : string) { this.text = value }
+      confirm_text_input(value : string) { this.text = value },
+      navigateToChild() {
+        uni.navigateTo({
+          url: 'buttonstatus',
+        })
+      },
+      //用于自动化测试
+      checkUniButtonElement() : boolean {
+        const button = uni.getElementById("testButton")
+        if (button != null && button instanceof UniButtonElement) {
+          return true
+        }
+        return false
+      }
     }
   }
 </script>
 
 <template>
   <view class="main">
-    <button :disabled="disabled_boolean" :size="size_enum[size_enum_current].name"
+    <button id="testButton" :disabled="disabled_boolean" :size="size_enum[size_enum_current].name"
       :type="type_enum[type_enum_current].name" :plain="plain_boolean" @click="button_click"
       @touchstart="button_touchstart" @touchmove="button_touchmove" @touchcancel="button_touchcancel"
       @touchend="button_touchend" @tap="button_tap" @longpress="button_longpress" class="btn"
-      :style="default_style ? style : ''" :hover-class="default_style ? 'is-hover' : 'button-hover'">
+      :class="default_style ? 'custom-btn' : ''" :hover-class="default_style ? 'is-hover' : 'button-hover'">
       {{ text }}
     </button>
   </view>
-  <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
     <view class="content">
       <boolean-data :defaultValue="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
@@ -56,15 +66,15 @@
       <enum-data :items="size_enum" title="按钮的大小" @change="radio_change_size_enum"></enum-data>
       <enum-data :items="type_enum" title="按钮的类型" @change="radio_change_type_enum"></enum-data>
       <input-data :defaultValue="text" title="按钮的文案" type="text" @confirm="confirm_text_input"></input-data>
+      <view style="height: 10px;"></view>
+      <button @click="navigateToChild">更多示例</button>
     </view>
-    <!-- #ifdef APP -->
   </scroll-view>
-  <!-- #endif -->
 </template>
 
 <style>
   .main {
-    padding: 10rpx 0;
+    padding: 5px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     flex-direction: row;
     justify-content: center;
@@ -72,13 +82,24 @@
 
   .main .list-item {
     width: 100%;
-    height: 200rpx;
+    height: 100px;
     border: 1px solid #666;
+  }
+
+  .custom-btn {
+    color: #ffffff;
+    background-color: #1AAD19;
+    border-color: #1AAD19;
   }
 
   .is-hover {
     color: rgba(255, 255, 255, 0.6);
     background-color: #179b16;
     border-color: #179b16;
+  }
+
+  .button-hover {
+    color: rgba(0, 0, 0, 0.6);
+    background-color: #dedede;
   }
 </style>

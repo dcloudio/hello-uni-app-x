@@ -1,7 +1,12 @@
 <template>
-	<list-view id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
+  <scroll-view direction="horizontal" style="flex-direction: row;">
+    <button class="button_item" @click="delayShow">测试延时显示</button>
+    <button class="button_item" @click="switchItemContent">修改item子元素</button>
+  </scroll-view>
+	<list-view v-show="list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
     <list-item v-for="index in item_count" class="item" @click="itemClick(index)">
       <text >item-------<text>{{index}}</text></text>
+      <text v-if="displayArrow" >item-------<text>{{index}}</text></text>
     </list-item>
   </list-view>
 </template>
@@ -11,7 +16,9 @@
 		data() {
 			return {
 				item_count: 20,
-        listViewElement: null as UniListViewElement|null
+        list_show: true,
+        listViewElement: null as UniListViewElement|null,
+        displayArrow: false
 			}
 		},
     onReady() {
@@ -29,6 +36,17 @@
       },
       itemClick(index: number) {
         console.log("itemTextClick---"+index)
+      },
+      delayShow() {
+        this.list_show = !this.list_show
+        this.item_count += 20
+        //延时显示list-view 测试list-item延时显示bug
+        setTimeout(()=>{
+          this.list_show = !this.list_show
+        }, 400)
+      },
+      switchItemContent() {
+        this.displayArrow = !this.displayArrow
       }
 		}
 	}
@@ -37,9 +55,12 @@
 <style>
   .item {
     padding: 15px;
-    margin: 5px 0;
+    margin: 0 0 5px 0;
     background-color: #fff;
     border-radius: 5px;
+  }
+  .button_item {
+    width: 200px;
   }
 
 </style>

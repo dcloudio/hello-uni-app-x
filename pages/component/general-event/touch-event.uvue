@@ -1,21 +1,23 @@
 <template>
-      <page-head title="拖拽图标测试相关事件"></page-head>
-	<view class="container">
-    <view class="view-box">
-      <image class="icon" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel" @touchmove="onTouchMove" @touchend="onTouchEnd"></image>
-    </view>
+  <scroll-view style="flex: 1">
+    <page-head title="拖拽图标测试相关事件"></page-head>
+    <view class="container">
+      <view class="view-box">
+        <image class="icon" id="icon" src="../image/logo.png" @touchstart="onTouchStart" @touchcancel="onTouchCancel" @touchmove="onTouchMove" @touchend="onTouchEnd"></image>
+      </view>
 
-  </view>
-  <view v-if="touchEvent !== null">
-    <text class="title1">touches: </text>
-    <template v-for="(touch, index) in touchEvent!.touches" :key="index">
-      <text class="title2">touch[{{ index }}]:</text>
-      <text>identifier: {{touch.identifier}}</text>
-      <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
-      <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
-      <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
-    </template>
-  </view>
+    </view>
+    <view v-if="touchEvent !== null">
+      <text class="title1">touches: </text>
+      <template v-for="(touch, index) in touchEvent!.touches" :key="index">
+        <text class="title2">touch[{{ index }}]:</text>
+        <text>identifier: {{touch.identifier}}</text>
+        <text>pageX: {{ touch.pageX }}, pageY: {{ touch.pageY }}</text>
+        <text>clientX: {{ touch.clientX }}, clientY: {{ touch.clientY }}</text>
+        <text>screenX: {{ touch.screenX }}, screenY: {{ touch.screenY }}</text>
+      </template>
+    </view>
+  </scroll-view>
 </template>
 
 <script>
@@ -28,7 +30,7 @@
         lastX: 0,
         lastY: 0,
         touchEvent: null as TouchEvent | null,
-        icon: null as Element | null
+        icon: null as UniElement | null
 			}
 		},
     onReady() {
@@ -44,6 +46,7 @@
         }
       },
 			onTouchMove(e: TouchEvent) {
+        e.preventDefault()
         this.touchEvent = e
         let p = e.touches[0]
         if(p.screenX == this.lastX && p.screenY == this.lastY){

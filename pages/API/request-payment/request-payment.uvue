@@ -1,0 +1,75 @@
+<template>
+  <page-head title="支付宝支付"></page-head>
+  <button :type="btnType" style="margin: 10px;" @click="pay()">{{btnText}}</button>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        btnText: "支付宝支付",
+        btnType: "primary",
+        orderInfo: "",
+        errorCode: 0,
+        errorMsg: "",
+        complete: false
+      }
+    },
+    methods: {
+      pay() {
+        uni.showLoading({
+          title: "请求中..."
+        })
+        uni.request({
+          url: 'https://demo.dcloud.net.cn/payment/alipay/?total=0.01',
+          method: 'GET',
+          timeout: 6000,
+          success: (res) => {
+            uni.hideLoading()
+            uni.requestPayment({
+              provider: "alipay",
+              orderInfo: res.data as string,
+              fail: (res : RequestPaymentFail) => {
+                console.log(JSON.stringify(res))
+                this.errorCode = res.errCode
+                uni.showToast({
+                  icon: 'error',
+                  title: 'errorCode:' + this.errorCode
+                });
+              },
+              success: (res : RequestPaymentSuccess) => {
+                console.log(JSON.stringify(res))
+                uni.showToast({
+                  icon: 'success',
+                  title: '支付成功'
+                });
+              }
+            } as RequestPaymentOptions)
+          },
+          fail: () => {
+            uni.hideLoading()
+          },
+        });
+      },
+      //自动化测试使用
+      jest_pay() {
+        uni.requestPayment({
+          provider: "alipay",
+          orderInfo: this.orderInfo,
+          fail: (res : RequestPaymentFail) => {
+            this.errorCode = res.errCode
+            this.complete = true
+          },
+          success: (res : RequestPaymentSuccess) => {
+            console.log(JSON.stringify(res))
+             this.complete = true
+          }
+        } as RequestPaymentOptions)
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>

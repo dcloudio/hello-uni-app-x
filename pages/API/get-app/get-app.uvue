@@ -14,8 +14,8 @@
           <text class="uni-common-mt">globalData object: {{ originGlobalData.obj }}</text>
           <text class="uni-common-mt">globalData null: {{ originGlobalData.null }}</text>
           <text class="uni-common-mt">globalData array: {{ originGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ originGlobalData.set }}</text>
-          <text class="uni-common-mt">globalData Map: {{ originGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData Set: {{ originGlobalData.mySet }}</text>
+          <text class="uni-common-mt">globalData Map: {{ originGlobalData.myMap }}</text>
           <text class="uni-common-mt">globalData func 返回值: {{ originGlobalDataFuncRes }}</text>
         </template>
         <button @click="setGlobalData" class="uni-common-mt">set globalData</button>
@@ -27,11 +27,10 @@
           <text class="uni-common-mt">globalData object: {{ newGlobalData.obj }}</text>
           <text class="uni-common-mt">globalData null: {{ newGlobalData.null }}</text>
           <text class="uni-common-mt">globalData array: {{ newGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ newGlobalData.set }}</text>
-          <text class="uni-common-mt">globalData Map: {{ newGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData Set: {{ newGlobalData.mySet }}</text>
+          <text class="uni-common-mt">globalData Map: {{ newGlobalData.myMap }}</text>
           <text class="uni-common-mt">globalData func 返回值: {{ newGlobalDataFuncRes }}</text>
         </template>
-        <view class="uni-common-mt hr"></view>
         <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
         <text class="margin-top:6px;">increasetLifeCycleNum 方法</text>
         <button class="uni-common-mt" @click="_increasetLifeCycleNum">
@@ -46,6 +45,8 @@
 </template>
 
 <script lang="uts">
+  import { state, setLifeCycleNum } from '@/store/index.uts'
+
   type MyGlobalData = {
     str : string,
     num : number,
@@ -53,11 +54,10 @@
     obj : UTSJSONObject,
     null : string | null,
     arr : number[],
-    set : Set<string>,
-    map : Map<string, any>,
+    mySet : string[],
+    myMap : UTSJSONObject,
     func : () => string
   }
-  import { state, setLifeCycleNum } from '@/store/index.uts'
 
   export default {
     data() {
@@ -73,8 +73,8 @@
           } as UTSJSONObject,
           null: null,
           arr: [] as number[],
-          set: new Set<string>(),
-          map: new Map<string, any>(),
+          mySet: [] as string[],
+          myMap: {},
           func: () : string => ''
         } as MyGlobalData,
         originGlobalDataFuncRes: '',
@@ -89,8 +89,8 @@
           } as UTSJSONObject,
           null: null,
           arr: [] as number[],
-          set: new Set<string>(),
-          map: new Map<string, any>(),
+          mySet: [] as string[],
+          myMap: {},
           func: () : string => ''
         } as MyGlobalData,
         newGlobalDataFuncRes: '',
@@ -103,14 +103,19 @@
     methods: {
       getGlobalData() {
         const app = getApp()
+
         this.originGlobalData.str = app.globalData.str
         this.originGlobalData.num = app.globalData.num
         this.originGlobalData.bool = app.globalData.bool
         this.originGlobalData.obj = app.globalData.obj
         this.originGlobalData.null = app.globalData.null
         this.originGlobalData.arr = app.globalData.arr
-        this.originGlobalData.set = app.globalData.set
-        this.originGlobalData.map = app.globalData.map
+        app.globalData.mySet.forEach((value : string) => {
+          this.originGlobalData.mySet.push(value)
+        })
+        app.globalData.myMap.forEach((value : any, key : string) => {
+          this.originGlobalData.myMap[key] = value
+        })
         this.originGlobalData.func = app.globalData.func
         this.originGlobalDataFuncRes = this.originGlobalData.func()
       },
@@ -127,8 +132,8 @@
         }
         app.globalData.null = 'not null'
         app.globalData.arr = [1, 2, 3]
-        app.globalData.set = new Set(['a', 'b', 'c'])
-        app.globalData.map = new Map([
+        app.globalData.mySet = new Set(['a', 'b', 'c'])
+        app.globalData.myMap = new Map([
           ['a', 1],
           ['b', 2],
           ['c', 3]
@@ -143,8 +148,12 @@
         this.newGlobalData.obj = app.globalData.obj
         this.newGlobalData.null = app.globalData.null
         this.newGlobalData.arr = app.globalData.arr
-        this.newGlobalData.set = app.globalData.set
-        this.newGlobalData.map = app.globalData.map
+        app.globalData.mySet.forEach((value : string) => {
+          this.newGlobalData.mySet.push(value)
+        })
+        app.globalData.myMap.forEach((value : any, key : string) => {
+          this.newGlobalData.myMap[key] = value
+        })
         this.newGlobalData.func = app.globalData.func
         this.newGlobalDataFuncRes = this.newGlobalData.func()
       },
@@ -165,5 +174,8 @@
   .bold {
     font-weight: bold;
   }
-  .hr{border-bottom: 1px solid #ccc;}
+
+  .hr {
+    border-bottom: 1px solid #ccc;
+  }
 </style>

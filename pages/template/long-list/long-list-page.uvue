@@ -23,16 +23,14 @@
         </view>
       </view>
     </list-item>
-    <list-item>
-      <view class="loading">
-        <text class="loading-text">{{loadingText}}</text>
-      </view>
+    <list-item class="loading">
+      <uni-loading :loading="loading" color="#999" :text="loadingText"></uni-loading>
     </list-item>
   </list-view>
 </template>
 
 <script>
-  const SERVER_URL = "https://ext.dcloud.net.cn/plugin/uniappx-plugin-list"
+  const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
   const PAGE_SIZE = 10; // 最大值 10
 
   type ListItem = {
@@ -72,7 +70,7 @@
         dataList: [] as ListItem[],
         isEnded: false,
         loadingError: '',
-        $currentPage: 1
+        currentPage: 1
       }
     },
     computed: {
@@ -96,7 +94,7 @@
     methods: {
       refreshData(loadComplete : (() => void) | null) {
         this.dataList.length = 0
-        this.$currentPage = 1
+        this.currentPage = 1
         this.loadData(loadComplete)
       },
       loadData(loadComplete : (() => void) | null) {
@@ -109,7 +107,7 @@
           url: SERVER_URL,
           data: {
             type: this.type,
-            page: this.$currentPage,
+            page: this.currentPage,
             page_size: PAGE_SIZE
           },
           success: (res) => {
@@ -123,7 +121,7 @@
             if (responseData.data.length == 0) {
               this.isEnded = true
             } else {
-              this.$currentPage++
+              this.currentPage++
             }
           },
           fail: (err) => {
@@ -239,12 +237,11 @@
   }
 
   .loading {
-    padding: 20px;
-    background-color: #f8f8f8;
-    justify-content: center;
+    padding: 30px;
+    align-items: center;
   }
 
-  .loading-text {
-    text-align: center;
+  .flex-row {
+    flex-direction: row;
   }
 </style>

@@ -1,28 +1,19 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
-    <!-- #endif -->
+  <!-- #endif -->
     <view>
       <page-head :title="title"></page-head>
       <view class="uni-common-mt">
         <view class="uni-list">
-          <view
-            class="uni-list-cell"
-            v-for="(item, _) in items"
-            style="align-items: center"
-          >
+          <view class="uni-list-cell" v-for="(item, _) in items" style="align-items: center">
             <view class="uni-pd">
               <view class="uni-label" style="width: 180px">{{
                 item.label
               }}</view>
             </view>
             <view class="uni-list-cell-db">
-              <textarea
-                :auto-height="true"
-                :disabled="true"
-                placeholder="未获取"
-                :value="item.value"
-              />
+              <text style="width: 100%;">{{ item.value == '' ? '未获取' : item.value }}</text>
             </view>
           </view>
         </view>
@@ -38,66 +29,66 @@
         </view>
       </view>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 <script>
-type Item = {
-	label : string,
-	value : string,
-}
-export default {
-	data() {
-		return {
-			title: 'getSystemInfo',
-			items: [] as Item[],
-		}
-	},
-	onUnload: function () {
-	},
-	methods: {
-		getSystemInfo: function () {
-			uni.getSystemInfo({
-				success: (res) => {
-          this.items = [] as Item[];
-          for(const key in res){
-            const value = res[key];
-            if(value != null){
-              const item = {
-              	label: key,
-              	value: "" + ((typeof value == "object")? JSON.stringify(value) : value)
-              } as Item;
-              this.items.push(item);
+  type Item = {
+    label : string,
+    value : string,
+  }
+  export default {
+    data() {
+      return {
+        title: 'getSystemInfo',
+        items: [] as Item[],
+      }
+    },
+    onUnload: function () {
+    },
+    methods: {
+      getSystemInfo: function () {
+        uni.getSystemInfo({
+          success: (res) => {
+            this.items = [] as Item[];
+            for (const key in res) {
+              const value = res[key];
+              if (value != null) {
+                const item = {
+                  label: key,
+                  value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
+                } as Item;
+                this.items.push(item);
+              }
             }
+          },
+        })
+      },
+      getSystemInfoSync: function () {
+        this.items = [] as Item[];
+        const res = uni.getSystemInfoSync()
+        for (const key in res) {
+          const value = res[key];
+          if (value != null) {
+            const item = {
+              label: key,
+              value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
+            } as Item;
+            this.items.push(item);
           }
-				},
-			})
-		},
-    getSystemInfoSync: function () {
-      this.items = [] as Item[];
-      const res = uni.getSystemInfoSync()
-    	for(const key in res){
-    	  const value = res[key];
-    	  if(value != null){
-    	    const item = {
-    	    	label: key,
-    	    	value: "" + ((typeof value == "object")? JSON.stringify(value) : value)
-    	    } as Item;
-    	    this.items.push(item);
-    	  }
-    	}
-    },
-    //自动化测试例专用
-    jest_getSystemInfo():GetSystemInfoResult{
-      return uni.getSystemInfoSync();
-    },
-	}
-}
+        }
+      },
+      //自动化测试例专用
+      jest_getSystemInfo() : GetSystemInfoResult {
+        return uni.getSystemInfoSync();
+      },
+    }
+  }
 </script>
 
 <style>
-.uni-pd {
-  padding-left: 30rpx;
-}
+  .uni-pd {
+    padding-left: 15px;
+  }
 </style>

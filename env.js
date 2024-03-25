@@ -1,3 +1,4 @@
+// 自动化测试
 module.exports = {
     "is-custom-runtime": false,
     "compile": true,

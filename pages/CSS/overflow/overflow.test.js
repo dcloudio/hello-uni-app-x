@@ -8,6 +8,15 @@ describe('component-native-overflow', () => {
 
   //检测overflow设置hidden，visible
   it('check_view_overflow', async () => {
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+        let version = process.env.uniTestPlatformInfo
+        version = parseInt(version.split(" ")[1])
+        //安卓7模拟器不截图 导致闪退
+        if(version == 7) {
+          return
+        }
+    }
+    await page.waitFor(600)
     const image = await program.screenshot({
       fullPage: true,
     });

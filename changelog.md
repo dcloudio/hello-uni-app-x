@@ -1,6 +1,20 @@
-## 1.0.8（2023-11-30）
-- 新增半屏弹窗示例  
+## 1.0.16
+* update 4.06.2024032403-alpha
 
-更多详情查看：[https://gitcode.net/dcloud/hello-uni-app-x/-/commits/master](https://gitcode.net/dcloud/hello-uni-app-x/-/commits/master)
-## 1.0.6（2023-11-27）
-详情查看：[https://gitcode.net/dcloud/hello-uni-app-x/-/commits/master](https://gitcode.net/dcloud/hello-uni-app-x/-/commits/master)
+## 1.0.15
+* update 4.05.2024032021-alpha
+
+## 1.0.14
+* update 4.04.2024031519-alpha
+
+## 1.0.13
+* update 4.03.2024031101-alpha
+
+## 1.0.12
+* update 4.02.2024030621-alpha
+
+## 1.0.11
+* update 4.01.2024020211-alpha
+
+## 1.0.10
+* update 4.0.2024012711-alpha

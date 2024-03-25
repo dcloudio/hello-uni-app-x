@@ -1,7 +1,7 @@
 <template>
   <view style="flex: 1;">
     <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-common-mt" style="border-width: 2rpx;border-style: solid; border-radius: 4rpx;">
+      <view class="uni-common-mt" style="border-width: 2px;border-style: solid; border-radius: 4px;">
         <textarea :value="res" class="uni-textarea"></textarea>
       </view>
       <view>
@@ -13,55 +13,55 @@
       </view>
     </view>
     <scroll-view style="flex: 1;" show-scrollbar="true">
-      <view style="padding: 20rpx;">
+      <view style="padding: 20px;">
         <text>设置请求方式</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5rpx; margin-right: 10rpx;" type="primary" size="mini"
+          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
             @click="changeMethod('GET')">GET</button>
-          <button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
+          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
             @click="changeMethod('POST')">POST</button>
-          <button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
+          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
             @click="changeMethod('PUT')">PUT</button>
-          <button style="padding: 5rpx; margin-right: 10rpx;" type="primary" size="mini"
+          <button style="padding: 5px; margin-right: 10px;" type="primary" size="mini"
             @click="changeMethod('DELETE')">DELETE</button>
-          <button style="padding: 5rpx; margin-right: 10rpx; " type="primary" size="mini"
+          <button style="padding: 5px; margin-right: 10px; " type="primary" size="mini"
             @click="changeMethod('PATCH')">PATCH</button>
-          <button style="padding: 5rpx;margin-right: 10rpx;" type="primary" size="mini"
+          <button style="padding: 5px;margin-right: 10px;" type="primary" size="mini"
             @click="changeMethod('OPTIONS')">OPTIONS</button>
-          <button style="padding: 5rpx;" type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
+          <button style="padding: 5px;" type="primary" size="mini" @click="changeMethod('HEAD')">HEAD</button>
         </view>
       </view>
-      <view style="padding: 20rpx;">
+      <view style="padding: 20px;">
         <text>请求返回错误码的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in errorCodeUrls" :key="index"
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in errorCodeUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
-      <view style="padding: 20rpx;">
+      <view style="padding: 20px;">
         <text>请求不同header的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in headerUrls" :key="index"
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in headerUrls" :key="index"
             @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
-      <view style="padding: 20rpx;">
+      <view style="padding: 20px;">
         <text>请求不同content-type的接口（默认为GET）</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in contentTypeUrls"
-            :key="index" @click="changeUrl(item)">{{item}}</button>
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in contentTypeUrls" :key="index"
+            @click="changeUrl(item)">{{item}}</button>
         </view>
       </view>
 
-      <view style="padding: 20rpx;">
+      <view style="padding: 20px;">
         <text>POST请求(有body)</text>
         <view class="uni-common-pb"></view>
         <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5rpx;" type="primary" size="mini" v-for="(item, index) in postUrls" :key="index"
+          <button style="padding: 5px;" type="primary" size="mini" v-for="(item, index) in postUrls" :key="index"
             @click="changeUrlFromPost(item)">{{item}}</button>
         </view>
       </view>
@@ -87,7 +87,7 @@
         title: 'request',
         res: '',
         task: null as RequestTask | null,
-        host: "http://request.dcloud.net.cn",
+        host: "https://request.dcloud.net.cn",
         url: "/api/http/method/get",
         method: "GET" as RequestMethod | null,
         data: null as any | null,
@@ -189,6 +189,7 @@
           firstIpv4: false,
           success: (res) => {
             console.log('request success', JSON.stringify(res.data))
+            console.log('request success header is :', JSON.stringify(res.header))
             uni.showToast({
               title: '请求成功',
               icon: 'success',
@@ -229,7 +230,77 @@
             this.jest_result = false;
           },
         });
-      }
+      },
+      jest_set_cookie() {
+        uni.request({
+          url: this.host + "/api/http/header/setCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_request(true)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_delete_cookie() {
+        uni.request({
+          url: this.host + "/api/http/header/deleteCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_cookie_request(false)
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_cookie_request(needCookie : boolean) {
+        uni.request({
+          url: this.host + "/api/http/header/requestCookie",
+          method: "GET",
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: (res) => {
+            const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+            console.log("requestCookie ", requestCookie);
+            if (requestCookie instanceof Array) {
+              this.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
+            } else {
+              this.jest_result = needCookie ? (requestCookie as UTSJSONObject).toMap().size > 0 : (requestCookie as UTSJSONObject).toMap().size == 0
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_timeout_null() {
+        uni.request({
+          url: this.host + (methodMap['GET'] as string),
+          method: "GET",
+          timeout: null,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_result = true;
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
     }
   }
 </script>

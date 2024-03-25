@@ -1,6 +1,6 @@
 <template>
   <view class="swiper-list">
-    <scroll-view ref="tabScroll" class="swiper-tabs" :scroll-x="true" :show-scrollbar="false">
+    <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
       <view class="flex-row" style="align-self: flex-start;">
         <text ref="swipertab" class="swiper-tabs-item" :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''"
           v-for="(item, index) in swiperList" :key="index" @click="onTabClick(index)">
@@ -39,10 +39,10 @@
     data() {
       return {
         swiperList: [] as SwiperViewItem[],
-        swiperIndex: -1,
-        $tabScrollView: null as null | Element,
-        $animationFinishIndex: 0,
-        $swiperWidth: 0
+        swiperIndex: 0,
+        tabScrollView: null as null | UniElement,
+        animationFinishIndex: 0,
+        swiperWidth: 0
       }
     },
     onLoad() {
@@ -53,9 +53,9 @@
       }
     },
     onReady() {
-      this.$tabScrollView = this.$refs['tabScroll'] as Element
-      this.$swiperWidth = (this.$refs["swiper"] as Element).getBoundingClientRect().width
-      this.setSwiperIndex(0, true)
+      this.tabScrollView = this.$refs['tabScroll'] as UniElement
+      this.swiperWidth = (this.$refs["swiper"] as UniElement).getBoundingClientRect().width
+      this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
     },
     methods: {
       onTabClick(index : number) {
@@ -65,9 +65,9 @@
         const offset_x = e.detail.dx
 
         // 计算当前索引并重置差异
-        const current_offset_x = offset_x % this.$swiperWidth
-        const current_offset_i = offset_x / this.$swiperWidth
-        const current_index = this.$animationFinishIndex + current_offset_i.toInt()
+        const current_offset_x = offset_x % this.swiperWidth
+        const current_offset_i = offset_x / this.swiperWidth
+        const current_index = this.animationFinishIndex + parseInt(current_offset_i + '')
 
         // 计算目标索引及边界检查
         let move_to_index = current_index
@@ -78,14 +78,16 @@
         }
 
         // 计算偏移百分比
-        const percentage = Math.abs(current_offset_x) / this.$swiperWidth
+        const percentage = Math.abs(current_offset_x) / this.swiperWidth
 
         // 通知更新指示线
-        this.updateTabIndicator(current_index, move_to_index, percentage)
+        if (current_index != move_to_index) {
+          this.updateTabIndicator(current_index, move_to_index, percentage)
+        }
       },
       onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
         this.setSwiperIndex(e.detail.current, true)
-        this.$animationFinishIndex = e.detail.current
+        this.animationFinishIndex = e.detail.current
       },
       setSwiperIndex(index : number, updateIndicator : boolean) {
         if (this.swiperIndex == index) {
@@ -99,8 +101,7 @@
         }
       },
       updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-        // TODO 0.0 != 0
-        if (percentage.toDouble() == 0.0) {
+        if (percentage == 0) {
           return
         }
 
@@ -108,9 +109,9 @@
         const min_ratio = 1
         const max_ratio = 1.3
 
-        const tabs = this.$refs['swipertab'] as Element[]
-        const current_node = tabs[current_index]!
-        const move_to_node = tabs[move_to_index]!
+        const tabs = this.$refs['swipertab'] as UniElement[]
+        const current_node = tabs[current_index]
+        const move_to_node = tabs[move_to_index]
 
         // 当前
         const current_scale = lerpNumber(min_ratio, max_ratio, 1 - percentage)
@@ -122,10 +123,8 @@
 
         // 滚动到水平中心位置
         const target_x = lerpNumber(current_node.offsetLeft, move_to_node.offsetLeft, percentage)
-        const center_x = target_x + move_to_node.offsetWidth / 2 - this.$swiperWidth / 2
-        if(this.$tabScrollView !== null){
-          this.$tabScrollView!.scrollLeft = center_x
-        }
+        const center_x = target_x + move_to_node.offsetWidth / 2 - this.swiperWidth / 2
+        this.tabScrollView!.scrollLeft = center_x
       }
     }
   }
@@ -144,6 +143,7 @@
     color: #555;
     font-size: 16px;
     margin: 15px 25px 5px 25px;
+    white-space: nowrap;
   }
 
   .swiper-tabs-item-active {
