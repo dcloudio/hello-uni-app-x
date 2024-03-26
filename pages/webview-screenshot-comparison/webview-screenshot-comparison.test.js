@@ -300,7 +300,7 @@ describe("shot-compare", () => {
         y: statusBarHeight * devicePixelRatio,
       },
     }
-    const screenshotPath = `__webview__${pages[pageIndex].replace(/\//g, "-")}`;
+    const screenshotPath = `__webview_comparison__/${pages[pageIndex].replace(/\//g, "-")}`;
 
     // web in webview screenshot
     let startTime = Date.now();

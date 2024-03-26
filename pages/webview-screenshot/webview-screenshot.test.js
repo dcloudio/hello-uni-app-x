@@ -291,7 +291,7 @@ describe("shot-compare", () => {
         y: (headerHeight - 44) * devicePixelRatio,
       },
     }
-    const screenshotPath = `webview-shot__${pages[pageIndex].replace(/\//g, "-")}`;
+    const screenshotPath = `__webview-shot__/${pages[pageIndex].replace(/\//g, "-")}`;
 
     // web in webview screenshot
     let startTime = Date.now();

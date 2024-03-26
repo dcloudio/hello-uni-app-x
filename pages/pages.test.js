@@ -169,7 +169,11 @@ describe("page screenshot test", () => {
     const image = await program.screenshot({
       fullPage: fullPage
     });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toMatchImageSnapshot({
+      customSnapshotIdentifier() {
+        return `__pages_test__/${pages[pageIndex].replace(/\//g, "-").substring(1)}`
+      }
+    })
     await page.waitFor(500);
   });
 });
