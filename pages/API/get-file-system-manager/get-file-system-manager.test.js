@@ -743,6 +743,7 @@ describe('ExtApi-FileManagerTest', () => {
       recursiveVal: true,
       copyToBasePath:globalRootPath,
       basePath: globalRootPath,
+      globalTempPath:globalRootPath,
       rmDirFile:'a',
       mkdirFile:'a',
       unlinkFile:'a/1.txt',
