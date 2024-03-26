@@ -11,9 +11,6 @@ describe('ExtApi-GetAppBaseInfo', () => {
   const numberProperties = [
     'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]
-  if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
-    stringProperties.push('version')
-  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
