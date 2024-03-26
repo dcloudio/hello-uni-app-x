@@ -1,7 +1,8 @@
 <template>
   <view class="uni-flex-item">
-    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles" @message="message"
-      @error="error" @loading="loading" @load="load" @download="download">
+    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles"
+      :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess"
+      @message="message" @error="error" @loading="loading" @load="load" @download="download">
     </web-view>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
@@ -19,6 +20,12 @@
       <view class="uni-btn-v">
         <button type="primary" @click="nativeToWeb">原生和Web通信</button>
       </view>
+      <!-- #ifdef APP-ANDROID -->
+      <view class="uni-row">
+        <boolean-data :defaultValue="true" title="显示横向滚动条" @change="changeHorizontalScrollBarAccess"></boolean-data>
+        <boolean-data :defaultValue="true" title="显示竖向滚动条" @change="changeVerticalScrollBarAccess"></boolean-data>
+      </view>
+      <!-- #endif -->
     </view>
     <!-- #endif -->
   </view>
@@ -35,7 +42,9 @@
           }
         },
         webviewContext: null as WebviewContext | null,
-        loadError: false
+        loadError: false,
+        horizontalScrollBarAccess: true,
+        verticalScrollBarAccess: true
       }
     },
     onReady() {
@@ -87,6 +96,12 @@
           url = 'https://' + url;
         }
         this.src = url;
+      },
+      changeHorizontalScrollBarAccess(checked : boolean) {
+        this.horizontalScrollBarAccess = checked;
+      },
+      changeVerticalScrollBarAccess(checked : boolean) {
+        this.verticalScrollBarAccess = checked;
       }
     }
   }
