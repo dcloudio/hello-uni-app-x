@@ -20,7 +20,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -31,7 +31,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -60,7 +60,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -71,7 +71,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -101,7 +101,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -112,7 +112,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -142,7 +142,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -153,7 +153,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -183,7 +183,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -194,7 +194,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -223,7 +223,7 @@ describe('API-loading', () => {
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -234,7 +234,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -263,7 +263,7 @@ describe('API-loading', () => {
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -274,7 +274,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -303,7 +303,7 @@ describe('API-loading', () => {
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -314,7 +314,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -343,7 +343,7 @@ describe('API-loading', () => {
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -354,7 +354,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -384,7 +384,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -395,7 +395,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -425,7 +425,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -436,7 +436,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -466,7 +466,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -477,7 +477,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -507,7 +507,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -518,7 +518,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -548,7 +548,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -559,7 +559,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -589,7 +589,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -600,7 +600,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -630,7 +630,7 @@ describe('API-loading', () => {
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -641,7 +641,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -671,7 +671,7 @@ describe('API-loading', () => {
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -682,7 +682,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()
@@ -711,7 +711,7 @@ describe('API-loading', () => {
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -722,7 +722,7 @@ describe('API-loading', () => {
       expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
       expect(image).toMatchImageSnapshot()

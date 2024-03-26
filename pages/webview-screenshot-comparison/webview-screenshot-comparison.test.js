@@ -289,12 +289,13 @@ describe("shot-compare", () => {
     const isCustomNavigationBar = customNavigationPages.includes(pages[pageIndex]);
     const {
       statusBarHeight,
+      safeArea,
       devicePixelRatio
     } = await page.data();
     const screenshotParams = {
       fullPage: true,
-      adb: isNeedAdbScreenshot,
-      // adb 截图时跳过状态栏
+      deviceShot: isNeedAdbScreenshot,
+      // deviceShot 截图时跳过状态栏
       area: {
         x: 0,
         y: statusBarHeight * devicePixelRatio,
@@ -331,11 +332,11 @@ describe("shot-compare", () => {
       await page.waitFor(3000);
     }
 
-    // web 端非 adb 截图时设置 offsetY 移除导航栏
+    // web 端非 deviceShot 截图时设置 offsetY 移除导航栏
     const webSnapshot = await program.screenshot({
       ...screenshotParams,
       id: 'webview-screenshot-comparison',
-      offsetY: `${isCustomNavigationBar ? 0 : 44}`
+      offsetY: `${isCustomNavigationBar ? 0 : 44 + safeArea.top}`
     });
     expect(webSnapshot).toMatchImageSnapshot({
       customSnapshotIdentifier() {

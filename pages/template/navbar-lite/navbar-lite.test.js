@@ -37,7 +37,7 @@ describe("setCustomNavigationBarColor", () => {
     await page.waitFor(1000);
     if (isAndroid) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: adbScreenShotArea,
       });
       expect(image).toMatchImageSnapshot();
@@ -51,7 +51,7 @@ describe("setCustomNavigationBarColor", () => {
     await page.waitFor(1000);
     if (isAndroid) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: adbScreenShotArea,
       });
       expect(image).toMatchImageSnapshot();

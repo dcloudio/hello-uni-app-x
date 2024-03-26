@@ -284,8 +284,8 @@ describe("shot-compare", () => {
     } = await page.data();
     const screenshotParams = {
       fullPage: true,
-      adb: isNeedAdbScreenshot,
-      // adb 截图时跳过状态栏
+      deviceShot: isNeedAdbScreenshot,
+      // deviceShot 截图时跳过状态栏
       area: {
         x: 0,
         y: (headerHeight - 44) * devicePixelRatio,
@@ -323,7 +323,7 @@ describe("shot-compare", () => {
       await page.waitFor(3000);
     }
 
-    // web 端非 adb 截图时设置 offsetY 移除导航栏
+    // web 端非 deviceShot 截图时设置 offsetY 移除导航栏
     const webSnapshot = await program.screenshot({
       ...screenshotParams,
       offsetY: `${isCustomNavigation ? 0 : headerHeight}`

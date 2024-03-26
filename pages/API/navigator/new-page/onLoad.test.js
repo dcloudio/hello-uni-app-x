@@ -61,7 +61,7 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showToast");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
@@ -79,7 +79,7 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showLoading");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
@@ -97,7 +97,7 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showModal");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
@@ -115,7 +115,7 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
