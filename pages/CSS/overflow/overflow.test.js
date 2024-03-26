@@ -20,6 +20,6 @@ describe('component-native-overflow', () => {
     const image = await program.screenshot({
       fullPage: true,
     });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   })
 })

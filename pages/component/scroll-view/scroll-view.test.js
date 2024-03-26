@@ -13,6 +13,6 @@ describe('component-native-scroll-view', () => {
     })
     await page.waitFor(300);
     const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   });
 });

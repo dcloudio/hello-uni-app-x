@@ -9,7 +9,7 @@ describe('component-native-sticky-section', () => {
   it('check_sticky_section', async () => {
     await page.callMethod('listViewScrollByY', 1000)
     const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   })
 
   it('check_goto_sticky_header', async () => {
@@ -27,6 +27,6 @@ describe('component-native-sticky-section', () => {
       return await page.data('scrolling') === false;
     });
     const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   })
 })

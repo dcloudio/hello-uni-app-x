@@ -8,6 +8,6 @@ describe('css-font-size', () => {
     await page.callMethod("setFontSize");
     await page.waitFor(100);
     const image = await program.screenshot({ fullPage: true });
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   });
 });

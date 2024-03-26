@@ -16,6 +16,6 @@ describe('component-native-nested-scroll-header', () => {
 
   it('check_nested-scroll-header', async () => {
     const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   })
 })

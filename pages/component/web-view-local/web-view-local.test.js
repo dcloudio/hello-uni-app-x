@@ -19,7 +19,7 @@ describe('component-native-web-view', () => {
       const image = await program.screenshot({
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }
   });
 });

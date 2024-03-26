@@ -12,7 +12,7 @@ describe('component-native-input', () => {
   //   const image = await program.screenshot({
   //     fullPage: true
   //   })
-  //   expect(image).toMatchImageSnapshot()
+  //   expect(image).toSaveImageSnapshot()
   // })
   // 测试焦点及键盘弹起
   it('focus', async () => {
@@ -176,6 +176,6 @@ describe('component-native-input', () => {
     const image = await program.screenshot({
       fullPage: true
     })
-    expect(image).toMatchImageSnapshot()
+    expect(image).toSaveImageSnapshot()
   })
 });

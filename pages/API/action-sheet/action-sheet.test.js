@@ -27,13 +27,13 @@ describe('API-loading', () => {
         },
       });
 
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
   })
 
@@ -67,13 +67,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -109,13 +109,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -150,13 +150,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -191,13 +191,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
   })
@@ -232,13 +232,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -276,13 +276,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -317,13 +317,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -358,13 +358,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
   })
@@ -399,13 +399,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -441,13 +441,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -482,13 +482,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -523,13 +523,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
   })
