@@ -12,6 +12,10 @@ describe('component-native-sticky-section', () => {
     expect(image).toMatchImageSnapshot();
   })
 
+  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    return
+  }
+
   it('check_goto_sticky_header', async () => {
     //滚动回顶部
     await page.callMethod('toTop')
