@@ -328,7 +328,7 @@ describe("shot-compare", () => {
       ...screenshotParams,
       offsetY: `${isCustomNavigation ? 0 : headerHeight}`
     });
-    expect(webSnapshot).toMatchImageSnapshot({
+    expect(webSnapshot).toSaveImageSnapshot({
       customSnapshotIdentifier() {
         return screenshotPath;
       },

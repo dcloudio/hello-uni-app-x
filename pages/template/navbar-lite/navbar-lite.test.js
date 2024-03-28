@@ -40,7 +40,7 @@ describe("setCustomNavigationBarColor", () => {
         deviceShot: true,
         area: adbScreenShotArea,
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(2);
@@ -54,7 +54,7 @@ describe("setCustomNavigationBarColor", () => {
         deviceShot: true,
         area: adbScreenShotArea,
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(4);

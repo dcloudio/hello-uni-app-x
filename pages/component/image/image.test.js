@@ -55,7 +55,7 @@ describe('component-native-image', () => {
       const image = await program.screenshot({
         fullPage: true
       })
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     });
 
     it('mode-screenshot', async () => {
@@ -65,6 +65,6 @@ describe('component-native-image', () => {
       const image = await program.screenshot({
         fullPage: true
       })
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     });
 });

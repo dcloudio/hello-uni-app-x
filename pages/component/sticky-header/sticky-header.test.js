@@ -9,6 +9,6 @@ describe('component-native-sticky-header', () => {
   it('check_sticky_header', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
     const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   })
 })

@@ -11,7 +11,7 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
     await page.waitFor(1000);
     const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    expect(image).toSaveImageSnapshot();
   });
   it("navigateTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -68,7 +68,7 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
@@ -86,7 +86,7 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
@@ -104,7 +104,7 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
@@ -122,7 +122,7 @@ describe("onLoad", () => {
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
