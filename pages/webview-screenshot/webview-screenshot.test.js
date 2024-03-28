@@ -255,6 +255,13 @@ describe("shot-compare", () => {
   let pageIndex = 0;
   let baseSrc = "";
   beforeAll(async () => {
+    // 获取导航栏+状态栏高度
+    page = await program.reLaunch('/pages/API/get-window-info/get-window-info')
+    await page.callMethod('getWindowInfo')
+    // 获取设备像素比
+    page = await program.reLaunch('/pages/API/get-device-info/get-device-info')
+    await page.callMethod('getDeviceInfo')
+
     page = await program.reLaunch(PAGE_PATH);
     await page.waitFor(500);
 
@@ -279,7 +286,7 @@ describe("shot-compare", () => {
     const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
     const isCustomNavigation = customNavigationPages.includes(pages[pageIndex]);
     const {
-      headerHeight,
+      statusBarHeight,
       devicePixelRatio
     } = await page.data();
     const screenshotParams = {
@@ -288,7 +295,7 @@ describe("shot-compare", () => {
       // deviceShot 截图时跳过状态栏
       area: {
         x: 0,
-        y: (headerHeight - 44) * devicePixelRatio,
+        y: (statusBarHeight - 44) * devicePixelRatio,
       },
     }
     const screenshotPath = `__webview-shot__/${pages[pageIndex].replace(/\//g, "-")}`;
@@ -326,7 +333,7 @@ describe("shot-compare", () => {
     // web 端非 deviceShot 截图时设置 offsetY 移除导航栏
     const webSnapshot = await program.screenshot({
       ...screenshotParams,
-      offsetY: `${isCustomNavigation ? 0 : headerHeight}`
+      offsetY: `${isCustomNavigation ? 0 : statusBarHeight + 44}`
     });
     expect(webSnapshot).toSaveImageSnapshot({
       customSnapshotIdentifier() {
