@@ -71,7 +71,7 @@ function toSaveSnapshot(received, {
     let pass = true;
 
     try {
-        checkSnapshotDir(snapshotDir);
+        checkSnapshotDir(path.dirname(filePath));
         fs.writeFileSync(filePath, received);
         writeTestCaseToSnapshotFile(testPath.replace(`${_rootDir}/`, ""), filePath);
     } catch (e) {
@@ -108,7 +108,7 @@ function toSaveImageSnapshot(
             SNAPSHOTS_DIR,
         });
     const _fileName = createFileName({
-        fileName: customSnapshotIdentifier ? customSnapshotIdentifier() : "",
+        fileName: customSnapshotIdentifier ? `${customSnapshotIdentifier()}.png` : "",
         testPath,
         currentTestName,
         fileType: "png",
@@ -118,7 +118,7 @@ function toSaveImageSnapshot(
     let pass = true;
 
     try {
-        checkSnapshotDir(snapshotDir);
+        checkSnapshotDir(path.dirname(filePath));
         fs.writeFileSync(filePath, Buffer.from(received, "base64"));
         writeTestCaseToSnapshotFile(testPath.replace(`${_rootDir}/`, ""), filePath);
     } catch (e) {
