@@ -51,6 +51,7 @@
         hasDefaultSize: false,
         defaultItemSize: 40,
         lastScrollTop: 0,
+        rearrangeQueue: [] as number[]
       };
     },
     provide() {
@@ -84,8 +85,28 @@
         const scrollTop = e.detail.scrollTop
         this.lastScrollTop = 0
         if (scrollTop < this.offsetThreshold[1] || scrollTop > this.offsetThreshold[2]) {
-          this.rearrange(scrollTop)
+          this.queue(scrollTop)
         }
+      },
+      queue(scrollTop : number) {
+        /*
+         * rearrange内为大量同步逻辑，在上次rearrange未执行完毕的情况下将后续多个rearrange合并成一次执行，即仅执行最后一次
+         * 由于滚动机制差异，此优化仅在web端才有意义。
+         * 如何测试：push后console.log(this.rearrangeQueue.length) 输出结果大于1时触发优化
+         */
+        this.rearrangeQueue.push(scrollTop)
+        setTimeout(() => {
+          this.flush()
+        }, 1)
+      },
+      flush() {
+        const queueLength = this.rearrangeQueue.length
+        if (queueLength === 0) {
+          return
+        }
+        const lastScrollTop = this.rearrangeQueue[queueLength - 1]
+        this.rearrange(lastScrollTop)
+        this.rearrangeQueue = [] as number[]
       },
       rearrange(scrollTop : number) {
         this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
