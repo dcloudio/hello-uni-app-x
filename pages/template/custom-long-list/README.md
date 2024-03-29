@@ -6,7 +6,7 @@
 [点击下载&安装]()
 :::
 
-uni-recycle-view 组件用于在展示超长列表时优化内存占用以及性能。不同于uni-app list-view组件，uni-recycle-view组件不会对所有数据循环创建VNode。适用于仅使用一个for循环创建所有列表项的场景。
+uni-recycle-view 组件用于在展示超长列表时优化内存占用以及初次加载时的速度。不同于uni-app list-view组件，uni-recycle-view组件不会对所有数据循环创建VNode。适用于仅使用一个for循环创建所有列表项的场景。
 
 ### 基本用法
 

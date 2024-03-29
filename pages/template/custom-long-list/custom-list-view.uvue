@@ -101,7 +101,7 @@
       },
       flush() {
         const queueLength = this.rearrangeQueue.length
-        if (queueLength === 0) {
+        if (queueLength == 0) {
           return
         }
         const lastScrollTop = this.rearrangeQueue[queueLength - 1]
@@ -109,10 +109,12 @@
         this.rearrangeQueue = [] as number[]
       },
       rearrange(scrollTop : number) {
-        const offsetStart = this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
+        this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
         this.offsetThreshold[1] = Math.max(scrollTop - this.scrollElementHeight * 3, 0)
         this.offsetThreshold[2] = Math.min(scrollTop + this.scrollElementHeight * 4, this.placeholderHeight)
-        const offsetEnd =this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
+        this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
+        const offsetStart = this.offsetThreshold[0]
+        const offsetEnd =this.offsetThreshold[3]
         const items = [] as any[]
         const defaultItemSize = this.defaultItemSize
         const cachedSize = this.cachedSize
