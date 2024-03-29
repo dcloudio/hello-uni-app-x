@@ -275,7 +275,6 @@ describe("shot-compare", () => {
   });
 
   beforeEach(async () => {
-    page = await program.reLaunch(PAGE_PATH);
     await page.waitFor(500);
   });
   afterEach(() => {
