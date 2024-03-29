@@ -237,13 +237,13 @@ const PAGE_PATH =
 
 describe("shot-compare", () => {
   let shouldCompareScreenShot = false
-  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
-    let version = process.env.uniTestPlatformInfo
-    version = parseInt(version.split(" ")[1])
+  const uniTestPlatformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  if (uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    version = parseInt(uniTestPlatformInfo.split(" ")[1])
     shouldCompareScreenShot = version > 9
   }
 
-  if(process.env.uniTestPlatformInfo.startsWith('IOS') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if(uniTestPlatformInfo.startsWith('ios') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     shouldCompareScreenShot = true
   }
 
