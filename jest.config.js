@@ -12,7 +12,7 @@ module.exports = {
       '<rootDir>/pages/API/upload-file/upload-file.test.js',
       '<rootDir>/pages/API/get-battery-info/get-battery-info.test.js',
       '<rootDir>/pages/webview-screenshot-comparison/webview-screenshot-comparison.test.js',
-      '<rootDir>//pages/webview-screenshot/webview-screenshot.test.js'
+      '<rootDir>/pages/webview-screenshot/webview-screenshot.test.js'
     ],
   setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
 }
