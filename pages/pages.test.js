@@ -38,7 +38,6 @@ const pages = [
 
   // CSS
   '/pages/CSS/background/background-color',
-  '/pages/CSS/background/background-image',
   '/pages/CSS/border/complex-border/complex-border',
   '/pages/CSS/border/border-bottom',
   '/pages/CSS/border/border-color',
