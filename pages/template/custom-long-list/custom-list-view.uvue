@@ -109,25 +109,39 @@
         this.rearrangeQueue = [] as number[]
       },
       rearrange(scrollTop : number) {
-        this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
+        const offsetStart = this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
         this.offsetThreshold[1] = Math.max(scrollTop - this.scrollElementHeight * 3, 0)
         this.offsetThreshold[2] = Math.min(scrollTop + this.scrollElementHeight * 4, this.placeholderHeight)
-        this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
+        const offsetEnd =this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
         const items = [] as any[]
+        const defaultItemSize = this.defaultItemSize
+        const cachedSize = this.cachedSize
+        const list = this.list
         let tempTotalHeight = 0
         let containerTop = 0
-        for (let i = 0; i < this.list.length; i++) {
-          const item = this.list[i]
-          let itemSize = this.defaultItemSize
-          const cachedItemSize = this.cachedSize.get(item)
+        let start = false, end = false
+        for (let i = 0; i < list.length; i++) {
+          const item = list[i]
+          let itemSize = defaultItemSize
+          const cachedItemSize = cachedSize.get(item)
           if (cachedItemSize != null) {
             itemSize = cachedItemSize
           }
           tempTotalHeight += itemSize
-          if (tempTotalHeight >= this.offsetThreshold[0] && tempTotalHeight <= this.offsetThreshold[3]) {
-            items.push(item)
-          } else if (tempTotalHeight < this.offsetThreshold[0]) {
+          if (end) {
+            continue
+          }
+          if (tempTotalHeight < offsetStart) {
             containerTop = tempTotalHeight
+          } else if (tempTotalHeight >= offsetStart && tempTotalHeight <= offsetEnd) {
+            if (start == false) {
+              start = true
+            }
+            items.push(item)
+          } else {
+            if (!end) {
+              end = true
+            }
           }
         }
         this.placeholderHeight = tempTotalHeight
