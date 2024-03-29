@@ -3,7 +3,7 @@
 describe('API-toast', () => {
 
   let page;
-  const isAndroid = process.env.UNI_OS_NAME === "android";
+  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
 
 
   beforeAll(async () => {
@@ -16,7 +16,7 @@ describe('API-toast', () => {
   it("onload-toast-test", async () => {
 
 
-    if (isAndroid) {
+    if (isApp) {
       await page.waitFor(500);
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
@@ -47,7 +47,7 @@ describe('API-toast', () => {
     const btnToastDefaultButton = await page.$('#btn-toast-default')
     await btnToastDefaultButton.tap()
     await page.waitFor(200)
-    if (isAndroid) {
+    if (isApp) {
 
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
@@ -78,7 +78,7 @@ describe('API-toast', () => {
     const btnToastDurationButton = await page.$('#btn-toast-duration')
     await btnToastDurationButton.tap()
     await page.waitFor(2000)
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -105,7 +105,7 @@ describe('API-toast', () => {
     const btnToastErrorIconButton = await page.$('#btn-toast-errorIcon')
     await btnToastErrorIconButton.tap()
     await page.waitFor(200)
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -138,7 +138,7 @@ describe('API-toast', () => {
     await btnToastHideButton.tap()
     await page.waitFor(1000)
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -166,7 +166,7 @@ describe('API-toast', () => {
   //   const btnToastButton = await page.$('#btn-toast-postion-bottom')
   //   await btnToastButton.tap()
   //   await page.waitFor(200)
-  //   if (isAndroid) {
+  //   if (isApp) {
   //     const windowHeight = uni.getWindowInfo().windowHeight;
   //     const windowWidth = uni.getWindowInfo().windowWidth;
   //     const image = await program.screenshot({
