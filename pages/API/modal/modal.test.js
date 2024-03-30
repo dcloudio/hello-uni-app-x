@@ -3,7 +3,7 @@
 describe('API-loading', () => {
 
   let page;
-  const isAndroid = process.env.UNI_OS_NAME === "android";
+  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/modal/modal')
@@ -13,7 +13,7 @@ describe('API-loading', () => {
 
 
   it("onload-modal-test", async () => {
-    if (isAndroid) {
+    if (isApp) {
       await page.waitFor(500);
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
@@ -54,7 +54,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -95,7 +95,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -136,7 +136,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -177,7 +177,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -218,7 +218,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -258,7 +258,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -298,7 +298,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -338,7 +338,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -378,7 +378,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -419,7 +419,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -460,7 +460,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -501,7 +501,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -542,7 +542,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -583,7 +583,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -625,7 +625,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -665,7 +665,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
@@ -706,7 +706,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;

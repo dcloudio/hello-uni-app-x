@@ -23,7 +23,7 @@ describe('component-native-sticky-section', () => {
     await page.setData({
       scrolling: 'true'
     })
-    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       //跳转到id为C的StickyHeader位置
       await page.callMethod('gotoStickyHeader', 'C')
     }
