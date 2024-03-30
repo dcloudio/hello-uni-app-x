@@ -1,4 +1,4 @@
-## uni-recycle-view【TODO 名称待定，由于使用uni-开头应避免和内置组件冲突，比如uni-list和list组件是冲突的】
+## uni-recycle-view
 
 ::: tip 组件名：uni-recycle-view
 > 代码块： `uRecycleView`、`uRecycleItem`
@@ -6,7 +6,26 @@
 [点击下载&安装]()
 :::
 
-uni-recycle-view 组件用于在展示超长列表时优化内存占用以及初次加载时的速度。不同于uni-app list-view组件，uni-recycle-view组件不会对所有数据循环创建VNode。适用于仅使用一个for循环创建所有列表项的场景。uni-recycle-view组件内部通过计算决定哪些数据需要在界面展示，默认展示当前滚动位置的所在屏及上下各5屏的数据。由于上述计算会在滚动过程中进行，因此滚动过程中的性能不如list组件。
+uni-recycle-view 组件是一个开源的、适用于展示超长列表的组件，它有2个优势：
+- 更快的初始化速度
+- 更低的内存占用
+
+### 背景
+uni-app x 的 list-view组件，在ui层面基于原生的recycle-view封装，对于长列表的渲染资源可以复用。
+
+但在vue环境下，装载长列表会对列表所有数据都创建VNode，不管渲染层这些列表是否显示。创建大量VNode会影响初始化速度和内存占用。
+
+uni-recycle-view 组件只创建了有限的VNode，循环复用这些VNode。uni-recycle-view组件内部通过计算决定哪些数据需要在界面展示，默认展示当前滚动位置的所在屏及上下各5屏的数据。
+
+同时它也有一些限制和注意事项：
+1. uni-recycle-view 组件适用于仅使用一个for循环创建所有列表项的场景。
+2. 由于滚动过程中会计算哪些数据需要渲染，因此滚动流畅度略低于list-view组件。
+
+所以uni-recycle-view 组件是对list-view组件的一个补充方案。如果list-view的初始化速度和内存占用满足你的需求，那么继续使用list-view即可。
+
+一般联网的分页加载列表，仍然可以使用list-view。uni-recycle-view 组件常见的场景是本地一次性遍历了大量数据并需要立即渲染在界面上。
+
+在hello uni-app x的模板->自定义虚拟长列表示例中可以看到演示。
 
 ### 基本用法
 
@@ -37,7 +56,7 @@ uni-recycle-view 组件用于在展示超长列表时优化内存占用以及初
       }
     },
     created() {
-      for (let i = 0; i < 2000; i++) {
+      for (let i = 0; i < 2000; i++) { //这里模拟了一个2000条的本地数据
         this.list.push({
           id: i,
           name: `Wifi_` + i,
