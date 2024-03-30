@@ -38,7 +38,7 @@ describe('test swiper', () => {
       })
       await page.waitFor(600)
       expect(await getData('currentValChange')).toEqual(0)
-      await page.waitFor(1800)
+      await page.waitFor(1600)
       expect(await getData('currentValChange')).toEqual(1)
       await page.waitFor(2000)
       expect(await getData('currentValChange')).toEqual(2)
@@ -50,11 +50,11 @@ describe('test swiper', () => {
       })
       await page.waitFor(600)
       expect(await getData('currentValChange')).toEqual(0)
-      await page.waitFor(1800)
+      await page.waitFor(1600)
       expect(await getData('currentValChange')).toEqual(1)
-      await page.waitFor(1800)
+      await page.waitFor(2000)
       expect(await getData('currentValChange')).toEqual(2)
-      await page.waitFor(1800)
+      await page.waitFor(2000)
       expect(await getData('currentValChange')).toEqual(0)
       await page.setData({
         circularSelect: false,
