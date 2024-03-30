@@ -44,10 +44,10 @@ describe('component-native-list-view', () => {
   if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
     return
   }
-
-  if (process.env.uniTestPlatformInfo.indexOf('iOS') > -1) {
+  if(process.env.uniTestPlatformInfo.startsWith('IOS_SIMULATOR')) {
     return
   }
+
 
   //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
   it('check_scroll_width', async () => {
