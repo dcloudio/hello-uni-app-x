@@ -1,10 +1,15 @@
 <template>
-  <view ref="box" class="custom-list-item-box">
+  <view class="item-container">
     <slot></slot>
   </view>
 </template>
 
 <script>
+  /**
+   * recycle-item 长列表子项组件
+   * @description 用于展示超长列表数据每一项
+   * @property {any[]} item 当前组件渲染的列表项
+   */
   export default {
     name: "custom-list-item",
     props: {
@@ -19,7 +24,7 @@
       },
     },
     mounted() {
-      uni.createSelectorQuery().in(this).select('.custom-list-item-box').boundingClientRect().exec((ret) => {
+      uni.createSelectorQuery().in(this).select('.item-container').boundingClientRect().exec((ret) => {
         this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
       })
     }

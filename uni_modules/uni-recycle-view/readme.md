@@ -1,16 +1,11 @@
 ## uni-recycle-view
 
-::: tip 组件名：uni-recycle-view
-> 代码块： `uRecycleView`、`uRecycleItem`
-【TODO 链接待补充】
-[点击下载&安装]()
-:::
-
 uni-recycle-view 组件是一个开源的、适用于展示超长列表的组件，它有2个优势：
 - 更快的初始化速度
 - 更低的内存占用
 
 ### 背景
+
 uni-app x 的 list-view组件，在ui层面基于原生的recycle-view封装，对于长列表的渲染资源可以复用。
 
 但在vue环境下，装载长列表会对列表所有数据都创建VNode，不管渲染层这些列表是否显示。创建大量VNode会影响初始化速度和内存占用。
@@ -28,6 +23,8 @@ uni-recycle-view 组件只创建了有限的VNode，循环复用这些VNode。un
 在hello uni-app x的模板->自定义虚拟长列表示例中可以看到演示。
 
 ### 基本用法
+
+示例参考：[hello uni-app-x 虚拟长列表模板](https://gitcode.net/dcloud/hello-uni-app-x/-/blob/dev/pages/template/custom-long-list/custom-long-list.uvue)
 
 ```vue
 <template>

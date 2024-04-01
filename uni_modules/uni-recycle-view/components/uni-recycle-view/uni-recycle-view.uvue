@@ -1,7 +1,7 @@
 <template>
-  <scroll-view class="custom-list-view-scoll-view" v-bind="$attrs" ref="scroll" @scroll="onScroll">
-    <view class="custom-list-view-placeholder" :style="{ height: placeholderHeight + 'px' }">
-      <view class="custom-list-view-container" :style="{ top: containerTop + 'px' }">
+  <scroll-view class="uni-recycle-view-main" v-bind="$attrs" ref="scroll" @scroll="onScroll">
+    <view :style="{ height: placeholderHeight + 'px' }">
+      <view :style="{ top: containerTop + 'px' }">
         <slot :items="items"></slot>
       </view>
     </view>
@@ -15,6 +15,11 @@
    * - 不支持设置初始滚动位置
    * - list数据内每一项不可以是基础类型
    * - item不支持设置margin，会导致计算位置不准确
+   */
+  /**
+   * recycle-view 虚拟长列表组件
+   * @description 用于超长列表的展示
+   * @property {any[]} list 列表所有数据
    */
   export default {
     name: "custom-list-view",
@@ -70,7 +75,7 @@
     },
     mounted() {
       nextTick(() => {
-        uni.createSelectorQuery().in(this).select('.custom-list-view-scoll-view').boundingClientRect().exec((ret) => {
+        uni.createSelectorQuery().in(this).select('.uni-recycle-view-main').boundingClientRect().exec((ret) => {
           this.scrollElementHeight = (ret[0] as NodeInfo).height!
           this.rearrange(0)
           this.initialized = true
@@ -83,7 +88,7 @@
           return
         }
         const scrollTop = e.detail.scrollTop
-        if(scrollTop === this.lastScrollTop || scrollTop < 0) {
+        if (scrollTop === this.lastScrollTop || scrollTop < 0) {
           return
         }
         this.lastScrollTop = scrollTop
@@ -117,7 +122,7 @@
         this.offsetThreshold[2] = Math.min(scrollTop + this.scrollElementHeight * 4, this.placeholderHeight)
         this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
         const offsetStart = this.offsetThreshold[0]
-        const offsetEnd =this.offsetThreshold[3]
+        const offsetEnd = this.offsetThreshold[3]
         const items = [] as any[]
         const defaultItemSize = this.defaultItemSize
         const cachedSize = this.cachedSize
