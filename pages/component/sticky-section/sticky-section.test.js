@@ -12,7 +12,7 @@ describe('component-native-sticky-section', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
     return
   }
 
