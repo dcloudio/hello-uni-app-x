@@ -83,7 +83,10 @@
           return
         }
         const scrollTop = e.detail.scrollTop
-        this.lastScrollTop = 0
+        if(scrollTop === this.lastScrollTop || scrollTop < 0) {
+          return
+        }
+        this.lastScrollTop = scrollTop
         if (scrollTop < this.offsetThreshold[1] || scrollTop > this.offsetThreshold[2]) {
           this.queue(scrollTop)
         }
