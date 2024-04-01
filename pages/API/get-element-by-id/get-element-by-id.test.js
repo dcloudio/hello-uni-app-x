@@ -16,6 +16,6 @@ describe("getElementById", () => {
     await page.callMethod("changeViewStyle");
     await page.waitFor(500);
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
 });

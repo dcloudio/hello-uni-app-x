@@ -11,6 +11,6 @@ describe('css-font-family', () => {
     const image = await program.screenshot({
       fullPage: true
     })
-    expect(image).toSaveImageSnapshot()
+    expect(image).toMatchImageSnapshot()
   });
 });

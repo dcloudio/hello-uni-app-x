@@ -35,16 +35,8 @@
 		methods: {
 			getAppBaseInfo: function () {
 				const res = uni.getAppBaseInfo();
-        const res_str = JSON.stringify(res);
-        const res_obj =  JSON.parseObject(res_str);
-        const res_map = res_obj!.toMap();
-        let keys = [] as string[]
-        res_map.forEach((_, key) => {
-           keys.push(key);
-        });
-
         this.items = [] as Item[];
-        keys.sort().forEach( key => {
+        for(const key in res){
           const value = res[key];
           if(value != null){
             const item = {
@@ -53,8 +45,7 @@
             } as Item;
             this.items.push(item);
           }
-        });
-
+        }
 			}
 		}
 	}

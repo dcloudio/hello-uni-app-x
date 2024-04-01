@@ -19,13 +19,13 @@ describe("setNavigationBarColor", () => {
   it("setNavigationBarNewTitle", async () => {
     await page.callMethod("setNavigationBarNewTitle");
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(2);
   });
   it("setNavigationBarLongTitle", async () => {
     await page.callMethod("setNavigationBarLongTitle");
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
 });

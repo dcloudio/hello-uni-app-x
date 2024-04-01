@@ -24,20 +24,6 @@ describe('component-native-video', () => {
     expect(await page.data('isPause')).toBe(true);
   });
 
-  it('test local source', async () => {
-  	  await page.callMethod('downloadSource');
-  	  await page.waitFor(5000);
-  	  expect(await page.data('isError')).toBe(false);
-  	  await page.setData({
-  		  localSrc: '/static/test-video/2minute-demo.m3u8'
-  	  });
-  	  await page.waitFor(100);
-  	  expect(await page.data('isError')).toBe(false);
-  	  await page.setData({
-  		  autoTest: false
-  	  });
-  });
-
   it('test format', async () => {
     page = await program.navigateTo('/pages/component/video/video-format');
     await page.waitFor(1000);

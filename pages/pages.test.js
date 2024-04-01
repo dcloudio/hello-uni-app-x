@@ -38,6 +38,7 @@ const pages = [
 
   // CSS
   '/pages/CSS/background/background-color',
+  '/pages/CSS/background/background-image',
   '/pages/CSS/border/complex-border/complex-border',
   '/pages/CSS/border/border-bottom',
   '/pages/CSS/border/border-color',
@@ -120,7 +121,7 @@ const pages = [
   // '/pages/API/element-draw/element-draw',
 ]
 
-if (process.env.uniTestPlatformInfo.startsWith('android')&& !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+if (process.env.uniTestPlatformInfo.startsWith('android')) {
   // 规避 web 端不支持页面
   pages.push(
     "/pages/component/list-view/list-view",
@@ -168,11 +169,7 @@ describe("page screenshot test", () => {
     const image = await program.screenshot({
       fullPage: fullPage
     });
-    expect(image).toSaveImageSnapshot({
-      customSnapshotIdentifier() {
-        return `__pages_test__/${pages[pageIndex].replace(/\//g, "-").substring(1)}`
-      }
-    })
+    expect(image).toMatchImageSnapshot();
     await page.waitFor(500);
   });
 });

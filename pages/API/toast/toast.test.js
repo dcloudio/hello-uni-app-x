@@ -3,7 +3,7 @@
 describe('API-toast', () => {
 
   let page;
-  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
+  const isAndroid = process.env.UNI_OS_NAME === "android";
 
 
   beforeAll(async () => {
@@ -16,14 +16,14 @@ describe('API-toast', () => {
   it("onload-toast-test", async () => {
 
 
-    if (isApp) {
-      await page.waitFor(500);
+    if (isAndroid) {
+
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         area: {
           x: 0,
           y: 200,
@@ -31,13 +31,13 @@ describe('API-toast', () => {
           width:windowWidth
         },
       });
-      expect(image).toSaveImageSnapshot();
+      expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         fullPage: true
       });
-      expect(image).toSaveImageSnapshot()
+      expect(image).toMatchImageSnapshot()
     }
   })
 
@@ -47,14 +47,14 @@ describe('API-toast', () => {
     const btnToastDefaultButton = await page.$('#btn-toast-default')
     await btnToastDefaultButton.tap()
     await page.waitFor(200)
-    if (isApp) {
+    if (isAndroid) {
 
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         area: {
           x: 0,
           y: 200,
@@ -62,13 +62,13 @@ describe('API-toast', () => {
           width:windowWidth
         },
       });
-      expect(image).toSaveImageSnapshot();
+      expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         fullPage: true
       });
-      expect(image).toSaveImageSnapshot()
+      expect(image).toMatchImageSnapshot()
     }
   })
 
@@ -78,12 +78,12 @@ describe('API-toast', () => {
     const btnToastDurationButton = await page.$('#btn-toast-duration')
     await btnToastDurationButton.tap()
     await page.waitFor(2000)
-    if (isApp) {
+    if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         area: {
           x: 0,
           y: 200,
@@ -91,13 +91,13 @@ describe('API-toast', () => {
           width:windowWidth
         },
       });
-      expect(image).toSaveImageSnapshot();
+      expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         fullPage: true
       });
-      expect(image).toSaveImageSnapshot()
+      expect(image).toMatchImageSnapshot()
     }
   })
 
@@ -105,12 +105,12 @@ describe('API-toast', () => {
     const btnToastErrorIconButton = await page.$('#btn-toast-errorIcon')
     await btnToastErrorIconButton.tap()
     await page.waitFor(200)
-    if (isApp) {
+    if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         area: {
           x: 0,
           y: 200,
@@ -118,13 +118,13 @@ describe('API-toast', () => {
           width:windowWidth
         },
       });
-      expect(image).toSaveImageSnapshot();
+      expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         fullPage: true
       });
-      expect(image).toSaveImageSnapshot()
+      expect(image).toMatchImageSnapshot()
     }
   })
 
@@ -138,12 +138,12 @@ describe('API-toast', () => {
     await btnToastHideButton.tap()
     await page.waitFor(1000)
 
-    if (isApp) {
+    if (isAndroid) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         area: {
           x: 0,
           y: 200,
@@ -151,13 +151,13 @@ describe('API-toast', () => {
           width:windowWidth
         },
       });
-      expect(image).toSaveImageSnapshot();
+      expect(image).toMatchImageSnapshot();
     }else{
       const image = await program.screenshot({
-        deviceShot: true,
+        adb: true,
         fullPage: true
       });
-      expect(image).toSaveImageSnapshot()
+      expect(image).toMatchImageSnapshot()
     }
   })
 
@@ -166,11 +166,11 @@ describe('API-toast', () => {
   //   const btnToastButton = await page.$('#btn-toast-postion-bottom')
   //   await btnToastButton.tap()
   //   await page.waitFor(200)
-  //   if (isApp) {
+  //   if (isAndroid) {
   //     const windowHeight = uni.getWindowInfo().windowHeight;
   //     const windowWidth = uni.getWindowInfo().windowWidth;
   //     const image = await program.screenshot({
-  //       deviceShot: true,
+  //       adb: true,
   //       area: {
   //         x: 0,
   //         y: 200,
@@ -178,13 +178,13 @@ describe('API-toast', () => {
   //         width:windowWidth
   //       },
   //     });
-  //     expect(image).toSaveImageSnapshot();
+  //     expect(image).toMatchImageSnapshot();
   //   }else{
   //     const image = await program.screenshot({
-  //       deviceShot: true,
+  //       adb: true,
   //       fullPage: true
   //     });
-  //     expect(image).toSaveImageSnapshot()
+  //     expect(image).toMatchImageSnapshot()
   //   }
   // })
 

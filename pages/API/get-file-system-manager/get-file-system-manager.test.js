@@ -2,7 +2,7 @@ const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
 describe('ExtApi-FileManagerTest', () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })
@@ -116,11 +116,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
     fileListComplete = await getData('fileListComplete')
-    fileListComplete.sort()
-    expect(JSON.stringify(fileListComplete)).toEqual("[\"1.txt\",\"b\"]")
+    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"1.txt\"]")
     fileListSuccess = await getData('fileListSuccess')
-    fileListSuccess.sort()
-    expect(JSON.stringify(fileListSuccess)).toEqual("[\"1.txt\",\"b\"]")
+    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"1.txt\"]")
     // 获取和对比 文件内容
     const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
@@ -178,11 +176,9 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 1.txt 2.txt 两个文件都存在
     fileListComplete = await getData('fileListComplete')
-    fileListComplete.sort()
-    expect(JSON.stringify(fileListComplete)).toEqual("[\"1.txt\",\"2.txt\",\"b\"]")
+    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"1.txt\",\"2.txt\"]")
     fileListSuccess = await getData('fileListSuccess')
-    fileListSuccess.sort()
-    expect(JSON.stringify(fileListSuccess)).toEqual("[\"1.txt\",\"2.txt\",\"b\"]")
+    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"1.txt\",\"2.txt\"]")
 
     // 测试 rename
     await page.setData({
@@ -199,11 +195,10 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 1.txt 3.txt 两个文件都存在
     fileListComplete = await getData('fileListComplete')
-    fileListComplete.sort()
-    expect(JSON.stringify(fileListComplete)).toEqual("[\"1.txt\",\"3.txt\",\"b\"]")
+    expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"1.txt\",\"3.txt\"]")
     fileListSuccess = await getData('fileListSuccess')
-    fileListSuccess.sort()
-    expect(JSON.stringify(fileListSuccess)).toEqual("[\"1.txt\",\"3.txt\",\"b\"]")
+    expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"1.txt\",\"3.txt\"]")
+
   });
 
   it('TEMP_PATH test', async () => {
@@ -286,10 +281,8 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
     fileListComplete = await getData('fileListComplete')
-    fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"" + testDirName + "\"]")
     fileListSuccess = await getData('fileListSuccess')
-    fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"" + testDirName + "\"]")
 
     /**
@@ -413,14 +406,13 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     fileListComplete = await getData('fileListComplete')
-    fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"" + testDirName + "\",\"提前创建的目录\"]")
     fileListSuccess = await getData('fileListSuccess')
-    fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"" + testDirName + "\",\"提前创建的目录\"]")
 
 
     await page.setData({
+
       copyFromFile:"a/" + testDirName + "/中文路径/张三/name/中文文件.mock",
       copyToFile:"a/提前创建的目录/4.txt"
     })
@@ -743,7 +735,6 @@ describe('ExtApi-FileManagerTest', () => {
       recursiveVal: true,
       copyToBasePath:globalRootPath,
       basePath: globalRootPath,
-      globalTempPath:globalRootPath,
       rmDirFile:'a',
       mkdirFile:'a',
       unlinkFile:'a/1.txt',
@@ -809,7 +800,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 读取单个文件信息
     let statsRet = await getData('statsRet')
     expect(statsRet.length).toEqual(1)
-    expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
+    expect(statsRet[0].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a/1.txt'))
     expect(statsRet[0].stats.size).toEqual(69)
 
     /**
@@ -837,7 +828,7 @@ describe('ExtApi-FileManagerTest', () => {
     await page.setData({
       //  asset 只能正式版测试，这里只能模拟返回路径
       basePath:'',
-      copyFromFile:'static/test-image/logo.ico',
+      copyFromFile:'file:///android_asset/uni-uts/uni-prompt/toast_error.png',
       copyToFile:'a/m/3.txt',
     })
     const btnCopyFileButton = await page.$('#btn-copy-file')
@@ -856,25 +847,16 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 读取全部文件信息
     statsRet = await getData('statsRet')
-
-    statsRet.sort(function(a, b){
-      if (a.path > b.path){
-        return 1
-      } else if (a.path < b.path){
-        return -1
-      }
-      return 0
-    })
     console.log(statsRet)
     expect(statsRet.length).toEqual(5)
-    expect(statsRet[0].path).toMatch(new RegExp('.*/a$'))
-    // expect(statsRet[0].stats.size).toEqual(0)
+    expect(statsRet[0].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a'))
+    expect(statsRet[0].stats.size).toEqual(0)
 
-    expect(statsRet[2].path).toMatch(new RegExp('.*/a/2.txt$'))
+    expect(statsRet[2].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a/2.txt'))
     expect(statsRet[2].stats.size).toEqual(10)
 
-    expect(statsRet[4].path).toMatch(new RegExp('.*/a/m/3.txt$'))
-    expect(statsRet[4].stats.size).toEqual(156406)
+    expect(statsRet[4].path).toMatch(new RegExp('/storage/\\S+/Android/data/io.dcloud.uniappx/a/m/3.txt'))
+    expect(statsRet[4].stats.size).toEqual(5842)
 
 
     // 清理文件，避免影响其他测试用例

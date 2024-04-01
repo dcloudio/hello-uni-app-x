@@ -1,7 +1,7 @@
 const PAGE_PATH = '/pages/API/get-system-setting/get-system-setting'
 
 describe('ExtApi-GetSystemSetting', () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
     it('web', () => {
       expect(1).toBe(1)
     })
@@ -18,7 +18,7 @@ describe('ExtApi-GetSystemSetting', () => {
   it('Check GetSystemSetting', async () => {
     for (const key in res) {
       const value = res[key];
-      if (res['bluetoothEnabled'] == undefined || res['bluetoothEnabled'] === false) {
+      if (res['bluetoothEnabled'] == undefined) {
         expect(res['bluetoothError']).not.toBe("")
       } else {
         expect(res['bluetoothError'] == undefined).toBe(true)

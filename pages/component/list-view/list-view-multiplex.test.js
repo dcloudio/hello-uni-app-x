@@ -21,7 +21,7 @@ describe('component-native-list-view', () => {
     });
     await page.waitFor(200)
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   })
 
   //检测修改item子元素后，item是否正常调整高度
@@ -32,6 +32,6 @@ describe('component-native-list-view', () => {
     });
     await page.waitFor(600)
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   })
 })

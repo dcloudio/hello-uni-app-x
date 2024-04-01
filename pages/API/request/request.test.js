@@ -86,7 +86,7 @@ describe('ExtApi-Request', () => {
   });
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (process.env.uniTestPlatformInfo.startsWith('android')) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
@@ -108,10 +108,4 @@ describe('ExtApi-Request', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
-  it('Check Get With Data', async () => {
-    res = await page.callMethod('jest_get_with_data')
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  })
 });

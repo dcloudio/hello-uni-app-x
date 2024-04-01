@@ -78,10 +78,9 @@
         const fileManager = uni.getFileSystemManager()
 
         fileManager.stat({
-          // path: `${this.basePath}${this.statFile}`, //USER_DATA_PATH
-          path: `${this.globalTempPath}${this.statFile}`, //CACHE_PATH
+          path: `${this.basePath}${this.statFile}`,
           recursive: this.recursiveVal,
-          success: (res : StatSuccessResult) => {
+          success: function (res : StatSuccessResult) {
             if (this.logAble) {
               this.log += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
             }
@@ -89,14 +88,14 @@
             this.statsRet = res.stats
             console.log('this.statsRet', this.statsRet)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'statFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('statFileInfoTest fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("statFileInfoTest complete", res)
             this.done = true
             if (res instanceof UniError) {
@@ -112,7 +111,7 @@
         fileManager.getFileInfo({
           filePath: `${this.basePath}${this.getFileInfoFile}`,
           digestAlgorithm: this.getFileInfoAlgorithm,
-          success: (res : GetFileInfoSuccessResult) => {
+          success: function (res : GetFileInfoSuccessResult) {
             if (this.logAble) {
               this.log += 'getFileInfoTest success:' + JSON.stringify(res) + '\n\n'
             }
@@ -120,14 +119,14 @@
             this.getFileInfoSize = res.size
             this.getFileInfoDigest = res.digest
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'getFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("complete", res)
             this.done = true
             if (res instanceof UniError) {
@@ -143,20 +142,20 @@
         fileManager.copyFile({
           srcPath: `${this.basePath}${this.copyFromFile}`,
           destPath: `${this.copyToBasePath}${this.copyToFile}`,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("complete", res)
             this.done = true
             if (res instanceof UniError) {
@@ -172,20 +171,20 @@
         fileManager.rename({
           oldPath: `${this.basePath}${this.renameFromFile}`,
           newPath: `${this.basePath}${this.renameToFile}`,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'renameFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'renameFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             this.done = true
             console.log("complete", res)
             if (res instanceof UniError) {
@@ -199,27 +198,28 @@
         const fileManager = uni.getFileSystemManager()
         fileManager.readdir({
           dirPath: `${this.basePath}${this.readDir}`,
-          success: (res : ReadDirSuccessResult) => {
+          success: function (res : ReadDirSuccessResult) {
             if (this.logAble) {
               this.log += 'readDirTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log("success", res)
             this.fileListSuccess = res.files
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'readDirTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("complete", res)
             this.done = true
+            if (res instanceof ReadDirSuccessResult) {
+              this.fileListComplete = res.files
+            }
             if (res instanceof UniError) {
               this.lastCompleteError = res
-            } else {
-              this.fileListComplete = (res as ReadDirSuccessResult).files
             }
           }
         } as ReadDirOptions)
@@ -232,20 +232,20 @@
           filePath: `${this.basePath}${this.writeFile}`,
           data: this.writeFileContent,
           encoding: this.writeFileEncoding,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'writeFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail:  (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'writeFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail')
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             this.done = true
             console.log("complete")
             if (res instanceof UniError) {
@@ -261,21 +261,21 @@
         fileManager.readFile({
           filePath: `${this.basePath}${this.readFile}`,
           encoding: this.readFileEncoding,
-          success: (res : ReadFileSuccessResult) => {
+          success: function (res : ReadFileSuccessResult) {
             if (this.logAble) {
               this.log += 'readFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
             this.readFileRet = res.data
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("complete", res)
             this.done = true
             if (res instanceof UniError) {
@@ -290,20 +290,20 @@
         fileManager.rmdir({
           dirPath: `${this.basePath}${this.rmDirFile}`,
           recursive: this.recursiveVal,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'rmdirTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'rmdirTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("complete", res)
             this.done = true
             if (res instanceof UniError) {
@@ -320,20 +320,20 @@
         fileManager.mkdir({
           dirPath: `${this.basePath}${this.mkdirFile}`,
           recursive: this.recursiveVal,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'mkdirTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'mkdirTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             if (res instanceof UniError) {
               this.lastCompleteError = res
             }
@@ -348,21 +348,21 @@
         const fileManager = uni.getFileSystemManager()
         fileManager.access({
           path: `${this.basePath}${this.accessFile}`,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'accessFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
             this.accessFileRet = res.errMsg
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'accessFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             if (res instanceof UniError) {
               this.lastCompleteError = res
             }
@@ -377,20 +377,20 @@
 
         fileManager.unlink({
           filePath: `${this.basePath}${this.unlinkFile}`,
-          success: (res : FileManagerSuccessResult) => {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'unlinkTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'unlinkTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             if (res instanceof UniError) {
               this.lastCompleteError = res
             }
@@ -403,26 +403,26 @@
         const fileManager = uni.getFileSystemManager()
         fileManager.readdir({
           dirPath: `${this.basePath}${this.rmDirFile}`,
-          success: (res : ReadDirSuccessResult) => {
+          success: function (res : ReadDirSuccessResult) {
             console.log("success to readdir", res)
             res.files.forEach(element => {
               console.log(element)
               fileManager.unlink({
                 filePath: `${this.basePath}${this.rmDirFile}/${element}`,
-                success: (res : FileManagerSuccessResult) => {
+                success: function (res : FileManagerSuccessResult) {
                   if (this.logAble) {
                     this.log += 'unlinkAllFileTest success:' + JSON.stringify(res) + '\n\n'
                   }
                   console.log('success unlink', res)
                 },
-                fail: (res : UniError) => {
+                fail: function (res : UniError) {
                   if (this.logAble) {
                     this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
                   }
                   console.log('fail unlink', res)
                   this.lastFailError = res
                 },
-                complete : (res : any) => {
+                complete: function (res : any) {
                   if (res instanceof UniError) {
                     this.lastCompleteError = res
                   }
@@ -432,18 +432,19 @@
               } as UnLinkOptions)
             });
           },
-          fail : (res : UniError) => {
+          fail: function (res : UniError) {
             this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
             console.log('fail to readdir', res)
             this.lastFailError = res
           },
-          complete : (res : any) => {
+          complete: function (res : any) {
             console.log("complete readdir", res)
             this.done = true
+            if (res instanceof ReadDirSuccessResult) {
+              this.fileListComplete = res.files
+            }
             if (res instanceof UniError) {
               this.lastCompleteError = res
-            } else {
-              this.fileListComplete = (res as ReadDirSuccessResult).files
             }
           }
         } as ReadDirOptions)
@@ -452,22 +453,22 @@
         const fileManager = uni.getFileSystemManager()
 
         fileManager.copyFile({
-          srcPath: "/static/list-mock/mock.json",
+          srcPath: UTSAndroid.getResourcePath("static/list-mock/mock.json"),
           destPath: `${this.copyToBasePath}/a/mock.json`,
-          success: (res : FileManagerSuccessResult) =>   {
+          success: function (res : FileManagerSuccessResult) {
             if (this.logAble) {
               this.log += 'copyFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: function (res : UniError) {
             if (this.logAble) {
               this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res : any) => {
+          complete: function (res : any) {
             console.log("complete", res)
             this.done = true
             if (res instanceof UniError) {

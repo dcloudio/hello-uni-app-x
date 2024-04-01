@@ -2,7 +2,7 @@ const PAGE_PATH = "/pages/API/element-takesnapshot/element-takesnapshot";
 
 
 describe("element-takesnapshot", () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })

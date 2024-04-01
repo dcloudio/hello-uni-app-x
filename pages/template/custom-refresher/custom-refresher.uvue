@@ -3,9 +3,7 @@
       :refresher-enabled="true" :refresher-triggered="refresherTriggered" refresher-default-style="none"
       @refresherpulling="onRefresherpulling"
       @refresherrefresh="onRefresherrefresh"
-      @refresherrestore="onRefreshrestore"
       :refresher-threshold="refresherThreshold"
-      refresher-max-drag-distance="200px"
   >
     <view v-for="i in 20" class="content-item">
       <text class="text">item-{{i}}</text>
@@ -45,6 +43,9 @@
       onRefresherpulling(e:RefresherEvent){
         // console.log('onRefresherpulling',e.detail.dy)
         this.pullingDistance = e.detail.dy
+        if (this.pullingDistance.toDouble() == 0.0) {
+          this.resetting = false;
+        }
       },
       onRefresherrefresh(){
         this.refresherTriggered = true
@@ -52,10 +53,12 @@
           this.refresherTriggered = false
         },1500)
       },
-      onRefreshrestore() {
-        this.pullingDistance = 0
-      	this.resetting = false;
-      }
+      // onRefresherrestore(e:RefresherEvent){
+      //   console.log('onRefresherrestore',e)
+      // },
+      // onRefresherabort(e:RefresherEvent){
+      //   console.log('onRefresherabort',e)
+      // },
     }
   }
 </script>

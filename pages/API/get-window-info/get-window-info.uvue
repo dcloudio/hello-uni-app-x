@@ -19,10 +19,7 @@
   </view>
 </template>
 <script>
-  import { setStatusBarHeight, setSafeArea } from '@/store/index.uts'
-  // #ifdef APP-ANDROID
-  import type { SafeArea } from '@/store/index.uts'
-  // #endif
+  import { setStatusBarHeight } from '@/store/index.uts'
 
   type Item = {
     label : string,
@@ -43,39 +40,10 @@
     methods: {
       getWindowInfo: function () {
         const res = uni.getWindowInfo();
-        // 获取状态栏高度, 供截图对比使用
+        // 获取状态栏+导航栏高度, 供截图对比使用
         setStatusBarHeight(res.statusBarHeight);
-        // 获取安全区信息,供截图使用
-        // #ifdef APP-ANDROID
-        setSafeArea({
-          top: res.safeArea.top,
-          left: res.safeArea.left,
-          right: res.safeArea.right,
-          bottom: res.safeArea.bottom,
-          width: res.safeArea.width,
-          height: res.safeArea.height,
-        } as SafeArea);
-        // #endif
-        // #ifdef APP-IOS
-        setSafeArea({
-          top: res.safeArea.top,
-          left: res.safeArea.left,
-          right: res.safeArea.right,
-          bottom: res.safeArea.bottom,
-          width: res.safeArea.width,
-          height: res.safeArea.height,
-        });
-        // #endif
         this.items = [] as Item[];
-
-        const res_str = JSON.stringify(res);
-        const res_obj = JSON.parseObject(res_str);
-        const res_map = res_obj!.toMap();
-        let keys = [] as string[]
-        res_map.forEach((_, key) => {
-          keys.push(key);
-        });
-        keys.sort().forEach(key => {
+        for (const key in res) {
           const value = res[key];
           if (value != null) {
             const item = {
@@ -84,7 +52,7 @@
             } as Item;
             this.items.push(item);
           }
-        });
+        }
       },
       //自动化测试例专用
       jest_getWindowInfo() : GetWindowInfoResult {

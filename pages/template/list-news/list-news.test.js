@@ -11,6 +11,6 @@ describe('template-list-news', () => {
     const image = await program.screenshot({
       fullPage: true
     })
-    expect(image).toSaveImageSnapshot()
+    expect(image).toMatchImageSnapshot()
   });
 });

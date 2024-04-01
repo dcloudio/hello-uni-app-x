@@ -8,12 +8,12 @@ describe("loadFontFace", () => {
   });
   it("parent screenshot", async () => {
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
   it("child screenshot", async () => {
     const page = await program.navigateTo(CHILD_PAGE_PATH);
     await page.waitFor(3000);
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   });
 });

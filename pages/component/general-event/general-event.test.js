@@ -10,7 +10,7 @@ describe('event trigger sequence', () => {
   })
 
   it('touch', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
       await el.touchstart({
         touches: [{
           identifier: 1,
@@ -56,7 +56,7 @@ describe('event trigger sequence', () => {
   })
 
   it('longPress', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
       await el.longpress()
       const data = await page.data()
       expect(data.onLongPressTime).toBeGreaterThan(0)

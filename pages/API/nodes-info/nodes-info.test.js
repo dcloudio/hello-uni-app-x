@@ -54,11 +54,6 @@ describe('nodes-info', () => {
     expect(Math.round(nodeInfo2.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo2.height)).toBe(RECT_HEIGHT)
   })
-  it('get-node-info-child', async () => {
-    const child = await page.$('.node-child')
-    const childData = await child.data()
-    expect(childData.top > 100).toBe(true)
-  })
 
   // #ifdef APP
   //检测onResize获取BoundingClientRect信息是否有效

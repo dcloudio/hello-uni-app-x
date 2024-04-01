@@ -7,15 +7,20 @@ describe('ExtApi-GetSystemInfo', () => {
   const stringProperties = [
     'appId', 'appLanguage', 'appName', 'appVersion', 'appVersionCode',
     'brand', 'deviceId', 'deviceBrand', 'deviceModel', 'deviceType', 'language',
-    'model', 'osName', 'osVersion', 'osLanguage', 'platform', 'system', 'ua', 'uniCompilerVersion',
+    'model', 'osName', 'osVersion', 'osLanguage', 'platform', 'system', 'ua', 'uniCompileVersion',
     'uniPlatform', 'uniRuntimeVersion', 'romName', 'romVersion',
   ]
   const numberProperties = [
     'osAndroidAPILevel', 'devicePixelRatio', 'pixelRatio', 'screenWidth', 'screenHeight', 'statusBarHeight',
     'windowWidth',
     'windowHeight', 'windowTop', 'windowBottom', 'screenTop',
-    'uniCompilerVersionCode', 'uniRuntimeVersionCode'
+    'uniCompileVersionCode', 'uniRuntimeVersionCode'
   ]
+
+
+  if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
+    stringProperties.push('version')
+  }
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

@@ -131,7 +131,6 @@
         <button type="primary" @click="setHeader(_header)">设置header</button>
       </view>
     </scroll-view>
-    <video v-if="autoTest" :src="localSrc" @error="onError"></video>
   </view>
 </template>
 
@@ -218,11 +217,9 @@
           color: '#FF0000'
         } as Danmu,
         // 自动化测试
-        autoTest: false,
         isPlaying: false,
         isPause: false,
-        isError: false,
-        localSrc: ''
+        isError: false
       }
     },
     onLoad() {
@@ -410,19 +407,6 @@
       },
       onControlsToggle: function (res : UniVideoControlsToggleEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
-      },
-      // 自动化测试
-      downloadSource() {
-        uni.downloadFile({
-          url: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
-          success: (res) => {
-            this.localSrc = res.tempFilePath;
-            this.autoTest = true;
-          },
-          fail: (_) => {
-            this.isError = true;
-          }
-        })
       }
     }
   }

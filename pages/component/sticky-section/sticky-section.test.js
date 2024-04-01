@@ -9,10 +9,10 @@ describe('component-native-sticky-section', () => {
   it('check_sticky_section', async () => {
     await page.callMethod('listViewScrollByY', 1000)
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (process.env.uniTestPlatformInfo.startsWith('web')) {
     return
   }
 
@@ -23,7 +23,7 @@ describe('component-native-sticky-section', () => {
     await page.setData({
       scrolling: 'true'
     })
-    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
       //跳转到id为C的StickyHeader位置
       await page.callMethod('gotoStickyHeader', 'C')
     }
@@ -31,6 +31,6 @@ describe('component-native-sticky-section', () => {
       return await page.data('scrolling') === false;
     });
     const image = await program.screenshot();
-    expect(image).toSaveImageSnapshot();
+    expect(image).toMatchImageSnapshot();
   })
 })
