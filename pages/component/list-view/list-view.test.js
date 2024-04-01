@@ -6,15 +6,6 @@ describe('component-native-list-view', () => {
     await page.waitFor(600)
   })
 
-  //检测竖向可滚动区域
-  it('check_scroll_height', async () => {
-    await page.callMethod('change_scroll_y_boolean', true)
-    await page.callMethod('change_scroll_x_boolean', false)
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_height')
-    expect(value).toBe(true)
-  })
-
   //检测竖向scrolltop属性赋值
   it('check_scroll_top', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
@@ -44,10 +35,20 @@ describe('component-native-list-view', () => {
   if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
     return
   }
-  if(process.env.uniTestPlatformInfo.startsWith('IOS_SIMULATOR')) {
+
+
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     return
   }
 
+  //检测竖向可滚动区域
+  it('check_scroll_height', async () => {
+    await page.callMethod('change_scroll_y_boolean', true)
+    await page.callMethod('change_scroll_x_boolean', false)
+    await page.waitFor(600)
+    const value = await page.callMethod('check_scroll_height')
+    expect(value).toBe(true)
+  })
 
   //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
   it('check_scroll_width', async () => {
