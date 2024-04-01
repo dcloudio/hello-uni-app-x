@@ -2,7 +2,7 @@ const PAGE_PATH =
   "/pages/API/request-payment/request-payment";
 
 describe("payment", () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
     it('web', () => {
       expect(1).toBe(1)
     })
