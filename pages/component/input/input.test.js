@@ -156,7 +156,7 @@ describe('component-native-input', () => {
     await page.setData({
       inputMaxLengthValue: str
     })
-    let length = (await input.attribute("value")).length
+    let length = (await input.property("value")).length
     expect(length).toBe(10)
     await page.setData({
       inputMaxLengthValue: ""
@@ -165,7 +165,7 @@ describe('component-native-input', () => {
 
   it("password and value order", async () => {
     const input = await page.$('#uni-input-password');
-    let length = (await input.attribute("value")).length
+    let length = (await input.property("value")).length
     expect(length).toBe(6)
     await page.setData({
       inputPasswordValue: ""
