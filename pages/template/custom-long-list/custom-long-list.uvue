@@ -1,0 +1,75 @@
+<template>
+  <view style="flex: 1;background-color: aliceblue;">
+    <page-head :title="title"></page-head>
+    <view class="tips">list-view组件虽然在UI层有recycle机制，但长列表的vnode太多也会造成初始化卡顿。本组件仅创建部分vnode，而未使用list-view，也就是UI层其实是短列表。
+    此示例中仅渲染滚动容器上下5屏的内容。适用于仅使用一个for循环创建所有列表项的场景。</view>
+    <custom-list-view style="flex: 1;" :list="list" @scrolltoupper="scrolltoupper" @scroll="scroll">
+      <template v-slot:default="{items}">
+        <custom-list-item class="item" v-for="item in (items as Item[])" :item="item" :key="item.id">
+          <view class="item-wrapper">
+            <view class="name"><text style="font-size: 14px;">{{item.name}}</text></view>
+            <view class="info"><text style="font-size: 12px; color: #999999;">{{item.info}}</text></view>
+          </view>
+        </custom-list-item>
+      </template>
+    </custom-list-view>
+  </view>
+</template>
+
+<script>
+  type Item = {
+    id : number
+    name : string
+    info : string
+  }
+  import CustomListView from "./custom-list-view"
+  import CustomListItem from "./custom-list-item"
+  export default {
+    components: {
+      CustomListView,
+      CustomListItem
+    },
+    data() {
+      return {
+        title: '自行实现长列表组件',
+        list: [] as Item[]
+      }
+    },
+    created() {
+      for (let i = 0; i < 2000; i++) {
+        this.list.push({
+          id: i,
+          name: `Wifi_` + i,
+          info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
+        } as Item)
+      }
+    },
+    methods: {
+      scrolltoupper() {
+        console.log('scroll top upper')
+      },
+      scroll() {
+        // console.log('scroll')
+      }
+    }
+  }
+</script>
+
+<style>
+  .tips {
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+  }
+
+  .item {
+    padding: 5px 10px;
+  }
+
+  .item-wrapper {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+  }
+</style>

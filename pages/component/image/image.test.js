@@ -30,7 +30,7 @@ describe('component-native-image', () => {
       expect(await page.data('loadError')).toBe(true)
     })
 
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       it('check-cookie', async () => {
         await page.setData({
           autoTest: true,
@@ -55,7 +55,7 @@ describe('component-native-image', () => {
       const image = await program.screenshot({
         fullPage: true
       })
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     });
 
     it('mode-screenshot', async () => {
@@ -65,6 +65,6 @@ describe('component-native-image', () => {
       const image = await program.screenshot({
         fullPage: true
       })
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     });
 });

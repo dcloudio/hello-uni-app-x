@@ -35,10 +35,13 @@
         </view>
       </view>
     </view>
+    <node-child class="node-child"></node-child>
   </view>
 </template>
 
 <script>
+  import nodeChild from './nodes-info-child.uvue'
+
   type NodeInfoType = {
     left : number | null,
     top : number | null,
@@ -49,6 +52,9 @@
   }
 
   export default {
+    components: {
+      nodeChild
+    },
     data() {
       return {
         title: 'createSelectorQuery',
@@ -71,7 +77,7 @@
     },
     methods: {
       // 仅用于自动化测试
-      getRootNodeInfo(selector: string) {
+      getRootNodeInfo(selector : string) {
         uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
           if (ret.length == 1) {
             const nodeInfo = ret[0] as NodeInfo;

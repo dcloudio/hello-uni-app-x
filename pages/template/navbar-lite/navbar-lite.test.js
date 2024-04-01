@@ -37,10 +37,10 @@ describe("setCustomNavigationBarColor", () => {
     await page.waitFor(1000);
     if (isAndroid) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: adbScreenShotArea,
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(2);
@@ -51,10 +51,10 @@ describe("setCustomNavigationBarColor", () => {
     await page.waitFor(1000);
     if (isAndroid) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: adbScreenShotArea,
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(4);

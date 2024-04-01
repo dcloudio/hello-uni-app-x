@@ -1,15 +1,22 @@
 <template>
-  <web-view id="webview-screenshot" class="webview-screenshot" :webview-styles='webviewStyles' :src="src"
-    @loaded="loaded" @error="error">
-  </web-view>
+  <view style="flex:1;">
+    <view :style='{height: `${statusBarHeight}px`}'></view>
+    <web-view id="webview-screenshot" class="webview-screenshot" :webview-styles='webviewStyles' :src="src"
+      @loaded="loaded" @error="error">
+    </web-view>
+  </view>
 </template>
 
 <script>
+  import { state } from '@/store/index.uts'
+
   export default {
     data() {
       return {
         baseSrc: '',
         src: '',
+        statusBarHeight: state.statusBarHeight,
+        devicePixelRatio: state.devicePixelRatio,
         webviewContext: null as WebviewContext | null,
         isLoaded: false,
         webviewStyles: {
