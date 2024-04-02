@@ -9,7 +9,6 @@ import PendingIntent from 'android.app.PendingIntent';
 import { CreateNotificationProgressOptions, FinishNotificationProgressOptions } from '../interface.uts';
 import { ACTION_DOWNLOAD_FINISH, ACTION_DOWNLOAD_PROGRESS } from "./constant.uts"
 
-import { globalNotificationProgressFinishCallBack, globalNotificationProgressCallBack } from './callbacks.uts';
 
 export { TransparentActivity } from './TransparentActivity.uts';
 
@@ -27,7 +26,8 @@ let histroyProgress = 0
 
 let isProgress = false
 
-
+export let globalNotificationProgressCallBack : (() => void) | null = () => { }
+export let globalNotificationProgressFinishCallBack = () => { }
 
 export function createNotificationProgress(options : CreateNotificationProgressOptions) : void {
 	const { content, progress, onClick } = options

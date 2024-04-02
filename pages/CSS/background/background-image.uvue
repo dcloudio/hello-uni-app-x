@@ -6,7 +6,7 @@
 			<text>不支持背景图片，仅支持linear-gradient方法</text>
 				<view v-for="(direction) in directionData">
 					<text>background-image: linear-gradient({{direction}}, red, yellow)</text>
-				<view class="common" :style="{'background-image': 'linear-gradient('+direction+', red, yellow)'}"></view>
+				<view class="common" :style="{'background-image': backgroundSelect ?'linear-gradient('+direction+', red, yellow)':''}"></view>
       </view>
 		</view>
   <!-- #ifdef APP -->
@@ -18,7 +18,14 @@
   export default {
     data(){
       return {
+        backgroundSelect : true,
         directionData: ['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right']
+      }
+    },
+    methods: {
+      //供自动化测试使用
+      updateBackgroundSelect() {
+        this.backgroundSelect = !this.backgroundSelect
       }
     }
   }

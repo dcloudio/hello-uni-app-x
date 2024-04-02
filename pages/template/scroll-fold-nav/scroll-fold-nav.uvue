@@ -65,10 +65,10 @@
     },
     methods: {
       onScroll(e : ScrollEvent) {
-        let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;
+        let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
         this.naviElement?.style?.setProperty('height', (this.nviBarHeight -offset)+'px');
-        this.searchElement?.style?.setProperty('left', BACKWIDTH*offset/SEARCHBARHEIGHT+'px');
         this.titleElement?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT));
+        this.searchElement?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
       },
       back() {
         uni.navigateBack();

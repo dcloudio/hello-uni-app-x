@@ -1,0 +1,36 @@
+<template>
+  <view class="item-container">
+    <slot></slot>
+  </view>
+</template>
+
+<script>
+  /**
+   * recycle-item 长列表子项组件
+   * @description 用于展示超长列表数据每一项
+   * @property {any[]} item 当前组件渲染的列表项
+   */
+  export default {
+    name: "custom-list-item",
+    props: {
+      item: {
+        type: Object as PropType<any>,
+        required: true
+      }
+    },
+    inject: {
+      setCachedSize: {
+        type: Function as PropType<(item : any, size : number) => void>
+      },
+    },
+    mounted() {
+      uni.createSelectorQuery().in(this).select('.item-container').boundingClientRect().exec((ret) => {
+        this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
+      })
+    }
+  }
+</script>
+
+<style>
+
+</style>

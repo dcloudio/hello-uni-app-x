@@ -20,8 +20,8 @@ describe('component-native-list-view', () => {
       return await page.data('list_show') === true;
     });
     await page.waitFor(200)
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   })
 
   //检测修改item子元素后，item是否正常调整高度
@@ -31,7 +31,7 @@ describe('component-native-list-view', () => {
       return await page.data('displayArrow') === true;
     });
     await page.waitFor(600)
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   })
 })

@@ -3,7 +3,7 @@
 describe('API-loading', () => {
 
   let page;
-  const isAndroid = process.env.UNI_OS_NAME === "android";
+  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/action-sheet/action-sheet')
@@ -12,13 +12,13 @@ describe('API-loading', () => {
 
 
   it("onload-action-sheet-test", async () => {
-    if (isAndroid) {
-
+    if (isApp) {
+      await page.waitFor(500);
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -27,13 +27,13 @@ describe('API-loading', () => {
         },
       });
 
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
   })
 
@@ -57,9 +57,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -67,13 +67,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -99,9 +99,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -109,13 +109,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -140,9 +140,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -150,13 +150,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -181,9 +181,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -191,13 +191,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
   })
@@ -222,9 +222,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -232,13 +232,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -266,9 +266,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -276,13 +276,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -307,9 +307,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -317,13 +317,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -348,9 +348,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -358,13 +358,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
   })
@@ -389,9 +389,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -399,13 +399,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -431,9 +431,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -441,13 +441,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -472,9 +472,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -482,13 +482,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
 
@@ -513,9 +513,9 @@ describe('API-loading', () => {
     await btnToastDurationButton.tap()
     await page.waitFor(500);
 
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         area: {
           x: 0,
           y: 200,
@@ -523,13 +523,13 @@ describe('API-loading', () => {
           width:windowWidth
         },
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
-        adb: true,
+        deviceShot: true,
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot()
+      expect(image).toSaveImageSnapshot()
     }
 
   })

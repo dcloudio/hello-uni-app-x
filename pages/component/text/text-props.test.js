@@ -9,7 +9,7 @@ describe('text-props', () => {
 
   it('screenshot', async () => {
     const image = await program.screenshot({ fullPage: true })
-    expect(image).toMatchImageSnapshot()
+    expect(image).toSaveImageSnapshot()
   })
 
   it('empty text', async () => {

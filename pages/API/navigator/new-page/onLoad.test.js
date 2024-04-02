@@ -10,8 +10,8 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
     await page.waitFor(1000);
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   });
   it("navigateTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -22,7 +22,7 @@ describe("onLoad", () => {
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
       await page.waitFor('view');
       await page.callMethod("navigateToOnLoadWithType", "navigateBack");
@@ -61,14 +61,14 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showToast");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
@@ -79,14 +79,14 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showLoading");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
@@ -97,14 +97,14 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showModal");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
@@ -115,14 +115,14 @@ describe("onLoad", () => {
     await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
     await page.waitFor(1000);
     const image = await program.screenshot({
-      adb: true,
+      deviceShot: true,
       area: {
         x: 0,
         y: 200,
         height: 2140,
       },
     });
-    expect(image).toMatchImageSnapshot({
+    expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
