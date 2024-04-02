@@ -120,7 +120,7 @@ const pages = [
   // '/pages/API/element-draw/element-draw',
 ]
 
-if (process.env.uniTestPlatformInfo.startsWith('android')&& !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
   // 规避 web 端不支持页面
   pages.push(
     "/pages/component/list-view/list-view",
@@ -145,6 +145,14 @@ const notFullPages = [
 ]
 
 let page;
+let windowInfo
+
+async function getWindowInfo() {
+  const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
+  await windowInfoPage.waitFor(600);
+  return await windowInfoPage.callMethod('jest_getWindowInfo')
+}
+
 describe("page screenshot test", () => {
   beforeAll(async () => {
     console.log("page screenshot test start");
@@ -165,9 +173,27 @@ describe("page screenshot test", () => {
     if (notFullPages.includes(pages[pageIndex])) {
       fullPage = false;
     }
-    const image = await program.screenshot({
-      fullPage: fullPage
-    });
+
+    const screenshotParams = {
+      fullPage
+    }
+    if (!fullPage && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+      let offsetY = '0'
+      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
+        offsetY = '44'
+      }
+      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
+        if (!windowInfo) {
+          windowInfo = await getWindowInfo()
+          page = await program.reLaunch(pages[pageIndex]);
+          await page.waitFor(1000);
+        }
+        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
+      }
+      screenshotParams.offsetY = offsetY
+    }
+
+    const image = await program.screenshot(screenshotParams);
     expect(image).toSaveImageSnapshot({
       customSnapshotIdentifier() {
         return `__pages_test__/${pages[pageIndex].replace(/\//g, "-").substring(1)}`
