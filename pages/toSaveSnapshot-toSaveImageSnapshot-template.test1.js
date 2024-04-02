@@ -29,15 +29,15 @@ describe('toSaveSnapshot & toSaveImageSnapshot template', () => {
   })
 
   it('test toSaveImageSnapshot 1', async () => {
-    const img1 = await program.screenshot();
+    const img1 = await program.screenshot({fullPage: true});
     expect(img1).toSaveImageSnapshot()
 
-    const img2 = await program.screenshot();
+    const img2 = await program.screenshot({fullPage: true});
     expect(img2).toSaveImageSnapshot()
   })
 
   it('test toSaveImageSnapshot 2', async () => {
-    const img1 = await program.screenshot();
+    const img1 = await program.screenshot({fullPage: true});
     expect(img1).toSaveImageSnapshot({
       customSnapshotsDir: './customDir/__image_snapshots__',
       customSnapshotIdentifier() {
@@ -45,12 +45,12 @@ describe('toSaveSnapshot & toSaveImageSnapshot template', () => {
       },
     })
 
-    const img2 = await program.screenshot();
+    const img2 = await program.screenshot({fullPage: true});
     expect(img2).toSaveImageSnapshot({
       customSnapshotsDir: './customDir/__image_snapshots__',
     })
 
-    const img3 = await program.screenshot();
+    const img3 = await program.screenshot({fullPage: true});
     expect(img3).toSaveImageSnapshot({
       customSnapshotIdentifier() {
         return 'test-toSaveImageSnapshot-2-3';

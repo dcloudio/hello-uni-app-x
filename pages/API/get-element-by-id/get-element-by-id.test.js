@@ -15,7 +15,7 @@ describe("getElementById", () => {
     await page.callMethod("changeTextColor");
     await page.callMethod("changeViewStyle");
     await page.waitFor(500);
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   });
 });

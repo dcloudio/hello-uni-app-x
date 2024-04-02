@@ -20,7 +20,7 @@ describe('component-native-list-view', () => {
       return await page.data('list_show') === true;
     });
     await page.waitFor(200)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 
@@ -31,7 +31,7 @@ describe('component-native-list-view', () => {
       return await page.data('displayArrow') === true;
     });
     await page.waitFor(600)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 })

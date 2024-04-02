@@ -17,7 +17,7 @@ describe('component-native-nested-scroll-body', () => {
   it('check_scroll_into_view_left', async () => {
     await page.callMethod('testBodyScrollBy', 400)
     await page.waitFor(300)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 })

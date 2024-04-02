@@ -10,7 +10,7 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
     await page.waitFor(1000);
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   });
   it("navigateTo", async () => {

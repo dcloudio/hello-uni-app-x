@@ -8,7 +8,7 @@ describe('component-native-sticky-section', () => {
   //检测吸顶上推效果
   it('check_sticky_section', async () => {
     await page.callMethod('listViewScrollByY', 1000)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 
@@ -30,7 +30,7 @@ describe('component-native-sticky-section', () => {
     await page.waitFor(async () => {
       return await page.data('scrolling') === false;
     });
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 })

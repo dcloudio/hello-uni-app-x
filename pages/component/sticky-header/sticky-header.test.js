@@ -8,7 +8,7 @@ describe('component-native-sticky-header', () => {
   //检测吸顶效果
   it('check_sticky_header', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 })

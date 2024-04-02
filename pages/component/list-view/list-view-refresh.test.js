@@ -18,7 +18,7 @@ describe('component-native-list-view-refresh', () => {
     });
     //等待下拉刷新结束
     await page.waitFor(500)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 })
