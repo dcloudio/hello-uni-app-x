@@ -178,16 +178,16 @@ describe("page screenshot test", () => {
       fullPage
     }
     if (!fullPage && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+      if (!windowInfo) {
+        windowInfo = await getWindowInfo()
+        page = await program.reLaunch(pages[pageIndex]);
+        await page.waitFor(1000);
+      }
       let offsetY = '0'
       if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
-        offsetY = '44'
+        offsetY = `${windowInfo.statusBarHeight + 44}`
       }
       if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
-        if (!windowInfo) {
-          windowInfo = await getWindowInfo()
-          page = await program.reLaunch(pages[pageIndex]);
-          await page.waitFor(1000);
-        }
         offsetY = `${windowInfo.safeAreaInsets.top + 44}`
       }
       screenshotParams.offsetY = offsetY
