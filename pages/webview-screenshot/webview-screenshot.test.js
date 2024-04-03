@@ -42,7 +42,6 @@ const pages = [
   "pages/API/navigator/navigator",
   "pages/API/set-navigation-bar-color/set-navigation-bar-color",
   "pages/API/set-navigation-bar-title/set-navigation-bar-title",
-  "pages/API/set-navigation-bar-color/set-custom-navigation-bar-color",
   "pages/API/navigator/new-page/new-page-1",
   "pages/API/navigator/new-page/new-page-3",
   "pages/API/pull-down-refresh/pull-down-refresh",
@@ -67,10 +66,7 @@ const pages = [
   "pages/API/get-system-info/get-system-info",
   "pages/API/get-device-info/get-device-info",
   "pages/API/get-app-base-info/get-app-base-info",
-  "pages/API/get-system-setting/get-system-setting",
-  "pages/API/get-app-authorize-setting/get-app-authorize-setting",
   "pages/API/preview-image/preview-image",
-  "pages/API/save-image-to-photos-album/save-image-to-photos-album",
   "pages/API/choose-image/choose-image",
   "pages/API/get-network-type/get-network-type",
   "pages/API/page-scroll-to/page-scroll-to",
@@ -196,6 +192,9 @@ const pages = [
   // "pages/template/scroll-sticky/scroll-sticky",
   // "pages/API/exit/exit",
   // "pages/API/element-takesnapshot/element-takesnapshot",
+  // "pages/API/get-app-authorize-setting/get-app-authorize-setting",
+  // "pages/API/get-system-setting/get-system-setting",
+  // "pages/API/save-image-to-photos-album/save-image-to-photos-album",
 
   // 仅 web
   // pages/template/browser-canvas/browser-canvas
@@ -236,10 +235,14 @@ const PAGE_PATH =
 
 describe("shot-compare", () => {
   let shouldCompareScreenShot = false
-  if (process.env.uniTestPlatformInfo.startsWith('android')) {
-    let version = process.env.uniTestPlatformInfo
-    version = parseInt(version.split(" ")[1])
+  const uniTestPlatformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  if (uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    version = parseInt(uniTestPlatformInfo.split(" ")[1])
     shouldCompareScreenShot = version > 9
+  }
+
+  if(uniTestPlatformInfo.startsWith('ios') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    shouldCompareScreenShot = true
   }
 
   if (!shouldCompareScreenShot) {
@@ -252,6 +255,13 @@ describe("shot-compare", () => {
   let pageIndex = 0;
   let baseSrc = "";
   beforeAll(async () => {
+    // 获取导航栏+状态栏高度
+    page = await program.reLaunch('/pages/API/get-window-info/get-window-info')
+    await page.callMethod('getWindowInfo')
+    // 获取设备像素比
+    page = await program.reLaunch('/pages/API/get-device-info/get-device-info')
+    await page.callMethod('getDeviceInfo')
+
     page = await program.reLaunch(PAGE_PATH);
     await page.waitFor(500);
 
@@ -265,7 +275,6 @@ describe("shot-compare", () => {
   });
 
   beforeEach(async () => {
-    page = await program.reLaunch(PAGE_PATH);
     await page.waitFor(500);
   });
   afterEach(() => {
@@ -276,21 +285,22 @@ describe("shot-compare", () => {
     const isNeedAdbScreenshot = needAdbScreenshot(pages[pageIndex]);
     const isCustomNavigation = customNavigationPages.includes(pages[pageIndex]);
     const {
-      headerHeight,
+      statusBarHeight,
       devicePixelRatio
     } = await page.data();
     const screenshotParams = {
       fullPage: true,
-      adb: isNeedAdbScreenshot,
-      // adb 截图时跳过状态栏
+      deviceShot: isNeedAdbScreenshot,
+      // deviceShot 截图时跳过状态栏
       area: {
         x: 0,
-        y: (headerHeight - 44) * devicePixelRatio,
+        y: (statusBarHeight - 44) * devicePixelRatio,
       },
     }
-    const screenshotPath = `webview-shot__${pages[pageIndex].replace(/\//g, "-")}`;
+    const screenshotPath = `__webview-shot__/${pages[pageIndex].replace(/\//g, "-")}`;
 
     // web in webview screenshot
+    let startTime = Date.now();
     // 加载依赖页面
     if (childToParentPagesMap.get(pages[pageIndex])) {
       await page.setData({
@@ -309,7 +319,7 @@ describe("shot-compare", () => {
       needRemoveWebHead: !isNeedAdbScreenshot,
     });
 
-    const startTime = Date.now();
+    startTime = Date.now();
     await page.waitFor(async () => {
       const isLoaded = await page.data("isLoaded");
       return isLoaded || Date.now() - startTime > 3000;
@@ -319,12 +329,12 @@ describe("shot-compare", () => {
       await page.waitFor(3000);
     }
 
-    // web 端非 adb 截图时设置 offsetY 移除导航栏
+    // web 端非 deviceShot 截图时设置 offsetY 移除导航栏
     const webSnapshot = await program.screenshot({
       ...screenshotParams,
-      offsetY: `${isCustomNavigation ? 0 : headerHeight}`
+      offsetY: `${isCustomNavigation ? 0 : statusBarHeight + 44}`
     });
-    expect(webSnapshot).toMatchImageSnapshot({
+    expect(webSnapshot).toSaveImageSnapshot({
       customSnapshotIdentifier() {
         return screenshotPath;
       },

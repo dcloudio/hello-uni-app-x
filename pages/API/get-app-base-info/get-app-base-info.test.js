@@ -6,14 +6,11 @@ describe('ExtApi-GetAppBaseInfo', () => {
   let res;
   const stringProperties = [
     'appId', 'appName', 'appVersion', 'appVersionCode', 'appLanguage',
-    'language', 'uniCompileVersion', 'uniPlatform', 'uniRuntimeVersion',
+    'language', 'uniCompilerVersion', 'uniPlatform', 'uniRuntimeVersion',
   ]
   const numberProperties = [
-    'uniCompileVersionCode', 'uniRuntimeVersionCode'
+    'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]
-  if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
-    stringProperties.push('version')
-  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);

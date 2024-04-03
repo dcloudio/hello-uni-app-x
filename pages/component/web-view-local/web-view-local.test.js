@@ -12,14 +12,14 @@ describe('component-native-web-view', () => {
   });
 
   it('screenshot', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       await page.waitFor(async () => {
         return await page.data('loadFinish') === true;
       });
       const image = await program.screenshot({
         fullPage: true
       });
-      expect(image).toMatchImageSnapshot();
+      expect(image).toSaveImageSnapshot();
     }
   });
 });

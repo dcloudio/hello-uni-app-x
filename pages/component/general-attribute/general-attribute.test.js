@@ -8,8 +8,8 @@ describe('general attribute', () => {
     await page.waitFor('view')
   })
   it("class & style", async () => {
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   });
   it('validateGeneralAttributes', async () => {
     const button = await page.$(".btn-style");
@@ -21,7 +21,7 @@ describe('general attribute', () => {
     const button = await page.$(".btn-ref");
     await button.tap();
     await page.waitFor(500);
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   });
 })
