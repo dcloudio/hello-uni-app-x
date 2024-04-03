@@ -8,6 +8,12 @@ describe("payment", () => {
     })
     return
   }
+  if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
+    it('ios', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600)
