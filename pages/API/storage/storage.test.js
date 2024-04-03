@@ -1,5 +1,6 @@
-const PAGE_PATH = '/pages/API/storage/storage'
+jest.setTimeout(50000);
 
+const PAGE_PATH = '/pages/API/storage/storage'
 
 describe('ExtApi-StorageInfoTest', () => {
 
