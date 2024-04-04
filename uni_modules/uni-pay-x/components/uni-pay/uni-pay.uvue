@@ -282,12 +282,14 @@
 				}
 				// #ifdef APP
 				if (options['provider'] == "wxpay") {
-					uni.showModal({
-						title: "提示",
-						content: "uni-pay 的 uni-app x 版本暂未适配微信支付",
-						showCancel: false
-					})
-					return;
+          // #ifdef  uniVersion < 4.11
+          uni.showModal({
+            title: "提示",
+            content: "请先升级HBX至4.11",
+            showCancel: false
+          })
+          return;
+          // #endif
 				}
 				// #endif
 
@@ -341,13 +343,6 @@
 			// 调起支付
 			orderPayment(res : UTSJSONObject) {
 				this.orderRes = res;
-				let _order = res.get('order');
-				let orderStr = "";
-				if (typeof _order == "string") {
-					orderStr = res.get('order') as string;
-				} else {
-					//order = res.get('order') as UTSJSONObject;
-				}
 				if (res['qr_code'] != null && res['qr_code'] != "") {
 					this.$emit("qrcode", res);
 				}
@@ -379,6 +374,8 @@
 				}
 				// #endif
 				// #ifndef H5
+				let _order = res.get('order');
+				let orderStr = typeof _order == "string" ? _order as string : JSON.stringify(_order) as string;
 				uni.requestPayment({
 					provider: res['provider'] as string,
 					orderInfo: orderStr,
