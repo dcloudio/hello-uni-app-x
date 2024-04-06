@@ -119,7 +119,10 @@ module.exports = {
 			cloudInfo,
 			wxpay_virtual,
 		});
-
+		// uniappx-特殊处理
+		if (typeof res.order === "object" && typeof res.order["timestamp"] === "string") {
+			res.order["timestamp"] = parseFloat(res.order["timestamp"]);
+		}
 		return res;
 	},
 	/**
@@ -256,7 +259,7 @@ module.exports = {
 			};
 		}
 	},
-	
+
 	/**
 	 * 验证iosIap苹果内购支付凭据
 	 */
@@ -272,7 +275,7 @@ module.exports = {
 			transaction_identifier
 		});
 	},
-	
+
 	/**
 	 * 接收微信小程序虚拟支付异步通知
 	 */
@@ -286,5 +289,5 @@ module.exports = {
 			cloudInfo
 		});
 	},
-	
+
 }
