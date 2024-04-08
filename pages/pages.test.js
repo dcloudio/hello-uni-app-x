@@ -21,8 +21,6 @@ const pages = [
   '/pages/component/rich-text/rich-text-complex',
   '/pages/component/rich-text/rich-text-tags',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/scroll-view/scroll-view-custom-refresher-props',
-  '/pages/component/scroll-view/scroll-view-refresher-props',
   '/pages/component/slider/slider',
   '/pages/component/slider-100/slider-100',
   '/pages/component/swiper/swiper',
@@ -120,7 +118,8 @@ const pages = [
   // '/pages/API/element-draw/element-draw',
 ]
 
-if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+if (platformInfo.startsWith('android' || platformInfo.startsWith('ios') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
   // 规避 web 端不支持页面
   pages.push(
     "/pages/component/list-view/list-view",
@@ -135,6 +134,8 @@ if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AU
     '/pages/template/custom-refresher/custom-refresher',
     '/pages/template/custom-tab-bar/custom-tab-bar',
     '/pages/template/half-screen/half-screen',
+    '/pages/component/scroll-view/scroll-view-custom-refresher-props',
+    '/pages/component/scroll-view/scroll-view-refresher-props',
   )
 }
 
