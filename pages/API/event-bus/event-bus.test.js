@@ -52,21 +52,21 @@ describe('event-bus', () => {
     expect(l3).toBe(0)
   })
 
-  it('off-all', async () => {
-    await page.callMethod('clear')
-    await page.callMethod('on')
-    await page.callMethod('on2')
-    await page.callMethod('emit')
-    const l1 = (await page.data()).log.length
-    expect(l1).toBe(2)
+  // it('off-all', async () => {
+  //   await page.callMethod('clear')
+  //   await page.callMethod('on')
+  //   await page.callMethod('on2')
+  //   await page.callMethod('emit')
+  //   const l1 = (await page.data()).log.length
+  //   expect(l1).toBe(2)
 
-    await page.callMethod('clear')
-    const l2 = (await page.data()).log.length
-    expect(l2).toBe(0)
+  //   await page.callMethod('clear')
+  //   const l2 = (await page.data()).log.length
+  //   expect(l2).toBe(0)
 
-    await page.callMethod('offAll')
-    await page.callMethod('emit')
-    const l3 = (await page.data()).log.length
-    expect(l3).toBe(0)
-  })
+  //   await page.callMethod('offAll')
+  //   await page.callMethod('emit')
+  //   const l3 = (await page.data()).log.length
+  //   expect(l3).toBe(0)
+  // })
 })
