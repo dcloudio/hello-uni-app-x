@@ -69,6 +69,10 @@
   </view>
 </template>
 <script>
+  class GETDataType {
+    data: UTSJSONObject | null = null
+  }
+
   const duration = 2000
   const methodMap = {
     "GET": "/api/http/method/get",
@@ -320,6 +324,23 @@
           },
         });
       },
+      jest_get_with_generics() {
+        uni.request<GETDataType>({
+          url: this.host + (methodMap['GET'] as string),
+          method: "GET",
+          timeout: null,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: (res: RequestSuccess<GETDataType>) => {
+            console.log("success :", res.data?.data);
+            this.jest_result = true;
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      }
     }
   }
 </script>

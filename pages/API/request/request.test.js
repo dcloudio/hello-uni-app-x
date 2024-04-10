@@ -92,6 +92,10 @@ describe('ExtApi-Request', () => {
     shouldTestCookie = version > 9
   }
 
+  if (process.env.uniTestPlatformInfo.startsWith('IOS') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    shouldTestCookie = true
+  }
+
   if (!shouldTestCookie) {
     return
   }
@@ -110,6 +114,12 @@ describe('ExtApi-Request', () => {
   });
   it('Check Get With Data', async () => {
     res = await page.callMethod('jest_get_with_data')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
+  it('Check Get With Generics', async () => {
+    res = await page.callMethod('jest_get_with_generics')
     await page.waitFor(2000);
     res = await page.data('jest_result');
     expect(res).toBe(true)
