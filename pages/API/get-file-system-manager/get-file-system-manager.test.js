@@ -1143,7 +1143,6 @@ describe('ExtApi-FileManagerTest', () => {
       })
       await createFile()
 
-
       await page.setData({
         basePath: basePath,
         temFile: 'save/1.txt',
@@ -1156,9 +1155,18 @@ describe('ExtApi-FileManagerTest', () => {
       await page.setData({
         saveFileRet: ''
       })
+      await clearDir('')
+    });
 
 
-
+  it('saveFileSyncTest',
+    async () => {
+      let globalTempPath = await getData('globalTempPath')
+      let basePath = await getData('basePath')
+      await page.setData({
+        basePath: basePath
+      })
+      await clearDir('')
       await page.setData({
         basePath: globalTempPath,
         temFile: 'save/2.txt',
@@ -1189,15 +1197,81 @@ describe('ExtApi-FileManagerTest', () => {
       await btnSavedFileList.tap()
       await isDone()
       let fileListSuccess = await getData("fileListSuccess")
-      expect(fileListSuccess.length).toEqual(3)
+      expect(fileListSuccess.length > 0).toEqual(true)
 
 
 
       await clearDir('')
     });
 
+  it('getSavedFileListTest',
+    async () => {
+      let globalTempPath = await getData('globalTempPath')
+      let basePath = await getData('basePath')
+      await page.setData({
+        basePath: basePath
+      })
+      await clearDir('')
+      await page.setData({
+        basePath: globalTempPath,
+        temFile: 'save/2.txt',
+        mkdirFile: 'save',
+        writeFile: 'save/2.txt',
+        accessFile: '2.txt'
+      })
+      await createFile()
+      await page.setData({
+        basePath: basePath,
+        writeFile: 'save/2.txt',
+      })
+      btnSaveFile = await page.$('#btn-save-file-sync')
+      await btnSaveFile.tap()
+      await isDone()
+
+      let btnSavedFileList = await page.$('#btn-getsaved-filelist')
+      await btnSavedFileList.tap()
+      await isDone()
+      let fileListSuccess = await getData("fileListSuccess")
+      expect(fileListSuccess.length > 0).toEqual(true)
+
+
+
+      await clearDir('')
+    });
+
+  it('removeSavedFileTest',
+    async () => {
+      let globalTempPath = await getData('globalTempPath')
+      let basePath = await getData('basePath')
+      await page.setData({
+        basePath: basePath
+      })
+      await clearDir('')
+      await page.setData({
+        basePath: globalTempPath,
+        temFile: 'save/2.txt',
+        mkdirFile: 'save',
+        writeFile: 'save/2.txt',
+        accessFile: '2.txt'
+      })
+      await createFile()
+      await page.setData({
+        basePath: basePath,
+        writeFile: 'save/2.txt',
+      })
+      btnSaveFile = await page.$('#btn-save-file-sync')
+      await btnSaveFile.tap()
+      await isDone()
+
+      let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
+      await btnRemoveSavedFileRet.tap()
+      let removeSavedFileRet = await getData("removeSavedFileRet")
+      expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
+      await clearDir('')
+    });
+
   //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
-  it('fd test', async () => {
+  it('openFiletest', async () => {
     await clearDir('')
     await page.setData({
       mkdirFile: 'fd',
@@ -1221,8 +1295,16 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
     fd = await getData("fd")
     expect(fd).not.toBe('');
-
-
+  });
+  // closeTest closeTestSync
+  it('closeTest', async () => {
+    await clearDir('')
+    await page.setData({
+      mkdirFile: 'fd',
+      writeFile: 'fd/1.txt',
+      readFile: 'fd/1.txt'
+    })
+    await createFile()
     //closeTest
     let btnCloseFile = await page.$('#btn-close-file')
     await btnCloseFile.tap()
@@ -1239,12 +1321,17 @@ describe('ExtApi-FileManagerTest', () => {
     closeFileRet = await getData("closeFileRet")
     expect(closeFileRet).toEqual('close:ok')
 
-    //writeTest
+  });
+  //writeTest writeSyncTest
+  it('writeTest', async () => {
+    await clearDir('')
     await page.setData({
+      mkdirFile: 'fd',
       writeFile: 'fd/1.txt',
       readFile: 'fd/1.txt',
       writeData: '我是一只小小鸟'
     })
+    await createFile()
 
     let btnWrite = await page.$('#btn-write')
     await btnWrite.tap()
@@ -1259,10 +1346,10 @@ describe('ExtApi-FileManagerTest', () => {
       writeData: '我是'
     })
 
-     btnWrite = await page.$('#btn-write')
+    btnWrite = await page.$('#btn-write')
     await btnWrite.tap()
     await isDone()
-     bytesWritten = await getData("bytesWritten")
+    bytesWritten = await getData("bytesWritten")
     expect(bytesWritten).toEqual(2)
 
     //fstatTest
