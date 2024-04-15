@@ -119,7 +119,7 @@ const pages = [
 ]
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-if (platformInfo.startsWith('android' || platformInfo.startsWith('ios') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+if ((platformInfo.startsWith('android') || platformInfo.startsWith('ios')) && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
   // 规避 web 端不支持页面
   pages.push(
     "/pages/component/list-view/list-view",
