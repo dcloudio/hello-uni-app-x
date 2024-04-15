@@ -1,61 +1,63 @@
 <template>
   <!-- #ifdef APP -->
+  <text>显示简易操作日志,详细日志需真机运行查看</text><button size="mini" @click="log=''">清空日志</button>
+  <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
   <scroll-view style="flex: 1;">
   <!-- #endif -->
-    <text>显示简易操作日志,详细日志需真机运行查看</text><button size="mini" @click="log=''">清空日志</button>
-    <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
-    <button type="primary" @tap="statFileInfoTest" id="btn-stat-file">递归获取目录files的Stats对象{{statFile}}</button>
-    <button type="primary" @tap="mkdirTest" id="btn-mkdir">创建文件夹{{mkdirFile}}</button>
-    <button type="primary" @tap="writeFileTest" id="btn-write-file">覆盖写入文件{{writeFile}}</button>
-    <button type="primary" @tap="readDirTest" id="btn-read-dir">读取文件夹{{readDir}}</button>
-    <button type="primary" @tap="readFileTest" id="btn-read-file">读取文件{{readFile}}</button>
-    <button type="primary" @tap="copyFileTest" id="btn-copy-file">复制文件{{copyFromFile}}到{{copyToFile}}</button>
-    <button type="primary" @tap="renameFileTest" id="btn-rename-file">重命名文件{{renameFromFile}}到{{renameToFile}}</button>
-    <button type="primary" @tap="accessFileTest" id="btn-access-file">判断文件{{accessFile}}是否存在</button>
-    <button type="primary" @tap="getFileInfoTest" id="btn-get-file-info">获取文件信息{{getFileInfoFile}}</button>
-    <button type="primary" @tap="unlinkTest" id="btn-unlink-file">删除文件{{unlinkFile}}</button>
-    <button type="primary" @tap="copyStaticToFilesTest" id="btn-copyStatic-file">从static目录复制文件到a目录</button>
-    <button type="primary" @tap="unlinkAllFileTest" id="btn-clear-file">删除文件夹{{rmDirFile}}下的所有文件</button>
-    <button type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="statFileInfoTest" id="btn-stat-file">递归获取目录files的Stats对象{{statFile}}</button>
+    <button class="btnstyle" type="primary" @tap="mkdirTest" id="btn-mkdir">创建文件夹{{mkdirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeFileTest" id="btn-write-file">覆盖写入文件{{writeFile}}</button>
+    <button class="btnstyle" type="primary" @tap="readDirTest" id="btn-read-dir">读取文件夹{{readDir}}</button>
+    <button class="btnstyle" type="primary" @tap="readFileTest" id="btn-read-file">读取文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="copyFileTest" id="btn-copy-file">复制文件{{copyFromFile}}到{{copyToFile}}</button>
+    <button class="btnstyle" type="primary" @tap="renameFileTest" id="btn-rename-file">重命名文件{{renameFromFile}}到{{renameToFile}}</button>
+    <button class="btnstyle" type="primary" @tap="accessFileTest" id="btn-access-file">判断文件{{accessFile}}是否存在</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoTest" id="btn-get-file-info">获取文件信息{{getFileInfoFile}}</button>
+    <button class="btnstyle" type="primary" @tap="unlinkTest" id="btn-unlink-file">删除文件{{unlinkFile}}</button>
+    <button class="btnstyle" type="primary" @tap="copyStaticToFilesTest" id="btn-copyStatic-file">从static目录复制文件到a目录</button>
+    <button class="btnstyle" type="primary" @tap="unlinkAllFileTest" id="btn-clear-file">删除文件夹{{rmDirFile}}下的所有文件</button>
+    <button class="btnstyle" type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
 
 
-
-
-    <button type="primary" @tap="statFileInfoSyncTest"
+    <!-- #ifdef APP-ANDROID -->
+    <button class="btnstyle" type="primary" @tap="statFileInfoSyncTest"
       id="btn-stat-file-sync">同步递归获取目录files的Stats对象{{statFile}}</button>
-    <button type="primary" @tap="appendFileTest" id="btn-append-file">在文件{{readFile}}结尾追加内容</button>
-    <button type="primary" @tap="appendFileSyncTest" id="btn-append-file-sync">同步在文件{{readFile}}结尾追加内容</button>
-    <button type="primary" @tap="writeFileSyncTest" id="btn-write-file-sync">同步覆盖写入文件{{writeFile}}</button>
-    <button type="primary" @tap="readFileSyncTest" id="btn-read-file-sync">同步读取文件{{readFile}}</button>
-    <button type="primary" @tap="unlinkSyncTest" id="btn-unlink-file-sync">同步删除文件{{unlinkFile}}</button>
-    <button type="primary" @tap="mkdirSyncTest" id="btn-mkdir-sync">同步创建文件夹{{mkdirFile}}</button>
-    <button type="primary" @tap="rmdirSyncTest" id="btn-remove-dir-sync">同步删除文件夹{{rmDirFile}}</button>
-    <button type="primary" @tap="readDirSyncTest" id="btn-read-dir-sync">同步读取文件夹{{readDir}}</button>
-    <button type="primary" @tap="accessFileSyncTest" id="btn-access-file-sync">同步判断文件{{accessFile}}是否存在</button>
-    <button type="primary" @tap="renameFileSync"
+    <button class="btnstyle" type="primary" @tap="appendFileTest" id="btn-append-file">在文件{{readFile}}结尾追加内容</button>
+    <button class="btnstyle" type="primary" @tap="appendFileSyncTest" id="btn-append-file-sync">同步在文件{{readFile}}结尾追加内容</button>
+    <button class="btnstyle" type="primary" @tap="writeFileSyncTest" id="btn-write-file-sync">同步覆盖写入文件{{writeFile}}</button>
+    <button class="btnstyle" type="primary" @tap="readFileSyncTest" id="btn-read-file-sync">同步读取文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="unlinkSyncTest" id="btn-unlink-file-sync">同步删除文件{{unlinkFile}}</button>
+    <button class="btnstyle" type="primary" @tap="mkdirSyncTest" id="btn-mkdir-sync">同步创建文件夹{{mkdirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="rmdirSyncTest" id="btn-remove-dir-sync">同步删除文件夹{{rmDirFile}}</button>
+    <button class="btnstyle" type="primary" @tap="readDirSyncTest" id="btn-read-dir-sync">同步读取文件夹{{readDir}}</button>
+    <button class="btnstyle" type="primary" @tap="accessFileSyncTest" id="btn-access-file-sync">同步判断文件{{accessFile}}是否存在</button>
+    <button class="btnstyle" type="primary" @tap="renameFileSync"
       id="btn-rename-file-sync">同步重命名文件{{renameFromFile}}到{{renameToFile}}</button>
-    <button type="primary" @tap="copyFileSyncTest"
+    <button class="btnstyle" type="primary" @tap="copyFileSyncTest"
       id="btn-copy-file-sync">同步复制文件{{copyFromFile}}到{{copyToFile}}</button>
-    <button type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地</button>
-    <button type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
-    <button type="primary" @tap="removeSavedFileTest" id="btn-remove-saved-file">删除已保存的本地文件</button>
-    <button type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
-    <button type="primary" @tap="getSavedFileListTest" id="btn-getsaved-filelist">获取该已保存的本地缓存文件列表</button>
-    <button type="primary" @tap="truncateFileTest" id="btn-truncate-file">对文件{{writeFile}}内容进行截断操作</button>
-    <button type="primary" @tap="truncateFileSyncTest" id="btn-truncate-file-sync">同步对文件{{writeFile}}内容进行截断操作</button>
-    <button type="primary" @tap="readCompressedFileTest" id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
-    <button type="primary" @tap="readCompressedFileSyncTest" id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
-    <button type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{readFile}}，返回描述符</button>
-    <button type="primary" @tap="openFileSyncTest" id="btn-open-file-sync">同步打开文件{{readFile}}，返回描述符</button>
-    <button type="primary" @tap="closeTest" id="btn-close-file">通过文件描述符关闭文件{{readFile}}</button>
-    <button type="primary" @tap="closeSyncTest" id="btn-close-file-sync">通过文件描述符同步关闭文件{{readFile}}</button>
-    <button type="primary" @tap="writeTest" id="btn-write">通过文件描述符写入文件{{readFile}}</button>
-    <button type="primary" @tap="writeSyncTest" id="btn-read-file">同步通过文件描述符写入文件{{readFile}}</button>
-    <button type="primary" @tap="fstatTest" id="btn-fstat-file">通过文件描述符获取{{statFile}}的状态信息</button>
-    <button type="primary" @tap="fstatSyncTest" id="btn-fstat-file-sync">同步通过文件描述符获取{{statFile}}的状态信息</button>
-    <button type="primary" @tap="ftruncateFileTest" id="btn-ftruncate-file">通过文件描述符对文件{{writeFile}}内容进行截断操作</button>
-    <button type="primary" @tap="ftruncateFileSyncTest"
-      id="btn-ftruncate-file-sync">同步通过文件描述符对文件{{writeFile}}内容进行截断操作</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地</button>
+    <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
+    <button class="btnstyle" type="primary" @tap="removeSavedFileTest" id="btn-remove-saved-file">删除已保存的本地文件</button>
+    <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
+    <button class="btnstyle" type="primary" @tap="getSavedFileListTest" id="btn-getsaved-filelist">获取该已保存的本地缓存文件列表</button>
+    <button class="btnstyle" type="primary" @tap="truncateFileTest" id="btn-truncate-file">对文件{{writeFile}}内容进行截断操作</button>
+    <button class="btnstyle" type="primary" @tap="truncateFileSyncTest" id="btn-truncate-file-sync">同步对文件{{writeFile}}内容进行截断操作</button>
+    <button class="btnstyle" type="primary" @tap="readCompressedFileTest" id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
+    <button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest" id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
+    <button class="btnstyle" type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{readFile}}，返回描述符</button>
+    <button class="btnstyle" type="primary" @tap="openFileSyncTest" id="btn-open-file-sync">同步打开文件{{readFile}}，返回描述符</button>
+    <button class="btnstyle" type="primary" @tap="closeTest" id="btn-close-file">通过文件描述符关闭文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="closeSyncTest" id="btn-close-file-sync">通过文件描述符同步关闭文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeTest" id="btn-write">通过文件描述符写入文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeSyncTest" id="btn-read-file">同步通过文件描述符写入文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="fstatTest" id="btn-fstat-file">通过文件描述符获取{{statFile}}的状态信息</button>
+    <button class="btnstyle" type="primary" @tap="fstatSyncTest" id="btn-fstat-file-sync">同步通过文件描述符获取{{statFile}}的状态信息</button>
+    <button class="btnstyle" type="primary" @tap="ftruncateFileTest" id="btn-ftruncate-file">通过文件描述符对文件{{writeFile}}内容进行截断</button>
+    <button class="btnstyle" type="primary" @tap="ftruncateFileSyncTest"
+      id="btn-ftruncate-file-sync">同步通过文件描述符对文件{{writeFile}}内容进行截断</button>
+    <button class="btnstyle" type="primary" @tap="readZipEntry" id="btn-readzip-entry">读取压缩包内的文件</button>
+    <view style="height: 4px;"></view>
+    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -112,7 +114,8 @@
         closeFileRet: '',
         bytesWritten: 0,
         fstat: new Stats(),
-        ftruncateRet:'',
+        ftruncateRet: '',
+        readZipFile: 'to.zip',
         /**
          * 待测试的全局环境变量
          */
@@ -733,7 +736,7 @@
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res) => {
+          complete: (_) => {
             this.done = true
           }
         } as SaveFileOptions)
@@ -772,7 +775,7 @@
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res) => {
+          complete: (_) => {
             this.done = true
           }
         } as UnzipFileOptions)
@@ -813,13 +816,13 @@
           length: 7,
           success: (res : FileManagerSuccessResult) => {
             if (this.logAble) {
-              this.log += 'getSavedFileListTest success:' + JSON.stringify(res) + '\n\n'
+              this.log += 'truncateFileTest success:' + JSON.stringify(res) + '\n\n'
             }
             console.log("success", res)
           },
           fail: (res : UniError) => {
             if (this.logAble) {
-              this.log += 'getSavedFileListTest fail:' + JSON.stringify(res) + '\n\n'
+              this.log += 'truncateFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
@@ -863,7 +866,7 @@
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res) => {
+          complete: (_) => {
             this.done = true
           }
         } as ReadCompressedFileOptions)
@@ -881,7 +884,7 @@
           this.done = true
         } catch (e) {
           if (this.logAble) {
-            this.log += 'rmdirSyncTest fail:' + e + '\n\n'
+            this.log += 'readCompressedFileSyncTest fail:' + e + '\n\n'
           }
           this.done = true
         }
@@ -905,7 +908,7 @@
             }
             console.log('removeSavedFileTest fail', res)
           },
-          complete: (res) => {
+          complete: (_) => {
             this.done = true
           }
         } as RemoveSavedFileOptions)
@@ -919,13 +922,13 @@
             `${this.globalTempPath}${this.statFile}`, //CACHE_PATH
             this.recursiveVal)
           if (this.logAble) {
-            this.log += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
+            this.log += 'statFileInfoSyncTest success:' + JSON.stringify(res) + '\n\n'
           }
           this.statsRet = res
           this.done = true
         } catch (e) {
           if (this.logAble) {
-            this.log += 'rmdirSyncTest fail:' + e + '\n\n'
+            this.log += 'statFileInfoSyncTest fail:' + e + '\n\n'
           }
           this.done = true
         }
@@ -950,7 +953,7 @@
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res) => {
+          complete: (_) => {
             this.done = true
           }
         } as OpenFileOptions)
@@ -1013,9 +1016,6 @@
             console.log('fail', res)
             this.lastFailError = res
             this.done = true
-          },
-          complete: (res) => {
-
           }
         } as OpenFileOptions)
 
@@ -1047,7 +1047,7 @@
                 console.log('fail', res)
                 this.lastFailError = res
               },
-              complete: (res) => {
+              complete: (_) => {
                 this.done = true
               }
 
@@ -1092,7 +1092,7 @@
                 console.log('fail', res)
                 this.lastFailError = res
               },
-              complete: (res) => {
+              complete: (_) => {
                 this.done = true
               }
 
@@ -1126,14 +1126,14 @@
                 encoding: "utf-8"
               } as WriteSyncOptions)
               if (this.logAble) {
-                this.log += 'writeTest success:' + JSON.stringify(ret) + '\n\n'
+                this.log += 'writeSyncTest success:' + JSON.stringify(ret) + '\n\n'
               }
               console.log("success", ret)
               this.done = true
               this.bytesWritten = ret.bytesWritten
             } catch (e) {
               if (this.logAble) {
-                this.log += 'writeTest fail:' + JSON.stringify(e) + '\n\n'
+                this.log += 'writeSyncTest fail:' + JSON.stringify(e) + '\n\n'
               }
               console.log('fail', e)
               this.done = true
@@ -1168,7 +1168,7 @@
             console.log('fail', res)
             this.lastFailError = res
           },
-          complete: (res) => {
+          complete: (_) => {
             this.done = true
           }
 
@@ -1202,7 +1202,7 @@
             if (this.logAble) {
               this.log += 'ftruncateFileTest success:' + JSON.stringify(res) + '\n\n'
             }
-            this.ftruncateRet=res.errMsg
+            this.ftruncateRet = res.errMsg
           },
           fail: (res : UniError) => {
             if (this.logAble) {
@@ -1231,14 +1231,46 @@
             this.log += 'ftruncateFileSyncTest success:' + '\n\n'
           }
           this.done = true
-           this.ftruncateRet=''
+          this.ftruncateRet = ''
         } catch (e) {
           if (this.logAble) {
             this.log += 'ftruncateFileSyncTest fail:' + JSON.stringify(e) + '\n\n'
           }
           this.done = true
         }
-      }
+      },
+      readZipEntry() {
+        const fileManager = uni.getFileSystemManager()
+        fileManager.readZipEntry({
+          filePath: `${this.basePath}${this.readZipFile}`,
+          encoding: 'utf-8',
+          entries: [{
+            path: 'kkkk',
+            encoding: 'utf-8'
+          } as EntryItem,
+          {
+            path: 'log/log1.txt',
+            encoding: 'utf-8'
+          } as EntryItem,
+          {
+            path: 'hello.txt',
+            encoding: 'utf-8'
+          } as EntryItem],
+          success: (res : EntriesResult) => {
+            if (this.logAble) {
+              this.log += 'readZipEntry success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log("success", res)
+          },
+          fail: (res : UniError) => {
+            if (this.logAble) {
+              this.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('fail', res)
+            this.lastFailError = res
+          }
+        } as ReadZipEntryOptions)
+      },
 
     },
 
@@ -1246,5 +1278,7 @@
 </script>
 
 <style>
-
+ .btnstyle{
+   margin: 4px;
+ }
 </style>
