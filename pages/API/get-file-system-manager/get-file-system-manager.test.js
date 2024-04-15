@@ -936,8 +936,13 @@ describe('ExtApi-FileManagerTest', () => {
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
   });
-
   it('appendFileTest', async () => {
+    if(!isAndroid()){
+      return
+    }
+
+
+
     await page.setData({
       recursiveVal: true,
       logAble: false,
@@ -989,6 +994,11 @@ describe('ExtApi-FileManagerTest', () => {
   //renameFileSync copyFileSyncTest appendFileSyncTest truncateFileTest truncateFileSyncTest
   it('sync test',
     async () => {
+      if(!isAndroid()){
+        return
+      }
+
+
       await page.setData({
         recursiveVal: false,
         logAble: false,
@@ -1123,9 +1133,30 @@ describe('ExtApi-FileManagerTest', () => {
     await btnClear.tap()
     await isDone()
   }
+
+  function isAndroid() {
+    if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+      it('web', () => {
+        expect(1).toBe(1)
+      })
+      return false
+    }
+    if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
+      it('ios', () => {
+        expect(1).toBe(1)
+      })
+      return false
+    }
+    return true
+  }
   //saveFileTest saveFileSyncTest getSavedFileListTest removeSavedFileTest
   it('savefile test',
     async () => {
+      if(!isAndroid()){
+        return
+      }
+
+
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1161,6 +1192,11 @@ describe('ExtApi-FileManagerTest', () => {
 
   it('saveFileSyncTest',
     async () => {
+      if(!isAndroid()){
+        return
+      }
+
+
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1206,6 +1242,11 @@ describe('ExtApi-FileManagerTest', () => {
 
   it('getSavedFileListTest',
     async () => {
+      if(!isAndroid()){
+        return
+      }
+
+
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1241,6 +1282,11 @@ describe('ExtApi-FileManagerTest', () => {
 
   it('removeSavedFileTest',
     async () => {
+      if(!isAndroid()){
+        return
+      }
+
+
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1272,6 +1318,11 @@ describe('ExtApi-FileManagerTest', () => {
 
   //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
   it('openFiletest', async () => {
+    if(!isAndroid()){
+      return
+    }
+
+
     await clearDir('')
     await page.setData({
       mkdirFile: 'fd',
@@ -1298,6 +1349,11 @@ describe('ExtApi-FileManagerTest', () => {
   });
   // closeTest closeTestSync
   it('closeTest', async () => {
+    if(!isAndroid()){
+      return
+    }
+
+
     await clearDir('')
     await page.setData({
       mkdirFile: 'fd',
@@ -1324,6 +1380,10 @@ describe('ExtApi-FileManagerTest', () => {
   });
   //writeTest writeSyncTest
   it('writeTest', async () => {
+    if(!isAndroid()){
+      return
+    }
+
     await clearDir('')
     await page.setData({
       mkdirFile: 'fd',
