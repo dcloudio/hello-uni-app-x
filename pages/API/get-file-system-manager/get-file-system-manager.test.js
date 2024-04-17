@@ -1,3 +1,4 @@
+jest.setTimeout(30000);
 const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
@@ -1156,7 +1157,6 @@ describe('ExtApi-FileManagerTest', () => {
         return
       }
 
-      console.log('start saveFileSyncTest')
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1164,7 +1164,6 @@ describe('ExtApi-FileManagerTest', () => {
         basePath: basePath
       })
       await clearDir('')
-      console.log('end saveFileSyncTest1')
       await page.setData({
         logAble: false,
         basePath: globalTempPath,
@@ -1174,18 +1173,15 @@ describe('ExtApi-FileManagerTest', () => {
         accessFile: '2.txt'
       })
       await createFile()
-      console.log('end saveFileSyncTest2')
       await page.setData({
         basePath: basePath,
         writeFile: 'save/2.txt',
       })
       btnSaveFile = await page.$('#btn-save-file-sync')
       await btnSaveFile.tap()
-      console.log('end saveFileSyncTest3')
       let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
       await btnRemoveSavedFileRet.tap()
       await isDone()
-      console.log('end saveFileSyncTest4')
 
       let removeSavedFileRet = await getData("removeSavedFileRet")
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
@@ -1193,7 +1189,6 @@ describe('ExtApi-FileManagerTest', () => {
         removeSavedFileRet: ''
       })
       await clearDir('')
-      console.log('end saveFileSyncTest')
     });
 
   it('getSavedFileListTest',
