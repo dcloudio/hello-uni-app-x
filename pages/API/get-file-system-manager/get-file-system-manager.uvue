@@ -718,7 +718,6 @@
       },
       saveFileTest: function (_ : any) {
         const fileManager = uni.getFileSystemManager()
-        console.log('=====' + uni.env.USER_DATA_PATH)
         fileManager.saveFile({
           tempFilePath: `${this.globalTempPath}${this.temFile}`,
           // filePath:`${this.basePath}local/`,
@@ -728,13 +727,15 @@
             }
             console.log('success', res)
             this.saveFileRet = res.savedFilePath
+            this.done = true
           },
           fail: (res : UniError) => {
             if (this.logAble) {
               this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
-            console.log('fail', res)
+            console.log('saveFileTest fail', res)
             this.lastFailError = res
+            this.done = true
           },
           complete: (_) => {
             this.done = true
@@ -752,7 +753,7 @@
           //todo 后面打开
           // this.saveFileRet=res
         } catch (e) {
-          console.log(e)
+          console.log('saveFileSyncTest:'+e)
           this.done = true
         }
       },
@@ -788,14 +789,14 @@
             if (this.logAble) {
               this.log += 'getSavedFileListTest success:' + JSON.stringify(res) + '\n\n'
             }
-            console.log("success", res)
+            console.log("getSavedFileListTest success", res)
             this.fileListSuccess = res.fileList
           },
           fail: (res : UniError) => {
             if (this.logAble) {
               this.log += 'getSavedFileListTest fail:' + JSON.stringify(res) + '\n\n'
             }
-            console.log('fail', res)
+            console.log('getSavedFileListTest fail', res)
             this.lastFailError = res
           },
           complete: (res : any) => {
