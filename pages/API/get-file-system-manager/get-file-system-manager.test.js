@@ -937,7 +937,7 @@ describe('ExtApi-FileManagerTest', () => {
 
   });
   it('appendFileTest', async () => {
-    if(!isAndroid()){
+    if (!isAndroid()) {
       return
     }
 
@@ -994,7 +994,7 @@ describe('ExtApi-FileManagerTest', () => {
   //renameFileSync copyFileSyncTest appendFileSyncTest truncateFileTest truncateFileSyncTest
   it('sync test',
     async () => {
-      if(!isAndroid()){
+      if (!isAndroid()) {
         return
       }
 
@@ -1149,50 +1149,10 @@ describe('ExtApi-FileManagerTest', () => {
     }
     return true
   }
-  //saveFileTest saveFileSyncTest getSavedFileListTest removeSavedFileTest
-  it('savefile test',
-    async () => {
-      if(!isAndroid()){
-        return
-      }
-
-
-      let globalTempPath = await getData('globalTempPath')
-      let basePath = await getData('basePath')
-      await page.setData({
-        basePath: basePath
-      })
-      await clearDir('')
-
-
-      await page.setData({
-        basePath: globalTempPath,
-        temFile: 'save/1.txt',
-        mkdirFile: 'save',
-        writeFile: 'save/1.txt',
-        accessFile: '1.txt'
-      })
-      await createFile()
-
-      await page.setData({
-        basePath: basePath,
-        temFile: 'save/1.txt',
-      })
-      let btnSaveFile = await page.$('#btn-save-file')
-      await btnSaveFile.tap()
-      await isDone()
-      let saveFileRet = await getData("saveFileRet")
-      expect(saveFileRet).not.toBe('');
-      await page.setData({
-        saveFileRet: ''
-      })
-      await clearDir('')
-    });
-
 
   it('saveFileSyncTest',
     async () => {
-      if(!isAndroid()){
+      if (!isAndroid()) {
         return
       }
 
@@ -1200,10 +1160,12 @@ describe('ExtApi-FileManagerTest', () => {
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
+        logAble: false,
         basePath: basePath
       })
       await clearDir('')
       await page.setData({
+        logAble: false,
         basePath: globalTempPath,
         temFile: 'save/2.txt',
         mkdirFile: 'save',
@@ -1217,32 +1179,21 @@ describe('ExtApi-FileManagerTest', () => {
       })
       btnSaveFile = await page.$('#btn-save-file-sync')
       await btnSaveFile.tap()
-      await isDone()
 
       let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
       await btnRemoveSavedFileRet.tap()
       let removeSavedFileRet = await getData("removeSavedFileRet")
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
-
+      await isDone()
       await page.setData({
         removeSavedFileRet: ''
       })
-
-
-      let btnSavedFileList = await page.$('#btn-getsaved-filelist')
-      await btnSavedFileList.tap()
-      await isDone()
-      let fileListSuccess = await getData("fileListSuccess")
-      expect(fileListSuccess.length > 0).toEqual(true)
-
-
-
       await clearDir('')
     });
 
   it('getSavedFileListTest',
     async () => {
-      if(!isAndroid()){
+      if (!isAndroid()) {
         return
       }
 
@@ -1250,10 +1201,12 @@ describe('ExtApi-FileManagerTest', () => {
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
+        logAble: false,
         basePath: basePath
       })
       await clearDir('')
       await page.setData({
+        logAble: false,
         basePath: globalTempPath,
         temFile: 'save/2.txt',
         mkdirFile: 'save',
@@ -1267,22 +1220,19 @@ describe('ExtApi-FileManagerTest', () => {
       })
       btnSaveFile = await page.$('#btn-save-file-sync')
       await btnSaveFile.tap()
-      await isDone()
 
       let btnSavedFileList = await page.$('#btn-getsaved-filelist')
       await btnSavedFileList.tap()
       await isDone()
       let fileListSuccess = await getData("fileListSuccess")
       expect(fileListSuccess.length > 0).toEqual(true)
-
-
 
       await clearDir('')
     });
 
   it('removeSavedFileTest',
     async () => {
-      if(!isAndroid()){
+      if (!isAndroid()) {
         return
       }
 
@@ -1290,10 +1240,12 @@ describe('ExtApi-FileManagerTest', () => {
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
+        logAble: false,
         basePath: basePath
       })
       await clearDir('')
       await page.setData({
+        logAble: false,
         basePath: globalTempPath,
         temFile: 'save/2.txt',
         mkdirFile: 'save',
@@ -1318,13 +1270,14 @@ describe('ExtApi-FileManagerTest', () => {
 
   //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
   it('openFiletest', async () => {
-    if(!isAndroid()){
+    if (!isAndroid()) {
       return
     }
 
 
     await clearDir('')
     await page.setData({
+      logAble: false,
       mkdirFile: 'fd',
       writeFile: 'fd/1.txt',
       readFile: 'fd/1.txt'
@@ -1349,13 +1302,14 @@ describe('ExtApi-FileManagerTest', () => {
   });
   // closeTest closeTestSync
   it('closeTest', async () => {
-    if(!isAndroid()){
+    if (!isAndroid()) {
       return
     }
 
 
     await clearDir('')
     await page.setData({
+      logAble: false,
       mkdirFile: 'fd',
       writeFile: 'fd/1.txt',
       readFile: 'fd/1.txt'
@@ -1380,12 +1334,13 @@ describe('ExtApi-FileManagerTest', () => {
   });
   //writeTest writeSyncTest
   it('writeTest', async () => {
-    if(!isAndroid()){
+    if (!isAndroid()) {
       return
     }
 
     await clearDir('')
     await page.setData({
+      logAble: false,
       mkdirFile: 'fd',
       writeFile: 'fd/1.txt',
       readFile: 'fd/1.txt',
@@ -1443,4 +1398,46 @@ describe('ExtApi-FileManagerTest', () => {
     expect(fstat).not.toEqual('ftruncate:ok')
 
   });
+
+  //saveFileTest saveFileSyncTest getSavedFileListTest removeSavedFileTest
+  it('savefile test',
+    async () => {
+      if (!isAndroid()) {
+        return
+      }
+
+
+      let globalTempPath = await getData('globalTempPath')
+      let basePath = await getData('basePath')
+      await page.setData({
+        logAble: false,
+        basePath: basePath
+      })
+      await clearDir('')
+
+
+      await page.setData({
+        basePath: globalTempPath,
+        temFile: 'save/1.txt',
+        mkdirFile: 'save',
+        writeFile: 'save/1.txt',
+        accessFile: '1.txt'
+      })
+      await createFile()
+
+      await page.setData({
+        basePath: basePath,
+        temFile: 'save/1.txt',
+      })
+      let btnSaveFile = await page.$('#btn-save-file')
+      await btnSaveFile.tap()
+      await isDone()
+      let saveFileRet = await getData("saveFileRet")
+      expect(saveFileRet).not.toBe('');
+      await page.setData({
+        saveFileRet: ''
+      })
+      // await clearDir('')
+    });
+
 });
