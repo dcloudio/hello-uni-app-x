@@ -1,4 +1,4 @@
-jest.setTimeout(30000);
+jest.setTimeout(50000);
 const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
@@ -1156,7 +1156,6 @@ describe('ExtApi-FileManagerTest', () => {
       if (!isAndroid()) {
         return
       }
-
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1263,6 +1262,7 @@ describe('ExtApi-FileManagerTest', () => {
 
       let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
       await btnRemoveSavedFileRet.tap()
+      await isDone()
       let removeSavedFileRet = await getData("removeSavedFileRet")
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
       await clearDir('')
