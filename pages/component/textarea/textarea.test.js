@@ -19,40 +19,10 @@ describe('component-native-textarea', () => {
     await page.waitFor(500)
     expect(await textarea.attribute("focus")).toBe("false")
   });
-  /* it("auto-height", async () => {
+  it("auto-height", async () => {
     await page.setData({
+      default_value: "",
       auto_height_boolean: true
-    })
-    await page.waitFor(500)
-    // 原始高度
-    var {
-      width,
-      height
-    } = await textarea.size()
-    expect(height).toBeGreaterThanOrEqual(150)
-    await page.waitFor(500)
-    // 只有一行的高度
-    await page.setData({
-      maxlength: 3,
-    })
-    await page.waitFor(500)
-    await page.setData({
-      default_value: "第一行\n第二行\n第三行",
-    })
-    await page.waitFor(500)
-    var {
-      width,
-      height
-    } = await textarea.size()
-    expect(height).toBeLessThanOrEqual(50)
-
-    // 四行的高度
-    await page.setData({
-      maxlength: -1,
-    })
-    await page.waitFor(500)
-    await page.setData({
-      default_value: "第一行\n第二行\n第三行\n第四行",
     })
     await page.waitFor(500)
     var {
@@ -60,7 +30,17 @@ describe('component-native-textarea', () => {
       height
     } = await textarea.size()
     expect(height).toBeLessThanOrEqual(150)
-  }) */
+    await page.setData({
+      default_value: "1\n2\n3\n4\n5\n6",
+      auto_height_boolean: false
+    })
+    await page.waitFor(500)
+    var {
+      width,
+      height
+    } = await textarea.size()
+    expect(height).toEqual(150)
+  })
   it("cursor-color", async () => {
     await page.setData({
       cursor_color: "transparent",

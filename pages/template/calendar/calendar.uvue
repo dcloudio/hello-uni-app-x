@@ -39,7 +39,8 @@ export default {
         lunar: '',
         disabled: false,
         is_today: false
-      } as DateType
+      } as DateType,
+      testWidth: 0
     }
   },
   computed: {
@@ -65,6 +66,10 @@ export default {
     // 绘制日历头部
     this.drawHeader()
     this.drawWeek(this.weeks, '')
+
+    // 仅自动化测试
+    const header = this.$refs['draw-header'] as UniElement
+    this.testWidth = header.getBoundingClientRect().width;
   },
   methods: {
 
@@ -158,6 +163,9 @@ export default {
       const num = date_header_map.length
       const one_width = width / num
 
+      ctx.font = '12'
+      ctx.textAlign = 'center'
+
       for (let i = 0; i < num; i++) {
         let box_left = i * one_width + 2
         let box_width = one_width - 4
@@ -167,8 +175,7 @@ export default {
         const text = date_header_map[i]
         let text_left = box_width / 2 + box_left
         let text_top = box_height / 2 + 6
-        ctx.font = '12'
-        ctx.textAlign = 'center'
+
         ctx.fillText(text, text_left, text_top)
         ctx.update()
       }
@@ -192,6 +199,8 @@ export default {
         ctx.reset()
       }
 
+      ctx.textAlign = 'center'
+
       for (let week = 0; week < week_len; week++) {
 
         const week_item = weeks[week]
@@ -207,9 +216,7 @@ export default {
           let text_left = day * one_width + (one_width / 2)
           let text_top = one_height * week + 25
 
-
           ctx.font = '16'
-          ctx.textAlign = 'center'
 
           // 日期是否禁用
           if (day_item.disabled) {
@@ -250,9 +257,7 @@ export default {
           let lunar_left = day * one_width + (one_width / 2)
           let lunar_top = one_height * week + 42
           ctx.font = '10'
-          ctx.textAlign = 'center'
           ctx.fillText(text, lunar_left, lunar_top)
-
         }
       }
 
