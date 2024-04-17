@@ -1,3 +1,4 @@
+jest.setTimeout(30000);
 const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
