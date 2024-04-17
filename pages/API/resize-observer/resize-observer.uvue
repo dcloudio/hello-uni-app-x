@@ -1,12 +1,13 @@
 <template>
 	<view>
 		<text>点击蓝色或红色方块区域会修改元素宽高</text>
-		<view style="align-items: center; justify-content: center; margin: 10px;">
+		<view v-show="boxDisplay" style="align-items: center; justify-content: center; margin: 10px;">
 			<view style="width: 140px; height: 140px; background-color: blue; align-items: center; justify-content: center; padding: 5px;" id="outBox" @click="outBoxClick">
 				<view style="width: 80px; height: 80px; background-color: red; padding: 5px;" id="innerBox" @click="innerBoxClick"></view>
 			</view>
 		</view>
 		<button @click="revertBoxSize">还原修改前元素宽高</button>
+		<button @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
 		<view>
 			<text class="info-text">蓝色方块元素:</text>
 			<view class="info-item">
@@ -27,6 +28,7 @@
 				outBoxSizeInfo: "",
 				innerBoxSizeInfo: "",
 				offset: 2,
+				boxDisplay: true,
 				outBoxElement: null as UniElement | null,
 				innerBoxElement: null as UniElement | null,
 			}
@@ -64,6 +66,9 @@
 					this.innerBoxElement!.style.setProperty("width", "80px")
 					this.innerBoxElement!.style.setProperty("height", "80px")
 				}
+			},
+			toggleDisplay() {
+				this.boxDisplay = !this.boxDisplay
 			},
 			analysisResizeObserverEntry(entry: UniResizeObserverEntry): string {
 				const contentBoxSize = entry.contentBoxSize[0]
