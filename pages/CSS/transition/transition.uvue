@@ -22,6 +22,12 @@
         <view class="base-style transition-background" id="styleBackground" @click="changeBackground"></view>
       </view>
       <view class="container">
+        <text class="text">点击修改Background（颜色带透明度）</text>
+        <view style="flex: 1;">
+          <view class="base-style transition-background" id="styleBackground2" @click="changeBackground2"></view>
+        </view>
+      </view>
+      <view class="container">
         <text class="text">动态修改Background</text>
         <view class="base-style" id="propertyStyleBackground" @click="propertyChangeBackground"></view>
       </view>
@@ -63,6 +69,7 @@
         stylePadding: null as UniElement | null,
         isTransitionstyleBackground: false,
         styleBackground: null as UniElement | null,
+        styleBackground2: null as UniElement | null,
         isTransitionStyleTransform: false,
         styleTransform: null as UniElement | null,
         isTransitionStyleTransformWithWidth:false,
@@ -83,6 +90,7 @@
       this.styleMargin = uni.getElementById("styleMargin")
       this.stylePadding = uni.getElementById("stylePadding")
       this.styleBackground = uni.getElementById("styleBackground")
+      this.styleBackground2 = uni.getElementById("styleBackground2")
       this.styleTransform = uni.getElementById("styleTransform")
       this.styleBorder = uni.getElementById("styleBorder")
       this.stylePosition = uni.getElementById("stylePosition")
@@ -126,6 +134,14 @@
         this.styleBackground?.style?.setProperty("opacity", this.isTransitionstyleBackground
           ? '1'
           : '0.5'
+        )
+        this.isTransitionstyleBackground = !this.isTransitionstyleBackground
+      },
+      changeBackground2() {
+        console.log(aa)
+        this.styleBackground2?.style?.setProperty("background-color", this.isTransitionstyleBackground
+          ? 'brown'
+          : 'rgba(0, 0, 0, 0.5);'
         )
         this.isTransitionstyleBackground = !this.isTransitionstyleBackground
       },
@@ -199,6 +215,11 @@
     width: 200px;
     height: 200px;
     background-color: brown;
+  }
+
+  .transform-bgColor {
+    transition-property: background-color;
+    transition-duration: 0.5s;
   }
 
   .transition-width {
