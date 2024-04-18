@@ -1185,14 +1185,14 @@ describe('ExtApi-FileManagerTest', () => {
       await btnRemoveSavedFileRet.tap()
       await isDone()
       console.log('saveFileSyncTest', '3')
-
       let removeSavedFileRet = await getData("removeSavedFileRet")
+      console.log('saveFileSyncTest', '4')
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
+      console.log('saveFileSyncTest', '5')
       await page.setData({
         removeSavedFileRet: ''
       })
-      await clearDir('')
-      console.log('saveFileSyncTest', '4')
+      console.log('saveFileSyncTest', '6')
     });
 
   it('getSavedFileListTest',
@@ -1208,7 +1208,9 @@ describe('ExtApi-FileManagerTest', () => {
         logAble: false,
         basePath: basePath
       })
-      await clearDir('')
+      // console.log('getSavedFileListTest', 'start')
+      // await clearDir('')
+      // console.log('getSavedFileListTest', 'end')
       await page.setData({
         logAble: false,
         basePath: globalTempPath,
@@ -1230,8 +1232,6 @@ describe('ExtApi-FileManagerTest', () => {
       await isDone()
       let fileListSuccess = await getData("getSavedFileListRet")
       expect(fileListSuccess).toEqual('getSavedFileList:ok')
-
-      await clearDir('')
     });
 
   it('removeSavedFileTest',
@@ -1270,7 +1270,6 @@ describe('ExtApi-FileManagerTest', () => {
       await isDone()
       let removeSavedFileRet = await getData("removeSavedFileRet")
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
-      await clearDir('')
     });
 
   //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
@@ -1280,7 +1279,7 @@ describe('ExtApi-FileManagerTest', () => {
     }
 
 
-    await clearDir('')
+    // await clearDir('')
     await page.setData({
       logAble: false,
       mkdirFile: 'fd',
@@ -1312,7 +1311,7 @@ describe('ExtApi-FileManagerTest', () => {
     }
 
 
-    await clearDir('')
+    // await clearDir('')
     await page.setData({
       logAble: false,
       mkdirFile: 'fd',
@@ -1343,7 +1342,7 @@ describe('ExtApi-FileManagerTest', () => {
       return
     }
 
-    await clearDir('')
+    // await clearDir('')
     await page.setData({
       logAble: false,
       mkdirFile: 'fd',
@@ -1418,7 +1417,7 @@ describe('ExtApi-FileManagerTest', () => {
         logAble: false,
         basePath: basePath
       })
-      await clearDir('')
+      // await clearDir('')
 
 
       await page.setData({
