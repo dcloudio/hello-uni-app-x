@@ -1156,6 +1156,7 @@ describe('ExtApi-FileManagerTest', () => {
       if (!isAndroid()) {
         return
       }
+      console.log('saveFileSyncTest', 'start')
       let globalTempPath = await getData('globalTempPath')
       let basePath = await getData('basePath')
       await page.setData({
@@ -1163,6 +1164,7 @@ describe('ExtApi-FileManagerTest', () => {
         basePath: basePath
       })
       await clearDir('')
+      console.log('saveFileSyncTest', '1')
       await page.setData({
         logAble: false,
         basePath: globalTempPath,
@@ -1172,6 +1174,7 @@ describe('ExtApi-FileManagerTest', () => {
         accessFile: '2.txt'
       })
       await createFile()
+      console.log('saveFileSyncTest', '2')
       await page.setData({
         basePath: basePath,
         writeFile: 'save/2.txt',
@@ -1181,6 +1184,7 @@ describe('ExtApi-FileManagerTest', () => {
       let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
       await btnRemoveSavedFileRet.tap()
       await isDone()
+      console.log('saveFileSyncTest', '3')
 
       let removeSavedFileRet = await getData("removeSavedFileRet")
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
@@ -1188,6 +1192,7 @@ describe('ExtApi-FileManagerTest', () => {
         removeSavedFileRet: ''
       })
       await clearDir('')
+      console.log('saveFileSyncTest', '4')
     });
 
   it('getSavedFileListTest',
