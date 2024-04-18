@@ -14,12 +14,20 @@ describe('unicloud-call-function', () => {
     await page.callMethod('callFunction')
     const {
       callFunctionResult,
-      callFunctionError
+      callFunctionError,
     } = await page.data()
     console.error(callFunctionResult)
     console.error(callFunctionError)
     expect(callFunctionResult['showMessage']).toBe("Hello uniCloud function")
     expect(callFunctionResult['event']['num']).toBe(1)
     expect(callFunctionResult['event']['str']).toBe('ABC')
+  })
+
+  it('callFunctionWithGeneric', async () => {
+    await page.callMethod('callFunctionWithGeneric')
+    const {
+      genericDemoShowMessage,
+    } = await page.data()
+    expect(genericDemoShowMessage).toBe("Hello uniCloud function")
   })
 })
