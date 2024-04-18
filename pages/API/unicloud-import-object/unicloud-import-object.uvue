@@ -9,6 +9,9 @@
           <button type="primary" @tap="addTodo">添加Todo</button>
         </view>
         <view class="uni-btn-v uni-common-mt">
+          <button type="primary" @tap="addTodoWithGeneric">添加Todo传入泛型</button>
+        </view>
+        <view class="uni-btn-v uni-common-mt">
           <button type="primary" @tap="randomFail">随机触发失败重试</button>
         </view>
         <view class="uni-btn-v uni-common-mt">
@@ -36,6 +39,8 @@
         todoContent: '熟悉uts语法',
         returnTodoTitle: '',
         returnTodoContent: '',
+        genericDemoReturnTodoTitle: '',
+        genericDemoReturnTodoContent: '',
         failErrCode: '',
         failNumberErrCode: 0,
         successErrCode: -1,
@@ -60,11 +65,33 @@
         })
         const title = this.todoTitle
         const content = this.todoContent
-        await todo.add(title, content).then((res : UTSJSONObject) => {
+        await todo.add<UTSJSONObject>(title, content).then((res : UTSJSONObject) => {
           this.returnTodoTitle = res['title'] as string
           this.returnTodoContent = res['content'] as string
           this.notify(res['showMessage'] as string, '提示')
         }).catch((err : any | null) => {
+          console.log(err)
+          const error = err as UniCloudError
+          console.error(error)
+        })
+      },
+      async addTodoWithGeneric() : Promise<void> {
+        type AddTodoResult = {
+          title: string,
+          content: string,
+          showMessage: string
+        }
+        const todo = uniCloud.importObject('todo', {
+          customUI: this.isUniTest
+        })
+        const title = this.todoTitle
+        const content = this.todoContent
+        await todo.add<AddTodoResult>(title, content).then((res : AddTodoResult) => {
+          this.genericDemoReturnTodoTitle = res.title
+          this.genericDemoReturnTodoContent = res.content
+          this.notify(res.showMessage, '提示')
+        }).catch((err : any | null) => {
+          console.log(err)
           const error = err as UniCloudError
           console.error(error)
         })
