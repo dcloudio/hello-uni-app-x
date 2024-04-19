@@ -1137,15 +1137,11 @@ describe('ExtApi-FileManagerTest', () => {
 
   function isAndroid() {
     if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
-      it('web', () => {
-        expect(1).toBe(1)
-      })
+      expect(1).toBe(1)
       return false
     }
     if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
-      it('ios', () => {
-        expect(1).toBe(1)
-      })
+      expect(1).toBe(1)
       return false
     }
     return true
@@ -1247,7 +1243,7 @@ describe('ExtApi-FileManagerTest', () => {
         logAble: false,
         basePath: basePath
       })
-      await clearDir('')
+      // await clearDir('')
       await page.setData({
         logAble: false,
         basePath: globalTempPath,
@@ -1341,7 +1337,7 @@ describe('ExtApi-FileManagerTest', () => {
     if (!isAndroid()) {
       return
     }
-
+    console.log('writeTest', 'start')
     // await clearDir('')
     await page.setData({
       logAble: false,
@@ -1351,13 +1347,13 @@ describe('ExtApi-FileManagerTest', () => {
       writeData: '我是一只小小鸟'
     })
     await createFile()
-
+    console.log('writeTest', '1')
     let btnWrite = await page.$('#btn-write')
     await btnWrite.tap()
     await isDone()
     let bytesWritten = await getData("bytesWritten")
     expect(bytesWritten).toEqual(7)
-
+    console.log('writeTest', '2')
     //writeSyncTest
     await page.setData({
       writeFile: 'fd/1.txt',
@@ -1365,18 +1361,19 @@ describe('ExtApi-FileManagerTest', () => {
       writeData: '我是'
     })
 
-    btnWrite = await page.$('#btn-write')
+    btnWrite = await page.$('#btn-write-sync')
     await btnWrite.tap()
     await isDone()
     bytesWritten = await getData("bytesWritten")
     expect(bytesWritten).toEqual(2)
-
+    console.log('writeTest', '3')
     //fstatTest
     let btnFstat = await page.$('#btn-fstat-file')
     await btnFstat.tap()
     await isDone()
     let fstat = await getData("fstat")
     expect(fstat.size > 0).toBe(true)
+    console.log('writeTest', '4')
 
     //fstatSyncTest
     btnFstat = await page.$('#btn-fstat-file-sync')
@@ -1384,6 +1381,7 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
     fstat = await getData("fstat")
     expect(fstat.size > 0).toBe(true)
+    console.log('writeTest', '5')
 
     //ftruncateFileTest
     let btnFTruncateFile = await page.$('#btn-ftruncate-file')
@@ -1394,15 +1392,57 @@ describe('ExtApi-FileManagerTest', () => {
     await page.setData({
       ftruncate: '',
     })
+    console.log('writeTest', '6')
+
     //ftruncateFileSyncTest
     btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
     await btnFTruncateFile.tap()
     await isDone()
     ftruncateRet = await getData("ftruncateRet")
     expect(fstat).not.toEqual('ftruncate:ok')
-
+    console.log('writeTest', '7')
   });
+  //writeTest writeSyncTest
+  it('ftruncateFileTest', async () => {
+    if (!isAndroid()) {
+      return
+    }
+    console.log('ftruncateFileTest', 'start')
+    // await clearDir('')
+    await page.setData({
+      logAble: false,
+      mkdirFile: 'fd',
+      writeFile: 'fd/1.txt',
+      readFile: 'fd/1.txt',
+      writeData: '我是一只小小鸟我是'
+    })
+    await createFile()
+    console.log('ftruncateFileTest', '1')
+    btnWrite = await page.$('#btn-write-sync')
+    await btnWrite.tap()
+    await isDone()
+    bytesWritten = await getData("bytesWritten")
+    expect(bytesWritten).toEqual(9)
+    console.log('ftruncateFileTest', '3')
+    //ftruncateFileTest
+    let btnFTruncateFile = await page.$('#btn-ftruncate-file')
+    await btnFTruncateFile.tap()
+    await isDone()
+    let ftruncateRet = await getData("ftruncateRet")
+    expect(ftruncateRet).toEqual('ftruncate:ok')
+    await page.setData({
+      ftruncate: '',
+    })
+    console.log('ftruncateFileTest', '6')
 
+    //ftruncateFileSyncTest
+    btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
+    await btnFTruncateFile.tap()
+    await isDone()
+    ftruncateRet = await getData("ftruncateRet")
+    expect(ftruncateRet).toEqual('ftruncate:ok')
+    console.log('ftruncateFileTest', '7')
+  });
   //saveFileTest saveFileSyncTest getSavedFileListTest removeSavedFileTest
   it('savefile test',
     async () => {
