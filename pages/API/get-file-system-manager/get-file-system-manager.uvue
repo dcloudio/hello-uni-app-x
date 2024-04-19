@@ -66,7 +66,7 @@
     <button class="btnstyle" type="primary" @tap="closeSyncTest"
       id="btn-close-file-sync">通过文件描述符同步关闭文件{{readFile}}</button>
     <button class="btnstyle" type="primary" @tap="writeTest" id="btn-write">通过文件描述符写入文件{{readFile}}</button>
-    <button class="btnstyle" type="primary" @tap="writeSyncTest" id="btn-read-file">同步通过文件描述符写入文件{{readFile}}</button>
+    <button class="btnstyle" type="primary" @tap="writeSyncTest" id="btn-write-sync">同步通过文件描述符写入文件{{readFile}}</button>
     <button class="btnstyle" type="primary" @tap="fstatTest" id="btn-fstat-file">通过文件描述符获取{{statFile}}的状态信息</button>
     <button class="btnstyle" type="primary" @tap="fstatSyncTest"
       id="btn-fstat-file-sync">同步通过文件描述符获取{{statFile}}的状态信息</button>
@@ -135,7 +135,7 @@
         fstat: null as Stats | null,
         ftruncateRet: '',
         readZipFile: 'to.zip',
-        getSavedFileListRet:'',
+        getSavedFileListRet: '',
         /**
          * 待测试的全局环境变量
          */
@@ -1007,87 +1007,47 @@
       closeSyncTest() {
         console.log('closeSyncTest')
         const fileManager = uni.getFileSystemManager()
-        fileManager.open({
-          filePath: `${this.basePath}${this.readFile}`,
-          flag: "r+",
-          success: (res : OpenFileSuccessResult) => {
-            console.log("success", res)
-            if (res.fd.length <= 0) {
-              this.done = true
-              return
-            }
-            try {
-              console.log('closeSync')
-              fileManager.closeSync({
-                fd: res.fd
-              } as CloseSyncOptions)
-              if (this.logAble) {
-                this.log += 'closeSyncTest success:' + '\n\n'
-              }
-              this.done = true
-              this.closeFileRet = "close:ok"
-            } catch (e) {
-              if (this.logAble) {
-                this.log += 'closeSyncTest fail:' + JSON.stringify(e) + '\n\n'
-              }
-              console.log('fail', e)
-              this.done = true
-            }
-
-          },
-          fail: (res : UniError) => {
-            if (this.logAble) {
-              this.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log('fail', res)
-            this.lastFailError = res
-            this.done = true
+        try {
+          console.log('closeSync')
+          fileManager.closeSync({
+            fd: this.openFileSyncTest()
+          } as CloseSyncOptions)
+          if (this.logAble) {
+            this.log += 'closeSyncTest success:' + '\n\n'
           }
-        } as OpenFileOptions)
-
+          this.done = true
+          this.closeFileRet = "close:ok"
+        } catch (e) {
+          if (this.logAble) {
+            this.log += 'closeSyncTest fail:' + JSON.stringify(e) + '\n\n'
+          }
+          console.log('fail', e)
+          this.done = true
+        }
       },
       closeTest() {
         const fileManager = uni.getFileSystemManager()
-        fileManager.open({
-          filePath: `${this.basePath}${this.readFile}`,
-          flag: "r+",
-          success: (res : OpenFileSuccessResult) => {
-            console.log("success", res)
-            if (res.fd.length <= 0) {
-              this.done = true
-              return
+        fileManager.close({
+          fd: this.openFileSyncTest(),
+          success: (res : FileManagerSuccessResult) => {
+            if (this.logAble) {
+              this.log += 'closeTest success:' + JSON.stringify(res) + '\n\n'
             }
-            fileManager.close({
-              fd: res.fd,
-              success: (res : FileManagerSuccessResult) => {
-                if (this.logAble) {
-                  this.log += 'closeTest success:' + JSON.stringify(res) + '\n\n'
-                }
-                this.closeFileRet = res.errMsg
-                console.log("success", res)
-              },
-              fail: (res : UniError) => {
-                if (this.logAble) {
-                  this.log += 'closeTest fail:' + JSON.stringify(res) + '\n\n'
-                }
-                console.log('fail', res)
-                this.lastFailError = res
-              },
-              complete: (_) => {
-                this.done = true
-              }
-
-            } as CloseOptions)
+            this.closeFileRet = res.errMsg
+            console.log("success", res)
           },
           fail: (res : UniError) => {
             if (this.logAble) {
-              this.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
+              this.log += 'closeTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
+          },
+          complete: (_) => {
             this.done = true
           }
-        } as OpenFileOptions)
+
+        } as CloseOptions)
       },
       writeTest() {
         const fileManager = uni.getFileSystemManager()
@@ -1257,7 +1217,7 @@
             this.log += 'ftruncateFileSyncTest success:' + '\n\n'
           }
           this.done = true
-          this.ftruncateRet = ''
+          this.ftruncateRet = 'ftruncate:ok'
         } catch (e) {
           if (this.logAble) {
             this.log += 'ftruncateFileSyncTest fail:' + JSON.stringify(e) + '\n\n'
