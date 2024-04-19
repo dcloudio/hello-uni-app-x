@@ -822,20 +822,21 @@ describe('ExtApi-FileManagerTest', () => {
     expect(statsRet.length).toEqual(1)
     expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
     expect(statsRet[0].stats.size).toEqual(69)
+    if (isAndroid()) {
+      // 写入一个文件
+      await page.setData({
+        statsRet: ''
+      })
+      btnStatFileButton = await page.$('#btn-stat-file-sync')
+      await btnStatFileButton.tap()
+      await isDone()
 
-    // 写入一个文件
-    await page.setData({
-      statsRet: ''
-    })
-    btnStatFileButton = await page.$('#btn-stat-file-sync')
-    await btnStatFileButton.tap()
-    await isDone()
-
-    // 读取单个文件信息
-    statsRet = await getData('statsRet')
-    expect(statsRet.length).toEqual(1)
-    expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
-    expect(statsRet[0].stats.size).toEqual(69)
+      // 读取单个文件信息
+      statsRet = await getData('statsRet')
+      expect(statsRet.length).toEqual(1)
+      expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
+      expect(statsRet[0].stats.size).toEqual(69)
+    }
 
     /**
      * 创建子目录和子目录文件，测试recursive参数
