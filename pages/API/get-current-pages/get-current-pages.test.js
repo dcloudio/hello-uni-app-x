@@ -8,7 +8,7 @@ describe('getCurrentPages', () => {
     if (process.env.uniTestPlatformInfo.startsWith('web')) {
       const waitTime = process.env.uniTestPlatformInfo.includes('safari') ?
         5000 :
-        1000
+        3000
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve()
