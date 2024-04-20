@@ -24,26 +24,21 @@ describe('getCurrentPages', () => {
     const data = await page.data()
     expect(data.checked).toBe(true)
   })
-  it('getPageStyle', async () => {
-    const btn = await page.$('.btn-get-page-style')
-    await btn.tap()
-    await page.waitFor(100)
+  it('page-style', async () => {
+    page = await program.navigateTo(PAGE_PATH)
 
-    const {
-      currentPageStyle
-    } = await page.data()
+    await page.callMethod('getPageStyle')
+    await page.waitFor(200)
+    const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    expect(isEnablePullDownRefresh1).toBe(true)
 
-    expect(currentPageStyle['enablePullDownRefresh']).toBe(true)
-  })
-  it('setPageStyle', async () => {
-    const btn = await page.$('.btn-set-page-style-0')
-    await btn.tap()
-    await page.waitFor(100)
+    // setPageStyle
+    await page.callMethod('setPageStyle', false)
+    await page.waitFor(200)
 
-    const {
-      currentPageStyle
-    } = await page.data()
-
-    expect(currentPageStyle['enablePullDownRefresh']).toBe(false)
+    await page.callMethod('getPageStyle')
+    await page.waitFor(200)
+    const isEnablePullDownRefresh2 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    expect(isEnablePullDownRefresh2).toBe(false)
   })
 })
