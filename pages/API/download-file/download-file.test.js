@@ -22,6 +22,17 @@ describe('ExtApi-DownloadFile', () => {
     expect(res).toBe(true);
   });
 
+
+  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
+    it('Check uni.env', async () => {
+      await page.callMethod('jest_downloadFile_with_uni_env');
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true);
+    });
+  }
+
+
   let shouldTestCookie = false
   if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let version = process.env.uniTestPlatformInfo
