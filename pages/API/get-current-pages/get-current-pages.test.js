@@ -25,8 +25,6 @@ describe('getCurrentPages', () => {
     expect(data.checked).toBe(true)
   })
   it('getPageStyle', async () => {
-    await changeData(page)
-
     const btn = await page.$('.btn-get-page-style')
     await btn.tap()
     await page.waitFor(100)
@@ -38,8 +36,6 @@ describe('getCurrentPages', () => {
     expect(currentPageStyle['enablePullDownRefresh']).toBe(true)
   })
   it('setPageStyle', async () => {
-    await changeData(page)
-
     const btn = await page.$('.btn-set-page-style-0')
     await btn.tap()
     await page.waitFor(100)
