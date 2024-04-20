@@ -8,6 +8,13 @@
         <text style="margin-top: 5px">index: {{ index }}, route: {{ page.route }}</text>
       </template>
     </view>
+    <button class="btn btn-get-page-style" type="primary" @click="getPageStyle">getPageStyle</button>
+    <button class="btn btn-set-page-style-1" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
+    <button class="btn btn-set-page-style-0" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
+    <textarea class="textarea" :value="pageStyleText" :maxlength="-1" :auto-height="true"></textarea>
+    <text class="tips">
+      当前版本仅支持设置属性 enablePullDownRefresh
+    </text>
   </view>
 </template>
 
@@ -22,7 +29,18 @@
       return {
         checked: false,
         pages: [] as Page[],
+        currentPageStyle: {} as UTSJSONObject
       }
+    },
+    computed: {
+      pageStyleText() : string {
+        return JSON.stringify(this.currentPageStyle)
+      }
+    },
+    onPullDownRefresh() {
+      setTimeout(() => {
+        uni.stopPullDownRefresh()
+      }, 3000)
     },
     methods: {
       _getCurrentPages: function () {
@@ -39,6 +57,43 @@
           }
         }
       },
+      getPageStyle() {
+        const pages = getCurrentPages();
+        const currentPage = pages[pages.length - 1];
+        this.currentPageStyle = currentPage.$getPageStyle();
+      },
+      setPageStyle(epr : boolean) {
+        // 目前仅支持 enablePullDownRefresh
+        const pages = getCurrentPages();
+        const currentPage = pages[pages.length - 1];
+        currentPage.$setPageStyle({
+          enablePullDownRefresh: epr
+        });
+      },
+      // getCurrentPage(): Page {
+      //   const pages = getCurrentPages();
+      //   const currentPage = pages[pages.length - 1];
+      //   return currentPage;
+      // }
     },
   }
 </script>
+
+
+<style>
+  .btn {
+    margin-top: 10px;
+  }
+
+  .textarea {
+    margin-top: 5px;
+    padding: 5px;
+    background-color: #fff;
+  }
+
+  .tips {
+    font-size: 12px;
+    margin-top: 10px;
+    opacity: .8;
+  }
+</style>

@@ -6,9 +6,9 @@ describe('getCurrentPages', () => {
   it('getCurrentPages', async () => {
     // web 端等待应用首页加载完成
     if (process.env.uniTestPlatformInfo.startsWith('web')) {
-      const waitTime = process.env.uniTestPlatformInfo.includes('safari')
-        ? 5000
-        : 1000
+      const waitTime = process.env.uniTestPlatformInfo.includes('safari') ?
+        5000 :
+        1000
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve()
@@ -23,5 +23,31 @@ describe('getCurrentPages', () => {
     await page.waitFor(200)
     const data = await page.data()
     expect(data.checked).toBe(true)
+  })
+  it('getPageStyle', async () => {
+    await changeData(page)
+
+    const btn = await page.$('.btn-get-page-style')
+    await btn.tap()
+    await page.waitFor(100)
+
+    const {
+      currentPageStyle
+    } = await page.data()
+
+    expect(currentPageStyle['enablePullDownRefresh']).toBe(true)
+  })
+  it('setPageStyle', async () => {
+    await changeData(page)
+
+    const btn = await page.$('.btn-set-page-style-0')
+    await btn.tap()
+    await page.waitFor(100)
+
+    const {
+      currentPageStyle
+    } = await page.data()
+
+    expect(currentPageStyle['enablePullDownRefresh']).toBe(false)
   })
 })
