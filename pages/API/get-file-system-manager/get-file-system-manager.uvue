@@ -786,36 +786,32 @@
         }
       },
       unzipFileTest: function (_ : any) {
-        uni.downloadFile({
-          url: 'https://b2c-store.oss-ap-southeast-1.aliyuncs.com/ceshi/FRT.zip',
-          success: (res) => {
-            console.log(res)
-            const fileManager = uni.getFileSystemManager()
-            fileManager.unzip({
-              zipFilePath: res.tempFilePath,
-              targetPath: `${this.basePath}${this.targetZip}`,
-              success: (res : FileManagerSuccessResult) => {
-                if (this.logAble) {
-                  this.log += 'unzipFileTest success:' + JSON.stringify(res) + '\n\n'
-                }
-                console.log('success', res)
-              },
-              fail: (res : UniError) => {
-                if (this.logAble) {
-                  this.log += 'unzipFileTest fail:' + JSON.stringify(res) + '\n\n'
-                }
-                console.log('fail', res)
-                this.lastFailError = res
-              },
-              complete: (_) => {
-                this.done = true
-              }
-            } as UnzipFileOptions)
+        const fileManager = uni.getFileSystemManager()
+        try {
+          fileManager.mkdirSync(`${this.basePath}${this.targetZip}`, true)
+        } catch (e) {
+          console.error(e)
+        }
+        fileManager.unzip({
+          zipFilePath: '/static/filemanager/to.zip',
+          targetPath: `${this.basePath}${this.targetZip}`,
+          success: (res : FileManagerSuccessResult) => {
+            if (this.logAble) {
+              this.log += 'unzipFileTest success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('success', res)
           },
-          fail: (e) => {
-            console.log(e)
+          fail: (res : UniError) => {
+            if (this.logAble) {
+              this.log += 'unzipFileTest fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('fail', res)
+            this.lastFailError = res
+          },
+          complete: (_) => {
+            this.done = true
           }
-        })
+        } as UnzipFileOptions)
       },
 
       getSavedFileListTest: function () {
@@ -1233,33 +1229,24 @@
         }
       },
       readZipEntry() {
-        uni.downloadFile({
-          url: 'https://b2c-store.oss-ap-southeast-1.aliyuncs.com/ceshi/FRT.zip',
-          success: (res) => {
-            console.log(res)
-            const fileManager = uni.getFileSystemManager()
-            fileManager.readZipEntry({
-              filePath: res.tempFilePath,
-              encoding: 'utf-8',
-              success: (res : EntriesResult) => {
-                if (this.logAble) {
-                  this.log += 'readZipEntry success:size=' + res.result.size + '\n\n'
-                }
-                console.log("success", res)
-              },
-              fail: (res : UniError) => {
-                if (this.logAble) {
-                  this.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
-                }
-                console.log('fail', res)
-                this.lastFailError = res
-              }
-            } as ReadZipEntryOptions)
+        const fileManager = uni.getFileSystemManager()
+        fileManager.readZipEntry({
+          filePath: '/static/filemanager/to.zip',
+          encoding: 'utf-8',
+          success: (res : EntriesResult) => {
+            if (this.logAble) {
+              this.log += 'readZipEntry success:size=' + res.result.size + '\n\n'
+            }
+            console.log("success", res)
           },
-          fail: (e) => {
-            console.log(e)
+          fail: (res : UniError) => {
+            if (this.logAble) {
+              this.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log('fail', res)
+            this.lastFailError = res
           }
-        })
+        } as ReadZipEntryOptions)
       },
 
     },
