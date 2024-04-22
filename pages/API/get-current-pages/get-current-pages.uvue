@@ -11,10 +11,13 @@
     <button class="btn btn-get-page-style" type="default" @click="getPageStyle">getPageStyle</button>
     <button class="btn btn-set-page-style-1" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
     <button class="btn btn-set-page-style-0" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
-    <textarea class="textarea" :value="pageStyleText" :maxlength="-1" :auto-height="true"></textarea>
-    <text class="tips">
-      当前版本仅支持设置属性 enablePullDownRefresh
-    </text>
+    <text class="page-style">当前 PageStyle</text>
+    <text class="page-style-value">{{pageStyleText}}</text>
+    <text class="status">状态：</text>
+    <view class="status-list">
+      <text>enablePullDownRefresh: {{enablePullDownRefreshStatus}}</text>
+    </view>
+    <text class="tips">当前版本仅支持设置属性 enablePullDownRefresh</text>
   </view>
 </template>
 
@@ -29,7 +32,9 @@
       return {
         checked: false,
         pages: [] as Page[],
-        currentPageStyle: {} as UTSJSONObject
+        currentPageStyle: {} as UTSJSONObject,
+        // TODO
+        enablePullDownRefreshStatus: true
       }
     },
     computed: {
@@ -62,13 +67,14 @@
         const currentPage = pages[pages.length - 1];
         this.currentPageStyle = currentPage.$getPageStyle();
       },
-      setPageStyle(epr : boolean) {
+      setPageStyle(enable : boolean) {
         // 目前仅支持 enablePullDownRefresh
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
         currentPage.$setPageStyle({
-          enablePullDownRefresh: epr
+          enablePullDownRefresh: enable
         });
+        this.enablePullDownRefreshStatus = enable
       },
       // getCurrentPage(): Page {
       //   const pages = getCurrentPages();
@@ -85,16 +91,28 @@
     margin-top: 10px;
   }
 
-  .textarea {
+  .page-style {
+    margin-top: 15px;
+  }
+
+  .page-style-value {
     margin-top: 5px;
     padding: 5px;
     background-color: #fff;
     width: 100%;
   }
 
+  .status {
+    margin-top: 20px;
+  }
+
+  .status-list {
+    margin-top: 5px;
+  }
+
   .tips {
     font-size: 12px;
-    margin-top: 10px;
+    margin-top: 15px;
     opacity: .8;
   }
 </style>
