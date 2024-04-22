@@ -483,7 +483,7 @@
             console.log("success to readdir", res)
             res.files.forEach(element => {
               console.log(element)
-              let filePath:string
+              let filePath : string
               if (this.rmDirFile.length <= 0) {
                 filePath = `${this.basePath}${element}`
               } else {
@@ -786,28 +786,36 @@
         }
       },
       unzipFileTest: function (_ : any) {
-        const fileManager = uni.getFileSystemManager()
-
-        fileManager.unzip({
-          zipFilePath: `${this.basePath}${this.unzipFile}`,
-          targetPath: `${this.basePath}${this.targetZip}`,
-          success: (res : FileManagerSuccessResult) => {
-            if (this.logAble) {
-              this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log('success', res)
+        uni.downloadFile({
+          url: 'https://b2c-store.oss-ap-southeast-1.aliyuncs.com/ceshi/FRT.zip',
+          success: (res) => {
+            console.log(res)
+            const fileManager = uni.getFileSystemManager()
+            fileManager.unzip({
+              zipFilePath: res.tempFilePath,
+              targetPath: `${this.basePath}${this.targetZip}`,
+              success: (res : FileManagerSuccessResult) => {
+                if (this.logAble) {
+                  this.log += 'unzipFileTest success:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('success', res)
+              },
+              fail: (res : UniError) => {
+                if (this.logAble) {
+                  this.log += 'unzipFileTest fail:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('fail', res)
+                this.lastFailError = res
+              },
+              complete: (_) => {
+                this.done = true
+              }
+            } as UnzipFileOptions)
           },
-          fail: (res : UniError) => {
-            if (this.logAble) {
-              this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log('fail', res)
-            this.lastFailError = res
-          },
-          complete: (_) => {
-            this.done = true
+          fail: (e) => {
+            console.log(e)
           }
-        } as UnzipFileOptions)
+        })
       },
 
       getSavedFileListTest: function () {
@@ -881,7 +889,7 @@
       readCompressedFileTest() {
         const fileManager = uni.getFileSystemManager()
         fileManager.readCompressedFile({
-          filePath: `${this.basePath}${this.brFile}`,
+          filePath: '/static/filemanager/1.txt.br',
           compressionAlgorithm: "br",
           success: (res : ReadCompressedFileResult) => {
             if (this.logAble) {
@@ -906,7 +914,7 @@
         const fileManager = uni.getFileSystemManager()
         try {
           let data = fileManager.readCompressedFileSync(
-            `${this.basePath}${this.brFile}`,
+            '/static/filemanager/1.txt.br',
             "br")
           if (this.logAble) {
             this.log += data
@@ -1224,36 +1232,33 @@
         }
       },
       readZipEntry() {
-        const fileManager = uni.getFileSystemManager()
-        fileManager.readZipEntry({
-          filePath: `${this.basePath}${this.readZipFile}`,
-          encoding: 'utf-8',
-          entries: [{
-            path: 'kkkk',
-            encoding: 'utf-8'
-          } as EntryItem,
-          {
-            path: 'log/log1.txt',
-            encoding: 'utf-8'
-          } as EntryItem,
-          {
-            path: 'hello.txt',
-            encoding: 'utf-8'
-          } as EntryItem],
-          success: (res : EntriesResult) => {
-            if (this.logAble) {
-              this.log += 'readZipEntry success:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log("success", res)
+        uni.downloadFile({
+          url: 'https://b2c-store.oss-ap-southeast-1.aliyuncs.com/ceshi/FRT.zip',
+          success: (res) => {
+            console.log(res)
+            const fileManager = uni.getFileSystemManager()
+            fileManager.readZipEntry({
+              filePath: res.tempFilePath,
+              encoding: 'utf-8',
+              success: (res : EntriesResult) => {
+                if (this.logAble) {
+                  this.log += 'readZipEntry success:size=' + res.result.size + '\n\n'
+                }
+                console.log("success", res)
+              },
+              fail: (res : UniError) => {
+                if (this.logAble) {
+                  this.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('fail', res)
+                this.lastFailError = res
+              }
+            } as ReadZipEntryOptions)
           },
-          fail: (res : UniError) => {
-            if (this.logAble) {
-              this.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log('fail', res)
-            this.lastFailError = res
+          fail: (e) => {
+            console.log(e)
           }
-        } as ReadZipEntryOptions)
+        })
       },
 
     },
