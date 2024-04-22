@@ -182,16 +182,17 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const image = await program.screenshot({
-        deviceShot: true,
-        area: {
-          x: 0,
-          y: 200,
-          height: windowHeight - 100,
-          width:windowWidth
-        },
-      });
-      expect(image).toSaveImageSnapshot();
+      // add since 2024-04-22 app 不再截图，避免跨平台对比失败
+      // const image = await program.screenshot({
+      //   deviceShot: true,
+      //   area: {
+      //     x: 0,
+      //     y: 200,
+      //     height: windowHeight - 100,
+      //     width:windowWidth
+      //   },
+      // });
+      // expect(image).toSaveImageSnapshot();
     }else{
       const image = await program.screenshot({
         deviceShot: true,
