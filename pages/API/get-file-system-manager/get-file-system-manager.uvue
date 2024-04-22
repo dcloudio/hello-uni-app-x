@@ -60,7 +60,7 @@
     <button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest"
       id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
     <button class="btnstyle" type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{readFile}}，返回描述符</button>
-    <button class="btnstyle" type="primary" @tap="openFileSyncTest"
+    <button class="btnstyle" type="primary" @tap="openFileSyncTest('r')"
       id="btn-open-file-sync">同步打开文件{{readFile}}，返回描述符</button>
     <button class="btnstyle" type="primary" @tap="closeTest" id="btn-close-file">通过文件描述符关闭文件{{readFile}}</button>
     <button class="btnstyle" type="primary" @tap="closeSyncTest"
@@ -483,8 +483,14 @@
             console.log("success to readdir", res)
             res.files.forEach(element => {
               console.log(element)
+              let filePath:string
+              if (this.rmDirFile.length <= 0) {
+                filePath = `${this.basePath}${element}`
+              } else {
+                filePath = `${this.basePath}${this.rmDirFile}/${element}`
+              }
               fileManager.unlink({
-                filePath: `${this.basePath}${this.rmDirFile}/${element}`,
+                filePath: filePath,
                 success: (res : FileManagerSuccessResult) => {
                   if (this.logAble) {
                     this.log += 'unlinkAllFileTest success:' + JSON.stringify(res) + '\n\n'
@@ -768,7 +774,7 @@
         const fileManager = uni.getFileSystemManager()
         try {
           fileManager.saveFileSync(
-            `${this.globalTempPath}${this.temFile}`, `${this.basePath}local/`)
+            `${this.globalTempPath}${this.temFile}`, `${this.basePath}/`)
           // filePath:`${this.basePath}local/`,)
           this.done = true
 
@@ -982,12 +988,12 @@
           }
         } as OpenFileOptions)
       },
-      openFileSyncTest() : string {
+      openFileSyncTest(param : string) : string {
         const fileManager = uni.getFileSystemManager()
         try {
           let fd = fileManager.openSync({
             filePath: `${this.basePath}${this.readFile}`,
-            flag: "r",
+            flag: param,
           } as OpenFileSyncOptions)
           if (this.logAble) {
             this.log += 'openFileSyncTest success:' + fd + '\n\n'
@@ -1010,7 +1016,7 @@
         try {
           console.log('closeSync')
           fileManager.closeSync({
-            fd: this.openFileSyncTest()
+            fd: this.openFileSyncTest('r')
           } as CloseSyncOptions)
           if (this.logAble) {
             this.log += 'closeSyncTest success:' + '\n\n'
@@ -1028,7 +1034,7 @@
       closeTest() {
         const fileManager = uni.getFileSystemManager()
         fileManager.close({
-          fd: this.openFileSyncTest(),
+          fd: this.openFileSyncTest('r'),
           success: (res : FileManagerSuccessResult) => {
             if (this.logAble) {
               this.log += 'closeTest success:' + JSON.stringify(res) + '\n\n'
@@ -1051,51 +1057,43 @@
       },
       writeTest() {
         const fileManager = uni.getFileSystemManager()
-        fileManager.open({
-          filePath: `${this.basePath}${this.readFile}`,
-          flag: "r+",
-          success: (res : OpenFileSuccessResult) => {
-            console.log("success", res)
-            if (res.fd.length <= 0) {
-              this.done = true
-              return
-            }
-            fileManager.write({
-              fd: res.fd,
-              data: this.writeData,
-              encoding: "utf-8",
-              success: (res : WriteResult) => {
-                if (this.logAble) {
-                  this.log += 'writeTest success:' + JSON.stringify(res) + '\n\n'
-                }
-                console.log("success", res)
-                this.bytesWritten = res.bytesWritten
-              },
-              fail: (res : UniError) => {
-                if (this.logAble) {
-                  this.log += 'writeTest fail:' + JSON.stringify(res) + '\n\n'
-                }
-                console.log('fail', res)
-                this.lastFailError = res
-              },
-              complete: (_) => {
-                this.done = true
-              }
+        try {
+          fileManager.mkdirSync(`${this.basePath}${this.mkdirFile}`, true)
+        } catch (e) {
+          console.error(e)
+        }
 
-            } as WriteOptions)
+        fileManager.write({
+          fd: this.openFileSyncTest('w+'),
+          data: this.writeData,
+          encoding: "utf-8",
+          success: (res : WriteResult) => {
+            if (this.logAble) {
+              this.log += 'writeTest success:' + JSON.stringify(res) + '\n\n'
+            }
+            console.log("success", res)
+            this.bytesWritten = res.bytesWritten
           },
           fail: (res : UniError) => {
             if (this.logAble) {
-              this.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
+              this.log += 'writeTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
             this.lastFailError = res
+          },
+          complete: (_) => {
             this.done = true
           }
-        } as OpenFileOptions)
+
+        } as WriteOptions)
       },
       writeSyncTest() {
         const fileManager = uni.getFileSystemManager()
+        try {
+          fileManager.mkdirSync(`${this.basePath}${this.mkdirFile}`, true)
+        } catch (e) {
+          console.error(e)
+        }
         fileManager.open({
           filePath: `${this.basePath}${this.readFile}`,
           flag: "r+",
@@ -1139,7 +1137,7 @@
       fstatTest() {
         const fileManager = uni.getFileSystemManager()
         fileManager.fstat({
-          fd: this.openFileSyncTest(),
+          fd: this.openFileSyncTest('r'),
           success: (res : FStatSuccessResult) => {
             if (this.logAble) {
               this.log += 'fstatTest success:' + JSON.stringify(res) + '\n\n'
@@ -1165,7 +1163,7 @@
         try {
           let stat =
             fileManager.fstatSync({
-              fd: this.openFileSyncTest(),
+              fd: this.openFileSyncTest('r'),
             } as FStatSyncOptions)
           if (this.logAble) {
             this.log += 'fstatSyncTest success:' + JSON.stringify(stat) + '\n\n'
@@ -1182,7 +1180,7 @@
       ftruncateFileTest() {
         const fileManager = uni.getFileSystemManager()
         fileManager.ftruncate({
-          fd: this.openFileSyncTest(),
+          fd: this.openFileSyncTest('r+'),
           length: 6,
           success: (res : FileManagerSuccessResult) => {
             if (this.logAble) {
@@ -1210,7 +1208,7 @@
         const fileManager = uni.getFileSystemManager()
         try {
           fileManager.ftruncateSync({
-            fd: this.openFileSyncTest(),
+            fd: this.openFileSyncTest('r+'),
             length: 4
           } as FTruncateFileSyncOptions)
           if (this.logAble) {
