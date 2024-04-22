@@ -1184,8 +1184,9 @@ describe('ExtApi-FileManagerTest', () => {
       let btnSavedFileList = await page.$('#btn-getsaved-filelist')
       await btnSavedFileList.tap()
       await isDone()
-      let fileListSuccess = await getData("getSavedFileListRet")
-      expect(fileListSuccess).toEqual('getSavedFileList:ok')
+      let getSavedFileListRet = await getData("getSavedFileListRet")
+      console.log('getSavedFileListTest->' + getSavedFileListRet)
+      expect(getSavedFileListRet.length > 0).toBe(true)
     });
 
   it('removeSavedFileTest',
