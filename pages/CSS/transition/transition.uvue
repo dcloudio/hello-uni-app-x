@@ -8,6 +8,10 @@
         <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
       </view>
       <view class="container">
+        <text class="text">点击修改宽度(递增)</text>
+        <view class="width-progress transition-width" id="widthProgress" @click="changeWidthProgress"></view>
+      </view>
+      <view class="container">
         <text class="text">点击修改Margin</text>
         <view class="base-style transition-margin" id="styleMargin" @click="changeMargin"></view>
       </view>
@@ -57,6 +61,8 @@
       return {
         isTranstionWidthOrHeight: false,
         widthOrHeight: null as UniElement | null,
+        widthProgress: null as UniElement | null,
+        progressWidth: 200,
         isTranstionChangeMargin: false,
         styleMargin: null as UniElement | null,
         isTransitionStylePadding: false,
@@ -80,6 +86,7 @@
     },
     onReady() {
       this.widthOrHeight = uni.getElementById("widthOrHeight")
+      this.widthProgress = uni.getElementById("widthProgress")
       this.styleMargin = uni.getElementById("styleMargin")
       this.stylePadding = uni.getElementById("stylePadding")
       this.styleBackground = uni.getElementById("styleBackground")
@@ -96,6 +103,10 @@
           ? '200px'
           : '300px')
         this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
+      },
+      changeWidthProgress() {
+        this.progressWidth += 20
+        this.widthProgress?.style?.setProperty("width", this.progressWidth + 'px')
       },
       changeMargin() {
         this.styleMargin?.style?.setProperty("margin-top", this.isTranstionChangeMargin
@@ -199,6 +210,17 @@
     width: 200px;
     height: 200px;
     background-color: brown;
+  }
+
+  .width-progress {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+  }
+
+  .transform-bgColor {
+    transition-property: background-color;
+    transition-duration: 0.5s;
   }
 
   .transition-width {
