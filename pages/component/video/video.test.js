@@ -1,14 +1,13 @@
 describe('component-native-video', () => {
-  if(process.env.uniTestPlatformInfo.startsWith('web')){
-    // TODO: web 端暂不支持测试
-    it('web', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/video/video');
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      await page.setData({
+        muted: true
+      });
+    }
     await page.waitFor(1000);
   });
 
