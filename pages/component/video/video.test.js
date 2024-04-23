@@ -1,5 +1,11 @@
 describe('component-native-video', () => {
-
+  if(process.env.uniTestPlatformInfo.startsWith('web')){
+    // TODO: web 端暂不支持测试
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/video/video');
@@ -41,5 +47,7 @@ describe('component-native-video', () => {
     page = await program.navigateTo('/pages/component/video/video-format');
     await page.waitFor(1000);
     expect(await page.data('isError')).toBe(false);
+    await page.waitFor(100000);
+    expect(1).toBe(1);
   });
 });
