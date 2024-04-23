@@ -47,7 +47,5 @@ describe('component-native-video', () => {
     page = await program.navigateTo('/pages/component/video/video-format');
     await page.waitFor(1000);
     expect(await page.data('isError')).toBe(false);
-    await page.waitFor(100000);
-    expect(1).toBe(1);
   });
 });
