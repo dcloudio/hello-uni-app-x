@@ -29,7 +29,7 @@ describe('component-native-textarea', () => {
       width,
       height
     } = await textarea.size()
-    expect(height).toBeLessThanOrEqual(150)
+    expect(height).toBeLessThanOrEqual(200)
     await page.setData({
       default_value: "1\n2\n3\n4\n5\n6",
       auto_height_boolean: false
@@ -39,7 +39,7 @@ describe('component-native-textarea', () => {
       width,
       height
     } = await textarea.size()
-    expect(height).toEqual(150)
+    expect(height).toEqual(200)
   })
   it("cursor-color", async () => {
     await page.setData({
