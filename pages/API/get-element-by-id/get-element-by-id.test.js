@@ -18,4 +18,11 @@ describe("getElementById", () => {
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   });
+  /**
+   * 检测元素offsetLeft属性值域
+   */
+  it("checkElementOffsetLeft", async() => {
+    const res = await page.callMethod("getTextOffsetLeft");
+    expect(res).toBe(0);
+  })
 });
