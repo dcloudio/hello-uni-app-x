@@ -1,13 +1,6 @@
 <template>
   <page-head title="getCurrentPages"></page-head>
   <view class="uni-padding-wrap">
-    <button @click="_getCurrentPages">getCurrentPages</button>
-    <view v-if="pages.length" style="padding: 15px 0px">
-      <text>当前页面栈中 {{ pages.length }} 个页面，列表如下：</text>
-      <template v-for="(page, index) in pages" :key="page.route">
-        <text style="margin-top: 5px">index: {{ index }}, route: {{ page.route }}</text>
-      </template>
-    </view>
     <button class="btn btn-get-page-style" type="default" @click="getPageStyle">getPageStyle</button>
     <button class="btn btn-set-page-style-1" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
     <button class="btn btn-set-page-style-0" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
@@ -48,20 +41,6 @@
       }, 3000)
     },
     methods: {
-      _getCurrentPages: function () {
-        this.pages.length = 0
-        const pages = getCurrentPages()
-        this.pages.push(new Page(pages[0].route))
-        if (this.pages[0].route.includes('/tabBar/')) {
-          this.checked = true
-        }
-        for (let i = 1; i < pages.length; i++) {
-          this.pages.push(new Page(pages[i].route))
-          if (pages[i].route.includes('/tabBar/')) {
-            this.checked = false
-          }
-        }
-      },
       getPageStyle() {
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
@@ -79,11 +58,6 @@
       startPullDownRefresh() {
         uni.startPullDownRefresh()
       }
-      // getCurrentPage(): Page {
-      //   const pages = getCurrentPages();
-      //   const currentPage = pages[pages.length - 1];
-      //   return currentPage;
-      // }
     },
   }
 </script>

@@ -40,5 +40,18 @@ describe('getCurrentPages', () => {
     await page.waitFor(200)
     const isEnablePullDownRefresh2 = (await page.data()).currentPageStyle.enablePullDownRefresh
     expect(isEnablePullDownRefresh2).toBe(false)
+
+    await page.callMethod('startPullDownRefresh')
+    await page.waitFor(500)
+    const image2 = await program.screenshot({fullPage: true});
+    expect(image2).toSaveImageSnapshot();
+
+    await page.waitFor(3500)
+    await page.callMethod('setPageStyle', true)
+    await page.waitFor(200)
+    await page.callMethod('startPullDownRefresh')
+    await page.waitFor(500)
+    const image3 = await program.screenshot({fullPage: true});
+    expect(image3).toSaveImageSnapshot();
   })
 })
