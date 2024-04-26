@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import { openSchema } from '@/uni_modules/uts-openSchema'
+  import { openSchema as utsOpenSchema } from '@/uni_modules/uts-openSchema'
   import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
   import { type CreateNotificationProgressOptions, type FinishNotificationProgressOptions } from '@/uni_modules/uts-progressNotification/utssdk/interface.uts'
 	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
@@ -71,6 +71,15 @@
 	const requiredKey = ['version', 'url', 'type']
 	let downloadTask : DownloadTask | null = null;
 	let openSchemePromise: Promise<boolean> | null = null;
+
+  const openSchema = (url: string): Promise<boolean> => new Promise<boolean>((resolve,reject) =>{
+    try{
+      utsOpenSchema(url)
+      resolve(true)
+    }catch(e){
+      reject(false)
+    }
+  })
 
 	export default {
     emits: ['close', 'show'],

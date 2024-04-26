@@ -67,7 +67,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
 		if (typeof appId === 'string' && typeof appVersion === 'string' && appId.length > 0 && appVersion.length > 0) {
 			let data = {
 				action: 'checkVersion',
-				appid: '__UNI__3584C99',
+				appid: appId,
 				appVersion: appVersion,
 				is_uniapp_x: true,
 				wgtVersion: '0.0.0.0.0.1'
