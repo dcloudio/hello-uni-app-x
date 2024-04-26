@@ -22,10 +22,9 @@
 				</view>
 				<view class="footer flex-center">
 					<template v-if="isiOS">
-						uni-app x 暂不支持 iOS
-						<!-- <button class="content-button" style="border: none;color: #fff;" plain @click="jumpToAppStore">
+						<button class="content-button" style="border: none;color: #fff;" plain @click="jumpToAppStore">
 							{{downLoadBtnTextiOS}}
-						</button> -->
+						</button>
 					</template>
 					<template v-else>
 						<template v-if="!downloadSuccess">
@@ -62,10 +61,10 @@
 </template>
 
 <script>
+  import { openSchema } from '@/uni_modules/uts-openSchema'
   import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
   import { type CreateNotificationProgressOptions, type FinishNotificationProgressOptions } from '@/uni_modules/uts-progressNotification/utssdk/interface.uts'
 	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
-  import { openSchema } from '../../utils/utils.uts'
 
 	const platform_iOS = 'iOS';
 	const platform_Android = 'Android';
@@ -128,6 +127,9 @@
       }
     },
 		methods: {
+      jumpToAppStore() {
+        openSchema(this.url)
+      },
 			show(shown : boolean, localPackageInfo : UniUpgradeCenterResult | null) {
 				if (localPackageInfo === null) return;
 

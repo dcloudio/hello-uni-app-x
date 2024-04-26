@@ -67,7 +67,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
 		if (typeof appId === 'string' && typeof appVersion === 'string' && appId.length > 0 && appVersion.length > 0) {
 			let data = {
 				action: 'checkVersion',
-				appid: appId,
+				appid: '__UNI__3584C99',
 				appVersion: appVersion,
 				is_uniapp_x: true,
 				wgtVersion: '0.0.0.0.0.1'
@@ -77,6 +77,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
 					name: 'uni-upgrade-center',
 					data: data
 				}).then(res => {
+          console.log('res: ',res);
 					const code = res.result['code']
 					const codeIsNumber = ['Int', 'Long', 'number'].includes(typeof code)
 					if (codeIsNumber) {
