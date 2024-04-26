@@ -77,6 +77,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
 					name: 'uni-upgrade-center',
 					data: data
 				}).then(res => {
+          console.log('res: ',res);
 					const code = res.result['code']
 					const codeIsNumber = ['Int', 'Long', 'number'].includes(typeof code)
 					if (codeIsNumber) {
