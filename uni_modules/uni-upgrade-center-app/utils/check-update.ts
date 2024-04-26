@@ -1,6 +1,6 @@
 import callCheckVersion, { UniUpgradeCenterResult } from "./call-check-version"
 // #ifdef UNI-APP-X
-import { openSchema } from './utils.uts'
+import { openSchema } from '@/uni_modules/uts-openSchema'
 // #endif
 
 // 推荐再App.vue中使用
