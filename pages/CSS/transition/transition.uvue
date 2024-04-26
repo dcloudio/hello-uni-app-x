@@ -40,6 +40,10 @@
         <view class="base-style transition-transform" id="styleTransform" @click="changeTransform"></view>
       </view>
       <view class="container">
+        <text class="text">点击修改TransformTranslate</text>
+        <view class="base-style transition-transform" id="transformTranslate" @click="changeTransformTranslate"></view>
+      </view>
+      <view class="container">
         <text class="text">点击修改Transform和宽</text>
         <view class="base-style transition-transform-width" id="styleTransformWithWidth" @click="changeTransformWithWidth"></view>
       </view>
@@ -89,6 +93,8 @@
         propertyStyleBackground: null as UniElement | null,
         isTransitionStyleTransformWithOrigin: false,
         styleTransformWithOrigin: null as UniElement | null,
+        styleTransformTranslate: null as UniElement | null,
+        isTransformTranslate: false
       }
     },
     onReady() {
@@ -104,6 +110,7 @@
       this.propertyStyleBackground = uni.getElementById("propertyStyleBackground")
       this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
       this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
+      this.styleTransformTranslate = uni.getElementById("transformTranslate")
     },
     methods: {
       changeWidthOrHeight() {
@@ -173,6 +180,11 @@
           : 'rotate(135deg)'
         )
         this.isTransitionStyleTransform = !this.isTransitionStyleTransform
+      },
+      changeTransformTranslate() {
+        const translate = this.isTransformTranslate ? `translate(0%,0%)` : `translate(100%,0%)`
+        this.styleTransformTranslate?.style?.setProperty('transform', translate)
+        this.isTransformTranslate = !this.isTransformTranslate
       },
       changeTransformWithWidth() {
         this.styleTransformWithWidth?.style?.setProperty("transform", this.isTransitionStyleTransformWithWidth
