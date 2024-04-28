@@ -46,6 +46,7 @@ const pages = [
   '/pages/CSS/border/border-top',
   '/pages/CSS/border/border-width',
   '/pages/CSS/border/border',
+  '/pages/CSS/border/dynamic-border',
   // '/pages/CSS/box-shadow/box-shadow',
   '/pages/CSS/display/flex',
   '/pages/CSS/display/none',
@@ -91,6 +92,7 @@ const pages = [
   '/pages/CSS/transform/scale',
   '/pages/CSS/transform/translate',
   // '/pages/CSS/transition/transition',
+  '/pages/CSS/pointer-events/pointer-events',
 
   // tabBar  //改动频繁，不再测试
   // '/pages/tabBar/API',
