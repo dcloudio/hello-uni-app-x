@@ -17,4 +17,11 @@ describe('api-resize-observer', () => {
     const image = await program.screenshot();
     expect(image).toSaveImageSnapshot();
   })
+
+  it('check_outbox_resize', async () => {
+    await page.callMethod('setOutBoxMarginLeft', '100px')
+    await page.waitFor(500)
+    const value = await page.data('outBoxElementOnResize')
+    expect(value).toBe(false)
+  })
 })
