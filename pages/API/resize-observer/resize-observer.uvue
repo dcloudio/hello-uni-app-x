@@ -4,7 +4,7 @@
     <view v-show="boxDisplay" style="align-items: center; justify-content: center; margin: 10px;">
       <view
         style="width: 140px; height: 140px; background-color: blue; align-items: center; justify-content: center; padding: 5px;"
-        id="outBox" @click="outBoxClick">
+          id="outBox">
         <view style="width: 80px; height: 80px; background-color: red; padding: 5px;" id="innerBox"
           @click="innerBoxClick"></view>
       </view>
@@ -34,7 +34,8 @@
         boxDisplay: false,
         outBoxElement: null as UniElement | null,
         innerBoxElement: null as UniElement | null,
-        resizeObserver: null as UniResizeObserver | null
+        resizeObserver: null as UniResizeObserver | null,
+        outBoxElementOnResize: false
       }
     },
     onBackPress() : boolean {
@@ -49,6 +50,7 @@
           entries.forEach(entry => {
             if (entry.target == this.outBoxElement) {
               this.outBoxSizeInfo = this.analysisResizeObserverEntry(entry)
+              this.outBoxElementOnResize = true
             } else if (entry.target == this.innerBoxElement) {
               this.innerBoxSizeInfo = this.analysisResizeObserverEntry(entry)
             }
@@ -86,6 +88,13 @@
         if (this.innerBoxElement != null) {
           this.innerBoxElement!.style.setProperty("width", "80px")
           this.innerBoxElement!.style.setProperty("height", "80px")
+        }
+      },
+      //自动化测试专用
+      setOutBoxMarginLeft(value: string) {
+        if (this.outBoxElement != null) {
+          this.outBoxElementOnResize = false
+          this.outBoxElement!.style.setProperty("margin-left", value)
         }
       },
       toggleDisplay() {
