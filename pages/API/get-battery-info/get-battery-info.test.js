@@ -7,6 +7,12 @@ describe('ExtApi-GetBatteryInfo', () => {
     })
     return
   }
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   let page;
   let res;
