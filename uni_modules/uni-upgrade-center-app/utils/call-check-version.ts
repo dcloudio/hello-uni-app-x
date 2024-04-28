@@ -111,7 +111,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
 		// #endif
 	})
 	// #endif
-	// #ifndef APP-PLUS
+	// #ifndef APP
 	return new Promise((resolve, reject) => {
 		reject({
 			message: '请在App中使用'
