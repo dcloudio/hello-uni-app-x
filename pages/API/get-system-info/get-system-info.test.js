@@ -37,6 +37,9 @@ describe('ExtApi-GetSystemInfo', () => {
       if (key == 'deviceOrientation') {
         expect(['portrait', 'landscape']).toContain(value);
       }
+      if (key == "osTheme") {
+        expect(['light', 'dark']).toContain(value);
+      }
     }
   });
 });
