@@ -172,6 +172,26 @@ describe('component-native-input', () => {
     })
   })
 
+  it("keyboard height changed after page back", async () => {
+    await program.navigateTo("/pages/component/input/blank-for-test")
+    await page.waitFor(2000);
+    await program.navigateBack()
+    await page.waitFor(1000);
+    await page.setData({
+      focusedForKeyboardHeightChangeTest: true
+    })
+    await page.waitFor(500);
+
+    const keyboardHeight = await page.data('keyboardHeight');
+    console.log("keyboardHeight :", keyboardHeight);
+    expect(keyboardHeight).toBeGreaterThan(25)
+    //reset
+    await page.setData({
+      focusedForKeyboardHeightChangeTest: false,
+      keyboardHeight:0
+    })
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
