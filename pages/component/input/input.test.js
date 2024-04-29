@@ -173,7 +173,7 @@ describe('component-native-input', () => {
   })
 
   it("keyboard height changed after page back", async () => {
-    await program.navigateTo("/pages/component/input/blank-for-test")
+    await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);
     await program.navigateBack()
     await page.waitFor(1000);
