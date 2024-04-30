@@ -27,7 +27,7 @@ describe('component-native-scroll-view-refresher', () => {
     await page.setData({
       refresherTriggered: true
     })
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     expect(await page.data('refresherrefreshTimes')).toBe(1)
   });
 
