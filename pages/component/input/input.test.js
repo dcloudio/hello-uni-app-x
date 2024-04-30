@@ -180,7 +180,7 @@ describe('component-native-input', () => {
     await page.setData({
       focusedForKeyboardHeightChangeTest: true
     })
-    await page.waitFor(500);
+    await page.waitFor(1000);
 
     const keyboardHeight = await page.data('keyboardHeight');
     console.log("keyboardHeight :", keyboardHeight);
