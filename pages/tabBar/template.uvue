@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view style="flex: 1" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
@@ -63,19 +63,27 @@
             enable: true,
             pages: [
               {
-                name: '顶部搜索框随时下移长列表',
+                name: 'Android顶部搜索框随时下移长列表',
                 url: 'long-list'
               },
+              // #ifdef WEB
               {
-                name: '顶部banner长列表',
+                name: '顶部banner长列表（嵌套滚动）',
                 url: 'long-list2'
               },
+              // #endif
+              // #ifdef APP-IOS || APP-ANDROID
+              {
+                name: '顶部banner长列表（嵌套滚动）',
+                url: 'long-list-nested'
+              },
+              // #endif
             ] as Page[],
           },
           {
             id: 'list-news',
             url: 'list-news',
-            name: '列表到详情',
+            name: '列表到详情（吸顶）',
             open: false,
             pages: [] as Page[],
           },
@@ -101,6 +109,13 @@
                 url: 'swiper-list2'
               },
             ] as Page[],
+          },
+          {
+            id: 'custom-long-list',
+            url: 'custom-long-list',
+            name: '自定义虚拟长列表',
+            open: false,
+            pages: [] as Page[],
           },
           // #ifdef APP
           {
@@ -170,13 +185,17 @@
             name: '日历',
             open: false,
             pages: [] as Page[],
-          }, {
+          },
+          {
             id: 'schema',
             url: 'schema',
             name: '打开外部链接',
             open: false,
             pages: [] as Page[],
-          }, {
+          }
+          // #endif
+          // #ifdef APP-ANDROID
+          ,{
             id: 'share',
             url: 'share',
             name: '分享示例',

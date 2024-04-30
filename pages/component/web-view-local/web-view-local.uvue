@@ -15,8 +15,12 @@
     methods: {
       message(event : UniWebViewMessageEvent) {
         console.log(JSON.stringify(event));
+        let contentStr = JSON.stringify(event.detail);
+        <!-- #ifdef APP-IOS -->
+          contentStr = JSON.stringify(event.detail.data[0]);
+        <!-- #endif -->
         uni.showModal({
-          content: JSON.stringify(event.detail),
+          content: contentStr,
           showCancel: false
         });
       },

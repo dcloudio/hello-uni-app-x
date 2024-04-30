@@ -11,6 +11,7 @@ describe('unicloud-import-object', () => {
   })
   it('importObject', async () => {
     await page.callMethod('addTodo')
+    await page.callMethod('addTodoWithGeneric')
     await page.callMethod('fail')
     await page.callMethod('failWithNumberErrCode')
     await page.callMethod('success')
@@ -20,6 +21,8 @@ describe('unicloud-import-object', () => {
       todoContent,
       returnTodoTitle,
       returnTodoContent,
+      genericDemoReturnTodoTitle,
+      genericDemoReturnTodoContent,
       failErrCode,
       failNumberErrCode,
       successErrCode,
@@ -27,6 +30,8 @@ describe('unicloud-import-object', () => {
 
     expect(returnTodoTitle).toBe(todoTitle)
     expect(returnTodoContent).toBe(todoContent)
+    expect(genericDemoReturnTodoTitle).toBe(todoTitle)
+    expect(genericDemoReturnTodoContent).toBe(todoContent)
     expect(failErrCode).toBe('TEST_ERROR_CODE')
     expect(failNumberErrCode).toBe(-1)
     expect(successErrCode).toBe(0)

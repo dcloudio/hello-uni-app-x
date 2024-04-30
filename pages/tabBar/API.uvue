@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view style="flex: 1" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
@@ -160,6 +160,12 @@
                 api: ["Element.takeSnapshot"]
               },
               // #endif
+              // #ifdef APP-ANDROID
+              {
+                name: 'element大小变化监听',
+                url: 'resize-observer'
+              },
+              // #endif
               {
                 name: 'node节点',
                 url: 'nodes-info',
@@ -190,10 +196,6 @@
                 name: 'showToast轻提示框',
                 url: 'toast',
                 api: ["showToast"]
-              },
-              {
-                name: 'rpx2px',
-                url: 'rpx2px'
               }
             ] as Page[],
           },
@@ -410,7 +412,7 @@
               }
             ] as Page[],
           },
-          // #ifdef APP-ANDROID
+          // #ifdef APP-ANDROID || APP-IOS
           {
             id: 'file',
             name: '文件',
@@ -449,10 +451,12 @@
             id: 'login',
             name: '登录与认证',
             pages: [
+          // #ifdef APP-ANDROID
               {
                 name: '一键登录',
                 url: 'get-univerify-manager',
               },
+          // #endif
               {
                 name: '实人认证',
                 url: 'facial-recognition-verify',
@@ -472,16 +476,6 @@
             ] as Page[],
           },
           {
-            id: "payment",
-            name: "支付",
-            pages: [
-              {
-                name: "发起支付",
-                url: "request-payment",
-              },
-            ] as Page[],
-          },
-          {
             id: 'permission-listener',
             name: '权限申请监听',
             pages: [
@@ -490,6 +484,34 @@
                 url: 'create-request-permission-listener',
               }
             ] as Page[]
+          },
+          // #endif
+          // #ifdef APP-ANDROID
+          {
+            id: "payment",
+            name: "支付",
+            pages: [
+              {
+                name: "简易支付示例",
+                url: "request-payment",
+              },
+              {
+                name: "uni-pay支付示例",
+                url: "request-payment-uni-pay",
+              }
+            ] as Page[],
+          },
+          // #endif
+          // #ifdef WEB
+          {
+            id: "payment",
+            name: "支付",
+            pages: [
+              {
+                name: "uni-pay支付示例",
+                url: "request-payment-uni-pay",
+              }
+            ] as Page[],
           },
           // #endif
           /*
@@ -573,7 +595,8 @@
     /* #ifdef APP */
     position: absolute;
     height: 100%;
-    /* #else */
+    /* #endif */
+    /* #ifndef APP */
     position: fixed;
     top: var(--window-top);
     bottom: var(--window-bottom);

@@ -84,12 +84,22 @@ describe('ExtApi-Request', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
+  it('Get Array', async () => {
+    res = await page.callMethod('jest_get_array')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android')) {
+  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
+  }
+
+  if (process.env.uniTestPlatformInfo.startsWith('IOS') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    shouldTestCookie = true
   }
 
   if (!shouldTestCookie) {
@@ -108,4 +118,16 @@ describe('ExtApi-Request', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
+  it('Check Get With Data', async () => {
+    res = await page.callMethod('jest_get_with_data')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
+  it('Check Get With Generics', async () => {
+    res = await page.callMethod('jest_get_with_generics')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
 });

@@ -65,7 +65,7 @@ describe('PickerView.uvue', () => {
   })
 
   it('reopen-picker-view-page', async () => {
-    await program.switchTab('/')
+    page = await program.switchTab('/pages/tabBar/component')
     await page.waitFor(500)
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(500)

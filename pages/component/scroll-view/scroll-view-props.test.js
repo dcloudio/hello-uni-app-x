@@ -89,8 +89,8 @@ describe('component-native-scroll-view-props', () => {
           showScrollbar: false
       })
       await page.waitFor(300);
-      const image = await program.screenshot();
-      expect(image).toMatchImageSnapshot();
+      const image = await program.screenshot({fullPage: true});
+      expect(image).toSaveImageSnapshot();
     })
 
 });

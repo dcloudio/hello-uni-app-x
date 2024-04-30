@@ -2,7 +2,7 @@
   <view style="flex: 1;">
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-common-mt" style="border-width: 2px;border-style: solid; border-radius: 4px;">
-        <textarea :value="res" class="uni-textarea"></textarea>
+        <textarea :value="res" class="uni-textarea" style="width: 100%;"></textarea>
       </view>
       <view>
         <text>地址 : {{ host + url}}</text>
@@ -69,6 +69,10 @@
   </view>
 </template>
 <script>
+  class GETDataType {
+    data: UTSJSONObject | null = null
+  }
+
   const duration = 2000
   const methodMap = {
     "GET": "/api/http/method/get",
@@ -301,6 +305,59 @@
           },
         });
       },
+      jest_get_with_data() {
+        uni.request({
+          url: "https://unidemo.dcloud.net.cn/api/banner/36kr",
+          method: "GET",
+          data:{
+            column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
+          },
+          timeout: 6000,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: () => {
+            this.jest_result = true;
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_get_with_generics() {
+        uni.request<GETDataType>({
+          url: this.host + (methodMap['GET'] as string),
+          method: "GET",
+          timeout: null,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: (res: RequestSuccess<GETDataType>) => {
+            console.log("success :", res.data?.data);
+            this.jest_result = true;
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
+      },
+      jest_get_array() {
+        uni.request<UTSJSONObject[]>({
+          url: 'https://unidemo.dcloud.net.cn/api/news?column=title,author_name,cover,published_at',
+          method: "GET",
+          success: (res : RequestSuccess<UTSJSONObject[]>) => {
+            console.log(res)
+            if (res.statusCode == 200 && Array.isArray(res.data)) {
+              this.jest_result = true
+            } else {
+              this.jest_result = false
+            }
+          },
+          fail: () => {
+            this.jest_result = false
+          }
+        });
+      }
     }
   }
 </script>

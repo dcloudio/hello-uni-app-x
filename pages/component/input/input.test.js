@@ -12,7 +12,7 @@ describe('component-native-input', () => {
   //   const image = await program.screenshot({
   //     fullPage: true
   //   })
-  //   expect(image).toMatchImageSnapshot()
+  //   expect(image).toSaveImageSnapshot()
   // })
   // 测试焦点及键盘弹起
   it('focus', async () => {
@@ -147,10 +147,35 @@ describe('component-native-input', () => {
     expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
   })
 
+  it("maxlength", async () => {
+    const input = await page.$('#uni-input-maxlength');
+    let str = "";
+    for(let i = 0;i < 200;i++){
+      str += `${i}`
+    }
+    await page.setData({
+      inputMaxLengthValue: str
+    })
+    let length = (await input.value()).length
+    expect(length).toBe(10)
+    await page.setData({
+      inputMaxLengthValue: ""
+    })
+  })
+
+  it("password and value order", async () => {
+    const input = await page.$('#uni-input-password');
+    let length = (await input.value()).length
+    expect(length).toBe(6)
+    await page.setData({
+      inputPasswordValue: ""
+    })
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
     })
-    expect(image).toMatchImageSnapshot()
+    expect(image).toSaveImageSnapshot()
   })
 });

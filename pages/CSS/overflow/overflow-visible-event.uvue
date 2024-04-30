@@ -1,0 +1,60 @@
+<template>
+  <view>
+    <text style="font-size: 15px;">overflow=visible 点击子view（超出父view区域的部分）</text>
+    <view class="backgroundview">
+      <view class="box-visible-border-radius">
+        <view id="child" style="width: 50px; height: 150px; background-color: greenyellow;"
+          @click="handleClickOverflowPart" @touchmove="handleTouchMoveOverflowPart">
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        jest_result: false,
+        jest_click_x: -1,
+        jest_click_y: -1
+      }
+    },
+    methods: {
+      handleClickOverflowPart() {
+        console.log("click");
+        this.jest_result = true;
+      },
+      handleTouchMoveOverflowPart() {
+        console.log("move");
+      },
+      jest_getRect() {
+        const rect = uni.getElementById('child')?.getBoundingClientRect()
+        if (rect != null) {
+          const ratio = uni.getSystemInfoSync().devicePixelRatio
+          this.jest_click_x = rect.x * ratio + 10
+          this.jest_click_y = rect.bottom * ratio - 10
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .backgroundview {
+    width: 300px;
+    height: 300px;
+    margin-bottom: 20px;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .box-visible-border-radius {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    overflow: visible;
+    background-color: green;
+  }
+</style>

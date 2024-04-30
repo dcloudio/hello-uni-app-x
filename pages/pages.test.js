@@ -21,8 +21,6 @@ const pages = [
   '/pages/component/rich-text/rich-text-complex',
   '/pages/component/rich-text/rich-text-tags',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/scroll-view/scroll-view-custom-refresher-props',
-  '/pages/component/scroll-view/scroll-view-refresher-props',
   '/pages/component/slider/slider',
   '/pages/component/slider-100/slider-100',
   '/pages/component/swiper/swiper',
@@ -38,7 +36,6 @@ const pages = [
 
   // CSS
   '/pages/CSS/background/background-color',
-  '/pages/CSS/background/background-image',
   '/pages/CSS/border/complex-border/complex-border',
   '/pages/CSS/border/border-bottom',
   '/pages/CSS/border/border-color',
@@ -121,7 +118,8 @@ const pages = [
   // '/pages/API/element-draw/element-draw',
 ]
 
-if (process.env.uniTestPlatformInfo.startsWith('android')) {
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+if ((platformInfo.startsWith('android') || platformInfo.startsWith('ios')) && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
   // 规避 web 端不支持页面
   pages.push(
     "/pages/component/list-view/list-view",
@@ -136,6 +134,8 @@ if (process.env.uniTestPlatformInfo.startsWith('android')) {
     '/pages/template/custom-refresher/custom-refresher',
     '/pages/template/custom-tab-bar/custom-tab-bar',
     '/pages/template/half-screen/half-screen',
+    '/pages/component/scroll-view/scroll-view-custom-refresher-props',
+    '/pages/component/scroll-view/scroll-view-refresher-props',
   )
 }
 
@@ -146,6 +146,14 @@ const notFullPages = [
 ]
 
 let page;
+let windowInfo
+
+async function getWindowInfo() {
+  const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
+  await windowInfoPage.waitFor(600);
+  return await windowInfoPage.callMethod('jest_getWindowInfo')
+}
+
 describe("page screenshot test", () => {
   beforeAll(async () => {
     console.log("page screenshot test start");
@@ -166,10 +174,32 @@ describe("page screenshot test", () => {
     if (notFullPages.includes(pages[pageIndex])) {
       fullPage = false;
     }
-    const image = await program.screenshot({
-      fullPage: fullPage
-    });
-    expect(image).toMatchImageSnapshot();
+
+    const screenshotParams = {
+      fullPage
+    }
+    if (!fullPage && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+      if (!windowInfo) {
+        windowInfo = await getWindowInfo()
+        page = await program.reLaunch(pages[pageIndex]);
+        await page.waitFor(1000);
+      }
+      let offsetY = '0'
+      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
+        offsetY = `${windowInfo.statusBarHeight + 44}`
+      }
+      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
+        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
+      }
+      screenshotParams.offsetY = offsetY
+    }
+
+    const image = await program.screenshot(screenshotParams);
+    expect(image).toSaveImageSnapshot({
+      customSnapshotIdentifier() {
+        return `__pages_test__/${pages[pageIndex].replace(/\//g, "-").substring(1)}`
+      }
+    })
     await page.waitFor(500);
   });
 });

@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1">
+  <scroll-view style="flex: 1" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
@@ -24,7 +24,7 @@
         </template>
       </uni-collapse>
 
-      <!-- #ifdef UNI-APP-X && APP-ANDROID -->
+      <!-- #ifdef UNI-APP-X && APP -->
       <uni-upgrade-center-app ref="upgradePopup" @show="upgradePopupShow" @close="upgradePopupClose" />
       <!-- #endif -->
     </view>
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="uts">
-  // #ifdef UNI-APP-X && APP-ANDROID
+  // #ifdef UNI-APP-X && APP
   import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
   // #endif
 
@@ -86,6 +86,14 @@
               {
                 name: 'sticky-section',
               },
+              // #ifdef APP
+              {
+                name: 'nested-scroll-header',
+              },
+              {
+                name: 'nested-scroll-body',
+              },
+              // #endif
             ] as Page[],
           },
           {
@@ -287,7 +295,7 @@
           url,
         })
       }
-      // #ifdef UNI-APP-X && APP-ANDROID
+      // #ifdef UNI-APP-X && APP
       , upgradePopupShow() {
         console.log('upgradePopup show');
         if (!this.pageHiden) {
@@ -301,7 +309,7 @@
       // #endif
     },
     onReady() {
-      // #ifdef UNI-APP-X && APP-ANDROID
+      // #ifdef UNI-APP-X && APP
       checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
       // #endif
     },

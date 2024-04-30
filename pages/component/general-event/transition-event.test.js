@@ -11,5 +11,10 @@ describe('transition event', () => {
         await page.callMethod('switchBtn')
         await page.waitFor(3000)
         expect(await page.data("onTransitionEndTriggr")).toBe(true)
+        await page.callMethod('switchBtn')
+        await page.waitFor(200)
+        await page.callMethod('switchBtn')
+        await page.waitFor(3000)
+        expect(await page.data("onTransitionEndTriggr")).toBe(true)
     });
 });

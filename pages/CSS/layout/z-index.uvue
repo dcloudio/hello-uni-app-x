@@ -27,6 +27,18 @@
         <text>z-index: 0</text>
       </view>
     </view>
+    <view>
+      <view>
+        <view class="common fixed popup" style="background-color: aqua;z-index: 5;">
+          <text>position: fixed</text>
+          <text>z-index: 5</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view v-if="autoTest">
+    <view style="z-index: 1;position: fixed;">111</view>
+    <view style="width: 750rpx;">222</view>
   </view>
 </template>
 
@@ -34,7 +46,9 @@
   export default {
     data() {
       return {
-        zIndex: 5
+        zIndex: 5,
+        // 自动化测试
+        autoTest: false
       }
     },
     methods: {
@@ -83,5 +97,16 @@
   /* #endif */
   left: 175px;
   z-index: -1;
+}
+
+.popup {
+  /* #ifdef APP */
+  top: 320px;
+  /* #endif */
+  /* #ifdef H5 */
+  top: calc(var(--window-top) + 320px);
+  /* #endif */
+  left: 87px;
+  height: 40px;
 }
 </style>

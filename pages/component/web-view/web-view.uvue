@@ -1,24 +1,37 @@
 <template>
   <view class="uni-flex-item">
-    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles" @message="message"
-      @error="error" @loading="loading" @load="load" @download="download">
+    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles"
+      :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess"
+      @message="message" @error="error" @loading="loading" @load="load" @download="download">
     </web-view>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-input-v">
-        <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" />
+      <view class="uni-btn-v">
+        <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" maxlength="-1"/>
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" @click="back">后退</button>
-        <button class="uni-btn-ml uni-flex-item" type="primary" @click="forward">前进</button>
+        <button class="margin-left-5 uni-flex-item" type="primary" @click="forward">前进</button>
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
-        <button class="uni-btn-ml uni-flex-item" type="primary" @click="stop">停止加载</button>
+        <button class="margin-left-5 uni-flex-item" type="primary" @click="stop">停止加载</button>
       </view>
       <view class="uni-btn-v">
         <button type="primary" @click="nativeToWeb">原生和Web通信</button>
       </view>
+      <!-- #ifdef APP-ANDROID -->
+      <view class="uni-row uni-btn-v">
+        <view class="uni-row uni-flex-item align-items-center">
+          <text>显示横向滚动条</text>
+          <switch :checked="true" @change="changeHorizontalScrollBarAccess"></switch>
+        </view>
+        <view class="uni-row uni-flex-item align-items-center">
+          <text>显示竖向滚动条</text>
+          <switch :checked="true" @change="changeVerticalScrollBarAccess"></switch>
+        </view>
+      </view>
+      <!-- #endif -->
     </view>
     <!-- #endif -->
   </view>
@@ -35,7 +48,9 @@
           }
         },
         webviewContext: null as WebviewContext | null,
-        loadError: false
+        loadError: false,
+        horizontalScrollBarAccess: true,
+        verticalScrollBarAccess: true
       }
     },
     onReady() {
@@ -87,17 +102,23 @@
           url = 'https://' + url;
         }
         this.src = url;
+      },
+      changeHorizontalScrollBarAccess(event : UniSwitchChangeEvent) {
+        this.horizontalScrollBarAccess = event.detail.value;
+      },
+      changeVerticalScrollBarAccess(event : UniSwitchChangeEvent) {
+        this.verticalScrollBarAccess = event.detail.value;
       }
     }
   }
 </script>
 
 <style>
-  .uni-input-v {
-    padding: 5px 0;
+  .margin-left-5 {
+    margin-left: 5px;
   }
 
-  .uni-btn-ml {
-    margin-left: 5px;
+  .align-items-center {
+    align-items: center;
   }
 </style>

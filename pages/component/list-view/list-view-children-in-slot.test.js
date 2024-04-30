@@ -22,6 +22,7 @@ describe('list-view-children-in-slot', () => {
 
     const addBtn = await page.$('#add-btn')
     await addBtn.tap()
+    await page.waitFor(500)
 
     listItems = await page.$$('list-item')
     expect(listItems.length).toBe(11)
@@ -33,12 +34,12 @@ describe('list-view-children-in-slot', () => {
 
     const emptyBtn = await page.$('#empty-btn')
     await emptyBtn.tap()
-
+    await page.waitFor(500)
     listItems = await page.$$('list-item')
     expect(listItems.length).toBe(3)
 
     await addBtn.tap()
-
+    await page.waitFor(500)
     listItems = await page.$$('list-item')
     expect(listItems.length).toBe(5)
 

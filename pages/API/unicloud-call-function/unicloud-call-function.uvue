@@ -7,6 +7,7 @@
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-btn-v uni-common-mt">
           <button type="primary" @click="callFunction">请求云函数</button>
+          <button type="primary" @click="callFunctionWithGeneric">请求云函数传入泛型</button>
         </view>
       </view>
     </view>
@@ -22,6 +23,7 @@
         title: '请求云函数',
         callFunctionResult: {},
         callFunctionError: {},
+        genericDemoShowMessage: '',
         isUniTest: false
       }
     },
@@ -43,6 +45,34 @@
         } else {
           console.log(title, content)
         }
+      },
+      async callFunctionWithGeneric() : Promise<void> {
+        type EchoCfResult = {
+          showMessage: string
+        }
+        uni.showLoading({
+          title: '加载中...'
+        })
+        await uniCloud.callFunction<EchoCfResult>({
+          name: 'echo-cf',
+          data: {
+            num: 1,
+            str: 'ABC'
+          }
+        }).then(res => {
+          const result = res.result
+          uni.hideLoading()
+          this.genericDemoShowMessage = result.showMessage
+          this.notify(result.showMessage, '提示')
+        }).catch((err : any | null) => {
+          const error = err as UniCloudError
+          this.callFunctionError = {
+            errCode: error.errCode,
+            errMsg: error.errMsg
+          }
+          uni.hideLoading()
+          this.notify(error.errMsg, '错误')
+        })
       },
       async callFunction() : Promise<void> {
         uni.showLoading({

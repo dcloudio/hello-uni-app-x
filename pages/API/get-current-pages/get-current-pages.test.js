@@ -6,9 +6,9 @@ describe('getCurrentPages', () => {
   it('getCurrentPages', async () => {
     // web 端等待应用首页加载完成
     if (process.env.uniTestPlatformInfo.startsWith('web')) {
-      const waitTime = process.env.uniTestPlatformInfo.includes('safari')
-        ? 5000
-        : 1000
+      const waitTime = process.env.uniTestPlatformInfo.includes('safari') ?
+        5000 :
+        3000
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve()
@@ -23,5 +23,35 @@ describe('getCurrentPages', () => {
     await page.waitFor(200)
     const data = await page.data()
     expect(data.checked).toBe(true)
+  })
+  it('page-style', async () => {
+    page = await program.navigateTo(PAGE_PATH)
+
+    await page.callMethod('getPageStyle')
+    await page.waitFor(200)
+    const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    expect(isEnablePullDownRefresh1).toBe(true)
+
+    // setPageStyle
+    await page.callMethod('setPageStyle', false)
+    await page.waitFor(200)
+
+    await page.callMethod('getPageStyle')
+    await page.waitFor(200)
+    const isEnablePullDownRefresh2 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    expect(isEnablePullDownRefresh2).toBe(false)
+
+    await page.callMethod('startPullDownRefresh')
+    await page.waitFor(500)
+    const image2 = await program.screenshot({fullPage: true});
+    expect(image2).toSaveImageSnapshot();
+
+    await page.waitFor(3500)
+    await page.callMethod('setPageStyle', true)
+    await page.waitFor(200)
+    await page.callMethod('startPullDownRefresh')
+    await page.waitFor(500)
+    const image3 = await program.screenshot({fullPage: true});
+    expect(image3).toSaveImageSnapshot();
   })
 })

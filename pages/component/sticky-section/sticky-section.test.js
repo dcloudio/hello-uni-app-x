@@ -8,11 +8,11 @@ describe('component-native-sticky-section', () => {
   //检测吸顶上推效果
   it('check_sticky_section', async () => {
     await page.callMethod('listViewScrollByY', 1000)
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
     return
   }
 
@@ -23,14 +23,14 @@ describe('component-native-sticky-section', () => {
     await page.setData({
       scrolling: 'true'
     })
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       //跳转到id为C的StickyHeader位置
       await page.callMethod('gotoStickyHeader', 'C')
     }
     await page.waitFor(async () => {
       return await page.data('scrolling') === false;
     });
-    const image = await program.screenshot();
-    expect(image).toMatchImageSnapshot();
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   })
 })

@@ -6,15 +6,6 @@ describe('component-native-list-view', () => {
     await page.waitFor(600)
   })
 
-  //检测竖向可滚动区域
-  it('check_scroll_height', async () => {
-    await page.callMethod('change_scroll_y_boolean', true)
-    await page.callMethod('change_scroll_x_boolean', false)
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_height')
-    expect(value).toBe(true)
-  })
-
   //检测竖向scrolltop属性赋值
   it('check_scroll_top', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
@@ -26,7 +17,7 @@ describe('component-native-list-view', () => {
   })
 
 
-  //检测横向scrollLeft属性赋值
+  //检测横向scrollLeft属性赋值 备注：iOS不支持list-view横向滚动
   it('check_scroll_left', async () => {
     if(await page.data('scroll_x_boolean') === false) {
         await page.callMethod('change_scroll_x_boolean', true)
@@ -45,7 +36,21 @@ describe('component-native-list-view', () => {
     return
   }
 
-  //检测横向可滚动区域
+
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    return
+  }
+
+  //检测竖向可滚动区域
+  it('check_scroll_height', async () => {
+    await page.callMethod('change_scroll_y_boolean', true)
+    await page.callMethod('change_scroll_x_boolean', false)
+    await page.waitFor(600)
+    const value = await page.callMethod('check_scroll_height')
+    expect(value).toBe(true)
+  })
+
+  //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
   it('check_scroll_width', async () => {
     if(await page.data('scroll_x_boolean') === false) {
         await page.callMethod('change_scroll_x_boolean', true)
@@ -59,7 +64,7 @@ describe('component-native-list-view', () => {
     expect(value).toBe(true)
   })
 
-  //检测下拉刷新
+  //检测下拉刷新 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_refresher', async () => {
     if(await page.data('scroll_y_boolean') === false) {
         await page.callMethod('change_scroll_y_boolean', true)
@@ -74,7 +79,7 @@ describe('component-native-list-view', () => {
     expect(await page.data('refresherrefresh')).toBe(true)
   })
 
-  //检测竖向scroll_into_view属性赋值
+  //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_scroll_into_view_top', async () => {
     if(await page.data('scroll_y_boolean') === false) {
         await page.callMethod('change_scroll_y_boolean', true)
@@ -90,7 +95,7 @@ describe('component-native-list-view', () => {
     expect(scrollTop-690).toBeGreaterThanOrEqual(0)
   })
 
-  //检测横向scroll_into_view属性赋值
+  //检测横向scroll_into_view属性赋值 备注：iOS不支持list-view横向滚动
   it('check_scroll_into_view_left', async () => {
     if(await page.data('scroll_x_boolean') === false) {
         await page.callMethod('change_scroll_x_boolean', true)

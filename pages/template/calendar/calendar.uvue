@@ -39,7 +39,8 @@ export default {
         lunar: '',
         disabled: false,
         is_today: false
-      } as DateType
+      } as DateType,
+      testWidth: 0
     }
   },
   computed: {
@@ -65,6 +66,10 @@ export default {
     // 绘制日历头部
     this.drawHeader()
     this.drawWeek(this.weeks, '')
+
+    // 仅自动化测试
+    const header = this.$refs['draw-header'] as UniElement
+    this.testWidth = header.getBoundingClientRect().width;
   },
   methods: {
 
@@ -87,7 +92,9 @@ export default {
     // 点击具体的日历格子
     clickGrid (x: number, y: number) {
       // 小格子数组
-      const gridArray = this.$coords
+      // const gridArray = this.$data.$coords
+      const calendar = this.$data['$calendar'] as Calendar
+      const gridArray = this.$data['$coords'] as Array<CoordsType>
 
       // 遍历小格子数组，找到最接近点击坐标的小格子
       for (let i = 0; i < gridArray.length; i++) {
@@ -103,7 +110,7 @@ export default {
 
         if (is_select) {
           const data = grid.data
-          this.timeData = this.$calendar.getDateInfo(data.fullDate)
+          this.timeData = calendar.getDateInfo(data.fullDate)
           this.drawWeek(this.weeks, grid.data.fullDate)
         }
       }
@@ -111,10 +118,11 @@ export default {
     // 切换上个月
     preDate () {
       const fulldate = this.timeData.fullDate
-      const time = this.$calendar.getDate(fulldate, -1, 'month')
-      this.timeData = this.$calendar.getDateInfo(time.fullDate)
+      const calendar = this.$data['$calendar'] as Calendar
+      const time = calendar.getDate(fulldate, -1, 'month')
+      this.timeData = calendar.getDateInfo(time.fullDate)
 
-      this.weeks = this.$calendar.getWeeks(time.fullDate)
+      this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
@@ -123,20 +131,22 @@ export default {
     // 切换下个他
     nextDate () {
       const fulldate = this.timeData.fullDate
-      const time = this.$calendar.getDate(fulldate, 1, 'month')
-      this.timeData = this.$calendar.getDateInfo(time.fullDate)
+      const calendar = this.$data['$calendar'] as Calendar
+      const time = calendar.getDate(fulldate, 1, 'month')
+      this.timeData = calendar.getDateInfo(time.fullDate)
 
-      this.weeks = this.$calendar.getWeeks(time.fullDate)
+      this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
     },
     // 回到今天
     gotoToday () {
-      const time = this.$calendar.getDate()
-      this.timeData = this.$calendar.getDateInfo(time.fullDate)
+      const calendar = this.$data['$calendar'] as Calendar
+      const time = calendar.getDate()
+      this.timeData = calendar.getDateInfo(time.fullDate)
 
-      this.weeks = this.$calendar.getWeeks(time.fullDate)
+      this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
@@ -153,6 +163,9 @@ export default {
       const num = date_header_map.length
       const one_width = width / num
 
+      ctx.font = '12'
+      ctx.textAlign = 'center'
+
       for (let i = 0; i < num; i++) {
         let box_left = i * one_width + 2
         let box_width = one_width - 4
@@ -162,8 +175,7 @@ export default {
         const text = date_header_map[i]
         let text_left = box_width / 2 + box_left
         let text_top = box_height / 2 + 6
-        ctx.font = '12'
-        ctx.textAlign = 'center'
+
         ctx.fillText(text, text_left, text_top)
         ctx.update()
       }
@@ -183,9 +195,11 @@ export default {
       const one_height = height / week_len
 
       if (time !== '') {
-        this.$coords = []
+        this.$data['$coords'] = [] as Array<CoordsType>
         ctx.reset()
       }
+
+      ctx.textAlign = 'center'
 
       for (let week = 0; week < week_len; week++) {
 
@@ -202,9 +216,7 @@ export default {
           let text_left = day * one_width + (one_width / 2)
           let text_top = one_height * week + 25
 
-
           ctx.font = '16'
-          ctx.textAlign = 'center'
 
           // 日期是否禁用
           if (day_item.disabled) {
@@ -232,7 +244,10 @@ export default {
               height: day_height,
               data: day_item
             }
-            this.$coords.push(coords)
+
+            // TODO 兼容安卓data内$开头的属性的赋值问题
+            let gridArr = this.$data['$coords'] as Array<CoordsType>
+            gridArr.push(coords)
             // }
           }
 
@@ -242,9 +257,7 @@ export default {
           let lunar_left = day * one_width + (one_width / 2)
           let lunar_top = one_height * week + 42
           ctx.font = '10'
-          ctx.textAlign = 'center'
           ctx.fillText(text, lunar_left, lunar_top)
-
         }
       }
 
