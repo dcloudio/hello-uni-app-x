@@ -1,27 +1,45 @@
 <template>
   <view class="content">
     <uni-navbar-lite :title="title" :is-left="isLeft" :text-color="navigationBarTextColor"></uni-navbar-lite>
-    <scroll-view class="scroll-view" scroll-y="true">
-      <view class="content-item" @click="onClick">
-        <text>点击此处，将标题切换为{{isLeft?'居中':'左侧'}}显示</text>
-      </view>
 
-      <view class="content-item" @tap="setNavigationBarColor1">
-        <text>设置自定义导航栏前景色白色</text>
-      </view>
-
-      <view class="content-item" @tap="setNavigationBarColor2">
-        <text>设置自定义导航栏前景色黑色</text>
-      </view>
-
-      <view class="content-item" v-for="item in 20">
+    <view class="content-item" @click="onClick">
+      <text>点击此处，将标题切换为{{isLeft?'居中':'左侧'}}显示</text>
+    </view>
+    <view class="content-item" @tap="setNavigationBarColor1">
+      <text>设置自定义导航栏前景色白色</text>
+    </view>
+    <view class="content-item" @tap="setNavigationBarColor2">
+      <text>设置自定义导航栏前景色黑色</text>
+    </view>
+    <view style="align-items: center;height: 60px;">
+      <text>测试输入框上推页面</text>
+      <radio-group @change="ChangeView" style="flex-direction: row;">
+        <radio value="0" :checked="true"><text>scroll-view</text></radio>
+        <radio value="1"><text>list-view</text></radio>
+        <radio value="2"><text>web-view</text></radio>
+      </radio-group>
+    </view>
+    <scroll-view v-if="indexView==0" class="scroll-view">
+      <view class="content-item" v-for="item in 10">
         <view class="cell-item">
           <text class="text">内容：{{item}}</text>
-          <input class="text" style="margin-top: 8px;" placeholder="备注:"/>
+          <input class="text" style="margin-top: 8px;" placeholder="备注输入框:" />
         </view>
       </view>
-      <!-- <input/> -->
     </scroll-view>
+    <list-view v-if="indexView==1" class="scroll-view">
+      <list-item class="content-item" v-for="item in 10">
+        <view class="cell-item">
+          <text class="text">列表项内容：{{item}}</text>
+          <input class="text" style="margin-top: 8px;" placeholder="备注输入框:" />
+        </view>
+      </list-item>
+    </list-view>
+    <web-view v-if="indexView==2" src="/hybrid/html/local.html" id="webv" style="height:380px"></web-view>
+    <view style="position: relative;bottom: 0;">
+      <input placeholder="滚动视图外的居底输入框" adjust-position="true" />
+    </view>
+
   </view>
 </template>
 
@@ -32,12 +50,12 @@
       return {
         title: 'Hello uni-app',
         isLeft: false,
-        navigationBarTextColor: '#000'
-
+        navigationBarTextColor: '#000',
+        indexView: 0
       }
     },
     methods: {
-      onClick(){
+      onClick() {
         this.isLeft = !this.isLeft
       },
       setNavigationBarColor1() {
@@ -78,12 +96,15 @@
           }
         })
       },
+      ChangeView(e:UniRadioGroupChangeEvent){
+        this.indexView = parseInt(e.detail.value)
+      },
       // 自动化测试
-      getLifeCycleNum(): number {
+      getLifeCycleNum() : number {
         return state.lifeCycleNum
       },
       // 自动化测试
-      setLifeCycleNum(num: number) {
+      setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
       },
     }
