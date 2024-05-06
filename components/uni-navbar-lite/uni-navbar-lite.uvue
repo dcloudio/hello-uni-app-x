@@ -1,6 +1,7 @@
 <template>
   <view class="uni-navbar">
-    <view class="uni-navbar-inner" :style="navbarStyle">
+    <view v-if="statusBar" class="status-bar"></view>
+    <view class="uni-navbar-inner">
       <view class="left-content" @click="back">
         <text :style="{ color: textColor }" class="uni-icons">{{
           unicode
@@ -35,6 +36,10 @@
         type: String,
         default: "#000",
       },
+      statusBar: {
+        type: Boolean,
+        default: false,
+      }
     },
     data() {
       return {
@@ -42,9 +47,6 @@
       };
     },
     computed: {
-      navbarStyle() : string {
-        return `margin-top:${this.statusBarHeight}px`;
-      },
       unicode() : string {
         return "\ue600";
       },
@@ -59,9 +61,6 @@
           console.log(err);
         },
       });
-      const sys = uni.getSystemInfoSync();
-      const statusBarHeight = sys.statusBarHeight;
-      this.statusBarHeight = statusBarHeight;
     },
     mounted() {
       uni.setNavigationBarColor({
@@ -85,6 +84,9 @@
     color: #333;
   }
 
+  .status-bar {
+    height: var(--status-bar-height);
+  }
   .uni-navbar {
     background-color: #007aff;
   }
