@@ -17,6 +17,7 @@ describe('unicloud-database', () => {
     await page.callMethod('dbGetWithCommand')
     await page.callMethod('dbUpdate')
     await page.callMethod('dbRemove')
+    await page.callMethod('dbMultiSend')
 
     const {
       addId,
@@ -26,6 +27,7 @@ describe('unicloud-database', () => {
       getData,
       getWithCommandData,
       removeDeleted,
+      multiSendSuccessCount,
     } = await page.data()
 
     expect(addId !== '').toBe(true)
@@ -35,6 +37,7 @@ describe('unicloud-database', () => {
     expect(getWithCommandData.length).toBe(1)
     expect(updateUpdated).toBe(3)
     expect(removeDeleted).toBe(3)
+    expect(multiSendSuccessCount).toBe(2)
 
   })
 

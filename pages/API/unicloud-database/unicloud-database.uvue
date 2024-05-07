@@ -35,6 +35,7 @@
         getWithCommandData: [] as Array<UTSJSONObject>,
         removeDeleted: 0,
         lookupData: [] as Array<UTSJSONObject>,
+        multiSendSuccessCount: 0,
         isUniTest: false
       }
     },
@@ -276,6 +277,32 @@
           .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
+            this.notify(error.errMsg, '错误')
+          })
+      },
+      dbMultiSend() {
+        const db = uniCloud.databaseForJQL()
+        const temp1 = db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          ).getTemp()
+        const temp2 = db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          ).getTemp()
+        db.multiSend(temp1, temp2)
+          .then<void>(res => {
+            uni.hideLoading()
+            const successCount = res.dataList.filter((item: UniCloudDBMultiSendResultItem) : boolean => {
+              return item.errCode == 0
+            }).length
+            this.multiSendSuccessCount = successCount
+            this.notify(`合并查询成功，成功查询的语句条数为：${successCount}`, '提示')
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            console.error(err)
             this.notify(error.errMsg, '错误')
           })
       }
