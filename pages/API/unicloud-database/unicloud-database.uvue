@@ -293,16 +293,9 @@
         db.multiSend(temp1, temp2)
           .then<void>(res => {
             uni.hideLoading()
-            let successCount = 0
-            for (let i = 0; i < res.dataList.length; i++) {
-              const item = res.dataList[i]
-              if(item.errCode == 0) {
-                console.log(`第${i}个请求查询到${item.data!.length}条数据`)
-                successCount++
-              } else {
-                console.error(`第${i}个请求查询失败，错误信息：${item.data!.length}`)
-              }
-            }
+            const successCount = res.dataList.filter((item: UniCloudDBMultiSendResultItem) : boolean => {
+              return item.errCode == 0
+            }).length
             this.multiSendSuccessCount = successCount
             this.notify(`合并查询成功，成功查询的语句条数为：${successCount}`, '提示')
           })
