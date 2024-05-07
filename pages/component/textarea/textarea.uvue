@@ -13,8 +13,12 @@ export default {
       default_value:"1\n2\n3\n4\n5\n6",
       maxlength:-1,
 			inputmode_enum: [{"value":1,"name":"text"},{"value":2,"name":"decimal"},{"value":3,"name":"numeric"},{"value":4,"name":"tel"},{"value":5,"name":"search"},{"value":6,"name":"email"},{"value":7,"name":"url"},{"value":0,"name":"none"}] as ItemType[],
+      confirm_type_list: [{"value":0,"name":"return"},{"value":1,"name":"done"},{"value":2,"name":"send"},{"value":3,"name":"search"},{"value":4,"name":"next"},{"value":5,"name":"go"}] as ItemType[],
       cursor_color: "#3393E2",
-			inputmode_enum_current: 0
+      cursor: 0,
+			inputmode_enum_current: 0,
+      confirm_type_current: 0,
+      placeholder_value: "请输入"
 		}
 	},
 
@@ -40,7 +44,8 @@ export default {
 		change_focus_boolean(checked : boolean) { this.focus_boolean = checked },
 		change_auto_focus_boolean(checked : boolean) { this.auto_focus_boolean = checked },
     change_cursor_color_boolean(checked : boolean) { if(checked){ this.cursor_color = "transparent"} else {this.cursor_color = "#3393E2"}},
-		radio_change_inputmode_enum(checked : number) { this.inputmode_enum_current = checked }
+		radio_change_inputmode_enum(checked : number) { this.inputmode_enum_current = checked },
+    radio_change_confirm_type(checked : number) { this.confirm_type_current = checked }
 	}
 }
 </script>
@@ -62,6 +67,7 @@ export default {
         :adjust-position="adjust_position_boolean"
         :cursor-color="cursor_color"
         :inputmode="inputmode_enum[inputmode_enum_current].name"
+        :confirm-type="confirm_type_list[confirm_type_current].name"
         :maxlength="maxlength"
         @click="textarea_click"
         @touchstart="textarea_touchstart"
@@ -124,6 +130,11 @@ export default {
         :items="inputmode_enum"
         title="是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
         @change="radio_change_inputmode_enum"
+      ></enum-data>
+      <enum-data
+        :items="confirm_type_list"
+        title="枚举属性，可以设置键盘右下角按钮。（仅限 Web、iOS 平台）。"
+        @change="radio_change_confirm_type"
       ></enum-data>
     </view>
   <!-- #ifdef APP -->
