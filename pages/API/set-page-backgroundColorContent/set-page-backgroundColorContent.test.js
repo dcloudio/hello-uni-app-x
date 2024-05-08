@@ -7,7 +7,12 @@ describe('set-page-backgroundColorContent', () => {
 
   it('check_backgroundColorContent_red', async () => {
     await page.callMethod('changeColor', "")
-    page.waitFor(100)
+    page.waitFor(200)
+
+    const color = (await page.data()).currentBackgroundColorContent
+    expect(color).toBe("red")
+
+
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
