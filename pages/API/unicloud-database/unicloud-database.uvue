@@ -14,6 +14,7 @@
           <button type="primary" @click="dbRemove">删除数据</button>
           <button type="primary" @click="dbLookupInit">初始化联表查询数据</button>
           <button type="primary" @click="dbLookup">联表查询</button>
+          <button type="primary" @click="dbMultiSend">合并查询查询</button>
         </view>
       </view>
     </view>
@@ -35,6 +36,7 @@
         getWithCommandData: [] as Array<UTSJSONObject>,
         removeDeleted: 0,
         lookupData: [] as Array<UTSJSONObject>,
+        multiSendSuccessCount: 0,
         isUniTest: false
       }
     },
@@ -276,6 +278,39 @@
           .catch((err : any | null) => {
             uni.hideLoading()
             const error = err as UniCloudError
+            this.notify(error.errMsg, '错误')
+          })
+      },
+      dbMultiSend() {
+        const db = uniCloud.databaseForJQL()
+        const temp1 = db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          ).getTemp()
+        const temp2 = db.collection('type')
+          .where(
+            'tag == "default-tag"'
+          ).getTemp()
+        db.multiSend(temp1, temp2)
+          .then<void>(res => {
+            uni.hideLoading()
+            let successCount = 0
+            for (let i = 0; i < res.dataList.length; i++) {
+              const item = res.dataList[i]
+              if(item.errCode == 0) {
+                console.log(`第${i}个请求查询到${item.data!.length}条数据`)
+                successCount++
+              } else {
+                console.error(`第${i}个请求查询失败，错误信息：${item.data!.length}`)
+              }
+            }
+            this.multiSendSuccessCount = successCount
+            this.notify(`合并查询成功，成功查询的语句条数为：${successCount}`, '提示')
+          })
+          .catch<void>((err : any | null) => {
+            uni.hideLoading()
+            const error = err as UniCloudError
+            console.error(err)
             this.notify(error.errMsg, '错误')
           })
       }
