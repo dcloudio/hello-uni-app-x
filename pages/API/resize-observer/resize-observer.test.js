@@ -1,5 +1,8 @@
 describe('api-resize-observer', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('android')) {
+  if (
+    !process.env.uniTestPlatformInfo.startsWith('android') &&
+    !process.env.uniTestPlatformInfo.startsWith('web')
+  ) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
