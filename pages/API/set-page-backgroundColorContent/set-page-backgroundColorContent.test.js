@@ -1,11 +1,4 @@
 describe('set-page-backgroundColorContent', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
-    it('dummyTest', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/set-page-backgroundColorContent/set-page-backgroundColorContent')
