@@ -1,0 +1,57 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>
+      </view>
+      <video class="video" :src="absoluteVideoPath"></video>
+      <text class="margin-top-10">{{absoluteVideoInfo}}</text>
+      <view class="uni-btn-v">
+        <button type="primary" @click="chooseVideo">拍摄视频或从相册中选择视频</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: "getVideoInfo",
+        absoluteVideoPath: "",
+        absoluteVideoInfo: "",
+      }
+    },
+    methods: {
+      chooseVideo() {
+        uni.chooseVideo({
+          compressed: false,
+          success: (_res) => {
+            this.absoluteVideoPath = _res.tempFilePath;
+            uni.getVideoInfo({
+              src: _res.tempFilePath,
+              success: (res) => {
+                this.absoluteVideoInfo = `视频画面方向: ${res.orientation}\n视频格式: ${res.type}\n视频长度: ${res.duration}s\n视频大小: ${Math.ceil(res.size / 1024)}kB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n视频帧率: ${res.fps}fps\n视频码率: ${res.bitrate}kbps`;
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+</script>
+
+<style>
+  .video {
+    align-self: center;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+</style>
