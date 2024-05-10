@@ -16,6 +16,16 @@ describe('ExtApi-GetSystemInfo', () => {
     'windowHeight', 'windowTop', 'windowBottom', 'screenTop',
     'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]
+  const booleanProperties = [
+    'isUniAppX'
+  ]
+  const requiredProperties = [
+    'uniCompilerVersion',
+    'uniCompilerVersionCode',
+    'uniRuntimeVersion',
+    'uniRuntimeVersionCode',
+    'isUniAppX'
+  ]
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -34,6 +44,10 @@ describe('ExtApi-GetSystemInfo', () => {
         expect(value).not.toBeNull();
         expect(value).toBeGreaterThanOrEqual(0);
       }
+      if (booleanProperties.indexOf(key) != -1) {
+        expect(value).not.toBeNull();
+        expect(typeof value).toBe('boolean');
+      }
       if (key == 'deviceOrientation') {
         expect(['portrait', 'landscape']).toContain(value);
       }
@@ -42,4 +56,10 @@ describe('ExtApi-GetSystemInfo', () => {
       }
     }
   });
+  it('Check GetSystemInfoSync required properties', async () => {
+    for (let i = 0; i < requiredProperties.length; i++) {
+      const key = requiredProperties[i]
+      expect(`${key} not null: ${res[key] != null}`).toBe(`${key} not null: true`)
+    }
+  })
 });
