@@ -31,12 +31,20 @@
       chooseVideo() {
         uni.chooseVideo({
           compressed: false,
-          success: (_res) => {
-            this.absoluteVideoPath = _res.tempFilePath;
+          success: (res) => {
+            this.absoluteVideoPath = res.tempFilePath;
             uni.getVideoInfo({
-              src: _res.tempFilePath,
-              success: (res) => {
-                this.absoluteVideoInfo = `视频画面方向: ${res.orientation}\n视频格式: ${res.type}\n视频长度: ${res.duration}s\n视频大小: ${Math.ceil(res.size / 1024)}kB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n视频帧率: ${res.fps}fps\n视频码率: ${res.bitrate}kbps`;
+              src: res.tempFilePath,
+              success: (_res) => {
+                console.log("getVideoInfo success", JSON.stringify(res));
+                this.absoluteVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${Math.ceil(_res.size / 1024)}kB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+              },
+              fail: (err) => {
+                uni.showModal({
+                  title: "获取视频信息失败",
+                  content: JSON.stringify(err),
+                  showCancel: false
+                });
               }
             });
           }

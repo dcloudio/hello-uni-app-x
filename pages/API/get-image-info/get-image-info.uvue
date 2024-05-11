@@ -45,12 +45,20 @@
       chooseImage() {
         uni.chooseImage({
           count: 1,
-          success: (_res) => {
-            this.absoluteImagePath = _res.tempFilePaths[0];
+          success: (res) => {
+            this.absoluteImagePath = res.tempFilePaths[0];
             uni.getImageInfo({
-              src: _res.tempFilePaths[0],
-              success: (res) => {
-                this.relativeImageInfo = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+              src: res.tempFilePaths[0],
+              success: (_res) => {
+                console.log("getImageInfo success", JSON.stringify(res));
+                this.relativeImageInfo = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n图片路径: ${_res.path}\n图片方向: ${_res.orientation}\n图片格式: ${_res.type}`;
+              },
+              fail: (err) => {
+                uni.showModal({
+                  title: "获取图片信息失败",
+                  content: JSON.stringify(err),
+                  showCancel: false
+                });
               }
             });
           }
@@ -61,13 +69,29 @@
       uni.getImageInfo({
         src: this.relativeImagePath,
         success: (res) => {
+          console.log("getImageInfo success", JSON.stringify(res));
           this.absoluteImageInfo = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        },
+        fail: (err) => {
+          uni.showModal({
+            title: "获取图片信息失败",
+            content: JSON.stringify(err),
+            showCancel: false
+          });
         }
       });
       uni.getImageInfo({
         src: this.remoteImagePath,
         success: (res) => {
+          console.log("getImageInfo success", JSON.stringify(res));
           this.remoteImageInfo = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+        },
+        fail: (err) => {
+          uni.showModal({
+            title: "获取图片信息失败",
+            content: JSON.stringify(err),
+            showCancel: false
+          });
         }
       });
     }

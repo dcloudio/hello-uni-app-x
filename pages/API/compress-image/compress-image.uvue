@@ -24,14 +24,12 @@
       </view>
     </view>
     <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
-      @confirm="onQualityInputConfirm"></input-data>
-    <input-data title="压缩后图片的宽度，单位px" type="number" @confirm="onCompressedWidthInputConfirm"></input-data>
-    <input-data title="压缩后图片的高度，单位px" type="number" @confirm="onCompressedHeightInputConfirm"></input-data>
-    <input-data defaultValue="auto" title="压缩后图片的宽度，支持px、%、auto" type="string"
-      @confirm="onWidthInputConfirm"></input-data>
-    <input-data defaultValue="auto" title="压缩后图片的高度，支持px、%、auto" type="string"
-      @confirm="onHeightInputConfirm"></input-data>
-    <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateInputConfirm"></input-data>
+      @confirm="onQualityConfirm"></input-data>
+    <input-data title="压缩后图片的宽度，单位px" type="number" @confirm="onCompressedWidthConfirm"></input-data>
+    <input-data title="压缩后图片的高度，单位px" type="number" @confirm="onCompressedHeightConfirm"></input-data>
+    <input-data defaultValue="auto" title="压缩后图片的宽度，支持px、%、auto" type="string" @confirm="onWidthConfirm"></input-data>
+    <input-data defaultValue="auto" title="压缩后图片的高度，支持px、%、auto" type="string" @confirm="onHeightConfirm"></input-data>
+    <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -56,6 +54,16 @@
     },
     methods: {
       compressImage() {
+        if (this.beforeCompressPath == "") {
+          uni.showToast({
+            title: "请先选择图片",
+            icon: "error"
+          });
+          return;
+        }
+        uni.showLoading({
+          title: "图片压缩中"
+        });
         uni.compressImage({
           src: this.beforeCompressPath,
           quality: this.quality,
@@ -64,24 +72,29 @@
           width: this.width,
           height: this.height,
           rotate: this.rotate,
-          success: (_res) => {
-            this.afterCompressPath = _res.tempFilePath;
+          success: (res) => {
+            console.log("compressImage success", JSON.stringify(res));
+            this.afterCompressPath = res.tempFilePath;
             uni.showToast({
               title: "压缩成功",
               icon: null
             });
             uni.getImageInfo({
-              src: _res.tempFilePath,
-              success: (res) => {
-                this.afterCompressImageInfo = `图片宽度: ${res.width}, 图片高度: ${res.height}`;
+              src: res.tempFilePath,
+              success: (_res) => {
+                this.afterCompressImageInfo = `图片宽度: ${_res.width}, 图片高度: ${_res.height}`;
               }
             });
           },
           fail: (err) => {
             uni.showModal({
-              title: "压缩失败",
-              content: JSON.stringify(err)
-            })
+              title: "压缩图片失败",
+              content: JSON.stringify(err),
+              showCancel: false
+            });
+          },
+          complete: (_) => {
+            uni.hideLoading();
           }
         })
       },
@@ -90,33 +103,33 @@
           count: 1,
           sizeType: ["original"],
           sourceType: ["album"],
-          success: (_res) => {
-            this.beforeCompressPath = _res.tempFilePaths[0];
+          success: (res) => {
+            this.beforeCompressPath = res.tempFilePaths[0];
             uni.getImageInfo({
-              src: _res.tempFilePaths[0],
-              success: (res) => {
-                this.beforeCompressImageInfo = `图片宽度: ${res.width}, 图片高度: ${res.height}`;
+              src: res.tempFilePaths[0],
+              success: (_res) => {
+                this.beforeCompressImageInfo = `图片宽度: ${_res.width}, 图片高度: ${_res.height}`;
               }
             });
           }
         });
       },
-      onQualityInputConfirm(value : number) {
+      onQualityConfirm(value : number) {
         this.quality = value;
       },
-      onCompressedWidthInputConfirm(value : number) {
+      onCompressedWidthConfirm(value : number) {
         this.compressedWidth = value;
       },
-      onCompressedHeightInputConfirm(value : number) {
+      onCompressedHeightConfirm(value : number) {
         this.compressedHeight = value;
       },
-      onWidthInputConfirm(value : string) {
+      onWidthConfirm(value : string) {
         this.width = value;
       },
-      onHeightInputConfirm(value : string) {
+      onHeightConfirm(value : string) {
         this.height = value;
       },
-      onRotateInputConfirm(value : number) {
+      onRotateConfirm(value : number) {
         this.rotate = value;
       }
     }

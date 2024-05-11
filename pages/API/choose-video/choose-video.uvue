@@ -1,0 +1,79 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <video class="video" :src="src"></video>
+      <view class="uni-btn-v">
+        <button type="primary" @click="chooseVideo">选取视频</button>
+      </view>
+      <enum-data title="视频来源" :items="sourceTypeItemTypes" @change="onSourceTypeChange"></enum-data>
+      <enum-data title="摄像头" :items="cameraItemTypes" @change="onCameraChange"></enum-data>
+      <input-data title="最长拍摄时间，单位秒" defaultValue="60" type="number" @confirm="onMaxDurationConfirm"></input-data>
+      <boolean-data title="是否压缩" :defaultValue="true" @change="onCompressedChange"></boolean-data>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  import { ItemType } from '@/components/enum-data/enum-data'
+  export default {
+    data() {
+      return {
+        title: "chooseVideo",
+        src: "",
+        sourceTypeItemTypes: [{ "value": 0, "name": "从相册中选择视频" }, { "value": 1, "name": "拍摄视频" }, { "value": 2, "name": "从相册中选择视频或拍摄视频" }] as ItemType[],
+        sourceTypeItems: [["album"], ["camera"], ["album", "camera"]],
+        cameraItemTypes: [{ "value": 0, "name": "后置摄像头" }, { "value": 1, "name": "前置摄像头" }] as ItemType[],
+        cameraItems: ["back", "front"],
+        sourceType: ["album", "camera"],
+        compressed: true,
+        maxDuration: 60,
+        camera: "back"
+      }
+    },
+    methods: {
+      chooseVideo() {
+        uni.chooseVideo({
+          sourceType: this.sourceType,
+          compressed: this.compressed,
+          maxDuration: this.maxDuration,
+          camera: this.camera,
+          // extension: ['mp4'],
+          success: (res) => {
+            console.log("chooseVideo success", JSON.stringify(res));
+            this.src = res.tempFilePath;
+          },
+          fail: (err) => {
+            uni.showModal({
+              title: "选择视频失败",
+              content: JSON.stringify(err),
+              showCancel: false
+            });
+          }
+        })
+      },
+      onSourceTypeChange(value : number) {
+        this.sourceType = this.sourceTypeItems[value];
+      },
+      onCompressedChange(value : boolean) {
+        this.compressed = value;
+      },
+      onMaxDurationConfirm(value : number) {
+        this.maxDuration = value;
+      },
+      onCameraChange(value : number) {
+        this.camera = this.cameraItems[value];
+      }
+    }
+  }
+</script>
+
+<style>
+  .video {
+    align-self: center;
+  }
+</style>

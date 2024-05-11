@@ -23,16 +23,18 @@
       saveImage() {
         uni.saveImageToPhotosAlbum({
           filePath: "/static/uni.png",
-          success() {
+          success: (res) => {
+            console.log("saveImageToPhotosAlbum success", JSON.stringify(res));
             uni.showToast({
               position: "center",
               icon: "none",
               title: "图片保存成功，请到手机相册查看"
             })
           },
-          fail(e) {
+          fail: (err) => {
             uni.showModal({
-              content: "保存相册失败，errCode：" + e.errCode + "，errMsg：" + e.errMsg + "，errSubject：" + e.errSubject,
+              title: "保存图片到相册失败",
+              content: JSON.stringify(err),
               showCancel: false
             });
           }
