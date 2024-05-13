@@ -348,65 +348,57 @@
                 url: 'save-image-to-photos-album'
               },
               // #endif
-              // #ifdef APP-ANDROID
+              // #ifdef APP-ANDROID || WEB
               {
                 name: "获取图片信息",
                 url: 'get-image-info'
               },
+              // #endif
+              // #ifdef APP-ANDROID
               {
                 name: "压缩图片",
                 url: 'compress-image'
               },
               // #endif
-              // #ifdef APP
               {
                 name: "拍摄视频或从相册中选择视频",
                 url: 'choose-video'
               },
+              // #ifdef APP
               {
                 name: "保存视频到相册",
                 url: 'save-video-to-photos-album'
               },
               // #endif
-              // #ifdef APP-ANDROID
+              // #ifdef APP-ANDROID || WEB
               {
                 name: "获取视频信息",
                 url: 'get-video-info'
               },
+              // #endif
+              // #ifdef APP-ANDROID
               {
                 name: "压缩视频",
                 url: 'compress-video'
               },
               // #endif
               /* {
-                name: "图片选择和拍照",
-                url: "image",
-                enable: false
-              },{
                 name: "音频",
                 url: "inner-audio",
-              },
-              {
-                name: "录音",
-                url: "voice",
               },
               {
                 name: "背景音频",
                 url: "background-audio",
               },
               {
-                name: "视频选择和拍照",
-                url: "video",
-                enable: false
+                name: "录音",
+                url: "rec",
               },
               {
                 name: "文件",
                 url: "file",
               },
-              {
-                name: "保存媒体到本地",
-                url: "save-media",
-              }, */
+              */
             ] as Page[],
           },
           {
@@ -446,7 +438,7 @@
               }
             ] as Page[],
           },
-          // #ifdef APP-ANDROID || APP-IOS
+          // #ifdef APP
           {
             id: 'file',
             name: '文件',
@@ -485,12 +477,10 @@
             id: 'login',
             name: '登录与认证',
             pages: [
-          // #ifdef APP-ANDROID
               {
                 name: '一键登录',
                 url: 'get-univerify-manager',
               },
-          // #endif
               {
                 name: '实人认证',
                 url: 'facial-recognition-verify',
@@ -498,6 +488,22 @@
             ] as Page[],
           },
           // #endif
+          {
+            id: "payment",
+            name: "支付",
+            pages: [
+              // #ifndef WEB
+              {
+                name: "简易支付示例",
+                url: "request-payment",
+              },
+              // #endif
+              {
+                name: "uni-pay支付示例",
+                url: "request-payment-uni-pay",
+              }
+            ] as Page[],
+          },
           // #ifdef APP-ANDROID
           {
             id: 'ad',
@@ -507,6 +513,13 @@
                 name: '激励视频广告',
                 url: 'rewarded-video-ad',
               }
+              /* {
+                id: "full-screen-video-ad",
+                url: "full-screen-video-ad",
+                name: "全屏视频广告",
+                enable: false,
+                pages: [] as Page[]
+              }, */
             ] as Page[],
           },
           {
@@ -520,56 +533,7 @@
             ] as Page[]
           },
           // #endif
-          // #ifdef APP-ANDROID || APP-IOS
-          {
-            id: "payment",
-            name: "支付",
-            pages: [
-              {
-                name: "简易支付示例",
-                url: "request-payment",
-              },
-              {
-                name: "uni-pay支付示例",
-                url: "request-payment-uni-pay",
-              }
-            ] as Page[],
-          },
-          // #endif
-          // #ifdef WEB
-          {
-            id: "payment",
-            name: "支付",
-            pages: [
-              {
-                name: "uni-pay支付示例",
-                url: "request-payment-uni-pay",
-              }
-            ] as Page[],
-          },
-          // #endif
           /*
-          {
-            id: "full-screen-video-ad",
-            url: "full-screen-video-ad",
-            name: "全屏视频广告",
-            enable: false,
-            pages: [] as Page[]
-          },
-          {
-            id: "login",
-            name: "登录",
-            pages: [
-              {
-                name: "登录",
-                url: "login",
-              },
-              {
-                name: "获取用户信息",
-                url: "get-user-info",
-              },
-            ] as Page[],
-          },
           {
             id: "share",
             name: "分享",
