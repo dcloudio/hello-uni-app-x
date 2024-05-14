@@ -164,12 +164,12 @@
             this.statsRet = res.stats
             console.log('this.statsRet', this.statsRet)
           },
-          fail: (res : UniError) => {
+          fail: (res:IUniError ) => {
             if (this.logAble) {
               this.log += 'statFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('statFileInfoTest fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             console.log("statFileInfoTest complete", res)
@@ -195,12 +195,12 @@
             this.getFileInfoSize = res.size
             this.getFileInfoDigest = res.digest
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'getFileInfoTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -224,12 +224,12 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -253,12 +253,12 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'renameFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             this.done = true
@@ -281,12 +281,12 @@
             console.log("success", res)
             this.fileListSuccess = res.files
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'readDirTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -313,12 +313,12 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'writeFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail')
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             this.done = true
@@ -344,12 +344,12 @@
             console.log('success', res)
             this.readFileRet = res.data
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'readFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -372,12 +372,12 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'rmdirTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+            this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -402,12 +402,13 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'mkdirTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             if (res instanceof UniError) {
@@ -431,12 +432,13 @@
             console.log('success', res)
             this.accessFileRet = res.errMsg
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'accessFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             if (res instanceof UniError) {
@@ -459,12 +461,13 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'unlinkTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             if (res instanceof UniError) {
@@ -497,12 +500,13 @@
                   }
                   console.log('success unlink', res)
                 },
-                fail: (res : UniError) => {
+                fail: (res : IUniError) => {
                   if (this.logAble) {
                     this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
                   }
                   console.log('fail unlink', res)
-                  this.lastFailError = res
+                              this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
                 },
                 complete: (res : any) => {
                   if (res instanceof UniError) {
@@ -514,12 +518,13 @@
               } as UnLinkOptions)
             });
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'unlinkAllFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail to readdir', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             console.log("complete readdir", res)
@@ -544,12 +549,13 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'copyFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -573,12 +579,13 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'appendFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail')
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             this.done = true
@@ -757,12 +764,13 @@
             this.saveFileRet = res.savedFilePath
             this.done = true
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('saveFileTest fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
             this.done = true
           },
           complete: (_) => {
@@ -801,12 +809,13 @@
             }
             console.log('success', res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'unzipFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (_) => {
             this.done = true
@@ -825,12 +834,13 @@
             this.fileListSuccess = res.fileList
             this.getSavedFileListRet = "getSavedFileList:ok"
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'getSavedFileListTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('getSavedFileListTest fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
             this.getSavedFileListRet = JSON.stringify(res)
           },
           complete: (res : any) => {
@@ -855,12 +865,13 @@
             }
             console.log("success", res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'truncateFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -894,12 +905,13 @@
             }
             console.log("success", res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'readCompressedFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (_) => {
             this.done = true
@@ -937,7 +949,7 @@
             this.removeSavedFileRet = res.errMsg
             console.log("removeSavedFileTest success", res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'removeSavedFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
@@ -981,12 +993,13 @@
             console.log("success", res)
             this.fd = res.fd
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (_) => {
             this.done = true
@@ -1047,12 +1060,13 @@
             this.closeFileRet = res.errMsg
             console.log("success", res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'closeTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (_) => {
             this.done = true
@@ -1079,12 +1093,13 @@
             console.log("success", res)
             this.bytesWritten = res.bytesWritten
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'writeTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (_) => {
             this.done = true
@@ -1128,12 +1143,13 @@
               this.done = true
             }
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'openFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
             this.done = true
           }
         } as OpenFileOptions)
@@ -1150,12 +1166,13 @@
             console.log("success", res)
             this.fstat = res.stats
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'fstatTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (_) => {
             this.done = true
@@ -1193,12 +1210,13 @@
             }
             this.ftruncateRet = res.errMsg
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'ftruncateFileTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           },
           complete: (res : any) => {
             console.log("complete", res)
@@ -1239,12 +1257,13 @@
             }
             console.log("success", res)
           },
-          fail: (res : UniError) => {
+          fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'readZipEntry fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-            this.lastFailError = res
+                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+
           }
         } as ReadZipEntryOptions)
       },
