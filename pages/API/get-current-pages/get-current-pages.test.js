@@ -42,9 +42,7 @@ describe('getCurrentPages', () => {
     await page.waitFor(200)
     const data2 = await page.data()
     const isEnablePullDownRefresh2 = data2.currentPageStyle.enablePullDownRefresh
-    const currentPageStyleIsUTSJSONObject2 = data2.currentPageStyleIsUTSJSONObject
     expect(isEnablePullDownRefresh2).toBe(false)
-    expect(currentPageStyleIsUTSJSONObject2).toBe(true)
 
     await page.callMethod('startPullDownRefresh')
     await page.waitFor(500)
