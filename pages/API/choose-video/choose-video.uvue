@@ -5,6 +5,10 @@
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <video class="video" :src="src" :controls="true"></video>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">视频信息</text>
+      </view>
+      <text>{{videoInfo}}</text>
       <view class="uni-btn-v">
         <button type="primary" @click="chooseVideo">选取视频</button>
       </view>
@@ -12,9 +16,11 @@
       <enum-data title="摄像头" :items="cameraItemTypes" @change="onCameraChange"></enum-data>
     </view>
     <input-data title="最长拍摄时间，单位秒" defaultValue="60" type="number" @confirm="onMaxDurationConfirm"></input-data>
+    <!-- #ifdef APP -->
     <view class="uni-padding-wrap">
       <boolean-data title="是否压缩" :defaultValue="true" @change="onCompressedChange"></boolean-data>
     </view>
+    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -34,20 +40,23 @@
         sourceType: ["album", "camera"],
         compressed: true,
         maxDuration: 60,
-        camera: "back"
+        camera: "back",
+        videoInfo: ""
       }
     },
     methods: {
       chooseVideo() {
         uni.chooseVideo({
           sourceType: this.sourceType,
+          // #ifdef APP
           compressed: this.compressed,
+          // #endif
           maxDuration: this.maxDuration,
           camera: this.camera,
-          // extension: ['mp4'],
           success: (res) => {
             console.log("chooseVideo success", JSON.stringify(res));
             this.src = res.tempFilePath;
+            this.videoInfo = `视频长度: ${res.duration}s\n视频大小: ${Math.ceil(res.size / 1024)}KB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n`;
           },
           fail: (err) => {
             uni.showModal({
@@ -56,7 +65,7 @@
               showCancel: false
             });
           }
-        })
+        });
       },
       onSourceTypeChange(value : number) {
         this.sourceType = this.sourceTypeItems[value];
