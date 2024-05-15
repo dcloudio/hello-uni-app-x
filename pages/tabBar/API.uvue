@@ -8,26 +8,28 @@
       </view>
       <view class="uni-text-box">
         <text class="hello-text">以下将演示uni-app接口能力，详细文档见：</text>
-        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'" :inWhiteList="true"></u-link>
+        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'"
+          :inWhiteList="true"></u-link>
       </view>
 
       <uni-collapse>
         <template v-for="item in list" :key="item.id">
           <uni-collapse-item :title="item.name" class="item">
-            <view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'" v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
-              <text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
+            <view class="uni-navigate-item" :hover-class="page.enable == false ? '' : 'is--active'"
+              v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
+              <text class="uni-navigate-text"
+                :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
               <image :src="arrowRightIcon" class="uni-icon-size"></image>
             </view>
           </uni-collapse-item>
         </template>
       </uni-collapse>
-
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
   <view ref="pop" @click="hidePop()" class="popup">
-    <view style="width: 90%;background-color: white;" @click="stopClickPop">
+    <view style="width: 90%; background-color: white" @click="stopClickPop">
       <api-set-tabbar></api-set-tabbar>
     </view>
   </view>
@@ -529,6 +531,16 @@
               {
                 name: '权限申请监听',
                 url: 'create-request-permission-listener',
+              }
+            ] as Page[]
+          },
+          {
+            id: 'theme-change',
+            name: '主题切换',
+            pages: [
+              {
+                name: '主题切换',
+                url: 'theme-change',
               }
             ] as Page[]
           },

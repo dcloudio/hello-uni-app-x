@@ -1,0 +1,85 @@
+<template>
+  <view class="uni-padding-wrap">
+    <view class="uni-common-mt flex justify-between flex-row">
+      <text>theme:</text>
+      <text id="theme">{{ dataInfo.theme }}</text>
+    </view>
+    <view class="uni-common-mt flex justify-between flex-row">
+      <text>fn1 trigger num:</text>
+      <text id="fn1-trigger-num">{{ dataInfo.fn1TriggerNum }}</text>
+    </view>
+    <view class="uni-common-mt flex justify-between flex-row">
+      <text>fn2 trigger num:</text>
+      <text id="fn2-trigger-num">{{ dataInfo.fn2TriggerNum }}</text>
+    </view>
+    <button class="uni-common-mt" id="bind-fn1" @click="bindFn1">
+      bind fn1
+    </button>
+    <button class="uni-common-mt" id="remove-fn1" @click="removeFn1">
+      remove fn1
+    </button>
+    <button class="uni-common-mt" id="bind-fn2" @click="bindFn2">
+      bind fn2
+    </button>
+    <button class="uni-common-mt" id="remove-fn2" @click="removeFn2">
+      remove fn2
+    </button>
+  </view>
+</template>
+
+<script setup lang="uts">
+type DataInfo = {
+  fn1TriggerNum: number
+  fn2TriggerNum: number
+  theme: string
+
+}
+
+const dataInfo = reactive<DataInfo>({
+  fn1TriggerNum: 0,
+  fn2TriggerNum: 0,
+  theme: ''
+})
+
+const fn1 = (options : OnThemeChangeOptions) => {
+  dataInfo.fn1TriggerNum++
+  console.log('fn1 triggered options: ', options)
+  dataInfo.theme = options.theme
+}
+
+const fn2 = (options : OnThemeChangeOptions) => {
+  dataInfo.fn2TriggerNum++
+  console.log('fn2 triggered options: ', options)
+  dataInfo.theme = options.theme
+}
+
+const bindFn1 = () => {
+  uni.onOSThemeChange(fn1)
+}
+const removeFn1 = () => {
+  uni.offOSThemeChange(fn1)
+}
+const bindFn2 = () => {
+  uni.onOSThemeChange(fn2)
+}
+const removeFn2 = () => {
+  uni.offOSThemeChange(fn2)
+}
+
+onReady(() => {
+  bindFn1()
+  bindFn2()
+})
+</script>
+
+<style>
+.flex {
+  display: flex;
+}
+.flex-row {
+  flex-direction: row;
+}
+.justify-between {
+  justify-content: space-between;
+}
+</style>
