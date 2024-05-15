@@ -117,10 +117,20 @@
 				uni.showLoading({
 					title: "请求中..."
 				})
-				let url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__uniappx/?total=1'
+				let url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__uniappx/?total=0.01'
 				const res = uni.getAppBaseInfo();
-				if (res.packageName == 'io.dcloud.hellouniappx') {//hello uniappx
-					url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__HelloUniAppX/?total=1'
+				let packageName = ''
+
+				// #ifdef APP-ANDROID
+				packageName = res.packageName
+				// #endif
+
+				// #ifdef APP-IOS
+				packageName = res.bundleId
+				// #endif
+
+				if (packageName == 'io.dcloud.hellouniappx') {//hello uniappx
+				  url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__HelloUniAppX/?total=0.01'
 				}
 				uni.request({
 					url: url,
