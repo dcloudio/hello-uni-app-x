@@ -33,7 +33,9 @@ describe('getCurrentPages', () => {
     expect(isEnablePullDownRefresh1).toBe(true)
 
     // setPageStyle
-    await page.callMethod('setPageStyle', false)
+    await page.callMethod('setPageStyle', {
+      enablePullDownRefresh: false
+    })
     await page.waitFor(200)
 
     await page.callMethod('getPageStyle')
@@ -50,7 +52,9 @@ describe('getCurrentPages', () => {
     expect(image2).toSaveImageSnapshot();
 
     await page.waitFor(3500)
-    await page.callMethod('setPageStyle', true)
+    await page.callMethod('setPageStyle', {
+      enablePullDownRefresh: true
+    })
     await page.waitFor(200)
     await page.callMethod('startPullDownRefresh')
     await page.waitFor(500)

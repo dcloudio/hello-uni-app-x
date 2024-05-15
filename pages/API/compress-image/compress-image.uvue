@@ -25,8 +25,8 @@
     </view>
     <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
       @confirm="onQualityConfirm"></input-data>
-    <input-data title="压缩后图片的宽度，单位px" type="number" @confirm="onCompressedWidthConfirm"></input-data>
-    <input-data title="压缩后图片的高度，单位px" type="number" @confirm="onCompressedHeightConfirm"></input-data>
+    <input-data title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
+    <input-data title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
     <input-data defaultValue="auto" title="压缩后图片的宽度，支持px、%、auto" type="string" @confirm="onWidthConfirm"></input-data>
     <input-data defaultValue="auto" title="压缩后图片的高度，支持px、%、auto" type="string" @confirm="onHeightConfirm"></input-data>
     <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
@@ -36,6 +36,9 @@
 </template>
 
 <script>
+  // #ifdef APP-ANDROID
+  import FileInputStream from 'java.io.FileInputStream';
+  // #endif
   export default {
     data() {
       return {
@@ -82,7 +85,11 @@
             uni.getImageInfo({
               src: res.tempFilePath,
               success: (_res) => {
-                this.afterCompressImageInfo = `图片宽度: ${_res.width}, 图片高度: ${_res.height}`;
+                this.afterCompressImageInfo = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
+                // #ifdef APP-ANDROID
+                const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
+                this.afterCompressImageInfo = this.afterCompressImageInfo.concat(`图片大小: ${size}KB`);
+                // #endif
               }
             });
           },
@@ -108,7 +115,11 @@
             uni.getImageInfo({
               src: res.tempFilePaths[0],
               success: (_res) => {
-                this.beforeCompressImageInfo = `图片宽度: ${_res.width}, 图片高度: ${_res.height}`;
+                this.beforeCompressImageInfo = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
+                // #ifdef APP-ANDROID
+                const size = new FileInputStream(res.tempFilePaths[0].substring("file://".length)).available() / 1024;
+                this.beforeCompressImageInfo = this.beforeCompressImageInfo.concat(`图片大小: ${size}KB`);
+                // #endif
               }
             });
           }
@@ -117,11 +128,11 @@
       onQualityConfirm(value : number) {
         this.quality = value;
       },
-      onCompressedWidthConfirm(value : number) {
-        this.compressedWidth = value;
+      onCompressedWidthConfirm(value : string) {
+        this.compressedWidth = parseInt(value);
       },
-      onCompressedHeightConfirm(value : number) {
-        this.compressedHeight = value;
+      onCompressedHeightConfirm(value : string) {
+        this.compressedHeight = parseInt(value);
       },
       onWidthConfirm(value : string) {
         this.width = value;

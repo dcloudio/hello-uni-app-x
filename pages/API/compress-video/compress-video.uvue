@@ -4,11 +4,12 @@
   <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
-      <video class="video" :src="src"></video>
+      <video class="video" :src="beforeCompressPath" :controls="true"></video>
       <view class="uni-title">
         <text class="uni-subtitle-text">压缩前视频信息</text>
       </view>
       <text>{{beforeCompressVideoInfo}}</text>
+      <video class="video" :src="afterCompressPath" :controls="true"></video>
       <view class="uni-title">
         <text class="uni-subtitle-text">压缩后视频信息</text>
       </view>
@@ -19,11 +20,8 @@
       <view class="uni-btn-v">
         <button type="primary" @click="compressVideo">压缩视频</button>
       </view>
+      <enum-data title="压缩质量" :items="qualityItemTypes" @change="onQualityChange"></enum-data>
     </view>
-    <input-data :defaultValue="null" title="压缩质量，low(低) medium(中) high(高)" type="string"
-      @confirm="onQualityConfirm"></input-data>
-    <!-- <input-data :defaultValue="null" title="码率，单位kbps" type="number" @confirm="onBitrateConfirm"></input-data> -->
-    <!-- <input-data :defaultValue="null" title="帧率" type="number" @confirm="onFpsConfirm"></input-data> -->
     <input-data :defaultValue="null" title="相对于原视频的分辨率比例，取值范围(0, 1]" type="string"
       @confirm="onResolutionConfirm"></input-data>
   <!-- #ifdef APP -->
@@ -32,11 +30,11 @@
 </template>
 
 <script>
+  import { ItemType } from '@/components/enum-data/enum-data';
   export default {
     data() {
       return {
         title: "compressVideo",
-        src: "",
         beforeCompressVideoInfo: "",
         afterCompressVideoInfo: "",
         beforeCompressPath: "",
@@ -45,6 +43,8 @@
         bitrate: null as number | null,
         fps: null as number | null,
         resolution: null as number | null,
+        qualityItemTypes: [{ "value": 0, "name": "low(低)" }, { "value": 1, "name": "medium(中)" }, { "value": 2, "name": "high(高)" }] as ItemType[],
+        qualityItems: ["low", "medium", "high"]
       }
     },
     methods: {
@@ -65,7 +65,7 @@
           resolution: this.resolution,
           success: (res) => {
             console.log("compressVideo success", JSON.stringify(res));
-            this.src = res.tempFilePath;
+            this.afterCompressPath = res.tempFilePath;
             uni.showToast({
               title: "压缩成功",
               icon: null
@@ -73,7 +73,7 @@
             uni.getVideoInfo({
               src: res.tempFilePath,
               success: (_res) => {
-                this.afterCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${Math.ceil(_res.size / 1024)}kB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+                this.afterCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${Math.ceil(_res.size / 1024)}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
               }
             });
           },
@@ -95,24 +95,17 @@
           compressed: false,
           success: (res) => {
             this.beforeCompressPath = res.tempFilePath;
-            this.src = res.tempFilePath;
             uni.getVideoInfo({
               src: res.tempFilePath,
               success: (_res) => {
-                this.beforeCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${Math.ceil(_res.size / 1024)}kB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+                this.beforeCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${Math.ceil(_res.size / 1024)}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
               }
             });
           }
         });
       },
-      onQualityConfirm(value : string) {
-        this.quality = value;
-      },
-      onBitrateConfirm(value : number) {
-        this.bitrate = value;
-      },
-      onFpsConfirm(value : number) {
-        this.fps = value;
+      onQualityChange(value : number) {
+        this.quality = this.qualityItems[value];
       },
       onResolutionConfirm(value : string) {
         this.resolution = parseFloat(value);
