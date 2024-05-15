@@ -14,35 +14,37 @@
     </view>
 
     <page-head title="currentPageStyle"></page-head>
-    <view class="page-style-item" v-for="(value, key) in currentPageStyle" :key="key">
-      <view class="item-text">
-        <text class="item-text-key">{{key}}:</text>
-        <text class="item-text-value">{{value}}</text>
+    <template v-for="(item, index) in PageStyleArray">
+      <view class="page-style-item" v-if="currentPageStyle[item.key]!=null" :key="index">
+        <view class="item-text">
+          <text class="item-text-key">{{item.key}}:</text>
+          <text class="item-text-value">{{currentPageStyle[item.key]}}</text>
+        </view>
+        <view class="set-value" v-if="item.type == 'boolean'">
+          <switch :checked="item.value.getBoolean('oldValue')"
+            @change="switchChange(item.key, $event as UniSwitchChangeEvent)">
+          </switch>
+        </view>
+        <view class="set-value" v-else-if="item.type == 'number'">
+          <slider :value="item.value.getNumber('oldValue')" :show-value="true"
+            @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
+        </view>
+        <view class="set-value" v-else-if="item.type == 'string'">
+          <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
+            <radio :value="item.value.getString('oldValue')">{{item.value.getString('oldValue')}}</radio>
+            <text class="split-h"></text>
+            <radio :value="item.value.getString('newValue')">{{item.value.getString('newValue')}}</radio>
+          </radio-group>
+        </view>
       </view>
-      <view class="set-value" v-if="typeof value == 'boolean'">
-        <switch :checked="getStyleValue(key).getBoolean('oldValue')"
-          @change="switchChange(key, $event as UniSwitchChangeEvent)">
-        </switch>
-      </view>
-      <view class="set-value" v-if="typeof value == 'number'">
-        <slider :value="getStyleValue(key).getNumber('oldValue')" :show-value="true"
-          @change="sliderChange(key, $event as UniSliderChangeEvent)" />
-      </view>
-      <view class="set-value" v-else-if="typeof value == 'string'">
-        <radio-group class="radio-set-value" @change="radioChange(key, $event as RadioGroupChangeEvent)">
-          <radio :value="getStyleValue(key).getString('oldValue')">{{getStyleValue(key).getString('oldValue')}}</radio>
-          <text class="split-h"></text>
-          <radio :value="getStyleValue(key).getString('newValue')">{{getStyleValue(key).getString('newValue')}}</radio>
-        </radio-group>
-      </view>
-    </view>
+    </template>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script>
-  import { PageStyleItem, PageStyleMap } from './page-style.uts';
+  import { PageStyleItem, PageStyleArray } from './page-style.uts';
 
   class Page {
     constructor(public route : string) {
@@ -54,7 +56,7 @@
       return {
         checked: false,
         pages: [] as Page[],
-        PageStyleMap: PageStyleMap as Map<string, PageStyleItem>,
+        PageStyleArray: PageStyleArray as PageStyleItem[],
         currentPageStyle: {} as UTSJSONObject,
       }
     },
@@ -104,12 +106,6 @@
         style[key] = value
         this.setPageStyle(style)
         this.getPageStyle()
-      },
-      getStyleValue(key : string) : UTSJSONObject {
-        if (PageStyleMap.has(key))
-          return PageStyleMap.get(key)!.value;
-        else
-          return {}
       },
       getPageStyle() : UTSJSONObject {
         const pages = getCurrentPages();
