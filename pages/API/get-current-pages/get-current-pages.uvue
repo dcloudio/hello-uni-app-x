@@ -21,19 +21,17 @@
           <text class="item-text-value">{{currentPageStyle[item.key]}}</text>
         </view>
         <view class="set-value" v-if="item.type == 'boolean'">
-          <switch :checked="item.value.getBoolean('oldValue')"
+          <switch :checked="currentPageStyle.getBoolean(item.key)"
             @change="switchChange(item.key, $event as UniSwitchChangeEvent)">
           </switch>
         </view>
         <view class="set-value" v-else-if="item.type == 'number'">
-          <slider :value="item.value.getNumber('oldValue')" :show-value="true"
+          <slider :value="currentPageStyle.getNumber(item.key)" :show-value="true"
             @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
         </view>
         <view class="set-value" v-else-if="item.type == 'string'">
           <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-            <radio :value="item.value.getString('oldValue')">{{item.value.getString('oldValue')}}</radio>
-            <text class="split-h"></text>
-            <radio :value="item.value.getString('newValue')">{{item.value.getString('newValue')}}</radio>
+            <radio class="radio-value" v-for="(item2, index2) in item.value" :key="index2" :value="item2" >{{item2}}</radio>
           </radio-group>
         </view>
       </view>
@@ -165,7 +163,7 @@
     flex-direction: row;
   }
 
-  .split-h {
-    width: 15px;
+  .radio-value {
+    margin-left: 10px;
   }
 </style>
