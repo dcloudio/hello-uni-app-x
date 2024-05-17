@@ -36,6 +36,13 @@ describe('ExtApi-UploadFile', () => {
     expect(res).toBe(true)
   });
 
+  it('Check Upload File In UTS Module', async () => {
+    res = await page.callMethod('jest_uts_module_invoked')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
+
   let shouldTestCookie = false
   if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let version = process.env.uniTestPlatformInfo

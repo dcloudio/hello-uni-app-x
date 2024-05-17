@@ -19,6 +19,11 @@
   <!-- #endif -->
 </template>
 <script>
+  import {
+    testInovkeDownloadFile,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+
   export default {
     data() {
       return {
@@ -127,6 +132,18 @@
             this.jest_result = needCookie ? false : true;
           }
         });
+      },
+      jest_uts_module_invoked(){
+        testInovkeDownloadFile({
+          success:(res: any)=>{
+            console.log("success :", res);
+            this.jest_result = true
+          },
+          fail:(err: any)=>{
+            console.log("fail :", err);
+            this.jest_result = false
+          }
+        } as CommonOptions)
       }
     }
   }

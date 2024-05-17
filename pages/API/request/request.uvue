@@ -69,6 +69,12 @@
   </view>
 </template>
 <script>
+
+  import {
+    testInovkeRequest,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+
   class GETDataType {
     data: UTSJSONObject | null = null
   }
@@ -357,6 +363,18 @@
             this.jest_result = false
           }
         });
+      },
+      jest_uts_module_invoked(){
+        testInovkeRequest({
+          success:(res: any)=>{
+            console.log("success :", res);
+            this.jest_result = true
+          },
+          fail:(err: any)=>{
+            console.log("fail :", err);
+            this.jest_result = false
+          }
+        } as CommonOptions)
       }
     }
   }

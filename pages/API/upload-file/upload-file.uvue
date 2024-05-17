@@ -16,6 +16,11 @@
   <!-- #endif -->
 </template>
 <script>
+  import {
+    testInovkeUploadFile,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+
   export default {
     data() {
       return {
@@ -171,6 +176,18 @@
             this.jest_result = false;
           },
         })
+      },
+      jest_uts_module_invoked(){
+        testInovkeUploadFile({
+          success:(res: any)=>{
+            console.log("success :", res);
+            this.jest_result = true
+          },
+          fail:(err: any)=>{
+            console.log("fail :", err);
+            this.jest_result = false
+          }
+        } as CommonOptions)
       }
     }
   }
