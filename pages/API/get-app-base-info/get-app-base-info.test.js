@@ -42,6 +42,9 @@ describe('ExtApi-GetAppBaseInfo', () => {
         expect(value).not.toBeNull();
         expect(typeof value).toBe('boolean');
       }
+      if (key == "appTheme") {
+        expect(['light', 'dark', 'auto']).toContain(value);
+      }
     }
   });
   it('Check GetSystemInfoSync required properties', async () => {

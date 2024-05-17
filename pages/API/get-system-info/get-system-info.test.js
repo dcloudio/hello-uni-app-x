@@ -54,6 +54,9 @@ describe('ExtApi-GetSystemInfo', () => {
       if (key == "osTheme") {
         expect(['light', 'dark']).toContain(value);
       }
+      if (key == "appTheme") {
+        expect(['light', 'dark', 'auto']).toContain(value);
+      }
     }
   });
   it('Check GetSystemInfoSync required properties', async () => {
