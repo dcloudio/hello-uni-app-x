@@ -5,12 +5,14 @@ const DEFAULT_GENDER = '0'
 const DEFAULT_LOVES = ['0']
 const DEFAULT_AGE = 18
 const DEFAULT_SWITCH = true
+const DEFAULT_COMMENT = ''
 
 const CHANGE_NICK_NAME = 'hello'
 const CHANGE_GENDER = '1'
 const CHANGE_LOVES = ['0', '1']
 const CHANGE_AGE = 50
 const CHANGE_SWITCH = false
+const CHANGE_COMMENT = '备注'
 
 describe('form', () => {
   let page
@@ -35,6 +37,7 @@ describe('form', () => {
     expect(formData['loves'][1]).toBe(CHANGE_LOVES[1])
     expect(formData['age']).toBe(CHANGE_AGE)
     expect(formData['switch']).toBe(CHANGE_SWITCH)
+    expect(formData['comment']).toBe(CHANGE_COMMENT)
   })
   it('reset', async () => {
     await changeData(page)
@@ -56,6 +59,7 @@ describe('form', () => {
     expect(formData['loves'][0]).toBe(DEFAULT_LOVES[0])
     expect(formData['age']).toBe(DEFAULT_AGE)
     expect(formData['switch']).toBe(DEFAULT_SWITCH)
+    expect(formData['comment']).toBe(DEFAULT_COMMENT)
   })
 })
 
@@ -65,7 +69,8 @@ async function changeData(page) {
     gender: CHANGE_GENDER,
     loves: CHANGE_LOVES,
     age: CHANGE_AGE,
-    switch: CHANGE_SWITCH
+    switch: CHANGE_SWITCH,
+    comment:CHANGE_COMMENT
   })
   await page.waitFor(100)
 }

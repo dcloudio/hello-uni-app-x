@@ -66,6 +66,8 @@ export default {
         :show-confirm-bar="show_confirm_bar_boolean"
         :adjust-position="adjust_position_boolean"
         :cursor-color="cursor_color"
+        :cursor="cursor"
+        :placeholder="placeholder_value"
         :inputmode="inputmode_enum[inputmode_enum_current].name"
         :confirm-type="confirm_type_list[confirm_type_current].name"
         :maxlength="maxlength"
@@ -82,34 +84,19 @@ export default {
         @blur="textarea_blur"
         @keyboardheightchange="textarea_keyboardheightchange"
         @focus="textarea_focus"
-        style="padding: 10px; border: 1px solid #666"
+        style="padding: 10px; border: 1px solid #666;height: 200px"
       />
     </view>
     <view class="content">
       <boolean-data
         :defaultValue="false"
-        title="键盘弹起时，是否自动上推页面（仅限非 Web 平台）"
+        title="键盘弹起时，是否自动上推页面（限非 Web 平台）"
         @change="change_adjust_position_boolean"
-      ></boolean-data>
-      <boolean-data
-        :defaultValue="false"
-        title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
-        @change="change_show_confirm_bar_boolean"
-      ></boolean-data>
-      <boolean-data
-        :defaultValue="false"
-        title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true（仅限小程序平台）"
-        @change="change_fixed_boolean"
       ></boolean-data>
       <boolean-data
         :defaultValue="false"
         title="是否自动增高，设置auto-height时，style.height不生效"
         @change="change_auto_height_boolean"
-      ></boolean-data>
-      <boolean-data
-        :defaultValue="false"
-        title="点击键盘右下角按钮时是否保持键盘不收起"
-        @change="change_confirm_hold_boolean"
       ></boolean-data>
       <boolean-data
         :defaultValue="focus_boolean"
@@ -127,15 +114,33 @@ export default {
         @change="change_cursor_color_boolean"
       ></boolean-data>
       <enum-data
-        :items="inputmode_enum"
-        title="是一个枚举属性，它提供了用户在编辑元素或其内容时可能输入的数据类型的提示。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
-        @change="radio_change_inputmode_enum"
-      ></enum-data>
-      <enum-data
         :items="confirm_type_list"
-        title="枚举属性，可以设置键盘右下角按钮。（仅限 Web、iOS 平台）。"
+        title="confirm-type，设置键盘右下角按钮。（Android仅支持return）"
         @change="radio_change_confirm_type"
       ></enum-data>
+      <boolean-data
+        :defaultValue="false"
+        title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
+        @change="change_confirm_hold_boolean"
+      ></boolean-data>
+      <enum-data
+        :items="inputmode_enum"
+        title="input-mode，控制软键盘类型。（仅限 Web 平台符合条件的高版本浏览器或webview）。"
+        @change="radio_change_inputmode_enum"
+      ></enum-data>
+      <boolean-data
+        :defaultValue="false"
+        title="是否显示键盘上方带有“完成”按钮那一栏（仅限小程序平台）"
+        @change="change_show_confirm_bar_boolean"
+      ></boolean-data>
+      <boolean-data
+        :defaultValue="false"
+        title="如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true（仅限小程序平台）"
+        @change="change_fixed_boolean"
+      ></boolean-data>
+      <view style="flex-direction:row;justify-content:center;">
+         <textarea id="textarea-height-exception" style="flex:1;border: 1 solid #666;margin: 10px" placeholder="底部textarea测试键盘遮挡"/>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>

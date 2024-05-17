@@ -1,4 +1,4 @@
-<template name="page-head">
+<template>
   <view class="common-page-head">
     <view class="common-page-head-title-box">
       <text class="common-page-head-title">{{title}}</text>

@@ -7,6 +7,7 @@ describe('ExtApi-GetDeviceInfo', () => {
   const stringProperties = [
     'brand', 'deviceBrand', 'deviceId', 'model', 'deviceModel',
     'deviceType', 'devicePixelRatio', 'system', 'platform', 'uniRuntimeVersion',
+    'osName', 'osVersion', 'osLanguage', 'osTheme', 'romName', 'romVersion'
   ]
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

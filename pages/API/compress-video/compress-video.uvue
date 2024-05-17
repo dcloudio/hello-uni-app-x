@@ -1,0 +1,127 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <video class="video" :src="beforeCompressPath" :controls="true"></video>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">压缩前视频信息</text>
+      </view>
+      <text>{{beforeCompressVideoInfo}}</text>
+      <video class="video" :src="afterCompressPath" :controls="true"></video>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">压缩后视频信息</text>
+      </view>
+      <text>{{afterCompressVideoInfo}}</text>
+      <view class="uni-btn-v">
+        <button type="primary" @click="chooseVideo">从相册中选取待压缩的视频</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @click="compressVideo">压缩视频</button>
+      </view>
+      <enum-data title="压缩质量" :items="qualityItemTypes" @change="onQualityChange"></enum-data>
+      <view class="uni-common-mt">
+        <text class="uni-title uni-title-text">相对于原视频的分辨率比例，取值范围(0, 1]</text>
+        <slider :min="0.1" :max="1" :step="0.1" :show-value="true" @change="onResolutionChange"></slider>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  import { ItemType } from '@/components/enum-data/enum-data';
+  export default {
+    data() {
+      return {
+        title: "compressVideo",
+        beforeCompressVideoInfo: "",
+        afterCompressVideoInfo: "",
+        beforeCompressPath: "",
+        afterCompressPath: "",
+        quality: null as string | null,
+        bitrate: null as number | null,
+        fps: null as number | null,
+        resolution: null as number | null,
+        qualityItemTypes: [{ "value": 0, "name": "low(低)" }, { "value": 1, "name": "medium(中)" }, { "value": 2, "name": "high(高)" }] as ItemType[],
+        qualityItems: ["low", "medium", "high"]
+      }
+    },
+    methods: {
+      compressVideo() {
+        if (this.beforeCompressPath == "") {
+          uni.showToast({
+            title: "请先选择视频",
+            icon: "error"
+          });
+          return;
+        }
+        uni.showLoading({
+          title: "视频压缩中"
+        });
+        uni.compressVideo({
+          src: this.beforeCompressPath,
+          quality: this.quality,
+          resolution: this.resolution,
+          success: (res) => {
+            console.log("compressVideo success", JSON.stringify(res));
+            this.afterCompressPath = res.tempFilePath;
+            uni.showToast({
+              title: "压缩成功",
+              icon: null
+            });
+            uni.getVideoInfo({
+              src: res.tempFilePath,
+              success: (_res) => {
+                this.afterCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+              }
+            });
+          },
+          fail: (err) => {
+            uni.showModal({
+              title: "压缩视频失败",
+              content: JSON.stringify(err),
+              showCancel: false
+            });
+          },
+          complete: (_) => {
+            uni.hideLoading();
+          }
+        });
+      },
+      chooseVideo() {
+        uni.chooseVideo({
+          sourceType: ["album"],
+          compressed: false,
+          success: (res) => {
+            this.beforeCompressPath = res.tempFilePath;
+            uni.getVideoInfo({
+              src: res.tempFilePath,
+              success: (_res) => {
+                this.beforeCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+              }
+            });
+          }
+        });
+      },
+      onQualityChange(value : number) {
+        this.quality = this.qualityItems[value];
+      },
+      onResolutionChange(event : UniSliderChangeEvent) {
+        this.resolution = event.detail.value;
+      }
+    }
+  }
+</script>
+
+<style>
+  .video {
+    align-self: center;
+  }
+
+  .image-container {
+    flex-direction: row;
+  }
+</style>

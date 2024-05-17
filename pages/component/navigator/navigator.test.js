@@ -15,7 +15,7 @@ describe('navigator', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
 
-    const btnNavigate = await page.$('.navigate')
+    const btnNavigate = await page.$('#navigate')
     await btnNavigate.tap()
     await page.waitFor(300)
 
@@ -26,7 +26,7 @@ describe('navigator', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
 
-    const btnRedirect = await page.$('.redirect')
+    const btnRedirect = await page.$('#redirect')
     await btnRedirect.tap()
     await page.waitFor(300)
 

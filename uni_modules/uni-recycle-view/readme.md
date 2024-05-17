@@ -1,6 +1,6 @@
 ## uni-recycle-view
 
-> 此组件支持uni-app-x（web端及app端），不支持非uni-app-x项目
+> 此组件支持uni-app-x（web端及app端），不支持非uni-app-x项目。最低HBuilderX版本4.11
 
 uni-recycle-view 组件是一个开源的、适用于展示超长列表的组件，它有2个优势：
 - 更快的初始化速度

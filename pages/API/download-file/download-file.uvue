@@ -19,6 +19,11 @@
   <!-- #endif -->
 </template>
 <script>
+  import {
+    testInovkeDownloadFile,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+
   export default {
     data() {
       return {
@@ -71,6 +76,19 @@
         });
       },
 
+      jest_downloadFile_with_uni_env() {
+        uni.downloadFile({
+          url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+          filePath: `${uni.env.CACHE_PATH}/a/b/`,
+          success: () => {
+            this.jest_result = true
+          },
+          fail: () => {
+            this.jest_result = false
+          }
+        });
+      },
+
       jest_set_cookie(){
         uni.request({
           url: "https://request.dcloud.net.cn/api/http/header/setCookie",
@@ -114,6 +132,18 @@
             this.jest_result = needCookie ? false : true;
           }
         });
+      },
+      jest_uts_module_invoked(){
+        testInovkeDownloadFile({
+          success:(res: any)=>{
+            console.log("success :", res);
+            this.jest_result = true
+          },
+          fail:(err: any)=>{
+            console.log("fail :", err);
+            this.jest_result = false
+          }
+        } as CommonOptions)
       }
     }
   }

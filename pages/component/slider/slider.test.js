@@ -8,7 +8,7 @@ describe('slider', () => {
   })
   // it('change', async () => {})
   it('value', async () => {
-    const slider = await page.$('.slider-custom-color-and-size')
+    const slider = await page.$('#slider-custom-color-and-size')
 
     const sliderValue = 80
     await page.setData({
@@ -20,7 +20,7 @@ describe('slider', () => {
     expect(newValue.toString()).toBe(sliderValue + '')
   })
   it('color', async () => {
-    const slider = await page.$('.slider-custom-color-and-size')
+    const slider = await page.$('#slider-custom-color-and-size')
     expect(await slider.attribute('backgroundColor')).toBe('#000000')
     expect(await slider.attribute('activeColor')).toBe('#FFCC33')
     expect(await slider.attribute('blockColor')).toBe('#8A6DE9')
@@ -40,7 +40,7 @@ describe('slider', () => {
     expect(await slider.attribute('blockColor')).toBe(blockColor)
   })
   it('block-size', async () => {
-    const slider = await page.$('.slider-custom-color-and-size')
+    const slider = await page.$('#slider-custom-color-and-size')
     expect(await slider.attribute('blockSize')).toBe(20 + '')
 
     const blockSize = 18

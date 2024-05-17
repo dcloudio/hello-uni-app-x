@@ -1,0 +1,69 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <video class="video" :src="src" :controls="true"></video>
+      <button type="primary" class="margin-top-10" @click="saveVideo">将视频保存到手机相册</button>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'saveVideoToPhotosAlbum',
+        src: ''
+      }
+    },
+    methods: {
+      saveVideo() {
+        uni.saveVideoToPhotosAlbum({
+          filePath: this.src,
+          success: (_) => {
+            console.log("saveVideoToPhotosAlbum success");
+            uni.showToast({
+              position: "center",
+              icon: "none",
+              title: "视频保存成功，请到手机相册查看"
+            });
+          },
+          fail: (err) => {
+            uni.showModal({
+              title: "保存视频到相册失败",
+              content: JSON.stringify(err),
+              showCancel: false
+            });
+          }
+        });
+      }
+    },
+    onReady() {
+      uni.showLoading({
+        title: '视频下载中'
+      });
+      uni.downloadFile({
+        url: 'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uts.mp4',
+        success: (res) => {
+          console.log("download video success", res.tempFilePath);
+          this.src = res.tempFilePath;
+          uni.hideLoading();
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .video {
+    align-self: center;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+</style>
