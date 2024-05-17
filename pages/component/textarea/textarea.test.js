@@ -49,6 +49,15 @@ describe('component-native-textarea', () => {
     expect(await textarea.attribute("cursor-color")).toBe("transparent")
   })
 
+  it("flex 1 height exception", async () => {
+    const bottomTextarea = await page.$('#textarea-height-exception');
+    var {
+      height
+    } = await bottomTextarea.size()
+    expect(height).toEqual(150)
+  })
+
+
   it("inputmode", async () => {
     const inputmodeEnum = await page.data("inputmode_enum")
     for (var i = 0; i < inputmodeEnum.length; i++) {
