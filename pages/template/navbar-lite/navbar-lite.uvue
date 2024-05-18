@@ -36,8 +36,8 @@
       </list-item>
     </list-view>
     <web-view v-if="indexView==2" src="/hybrid/html/local.html" id="webv" style="height:380px"></web-view>
-    <view style="position: relative;bottom: 0;">
-      <input placeholder="滚动视图外的居底输入框" adjust-position="true" />
+    <view style="position:relative;background-color:white;" :style="{bottom: inputBottom}">
+      <input placeholder="滚动视图外的居底输入框" adjust-position="false" @focus="onInputFocus" @blur="onInputBlur" />
     </view>
 
   </view>
@@ -51,7 +51,8 @@
         title: 'Hello uni-app',
         isLeft: false,
         navigationBarTextColor: '#000',
-        indexView: 0
+        indexView: 0,
+        inputBottom: '0px'
       }
     },
     methods: {
@@ -98,6 +99,12 @@
       },
       ChangeView(e:UniRadioGroupChangeEvent){
         this.indexView = parseInt(e.detail.value)
+      },
+      onInputFocus(e:UniInputFocusEvent ) {
+        this.inputBottom = `${e.detail.height}px`;
+      },
+      onInputBlur(e:UniInputBlurEvent) {
+        this.inputBottom = '0px';
       },
       // 自动化测试
       getLifeCycleNum() : number {
