@@ -37,7 +37,7 @@
     </list-view>
     <web-view v-if="indexView==2" src="/hybrid/html/local.html" id="webv" style="height:380px"></web-view>
     <view style="position:relative;background-color:white;" :style="{bottom: inputBottom}">
-      <input placeholder="滚动视图外的居底输入框" adjust-position="false" @focus="onInputFocus" @blur="onInputBlur" />
+      <input placeholder="滚动视图外的居底输入框" adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
     </view>
 
   </view>
@@ -52,6 +52,7 @@
         isLeft: false,
         navigationBarTextColor: '#000',
         indexView: 0,
+        windowHeight: 0,
         inputBottom: '0px'
       }
     },
@@ -100,11 +101,14 @@
       ChangeView(e:UniRadioGroupChangeEvent){
         this.indexView = parseInt(e.detail.value)
       },
-      onInputFocus(e:UniInputFocusEvent ) {
-        this.inputBottom = `${e.detail.height}px`;
-      },
-      onInputBlur(e:UniInputBlurEvent) {
+      onInputBlur(_:UniInputBlurEvent) {
         this.inputBottom = '0px';
+      },
+      onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
+        let inputBottom = e.target?.getBoundingClientRect()?.bottom??this.windowHeight;
+        let remainHeight = this.windowHeight - inputBottom;
+        let bottom = (remainHeight > e.detail.height)?0:(e.detail.height-remainHeight);
+        this.inputBottom = `${bottom}px`;
       },
       // 自动化测试
       getLifeCycleNum() : number {
@@ -114,6 +118,12 @@
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
       },
+    },
+    onReady() {
+      this.windowHeight = uni.getWindowInfo().windowHeight;
+    },
+    onResize() {
+      this.windowHeight = uni.getWindowInfo().windowHeight;
     }
   }
 </script>
