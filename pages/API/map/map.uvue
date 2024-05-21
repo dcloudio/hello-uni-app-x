@@ -304,7 +304,11 @@
         includePoints: [] as Points[],
         rotate: 0,
         skew: 0,
-        map: null as MapContext | null
+        map: null as MapContext | null,
+        // 自动化测试
+        autoTest: false,
+        getCenterLocationTest:{},
+        getRegionTest:{},
       }
     },
     onReady() {
@@ -359,9 +363,12 @@
         this.map!.getCenterLocation({
           success: ret => {
             console.log(JSON.stringify(ret));
-            uni.showModal({
-              content: JSON.stringify(ret)
-            })
+            this.getCenterLocationTest = ret
+            if(!this.autoTest){
+              uni.showModal({
+                content: JSON.stringify(ret)
+              })
+            }
           }
         })
       },
@@ -369,9 +376,12 @@
         this.map!.getRegion({
           success: ret => {
             console.log(JSON.stringify(ret));
-            uni.showModal({
-              content: JSON.stringify(ret)
-            })
+            this.getRegionTest = ret
+            if(!this.autoTest){
+              uni.showModal({
+                content: JSON.stringify(ret)
+              })
+            }
           }
         })
       },
