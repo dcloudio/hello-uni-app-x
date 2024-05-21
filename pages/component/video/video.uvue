@@ -12,6 +12,7 @@
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
+      <input class="input" placeholder="输入视频地址播放" @confirm="onSrcInputConfirm"></input>
       <view class="uni-btn-v">
         <navigator url="/pages/component/video/video-format">
           <button type="primary" @click="pause">视频格式示例</button>
@@ -178,7 +179,7 @@
         danmuBtn: false,
         enableDanmu: true,
         pageGesture: false,
-        direction: -90,
+        direction: -1,
         _direction: 0,
         requestFullScreenOptions: {
           direction: -90
@@ -412,6 +413,9 @@
       onControlsToggle: function (res : UniVideoControlsToggleEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
       },
+      onSrcInputConfirm(event : UniInputConfirmEvent) {
+        this.src = event.detail.value;
+      },
       // 自动化测试
       downloadSource() {
         uni.downloadFile({
@@ -433,5 +437,11 @@
   .video {
     width: 100%;
     height: 200px;
+  }
+
+  .input {
+    height: 40px;
+    background: #FFF;
+    margin: 5px 0;
   }
 </style>
