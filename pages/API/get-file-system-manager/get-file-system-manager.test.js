@@ -97,10 +97,10 @@ describe('ExtApi-FileManagerTest', () => {
 
     let lastFailError = await getData('lastFailError')
     expect(lastFailError.errCode).toEqual(1300002)
-    expect(lastFailError.errMsg).toEqual('no such file or directory:unifile://usr/a/b/c')
+    expect(lastFailError.errMsg).toEqual('no such file or directory')
     let lastCompleteError = await getData('lastCompleteError')
     expect(lastCompleteError.errCode).toEqual(1300002)
-    expect(lastCompleteError.errMsg).toEqual('no such file or directory:unifile://usr/a/b/c')
+    expect(lastCompleteError.errMsg).toEqual('no such file or directory')
 
 
     // 测试 recursive = true 期望文件夹创建成功
