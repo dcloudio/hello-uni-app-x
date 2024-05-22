@@ -17,14 +17,12 @@ describe('ExtApi-GetSystemInfo', () => {
     'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]
   const booleanProperties = [
-    'isUniAppX'
   ]
   const requiredProperties = [
     'uniCompilerVersion',
     'uniCompilerVersionCode',
     'uniRuntimeVersion',
-    'uniRuntimeVersionCode',
-    'isUniAppX'
+    'uniRuntimeVersionCode'
   ]
 
   beforeAll(async () => {
