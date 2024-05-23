@@ -11,6 +11,11 @@ let page
 beforeAll(async () => {
   page = await program.reLaunch(PAGE_PATH)
   await page.waitFor('view')
+  await page.callMethod('setEventCallbackNum', 0)
+})
+
+afterEach(async () => {
+  await page.callMethod('setEventCallbackNum', 0)
 })
 
 describe('PickerView.uvue', () => {
@@ -78,5 +83,23 @@ describe('PickerView.uvue', () => {
     expect(year).toEqual(date.getFullYear())
     expect(month).toEqual(date.getMonth() + 1)
     expect(day).toEqual(date.getDate())
+  })
+
+  it('trigger UniPickerViewChangeEvent', async () => {
+
+    // if web skip todo
+    if (
+      process.env.uniTestPlatformInfo.startsWith('web')
+    ) {
+      expect(1).toBe(1)
+      return
+    }
+
+    const el = await page.$('.picker-view')
+    await page.callMethod('setValue')
+    await page.waitFor(1000)
+    const eventCallbackNum = await page.callMethod('getEventCallbackNum')
+    // 3 times 3*3
+    expect(eventCallbackNum).toBe(9)
   })
 })
