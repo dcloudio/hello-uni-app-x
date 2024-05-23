@@ -4,13 +4,15 @@
     <view v-show="boxDisplay" style="align-items: center; justify-content: center; margin: 10px;">
       <view
         style="width: 140px; height: 140px; background-color: blue; align-items: center; justify-content: center; padding: 5px;"
-          id="outBox" @click="outBoxClick">
+        id="outBox" @click="outBoxClick">
         <view style="width: 80px; height: 80px; background-color: red; padding: 5px;" id="innerBox"
           @click="innerBoxClick"></view>
       </view>
     </view>
     <button @click="revertBoxSize">还原修改前元素宽高</button>
     <button @click="toggleDisplay">{{boxDisplay? '隐藏元素': '显示元素'}}</button>
+    <button @click='cancelListen'>停止监听</button>
+    <button @click='goOnListen'>恢复监听</button>
     <view>
       <text class="info-text">蓝色方块元素:</text>
       <view class="info-item">
@@ -47,6 +49,7 @@
     onReady() {
       if (this.resizeObserver == null) {
         this.resizeObserver = new UniResizeObserver((entries : Array<UniResizeObserverEntry>) => {
+
           entries.forEach(entry => {
             if (entry.target == this.outBoxElement) {
               this.outBoxSizeInfo = this.analysisResizeObserverEntry(entry)
@@ -91,7 +94,7 @@
         }
       },
       //自动化测试专用
-      setOutBoxMarginLeft(value: string) {
+      setOutBoxMarginLeft(value : string) {
         if (this.outBoxElement != null) {
           this.outBoxElementOnResize = false
           this.outBoxElement!.style.setProperty("margin-left", value)
@@ -108,6 +111,15 @@
           "contentBoxSize: \n{blockSize:" + contentBoxSize.blockSize + ", inlineSize:" + contentBoxSize.inlineSize + "}\n" +
           "devicePixelContentBoxSize: \n{blockSize:" + devicePixelContentBoxSize.blockSize + ", inlineSize:" + devicePixelContentBoxSize.inlineSize + "}\n" +
           "contentRect: \n{x:" + entry.contentRect.x + ", y:" + entry.contentRect.y + ", width:" + entry.contentRect.width + ", height:" + entry.contentRect.height + "}"
+      },
+      cancelListen(){
+        // this.resizeObserver?.unobserve()
+        this.resizeObserver!.unobserve(this.outBoxElement!)
+        this.resizeObserver!.unobserve(this.innerBoxElement!)
+      },
+      goOnListen(){
+        this.resizeObserver!.observe(this.outBoxElement!)
+        this.resizeObserver!.observe(this.innerBoxElement!)
       }
     }
   }
