@@ -281,7 +281,7 @@
             this.notify(error.errMsg, '错误')
           })
       },
-      dbMultiSend() {
+      async dbMultiSend() {
         const db = uniCloud.databaseForJQL()
         const temp1 = db.collection('type')
           .where(
@@ -291,7 +291,7 @@
           .where(
             'tag == "default-tag"'
           ).getTemp()
-        db.multiSend(temp1, temp2)
+        await db.multiSend(temp1, temp2)
           .then<void>(res => {
             uni.hideLoading()
             let successCount = 0
