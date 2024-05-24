@@ -1,13 +1,5 @@
 describe('api-resize-observer', () => {
-  if (
-    !process.env.uniTestPlatformInfo.startsWith('android') &&
-    !process.env.uniTestPlatformInfo.startsWith('web')
-  ) {
-    it('dummyTest', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+
 
   let page
   beforeAll(async () => {

@@ -5,7 +5,7 @@
       <view class="uni-form-item uni-column">
         <view class="title">表单组件在label内</view>
         <checkbox-group class="uni-list" @change="checkboxChange">
-          <label class="uni-list-cell uni-list-cell-pd" v-for="item in checkboxItems" :key="item.name">
+          <label class="uni-list-cell uni-list-cell-pd checkboxItemsTest" v-for="item in checkboxItems" :key="item.name">
             <view>
               <checkbox :value="item.name" :checked="item.checked"></checkbox>
             </view>
@@ -70,17 +70,19 @@
           checked: 'true'
         }
         ],
-        hidden: false
+        hidden: false,
+        checkboxValue: [] as string[],
+        radioValue:''
       }
     },
     methods: {
-      checkboxChange: function (e) {
-        var checked = e.detail.value
-        console.log(checked)
+      checkboxChange: function (e : UniCheckboxGroupChangeEvent) {
+        console.log(e.detail.value)
+        this.checkboxValue = e.detail.value
       },
-      radioChange: function (e) {
-        var checked = e.detail.value
-        console.log(checked)
+      radioChange: function (e : UniRadioGroupChangeEvent) {
+        console.log(e.detail.value)
+        this.radioValue = e.detail.value
       }
     }
   }

@@ -198,4 +198,9 @@ describe('component-native-input', () => {
     })
     expect(image).toSaveImageSnapshot()
   })
+
+  it('both set modelValue and value', async()=>{
+    const input2 = await page.$('#both-model-value');
+    expect(await input2.value()).toEqual("123")
+  })
 });

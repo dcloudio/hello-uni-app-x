@@ -73,4 +73,9 @@ describe('component-native-textarea', () => {
       await page.waitFor(500)
     }
   })
+
+  it('both set modelValue and value', async () => {
+    let textarea2 = await page.$('.both-set-textarea');
+    expect(await textarea2.value()).toBe("123")
+  })
 });

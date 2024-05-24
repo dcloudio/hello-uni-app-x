@@ -6,9 +6,16 @@ function getData(key = '') {
 }
 
 let page
+let originEventCallbackNum
+
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/checkbox/checkbox')
-  await page.waitFor(2000);
+  await page.waitFor(2000)
+  originEventCallbackNum = await page.callMethod('getEventCallbackNum')
+})
+
+beforeEach(async () => {
+  await page.callMethod('setEventCallbackNum', 0)
 })
 
 describe('Checkbox.uvue', () => {
@@ -67,5 +74,11 @@ describe('Checkbox.uvue', () => {
       disabled: false,
     })
     expect(await cb.attribute('disabled')).toBe(false + '')
+  })
+  it('trigger UniCheckboxGroupChangeEvent', async () => {
+    const element = await page.$('.checkbox-item-0')
+    await element.tap()
+    const eventCallbackNum = await page.callMethod('getEventCallbackNum')
+    expect(eventCallbackNum - originEventCallbackNum).toBe(3)
   })
 })

@@ -1,4 +1,5 @@
 <script>
+  import { state, setEventCallbackNum } from '@/store/index.uts'
   type ItemType = {
     value : string
     name : string
@@ -58,7 +59,24 @@
       }
     },
     methods: {
+
+      // 自动化测试
+      getEventCallbackNum() : number {
+        return state.eventCallbackNum
+      },
+      // 自动化测试
+      setEventCallbackNum(num : number) {
+        setEventCallbackNum(num)
+      },
       checkboxChange: function (e : UniCheckboxGroupChangeEvent) {
+        // 自动化测试
+        if ((e.target?.tagName ?? '').includes('CHECKBOX-GROUP')) {
+          this.setEventCallbackNum(state.eventCallbackNum + 1)
+        }
+        if (e.type === 'change') {
+          this.setEventCallbackNum(state.eventCallbackNum + 2)
+        }
+
         const selectedNames : string[] = []
         this.items.forEach((item) => {
           if (e.detail.value.includes(item.value)) {
@@ -156,9 +174,10 @@
         </view>
       </view>
       <view class="uni-list uni-common-pl">
-        <checkbox-group @change="checkboxChange" class="checkbox-group">
+        <checkbox-group @change="checkboxChange" class="checkbox-group" id="trigger-change">
           <checkbox class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in items" :key="item.value"
-            :value="item.value" :checked="item.checked" :class="index < items.length - 1 ? 'uni-list-cell-line' : ''">
+            :value="item.value" :checked="item.checked"
+            :class="[index < items.length - 1 ? 'uni-list-cell-line' : '','checkbox-item-'+index]">
             {{ item.name }}
           </checkbox>
         </checkbox-group>

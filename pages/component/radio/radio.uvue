@@ -1,4 +1,5 @@
 <script>
+  import { state, setEventCallbackNum } from '@/store/index.uts'
   type ItemType = {
     value : string
     name : string
@@ -62,7 +63,23 @@
           title: '当前选中:' + selected?.name,
         })
       },
+      // 自动化测试
+      getEventCallbackNum() : number {
+        return state.eventCallbackNum
+      },
+      // 自动化测试
+      setEventCallbackNum(num : number) {
+        setEventCallbackNum(num)
+      },
       testChange(e : UniRadioGroupChangeEvent) {
+        // 自动化测试
+        if ((e.target?.tagName ?? '').includes('RADIO-GROUP')) {
+          this.setEventCallbackNum(state.eventCallbackNum + 1)
+        }
+        if (e.type === 'change') {
+          this.setEventCallbackNum(state.eventCallbackNum + 2)
+        }
+
         this.value = e.detail.value
       },
       radio_click() { console.log("组件被点击时触发") },
@@ -119,7 +136,8 @@
           <text class="uni-title-text"> 默认样式 </text>
         </view>
         <radio-group class="uni-flex uni-row radio-group" @change="testChange" style="flex-wrap: wrap">
-          <radio value="r" :checked="checked" :color="color" style="margin-right: 15px" class="radio r">选中
+          <radio id="trigger-change" value="r" :checked="checked" :color="color" style="margin-right: 15px"
+            class="radio r">选中
           </radio>
           <radio value="r1" style="margin-right: 15px" class="radio r1">{{
             text
