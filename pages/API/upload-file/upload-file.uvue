@@ -102,6 +102,29 @@
           },
         })
       },
+      jest_uploadFile_with_uni_env() {
+        const filePath = `${uni.env.CACHE_PATH}/download/uni-app.png`
+        uni.downloadFile({
+          url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+          filePath: filePath,
+          success: () => {
+            uni.uploadFile({
+              url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+              filePath: filePath,
+              name: 'file',
+              success: () => {
+                this.jest_result = true;
+              },
+              fail: () => {
+                this.jest_result = false;
+              },
+            })
+          },
+          fail: () => {
+            this.jest_result = false
+          }
+        });
+      },
       jest_set_cookie() {
         uni.request({
           url: "https://request.dcloud.net.cn/api/http/header/setCookie",
@@ -179,14 +202,14 @@
           },
         })
       },
-      jest_uts_module_invoked(){
+      jest_uts_module_invoked() {
         // #ifdef APP
         testInovkeUploadFile({
-          success:(res: any)=>{
+          success: (res : any) => {
             console.log("success :", res);
             this.jest_result = true
           },
-          fail:(err: any)=>{
+          fail: (err : any) => {
             console.log("fail :", err);
             this.jest_result = false
           }
