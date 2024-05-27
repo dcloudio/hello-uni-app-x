@@ -33,6 +33,7 @@
           <button @tap="navigateTo" class="uni-btn">
             跳转新页面，并传递数据
           </button>
+          <button v-for="(item, _) in animationTypeList" @tap="navigateToAnimationType(item)" class="uni-btn">navigateTo({{item}})</button>
           <button @tap="navigateBack" class="uni-btn">返回上一页</button>
           <button @tap="redirectTo" class="uni-btn">在当前页面打开</button>
           <button @tap="switchTab" class="uni-btn">切换到模板选项卡</button>
@@ -60,6 +61,17 @@
         onShowTime: 0,
         onReadyTime: 0,
         onHideTime: 0,
+        animationTypeList: [
+          'slide-in-right',
+          'slide-in-left',
+          'slide-in-top',
+          'slide-in-bottom',
+          'pop-in',
+          'fade-in',
+          'zoom-out',
+          'zoom-fade-out',
+          'none',
+        ]
       }
     },
     onLoad() {
@@ -110,6 +122,30 @@
       navigateTo() {
         uni.navigateTo({
           url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          animationType: 'fade-in',
+          animationDuration: 200,
+          success(result) {
+            console.log('navigateTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateTo fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateToAnimationType(animationType: string) {
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          animationType: animationType,
+          animationDuration: 200,
           success(result) {
             console.log('navigateTo success', result.errMsg)
             // 自动化测试
