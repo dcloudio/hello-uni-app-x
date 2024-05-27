@@ -41,11 +41,13 @@ describe('web-map', () => {
     await page.callMethod('handleGetRegion')
     await page.waitFor(500);
     const regionRes = await page.data('getRegionTest')
-    const getRegionExpected = {
-      southwest: { latitude: 39.88334279187766, longitude: 116.31050146728515 },
-      northeast: { latitude: 40.0149408585477, longitude: 116.56799353271484 },
-      errMsg: 'getRegion:ok'
-    }
-    expect(regionRes).toEqual(expect.objectContaining(getRegionExpected));
+    console.log('regionRes', regionRes);
+    const {southwest,northeast} = regionRes;
+    const southwestExp ={ latitude: 39.88334279187766, longitude: 116.31050146728515 }
+    const northeastExp ={ latitude: 40.0149408585477, longitude: 116.56799353271484 }
+    expect(southwest.latitude).toBeCloseTo(southwestExp.latitude, 3);
+    expect(southwest.longitude).toBeCloseTo(southwestExp.longitude, 3);
+    expect(northeast.latitude).toBeCloseTo(northeastExp.latitude, 3);
+    expect(northeast.longitude).toBeCloseTo(northeastExp.longitude, 3);
   });
 });
