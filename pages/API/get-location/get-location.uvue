@@ -1,167 +1,170 @@
 <template>
-  <page-head :title="title"></page-head>
-  <view style="padding: 4px;">
-    <text class="hello-text">
-      定位功能默认调用操作系统定位API实现。\n
-      部分手机因gms兼容不好可能导致无法定位。\n
-      gcj国标、逆地理信息等功能需三方sdk定位。如果需要类似能力可以下载腾讯定位插件，打包自定义基座。参考示例：</text>
-    <u-link :href="'https://ext.dcloud.net.cn/plugin?id=14569'" :text="'https://ext.dcloud.net.cn/plugin?id=14569'"
-      :inWhiteList="true"></u-link>
-  </view>
+	<page-head :title="title"></page-head>
+	<view style="padding: 4px;">
+		<text class="hello-text">
+			定位功能默认调用操作系统定位API实现。\n
+			部分手机因gms兼容不好可能导致无法定位。\n
+			gcj国标、逆地理信息等功能需三方sdk定位。如果需要类似能力可以下载腾讯定位插件，打包自定义基座。参考示例：</text>
+		<u-link :href="'https://ext.dcloud.net.cn/plugin?id=14569'" :text="'https://ext.dcloud.net.cn/plugin?id=14569'"
+			:inWhiteList="true"></u-link>
+	</view>
 
-  <view class="uni-padding-wrap uni-common-mt">
-    <view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
-    <view class="uni-list" style="margin-bottom: 20px;">
-      <radio-group @change="radioChangePV">
-        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.value"
-          :class="index < providerList.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
-          :checked="index === currentProvider">
-          {{item.name}}
-        </radio>
-      </radio-group>
-    </view>
-    <view class="uni-list-cell-db">定位类型1</view>
-    <view class="uni-list">
-      <radio-group @change="radioChange">
-        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-          :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value" :checked="index === current">
-          {{item.name}}
-        </radio>
-      </radio-group>
-    </view>
-    <view class="uni-list-cell uni-list-cell-pd" style="margin-top: 20px;">
-      <view class="uni-list-cell-db">高度信息</view>
-      <switch :checked="altitudeSelect" @change="altitudeChange" />
-    </view>
-    <view class="uni-list-cell uni-list-cell-pd">
-      <view class="uni-list-cell-db">开启高精度定位</view>
-      <switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
-    </view>
-    <view class="uni-list-cell uni-list-cell-pd">
-      <view class="uni-list-cell-db">是否解析地址信息</view>
-      <switch :checked="geocodeSelect" @change="geocodeChange" />
-    </view>
-    <text>{{exeRet}}</text>
-    <view class="uni-btn-v">
-      <button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
-    </view>
-  </view>
+	<view class="uni-padding-wrap uni-common-mt">
+		<view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
+		<view class="uni-list" style="margin-bottom: 20px;">
+			<radio-group @change="radioChangePV">
+				<radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.value"
+					:class="index < providerList.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
+					:checked="index === currentProvider">
+					{{item.name}}
+				</radio>
+			</radio-group>
+		</view>
+		<view class="uni-list-cell-db">定位类型1</view>
+		<view class="uni-list">
+			<radio-group @change="radioChange">
+				<radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+					:class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
+					:checked="index === current">
+					{{item.name}}
+				</radio>
+			</radio-group>
+		</view>
+		<view class="uni-list-cell uni-list-cell-pd" style="margin-top: 20px;">
+			<view class="uni-list-cell-db">高度信息</view>
+			<switch :checked="altitudeSelect" @change="altitudeChange" />
+		</view>
+		<view class="uni-list-cell uni-list-cell-pd">
+			<view class="uni-list-cell-db">开启高精度定位</view>
+			<switch :checked="isHighAccuracySelect" @change="highAccuracySelectChange" />
+		</view>
+		<view class="uni-list-cell uni-list-cell-pd">
+			<view class="uni-list-cell-db">是否解析地址信息</view>
+			<switch :checked="geocodeSelect" @change="geocodeChange" />
+		</view>
+		<text>{{exeRet}}</text>
+		<view class="uni-btn-v">
+			<button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
+		</view>
+	</view>
 </template>
 <script lang="uts">
-  type ItemType = {
-    value : 'wgs84' | 'gcj02',
-    name : string,
-  }
-  export default {
-    data() {
-      return {
-        title: 'get-location',
-        altitudeSelect: false,
-        isHighAccuracySelect: false,
-        geocodeSelect: false,
-        exeRet: '',
-        items: [
-          {
-            value: 'wgs84',
-            name: 'wgs84'
-          },
-          {
-            value: 'gcj02',
-            name: 'gcj02'
-          }
-        ] as ItemType[],
-        providerList: [] as ItemType[],
-        current: 0,
-        currentProvider: 0
-      }
-    },
-    onLoad: function () {
-      this.getProvider()
-    },
-    methods: {
-      getProvider() {
-        uni.getProvider({
-          service: "location",
-          success: (e) => {
-            console.log("location success:" + JSON.stringify(e));
-            let array = e.provider as string[]
+	type ItemType = {
+		value : 'wgs84' | 'gcj02',
+		name : string,
+	}
+	export default {
+		data() {
+			return {
+				title: 'get-location',
+				altitudeSelect: false,
+				isHighAccuracySelect: false,
+				geocodeSelect: false,
+				exeRet: '',
+				items: [
+					{
+						value: 'wgs84',
+						name: 'wgs84'
+					},
+					{
+						value: 'gcj02',
+						name: 'gcj02'
+					}
+				] as ItemType[],
+				providerList: [] as ItemType[],
+				current: 0,
+				currentProvider: 0
+			}
+		},
+		onLoad: function () {
+			this.getProvider()
+		},
+		methods: {
+			getProvider() {
+				uni.getProvider({
+					service: "location",
+					success: (e) => {
+						console.log("location success:" + JSON.stringify(e),e.providers.length);
+						let array = e.provider as string[]
+						array.forEach((value : string) => {
+							let locationProvider = e.providers.find((item) : boolean => {
+								return item.id == value
+							})
+							if (locationProvider != null) {
+								this.providerList.push({
+									name: locationProvider.id,
+									value: locationProvider.description,
+								} as ItemType);
+							}
+						})
+					},
+					fail: (e) => {
+						console.log("获取支付通道失败：", e);
+					}
+				});
 
 
-            array.forEach((value : string) => {
-              const exist = this.providerList.some((item) => item.name === value);
 
-              if (exist == false) {
-                this.providerList.push({
-                  value: value,
-                  name: value,
-                } as ItemType);
-              }
-            })
-          },
-          fail: (e) => {
-            console.log("获取location provider失败：", e);
-          }
-        });
-      },
-      altitudeChange: function (e : UniSwitchChangeEvent) {
-        this.altitudeSelect = e.detail.value
-      },
-      geocodeChange: function (e : UniSwitchChangeEvent) {
-        this.geocodeSelect = e.detail.value
-      },
-      highAccuracySelectChange: function (e : UniSwitchChangeEvent) {
-        this.isHighAccuracySelect = e.detail.value
-      },
-      radioChange(e : UniRadioGroupChangeEvent) {
-        for (let i = 0; i < this.items.length; i++) {
-          if (this.items[i].value === e.detail.value) {
-            this.current = i;
-            break;
-          }
-        }
-      },
-      radioChangePV(e : UniRadioGroupChangeEvent) {
-        for (let i = 0; i < this.providerList.length; i++) {
-          if (this.providerList[i].value === e.detail.value) {
-            this.currentProvider = i;
-            break;
-          }
-        }
-      },
-      getLocationTap: function () {
-        if (this.providerList.length == 0) {
-          return
-        }
-        uni.showLoading({
-          title: '定位中'
-        })
+			},
+			altitudeChange: function (e : UniSwitchChangeEvent) {
+				this.altitudeSelect = e.detail.value
+			},
+			geocodeChange: function (e : UniSwitchChangeEvent) {
+				this.geocodeSelect = e.detail.value
+			},
+			highAccuracySelectChange: function (e : UniSwitchChangeEvent) {
+				this.isHighAccuracySelect = e.detail.value
+			},
+			radioChange(e : UniRadioGroupChangeEvent) {
+				for (let i = 0; i < this.items.length; i++) {
+					if (this.items[i].value === e.detail.value) {
+						this.current = i;
+						break;
+					}
+				}
+			},
+			radioChangePV(e : UniRadioGroupChangeEvent) {
+				for (let i = 0; i < this.providerList.length; i++) {
+					if (this.providerList[i].value === e.detail.value) {
+						this.currentProvider = i;
+						break;
+					}
+				}
+			},
+			getLocationTap: function () {
+				if (this.providerList.length == 0) {
+					return
+				}
+				uni.showLoading({
+					title: '定位中'
+				})
 
-        uni.getLocation(({
-          provider: this.providerList[this.currentProvider].value,
-          type: this.items[this.current].value,
-          altitude: this.altitudeSelect,
-          isHighAccuracy: this.isHighAccuracySelect,
-          geocode: this.geocodeSelect,
-          success: (res : any) => {
-            uni.hideLoading()
-            console.log(res);
-            this.exeRet = JSON.stringify(res)
-          },
-          fail: (res : any) => {
-            uni.hideLoading()
-            console.log(res);
-            this.exeRet = JSON.stringify(res)
-          },
-          complete: (res : any) => {
-            uni.hideLoading()
-            console.log(res);
-            this.exeRet = JSON.stringify(res)
-          }
-        }));
+				uni.getLocation(({
+					provider: this.providerList[this.currentProvider].value,
+					type: this.items[this.current].value,
+					altitude: this.altitudeSelect,
+					isHighAccuracy: this.isHighAccuracySelect,
+					geocode: this.geocodeSelect,
+					success: (res : any) => {
+						uni.hideLoading()
+						console.log(res);
+						this.exeRet = JSON.stringify(res)
+					},
+					fail: (res : any) => {
+						uni.hideLoading()
+						console.log(res);
+						this.exeRet = JSON.stringify(res)
+					},
+					complete: (res : any) => {
+						uni.hideLoading()
+						console.log(res);
+						this.exeRet = JSON.stringify(res)
+					}
+				}));
 
 
-      }
+			}
 
-    }
-  }
+		}
+	}
 </script>
