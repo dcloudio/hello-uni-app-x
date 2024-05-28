@@ -93,7 +93,7 @@ const pages = [
   '/pages/CSS/transform/rotate',
   '/pages/CSS/transform/scale',
   '/pages/CSS/transform/translate',
-  // '/pages/CSS/transition/transition',
+  '/pages/CSS/transition/transition',
   '/pages/CSS/pointer-events/pointer-events',
 
   // tabBar  //改动频繁，不再测试
