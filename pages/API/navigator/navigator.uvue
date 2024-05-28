@@ -33,7 +33,6 @@
           <button @tap="navigateTo" class="uni-btn">
             跳转新页面，并传递数据
           </button>
-          <button v-for="(item, _) in animationTypeList" @tap="navigateToAnimationType(item)" class="uni-btn">navigateTo({{item}})</button>
           <button @tap="navigateBack" class="uni-btn">返回上一页</button>
           <button @tap="redirectTo" class="uni-btn">在当前页面打开</button>
           <button @tap="switchTab" class="uni-btn">切换到模板选项卡</button>
@@ -43,6 +42,7 @@
           <button @tap="navigateToErrorPage" class="uni-btn">
             打开不存在的页面
           </button>
+          <button v-for="(item, _) in animationTypeList" @tap="navigateToAnimationType(item)" class="uni-btn">navigateTo动画({{item}})</button>
         </view>
       </view>
     </view>
@@ -62,6 +62,7 @@
         onReadyTime: 0,
         onHideTime: 0,
         animationTypeList: [
+          // #ifdef APP-ANDROID
           'slide-in-right',
           'slide-in-left',
           'slide-in-top',
@@ -70,7 +71,8 @@
           'fade-in',
           'zoom-out',
           'zoom-fade-out',
-          'none',
+          'none'
+          // #endif
         ]
       }
     },
@@ -122,7 +124,6 @@
       navigateTo() {
         uni.navigateTo({
           url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
-          animationType: 'fade-in',
           success(result) {
             console.log('navigateTo success', result.errMsg)
             // 自动化测试
