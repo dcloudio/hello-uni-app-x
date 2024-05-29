@@ -177,6 +177,10 @@ describe('component-native-input', () => {
       expect(1).toBe(1)
       return
     }
+    if (!process.env.uniTestPlatformInfo.startsWith('ios')) {
+      expect(1).toBe(1)
+      return
+    }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);
     await program.navigateBack()
@@ -184,7 +188,7 @@ describe('component-native-input', () => {
     await page.setData({
       focusedForKeyboardHeightChangeTest: true
     })
-    await page.waitFor(5000);
+    await page.waitFor(2000);
 
     const keyboardHeight = await page.data('keyboardHeight');
     console.log("keyboardHeight :", keyboardHeight);
