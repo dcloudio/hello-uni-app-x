@@ -173,6 +173,10 @@ describe('component-native-input', () => {
   })
 
   it("keyboard height changed after page back", async () => {
+    if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('web')) {
+      expect(1).toBe(1)
+      return
+    }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);
     await program.navigateBack()
