@@ -73,6 +73,7 @@ describe('Radio.uvue', () => {
   it('trigger UniRadioGroupChangeEvent', async () => {
     const element = await page.$('#trigger-change')
     await element.tap()
+    await page.waitFor(500)
     const eventCallbackNum = await page.callMethod('getEventCallbackNum')
     expect(eventCallbackNum - originEventCallbackNum).toBe(3)
   })
