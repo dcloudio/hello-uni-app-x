@@ -180,11 +180,11 @@ describe('component-native-input', () => {
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);
     await program.navigateBack()
-    await page.waitFor(2000);
+    await page.waitFor(1000);
     await page.setData({
       focusedForKeyboardHeightChangeTest: true
     })
-    await page.waitFor(2000);
+    await page.waitFor(3000);
 
     const keyboardHeight = await page.data('keyboardHeight');
     console.log("keyboardHeight :", keyboardHeight);
