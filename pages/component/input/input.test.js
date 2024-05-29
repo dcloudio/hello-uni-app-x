@@ -177,7 +177,7 @@ describe('component-native-input', () => {
       expect(1).toBe(1)
       return
     }
-    if (!process.env.uniTestPlatformInfo.startsWith('ios')) {
+    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
       expect(1).toBe(1)
       return
     }
