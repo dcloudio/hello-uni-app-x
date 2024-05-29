@@ -22,6 +22,12 @@ describe('ExtApi-DownloadFile', () => {
     expect(res).toBe(true);
   });
 
+  it('Check Special characters Url download file', async () => {
+    res = await page.callMethod('jest_special_characters_download')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  });
 
   if (!process.env.uniTestPlatformInfo.startsWith('web')) {
     it('Check uni.env', async () => {
