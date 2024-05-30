@@ -37,6 +37,16 @@ describe('switch', () => {
     await page.waitFor(100)
     expect(await switch_element.attribute('color')).toBe(color)
   })
+  it('dark', async () => {
+    const dark = await page.$('#dark')
+    const darkChecked = await page.$('#darkChecked')
+
+    expect(await dark.attribute('background-color')).toBe('#1f1f1f')
+    expect(await dark.attribute('fore-color')).toBe('#f0f0f0')
+
+    expect(await darkChecked.attribute('active-background-color')).toBe('#007aff')
+    expect(await darkChecked.attribute('active-fore-color')).toBe('#ffffff')
+  })
   it('click', async () => {
     let switchElement
     // TODO 暂时通过获取组件内部的 class 触发模拟点击
