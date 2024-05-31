@@ -67,6 +67,23 @@ describe('Checkbox.uvue', () => {
     })
     expect(await cb.attribute('color')).toBe('#63acfc')
   })
+
+  it('icon color', async () => {
+    const cb = await page.$('.cb')
+    expect(await cb.attribute('iconColor')).toBe('#211cfe')
+    await page.setData({
+      iconColor: '#63acfc',
+    })
+    expect(await cb.attribute('iconColor')).toBe('#63acfc')
+  })
+  it('foreColor', async () => {
+    const cb = await page.$('.cb')
+    expect(await cb.attribute('foreColor')).toBe('#ff0000')
+    await page.setData({
+      foreColor: '#63acfe',
+    })
+    expect(await cb.attribute('foreColor')).toBe('#63acfe')
+  })
   it('disabled', async () => {
     const cb = await page.$('.cb2')
     expect(await cb.attribute('disabled')).toBe(true + '')
@@ -78,6 +95,7 @@ describe('Checkbox.uvue', () => {
   it('trigger UniCheckboxGroupChangeEvent', async () => {
     const element = await page.$('.checkbox-item-0')
     await element.tap()
+    await page.waitFor(1000)
     const eventCallbackNum = await page.callMethod('getEventCallbackNum')
     expect(eventCallbackNum - originEventCallbackNum).toBe(3)
   })

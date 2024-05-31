@@ -47,6 +47,8 @@
         disabled: true,
         checked: true,
         color: '#007aff',
+        iconColor:'#211cfe',
+        foreColor:'#ff0000',
         // 组件属性 autotest
         checked_boolean: false,
         disabled_boolean: false,
@@ -55,7 +57,8 @@
         borderColor_input: "#d1d1d1",
         activeBackgroundColor_input: "#ffffff",
         activeBorderColor_input: "#d1d1d1",
-        iconColor_input: "#007aff"
+        iconColor_input: "#007aff",
+        foreColor_input: '#ff0000'
       }
     },
     methods: {
@@ -70,7 +73,7 @@
       },
       checkboxChange: function (e : UniCheckboxGroupChangeEvent) {
         // 自动化测试
-        if ((e.target?.tagName ?? '').includes('CHECKBOX-GROUP')) {
+        if ((e.target?.tagName ?? '') == 'CHECKBOX-GROUP') {
           this.setEventCallbackNum(state.eventCallbackNum + 1)
         }
         if (e.type === 'change') {
@@ -105,19 +108,20 @@
       confirm_borderColor_input(value : string) { this.borderColor_input = value },
       confirm_activeBackgroundColor_input(value : string) { this.activeBackgroundColor_input = value },
       confirm_activeBorderColor_input(value : string) { this.activeBorderColor_input = value },
-      confirm_iconColor_input(value : string) { this.iconColor_input = value }
+      confirm_iconColor_input(value : string) { this.iconColor_input = value },
+      confirm_foreColor_input(value : string) { this.foreColor_input = value }
     }
   }
 </script>
 
 <template>
   <view class="main">
-    <checkbox :disabled="disabled_boolean" :checked="checked_boolean" :color="color_input"
-      :backgroundColor="backgroundColor_input" :borderColor="borderColor_input"
+    <checkbox :disabled="disabled_boolean" :checked="checked_boolean" :color="color_input" :iconColor="iconColor_input"
+      :foreColor="foreColor_input" :backgroundColor="backgroundColor_input" :borderColor="borderColor_input"
       :activeBackgroundColor="activeBackgroundColor_input" :activeBorderColor="activeBorderColor_input"
-      :iconColor="iconColor_input" @click="checkbox_click" @touchstart="checkbox_touchstart"
-      @touchmove="checkbox_touchmove" @touchcancel="checkbox_touchcancel" @touchend="checkbox_touchend"
-      @tap="checkbox_tap" @longpress="checkbox_longpress"><text>uni-app-x</text></checkbox>
+      @click="checkbox_click" @touchstart="checkbox_touchstart" @touchmove="checkbox_touchmove"
+      @touchcancel="checkbox_touchcancel" @touchend="checkbox_touchend" @tap="checkbox_tap"
+      @longpress="checkbox_longpress"><text>uni-app-x</text></checkbox>
   </view>
 
   <scroll-view style="flex: 1">
@@ -134,8 +138,10 @@
         @confirm="confirm_activeBackgroundColor_input"></input-data>
       <input-data defaultValue="#d1d1d1" title="checkbox选中时的边框颜色" type="text"
         @confirm="confirm_activeBorderColor_input"></input-data>
-      <input-data defaultValue="#007aff" title="checkbox的图标颜色，优先级大于color属性" type="text"
+      <input-data defaultValue="#007aff" title="iconColor: checkbox的图标颜色，优先级大于color属性" type="text"
         @confirm="confirm_iconColor_input"></input-data>
+      <input-data defaultValue="#ff0000" title="foreColor: checkbox的图标颜色，优先级大于color属性" type="text"
+        @confirm="confirm_foreColor_input"></input-data>
     </view>
 
     <view>
@@ -146,7 +152,8 @@
         </view>
         <view>
           <checkbox-group class="uni-flex uni-row checkbox-group" @change="testChange" style="flex-wrap: wrap">
-            <checkbox value="cb" :checked="checked" :color="color" style="margin-right: 15px" class="checkbox cb">选中
+            <checkbox value="cb" :checked="checked" :color="color" :iconColor="iconColor"
+              :foreColor="foreColor" style="margin-right: 15px" class="checkbox cb">选中
             </checkbox>
             <checkbox value="cb1" style="margin-right: 15px" class="checkbox cb1">{{ text }}</checkbox>
             <checkbox value="cb2" :disabled="disabled" class="checkbox cb2">禁用</checkbox>
