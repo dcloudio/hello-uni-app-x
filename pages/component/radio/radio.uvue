@@ -1,5 +1,4 @@
 <script>
-  import { state, setEventCallbackNum } from '@/store/index.uts'
   type ItemType = {
     value : string
     name : string
@@ -35,6 +34,7 @@
           },
         ] as ItemType[],
         current: 0,
+        eventTest: false,
 
         value: '',
         text: '未选中',
@@ -56,6 +56,13 @@
 
     methods: {
       radioChange(e : UniRadioGroupChangeEvent) {
+
+        // 自动化测试
+        console.log('test: radio event detail', e.target?.tagName, e.type)
+        if ((e.target?.tagName ?? '') == 'RADIO-GROUP' && e.type == 'change') {
+          this.eventTest = true
+        }
+
         const selected = this.items.find((item) : boolean => {
           return item.value == e.detail.value
         })
@@ -64,23 +71,7 @@
           title: '当前选中:' + selected?.name,
         })
       },
-      // 自动化测试
-      getEventCallbackNum() : number {
-        return state.eventCallbackNum
-      },
-      // 自动化测试
-      setEventCallbackNum(num : number) {
-        setEventCallbackNum(num)
-      },
       testChange(e : UniRadioGroupChangeEvent) {
-        // 自动化测试
-        console.log('test: radio event detail', e.target?.tagName, e.type)
-        if ((e.target?.tagName ?? '') == 'RADIO-GROUP') {
-          this.setEventCallbackNum(state.eventCallbackNum + 1)
-        }
-        if (e.type === 'change') {
-          this.setEventCallbackNum(state.eventCallbackNum + 2)
-        }
 
         this.value = e.detail.value
       },
@@ -170,7 +161,7 @@
       </view>
       <view class="uni-list uni-common-pl">
         <radio-group @change="radioChange" class="radio-group">
-          <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.value"
+          <radio class="uni-list-cell uni-list-cell-pd radio recommand" v-for="(item, index) in items" :key="item.value"
             :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
             :checked="index === current">
             {{ item.name }}

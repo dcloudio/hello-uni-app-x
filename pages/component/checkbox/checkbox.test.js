@@ -11,11 +11,6 @@ let originEventCallbackNum
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/checkbox/checkbox')
   await page.waitFor(2000)
-  originEventCallbackNum = await page.callMethod('getEventCallbackNum')
-})
-
-beforeEach(async () => {
-  await page.callMethod('setEventCallbackNum', 0)
 })
 
 describe('Checkbox.uvue', () => {
@@ -96,7 +91,7 @@ describe('Checkbox.uvue', () => {
     const element = await page.$('.checkbox-item-0')
     await element.tap()
     await page.waitFor(1000)
-    const eventCallbackNum = await page.callMethod('getEventCallbackNum')
-    expect(eventCallbackNum - originEventCallbackNum).toBe(3)
+    const { testEvent } = await page.data()
+    expect(testEvent).toBe(true)
   })
 })
