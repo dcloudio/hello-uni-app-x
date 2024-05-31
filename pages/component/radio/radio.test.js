@@ -10,10 +10,6 @@ let originEventCallbackNum
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/radio/radio')
   await page.waitFor(2000)
-  originEventCallbackNum = await page.callMethod('getEventCallbackNum')
-})
-beforeEach(async () => {
-  await page.callMethod('setEventCallbackNum', 0)
 })
 
 describe('Radio.uvue', () => {
@@ -71,11 +67,14 @@ describe('Radio.uvue', () => {
     expect(await radio.attribute('disabled')).toBe(false + '')
   })
   it('trigger UniRadioGroupChangeEvent', async () => {
-    const element = await page.$('#trigger-change')
-    await element.tap()
-    console.log('radio trigger change event', element)
-    await page.waitFor(1000)
-    const eventCallbackNum = await page.callMethod('getEventCallbackNum')
-    expect(eventCallbackNum - originEventCallbackNum).toBe(3)
+    const { current } = await page.data()
+
+    const nextCurrent = current == 0 ? 1 : 0
+
+    const elements = await page.$$('.recommand')
+    await elements[nextCurrent].tap()
+    await page.waitFor(500)
+    const { eventTest } = await page.data()
+    expect(eventTest).toEqual(true)
   })
 })
