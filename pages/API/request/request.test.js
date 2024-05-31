@@ -131,11 +131,11 @@ describe('ExtApi-Request', () => {
     expect(res).toBe(true)
   })
 
-  // 15以下的模拟器所对应的xcode不能编译自定义插件
+  // 15以下的模拟器所对应的xcode不能编译自定义插件，大于15是因为某台设备，会用xcode14.1跑15.5的设备
   let version = process.env.uniTestPlatformInfo
   let split = version.split(" ")
   version = parseInt(split[split.length - 1])
-  if(!process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') || version > 14) {
+  if(!process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') || version > 15) {
     it('Check Post In UTS Module', async () => {
       res = await page.callMethod('jest_uts_module_invoked')
       await page.waitFor(2000);
