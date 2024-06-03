@@ -97,7 +97,7 @@ describe('PickerView.uvue', () => {
 
     const el = await page.$('.picker-view')
     await page.callMethod('setValue')
-    await page.waitFor(1000)
+    await page.waitFor(1500)
     const eventCallbackNum = await page.callMethod('getEventCallbackNum')
     // 3 times 3*3
     expect(eventCallbackNum).toBe(9)
