@@ -25,6 +25,8 @@
         title: "getVideoInfo",
         absoluteVideoPath: "",
         absoluteVideoInfo: "",
+        // 自动化测试
+        videoInfoForTest: null
       }
     },
     methods: {
@@ -47,6 +49,26 @@
                 });
               }
             });
+          }
+        });
+      },
+      testGetVideoInfo() {
+        uni.getVideoInfo({
+          src: '/static/test-video/10second-demo.mp4',
+          success: (res) => {
+            this.videoInfoForTest = {
+              "orientation": res.orientation,
+              "type": res.type,
+              "duration": res.duration.toInt(),
+              "size": res.size,
+              "width": res.width,
+              "height": res.height,
+              "fps": res.fps,
+              "bitrate": res.bitrate
+            };
+          },
+          fail: (_) => {
+            this.videoInfoForTest = null;
           }
         });
       }

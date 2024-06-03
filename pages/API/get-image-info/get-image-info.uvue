@@ -39,6 +39,8 @@
         absoluteImageInfo: "",
         remoteImagePath: "https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/img/building.jpg",
         remoteImageInfo: "",
+        // 自动化测试
+        imageInfoForTest: null,
       }
     },
     methods: {
@@ -71,6 +73,13 @@
         success: (res) => {
           console.log("getImageInfo success", JSON.stringify(res));
           this.absoluteImageInfo = `图片宽度: ${res.width}\n图片高度: ${res.height}\n图片路径: ${res.path}\n图片方向: ${res.orientation}\n图片格式: ${res.type}`;
+          this.imageInfoForTest = {
+            "width": res.width,
+            "height": res.height,
+            "path": res.path,
+            "orientation": res.orientation,
+            "type": res.type
+          };
         },
         fail: (err) => {
           uni.showModal({
@@ -78,6 +87,7 @@
             content: JSON.stringify(err),
             showCancel: false
           });
+          this.imageInfoForTest = null;
         }
       });
       uni.getImageInfo({

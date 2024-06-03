@@ -17,7 +17,9 @@
     data() {
       return {
         title: 'saveVideoToPhotosAlbum',
-        src: ''
+        src: '/static/test-video/10second-demo.mp4',
+        // 自动化测试
+        success: false
       }
     },
     methods: {
@@ -31,6 +33,7 @@
               icon: "none",
               title: "视频保存成功，请到手机相册查看"
             });
+            this.success = true;
           },
           fail: (err) => {
             uni.showModal({
@@ -38,22 +41,10 @@
               content: JSON.stringify(err),
               showCancel: false
             });
+            this.success = false;
           }
         });
       }
-    },
-    onReady() {
-      uni.showLoading({
-        title: '视频下载中'
-      });
-      uni.downloadFile({
-        url: 'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/video/swiper-vertical-video/uts.mp4',
-        success: (res) => {
-          console.log("download video success", res.tempFilePath);
-          this.src = res.tempFilePath;
-          uni.hideLoading();
-        }
-      });
     }
   }
 </script>

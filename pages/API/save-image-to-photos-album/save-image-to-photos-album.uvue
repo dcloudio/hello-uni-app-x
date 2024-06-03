@@ -16,7 +16,9 @@
   export default {
     data() {
       return {
-        title: "saveImageToPhotosAlbum"
+        title: "saveImageToPhotosAlbum",
+        // 自动化测试
+        success: false
       }
     },
     methods: {
@@ -29,7 +31,8 @@
               position: "center",
               icon: "none",
               title: "图片保存成功，请到手机相册查看"
-            })
+            });
+            this.success = true;
           },
           fail: (err) => {
             uni.showModal({
@@ -37,6 +40,7 @@
               content: JSON.stringify(err),
               showCancel: false
             });
+            this.success = false;
           }
         })
       }
