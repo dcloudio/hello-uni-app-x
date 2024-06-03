@@ -20,7 +20,10 @@
 		data() {
 			return {
 				title: 'get/setClipboardData',
-				data: ''
+				data: '',
+        // 自动化测试
+        getDataTest:'',
+        setClipboardTest: false
 			}
 		},
 		methods: {
@@ -31,6 +34,7 @@
 				uni.getClipboardData({
 					success: (res) => {
 						console.log(res.data);
+            this.getDataTest = res.data;
 						const content = res.data ? '剪贴板内容为:' + res.data : '剪贴板暂无内容';
 						uni.showModal({
 							content,
@@ -57,6 +61,7 @@
 					uni.setClipboardData({
 						data: this.data,
 						success: () => {
+              this.setClipboardTest = true
 							// 成功处理
 							uni.showToast({
 								title: '设置剪贴板成功',
@@ -65,6 +70,8 @@
 							})
 						},
 						fail: () => {
+              // bug：自动化测试时设置成功也进入了fail
+              this.setClipboardTest = false
 							// 失败处理
 							uni.showToast({
 								title: '储存数据失败!',
