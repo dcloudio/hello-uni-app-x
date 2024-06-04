@@ -26,7 +26,7 @@
           <text class="uni-subtitle-text">横向滚动</text>
         </view>
         <view>
-          <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" :scroll-left="120" :show-scrollbar="showScrollbar">
+          <scroll-view class="scroll-view_H" direction="horizontal" @scroll="scroll" :scroll-left="scrollLeft" :show-scrollbar="showScrollbar">
             <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
             <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
             <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
@@ -68,17 +68,25 @@
       return {
         scrollTop: 0,
         oldScrollTop: 0,
-        showScrollbar: true
+        scrollLeft:120,
+        showScrollbar: true,
+        // 自动化测试
+        scrollTest:null as ScrollEvent|null,
+        toUpperTest:null as ScrollToUpperEvent|null,
+        toLowerTest:null as ScrollToLowerEvent|null
       }
     },
     methods: {
       upper: function (e : ScrollToUpperEvent) {
-        console.log(e)
+        console.log('滚动到顶部/左边',e)
+        this.toUpperTest = e
       },
       lower: function (e : ScrollToLowerEvent) {
-        console.log(e)
+        console.log('滚动到底部/右边',e)
+        this.toLowerTest = e
       },
       scroll: function (e : ScrollEvent) {
+        this.scrollTest = e
         this.oldScrollTop = e.detail.scrollTop
       },
       goTop: function () {
