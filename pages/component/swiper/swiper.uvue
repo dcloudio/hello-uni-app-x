@@ -110,12 +110,17 @@
         swiperTransitionSelect: false,
         swiperAnimationfinishSelect: false,
         swiperChangeSelect: false,
-        currentValChange: 0
+        currentValChange: 0,
+        // 自动化测试
+        swiperChangeEventTest:null as SwiperChangeEvent | null,
+        swiperTransitionTest:null as SwiperTransitionEvent | null,
+        swiperAnimationfinishTest:null as SwiperAnimationFinishEvent | null
       }
     },
     methods: {
 
       swiperChange: function (e : SwiperChangeEvent) {
+        this.swiperChangeEventTest = e
         this.currentValChange = e.detail.current
         console.log(this.currentValChange)
         if (this.swiperChangeSelect) {
@@ -124,12 +129,14 @@
         }
       },
       swiperTransition: function (e : SwiperTransitionEvent) {
+        this.swiperTransitionTest = e
         if (this.swiperTransitionSelect) {
           console.log("swiperTransition")
           console.log(e)
         }
       },
       swiperAnimationfinish: function (e : SwiperAnimationFinishEvent) {
+        this.swiperAnimationfinishTest = e
         if (this.swiperAnimationfinishSelect) {
           console.log("swiperAnimationfinish")
           console.log(e)
