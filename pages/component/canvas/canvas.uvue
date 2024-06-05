@@ -1,0 +1,156 @@
+<template>
+    <view class="page-body">
+        <canvas canvas-id="canvas" id="canvas" class="canvas"></canvas>
+    </view>
+</template>
+
+<script setup>
+    class Ball {
+		private canvasWidth : number
+        private canvasHeight : number
+        private ctx : CanvasRenderingContext2D
+        private x : number
+        private y : number
+        private vx : number
+        private vy : number
+        private radius : number = 5
+
+		constructor(x: number, y: number, vx: number, vy: number, ctx: CanvasRenderingContext2D){
+			this.ctx = ctx
+			this.canvasWidth = ctx.canvas.width
+			this.canvasHeight = ctx.canvas.height
+			this.x = x
+			this.y = y
+			this.vx = vx
+			this.vy = vy
+		}
+
+		draw() {
+		    this.ctx.fillStyle = '#007AFF'
+		    this.ctx.beginPath()
+		    this.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+		    this.ctx.closePath()
+		    this.ctx.fill()
+		}
+
+		move() {
+		    this.x += this.vx
+		    this.y += this.vy
+		    // 回到中心
+		    // if (getDistance(this.x - this.canvasWidth / 2, this.y - this.canvasHeight / 2) >
+		    // 	getDistance(this.canvasWidth / 2, this.canvasHeight / 2) + this.radius) {
+		    // 	this.x = this.canvasWidth / 2
+		    // 	this.y = this.canvasHeight / 2
+		    // }
+
+		    // 边框反弹
+		    if (this.x < this.radius) {
+		        this.vx = Math.abs(this.vx)
+		        return
+		    }
+		    if (this.x > this.canvasWidth - this.radius) {
+		        this.vx = -Math.abs(this.vx)
+		    }
+		    if (this.y < this.radius) {
+		        this.vy = Math.abs(this.vy)
+		        return
+		    }
+		    if (this.y > this.canvasWidth - this.radius) {
+		        this.vy = -Math.abs(this.vy)
+		    }
+		}
+    }
+
+	class BallAnimation {
+		private ctx : CanvasRenderingContext2D
+		private ballList : Array<Ball> = []
+		private speed = 3
+		private layer = 3
+		private ballInlayer = 20
+		private interval : number = 0
+		constructor(ctx : CanvasRenderingContext2D){
+			this.ctx = ctx
+			this.initBall()
+		}
+
+		private getDistance(x: number, y: number) : number{
+		    return Math.pow((Math.pow(x, 2) + Math.pow(y, 2)), 0.5)
+		}
+
+		private initBall() {
+			let canvasWidth = this.ctx.canvas.width,
+			    canvasHeight = this.ctx.canvas.height
+			for (let i = 0; i < this.layer; i++) {
+			    let radius = getDistance(canvasWidth / 2, canvasHeight / 2) / layer * i
+			    for (let j = 0; j < this.ballInlayer; j++) {
+			        let deg = j * 2 * Math.PI / ballInlayer,
+			            sin = Math.sin(deg),
+			            cos = Math.cos(deg),
+			            x = radius * cos + canvasWidth / 2,
+			            y = radius * sin + canvasHeight / 2,
+			            vx = this.speed * cos,
+			            vy = this.speed * sin
+			        ballList.push(new Ball(x, y, vx, vy, ctx))
+			    }
+			}
+		}
+
+		private animate(ballList: Array<Ball>) {
+		    this.ctx.clearRect(0, 0, this.ctx.canvas.width,  this.ctx.canvas.height )
+		    ballList.forEach(function(item) {
+		        item.move()
+		        item.draw()
+		    })
+		    this.ctx.draw()
+		}
+
+		start(){
+			//Todo.. requestAnimationFrame
+			clearInterval(this.interval)
+			interval = setInterval(function() {
+			    animate(ballList)
+			}, 17)
+		}
+		stop(){
+			clearInterval(this.interval)
+		}
+	}
+
+	var animation : BallAnimation|null = null
+	onReady(() => {
+		let canvas = uni.getElementById("canvas") as UniCanvasElementImpl
+	    let canvasContext = canvas.getContext("2d");
+		if(canvasContext != null) {
+			animation = new BallAnimation(canvasContext)
+			animation?.start()
+		} else {
+			console.log("canvas.getContext error!!")
+		}
+	})
+
+	onUnload(()=> {
+	    animation?.stop()
+		animation = null
+	})
+	onAppShow((_ : OnShowOptions)=>{
+		animation?.start()
+	})
+
+	onAppHide(()=>{
+		animation?.stop()
+	})
+
+</script>
+
+<style>
+    .page-body-wrapper {
+        text-align: center;
+    }
+
+    .canvas {
+        width: 610rpx;
+        height: 610rpx;
+        margin: auto;
+        background-color: #fff;
+    }
+</style>
