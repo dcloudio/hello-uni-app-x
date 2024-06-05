@@ -20,7 +20,12 @@
         refresherTriggered: false,
         refresherrefresh: false,
         refresherrefreshTimes: 0,
-        showScrollbar: false
+        showScrollbar: false,
+        // 自动化测试
+        refresherrefreshTest:null as RefresherEvent|null,
+        onRefresherabortTest:null as RefresherEvent|null,
+        onRefresherrestoreTest:null as RefresherEvent|null,
+        onRefresherpullingTest:null as RefresherEvent|null
       };
     },
     onLoad() {
@@ -32,25 +37,28 @@
     },
 
     methods: {
-      onRefresherrefresh(_ : RefresherEvent) {
+      onRefresherrefresh(e : RefresherEvent) {
         this.refresherrefresh = true
         console.log("onRefresherrefresh--------------下拉刷新触发")
+        this.refresherrefreshTest = e
         this.refresherTriggered = true
         this.refresherrefreshTimes++
         setTimeout(() => {
           this.refresherTriggered = false
         }, 1500)
-
       },
-      onRefresherabort(_ : RefresherEvent) {
+      onRefresherabort(e : RefresherEvent) {
         console.log("onRefresherabort------下拉刷新被中止")
+        this.onRefresherabortTest = e
       },
-      onRefresherrestore(_ : RefresherEvent) {
+      onRefresherrestore(e : RefresherEvent) {
         this.refresherrefresh = false
         console.log("onRefresherrestore------下拉刷新被复位")
+        this.onRefresherrestoreTest = e
       },
       onRefresherpulling(e : RefresherEvent) {
         console.log("onRefresherpulling------拉刷新控件被下拉-dy=" + e.detail.dy)
+        this.onRefresherpullingTest = e
       },
       onScrolltolower(e : ScrollToLowerEvent) {
         console.log("onScrolltolower 滚动到底部-----" + e.detail.direction)
