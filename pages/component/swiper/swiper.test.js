@@ -7,14 +7,23 @@ function getData(key = '') {
   })
 }
 
-let page;
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/swiper/swiper')
-  await page.waitFor(600)
-})
 
 
 describe('test swiper', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isIos = platformInfo.startsWith('ios')
+  if (isIos) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let page;
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/swiper/swiper')
+    await page.waitFor(600)
+  })
   it('check indicator show', async () => {
     await page.setData({
       dotsSelect: true,

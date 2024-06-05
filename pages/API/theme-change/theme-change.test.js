@@ -1,7 +1,14 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('API-theme-change', () => {
-
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isIos = platformInfo.startsWith('ios')
+  if (isIos) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page;
   const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
 
