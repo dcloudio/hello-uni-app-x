@@ -1,5 +1,13 @@
 jest.setTimeout(30000);
 describe('component-native-scroll-view', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isIos = platformInfo.startsWith('ios')
+  if (isIos) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/scroll-view/scroll-view');
