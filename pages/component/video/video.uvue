@@ -174,7 +174,17 @@
         isPlaying: false,
         isPause: false,
         isError: false,
-        localSrc: ''
+        localSrc: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
+        eventPlay: null,
+        eventPause: null,
+        eventEnded: null,
+        eventTimeupdate: null,
+        eventFullscreenchange: null,
+        eventWaiting: null,
+        eventError: null,
+        eventProgress: null,
+        eventFullscreenclick: null,
+        eventControlstoggle: null
       }
     },
     onLoad() {
@@ -362,36 +372,107 @@
         console.log(res.type);
         this.isPlaying = true;
         this.isPause = false;
+        if (this.autoTest) {
+          this.eventPlay = {
+            "tagName": res.target?.tagName,
+            "type": res.type
+          };
+        }
       },
       onPause: function (res : UniEvent) {
         console.log(res.type);
         this.isPlaying = false;
         this.isPause = true;
+        if (this.autoTest) {
+          this.eventPause = {
+            "tagName": res.target?.tagName,
+            "type": res.type
+          };
+        }
       },
       onEnded: function (res : UniEvent) {
         console.log(res.type);
+        if (this.autoTest) {
+          this.eventEnded = {
+            "tagName": res.target?.tagName,
+            "type": res.type
+          };
+        }
       },
       onTimeUpdate: function (res : UniVideoTimeUpdateEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        if (this.autoTest) {
+          this.eventTimeupdate = {
+            "tagName": res.target?.tagName,
+            "type": res.type,
+            "currentTime": Math.round(res.detail.currentTime),
+            "duration": res.detail.duration.toInt()
+          };
+        }
       },
       onFullScreenChange: function (res : UniVideoFullScreenChangeEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        if (this.autoTest) {
+          this.eventFullscreenchange = {
+            "tagName": res.target?.tagName,
+            "type": res.type,
+            "fullScreen": res.detail.fullScreen,
+            "direction": res.detail.direction
+          };
+        }
       },
       onWaiting: function (res : UniEvent) {
         console.log(res.type);
+        if (this.autoTest) {
+          this.eventWaiting = {
+            "tagName": res.target?.tagName,
+            "type": res.type
+          };
+        }
       },
       onError: function (res : UniVideoErrorEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
         this.isError = true;
+        if (this.autoTest) {
+          this.eventError = {
+            "tagName": res.target?.tagName,
+            "type": res.type,
+            "errCode": res.detail.errCode
+          };
+        }
       },
       onProgress: function (res : UniVideoProgressEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        if (this.autoTest) {
+          this.eventProgress = {
+            "tagName": res.target?.tagName,
+            "type": res.type,
+            "buffered": res.detail.buffered
+          };
+        }
       },
       onFullScreenClick: function (res : UniVideoFullScreenClickEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        if (this.autoTest) {
+          this.eventFullscreenclick = {
+            "tagName": res.target?.tagName,
+            "type": res.type,
+            "screenX": res.detail.screenX.toInt(),
+            "screenY": res.detail.screenY.toInt(),
+            "screenWidth": res.detail.screenWidth.toInt(),
+            "screenHeight": res.detail.screenHeight.toInt()
+          };
+        }
       },
       onControlsToggle: function (res : UniVideoControlsToggleEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        if (this.autoTest) {
+          this.eventControlstoggle = {
+            "tagName": res.target?.tagName,
+            "type": res.type,
+            "show": res.detail.show
+          };
+        }
       },
       // 自动化测试
       downloadSource() {
@@ -399,7 +480,6 @@
           url: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
           success: (res) => {
             this.localSrc = res.tempFilePath;
-            this.autoTest = true;
           },
           fail: (_) => {
             this.isError = true;
