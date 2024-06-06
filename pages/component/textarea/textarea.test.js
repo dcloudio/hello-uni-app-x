@@ -81,4 +81,21 @@ describe('component-native-textarea', () => {
       expect(await textarea2.value()).toBe("123")
     })
   }
+
+  it("maxlength", async () => {
+    const input = await page.$('#textarea-instance-maxlength');
+    let str = "";
+    for(let i = 0;i < 200;i++){
+      str += `${i}`
+    }
+    await page.setData({
+      textareaMaxLengthValue: str
+    })
+    let length = (await input.value()).length
+    expect(length).toBe(10)
+    await page.setData({
+      textareaMaxLengthValue: ""
+    })
+  })
+
 });
