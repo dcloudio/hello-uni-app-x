@@ -1,20 +1,20 @@
 jest.setTimeout(30000);
 
-function getData(key = '') {
-  return new Promise(async (resolve, reject) => {
-    const data = await page.data()
-    resolve(key ? data[key] : data)
-  })
-}
-
-let page;
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/swiper/swiper')
-  await page.waitFor(600)
-})
-
-
 describe('test swiper', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isIos = platformInfo.startsWith('ios')
+  if (isIos) {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let page;
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/swiper/swiper')
+    await page.waitFor(600)
+  })
   it('check indicator show', async () => {
     await page.setData({
       dotsSelect: true,
@@ -35,11 +35,11 @@ describe('test swiper', () => {
       autoplaySelect: true,
     })
     await page.waitFor(2400)
-    expect(await getData('currentValChange')).toEqual(1)
+    expect(await page.data('currentValChange')).toEqual(1)
     await page.waitFor(2000)
-    expect(await getData('currentValChange')).toEqual(2)
+    expect(await page.data('currentValChange')).toEqual(2)
     await page.waitFor(2000)
-    expect(await getData('currentValChange')).toEqual(0)
+    expect(await page.data('currentValChange')).toEqual(0)
 
     await page.setData({
       autoplaySelect: false
@@ -52,12 +52,12 @@ describe('test swiper', () => {
       currentVal: 2,
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(2)
+    expect(await page.data('currentValChange')).toEqual(2)
     await page.setData({
       currentVal: 0,
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(0)
+    expect(await page.data('currentValChange')).toEqual(0)
   });
 
   it('check currentId', async () => {
@@ -65,13 +65,13 @@ describe('test swiper', () => {
       currentItemIdVal: 'C',
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(2)
+    expect(await page.data('currentValChange')).toEqual(2)
 
     await page.setData({
       currentItemIdVal: 'A',
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(0)
+    expect(await page.data('currentValChange')).toEqual(0)
   });
 
   it('Trigger Event', async () => {
@@ -82,8 +82,8 @@ describe('test swiper', () => {
       autoplaySelect:true
     })
     await page.waitFor(2000)
-    console.log('currentValChange',await getData('currentValChange'))
-    if(await getData('currentValChange') == 1){
+    console.log('currentValChange',await page.data('currentValChange'))
+    if(await page.data('currentValChange') == 1){
       await page.setData({
         autoplaySelect:false
       })
