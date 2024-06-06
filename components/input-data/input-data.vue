@@ -50,7 +50,9 @@
         this.$emit('confirm', this.getValue(this.inputClearValue))
       },
       blur() {
-        this.showClearIcon = false
+        setTimeout(() => {
+          this.showClearIcon = false
+        }, 100)
       },
       focus() {
         let inputValue = this.inputClearValue
