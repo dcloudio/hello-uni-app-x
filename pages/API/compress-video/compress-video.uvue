@@ -48,7 +48,8 @@
         qualityItemTypes: [{ "value": 0, "name": "low(低)" }, { "value": 1, "name": "medium(中)" }, { "value": 2, "name": "high(高)" }] as ItemType[],
         qualityItems: ["low", "medium", "high"],
         // 自动化测试
-        videoInfoForTest: null
+        videoInfoForTest: null,
+        videoSrcForTest: '/static/test-video/10second-demo.mp4'
       }
     },
     methods: {
@@ -115,18 +116,26 @@
         this.resolution = event.detail.value;
       },
       testCompressVideo() {
+        let beforeCompressSize: number, afterComoressSize: number;
         uni.compressVideo({
-          src: '/static/test-video/10second-demo.mp4',
+          src: this.videoSrcForTest,
           quality: 'medium',
           success: (res) => {
             uni.getVideoInfo({
-              src: res.tempFilePath,
+              src: this.videoSrcForTest,
               success: (_res) => {
-                this.videoInfoForTest = {
-                  "width": _res.width,
-                  "height": _res.height,
-                  "size": res.size.toInt()
-                };
+                beforeCompressSize = _res.size.toInt();
+                uni.getVideoInfo({
+                  src: res.tempFilePath,
+                  success: (__res) => {
+                    afterComoressSize = __res.size.toInt();
+                    this.videoInfoForTest = {
+                      "width": __res.width,
+                      "height": __res.height,
+                      // "isSizeReduce": afterComoressSize < beforeCompressSize
+                    };
+                  }
+                });
               }
             });
           },

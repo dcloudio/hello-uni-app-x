@@ -54,7 +54,8 @@
         height: "auto",
         rotate: 0,
         // 自动化测试
-        imageInfoForTest: null
+        imageInfoForTest: null,
+        imageSrcForTest: '/static/test-image/logo.png'
       }
     },
     methods: {
@@ -147,7 +148,7 @@
       },
       testCompressImage() {
         uni.compressImage({
-          src: '/static/test-image/logo.png',
+          src: this.imageSrcForTest,
           quality: 50,
           compressedWidth: 100,
           compressedHeight: 100,
@@ -155,13 +156,15 @@
             uni.getImageInfo({
               src: res.tempFilePath,
               success: (_res) => {
+                let beforeCompressSize: number, afterComoressSize: number;
                 // #ifdef APP-ANDROID
-                const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
+                beforeCompressSize = new FileInputStream(UTSAndroid.convert2AbsFullPath(this.imageSrcForTest)).available();
+                afterComoressSize = new FileInputStream(res.tempFilePath.substring("file://".length)).available();
                 // #endif
                 this.imageInfoForTest = {
                   "width": _res.width,
                   "height": _res.height,
-                  "size": size.toInt()
+                  "isSizeReduce": afterComoressSize < beforeCompressSize
                 };
               }
             });

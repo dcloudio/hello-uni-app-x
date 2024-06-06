@@ -1,5 +1,12 @@
 // uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 describe('API-getVideoInfo', () => {
+  if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+    it('pass', async () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/get-video-info/get-video-info');
@@ -7,10 +14,6 @@ describe('API-getVideoInfo', () => {
   });
 
   it('test getVideoInfo', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
-      expect(1).toBe(1);
-      return;
-    }
     await page.callMethod('testGetVideoInfo');
     await page.waitFor(1000);
     if (process.env.uniTestPlatformInfo.startsWith('web')) {
