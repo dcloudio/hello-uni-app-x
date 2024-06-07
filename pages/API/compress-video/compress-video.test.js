@@ -19,7 +19,7 @@ describe('API-compressVideo', () => {
     expect(await page.data('videoInfoForTest')).toEqual({
       width: 640,
       height: 360,
-      // isSizeReduce: true
+      isSizeReduce: true
     });
   });
 });
