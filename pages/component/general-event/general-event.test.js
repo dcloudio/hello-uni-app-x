@@ -222,11 +222,25 @@ describe('event trigger sequence', () => {
 
       if (isAndroid || isIos) {
         if (isAndroid) {
-          await program.tap({
-            x: 200,
-            y: 1000,
-            duration: 1000
-          })
+          if (platformInfo.indexOf('6') != -1) {
+            await program.tap({
+              x: 200,
+              y: 700,
+              duration: 1000
+            })
+          } else if (platformInfo.indexOf('12') != -1) {
+            await program.tap({
+              x: 300,
+              y: 1100,
+              duration: 1000
+            })
+          } else {
+            await program.tap({
+              x: 200,
+              y: 1000,
+              duration: 1000
+            })
+          }
         } else if (isIos) {
           await program.tap({
             x: 200,
