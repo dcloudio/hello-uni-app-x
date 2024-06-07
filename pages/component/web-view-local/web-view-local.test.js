@@ -42,15 +42,29 @@ describe('component-native-web-view', () => {
         });
         return;
       }
-      expect(await page.data('eventDownload')).toEqual({
-        tagName: 'WEB-VIEW',
-        type: 'download',
-        url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
-        userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
-        contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
-        mimetype: 'application/vnd.android.package-archive',
-        contentLength: 27317517
-      });
+      const infos = process.env.uniTestPlatformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (version > 8) {
+        expect(await page.data('eventDownload')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'download',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
+          contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
+          mimetype: 'application/vnd.android.package-archive',
+          contentLength: 27317517
+        });
+      } else { // 低版本webview内核，部分属性无有效值
+        expect(await page.data('eventDownload')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'download',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          userAgent: '',
+          contentDisposition: '',
+          mimetype: '',
+          contentLength: -1
+        });
+      }
     });
 
     it('test event message', async () => {
