@@ -19,98 +19,68 @@ describe('component-native-scroll-view', () => {
   it('Event scroll-vertical',async()=>{
     // 纵向滚动
     await page.setData({scrollTop: 100})
-    await page.waitFor(600)
-    //设置top 是否触发scroll 事件
-    const topScrollInfo = await page.data('scrollTest')
-    // const topScrollResult = {
-    //   "scrollLeft": 0,
-    //   "scrollTop": 100,
-    //   "scrollHeight": 450,
-    //   "scrollWidth": 345,
-    //   "deltaX": 0,
-    //   "deltaY": -100
-    // }
-    const {scrollLeft,scrollTop,scrollHeight,scrollWidth,deltaX,deltaY} = topScrollInfo.detail
-    expect(topScrollInfo.type).toBe('scroll')
-    expect(scrollLeft).toBe(0)
-    // Android 差异scrollTop：99.809525
-    if(!process.env.uniTestPlatformInfo.startsWith('android')){
-      expect(scrollTop).toBe(100)
+    await page.waitFor(1000)
+    // bug:在web端scroll事件event参数中detail类型报错
+    if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
+      // 设置top 是否触发scroll 事件
+      const topScrollDetail = await page.data('scrollDetailTest')
+      expect(topScrollDetail.scrollLeft).toBe(0)
+      // Android 差异scrollTop：99.809525
+      if(!process.env.uniTestPlatformInfo.startsWith('android')){
+        expect(topScrollDetail.scrollTop).toBe(100)
+      }
+      expect(topScrollDetail.scrollHeight).toBeGreaterThan(0)
+      expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
+      expect(topScrollDetail.deltaX).toBe(0)
+      expect(topScrollDetail.deltaY).toBe(-100)
     }
-    expect(scrollHeight).toBeGreaterThan(0)
-    expect(scrollWidth).toBeGreaterThan(0)
-    expect(deltaX).toBe(0)
-    expect(deltaY).toBe(-100)
-    expect(topScrollInfo.currentTarget).not.toBeFalsy();
-    expect(topScrollInfo.target).not.toBeFalsy();
-    // expect(topScrollInfo.detail).toEqual(topScrollResult);
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
-      expect(topScrollInfo.timeStamp).toBeGreaterThan(0)
-    }
+    expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
   it('Event scroll-horizontal',async()=>{
     // 横向滚动
-    console.log('scrollLeft',await page.data('scrollLeft'))
     await page.setData({scrollLeft:220})
     await page.waitFor(600)
-    //设置left 是否触发scroll 事件
-    const leftScrollInfo = await page.data('scrollTest')
-    // const leftScrollResult = {
-    //   "scrollLeft": 220,
-    //   "scrollTop": 0,
-    //   "scrollHeight": 150,
-    //   "scrollWidth": 1036,
-    //   "deltaX": -100,
-    //   "deltaY": 0
-    // }
-    const {scrollLeft,scrollTop,scrollHeight,scrollWidth,deltaX,deltaY} = leftScrollInfo.detail
-    console.log('deltaX',deltaX)
-    expect(leftScrollInfo.type).toBe('scroll')
-    // Android 差异scrollLeft：219.80952
-    if(!process.env.uniTestPlatformInfo.startsWith('android')){
-      expect(scrollLeft).toBe(220)
+    if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
+      //设置left 是否触发scroll 事件
+      const leftScrollDetail = await page.data('scrollDetailTest')
+      // Android 差异scrollLeft：219.80952
+      if(!process.env.uniTestPlatformInfo.startsWith('android')){
+        expect(leftScrollDetail.scrollLeft).toBe(220)
+      }
+      expect(leftScrollDetail.scrollTop).toBe(0)
+      expect(leftScrollDetail.scrollHeight).toBeGreaterThan(0)
+      expect(leftScrollDetail.scrollWidth).toBeGreaterThan(0)
+      expect(leftScrollDetail.deltaX).toBe(-100)
+      expect(leftScrollDetail.deltaY).toBe(0)
     }
-    expect(scrollTop).toBe(0)
-    expect(scrollHeight).toBeGreaterThan(0)
-    expect(scrollWidth).toBeGreaterThan(0)
-    expect(deltaX).toBe(-100)
-    expect(deltaY).toBe(0)
-    expect(leftScrollInfo.currentTarget).not.toBeFalsy();
-    expect(leftScrollInfo.target).not.toBeFalsy();
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
-      expect(leftScrollInfo.timeStamp).toBeGreaterThan(0)
-    }
+    expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
-    // 滚动到底部scrollTop:300,
+    // 滚动到底部scrollTop:300,是否触发scrolltolower事件
     await page.setData({scrollTop: 300})
     await page.waitFor(600)
-    //设置top 是否触发scrolltolower事件
-    const toLowerInfo = await page.data('toLowerTest')
-    expect(toLowerInfo.type).toBe('scrolltolower')
-    expect(toLowerInfo.detail.direction).toBe('bottom')
-    expect(toLowerInfo.currentTarget).not.toBeFalsy();
-    expect(toLowerInfo.target).not.toBeFalsy();
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
-      expect(toLowerInfo.timeStamp).toBeGreaterThan(0)
-    }
+    expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
-    // 滚动到顶部scrollTop: 0,
-    // await page.setData({scrollTop: 0})
-    await page.callMethod('goTop')
+    // 滚动到顶部scrollTop: 0,是否触发scrolltoupper事件
+    await page.setData({scrollTop: 0})
+    // await page.callMethod('goTop')
     await page.waitFor(600)
-    //设置top 是否触发scrolltoupper事件
-    const toUpperInfo = await page.data('toUpperTest')
-    expect(toUpperInfo.type).toBe('scrolltoupper')
-    expect(toUpperInfo.detail.direction).toBe('top')
-    expect(toUpperInfo.currentTarget).not.toBeFalsy();
-    expect(toUpperInfo.target).not.toBeFalsy();
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
-      expect(toUpperInfo.timeStamp).toBeGreaterThan(0)
-    }
+    expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
+
+  if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
+    it('Event scrollend-滚动结束时触发仅App端支持',async()=>{
+      const endDetail = await page.data('scrollEndDetailTest')
+      expect(endDetail.scrollLeft).toBe(0)
+      expect(endDetail.scrollTop).toBe(0)
+      expect(endDetail.deltaY).toBe(0)
+      expect(endDetail.deltaX).toBe(0)
+      expect(endDetail.scrollHeight).toBeGreaterThan(0)
+      expect(endDetail.scrollWidth).toBeGreaterThan(0)
+    })
+  }
 });

@@ -63,6 +63,12 @@
   <!-- #endif -->
 </template>
 <script lang="uts">
+  type ScrollEventTest = {
+    type: string;
+    target: UniElement | null;
+    currentTarget: UniElement | null;
+    direction?:string
+  }
   export default {
     data() {
       return {
@@ -71,26 +77,56 @@
         scrollLeft:120,
         showScrollbar: true,
         // 自动化测试
-        scrollTest:null as ScrollEvent|null,
-        toUpperTest:null as ScrollToUpperEvent|null,
-        toLowerTest:null as ScrollToLowerEvent|null
+        isScrollTest:'',
+        isScrolltolowerTest:'',
+        isScrolltoupperTest:'',
+        // 在web端scroll事件event参数中detail类型报错，先条件编译处理
+        // #ifndef WEB
+        scrollDetailTest:null as UniScrollEventDetail|null,
+        scrollEndDetailTest:null as UniScrollEventDetail|null,
+        // #endif
       }
     },
     methods: {
       upper: function (e : UniScrollToUpperEvent) {
         console.log('滚动到顶部/左边',e)
-        this.toUpperTest = e
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget,
+          direction:e.detail.direction,
+        } as ScrollEventTest,'scrolltoupper')
       },
       lower: function (e : UniScrollToLowerEvent) {
         console.log('滚动到底部/右边',e)
-        this.toLowerTest = e
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget,
+          direction:e.detail.direction,
+        } as ScrollEventTest,'scrolltolower')
       },
       scroll: function (e : UniScrollEvent) {
-        this.scrollTest = e
+        // #ifndef WEB
+        this.scrollDetailTest = e.detail
+        // #endif
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget
+        } as ScrollEventTest,'scroll')
         this.oldScrollTop = e.detail.scrollTop
       },
       end: function (e : UniScrollEvent){
         console.log('滚动结束时触发',e)
+        // #ifndef WEB
+        this.scrollEndDetailTest = e.detail
+        // #endif
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget
+        } as ScrollEventTest,'scrollend')
       },
       goTop: function () {
         // 解决view层不同步的问题
@@ -102,7 +138,25 @@
           icon: 'none',
           title: '纵向滚动 scrollTop 值已被修改为 0',
         })
-      }
+      },
+      // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+      checkEventTest(e:ScrollEventTest, eventName:String){
+        const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+        const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+        switch (eventName){
+          case 'scroll':
+            this.isScrollTest = result
+            break;
+          case 'scrolltolower':
+            this.isScrolltolowerTest =  result + `-${e.direction}`
+            break;
+          case 'scrolltoupper':
+            this.isScrolltoupperTest =  result + `-${e.direction}`
+            break;
+          default:
+            break;
+        }
+      },
     },
   }
 </script>

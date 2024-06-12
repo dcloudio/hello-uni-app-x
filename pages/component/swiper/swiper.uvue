@@ -129,24 +129,6 @@
       }
     },
     methods: {
-      // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
-      checkEventTest(e:SwiperEventTest, eventName:String){
-        const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
-        const result = isPass ? `${eventName}:Pass` : `${eventName}:NoPass`;
-        switch (eventName){
-          case 'change':
-            this.isChangeTest = result
-            break;
-          case 'transition':
-            this.isTransitionTest = result
-            break;
-          case 'animationfinish':
-            this.isAnimationfinishTest = result
-            break;
-          default:
-            break;
-        }
-      },
       swiperChange: function (e : UniSwiperChangeEvent) {
         // #ifndef APP-ANDROID
         this.changeDetailTest = e.detail
@@ -191,7 +173,24 @@
           console.log(e)
         }
       },
-
+      // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+      checkEventTest(e:SwiperEventTest, eventName:String){
+        const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+        const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+        switch (eventName){
+          case 'change':
+            this.isChangeTest = result
+            break;
+          case 'transition':
+            this.isTransitionTest = result
+            break;
+          case 'animationfinish':
+            this.isAnimationfinishTest = result
+            break;
+          default:
+            break;
+        }
+      },
       dotsChange: function (e : UniSwitchChangeEvent) {
         this.dotsSelect = e.detail.value
       },

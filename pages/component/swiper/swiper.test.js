@@ -98,7 +98,7 @@ describe('test swiper', () => {
         expect(transitionDetailInfo.dy).toBe(0)
       }
       expect(transitionDetailInfo.dx).not.toBe(0)
-      expect(await page.data('isTransitionTest')).toBe('transition:Pass')
+      expect(await page.data('isTransitionTest')).toBe('transition:Success')
     }
   });
 
@@ -110,7 +110,7 @@ describe('test swiper', () => {
       }else{
         expect(changeDetailInfo).toEqual(appDetailRes)
       }
-      expect(await page.data('isChangeTest')).toBe('change:Pass')
+      expect(await page.data('isChangeTest')).toBe('change:Success')
     }
   });
 
@@ -124,7 +124,7 @@ describe('test swiper', () => {
       }else{
         expect(animationfinishDetailInfo).toEqual(appDetailRes)
       }
-      expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Pass')
+      expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
     }
   });
 });
