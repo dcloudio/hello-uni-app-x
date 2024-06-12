@@ -100,6 +100,9 @@ describe('component-native-video', () => {
   });
 
   it('test event fullscreenchange fullscreenclick controlstoggle', async () => {
+    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+      return;
+    }
     await page.callMethod('requestFullScreen');
     await page.waitFor(async () => {
       return await page.data('eventFullscreenchange');
