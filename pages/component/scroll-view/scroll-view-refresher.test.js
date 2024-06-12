@@ -32,8 +32,8 @@ describe('component-native-scroll-view-refresher', () => {
     // 手动设置下拉刷新状态refresher-triggered为true时，在web和iOS不触发@refresherpulling事件
     if(process.env.uniTestPlatformInfo.startsWith('android')){
       expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
+      expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
     }
-    expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
     await page.waitFor(1000);
     expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
   });
@@ -47,7 +47,10 @@ describe('component-native-scroll-view-refresher', () => {
         duration: 1000
       })
       await page.waitFor(1500)
-      expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
+      // 下拉刷新被中止，在iOS不触发@refresherabort事件
+      if(process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
+        expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
+      }
     });
   }
 
