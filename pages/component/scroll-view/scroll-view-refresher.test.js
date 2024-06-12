@@ -13,14 +13,6 @@ describe('component-native-scroll-view-refresher', () => {
     await page.waitFor(300);
   });
 
-  async function eventCheck(dataName,typeName){
-    const eventInfo = await page.data(dataName)
-    expect(eventInfo.type).toBe(typeName)
-    expect(eventInfo.currentTarget).not.toBeFalsy();
-    expect(eventInfo.target).not.toBeFalsy();
-    expect(eventInfo.detail.dy).toBeGreaterThan(0)
-  }
-
   it('scroll-view-refresher-screenshot', async () => {
     //禁止滚动条
     await page.setData({
@@ -39,12 +31,25 @@ describe('component-native-scroll-view-refresher', () => {
     expect(await page.data('refresherrefreshTimes')).toBe(1)
     // 手动设置下拉刷新状态refresher-triggered为true时，在web和iOS不触发@refresherpulling事件
     if(process.env.uniTestPlatformInfo.startsWith('android')){
-      await eventCheck('onRefresherpullingTest','refresherpulling')
+      expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
     }
-    await eventCheck('refresherrefreshTest','refresherrefresh')
+    expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
     await page.waitFor(1000);
-    await eventCheck('onRefresherrestoreTest','refresherrestore')
+    expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
   });
+
+  // 仅App端支持手势下拉刷新
+  if(!process.env.uniTestPlatformInfo.startsWith('web')){
+    it('check_refresherabort', async () => {
+      await program.swipe({
+        startPoint: {x: 100,y: 500},
+        endPoint: {x: 100,y: 630},
+        duration: 1000
+      })
+      await page.waitFor(1500)
+      expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
+    });
+  }
 
   it('check_refresher_snapshot', async () => {
     await page.setData({
