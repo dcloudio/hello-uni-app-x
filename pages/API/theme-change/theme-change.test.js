@@ -23,5 +23,8 @@ describe('API-theme-change', () => {
     await page.callMethod('setAppTheme', "dark")
     await page.waitFor(300)
     expect(await page.data('appTheme')).toBe("dark")
+    //还原主题为light
+    await page.callMethod('setAppTheme', "light")
+    await page.waitFor(600)
   })
 });
