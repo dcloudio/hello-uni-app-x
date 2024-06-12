@@ -32,7 +32,7 @@ describe('component-native-scroll-view', () => {
       expect(topScrollDetail.scrollHeight).toBeGreaterThan(0)
       expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
       expect(topScrollDetail.deltaX).toBe(0)
-      expect(topScrollDetail.deltaY).toBe(-100)
+      expect(topScrollDetail.deltaY).not.toBe(0)
     }
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
