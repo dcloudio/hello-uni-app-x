@@ -41,6 +41,7 @@ describe('component-native-list-view', () => {
     // 在web端scroll事件event参数中detail类型报错，先忽略测试
     if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
       const scrollDetail = await page.data('scrollDetailTest')
+      console.log('scrollDetailTest:', scrollDetail)
       expect(scrollDetail.scrollLeft).toBe(0)
       expect(scrollDetail.scrollTop).toBe(300)
       expect(scrollDetail.scrollHeight).toBeGreaterThan(0)
@@ -73,14 +74,15 @@ describe('component-native-list-view', () => {
   }
 
   it('Event scrollend-滚动结束时触发',async()=>{
-    // 仅App端支持,向下滑动页面
+    // 仅App端支持,向上滑动页面
     await program.swipe({
-      startPoint: { x: 100, y: 500 },
-      endPoint: { x: 100, y: 200 },
+      startPoint: { x: 100, y: 300 },
+      endPoint: { x: 100, y: 100 },
       duration: 1000
     })
     await page.waitFor(600)
     const endDetail = await page.data('scrollEndDetailTest')
+    console.log('scrollEndDetailTest:', endDetail)
     expect(endDetail.deltaY).toBe(0)
     expect(endDetail.deltaX).toBe(0)
     expect(endDetail.scrollLeft).toBe(0)
