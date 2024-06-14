@@ -2,9 +2,10 @@
   <view>
     <text style="font-size: 15px;">overflow=visible 父view（绿色），子view（红色），点击超出父view区域的部分也可触发事件。</text>
     <view class="backgroundview">
-      <view class="box-visible-border-radius">
-        <view id="child" style="width: 50px; height: 150px; background-color: red;"
-          @click="handleClickOverflowPart" @touchmove="handleTouchMoveOverflowPart">
+      <view id="parent" class="box-visible-border-radius">
+        <view id="child" style="width: 50px; height: 150px; background-color: red;" @click="handleClickOverflowPart"
+          @touchmove="handleTouchMoveOverflowPart" @touchstart="handleTouchStartOverflowPart"
+          @touchend="handleTouchEndOverflowPart">
         </view>
       </view>
     </view>
@@ -17,17 +18,43 @@
       return {
         jest_result: false,
         jest_click_x: -1,
-        jest_click_y: -1
+        jest_click_y: -1,
+        jest_parent_top: -1.0,
+        startX: 0,
+        startY: 0,
+        moveX: 0,
+        moveY: 0,
+        oldX: 0,
+        oldY: 0,
+        moveEl: null as UniElement | null
       }
+    },
+    onReady() {
+      this.moveEl = uni.getElementById('parent')
     },
     methods: {
       handleClickOverflowPart() {
         console.log("click");
         this.jest_result = true;
-        uni.showToast({"title":"点击红色区域"})
+        uni.showToast({ "title": "点击红色区域" })
       },
-      handleTouchMoveOverflowPart(e:UniTouchEvent) {
+      handleTouchStartOverflowPart(e : UniTouchEvent) {
+        this.startX = e.changedTouches[0].clientX
+        this.startY = e.changedTouches[0].clientY
+      },
+      handleTouchMoveOverflowPart(e : UniTouchEvent) {
         console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY);
+        e.preventDefault()
+        e.stopPropagation()
+        const difX = e.changedTouches[0].clientX
+        const difY = e.changedTouches[0].clientY
+        this.moveX = difX - this.startX + this.oldX
+        this.moveY = difY - this.startY + this.oldY
+        this.moveEl?.style?.setProperty('transform', `translate(${this.moveX}px,${this.moveY}px)`)
+      },
+      handleTouchEndOverflowPart(_ : UniTouchEvent) {
+        this.oldX = this.moveX
+        this.oldY = this.moveY
       },
       jest_getRect() {
         const rect = uni.getElementById('child')?.getBoundingClientRect()
@@ -35,6 +62,15 @@
           const ratio = uni.getSystemInfoSync().devicePixelRatio
           this.jest_click_x = rect.x * ratio + 10
           this.jest_click_y = rect.bottom * ratio - 10
+        }
+      },
+      jest_getParentRect() {
+        const transform = uni.getElementById('parent')?.style.getPropertyValue("transform")
+        if (transform != null) {
+          let value = transform as string
+          value = value.split(",")[1].slice(0, -3)
+          const ratio = uni.getSystemInfoSync().devicePixelRatio
+          this.jest_parent_top = Math.round((parseFloat(value) * ratio))
         }
       }
     }
