@@ -75,9 +75,7 @@ describe('component-native-image', () => {
       autoTest: true,
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     });
-    await page.waitFor(async () => {
-      return await page.data('eventLoad');
-    });
+    await page.waitFor(300);
     expect(await page.data('eventLoad')).toEqual({
       tagName: 'IMAGE',
       type: 'load',
@@ -90,9 +88,7 @@ describe('component-native-image', () => {
     await page.setData({
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/404.png'
     });
-    await page.waitFor(async () => {
-      return await page.data('eventError');
-    });
+    await page.waitFor(300);
     expect(await page.data('eventError')).toEqual({
       tagName: 'IMAGE',
       type: 'error'
