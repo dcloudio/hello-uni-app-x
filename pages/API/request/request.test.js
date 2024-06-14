@@ -118,6 +118,27 @@ describe('ExtApi-Request', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   });
+  it('Check Set Cookie Expires', async () => {
+    await page.callMethod('jest_set_cookie_expires')
+    await page.waitFor(2000);
+    res = await page.data('jest_result_data');
+    console.log("request expires cookie data :", res);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+    await page.setData({
+      jest_result: false,
+      jest_result_data: "",
+      data: null,
+      header: null
+    })
+    await page.waitFor(5000);
+    await page.callMethod('jest_cookie_request', false)
+    await page.waitFor(2000);
+    res = await page.data('jest_result_data');
+    console.log("verify request data :", res);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  });
   it('Check Get With Data', async () => {
     res = await page.callMethod('jest_get_with_data')
     await page.waitFor(2000);
