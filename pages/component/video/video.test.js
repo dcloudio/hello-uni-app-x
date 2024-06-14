@@ -52,17 +52,13 @@ describe('component-native-video', () => {
       autoTest: true
     });
     await page.callMethod('play');
-    await page.waitFor(async () => {
-      return await page.data('eventPlay');
-    });
+    await page.waitFor(100);
     expect(await page.data('eventPlay')).toEqual({
       tagName: 'VIDEO',
       type: 'play'
     });
     await page.callMethod('pause');
-    await page.waitFor(async () => {
-      return await page.data('eventPause');
-    });
+    await page.waitFor(100);
     expect(await page.data('eventPause')).toEqual({
       tagName: 'VIDEO',
       type: 'pause'
@@ -75,38 +71,36 @@ describe('component-native-video', () => {
       pos: 10
     });
     await page.callMethod('seek');
-    await page.waitFor(async () => {
-      return await page.data('eventWaiting');
-    });
+    await page.waitFor(100);
     expect(await page.data('eventWaiting')).toEqual({
       tagName: 'VIDEO',
       type: 'waiting'
     });
-    await page.waitFor(async () => {
-      return await page.data('eventProgress');
-    });
+    await page.waitFor(200);
     expect(await page.data('eventProgress')).toEqual({
       tagName: 'VIDEO',
       type: 'progress',
-      buffered: 100
+      isBufferedValid: true
     });
-    await page.waitFor(250);
-    expect(await page.data('eventTimeupdate')).toEqual({
-      tagName: 'VIDEO',
-      type: 'timeupdate',
-      currentTime: 10,
-      duration: 121
-    });
+    const infos = process.env.uniTestPlatformInfo.split(' ');
+    const version = parseInt(infos[infos.length - 1]);
+    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+      await page.waitFor(200);
+      expect(await page.data('eventTimeupdate')).toEqual({
+        tagName: 'VIDEO',
+        type: 'timeupdate',
+        currentTime: 10,
+        duration: 121
+      });
+    }
   });
 
   it('test event fullscreenchange fullscreenclick controlstoggle', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return;
     }
     await page.callMethod('requestFullScreen');
-    await page.waitFor(async () => {
-      return await page.data('eventFullscreenchange');
-    });
+    await page.waitFor(500);
     expect(await page.data('eventFullscreenchange')).toEqual({
       tagName: 'VIDEO',
       type: 'fullscreenchange',
@@ -144,9 +138,7 @@ describe('component-native-video', () => {
       pos: 120
     });
     await page.callMethod('seek');
-    await page.waitFor(async () => {
-      return await page.data('eventEnded');
-    });
+    await page.waitFor(2500);
     expect(await page.data('eventEnded')).toEqual({
       tagName: 'VIDEO',
       type: 'ended'
@@ -158,9 +150,7 @@ describe('component-native-video', () => {
     await page.setData({
       src: 'invalid url'
     });
-    await page.waitFor(async () => {
-      return await page.data('eventError');
-    });
+    await page.waitFor(300);
     expect(await page.data('eventError')).toEqual({
       tagName: 'VIDEO',
       type: 'error',

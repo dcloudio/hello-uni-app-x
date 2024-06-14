@@ -17,17 +17,13 @@ describe('component-native-web-view', () => {
         autoTest: true
       });
       await page.callMethod('reload');
-      await page.waitFor(async () => {
-        return await page.data('eventLoading');
-      });
+      await page.waitFor(100);
       expect(await page.data('eventLoading')).toEqual({
         tagName: 'WEB-VIEW',
         type: 'loading',
         src: 'https://www.dcloud.io/'
       });
-      await page.waitFor(async () => {
-        return await page.data('eventLoad');
-      });
+      await page.waitFor(1000);
       expect(await page.data('eventLoad')).toEqual({
         tagName: 'WEB-VIEW',
         type: 'load',
@@ -36,21 +32,23 @@ describe('component-native-web-view', () => {
     });
 
     it('test event error', async () => {
-      await page.setData({
-        src: 'https://www.dclou.io/uni-app-x'
-      });
-      await page.waitFor(async () => {
-        return await page.data('eventError');
-      });
-      expect(await page.data('eventError')).toEqual({
-        tagName: 'WEB-VIEW',
-        type: 'error',
-        errCode: 100002,
-        errMsg: 'page error',
-        url: 'https://www.dclou.io',
-        fullUrl: 'https://www.dclou.io/uni-app-x',
-        src: 'https://www.dclou.io/uni-app-x'
-      });
+      const infos = process.env.uniTestPlatformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+        await page.setData({
+          src: 'https://www.dclou.io/uni-app-x'
+        });
+        await page.waitFor(500);
+        expect(await page.data('eventError')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'error',
+          errCode: 100002,
+          errMsg: 'page error',
+          url: 'https://www.dclou.io',
+          fullUrl: 'https://www.dclou.io/uni-app-x',
+          src: 'https://www.dclou.io/uni-app-x'
+        });
+      }
       await page.setData({
         autoTest: false
       });

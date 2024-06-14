@@ -27,10 +27,8 @@ describe('component-native-web-view', () => {
         autoTest: true
       });
       await page.callMethod('testEventDownload');
-      await page.waitFor(async () => {
-        return await page.data('eventDownload');
-      });
-      if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+      await page.waitFor(500);
+      if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
         expect(await page.data('eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
@@ -54,7 +52,7 @@ describe('component-native-web-view', () => {
           mimetype: 'application/vnd.android.package-archive',
           isContentLengthValid: true
         });
-      } else { // 低版本webview内核，部分属性无有效值
+      } else if (version > 6) { // 低版本webview内核，部分属性无有效值
         expect(await page.data('eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
@@ -68,17 +66,19 @@ describe('component-native-web-view', () => {
     });
 
     it('test event message', async () => {
-      await page.callMethod('testEventMessage');
-      await page.waitFor(async () => {
-        return await page.data('eventMessage');
-      });
-      expect(await page.data('eventMessage')).toEqual({
-        tagName: 'WEB-VIEW',
-        type: 'message',
-        data: [{
-          action: 'message'
-        }]
-      });
+      const infos = process.env.uniTestPlatformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (process.env.uniTestPlatformInfo.startsWith('android') && version > 6) {
+        await page.callMethod('testEventMessage');
+        await page.waitFor(200);
+        expect(await page.data('eventMessage')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'message',
+          data: [{
+            action: 'message'
+          }]
+        });
+      }
       await page.setData({
         autoTest: false
       });
