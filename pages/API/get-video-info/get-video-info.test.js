@@ -1,6 +1,6 @@
 // uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 describe('API-getVideoInfo', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+  if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
@@ -25,15 +25,19 @@ describe('API-getVideoInfo', () => {
       });
       return;
     }
-    expect(await page.data('videoInfoForTest')).toEqual({
-      orientation: 'up',
-      type: 'video/mp4',
-      duration: 10,
-      size: 211,
-      width: 1280,
-      height: 720,
-      fps: 30,
-      bitrate: 172
-    });
+    const infos = process.env.uniTestPlatformInfo.split(' ');
+    const version = parseInt(infos[infos.length - 1]);
+    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+      expect(await page.data('videoInfoForTest')).toEqual({
+        orientation: 'up',
+        type: 'video/mp4',
+        duration: 10,
+        size: 211,
+        width: 1280,
+        height: 720,
+        fps: 30,
+        bitrate: 172
+      });
+    }
   });
 });

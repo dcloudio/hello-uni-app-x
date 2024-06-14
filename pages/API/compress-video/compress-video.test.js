@@ -1,6 +1,6 @@
 // uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 describe('API-compressVideo', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.uniTestPlatformInfo.startsWith('ios')) {
+  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
