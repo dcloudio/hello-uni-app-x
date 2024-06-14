@@ -112,14 +112,16 @@
             color: '#7A7E83',
             selectedColor: '#007AFF',
             backgroundColor: '#F8F8F8',
-            borderStyle: 'black'
+            borderStyle: 'black',
+            // 新增 borderColor，优先级高于 borderStyle
+            borderColor:'red'
           })
         } else {
           uni.setTabBarStyle({
             color: '#FFF',
             selectedColor: '#007AFF',
             backgroundColor: '#000000',
-            borderStyle: 'black'
+            borderStyle: 'black',
           })
         }
         this.hasCustomedStyle = !this.hasCustomedStyle
