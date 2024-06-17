@@ -27,9 +27,7 @@ describe('component-native-scroll-view', () => {
       console.log('topScrollDetail:', topScrollDetail)
       expect(topScrollDetail.scrollLeft).toBe(0)
       // Android 差异scrollTop：99.809525
-      if(!process.env.uniTestPlatformInfo.startsWith('android')){
-        expect(topScrollDetail.scrollTop).toBe(100)
-      }
+      expect([100, 99.809525]).toContain(topScrollDetail.scrollTop);
       expect(topScrollDetail.scrollHeight).toBeGreaterThan(0)
       expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
       expect(topScrollDetail.deltaX).toBe(0)
@@ -47,13 +45,12 @@ describe('component-native-scroll-view', () => {
       const leftScrollDetail = await page.data('scrollDetailTest')
       console.log('leftScrollDetail:', leftScrollDetail)
       // Android 差异scrollLeft：219.80952
-      if(!process.env.uniTestPlatformInfo.startsWith('android')){
-        expect(leftScrollDetail.scrollLeft).toBe(220)
-      }
+      expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
       expect(leftScrollDetail.scrollTop).toBe(0)
       expect(leftScrollDetail.scrollHeight).toBeGreaterThan(0)
       expect(leftScrollDetail.scrollWidth).toBeGreaterThan(0)
-      expect(leftScrollDetail.deltaX).toBe(-100)
+      // 在安卓差异 -99.809525
+      expect([-100, -99.809525]).toContain(leftScrollDetail.deltaX);
       expect(leftScrollDetail.deltaY).toBe(0)
     }
     expect(await page.data('isScrollTest')).toBe('scroll:Success')

@@ -49,6 +49,7 @@ describe('component-native-scroll-view-refresher', () => {
       await page.waitFor(1500)
       // 下拉刷新被中止，在iOS不触发@refresherabort事件
       if(process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
+        console.log('onRefresherabortTest',await page.data('onRefresherabortTest'))
         expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
       }
     });
