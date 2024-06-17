@@ -95,7 +95,7 @@ describe('component-native-video', () => {
     }
   });
 
-  it('test event fullscreenchange fullscreenclick controlstoggle', async () => {
+  it('test event fullscreenchange controlstoggle fullscreenclick', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return;
     }
@@ -108,24 +108,25 @@ describe('component-native-video', () => {
       direction: 'horizontal'
     });
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      const res = await program.adbCommand('wm size');
-      const width = res.data.split(' ').at(-1).split('x')[0]
-      const height = res.data.split(' ').at(-1).split('x')[1]
-      const res2 = await program.adbCommand('wm density');
-      const scale = res2.data.split(' ').at(-1) / 160;
-      await page.waitFor(100);
-      await program.adbCommand(`input tap ${parseInt(height / 2)} ${parseInt(width / 2)}`);
+      await page.waitFor(5000);
+      await program.adbCommand('input tap 10 10');
       await page.waitFor(100);
       expect(await page.data('eventControlstoggle')).toEqual({
         tagName: 'VIDEO',
         type: 'controlstoggle',
-        show: false
+        show: true
       });
+      const res = await program.adbCommand('wm size');
+      const width = res.data.split(' ').at(-1).split('x')[0];
+      const height = res.data.split(' ').at(-1).split('x')[1];
+      const res2 = await program.adbCommand('wm density');
+      const scale = res2.data.split(' ').at(-1) / 160;
+      // android模拟器全屏时会弹出系统提示框，影响测试screenX、screenY
       expect(await page.data('eventFullscreenclick')).toEqual({
         tagName: 'VIDEO',
         type: 'fullscreenclick',
-        screenX: parseInt(height / 2 / scale),
-        screenY: parseInt(width / 2 / scale),
+        screenX: parseInt(10 / scale),
+        screenY: parseInt(10 / scale),
         screenWidth: parseInt(height / scale),
         screenHeight: parseInt(width / scale)
       });
