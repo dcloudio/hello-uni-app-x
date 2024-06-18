@@ -14,7 +14,9 @@
                 }}</view>
               </view>
               <view class="uni-list-cell-db">
-                <text style="width: 100%;">{{ item.value == '' ? '未获取' : item.value }}</text>
+                <text style="width: 100%">{{
+                  item.value == "" ? "未获取" : item.value
+                }}</text>
               </view>
             </view>
           </view>
@@ -50,22 +52,22 @@
       getDeviceInfo: function () {
         const res = uni.getDeviceInfo();
         // 获取像素比, 供截图对比使用
-        setDevicePixelRatio(res.devicePixelRatio !== null ? parseFloat(res.devicePixelRatio!) : 1)
+        setDevicePixelRatio(res.devicePixelRatio !== null ? res.devicePixelRatio! : 1)
         this.items = [] as Item[];
 
         const res_str = JSON.stringify(res);
-        const res_obj =  JSON.parseObject(res_str);
+        const res_obj = JSON.parseObject(res_str);
         const res_map = res_obj!.toMap();
         let keys = [] as string[]
         res_map.forEach((_, key) => {
-           keys.push(key);
+          keys.push(key);
         });
-        keys.sort().forEach( key => {
+        keys.sort().forEach(key => {
           const value = res[key];
-          if(value != null){
+          if (value != null) {
             const item = {
-            	label: key,
-            	value: "" + ((typeof value == "object")? JSON.stringify(value) : value)
+              label: key,
+              value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
             } as Item;
             this.items.push(item);
           }
