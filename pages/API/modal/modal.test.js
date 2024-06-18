@@ -7,7 +7,7 @@ describe('API-loading', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/modal/modal')
-    await page.waitFor(200);
+    await page.waitFor('view');
 
   });
 

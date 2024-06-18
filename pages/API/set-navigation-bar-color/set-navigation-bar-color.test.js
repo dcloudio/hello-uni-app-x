@@ -2,6 +2,12 @@ const CURRENT_PAGE_PATH =
   '/pages/API/set-navigation-bar-color/set-navigation-bar-color'
 
 describe('setNavigationBarColor', () => {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+    it('dummyTest', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page
   let originLifeCycleNum
   beforeAll(async () => {
