@@ -9,7 +9,7 @@ describe('api-resize-observer', () => {
 
   it('check_resize-observer', async () => {
     await page.waitFor(600)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 
