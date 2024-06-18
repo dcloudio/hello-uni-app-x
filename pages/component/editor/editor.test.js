@@ -65,7 +65,7 @@ describe('editor.uvue', () => {
 
   it('insertImage', async () => {
     await page.callMethod('insertImage','https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
-    await page.waitFor(500)
+    await page.waitFor(1200)
     expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
