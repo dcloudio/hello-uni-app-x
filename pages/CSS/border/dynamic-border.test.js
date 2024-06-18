@@ -14,7 +14,7 @@ describe('css-dynamic-border', () => {
   // 取消圆角
   it('check_none', async () => {
     await page.callMethod('changeIndex', 2)
-    page.waitFor(100)
+    await page.waitFor(100)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
@@ -22,7 +22,7 @@ describe('css-dynamic-border', () => {
   // 左下，右下设置圆角
   it('check_bottomleft_bottomright', async () => {
     await page.callMethod('changeIndex', 10)
-    page.waitFor(100)
+    await page.waitFor(100)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
