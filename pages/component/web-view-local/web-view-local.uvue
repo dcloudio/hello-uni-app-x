@@ -12,17 +12,17 @@
         loadFinish: false,
         // 自动化测试
         autoTest: false,
-        eventMessage: null,
-        eventDownload: null
+        eventMessage: null as UTSJSONObject | null,
+        eventDownload: null as UTSJSONObject | null
       }
     },
     methods: {
       message(event : UniWebViewMessageEvent) {
         console.log(JSON.stringify(event.detail));
         let contentStr = JSON.stringify(event.detail);
-        <!-- #ifdef APP-IOS -->
-          contentStr = JSON.stringify(event.detail.data[0]);
-        <!-- #endif -->
+        // #ifdef APP-IOS
+        contentStr = JSON.stringify(event.detail.data[0]);
+        // #endif
         uni.showModal({
           content: contentStr,
           showCancel: false
