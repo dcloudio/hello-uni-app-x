@@ -150,7 +150,7 @@ describe('component-native-input', () => {
   it("maxlength", async () => {
     const input = await page.$('#uni-input-maxlength');
     let str = "";
-    for(let i = 0;i < 200;i++){
+    for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
     await page.setData({
@@ -196,7 +196,7 @@ describe('component-native-input', () => {
     //reset
     await page.setData({
       focusedForKeyboardHeightChangeTest: false,
-      keyboardHeight:0
+      keyboardHeight: 0
     })
   })
 
@@ -206,11 +206,8 @@ describe('component-native-input', () => {
     })
     expect(image).toSaveImageSnapshot()
   })
-  if (!process.env.uniTestPlatformInfo.startsWith('android')) {
-    // TODO: 暂时规避 android 端测试
-    it('both set modelValue and value', async()=>{
-      const input2 = await page.$('#both-model-value');
-      expect(await input2.value()).toEqual("123")
-    })
-  }
+  it('both set modelValue and value', async () => {
+    const input2 = await page.$('#both-model-value');
+    expect(await input2.value()).toEqual("123")
+  })
 });
