@@ -1,6 +1,6 @@
 const PAGE_PATH = '/pages/component/general-event/general-event'
 
-describe('event trigger sequence', () => {
+describe('event trigger', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
   const isIos = platformInfo.startsWith('ios')
