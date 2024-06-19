@@ -249,6 +249,8 @@ describe('event trigger', () => {
             duration: 1000
           })
         }
+        const img = await program.screenshot({fullPage: true});
+        expect(img).toSaveImageSnapshot()
         const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
         expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
         expect(longPressTouchIdentifierText).toBeTruthy()
