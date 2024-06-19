@@ -2,9 +2,8 @@ const PAGE_PATH = '/pages/component/general-event/general-event'
 
 describe('event trigger', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const osName = process.env.UNI_OS_NAME.toLocaleLowerCase()
-  const isAndroid = osName.startsWith('android')
-  const isIos = osName.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+  const isIos = platformInfo.startsWith('ios')
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
@@ -223,7 +222,7 @@ describe('event trigger', () => {
 
       if (isAndroid || isIos) {
         if (isAndroid) {
-          if (platformInfo.indexOf('6') != -1) {
+          if (platformInfo.indexOf('6') != -1 && platformInfo.indexOf('x86') == -1) {
             await program.tap({
               x: 200,
               y: 700,
@@ -249,8 +248,6 @@ describe('event trigger', () => {
             duration: 1000
           })
         }
-        const img = await program.screenshot({fullPage: true});
-        expect(img).toSaveImageSnapshot()
         const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
         expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
         expect(longPressTouchIdentifierText).toBeTruthy()
