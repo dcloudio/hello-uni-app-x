@@ -85,23 +85,23 @@
 			let canvasWidth = this.ctx.canvas.width,
 			    canvasHeight = this.ctx.canvas.height
 			for (let i = 0; i < this.layer; i++) {
-			    let radius = getDistance(canvasWidth / 2, canvasHeight / 2) / layer * i
+			    let radius = this.getDistance(canvasWidth / 2, canvasHeight / 2) / this.layer * i
 			    for (let j = 0; j < this.ballInlayer; j++) {
-			        let deg = j * 2 * Math.PI / ballInlayer,
+			        let deg = j * 2 * Math.PI / this.ballInlayer,
 			            sin = Math.sin(deg),
 			            cos = Math.cos(deg),
 			            x = radius * cos + canvasWidth / 2,
 			            y = radius * sin + canvasHeight / 2,
 			            vx = this.speed * cos,
 			            vy = this.speed * sin
-			        ballList.push(new Ball(x, y, vx, vy, ctx, devicePixelRatio))
+			        this.ballList.push(new Ball(x, y, vx, vy, this.ctx, devicePixelRatio))
 			    }
 			}
 		}
 
 		private animate(ballList: Array<Ball>) {
 		    this.ctx.clearRect(0, 0, this.ctx.canvas.width,  this.ctx.canvas.height )
-		    ballList.forEach(function(item) {
+		    this.ballList.forEach(function(item) {
 		        item.move()
 		        item.draw()
 		    })
@@ -111,8 +111,8 @@
 		start(){
 			//Todo.. requestAnimationFrame
 			clearInterval(this.interval)
-			interval = setInterval(function() {
-			    animate(ballList)
+			this.interval = setInterval(()=> {
+			    this.animate(this.ballList)
 			}, 17)
 		}
 		stop(){
