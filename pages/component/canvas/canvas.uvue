@@ -14,8 +14,9 @@
         private vx : number
         private vy : number
         private radius : number = 5
+		private devicePixelRatio: Number
 
-		constructor(x: number, y: number, vx: number, vy: number, ctx: CanvasRenderingContext2D){
+		constructor(x: number, y: number, vx: number, vy: number, ctx: CanvasRenderingContext2D, devicePixelRatio: number){
 			this.ctx = ctx
 			this.canvasWidth = ctx.canvas.width
 			this.canvasHeight = ctx.canvas.height
@@ -23,6 +24,8 @@
 			this.y = y
 			this.vx = vx
 			this.vy = vy
+			this.devicePixelRatio = devicePixelRatio
+			this.radius *= this.devicePixelRatio
 		}
 
 		draw() {
@@ -68,16 +71,17 @@
 		private layer = 3
 		private ballInlayer = 20
 		private interval : number = 0
-		constructor(ctx : CanvasRenderingContext2D){
+		constructor(ctx : CanvasRenderingContext2D, devicePixelRatio: Number){
 			this.ctx = ctx
-			this.initBall()
+			this.speed *= devicePixelRatio
+			this.initBall(devicePixelRatio)
 		}
 
 		private getDistance(x: number, y: number) : number{
 		    return Math.pow((Math.pow(x, 2) + Math.pow(y, 2)), 0.5)
 		}
 
-		private initBall() {
+		private initBall(devicePixelRatio: Number) {
 			let canvasWidth = this.ctx.canvas.width,
 			    canvasHeight = this.ctx.canvas.height
 			for (let i = 0; i < this.layer; i++) {
@@ -90,7 +94,7 @@
 			            y = radius * sin + canvasHeight / 2,
 			            vx = this.speed * cos,
 			            vy = this.speed * sin
-			        ballList.push(new Ball(x, y, vx, vy, ctx))
+			        ballList.push(new Ball(x, y, vx, vy, ctx, devicePixelRatio))
 			    }
 			}
 		}
@@ -118,10 +122,12 @@
 
 	var animation : BallAnimation|null = null
 	onReady(() => {
+		const res = uni.getDeviceInfo();
+		const devicePixelRatio = res.devicePixelRatio !== null ? res.devicePixelRatio! : 1
 		let canvas = uni.getElementById("canvas") as UniCanvasElementImpl
 	    let canvasContext = canvas.getContext("2d");
 		if(canvasContext != null) {
-			animation = new BallAnimation(canvasContext)
+			animation = new BallAnimation(canvasContext, devicePixelRatio)
 			animation?.start()
 		} else {
 			console.log("canvas.getContext error!!")
