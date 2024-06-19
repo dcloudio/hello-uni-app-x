@@ -18,6 +18,8 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
   beforeEach(async () => {
     await page.setData({
       jest_result: false,
+      jest_click_x: -1,
+      jest_click_y: -1
     })
   });
 
@@ -48,5 +50,16 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     console.log("current ", currentParentTop);
     console.log("diff", diff);
     expect(diff).toBe(true)
+  })
+
+  it('Check Overflow Visible Block View Click', async () => {
+    await page.callMethod('jest_getAbsoluteViewRect')
+    const point_x = await page.data('jest_click_x');
+    const point_y = await page.data('jest_click_y');
+    console.log("input tap" + " " + point_x + " " + point_y);
+    await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    await page.waitFor(500);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
   })
 });
