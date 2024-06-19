@@ -2,8 +2,9 @@ const PAGE_PATH = '/pages/component/general-event/general-event'
 
 describe('event trigger', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIos = platformInfo.startsWith('ios')
+  const osName = process.env.UNI_OS_NAME.toLocaleLowerCase()
+  const isAndroid = osName.startsWith('android')
+  const isIos = osName.startsWith('ios')
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
