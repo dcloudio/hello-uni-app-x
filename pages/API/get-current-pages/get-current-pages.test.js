@@ -47,7 +47,9 @@ describe('getCurrentPages', () => {
     await page.callMethod('startPullDownRefresh')
     await page.waitFor(500)
     const image2 = await program.screenshot({fullPage: true});
-    expect(image2).toSaveImageSnapshot();
+    expect(image2).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-js-get-current-pages-page-style-before-set-page-style'
+    }});
 
     await page.waitFor(3500)
     await page.callMethod('setPageStyle', {
@@ -57,6 +59,8 @@ describe('getCurrentPages', () => {
     await page.callMethod('startPullDownRefresh')
     await page.waitFor(500)
     const image3 = await program.screenshot({fullPage: true});
-    expect(image3).toSaveImageSnapshot();
+    expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-js-get-current-pages-page-style-after-set-page-style'
+    }});
   })
 })
