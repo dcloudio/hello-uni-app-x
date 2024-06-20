@@ -90,28 +90,23 @@ describe('test swiper', () => {
   });
 
   it('Event transitiont', async () => {
-    // bug：android端swiper的事件event参数detail类型错误，暂时忽略测试
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-      const transitionDetailInfo = await page.data('transitionDetailTest')
-      // bug：在iOS端，swiper首次横向滑动切换@transition事件参数e.detail.dy为1错误，暂时忽略测试
-      if(process.env.uniTestPlatformInfo.startsWith('web')){
-        expect(transitionDetailInfo.dy).toBe(0)
-      }
-      expect(transitionDetailInfo.dx).not.toBe(0)
-      expect(await page.data('isTransitionTest')).toBe('transition:Success')
+    const transitionDetailInfo = await page.data('transitionDetailTest')
+    // bug：在iOS端，swiper首次横向滑动切换@transition事件参数e.detail.dy为1错误，暂时忽略测试
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(transitionDetailInfo.dy).toBe(0)
     }
+    expect(transitionDetailInfo.dx).not.toBe(0)
+    expect(await page.data('isTransitionTest')).toBe('transition:Success')
   });
 
   it('Event change', async () => {
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-      const changeDetailInfo = await page.data('changeDetailTest')
-      if(process.env.uniTestPlatformInfo.startsWith('web')){
-        expect(changeDetailInfo).toEqual(webDetailRes)
-      }else{
-        expect(changeDetailInfo).toEqual(appDetailRes)
-      }
-      expect(await page.data('isChangeTest')).toBe('change:Success')
+    const changeDetailInfo = await page.data('changeDetailTest')
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(changeDetailInfo).toEqual(webDetailRes)
+    }else{
+      expect(changeDetailInfo).toEqual(appDetailRes)
     }
+    expect(await page.data('isChangeTest')).toBe('change:Success')
   });
 
   it('Event animationfinish', async () => {
