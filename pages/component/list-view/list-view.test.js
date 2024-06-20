@@ -43,15 +43,11 @@ describe('component-native-list-view', () => {
       const scrollDetail = await page.data('scrollDetailTest')
       console.log('scrollDetailTest:', scrollDetail)
       expect(scrollDetail.scrollLeft).toBe(0)
-      // 在安卓端差异 299.8095
+      // scrollTop和deltaY 在安卓端差异 299.8095
       expect([300, 299.8095]).toContain(scrollDetail.scrollTop);
       expect(scrollDetail.scrollHeight).toBeGreaterThan(0)
-      // 在安卓端 "scrollWidth":0
-      if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-        expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
-      }
+      expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
       expect(scrollDetail.deltaX).toBe(0)
-      // 在安卓端差异 299.8095
       expect([300, 299.8095]).toContain(scrollDetail.deltaY);
     }
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
@@ -90,8 +86,7 @@ describe('component-native-list-view', () => {
     expect(endDetail.scrollLeft).toBe(0)
     expect(endDetail.scrollTop).toBeGreaterThan(0)
     expect(endDetail.scrollHeight).toBeGreaterThan(0)
-    // 在安卓端 "scrollWidth":0
-    // expect(endDetail.scrollWidth).toBeGreaterThan(0)
+    expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
   if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
