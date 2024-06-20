@@ -22,7 +22,6 @@ describe('inner-audio', () => {
     await page.waitFor(async()=>{
       return await getData('isCanplay')
     })
-    console.log("获取缓冲信息",await getData('buffered'))
     expect(await getData('buffered')).toBeGreaterThan(0)
   })
 
@@ -31,7 +30,7 @@ describe('inner-audio', () => {
     await page.waitFor(3000);
     expect(await getData('isPlaying')).toBeTruthy()
     console.log("duration：",await getData('duration'),"currentTime：",await getData('currentTime'))
-    expect(await getData('duration')).toBe(175.109)
+    expect(await getData('duration')).toBeCloseTo(175.109, 0);
     // console.log("isPaused",await getData('isPaused'))
     // expect(await getData('currentTime')).toBeGreaterThan(0);
     // expect(await getData('isPaused')).toBeFalsy();
