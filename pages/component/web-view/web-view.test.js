@@ -12,6 +12,28 @@ describe('component-native-web-view', () => {
       expect(await page.data('loadError')).toBe(false)
     });
 
+    it('test attr webview-styles', async () => {
+      await page.setData({
+        webview_styles: {
+          progress: {
+            color: '#FF0'
+          }
+        }
+      });
+      await page.waitFor(100);
+      await page.callMethod('reload');
+      await page.waitFor(100);
+      await page.setData({
+        webview_styles: {
+          progress: {
+            color: 'yellow'
+          }
+        }
+      });
+      await page.waitFor(100);
+      await page.callMethod('reload');
+    });
+
     it('test event loading load', async () => {
       await page.setData({
         autoTest: true
