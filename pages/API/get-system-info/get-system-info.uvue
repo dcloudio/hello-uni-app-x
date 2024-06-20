@@ -38,7 +38,15 @@
     label : string,
     value : string,
   }
-  const globalScreenHeight = uni.getSystemInfoSync().screenHeight
+
+  let globalScreenHeight = 0
+  try {
+    globalScreenHeight = uni.getSystemInfoSync().screenHeight
+  } catch (e) {
+    // 兼容本地测试
+    console.error(e)
+  }
+
   export default {
     data() {
       return {
@@ -50,7 +58,6 @@
     },
     onUnload: function () {
     },
-
     onReady() {
       this.screenHeightAtReady = uni.getSystemInfoSync().screenHeight
       console.log(`全局获取屏幕高度: ${globalScreenHeight}  onReady内获取屏幕高度: ${this.screenHeightAtReady}`);
@@ -61,18 +68,18 @@
           success: (res) => {
             this.items = [] as Item[];
             const res_str = JSON.stringify(res);
-            const res_obj =  JSON.parseObject(res_str);
+            const res_obj = JSON.parseObject(res_str);
             const res_map = res_obj!.toMap();
             let keys = [] as string[]
             res_map.forEach((_, key) => {
-               keys.push(key);
+              keys.push(key);
             });
-            keys.sort().forEach( key => {
+            keys.sort().forEach(key => {
               const value = res[key];
-              if(value != null){
+              if (value != null) {
                 const item = {
-                	label: key,
-                	value: "" + ((typeof value == "object")? JSON.stringify(value) : value)
+                  label: key,
+                  value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
                 } as Item;
                 this.items.push(item);
               }
@@ -84,18 +91,18 @@
         this.items = [] as Item[];
         const res = uni.getSystemInfoSync()
         const res_str = JSON.stringify(res);
-        const res_obj =  JSON.parseObject(res_str);
+        const res_obj = JSON.parseObject(res_str);
         const res_map = res_obj!.toMap();
         let keys = [] as string[]
         res_map.forEach((_, key) => {
-           keys.push(key);
+          keys.push(key);
         });
-        keys.sort().forEach( key => {
+        keys.sort().forEach(key => {
           const value = res[key];
-          if(value != null){
+          if (value != null) {
             const item = {
-            	label: key,
-            	value: "" + ((typeof value == "object")? JSON.stringify(value) : value)
+              label: key,
+              value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
             } as Item;
             this.items.push(item);
           }
@@ -105,7 +112,7 @@
       jest_getSystemInfo() : GetSystemInfoResult {
         return uni.getSystemInfoSync();
       },
-      jest_getScreenHeight_at_different_stages(){
+      jest_getScreenHeight_at_different_stages() {
         this.jest_result = (globalScreenHeight == this.screenHeightAtReady)
       }
     }
