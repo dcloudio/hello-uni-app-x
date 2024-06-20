@@ -111,15 +111,12 @@ describe('test swiper', () => {
 
   it('Event animationfinish', async () => {
     await page.waitFor(1000)
-    // bug：在android端第一次触发@animationfinish 得到detail中的source为空，第二次触发时正常得到source: 'autoplay'
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-      const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
-      if(process.env.uniTestPlatformInfo.startsWith('web')){
-        expect(animationfinishDetailInfo).toEqual(webDetailRes)
-      }else{
-        expect(animationfinishDetailInfo).toEqual(appDetailRes)
-      }
-      expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
+    const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(animationfinishDetailInfo).toEqual(webDetailRes)
+    }else{
+      expect(animationfinishDetailInfo).toEqual(appDetailRes)
     }
+    expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
   });
 });
