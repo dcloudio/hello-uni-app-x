@@ -32,10 +32,67 @@ describe('component-native-list-view', () => {
     expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
   })
 
+  it('Event check_scroll', async () => {
+    await page.callMethod('change_scroll_y_boolean', true)
+    await page.callMethod('change_scroll_x_boolean', false)
+    await page.waitFor(600)
+    await page.callMethod('confirm_scroll_top_input', 300)
+    await page.waitFor(600)
+    // 在web端scroll事件event参数中detail类型报错，先忽略测试
+    if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
+      const scrollDetail = await page.data('scrollDetailTest')
+      console.log('scrollDetailTest:', scrollDetail)
+      expect(scrollDetail.scrollLeft).toBe(0)
+      // 在安卓端差异 299.8095
+      expect([300, 299.8095]).toContain(scrollDetail.scrollTop);
+      expect(scrollDetail.scrollHeight).toBeGreaterThan(0)
+      // 在安卓端 "scrollWidth":0
+      if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
+        expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
+      }
+      expect(scrollDetail.deltaX).toBe(0)
+      // 在安卓端差异 299.8095
+      expect([300, 299.8095]).toContain(scrollDetail.deltaY);
+    }
+    expect(await page.data('isScrollTest')).toBe('scroll:Success')
+  })
+
+  it('Event scrolltolower-滚动到底部/右边',async()=>{
+    // 滚动到底部,是否触发scrolltolower事件
+    await page.callMethod('confirm_scroll_top_input', 2500)
+    await page.waitFor(600)
+    expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
+  })
+
+  it('Event scrolltoupper-滚动到顶部/左边',async()=>{
+    // 滚动到顶部50,是否触发scrolltoupper事件
+    await page.callMethod('confirm_scroll_top_input', 50)
+    await page.waitFor(2000)
+    expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
+  })
+
   if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
     return
   }
 
+  it('Event scrollend-滚动结束时触发',async()=>{
+    // 仅App端支持,向上滑动页面
+    await program.swipe({
+      startPoint: { x: 100, y: 300 },
+      endPoint: { x: 100, y: 100 },
+      duration: 1000
+    })
+    await page.waitFor(600)
+    const endDetail = await page.data('scrollEndDetailTest')
+    console.log('scrollEndDetailTest:', endDetail)
+    expect(endDetail.deltaY).toBe(0)
+    expect(endDetail.deltaX).toBe(0)
+    expect(endDetail.scrollLeft).toBe(0)
+    expect(endDetail.scrollTop).toBeGreaterThan(0)
+    expect(endDetail.scrollHeight).toBeGreaterThan(0)
+    // 在安卓端 "scrollWidth":0
+    // expect(endDetail.scrollWidth).toBeGreaterThan(0)
+  })
 
   if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     return

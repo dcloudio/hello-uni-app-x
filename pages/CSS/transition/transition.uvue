@@ -22,16 +22,26 @@
         </view>
       </view>
       <view class="container">
-        <text class="text">点击修改Background</text>
+        <text class="text">点击修改background-color和opacity</text>
         <view class="base-style transition-background" id="styleBackground" @click="changeBackground"></view>
       </view>
       <view class="container">
-        <text class="text">动态修改Background</text>
+        <text class="text">点击修改background-color（rgba）</text>
+        <view style="flex: 1;">
+          <view class="base-style transition-background" id="styleBackground2" @click="changeBackground2"></view>
+        </view>
+      </view>
+      <view class="container">
+        <text class="text">动态修改background-color和duration</text>
         <view class="base-style" id="propertyStyleBackground" @click="propertyChangeBackground"></view>
       </view>
       <view class="container">
         <text class="text">点击修改Transform</text>
         <view class="base-style transition-transform" id="styleTransform" @click="changeTransform"></view>
+      </view>
+      <view class="container">
+        <text class="text">点击修改TransformTranslate</text>
+        <view class="base-style transition-transform" id="transformTranslate" @click="changeTransformTranslate"></view>
       </view>
       <view class="container">
         <text class="text">点击修改Transform和宽</text>
@@ -68,7 +78,9 @@
         isTransitionStylePadding: false,
         stylePadding: null as UniElement | null,
         isTransitionstyleBackground: false,
+        isTransitionstyleBackground2: false,
         styleBackground: null as UniElement | null,
+        styleBackground2: null as UniElement | null,
         isTransitionStyleTransform: false,
         styleTransform: null as UniElement | null,
         isTransitionStyleTransformWithWidth:false,
@@ -82,6 +94,8 @@
         propertyStyleBackground: null as UniElement | null,
         isTransitionStyleTransformWithOrigin: false,
         styleTransformWithOrigin: null as UniElement | null,
+        styleTransformTranslate: null as UniElement | null,
+        isTransformTranslate: false
       }
     },
     onReady() {
@@ -90,12 +104,14 @@
       this.styleMargin = uni.getElementById("styleMargin")
       this.stylePadding = uni.getElementById("stylePadding")
       this.styleBackground = uni.getElementById("styleBackground")
+      this.styleBackground2 = uni.getElementById("styleBackground2")
       this.styleTransform = uni.getElementById("styleTransform")
       this.styleBorder = uni.getElementById("styleBorder")
       this.stylePosition = uni.getElementById("stylePosition")
       this.propertyStyleBackground = uni.getElementById("propertyStyleBackground")
       this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
       this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
+      this.styleTransformTranslate = uni.getElementById("transformTranslate")
     },
     methods: {
       changeWidthOrHeight() {
@@ -140,6 +156,13 @@
         )
         this.isTransitionstyleBackground = !this.isTransitionstyleBackground
       },
+      changeBackground2() {
+        this.styleBackground2?.style?.setProperty("background-color", this.isTransitionstyleBackground2
+          ? 'brown'
+          : 'rgba(0, 0, 0, 0.5)'
+        )
+        this.isTransitionstyleBackground2 = !this.isTransitionstyleBackground2
+      },
       propertyChangeBackground() {
         if (!this.isSetTransition) {
           this.propertyStyleBackground?.style?.setProperty("transition-property", "background-color")
@@ -158,6 +181,11 @@
           : 'rotate(135deg)'
         )
         this.isTransitionStyleTransform = !this.isTransitionStyleTransform
+      },
+      changeTransformTranslate() {
+        const translate = this.isTransformTranslate ? `translate(0%,0%)` : `translate(100%,0%)`
+        this.styleTransformTranslate?.style?.setProperty('transform', translate)
+        this.isTransformTranslate = !this.isTransformTranslate
       },
       changeTransformWithWidth() {
         this.styleTransformWithWidth?.style?.setProperty("transform", this.isTransitionStyleTransformWithWidth

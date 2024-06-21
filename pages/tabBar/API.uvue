@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1" enable-back-to-top="true">
+  <scroll-view style="flex: 1;background-color: #f8f8f8;" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
@@ -8,26 +8,28 @@
       </view>
       <view class="uni-text-box">
         <text class="hello-text">以下将演示uni-app接口能力，详细文档见：</text>
-        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'" :inWhiteList="true"></u-link>
+        <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'"
+          :inWhiteList="true"></u-link>
       </view>
 
       <uni-collapse>
         <template v-for="item in list" :key="item.id">
           <uni-collapse-item :title="item.name" class="item">
-            <view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'" v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
-              <text class="uni-navigate-text" :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
+            <view class="uni-navigate-item" :hover-class="page.enable == false ? '' : 'is--active'"
+              v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
+              <text class="uni-navigate-text"
+                :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
               <image :src="arrowRightIcon" class="uni-icon-size"></image>
             </view>
           </uni-collapse-item>
         </template>
       </uni-collapse>
-
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
   <view ref="pop" @click="hidePop()" class="popup">
-    <view style="width: 90%;background-color: white;" @click="stopClickPop">
+    <view style="width: 90%; background-color: white" @click="stopClickPop">
       <api-set-tabbar></api-set-tabbar>
     </view>
   </view>
@@ -83,11 +85,17 @@
                 name: '获取启动参数',
                 url: 'get-launch-options-sync',
               },
+              // #ifndef WEB
+              {
+                name: 'env环境变量',
+                url: 'env'
+              },
+              // #endif
               // #ifdef APP-ANDROID
               {
                 name: '退出应用',
                 url: 'exit',
-              },
+              }
               // #endif
             ] as Page[],
           },
@@ -108,6 +116,10 @@
               {
                 name: '设置导航条颜色',
                 url: 'set-navigation-bar-color',
+              },
+              {
+                name: '设置页面容器背景色',
+                url: 'set-page-backgroundColorContent',
               },
               {
                 name: '设置TabBar',
@@ -160,12 +172,10 @@
                 api: ["Element.takeSnapshot"]
               },
               // #endif
-              // #ifdef APP-ANDROID
               {
                 name: 'element大小变化监听',
                 url: 'resize-observer'
               },
-              // #endif
               {
                 name: 'node节点',
                 url: 'nodes-info',
@@ -197,6 +207,13 @@
                 url: 'toast',
                 api: ["showToast"]
               }
+              // #ifdef APP
+              ,{
+                name: '主题切换',
+                url: 'theme-change',
+                api: ["setAppTheme","onOsThemeChange","offOsThemeChange","onAppThemeChange","offAppThemeChange"]
+              }
+              // #endif
             ] as Page[],
           },
           {
@@ -271,10 +288,13 @@
                 url: 'install-apk'
               },
               // #endif
-              /* {
+              // #ifdef WEB
+              {
                 name: "打电话",
                 url: "make-phone-call",
               },
+              // #endif
+              /*
               {
                 name: "震动",
                 url: "vibrate",
@@ -330,7 +350,7 @@
             name: '媒体',
             pages: [
               {
-                name: "拍照和相册选择",
+                name: "拍摄图片或从相册中选择图片",
                 url: 'choose-image'
               },
               {
@@ -344,35 +364,60 @@
                 url: 'save-image-to-photos-album'
               },
               // #endif
-              /* {
-                name: "图片选择和拍照",
-                url: "image",
-                enable: false
-              },{
+              // #ifdef APP-ANDROID || WEB
+              {
+                name: "获取图片信息",
+                url: 'get-image-info'
+              },
+              // #endif
+              // #ifdef APP-ANDROID
+              {
+                name: "压缩图片",
+                url: 'compress-image'
+              },
+              // #endif
+              {
+                name: "拍摄视频或从相册中选择视频",
+                url: 'choose-video'
+              },
+              // #ifdef APP
+              {
+                name: "保存视频到相册",
+                url: 'save-video-to-photos-album'
+              },
+              // #endif
+              // #ifdef APP-ANDROID || WEB
+              {
+                name: "获取视频信息",
+                url: 'get-video-info'
+              },
+              // #endif
+              // #ifdef APP-ANDROID
+              {
+                name: "压缩视频",
+                url: 'compress-video'
+              },
+              // #endif
+              // #ifdef WEB
+              {
                 name: "音频",
                 url: "inner-audio",
               },
-              {
-                name: "录音",
-                url: "voice",
-              },
+              // #endif
+              /*
               {
                 name: "背景音频",
                 url: "background-audio",
               },
               {
-                name: "视频选择和拍照",
-                url: "video",
-                enable: false
+                name: "录音",
+                url: "rec",
               },
               {
                 name: "文件",
                 url: "file",
               },
-              {
-                name: "保存媒体到本地",
-                url: "save-media",
-              }, */
+              */
             ] as Page[],
           },
           {
@@ -383,6 +428,12 @@
                 name: '获取当前位置',
                 url: 'get-location',
               },
+              // #ifdef WEB
+              {
+                name: "地图控制",
+                url: "map",
+              },
+              // #endif
               /* {
                 name: "使用地图查看位置",
                 url: "open-location",
@@ -390,10 +441,6 @@
               {
                 name: "使用地图选择位置",
                 url: "choose-location",
-              },
-              {
-                name: "地图控制",
-                url: "map",
               },
               {
                 name: "地图搜索",
@@ -412,7 +459,7 @@
               }
             ] as Page[],
           },
-          // #ifdef APP-ANDROID || APP-IOS
+          // #ifdef APP
           {
             id: 'file',
             name: '文件',
@@ -420,7 +467,7 @@
               {
                 name: 'fileSystemManager文件管理',
                 url: 'get-file-system-manager'
-              },
+              }
             ] as Page[],
           },
           // #endif
@@ -451,12 +498,10 @@
             id: 'login',
             name: '登录与认证',
             pages: [
-          // #ifdef APP-ANDROID
               {
                 name: '一键登录',
                 url: 'get-univerify-manager',
               },
-          // #endif
               {
                 name: '实人认证',
                 url: 'facial-recognition-verify',
@@ -464,6 +509,22 @@
             ] as Page[],
           },
           // #endif
+          {
+            id: "payment",
+            name: "支付",
+            pages: [
+              // #ifndef WEB
+              {
+                name: "简易支付示例",
+                url: "request-payment",
+              },
+              // #endif
+              {
+                name: "uni-pay支付示例",
+                url: "request-payment-uni-pay",
+              }
+            ] as Page[],
+          },
           // #ifdef APP-ANDROID
           {
             id: 'ad',
@@ -473,6 +534,13 @@
                 name: '激励视频广告',
                 url: 'rewarded-video-ad',
               }
+              /* {
+                id: "full-screen-video-ad",
+                url: "full-screen-video-ad",
+                name: "全屏视频广告",
+                enable: false,
+                pages: [] as Page[]
+              }, */
             ] as Page[],
           },
           {
@@ -486,56 +554,7 @@
             ] as Page[]
           },
           // #endif
-          // #ifdef APP-ANDROID
-          {
-            id: "payment",
-            name: "支付",
-            pages: [
-              {
-                name: "简易支付示例",
-                url: "request-payment",
-              },
-              {
-                name: "uni-pay支付示例",
-                url: "request-payment-uni-pay",
-              }
-            ] as Page[],
-          },
-          // #endif
-          // #ifdef WEB
-          {
-            id: "payment",
-            name: "支付",
-            pages: [
-              {
-                name: "uni-pay支付示例",
-                url: "request-payment-uni-pay",
-              }
-            ] as Page[],
-          },
-          // #endif
           /*
-          {
-            id: "full-screen-video-ad",
-            url: "full-screen-video-ad",
-            name: "全屏视频广告",
-            enable: false,
-            pages: [] as Page[]
-          },
-          {
-            id: "login",
-            name: "登录",
-            pages: [
-              {
-                name: "登录",
-                url: "login",
-              },
-              {
-                name: "获取用户信息",
-                url: "get-user-info",
-              },
-            ] as Page[],
-          },
           {
             id: "share",
             name: "分享",
@@ -552,6 +571,15 @@
         arrowDownIcon: '/static/icons/arrow-down.png',
         arrowRightIcon: '/static/icons/arrow-right.png',
       }
+    },
+    onLoad() {
+      // console.log("API page onLoad")
+    },
+    onShow() {
+      // console.log("API page onShow")
+    },
+    onHide() {
+      // console.log("API page onHide")
     },
     methods: {
       goDetailPage(e : Page) {

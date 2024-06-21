@@ -19,6 +19,14 @@
   <!-- #endif -->
 </template>
 <script>
+
+  // #ifdef APP
+  import {
+    testInovkeDownloadFile,
+    CommonOptions
+  } from '@/uni_modules/test-invoke-network-api'
+  // #endif
+
   export default {
     data() {
       return {
@@ -71,6 +79,19 @@
         });
       },
 
+      jest_downloadFile_with_uni_env() {
+        uni.downloadFile({
+          url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+          filePath: `${uni.env.CACHE_PATH}/a/b/`,
+          success: () => {
+            this.jest_result = true
+          },
+          fail: () => {
+            this.jest_result = false
+          }
+        });
+      },
+
       jest_set_cookie(){
         uni.request({
           url: "https://request.dcloud.net.cn/api/http/header/setCookie",
@@ -112,6 +133,32 @@
           },
           fail: () => {
             this.jest_result = needCookie ? false : true;
+          }
+        });
+      },
+      jest_uts_module_invoked(){
+        // #ifdef APP
+        testInovkeDownloadFile({
+          success:(res: any)=>{
+            console.log("success :", res);
+            this.jest_result = true
+          },
+          fail:(err: any)=>{
+            console.log("fail :", err);
+            this.jest_result = false
+          }
+        } as CommonOptions)
+        // #endif
+      },
+      jest_special_characters_download(){
+        uni.downloadFile({
+          url: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
+          success: (res: DownloadFileSuccess) => {
+            this.jest_result = true;
+            console.log("res :", res);
+          },
+          fail: () => {
+            this.jest_result = false;
           }
         });
       }

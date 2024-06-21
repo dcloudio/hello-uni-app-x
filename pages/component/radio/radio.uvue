@@ -34,6 +34,7 @@
           },
         ] as ItemType[],
         current: 0,
+        eventTest: false,
 
         value: '',
         text: '未选中',
@@ -52,8 +53,16 @@
         iconColor_input: "#ffffff"
       }
     },
+
     methods: {
       radioChange(e : UniRadioGroupChangeEvent) {
+
+        // 自动化测试
+        console.log('test: radio event detail', e.target?.tagName, e.type)
+        if ((e.target?.tagName ?? '') == 'RADIO-GROUP' && e.type == 'change') {
+          this.eventTest = true
+        }
+
         const selected = this.items.find((item) : boolean => {
           return item.value == e.detail.value
         })
@@ -63,6 +72,7 @@
         })
       },
       testChange(e : UniRadioGroupChangeEvent) {
+
         this.value = e.detail.value
       },
       radio_click() { console.log("组件被点击时触发") },
@@ -119,7 +129,8 @@
           <text class="uni-title-text"> 默认样式 </text>
         </view>
         <radio-group class="uni-flex uni-row radio-group" @change="testChange" style="flex-wrap: wrap">
-          <radio value="r" :checked="checked" :color="color" style="margin-right: 15px" class="radio r">选中
+          <radio id="trigger-change" value="r" :checked="checked" :color="color" style="margin-right: 15px"
+            class="radio r">选中
           </radio>
           <radio value="r1" style="margin-right: 15px" class="radio r1">{{
             text
@@ -150,7 +161,7 @@
       </view>
       <view class="uni-list uni-common-pl">
         <radio-group @change="radioChange" class="radio-group">
-          <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.value"
+          <radio class="uni-list-cell uni-list-cell-pd radio recommand" v-for="(item, index) in items" :key="item.value"
             :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
             :checked="index === current">
             {{ item.name }}

@@ -150,7 +150,7 @@ describe('component-native-input', () => {
   it("maxlength", async () => {
     const input = await page.$('#uni-input-maxlength');
     let str = "";
-    for(let i = 0;i < 200;i++){
+    for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
     await page.setData({
@@ -172,10 +172,42 @@ describe('component-native-input', () => {
     })
   })
 
+  it("keyboard height changed after page back", async () => {
+    if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('web')) {
+      expect(1).toBe(1)
+      return
+    }
+    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+      expect(1).toBe(1)
+      return
+    }
+    await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
+    await page.waitFor(2000);
+    await program.navigateBack()
+    await page.waitFor(2000);
+    await page.setData({
+      focusedForKeyboardHeightChangeTest: true
+    })
+    await page.waitFor(2000);
+
+    const keyboardHeight = await page.data('keyboardHeight');
+    console.log("keyboardHeight :", keyboardHeight);
+    expect(keyboardHeight).toBeGreaterThan(25)
+    //reset
+    await page.setData({
+      focusedForKeyboardHeightChangeTest: false,
+      keyboardHeight: 0
+    })
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
+  })
+  it('both set modelValue and value', async () => {
+    const input2 = await page.$('#both-model-value');
+    expect(await input2.value()).toEqual("123")
   })
 });

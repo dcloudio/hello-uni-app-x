@@ -11,6 +11,16 @@ describe('ExtApi-GetAppBaseInfo', () => {
   const numberProperties = [
     'uniCompilerVersionCode', 'uniRuntimeVersionCode'
   ]
+  const booleanProperties = [
+    'isUniAppX'
+  ]
+  const requiredProperties = [
+    'uniCompilerVersion',
+    'uniCompilerVersionCode',
+    'uniRuntimeVersion',
+    'uniRuntimeVersionCode',
+    'isUniAppX'
+  ]
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
@@ -28,6 +38,19 @@ describe('ExtApi-GetAppBaseInfo', () => {
         expect(value).not.toBeNull();
         expect(value).toBeGreaterThanOrEqual(3.90);
       }
+      if (booleanProperties.indexOf(key) != -1) {
+        expect(value).not.toBeNull();
+        expect(typeof value).toBe('boolean');
+      }
+      if (key == "appTheme") {
+        expect(['light', 'dark', 'auto']).toContain(value);
+      }
     }
   });
+  it('Check GetSystemInfoSync required properties', async () => {
+    for (let i = 0; i < requiredProperties.length; i++) {
+      const key = requiredProperties[i]
+      expect(`${key} not null: ${res[key] != null}`).toBe(`${key} not null: true`)
+    }
+  })
 });

@@ -1,7 +1,8 @@
 <template>
   <view>
-    <!-- #ifdef UNI-APP-X -->
+    <!-- #ifdef APP -->
     <button class="button" @click="openSchema('https://uniapp.dcloud.io/uni-app-x')">使用外部浏览器打开指定URL</button>
+    <!-- #endif -->
     <!-- #ifdef APP-ANDROID -->
     <button class="button" @click="openSchema('market://details?id=com.tencent.mm')">使用应用商店打开指定App</button>
     <button class="button" @click="openSchema('androidamap://viewMap?sourceApplication=Hello%20uni-app&poiname=DCloud&lat=39.9631018208&lon=116.3406135236&dev=0')">
@@ -13,6 +14,12 @@
     <button class="button" @click="openSchema('http://maps.apple.com/?q=数字天堂公司&sll=39.9631018208,116.3406135236&z=10&t=s')">打开 iOS 地图坐标</button>
     <!-- apple协议：https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html -->
     <!-- #endif -->
+    <!-- #ifdef WEB -->
+    <view class="tip">
+    <text>仅Android/iOS设备的浏览器中支持使用此功能，需先安装“Hello uni-app x”应用，如未安装请前往以下网页安装：</text>
+    <text class="link" @click="openSchema('https://hellouniappx.dcloud.net.cn/')">https://hellouniappx.dcloud.net.cn/</text>
+    </view>
+    <button class="button" @click="openSchema('hellouniappx://')">启动 Hello uni-app x 应用</button>
     <!-- #endif -->
   </view>
 </template>
@@ -24,5 +31,13 @@ import { openSchema } from '@/uni_modules/uts-openSchema'
 <style>
   .button {
     margin: 15px;
+  }
+  .tip {
+    padding: 8px;
+  }
+  .link {
+    color: #7A7E83;
+    font-size: 14px;
+    line-height: 20px;
   }
 </style>

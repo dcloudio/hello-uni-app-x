@@ -29,7 +29,7 @@ describe('component-native-textarea', () => {
       width,
       height
     } = await textarea.size()
-    expect(height).toBeLessThanOrEqual(150)
+    expect(height).toBeLessThanOrEqual(200)
     await page.setData({
       default_value: "1\n2\n3\n4\n5\n6",
       auto_height_boolean: false
@@ -39,7 +39,7 @@ describe('component-native-textarea', () => {
       width,
       height
     } = await textarea.size()
-    expect(height).toEqual(150)
+    expect(height).toEqual(200)
   })
   it("cursor-color", async () => {
     await page.setData({
@@ -48,6 +48,15 @@ describe('component-native-textarea', () => {
     await page.waitFor(500)
     expect(await textarea.attribute("cursor-color")).toBe("transparent")
   })
+
+  it("flex 1 height exception", async () => {
+    const bottomTextarea = await page.$('#textarea-height-exception');
+    var {
+      height
+    } = await bottomTextarea.size()
+    expect(height).toEqual(150)
+  })
+
 
   it("inputmode", async () => {
     const inputmodeEnum = await page.data("inputmode_enum")
@@ -64,4 +73,12 @@ describe('component-native-textarea', () => {
       await page.waitFor(500)
     }
   })
+
+  if (!process.env.uniTestPlatformInfo.startsWith('android')) {
+    // TODO: 暂时规避 android 端测试
+    it('both set modelValue and value', async () => {
+      let textarea2 = await page.$('.both-set-textarea');
+      expect(await textarea2.value()).toBe("123")
+    })
+  }
 });

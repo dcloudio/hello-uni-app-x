@@ -1,0 +1,65 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>
+      </view>
+      <video class="video" :src="absoluteVideoPath" :controls="true"></video>
+      <text class="margin-top-10">{{absoluteVideoInfo}}</text>
+      <view class="uni-btn-v">
+        <button type="primary" @click="chooseVideo">拍摄视频或从相册中选择视频</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: "getVideoInfo",
+        absoluteVideoPath: "",
+        absoluteVideoInfo: "",
+      }
+    },
+    methods: {
+      chooseVideo() {
+        uni.chooseVideo({
+          compressed: false,
+          success: (res) => {
+            this.absoluteVideoPath = res.tempFilePath;
+            uni.getVideoInfo({
+              src: res.tempFilePath,
+              success: (_res) => {
+                console.log("getVideoInfo success", JSON.stringify(res));
+                this.absoluteVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+              },
+              fail: (err) => {
+                uni.showModal({
+                  title: "获取视频信息失败",
+                  content: JSON.stringify(err),
+                  showCancel: false
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+</script>
+
+<style>
+  .video {
+    align-self: center;
+  }
+
+  .margin-top-10 {
+    margin-top: 10px;
+  }
+</style>

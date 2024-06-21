@@ -1,10 +1,5 @@
 describe('api-resize-observer', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('android')) {
-    it('dummyTest', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+
 
   let page
   beforeAll(async () => {
@@ -14,7 +9,7 @@ describe('api-resize-observer', () => {
 
   it('check_resize-observer', async () => {
     await page.waitFor(600)
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
 

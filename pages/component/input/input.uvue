@@ -213,7 +213,7 @@
             v-if="keyboardHeightChangeEventDetail">{{keyboardHeightChangeEventDetail}}</text>
         </view>
         <view class="input-wrapper">
-          <input class="uni-input" @keyboardheightchange="onKeyborardHeightChange" />
+          <input class="uni-input" @keyboardheightchange="onKeyborardHeightChange" :focus="focusedForKeyboardHeightChangeTest"/>
         </view>
       </view>
 
@@ -236,6 +236,16 @@
           <input class="uni-input" placeholder="请输入密码" :password="showPassword" />
           <image class="uni-icon" :src="!showPassword ? '/static/icons/eye-active.png' : '/static/icons/eye.png'"
             @click="changePassword"></image>
+        </view>
+      </view>
+
+      <view>
+        <view class="uni-title">
+          <text class="uni-title-text">同时存在 v-model 和 value</text>
+        </view>
+        <view class="input-wrapper">
+          <input id="both-model-value" class="uni-input" v-model='demoValue' value='456'  />
+
         </view>
       </view>
     </view>
@@ -270,6 +280,9 @@
         inputPasswordValue: "cipher",
         inputFocusKeyBoardChangeValue: true,
         holdKeyboard: false,
+        keyboardHeight: 0,
+        focusedForKeyboardHeightChangeTest: false,
+        demoValue: '123'
       }
     },
     methods: {
@@ -328,6 +341,7 @@
       onKeyborardHeightChange: function (event : UniInputKeyboardHeightChangeEvent) {
         console.log("键盘高度发生变化", JSON.stringify(event.detail));
         this.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
+        this.keyboardHeight = event.detail.height;
       },
       test_check_input_value() : number {
         return this.onMaxLengthInputValue.length

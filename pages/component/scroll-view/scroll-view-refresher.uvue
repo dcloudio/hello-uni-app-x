@@ -13,13 +13,25 @@
   </view>
 </template>
 <script>
+  type RefresherEventTest = {
+    type: string;
+    target: UniElement | null;
+    currentTarget: UniElement | null;
+    dy:number;
+  }
   export default {
     data() {
       return {
         scrollData: [] as Array<string>,
         refresherTriggered: false,
         refresherrefresh: false,
-        showScrollbar: false
+        refresherrefreshTimes: 0,
+        showScrollbar: false,
+        // 自动化测试使用
+        refresherrefreshTest:"",
+        onRefresherabortTest:"",
+        onRefresherrestoreTest:"",
+        onRefresherpullingTest:""
       };
     },
     onLoad() {
@@ -31,27 +43,72 @@
     },
 
     methods: {
-      onRefresherrefresh(_ : RefresherEvent) {
+      onRefresherrefresh(e : UniRefresherEvent) {
         this.refresherrefresh = true
-        console.log("onRefresherrefresh--------------下拉刷新触发")
+        console.log("onRefresherrefresh------下拉刷新触发")
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget,
+          dy:e.detail.dy,
+        } as RefresherEventTest,'refresherrefresh')
         this.refresherTriggered = true
+        this.refresherrefreshTimes++
         setTimeout(() => {
           this.refresherTriggered = false
         }, 1500)
-
       },
-      onRefresherabort(_ : RefresherEvent) {
+      onRefresherabort(e : UniRefresherEvent) {
         console.log("onRefresherabort------下拉刷新被中止")
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget,
+          dy:e.detail.dy,
+        } as RefresherEventTest,'refresherabort')
       },
-      onRefresherrestore(_ : RefresherEvent) {
+      onRefresherrestore(e : UniRefresherEvent) {
         this.refresherrefresh = false
         console.log("onRefresherrestore------下拉刷新被复位")
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget,
+          dy:e.detail.dy,
+        } as RefresherEventTest,'refresherrestore')
       },
-      onRefresherpulling(e : RefresherEvent) {
+      onRefresherpulling(e : UniRefresherEvent) {
         console.log("onRefresherpulling------拉刷新控件被下拉-dy=" + e.detail.dy)
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget,
+          dy:e.detail.dy,
+        } as RefresherEventTest,'refresherpulling')
       },
-      onScrolltolower(e : ScrollToLowerEvent) {
+      onScrolltolower(e : UniScrollToLowerEvent) {
         console.log("onScrolltolower 滚动到底部-----" + e.detail.direction)
+      },
+      // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+      checkEventTest(e:RefresherEventTest, eventName:String){
+        const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement && e.dy>0;
+        const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+        switch (eventName){
+          case 'refresherrefresh':
+            this.refresherrefreshTest = result
+            break;
+          case 'refresherpulling':
+            this.onRefresherpullingTest =  result
+            break;
+          case 'refresherrestore':
+            this.onRefresherrestoreTest =  result
+            break;
+          case 'refresherabort':
+            this.onRefresherabortTest =  result
+            break;
+          default:
+            break;
+        }
       }
     }
   };

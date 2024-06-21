@@ -7,12 +7,13 @@ describe('ExtApi-GetBatteryInfo', () => {
     })
     return
   }
-  if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })
     return
   }
+
   let page;
   let res;
 
@@ -22,7 +23,7 @@ describe('ExtApi-GetBatteryInfo', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
-    res = await uni.getBatteryInfo();
+    res = await page.data();
   });
 
   it('Check properties', async () => {

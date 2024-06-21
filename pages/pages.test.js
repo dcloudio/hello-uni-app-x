@@ -11,7 +11,9 @@ const pages = [
   // '/pages/component/image/image-path', // 网络资源加载，单独测试例截图
   '/pages/component/image/image',
   // '/pages/component/input/input', // 自动获取焦点，单独测试例截图
-  // '/pages/component/list-view/list-view',
+  '/pages/component/list-view/list-view',
+  '/pages/component/scroll-view/scroll-view-custom-refresher-props',
+  '/pages/component/scroll-view/scroll-view-refresher-props',
   '/pages/component/navigator/navigate',
   '/pages/component/navigator/navigator',
   '/pages/component/navigator/redirect',
@@ -46,6 +48,7 @@ const pages = [
   '/pages/CSS/border/border-top',
   '/pages/CSS/border/border-width',
   '/pages/CSS/border/border',
+  '/pages/CSS/border/dynamic-border',
   // '/pages/CSS/box-shadow/box-shadow',
   '/pages/CSS/display/flex',
   '/pages/CSS/display/none',
@@ -91,6 +94,7 @@ const pages = [
   '/pages/CSS/transform/scale',
   '/pages/CSS/transform/translate',
   // '/pages/CSS/transition/transition',
+  '/pages/CSS/pointer-events/pointer-events',
 
   // tabBar  //改动频繁，不再测试
   // '/pages/tabBar/API',
@@ -100,18 +104,18 @@ const pages = [
 
   // template
   // '/pages/template/calendar/calendar', // 动态内容
-  // '/pages/template/custom-refresher/custom-refresher',
-  // '/pages/template/custom-tab-bar/custom-tab-bar',
+  '/pages/template/custom-refresher/custom-refresher',
+  '/pages/template/custom-tab-bar/custom-tab-bar',
   // '/pages/template/drop-card/drop-card',
-  // '/pages/template/half-screen/half-screen',
+  '/pages/template/half-screen/half-screen',
   // '/pages/template/list-news/list-news', // 网络资源加载，单独测试例截图
   // '/pages/template/long-list/long-list', // 动态内容
-  // '/pages/template/navbar-lite/navbar-lite',
-  // '/pages/template/pull-zoom-image/pull-zoom-image',
-  // '/pages/template/scroll-fold-nav/scroll-fold-nav',
+  '/pages/template/navbar-lite/navbar-lite',
+  '/pages/template/pull-zoom-image/pull-zoom-image',
+  '/pages/template/scroll-fold-nav/scroll-fold-nav',
   // '/pages/template/scroll-sticky/scroll-sticky',
-  // '/pages/template/swiper-list/swiper-list',
-  // '/pages/template/swiper-list2/swiper-list2',
+  '/pages/template/swiper-list/swiper-list',
+  '/pages/template/swiper-list2/swiper-list2',
   // '/pages/template/swiper-vertical-video/swiper-vertical-video'
 
   // api
@@ -122,20 +126,8 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 if ((platformInfo.startsWith('android') || platformInfo.startsWith('ios')) && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
   // 规避 web 端不支持页面
   pages.push(
-    "/pages/component/list-view/list-view",
-    "/pages/CSS/transition/transition",
-    '/pages/template/swiper-list/swiper-list',
-    '/pages/template/swiper-list2/swiper-list2',
     '/pages/API/element-draw/element-draw',
-    '/pages/template/navbar-lite/navbar-lite',
-    '/pages/template/pull-zoom-image/pull-zoom-image',
-    '/pages/template/scroll-fold-nav/scroll-fold-nav',
     '/pages/template/scroll-sticky/scroll-sticky',
-    '/pages/template/custom-refresher/custom-refresher',
-    '/pages/template/custom-tab-bar/custom-tab-bar',
-    '/pages/template/half-screen/half-screen',
-    '/pages/component/scroll-view/scroll-view-custom-refresher-props',
-    '/pages/component/scroll-view/scroll-view-refresher-props',
   )
 }
 

@@ -6,9 +6,10 @@ function getData(key = '') {
 }
 
 let page
+let originEventCallbackNum
 beforeAll(async () => {
   page = await program.reLaunch('/pages/component/radio/radio')
-  await page.waitFor(2000);
+  await page.waitFor(2000)
 })
 
 describe('Radio.uvue', () => {
@@ -64,5 +65,16 @@ describe('Radio.uvue', () => {
       disabled: false,
     })
     expect(await radio.attribute('disabled')).toBe(false + '')
+  })
+  it('trigger UniRadioGroupChangeEvent', async () => {
+    const { current } = await page.data()
+
+    const nextCurrent = current == 0 ? 1 : 0
+
+    const elements = await page.$$('.recommand')
+    await elements[nextCurrent].tap()
+    await page.waitFor(500)
+    const { eventTest } = await page.data()
+    expect(eventTest).toEqual(true)
   })
 })

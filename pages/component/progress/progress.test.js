@@ -11,6 +11,10 @@ beforeAll(async () => {
   await page.waitFor(2000);
 })
 
+beforeEach(async () => {
+  await page.callMethod('setEventCallbackNum', 0)
+})
+
 describe('Progress.uvue', () => {
   it('percent', async () => {
     await page.callMethod('setProgress')
@@ -79,5 +83,22 @@ describe('Progress.uvue', () => {
       backgroundColor: "#007aff"
     })
     expect(await el.attribute('background-color')).toEqual('#007aff')
+  })
+  it('trigger UniProgressActiveendEvent', async () => {
+
+    if (
+      process.env.uniTestPlatformInfo.startsWith('web')
+    ) {
+      expect(1).toBe(1)
+      return
+    }
+
+    await page.setData({
+      pgList: [21, 40, 60, 80]
+    })
+    // 动画执行
+    await page.waitFor(1000);
+    const eventCallbackNum = await page.callMethod('getEventCallbackNum')
+    expect(eventCallbackNum).toBe(3)
   })
 })
