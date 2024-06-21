@@ -74,13 +74,10 @@ describe('component-native-textarea', () => {
     }
   })
 
-  if (!process.env.uniTestPlatformInfo.startsWith('android')) {
-    // TODO: 暂时规避 android 端测试
-    it('both set modelValue and value', async () => {
-      let textarea2 = await page.$('.both-set-textarea');
-      expect(await textarea2.value()).toBe("123")
-    })
-  }
+  it('both set modelValue and value', async () => {
+    const textarea2 = await page.$('#both-model-value');
+    expect(await textarea2.value()).toEqual("123")
+  })
 
   it("maxlength", async () => {
     const input = await page.$('#textarea-instance-maxlength');
