@@ -111,17 +111,20 @@ describe('component-native-video', () => {
       await page.waitFor(5000);
       await program.adbCommand('input tap 10 10');
       await page.waitFor(100);
-      expect(await page.data('eventControlstoggle')).toEqual({
-        tagName: 'VIDEO',
-        type: 'controlstoggle',
-        show: true
-      });
+      const infos = process.env.uniTestPlatformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+        expect(await page.data('eventControlstoggle')).toEqual({
+          tagName: 'VIDEO',
+          type: 'controlstoggle',
+          show: true
+        });
+      }
       const res = await program.adbCommand('wm size');
       const width = res.data.split(' ').at(-1).split('x')[0];
       const height = res.data.split(' ').at(-1).split('x')[1];
       const res2 = await program.adbCommand('wm density');
       const scale = res2.data.split(' ').at(-1) / 160;
-      // android模拟器全屏时会弹出系统提示框，影响测试screenX、screenY
       expect(await page.data('eventFullscreenclick')).toEqual({
         tagName: 'VIDEO',
         type: 'fullscreenclick',
