@@ -8,7 +8,7 @@ describe('web-map', () => {
     return
   }
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/map/map')
+    page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
     // 等待地图加载完成
     await page.waitFor(4000);
