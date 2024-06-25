@@ -1,11 +1,11 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-
 describe('component-native-input', () => {
-
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIos = platformInfo.startsWith('ios')
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input')
-    await page.waitFor(3000);
+    await page.waitFor('view');
   });
 
   // it("beforeAllTestScreenshot", async () => {
@@ -209,5 +209,56 @@ describe('component-native-input', () => {
   it('both set modelValue and value', async () => {
     const input2 = await page.$('#both-model-value');
     expect(await input2.value()).toEqual("123")
+  })
+  it('digit input .', async () => {
+    // ios 非 webview 模式规避该测试
+    // ios input type='digit' 输入 . 实际得到 。,只有系统软键盘才可以输入 .
+    if(isIos && !process.env.UNI_AUTOMATOR_APP_WEBVIEW){
+      return
+    }
+    await page.setData({
+      focus: false,
+      digitValue: '1'
+    })
+    await program.pageScrollTo(0)
+    const digitInput = await page.$('#uni-input-type-digit')
+    expect(await digitInput.value()).toEqual('1')
+    if (isAndroid) {
+      if (platformInfo.indexOf('6') != -1 && platformInfo.indexOf('x86') == -1) {
+        await program.tap({
+          x: 200,
+          y: 850,
+        })
+      } else if (platformInfo.indexOf('12') != -1) {
+        await program.tap({
+          x: 200,
+          y: 1500,
+        })
+      } else {
+        await program.tap({
+          x: 200,
+          y: 1200,
+        })
+      }
+    } else if (isIos) {
+      await program.tap({
+        x: 200,
+        y: 450,
+      })
+    } else {
+      await program.tap({
+        x: 200,
+        y: 400,
+      })
+    }
+    await page.waitFor(1000)
+    await program.keyboardInput('.2')
+    await page.waitFor(500)
+    await program.tap({
+      x: 0,
+      y: 0,
+    })
+    await page.waitFor(500)
+    expect(await digitInput.value()).toEqual('1.2');
   })
 });
