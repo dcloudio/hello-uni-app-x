@@ -1,0 +1,48 @@
+<template>
+  <view class="page">
+    <page-head :title="title"></page-head>
+    <view class="page-body">
+      <!-- 如何使用浏览器内置 element -->
+      <text>使用浏览器内置的 a 标签</text>
+      <view ref="html-element-area"></view>
+
+      <text class="html-tips">HTML语法</text>
+      <text class="html-tips-link">{{linkTips}}</text>
+    </view>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: '浏览器 element',
+        linkTips: `<a href="https://doc.dcloud.net.cn/uni-app-x/" target="uni-app-x">uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎</a>`
+      }
+    },
+    onReady() {
+      const element = this.$refs['html-element-area'] as HTMLElement;
+      const linkElement = document.createElement('a') as HTMLLinkElement;
+      linkElement.href = 'https://doc.dcloud.net.cn/uni-app-x/';
+      linkElement.innerText = 'uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎';
+      linkElement.setAttribute('target', "uni-app-x");
+      element.appendChild(linkElement);
+    }
+  }
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .html-tips {
+    margin-top: 15px;
+  }
+
+  .html-tips-link {
+    font-size: 12px;
+    margin-top: 5px;
+    opacity: .7;
+  }
+</style>
