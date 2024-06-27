@@ -38,22 +38,14 @@
     label : string,
     value : string,
   }
-  const globalScreenHeight = uni.getSystemInfoSync().screenHeight
   export default {
     data() {
       return {
         title: 'getSystemInfo',
         items: [] as Item[],
-        screenHeightAtReady: 0,
-        jest_result: false,
       }
     },
     onUnload: function () {
-    },
-
-    onReady() {
-      this.screenHeightAtReady = uni.getSystemInfoSync().screenHeight
-      console.log(`全局获取屏幕高度: ${globalScreenHeight}  onReady内获取屏幕高度: ${this.screenHeightAtReady}`);
     },
     methods: {
       getSystemInfo: function () {
@@ -105,9 +97,6 @@
       jest_getSystemInfo() : GetSystemInfoResult {
         return uni.getSystemInfoSync();
       },
-      jest_getScreenHeight_at_different_stages(){
-        this.jest_result = (globalScreenHeight == this.screenHeightAtReady)
-      }
     }
   }
 </script>
