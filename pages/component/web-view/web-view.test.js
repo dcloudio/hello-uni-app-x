@@ -34,10 +34,47 @@ describe('component-native-web-view', () => {
       await page.callMethod('reload');
     });
 
-    it('test event loading load', async () => {
+    it('test touch event', async () => {
       await page.setData({
         autoTest: true
       });
+      const info = await page.callMethod('getWindowInfo');
+      await program.tap({
+        x: 1,
+        y: (info.statusBarHeight + 44) * info.pixelRatio + 1
+      });
+      await page.waitFor(100);
+      expect(await page.data('eventTouchstart')).toEqual({
+        clientX: 1,
+        clientY: 1
+      });
+      expect(await page.data('eventTap')).toEqual({
+        clientX: 1,
+        clientY: 1
+      });
+      await page.setData({
+        pointerEvents: 'none'
+      });
+      await page.waitFor(100);
+      await program.tap({
+        x: 10,
+        y: (info.statusBarHeight + 44) * info.pixelRatio + 10
+      });
+      await page.waitFor(100);
+      expect(await page.data('eventTouchstart')).toEqual({
+        clientX: 1,
+        clientY: 1
+      });
+      expect(await page.data('eventTap')).toEqual({
+        clientX: 1,
+        clientY: 1
+      });
+      await page.setData({
+        pointerEvents: 'auto'
+      });
+    });
+
+    it('test event loading load', async () => {
       await page.callMethod('reload');
       await page.waitFor(100);
       expect(await page.data('eventLoading')).toEqual({
