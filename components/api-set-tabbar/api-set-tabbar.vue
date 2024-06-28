@@ -114,7 +114,7 @@
             backgroundColor: '#F8F8F8',
             borderStyle: 'black',
             // 新增 borderColor，优先级高于 borderStyle
-            borderColor:'red'
+            // borderColor:'red'
           })
         } else {
           uni.setTabBarStyle({
