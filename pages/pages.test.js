@@ -291,7 +291,6 @@ if (isApp && !isAppWebview) {
 
 if (isAndroid && !isAppWebview) {
   pages.push(
-    '/pages/component/canvas/canvas',
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
     '/pages/API/get-image-info/get-image-info',
@@ -321,6 +320,8 @@ if (isWeb) {
     '/pages/API/inner-audio/inner-audio-path',
     '/pages/API/clipboard/clipboard',
     '/pages/API/on-compass-change/on-compass-change',
+    '/pages/component/canvas/canvas',
+    '/pages/component/canvas/ball',
     '/pages/template/browser-element/browser-element',
   )
 }
