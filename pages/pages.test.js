@@ -321,7 +321,7 @@ if (isWeb) {
     '/pages/API/inner-audio/inner-audio-path',
     '/pages/API/clipboard/clipboard',
     '/pages/API/on-compass-change/on-compass-change',
-    '/pages/template/browser-canvas/browser-canvas',
+    '/pages/template/browser-element/browser-element',
   )
 }
 
