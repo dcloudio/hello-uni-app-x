@@ -7,7 +7,7 @@ describe('API-toast', () => {
 
 
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/toast/toast')
+    page = await program.reLaunch('/pages/API/show-toast/show-toast')
     await page.waitFor(600);
   });
 

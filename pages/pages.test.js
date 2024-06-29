@@ -73,15 +73,15 @@ const pages = [
   // 动态内容
   // '/pages/component/web-view/web-view',
   // 依赖加载完成回调，单独测试例截图
-  // '/pages/component/web-view-local/web-view-local',
+  // '/pages/component/web-view/web-view-local',
   // 动态内容
-  // '/pages/component/unicloud-db-contacts/list',
-  '/pages/component/unicloud-db-contacts/add',
+  // '/pages/component/unicloud-db/unicloud-db',
+  '/pages/component/unicloud-db/add',
   // 动态内容
-  // '/pages/component/unicloud-db-contacts/edit',
+  // '/pages/component/unicloud-db/edit',
   // 动态内容
-  // '/pages/component/unicloud-db-contacts/detail',
-  '/pages/component/mixin-datacom/mixin-datacom',
+  // '/pages/component/unicloud-db/detail',
+  '/pages/component/datacom/datacom',
   // 单独测试例截图
   // '/pages/component/general-attribute/general-attribute',
   '/pages/component/general-event/general-event',
@@ -124,12 +124,12 @@ const pages = [
   '/pages/API/nodes-info/nodes-info',
   '/pages/API/storage/storage',
   // 单独测试例截图
-  // '/pages/API/action-sheet/action-sheet',
+  // '/pages/API/show-action-sheet/show-action-sheet',
   // 单独测试例截图
-  // '/pages/API/modal/modal',
-  '/pages/API/loading/loading',
+  // '/pages/API/show-modal/show-modal',
+  '/pages/API/show-loading/show-loading',
   // 单独测试例截图
-  // '/pages/API/toast/toast',
+  // '/pages/API/show-toast/show-toast',
   // 单独测试例截图
   // '/pages/API/load-font-face/load-font-face',
   // 单独测试例截图
@@ -141,11 +141,11 @@ const pages = [
   '/pages/API/request/request',
   '/pages/API/upload-file/upload-file',
   '/pages/API/download-file/download-file',
-  '/pages/API/websocket-socketTask/websocket-socketTask',
+  '/pages/API/websocket/websocket-socketTask',
   // 页面销毁时会关闭socket连接，所以规避
-  // '/pages/API/websocket-global/websocket-global',
-  '/pages/API/unicloud-call-function/unicloud-call-function',
-  '/pages/API/unicloud-import-object/unicloud-import-object',
+  // '/pages/API/websocket/websocket',
+  '/pages/API/unicloud/call-function',
+  '/pages/API/unicloud/import-object',
   '/pages/API/get-system-info/get-system-info',
   '/pages/API/get-device-info/get-device-info',
   '/pages/API/get-app-base-info/get-app-base-info',

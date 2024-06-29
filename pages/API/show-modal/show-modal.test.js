@@ -12,7 +12,7 @@ describe('API-loading', () => {
   }
 
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/modal/modal')
+    page = await program.reLaunch('/pages/API/show-modal/show-modal')
     await page.waitFor('view');
 
   });

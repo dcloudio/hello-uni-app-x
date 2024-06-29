@@ -6,7 +6,7 @@ describe('API-loading', () => {
   const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
 
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/action-sheet/action-sheet')
+    page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor(500);
   });
 
