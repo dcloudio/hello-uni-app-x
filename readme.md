@@ -24,13 +24,23 @@ npx husky@9.0.11
 
 #### pages.json
 
-创建 component、API、css 示例页面时，如果该示例页面需要在对应 tabBar 菜单中展示，命名需要遵循以下规则：
+创建 component、API、css 示例页面时，如果该示例页面需要在对应 tabBar 菜单中展示，`path` 命名需要遵循以下规则：
 - component pages/component/component-name/component-name
 - API pages/API/api-name/api-name
 - css pages/API/css-name/css-name
 
-增加上述示例页面时，不需要基于平台兼容性补充条件编译，代码提交后，会自动生成对应的条件编译代码，并更新 pages.json。
+所以，如果是扩展示例，比如针对 `button type 属性` 的示例，`path` 可以是：
+```
+pages/component/button/button-type
+```
+如果想要该示例页面在菜单中显示，则需要调整为：
+```
+pages/component/button/button/type
+```
+
+
+**注意：**增加上述示例页面时，不需要基于平台兼容性补充条件编译，代码提交后，会自动生成对应的条件编译代码，并更新 pages.json。
 
 pages.json 中增加后，需要在 [syntaxdoc](http://git.dcloud.io/uni-app-x/syntaxdoc) 仓库的 modules.json 中维护目录信息。
 
-**注意：** 调整现有页面的路径或平台兼容性，或移除页面时，如果该页面设计截图对比测试，需要同时调整 pages/pages.test.js 中的页面地址。
+**注意：**调整现有页面的路径或平台兼容性，或移除页面时，如果该页面设计截图对比测试，需要同时调整 pages/pages.test.js 中的页面地址。
