@@ -1,0 +1,56 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt uni-padding-wrap">
+      <view class="uni-btn-v">
+        <button type="primary" @tap="onUserCaptureScreen">开启截屏监听</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @tap="offUserCaptureScreen">关闭截屏监听</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  import { OnUserCaptureScreenCallbackResult } from "@/uni_modules/uni-usercapturescreen";
+  export default {
+    data() {
+      return {
+        title: 'userCaptureScreen',
+        callback: null as ((res : OnUserCaptureScreenCallbackResult) => void) | null
+      }
+    },
+    methods: {
+      onUserCaptureScreen() {
+        this.callback = (res : OnUserCaptureScreenCallbackResult) => {
+          console.log('截屏文件路径(仅Android平台支持)', res.path);
+          uni.showToast({
+            title: '捕获截屏事件'
+          });
+        };
+        uni.onUserCaptureScreen(this.callback!);
+        uni.showToast({
+          title: '截屏监听已开启'
+        });
+      },
+      offUserCaptureScreen() {
+        uni.offUserCaptureScreen(this.callback);
+        uni.showToast({
+          title: '截屏监听已关闭'
+        });
+      }
+    },
+    onUnload() {
+      uni.offUserCaptureScreen(this.callback);
+    }
+  }
+</script>
+
+<style>
+
+</style>
