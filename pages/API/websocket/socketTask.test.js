@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/websocket/websocket-socketTask'
+const PAGE_PATH = '/pages/API/websocket/socketTask'
 
 describe('ExtApi-WebSocket', () => {
 

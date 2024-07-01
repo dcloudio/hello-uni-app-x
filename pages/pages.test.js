@@ -141,7 +141,7 @@ const pages = [
   '/pages/API/request/request',
   '/pages/API/upload-file/upload-file',
   '/pages/API/download-file/download-file',
-  '/pages/API/websocket/websocket-socketTask',
+  '/pages/API/websocket/socketTask',
   // 页面销毁时会关闭socket连接，所以规避
   // '/pages/API/websocket/websocket',
   '/pages/API/unicloud/unicloud/cloud-function',
