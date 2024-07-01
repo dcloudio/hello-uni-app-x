@@ -84,7 +84,12 @@
   <view class="input-wrapper">
     <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" maxlength="-1" @input="input" @blur="blur"
       @focus="focus" />
-    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @click="clearIcon">
+    <!-- #ifdef WEB -->
+    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @touchstart="clearIcon" @mousedown="clearIcon">
+    <!-- #endif -->
+    <!-- #ifndef WEB -->
+    <image class="input-wrapper_image" src="/static/icons/clear.png" v-if="showClearIcon" @touchstart="clearIcon">
+    <!-- #endif -->
     </image>
   </view>
 </template>

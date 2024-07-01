@@ -27,7 +27,9 @@ describe('getCurrentPages', () => {
     const image3 = await program.screenshot({
       fullPage: true
     });
-    expect(image3).toSaveImageSnapshot();
+    expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'set-page-style-disable-pull-down-refresh-test-js-get-current-pages-page-style-before-set-page-style'
+    }});
 
     await page.waitFor(3500)
 
@@ -39,7 +41,9 @@ describe('getCurrentPages', () => {
     const image2 = await program.screenshot({
       fullPage: true
     });
-    expect(image2).toSaveImageSnapshot();
+    expect(image2).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'set-page-style-disable-pull-down-refresh-test-js-get-current-pages-page-style-after-set-page-style'
+    }});
 
   })
 })

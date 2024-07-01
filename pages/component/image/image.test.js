@@ -70,6 +70,34 @@ describe('component-native-image', () => {
     })
   }
 
+  it('test event load', async () => {
+    await page.setData({
+      autoTest: true,
+      imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
+    });
+    await page.waitFor(1000);
+    expect(await page.data('eventLoad')).toEqual({
+      tagName: 'IMAGE',
+      type: 'load',
+      width: 10,
+      height: 10
+    });
+  });
+
+  it('test event error', async () => {
+    await page.setData({
+      imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/404.png'
+    });
+    await page.waitFor(500);
+    expect(await page.data('eventError')).toEqual({
+      tagName: 'IMAGE',
+      type: 'error'
+    });
+    await page.setData({
+      autoTest: false
+    });
+  });
+
   it('path-screenshot', async () => {
     const page = await program.navigateTo('/pages/component/image/image-path');
     await page.waitFor(3000);

@@ -75,7 +75,24 @@ describe('component-native-textarea', () => {
   })
 
   it('both set modelValue and value', async () => {
-    let textarea2 = await page.$('.both-set-textarea');
-    expect(await textarea2.value()).toBe("123")
+    const textarea2 = await page.$('#both-model-value');
+    expect(await textarea2.value()).toEqual("123")
   })
+
+  it("maxlength", async () => {
+    const input = await page.$('#textarea-instance-maxlength');
+    let str = "";
+    for(let i = 0;i < 200;i++){
+      str += `${i}`
+    }
+    await page.setData({
+      textareaMaxLengthValue: str
+    })
+    let length = (await input.value()).length
+    expect(length).toBe(10)
+    await page.setData({
+      textareaMaxLengthValue: ""
+    })
+  })
+
 });

@@ -1,0 +1,53 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt uni-padding-wrap">
+      <view class="uni-btn-v">
+        <button type="primary" @tap="onMemoryWarning">开启监听内存警告</button>
+      </view>
+      <view class="uni-btn-v">
+        <button type="primary" @tap="offMemoryWarning">关闭监听内存警告</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  import { MemoryWarningCallbackResult } from "@/uni_modules/uni-memorywarning";
+  export default {
+    data() {
+      return {
+        title: 'memoryWarning',
+        callback: null as ((res : MemoryWarningCallbackResult) => void) | null
+      }
+    },
+    methods: {
+      onMemoryWarning() {
+        this.callback = (res : MemoryWarningCallbackResult) => {
+          console.log('当前内存警告等级(仅Android平台有效，iOS平台始终为0)', res.level);
+        };
+        uni.onMemoryWarning(this.callback!);
+        uni.showToast({
+          title: '内存警告监听已开启'
+        });
+      },
+      offMemoryWarning() {
+        uni.offMemoryWarning(this.callback);
+        uni.showToast({
+          title: '内存警告监听已关闭'
+        });
+      }
+    },
+    onUnload() {
+      uni.offMemoryWarning(this.callback);
+    }
+  }
+</script>
+
+<style>
+
+</style>

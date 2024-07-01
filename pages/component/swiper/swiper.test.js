@@ -1,20 +1,19 @@
-jest.setTimeout(20000);
-
-function getData(key = '') {
-  return new Promise(async (resolve, reject) => {
-    const data = await page.data()
-    resolve(key ? data[key] : data)
-  })
-}
-
-let page;
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/swiper/swiper')
-  await page.waitFor(600)
-})
-
-
+jest.setTimeout(30000);
 describe('test swiper', () => {
+  let page;
+  const webDetailRes = {
+    current: 1,
+    currentItemId: 'B',//web端多了currentItemId
+    source: 'autoplay' ,
+  }
+  const appDetailRes = {
+    current: 1,
+    source: 'autoplay' ,
+  }
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/swiper/swiper')
+    await page.waitFor(600)
+  })
   it('check indicator show', async () => {
     await page.setData({
       dotsSelect: true,
@@ -35,11 +34,11 @@ describe('test swiper', () => {
       autoplaySelect: true,
     })
     await page.waitFor(2400)
-    expect(await getData('currentValChange')).toEqual(1)
+    expect(await page.data('currentValChange')).toEqual(1)
     await page.waitFor(2000)
-    expect(await getData('currentValChange')).toEqual(2)
+    expect(await page.data('currentValChange')).toEqual(2)
     await page.waitFor(2000)
-    expect(await getData('currentValChange')).toEqual(0)
+    expect(await page.data('currentValChange')).toEqual(0)
 
     await page.setData({
       autoplaySelect: false
@@ -52,12 +51,12 @@ describe('test swiper', () => {
       currentVal: 2,
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(2)
+    expect(await page.data('currentValChange')).toEqual(2)
     await page.setData({
       currentVal: 0,
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(0)
+    expect(await page.data('currentValChange')).toEqual(0)
   });
 
   it('check currentId', async () => {
@@ -65,13 +64,59 @@ describe('test swiper', () => {
       currentItemIdVal: 'C',
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(2)
+    expect(await page.data('currentValChange')).toEqual(2)
 
     await page.setData({
       currentItemIdVal: 'A',
     })
     await page.waitFor(600)
-    expect(await getData('currentValChange')).toEqual(0)
+    expect(await page.data('currentValChange')).toEqual(0)
   });
 
+  it('Trigger Event', async () => {
+    await page.setData({
+      swiperChangeSelect: true,
+      swiperTransitionSelect: true,
+      swiperAnimationfinishSelect: true,
+      autoplaySelect:true
+    })
+    await page.waitFor(2000)
+    await page.waitFor(async()=>{
+      return await page.data('currentValChange') == 1
+    })
+    await page.setData({
+      autoplaySelect:false
+    })
+  });
+
+  it('Event transitiont', async () => {
+    const transitionDetailInfo = await page.data('transitionDetailTest')
+    // bug：在iOS端，swiper首次横向滑动切换@transition事件参数e.detail.dy为1错误，暂时忽略测试
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(transitionDetailInfo.dy).toBe(0)
+    }
+    expect(transitionDetailInfo.dx).not.toBe(0)
+    expect(await page.data('isTransitionTest')).toBe('transition:Success')
+  });
+
+  it('Event change', async () => {
+    const changeDetailInfo = await page.data('changeDetailTest')
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(changeDetailInfo).toEqual(webDetailRes)
+    }else{
+      expect(changeDetailInfo).toEqual(appDetailRes)
+    }
+    expect(await page.data('isChangeTest')).toBe('change:Success')
+  });
+
+  it('Event animationfinish', async () => {
+    await page.waitFor(1000)
+    const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(animationfinishDetailInfo).toEqual(webDetailRes)
+    }else{
+      expect(animationfinishDetailInfo).toEqual(appDetailRes)
+    }
+    expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
+  });
 });

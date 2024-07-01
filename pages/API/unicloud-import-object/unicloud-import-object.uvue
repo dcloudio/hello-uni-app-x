@@ -42,6 +42,7 @@
         genericDemoReturnTodoTitle: '',
         genericDemoReturnTodoContent: '',
         failErrCode: '',
+        failErrDetailTips: '',
         failNumberErrCode: 0,
         successErrCode: -1,
         isUniTest: false
@@ -119,6 +120,10 @@
         }).catch((err : any | null) => {
           const error = err as UniCloudError
           this.failErrCode = error.errCode as string
+          const detail = error.detail
+          if (detail != null && detail['tips'] != null) {
+            this.failErrDetailTips = detail['tips'] as string
+          }
           console.error(error)
         })
       },

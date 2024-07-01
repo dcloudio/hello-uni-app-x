@@ -35,19 +35,19 @@
         collectionList: [
           db.collection('book').where('name == "水浒传"').getTemp(),
         ] as UTSJSONObject[],
-        $uniCloudElement: null as UniCloudDBElement | null,
-        $isTesting: false,
-        $addResult: {},
-        $updateResult: {},
-        $removeResult: {}
+        uniCloudElement: null as UniCloudDBElement | null,
+        isTesting: false,
+        addResult: {},
+        updateResult: {},
+        removeResult: {}
       }
     },
     onReady() {
-      this.$uniCloudElement = this.$refs['udb'] as UniCloudDBElement
+      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
       this.get();
     },
     onPullDownRefresh() {
-      this.$uniCloudElement!.loadData({
+      this.uniCloudElement!.loadData({
         clear: true,
         success: (_ : UniCloudDBGetResult) => {
           uni.stopPullDownRefresh()
@@ -56,10 +56,10 @@
     },
     methods: {
       loadMore() {
-        this.$uniCloudElement!.loadMore()
+        this.uniCloudElement!.loadMore()
       },
       get() {
-        this.$uniCloudElement!.loadData({
+        this.uniCloudElement!.loadData({
           clear: true
         })
       },
@@ -68,10 +68,10 @@
           title: "title-" + Date.now(),
           comment: "comment" + Date.now()
         };
-        this.$uniCloudElement!.add(value, {
+        this.uniCloudElement!.add(value, {
           showToast: false,
           success: (res : UniCloudDBAddResult) => {
-            this.$addResult = {
+            this.addResult = {
               id: res.id
             };
             this.get();
@@ -86,13 +86,13 @@
           title: "title-" + Date.now(),
           comment: "comment" + Date.now()
         };
-        this.$uniCloudElement!.update(id, value, {
+        this.uniCloudElement!.update(id, value, {
           showToast: false,
           needLoading: true,
           needConfirm: false,
           loadingTitle: "正在更新...",
           success: (res : UniCloudDBUpdateResult) => {
-            this.$updateResult = {
+            this.updateResult = {
               updated: res.updated
             }
           },
@@ -102,12 +102,12 @@
         })
       },
       remove(id : string) {
-        this.$uniCloudElement!.remove(id, {
+        this.uniCloudElement!.remove(id, {
           showToast: false,
           needConfirm: false,
           needLoading: false,
           success: (res : UniCloudDBRemoveResult) => {
-            this.$removeResult = {
+            this.removeResult = {
               deleted: res.deleted
             }
           },

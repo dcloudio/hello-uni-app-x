@@ -1,8 +1,9 @@
 <template>
   <scroll-view class="uni-flex-item">
-    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles"
-      :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess"
-      @message="message" @error="error" @loading="loading" @load="load" @download="download">
+    <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
+      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess"
+      :verticalScrollBarAccess="verticalScrollBarAccess" @message="message" @error="error" @loading="loading"
+      @load="load" @download="download" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
@@ -50,7 +51,15 @@
         webviewContext: null as WebviewContext | null,
         loadError: false,
         horizontalScrollBarAccess: true,
-        verticalScrollBarAccess: true
+        verticalScrollBarAccess: true,
+        // 自动化测试
+        autoTest: false,
+        eventLoading: null as UTSJSONObject | null,
+        eventLoad: null as UTSJSONObject | null,
+        eventError: null as UTSJSONObject | null,
+        eventTouchstart: null as UTSJSONObject | null,
+        eventTap: null as UTSJSONObject | null,
+        pointerEvents: 'auto'
       }
     },
     onReady() {
@@ -76,27 +85,51 @@
         this.webviewContext?.evalJS("alert('hello uni-app x')");
       },
       message(event : UniWebViewMessageEvent) {
-        console.log(JSON.stringify(event));
+        console.log(JSON.stringify(event.detail));
       },
       error(event : UniWebViewErrorEvent) {
         this.loadError = true
-        console.log(JSON.stringify(event));
+        console.log(JSON.stringify(event.detail));
+        if (this.autoTest) {
+          this.eventError = {
+            "tagName": event.target?.tagName,
+            "type": event.type,
+            "errCode": event.detail.errCode,
+            "errMsg": event.detail.errMsg,
+            "url": event.detail.url,
+            "fullUrl": event.detail.fullUrl,
+            "src": event.detail.src
+          };
+        }
       },
       loading(event : UniWebViewLoadingEvent) {
-        console.log(JSON.stringify(event));
+        console.log(JSON.stringify(event.detail));
+        if (this.autoTest) {
+          this.eventLoading = {
+            "tagName": event.target?.tagName,
+            "type": event.type,
+            "src": event.detail.src
+          };
+        }
       },
       load(event : UniWebViewLoadEvent) {
-        console.log(JSON.stringify(event));
+        console.log(JSON.stringify(event.detail));
+        if (this.autoTest) {
+          this.eventLoad = {
+            "tagName": event.target?.tagName,
+            "type": event.type,
+            "src": event.detail.src
+          };
+        }
       },
       download(event : UniWebViewDownloadEvent) {
-        console.log(JSON.stringify(event));
+        console.log(JSON.stringify(event.detail));
         uni.showModal({
           content: "下载链接: " + event.detail.url + "\n文件大小: " + event.detail.contentLength / 1024 + "KB",
           showCancel: false
         });
       },
       confirm(event : UniInputConfirmEvent) {
-        console.log(JSON.stringify(event));
         let url = event.detail.value;
         if (!url.startsWith('https://') && !url.startsWith('http://')) {
           url = 'https://' + url;
@@ -108,6 +141,26 @@
       },
       changeVerticalScrollBarAccess(event : UniSwitchChangeEvent) {
         this.verticalScrollBarAccess = event.detail.value;
+      },
+      // 自动化测试
+      touchstart(event : UniTouchEvent) {
+        if (this.autoTest) {
+          this.eventTouchstart = {
+            clientX: Math.ceil(event.touches[0].clientX),
+            clientY: Math.ceil(event.touches[0].clientY)
+          };
+        }
+      },
+      tap(event : UniPointerEvent) {
+        if (this.autoTest) {
+          this.eventTap = {
+            clientX: Math.ceil(event.clientX),
+            clientY: Math.ceil(event.clientY)
+          };
+        }
+      },
+      getWindowInfo() : GetWindowInfoResult {
+        return uni.getWindowInfo();
       }
     }
   }

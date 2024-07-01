@@ -46,7 +46,10 @@
         fps: null as number | null,
         resolution: null as number | null,
         qualityItemTypes: [{ "value": 0, "name": "low(低)" }, { "value": 1, "name": "medium(中)" }, { "value": 2, "name": "high(高)" }] as ItemType[],
-        qualityItems: ["low", "medium", "high"]
+        qualityItems: ["low", "medium", "high"],
+        // 自动化测试
+        videoInfoForTest: null,
+        videoSrcForTest: '/static/test-video/10second-demo.mp4'
       }
     },
     methods: {
@@ -111,6 +114,35 @@
       },
       onResolutionChange(event : UniSliderChangeEvent) {
         this.resolution = event.detail.value;
+      },
+      testCompressVideo() {
+        let beforeCompressSize: number, afterComoressSize: number;
+        uni.compressVideo({
+          src: this.videoSrcForTest,
+          quality: 'medium',
+          success: (res) => {
+            uni.getVideoInfo({
+              src: this.videoSrcForTest,
+              success: (_res) => {
+                beforeCompressSize = _res.size.toInt();
+                uni.getVideoInfo({
+                  src: res.tempFilePath,
+                  success: (__res) => {
+                    afterComoressSize = __res.size.toInt();
+                    this.videoInfoForTest = {
+                      "width": __res.width,
+                      "height": __res.height,
+                      "isSizeReduce": afterComoressSize < beforeCompressSize
+                    };
+                  }
+                });
+              }
+            });
+          },
+          fail: (_) => {
+            this.videoInfoForTest = null;
+          }
+        });
       }
     }
   }

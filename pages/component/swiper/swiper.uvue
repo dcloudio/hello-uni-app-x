@@ -89,6 +89,11 @@
 </template>
 
 <script>
+  type SwiperEventTest = {
+    type: string;
+    target: UniElement | null;
+    currentTarget: UniElement | null;
+  }
   export default {
     data() {
       return {
@@ -110,12 +115,24 @@
         swiperTransitionSelect: false,
         swiperAnimationfinishSelect: false,
         swiperChangeSelect: false,
-        currentValChange: 0
+        currentValChange: 0,
+        // 自动化测试
+        changeDetailTest:null as UniSwiperChangeEventDetail | null,
+        transitionDetailTest:null as UniSwiperTransitionEventDetail | null,
+        animationfinishDetailTest:null as UniSwiperAnimationFinishEventDetail | null,
+        isChangeTest:'',
+        isTransitionTest:'',
+        isAnimationfinishTest:''
       }
     },
     methods: {
-
-      swiperChange: function (e : SwiperChangeEvent) {
+      swiperChange: function (e : UniSwiperChangeEvent) {
+        this.changeDetailTest = e.detail
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget
+        } as SwiperEventTest,'change')
         this.currentValChange = e.detail.current
         console.log(this.currentValChange)
         if (this.swiperChangeSelect) {
@@ -123,19 +140,48 @@
           console.log(e)
         }
       },
-      swiperTransition: function (e : SwiperTransitionEvent) {
+      swiperTransition: function (e : UniSwiperTransitionEvent) {
+        this.transitionDetailTest = e.detail
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget
+        } as SwiperEventTest,'transition')
         if (this.swiperTransitionSelect) {
           console.log("swiperTransition")
           console.log(e)
         }
       },
-      swiperAnimationfinish: function (e : SwiperAnimationFinishEvent) {
+      swiperAnimationfinish: function (e : UniSwiperAnimationFinishEvent) {
+        this.animationfinishDetailTest = e.detail
+        this.checkEventTest({
+          type:e.type,
+          target:e.target,
+          currentTarget:e.currentTarget
+        } as SwiperEventTest,'animationfinish')
         if (this.swiperAnimationfinishSelect) {
           console.log("swiperAnimationfinish")
           console.log(e)
         }
       },
-
+      // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
+      checkEventTest(e:SwiperEventTest, eventName:String){
+        const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+        const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
+        switch (eventName){
+          case 'change':
+            this.isChangeTest = result
+            break;
+          case 'transition':
+            this.isTransitionTest = result
+            break;
+          case 'animationfinish':
+            this.isAnimationfinishTest = result
+            break;
+          default:
+            break;
+        }
+      },
       dotsChange: function (e : UniSwitchChangeEvent) {
         this.dotsSelect = e.detail.value
       },

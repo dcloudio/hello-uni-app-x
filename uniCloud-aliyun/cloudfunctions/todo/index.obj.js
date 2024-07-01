@@ -29,6 +29,7 @@ module.exports = {
     return {
       errCode: 'TEST_ERROR_CODE',
       errMsg: '[预期内的报错]执行失败',
+      tips: 'DO_NOT_TRY_AGAIN'
     }
   },
   async failWithNumberErrCode() {

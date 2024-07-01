@@ -23,6 +23,7 @@
 </template>
 
 <script lang="uts">
+  import { state, setEventCallbackNum } from '@/store/index.uts'
   export default {
     data() {
       const date = new Date()
@@ -57,7 +58,24 @@
       }
     },
     methods: {
+      // 自动化测试
+      getEventCallbackNum() : number {
+        return state.eventCallbackNum
+      },
+      // 自动化测试
+      setEventCallbackNum(num : number) {
+        setEventCallbackNum(num)
+      },
       bindChange(e : UniPickerViewChangeEvent) {
+        // 自动化测试
+        console.log(e.target?.tagName,e.type);
+        if ((e.target?.tagName ?? '').includes('PICKER-VIEW')) {
+          this.setEventCallbackNum(state.eventCallbackNum + 1)
+        }
+        if (e.type === 'change') {
+          this.setEventCallbackNum(state.eventCallbackNum + 2)
+        }
+
         const val = e.detail.value
         this.result = val
         this.year = this.years[val[0]]

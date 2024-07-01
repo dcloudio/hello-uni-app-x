@@ -68,7 +68,10 @@
         loves: ['0'],
         switch: true,
         comment:'',
-        formData: {} as UTSJSONObject
+        formData: {} as UTSJSONObject,
+        // 仅测试
+        testVerifySubmit: false,
+        testVerifyReset: false,
       }
     },
     computed: {
@@ -78,10 +81,18 @@
     },
     methods: {
       onFormSubmit: function (e : UniFormSubmitEvent) {
+        console.log(e.target?.tagName ?? '123');
+        console.log(e.type);
         this.formData = e.detail.value
+
+        // 仅测试
+        this.testVerifySubmit = (e.type == 'submit' && (e.target?.tagName ?? '') == "FORM")
       },
-      onFormReset: function (_ : UniFormResetEvent) {
+      onFormReset: function (e : UniFormResetEvent) {
         this.formData = {}
+
+        // 仅测试
+        this.testVerifyReset = (e.type == 'reset' && (e.target?.tagName ?? '') == "FORM")
       }
     }
   }

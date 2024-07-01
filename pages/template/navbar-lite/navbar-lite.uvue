@@ -35,9 +35,9 @@
         </view>
       </list-item>
     </list-view>
-    <web-view v-if="indexView==2" src="/hybrid/html/local.html" id="webv" style="height:380px"></web-view>
-    <view style="position:relative;background-color:white;" :style="{bottom: inputBottom}">
-      <input placeholder="滚动视图外的居底输入框,不上推,手动控制输入框top" adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
+    <web-view v-if="indexView==2" src="/hybrid/html/local.html" id="webv" class="scroll-view"></web-view>
+    <view style="position:relative;background-color:white;z-index:1000;" :style="{bottom: inputBottom}">
+      <input id="input" placeholder="滚动视图外的居底输入框,不上推,手动控制输入框top" adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
     </view>
 
   </view>
@@ -53,6 +53,7 @@
         navigationBarTextColor: '#000',
         indexView: 0,
         windowHeight: 0,
+        inputRemainHeight: 0,  //输入框距离底部的距离
         inputBottom: '0px'
       }
     },
@@ -105,9 +106,7 @@
         this.inputBottom = '0px';
       },
       onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
-        let inputBottom = e.target?.getBoundingClientRect()?.bottom??this.windowHeight;
-        let remainHeight = this.windowHeight - inputBottom;
-        let bottom = (remainHeight > e.detail.height)?0:(e.detail.height-remainHeight);
+        let bottom = (this.inputRemainHeight > e.detail.height)?0:(e.detail.height-this.inputRemainHeight);
         this.inputBottom = `${bottom}px`;
       },
       // 自动化测试
@@ -120,10 +119,12 @@
       },
     },
     onReady() {
-      this.windowHeight = uni.getWindowInfo().windowHeight;
+      let windowHeight = uni.getWindowInfo().windowHeight;
+      this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
     },
     onResize() {
-      this.windowHeight = uni.getWindowInfo().windowHeight;
+      let windowHeight = uni.getWindowInfo().windowHeight;
+      this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
     }
   }
 </script>

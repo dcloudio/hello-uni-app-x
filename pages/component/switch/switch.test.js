@@ -6,22 +6,6 @@ describe('switch', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
   })
-  // TODO
-  // it('click', async () => {
-  //   const switch_element = await page.$('.switch-checked')
-  //   const switch_element_value = await page.$('.switch-checked-value')
-  //   expect(await switch_element_value.text()).toBe('true')
-
-  //   await page.waitFor(200)
-
-  //   await switch_element.tap()
-  //   await page.waitFor(200)
-  //   expect(await switch_element_value.text()).toBe('false')
-
-  //   await switch_element.tap()
-  //   await page.waitFor(200)
-  //   expect(await switch_element_value.text()).toBe('true')
-  // })
   it('checked', async () => {
     const switch_element = await page.$('.switch-checked')
 
@@ -52,5 +36,41 @@ describe('switch', () => {
     })
     await page.waitFor(100)
     expect(await switch_element.attribute('color')).toBe(color)
+  })
+  it('dark', async () => {
+    const dark = await page.$('#dark')
+    const darkChecked = await page.$('#darkChecked')
+
+    expect(await dark.attribute('background-color')).toBe('#1f1f1f')
+    expect(await dark.attribute('fore-color')).toBe('#f0f0f0')
+
+    expect(await darkChecked.attribute('active-background-color')).toBe('#007aff')
+    expect(await darkChecked.attribute('active-fore-color')).toBe('#ffffff')
+  })
+  it('click', async () => {
+    let switchElement
+    // TODO 暂时通过获取组件内部的 class 触发模拟点击
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      switchElement = await page.$('.uni-switch-input')
+      await switchElement.tap()
+      await page.waitFor(200)
+
+      const {
+        testVerifyEvent
+      } = await page.data()
+
+      expect(testVerifyEvent).toBe(true)
+    } else {
+      // switchElement = await page.$('#testTap')
+    }
+
+    // await switchElement.tap()
+    // await page.waitFor(200)
+
+    // const {
+    //   testVerifyEvent
+    // } = await page.data()
+
+    // expect(testVerifyEvent).toBe(true)
   })
 })

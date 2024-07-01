@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1" enable-back-to-top="true">
+  <scroll-view style="flex: 1;background-color: #f8f8f8;" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
       <view class="uni-header-logo">
@@ -207,6 +207,13 @@
                 url: 'toast',
                 api: ["showToast"]
               }
+              // #ifdef APP
+              ,{
+                name: '主题切换',
+                url: 'theme-change',
+                api: ["setAppTheme","onOsThemeChange","offOsThemeChange","onAppThemeChange","offAppThemeChange"]
+              }
+              // #endif
             ] as Page[],
           },
           {
@@ -281,10 +288,28 @@
                 url: 'install-apk'
               },
               // #endif
+              // #ifdef APP
+              {
+                name: '内存',
+                url: 'memory-warning'
+              },
+              {
+                name: '截屏事件',
+                url: 'user-capture-screen'
+              },
+              // #endif
               // #ifdef WEB
               {
                 name: "打电话",
                 url: "make-phone-call",
+              },
+              {
+                name: "剪贴板",
+                url: "clipboard",
+              },
+              {
+                name: "监听罗盘数据",
+                url: "on-compass-change",
               },
               // #endif
               /*
@@ -299,10 +324,6 @@
               {
                 name: "扫码",
                 url: "scan-code",
-              },
-              {
-                name: "剪贴板",
-                url: "clipboard",
               },
               {
                 name: "屏幕亮度",
@@ -323,10 +344,6 @@
               {
                 name: "监听加速度传感器",
                 url: "on-accelerometer-change",
-              },
-              {
-                name: "监听罗盘数据",
-                url: "on-compass-change",
               },
               {
                 name: "监听距离传感器",
@@ -357,13 +374,11 @@
                 url: 'save-image-to-photos-album'
               },
               // #endif
-              // #ifdef APP-ANDROID || WEB
               {
                 name: "获取图片信息",
                 url: 'get-image-info'
               },
-              // #endif
-              // #ifdef APP-ANDROID
+              // #ifdef APP
               {
                 name: "压缩图片",
                 url: 'compress-image'
@@ -379,13 +394,11 @@
                 url: 'save-video-to-photos-album'
               },
               // #endif
-              // #ifdef APP-ANDROID || WEB
               {
                 name: "获取视频信息",
                 url: 'get-video-info'
               },
-              // #endif
-              // #ifdef APP-ANDROID
+              // #ifdef APP
               {
                 name: "压缩视频",
                 url: 'compress-video'
@@ -423,11 +436,6 @@
               },
               // #ifdef WEB
               {
-                name: "地图控制",
-                url: "map",
-              },
-              // #endif
-              /* {
                 name: "使用地图查看位置",
                 url: "open-location",
               },
@@ -435,6 +443,8 @@
                 name: "使用地图选择位置",
                 url: "choose-location",
               },
+              // #endif
+              /*
               {
                 name: "地图搜索",
                 url: "map-search",
@@ -501,6 +511,23 @@
               }
             ] as Page[],
           },
+          {
+            id: 'ad',
+            name: '广告',
+            pages: [
+              {
+                name: '激励视频广告',
+                url: 'rewarded-video-ad',
+              }
+              /* {
+                id: "full-screen-video-ad",
+                url: "full-screen-video-ad",
+                name: "全屏视频广告",
+                enable: false,
+                pages: [] as Page[]
+              }, */
+            ] as Page[],
+          },
           // #endif
           {
             id: "payment",
@@ -520,23 +547,6 @@
           },
           // #ifdef APP-ANDROID
           {
-            id: 'ad',
-            name: '广告',
-            pages: [
-              {
-                name: '激励视频广告',
-                url: 'rewarded-video-ad',
-              }
-              /* {
-                id: "full-screen-video-ad",
-                url: "full-screen-video-ad",
-                name: "全屏视频广告",
-                enable: false,
-                pages: [] as Page[]
-              }, */
-            ] as Page[],
-          },
-          {
             id: 'permission-listener',
             name: '权限申请监听',
             pages: [
@@ -546,16 +556,6 @@
               }
             ] as Page[]
           },
-          // {
-          //   id: 'theme-change',
-          //   name: '主题切换',
-          //   pages: [
-          //     {
-          //       name: '主题切换',
-          //       url: 'theme-change',
-          //     }
-          //   ] as Page[]
-          // },
           // #endif
           /*
           {

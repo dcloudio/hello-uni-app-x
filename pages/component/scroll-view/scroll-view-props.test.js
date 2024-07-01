@@ -24,6 +24,10 @@ describe('component-native-scroll-view-props', () => {
             scrollTop: 600
         })
         await page.waitFor(600)
+        //检测滚动top 是否触发scroll 事件
+        const scrollChangeTop = await page.data('scrollChangeTop')
+        console.log("scrollChangeTop="+scrollChangeTop)
+        expect(scrollChangeTop-600).toBeGreaterThanOrEqual(0)
         const element = await page.$('#scrollViewY')
         const scrollTop = await element.property("scrollTop")
         console.log("check_scroll_top---"+scrollTop)

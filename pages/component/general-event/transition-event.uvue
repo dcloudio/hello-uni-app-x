@@ -19,10 +19,16 @@
         isStart: false,
         buttonValue: "开启图片旋转",
         onTransitionEndTriggr: false,
-        isShow: false
+        // #ifdef APP-ANDROID
+        isShow: false,
+        // #endif
+        // #ifndef APP-ANDROID
+        isShow: true,
+        // #endif
       }
     },
     onReady() {
+      // onReady中动态修改isShow是为了验证在安卓手机上子线程中创建节点可能会崩溃的问题，不具备代码参考性。
       // #ifdef APP-ANDROID
       var that = this
       class ThreadRunnable extends Runnable {
@@ -31,9 +37,6 @@
         }
       }
       new Thread(new ThreadRunnable()).start()
-      // #endif
-      // #ifndef APP-ANDROID
-      this.isShow = true
       // #endif
     },
     methods: {

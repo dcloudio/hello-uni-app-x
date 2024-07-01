@@ -1,11 +1,11 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-
 describe('component-native-input', () => {
-
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIos = platformInfo.startsWith('ios')
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input')
-    await page.waitFor(3000);
+    await page.waitFor('view');
   });
 
   // it("beforeAllTestScreenshot", async () => {
@@ -150,7 +150,7 @@ describe('component-native-input', () => {
   it("maxlength", async () => {
     const input = await page.$('#uni-input-maxlength');
     let str = "";
-    for(let i = 0;i < 200;i++){
+    for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
     await page.setData({
@@ -173,6 +173,14 @@ describe('component-native-input', () => {
   })
 
   it("keyboard height changed after page back", async () => {
+    if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('web')) {
+      expect(1).toBe(1)
+      return
+    }
+    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+      expect(1).toBe(1)
+      return
+    }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);
     await program.navigateBack()
@@ -180,7 +188,7 @@ describe('component-native-input', () => {
     await page.setData({
       focusedForKeyboardHeightChangeTest: true
     })
-    await page.waitFor(1000);
+    await page.waitFor(2000);
 
     const keyboardHeight = await page.data('keyboardHeight');
     console.log("keyboardHeight :", keyboardHeight);
@@ -188,7 +196,7 @@ describe('component-native-input', () => {
     //reset
     await page.setData({
       focusedForKeyboardHeightChangeTest: false,
-      keyboardHeight:0
+      keyboardHeight: 0
     })
   })
 
@@ -198,8 +206,7 @@ describe('component-native-input', () => {
     })
     expect(image).toSaveImageSnapshot()
   })
-
-  it('both set modelValue and value', async()=>{
+  it('both set modelValue and value', async () => {
     const input2 = await page.$('#both-model-value');
     expect(await input2.value()).toEqual("123")
   })

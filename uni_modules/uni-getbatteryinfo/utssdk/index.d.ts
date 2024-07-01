@@ -31,12 +31,13 @@ declare interface Uni {
   /**
    * 获取设备电量
    *
-   * 文档: [https://uniapp.dcloud.net.cn/api/system/batteryInfo.html](https://uniapp.dcloud.net.cn/api/system/batteryInfo.html)
+   * @tutorial https://uniapp.dcloud.net.cn/api/system/batteryInfo.html
    */
   getBatteryInfo(option?: UniNamespace.GetBatteryInfoOption): void;
 
 	/**
 	 * 同步获取电池电量信息
+   * @tutorial https://uniapp.dcloud.net.cn/api/system/batteryInfo.html
 	 */
 	getBatteryInfoSync(): UniNamespace.GetBatteryInfoSuccessCallbackResult;
 }

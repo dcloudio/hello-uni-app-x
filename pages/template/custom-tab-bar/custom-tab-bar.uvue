@@ -1,8 +1,9 @@
 <template>
   <view class="tabs">
     <view ref="tabview" class="tab-view">
-      <tab1 ref="tab1" v-if="tabList[0].init" v-show="selectedIndex==0"></tab1>
-      <tab2 ref="tab2" v-if="tabList[1].init" v-show="selectedIndex==1"></tab2>
+      <!-- 注意tab的逻辑是：第一次使用v-if创建，创建之后不再使用v-if，而是设置visibility来隐藏和显示。不能设置tab的v-if为false，因为销毁再创建影响性能 -->
+      <tab1 ref="tab1" class="tab-page" v-if="tabList[0].init" :style="{visibility:(selectedIndex==0?'visible':'hidden')}"></tab1>
+      <tab2 ref="tab2" class="tab-page" v-if="tabList[1].init" :style="{visibility:(selectedIndex==1?'visible':'hidden')}"></tab2>
     </view>
     <view ref="tabbar" class="tab-bar">
       <view class="tab-item" @click="onTabClick(0)">
@@ -55,7 +56,7 @@
       return {
         tabList: [
           {
-            init: false,
+            init: true,
             preload: false
           } as TabItem,
           {
@@ -63,16 +64,17 @@
             preload: false
           } as TabItem,
         ] as TabItem[],
-        selectedIndex: -1,
+        selectedIndex: 0,
         displayArrow: false,
+        lastTab1Top:0,
         tabViewHeight: 0
       }
     },
     onLoad() {
-      uni.$on('tabchange', this.onTabPageEvent)
+      uni.$on('tabchange', this.onTabPageEvent) //监听tab1页面发出的tabchange事件，触发到本页面的onTabPageEvent方法。为了判断tab1的scroll-view滚动距离
     },
     onReady() {
-      this.setSelectedIndex(0)
+      // this.setSelectedIndex(0)
       this.tabViewHeight = (this.$refs["tabview"] as UniElement).getBoundingClientRect().height
     },
     onUnload() {
@@ -80,14 +82,29 @@
     },
     methods: {
       onTabClick(index : number) {
-        if (this.selectedIndex == index && index == 0) {
+        if (this.selectedIndex == index && index == 0 && this.displayArrow == true) { //首页当tab按钮变成向上时，点向上就滚动到顶
+          // console.log("11");
           this.displayArrow = false;
           (this.$refs["tab1"]! as ComponentPublicInstance).$callMethod('scrollTop', 0)
         }
+        else if (index !=0){ //不在首页时，把箭头变成图标
+          // console.log("22");
+          this.displayArrow = false
+        }
+        else if (index == 0 && this.selectedIndex !=0){ //从其他tab切回首页时，检查是否需要把图标变箭头
+          // console.log("33",this.lastTab1Top, this.tabViewHeight);
+          this.displayArrow = this.lastTab1Top > this.tabViewHeight
+        }
         this.setSelectedIndex(index);
+        // console.log('index: ',index);
+        // console.log('this.selectedIndex: ',this.selectedIndex);
+        // console.log('this.displayArrow: ',this.displayArrow);
+        // console.log('this.lastTab1Top: ',this.lastTab1Top);
       },
       onTabPageEvent(top : number) {
-        this.displayArrow = top > this.tabViewHeight
+        // console.log('top: ',top);
+        this.displayArrow = top > this.tabViewHeight //滚动1屏后，就把第一个tab的图标从首页变成向上箭头
+        this.lastTab1Top = top
       },
       setSelectedIndex(index : number) {
         if (this.selectedIndex === index) {
@@ -129,6 +146,12 @@
 
   .tab-view {
     flex: 1;
+  }
+
+  .tab-page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
   }
 
   .tab-bar {

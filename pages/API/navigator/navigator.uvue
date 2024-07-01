@@ -42,6 +42,7 @@
           <button @tap="navigateToErrorPage" class="uni-btn">
             打开不存在的页面
           </button>
+          <button v-for="(item, _) in animationTypeList" @tap="navigateToAnimationType(item)" class="uni-btn">navigateTo动画({{item}})</button>
         </view>
       </view>
     </view>
@@ -60,6 +61,19 @@
         onShowTime: 0,
         onReadyTime: 0,
         onHideTime: 0,
+        animationTypeList: [
+          // #ifdef APP-ANDROID
+          'slide-in-right',
+          'slide-in-left',
+          'slide-in-top',
+          'slide-in-bottom',
+          'pop-in',
+          'fade-in',
+          'zoom-out',
+          'zoom-fade-out',
+          'none'
+          // #endif
+        ]
       }
     },
     onLoad() {
@@ -110,6 +124,27 @@
       navigateTo() {
         uni.navigateTo({
           url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          success(result) {
+            console.log('navigateTo success', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(error) {
+            console.log('navigateTo fail', error.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 1)
+          },
+          complete(result) {
+            console.log('navigateTo complete', result.errMsg)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+        })
+      },
+      navigateToAnimationType(animationType: string) {
+        uni.navigateTo({
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          animationType: animationType,
           success(result) {
             console.log('navigateTo success', result.errMsg)
             // 自动化测试

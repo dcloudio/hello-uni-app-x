@@ -1,5 +1,5 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-jest.setTimeout(60000);
+jest.setTimeout(30000);
 describe('editor.uvue', () => {
   if (!process.env.uniTestPlatformInfo.startsWith('web')) {
     it('app', () => {
@@ -65,7 +65,7 @@ describe('editor.uvue', () => {
 
   it('insertImage', async () => {
     await page.callMethod('insertImage','https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
-    await page.waitFor(500)
+    await page.waitFor(2000)
     expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
