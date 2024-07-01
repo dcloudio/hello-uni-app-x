@@ -1,5 +1,1 @@
-二期：
-- 翻书效果
-- 毛玻璃效果
-- 自定义窗体动画：叠窗式、上浮卡片
-- 全局置顶视图，global-cover-view。音乐播放app的悬浮播放bar；弹窗
+欢迎到需求墙投票：[https://vote.dcloud.net.cn/#/?name=uni-app%20x](https://vote.dcloud.net.cn/#/?name=uni-app%20x)
