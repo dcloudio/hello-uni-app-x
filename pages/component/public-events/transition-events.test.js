@@ -3,7 +3,7 @@
 describe('transition event', () => {
     let page;
     beforeAll(async () => {
-        page = await program.reLaunch('/pages/component/general-event/transition-event')
+        page = await program.reLaunch('/pages/component/public-events/transition-events')
         await page.waitFor(3000);
     });
 

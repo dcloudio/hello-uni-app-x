@@ -83,10 +83,10 @@ const pages = [
   // '/pages/component/unicloud-db/unicloud-db/contacts/detail',
   '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
   // 单独测试例截图
-  // '/pages/component/general-attribute/general-attribute',
-  '/pages/component/general-event/general-event',
-  '/pages/component/general-event/transition-event',
-  '/pages/component/general-event/touch-event',
+  // '/pages/component/public-properties/public-properties',
+  '/pages/component/public-events/public-events',
+  '/pages/component/public-events/transition-events',
+  '/pages/component/public-events/touch-events',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
   // 单独测试例截图
@@ -349,7 +349,7 @@ function getWaitForTagName(pagePath) {
     return 'video'
   }
   if (
-    pagePath === '/pages/component/general-event/transition-event' ||
+    pagePath === '/pages/component/public-events/transition-events' ||
     pagePath === '/pages/component/list-view/list-view-refresh' ||
     pagePath === '/pages/API/env/env'
   ) {
