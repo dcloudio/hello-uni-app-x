@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/unicloud-import-object/unicloud-import-object'
+const PAGE_PATH = '/pages/API/unicloud/unicloud/cloud-object'
 
 describe('unicloud-import-object', () => {
   let page

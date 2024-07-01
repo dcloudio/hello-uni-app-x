@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/unicloud-database/unicloud-database'
+const PAGE_PATH = '/pages/API/unicloud/unicloud/database'
 
 describe('unicloud-database', () => {
   let page

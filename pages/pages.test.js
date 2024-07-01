@@ -76,12 +76,12 @@ const pages = [
   // '/pages/component/web-view/web-view-local',
   // 动态内容
   // '/pages/component/unicloud-db/unicloud-db',
-  '/pages/component/unicloud-db/add',
+  '/pages/component/unicloud-db/unicloud-db/contacts/add',
   // 动态内容
-  // '/pages/component/unicloud-db/edit',
+  // '/pages/component/unicloud-db/unicloud-db/contacts/edit',
   // 动态内容
-  // '/pages/component/unicloud-db/detail',
-  '/pages/component/datacom/datacom',
+  // '/pages/component/unicloud-db/unicloud-db/contacts/detail',
+  '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
   // 单独测试例截图
   // '/pages/component/general-attribute/general-attribute',
   '/pages/component/general-event/general-event',
@@ -144,8 +144,10 @@ const pages = [
   '/pages/API/websocket/websocket-socketTask',
   // 页面销毁时会关闭socket连接，所以规避
   // '/pages/API/websocket/websocket',
-  '/pages/API/unicloud/call-function',
-  '/pages/API/unicloud/import-object',
+  '/pages/API/unicloud/unicloud/cloud-function',
+  '/pages/API/unicloud/unicloud/cloud-object',
+  '/pages/API/unicloud/unicloud/database',
+  '/pages/API/unicloud/unicloud/cloud-storage',
   '/pages/API/get-system-info/get-system-info',
   '/pages/API/get-device-info/get-device-info',
   '/pages/API/get-app-base-info/get-app-base-info',
@@ -155,13 +157,11 @@ const pages = [
   '/pages/API/get-network-type/get-network-type',
   '/pages/API/page-scroll-to/page-scroll-to',
   '/pages/API/event-bus/event-bus',
-  '/pages/API/unicloud-file-api/unicloud-file-api',
-  '/pages/API/unicloud-database/unicloud-database',
   '/pages/API/get-battery-info/get-battery-info',
   '/pages/API/get-window-info/get-window-info',
   '/pages/API/rpx2px/rpx2px',
-  '/pages/API/request-payment-uni-pay/request-payment-uni-pay',
-  '/pages/API/request-payment-uni-pay/order-detail',
+  '/pages/API/request-payment/request-payment/request-payment-uni-pay',
+  '/pages/API/request-payment/request-payment/order-detail',
   // 单独测试例截图
   // '/pages/API/resize-observer/resize-observer',
   // 单独测试例截图
@@ -356,8 +356,8 @@ function getWaitForTagName(pagePath) {
     return 'text'
   }
   if (
-    pagePath === '/pages/component/unicloud-db-contacts/edit' ||
-    pagePath === '/pages/component/unicloud-db-contacts/detail'
+    pagePath === '/pages/component/unicloud-db/unicloud-db/contacts/edit' ||
+    pagePath === '/pages/component/unicloud-db/unicloud-db/contacts/detail'
   ) {
     return 'scroll-view'
   }
