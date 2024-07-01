@@ -15,7 +15,7 @@ describe('API-compressVideo', () => {
 
   it('test compressVideo', async () => {
     await page.callMethod('testCompressVideo');
-    await page.waitFor(3000);
+    await page.waitFor(5000);
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
