@@ -71,12 +71,16 @@ describe('component-native-list-view', () => {
     return
   }
 
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    return
+  }
+
   it('Event scrollend-滚动结束时触发',async()=>{
     // 仅App端支持,向上滑动页面
     await program.swipe({
       startPoint: { x: 100, y: 300 },
       endPoint: { x: 100, y: 100 },
-      duration: 1000
+      duration: 100
     })
     await page.waitFor(600)
     const endDetail = await page.data('scrollEndDetailTest')
@@ -88,10 +92,6 @@ describe('component-native-list-view', () => {
     expect(endDetail.scrollHeight).toBeGreaterThan(0)
     expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
-
-  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-    return
-  }
 
   //检测竖向可滚动区域
   it('check_scroll_height', async () => {

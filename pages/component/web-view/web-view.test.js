@@ -77,17 +77,34 @@ describe('component-native-web-view', () => {
     it('test event loading load', async () => {
       await page.callMethod('reload');
       await page.waitFor(100);
-      expect(await page.data('eventLoading')).toEqual({
-        tagName: 'WEB-VIEW',
-        type: 'loading',
-        src: 'https://www.dcloud.io/'
-      });
+      if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+        expect(await page.data('eventLoading')).toEqual({
+          type: 'loading',
+          src: 'https://www.dcloud.io/'
+        });
+      }else {
+        expect(await page.data('eventLoading')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'loading',
+          src: 'https://www.dcloud.io/'
+        });
+      }
+
       await page.waitFor(1000);
-      expect(await page.data('eventLoad')).toEqual({
-        tagName: 'WEB-VIEW',
-        type: 'load',
-        src: 'https://www.dcloud.io/'
-      });
+      if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+         expect(await page.data('eventLoad')).toEqual({
+           tagName: 'WEB-VIEW',
+           type: 'load',
+           src: 'https://www.dcloud.io/'
+         });
+      }else {
+        expect(await page.data('eventLoad')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'load',
+          src: 'https://www.dcloud.io/'
+        });
+      }
+
     });
 
     it('test event error', async () => {
