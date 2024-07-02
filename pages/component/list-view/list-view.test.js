@@ -66,7 +66,7 @@ describe('component-native-list-view', () => {
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
     // 滚动到顶部50,是否触发scrolltoupper事件
-    await page.callMethod('confirm_scroll_left_input', 50)
+    await page.callMethod('confirm_scroll_top_input', 50)
     await page.waitFor(2000)
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
