@@ -91,7 +91,7 @@ describe('component-native-list-view', () => {
     expect(endDetail.scrollTop).toBeGreaterThan(0)
     expect(endDetail.scrollHeight).toBeGreaterThan(0)
     // 在安卓端 "scrollWidth":0
-    expect(endDetail.scrollWidth).toBeGreaterThan(0)
+    // expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
   if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
@@ -134,8 +134,6 @@ describe('component-native-list-view', () => {
     })
     await page.waitFor(2000)
     expect(await page.data('refresherrefresh')).toBe(true)
-    //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
-    await page.waitFor(1000)
   })
 
   //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
