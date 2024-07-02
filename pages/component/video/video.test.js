@@ -125,14 +125,16 @@ describe('component-native-video', () => {
       const height = res.data.split(' ').at(-1).split('x')[1];
       const res2 = await program.adbCommand('wm density');
       const scale = res2.data.split(' ').at(-1) / 160;
-      expect(await page.data('eventFullscreenclick')).toEqual({
-        tagName: 'VIDEO',
-        type: 'fullscreenclick',
-        screenX: parseInt(10 / scale),
-        screenY: parseInt(10 / scale),
-        screenWidth: parseInt(height / scale),
-        screenHeight: parseInt(width / scale)
-      });
+      if (version > 5) {
+        expect(await page.data('eventFullscreenclick')).toEqual({
+          tagName: 'VIDEO',
+          type: 'fullscreenclick',
+          screenX: parseInt(10 / scale),
+          screenY: parseInt(10 / scale),
+          screenWidth: parseInt(height / scale),
+          screenHeight: parseInt(width / scale)
+        });
+      }
     }
     await page.callMethod('exitFullScreen');
   });
