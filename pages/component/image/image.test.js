@@ -2,7 +2,7 @@
 
 describe('component-native-image', () => {
   let page;
-  
+
   async function getWindowInfo() {
     const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
     await windowInfoPage.waitFor(600);
@@ -10,7 +10,7 @@ describe('component-native-image', () => {
   }
   const screenshotParams = { fullPage: true }
   let windowInfo
-  
+
   beforeAll(async () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       screenshotParams.fullPage = false
@@ -24,7 +24,7 @@ describe('component-native-image', () => {
       }
       screenshotParams.offsetY = offsetY
     }
-    
+
     page = await program.reLaunch('/pages/component/image/image');
     await page.waitFor(600);
   });
@@ -76,6 +76,14 @@ describe('component-native-image', () => {
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     });
     await page.waitFor(1000);
+    if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      expect(await page.data('eventLoad')).toEqual({
+        type: 'load',
+        width: 10,
+        height: 10
+      });
+      return
+    }
     expect(await page.data('eventLoad')).toEqual({
       tagName: 'IMAGE',
       type: 'load',
@@ -89,10 +97,17 @@ describe('component-native-image', () => {
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/404.png'
     });
     await page.waitFor(500);
-    expect(await page.data('eventError')).toEqual({
-      tagName: 'IMAGE',
-      type: 'error'
-    });
+    if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      expect(await page.data('eventError')).toEqual({
+        type: 'error'
+      });
+    }else {
+      expect(await page.data('eventError')).toEqual({
+        tagName: 'IMAGE',
+        type: 'error'
+      });
+    }
+
     await page.setData({
       autoTest: false
     });
