@@ -64,7 +64,7 @@ describe('component-native-textarea', () => {
       var x = inputmodeEnum[i]
       console.log(x['value'], x['name'])
       var selected = x['value'] - 1
-      if(i == inputmodeEnum.length - 1){
+      if (i == inputmodeEnum.length - 1) {
         selected = i
       }
       await page.callMethod("radio_change_inputmode_enum", selected);
@@ -74,15 +74,10 @@ describe('component-native-textarea', () => {
     }
   })
 
-  it('both set modelValue and value', async () => {
-    const textarea2 = await page.$('#both-model-value');
-    expect(await textarea2.value()).toEqual("123")
-  })
-
   it("maxlength", async () => {
     const input = await page.$('#textarea-instance-maxlength');
     let str = "";
-    for(let i = 0;i < 200;i++){
+    for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
     await page.setData({
@@ -93,6 +88,11 @@ describe('component-native-textarea', () => {
     await page.setData({
       textareaMaxLengthValue: ""
     })
+  })
+
+  it('both set modelValue and value', async () => {
+    const textarea2 = await page.$('#both-model-value');
+    expect(await textarea2.value()).toEqual("123")
   })
 
 });
