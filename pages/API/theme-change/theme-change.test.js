@@ -20,11 +20,13 @@ describe('API-theme-change', () => {
 
 
   it("check-set-app-theme", async () => {
+    const originalTheme = await page.data('originalTheme')
+    console.log("originalTheme是", originalTheme)
     await page.callMethod('setAppTheme', "dark")
     await page.waitFor(300)
     expect(await page.data('appTheme')).toBe("dark")
     //还原主题为light
-    await page.callMethod('setAppTheme', "light")
+    await page.callMethod('setAppTheme', originalTheme)
     await page.waitFor(600)
   })
 });
