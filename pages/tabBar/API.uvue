@@ -105,6 +105,14 @@
             children: [] as MenuItem[],
             pages: [] as PagesJsonPage[]
           } as MenuItem)
+          if (_id == 'page' && name == '页面和路由') {
+            currentArr[currentArr.length - 1].pages.push({
+              path: 'set-tab-bar',
+              style: {
+                navigationBarTitleText: '设置 TabBar'
+              }
+            } as PagesJsonPage)
+          }
         }
         currentMenu = currentArr[menuKeyMap.get(id)!]
         if (index < page.group!.length - 1) {
@@ -116,7 +124,6 @@
       (currentMenu as MenuItem).pages.push(page)
     }
   })
-  console.log('menu', menu)
   type Page = {
     name : string
     url : string
@@ -676,7 +683,11 @@
         })
       },
       goPage(url : string) {
-        uni.navigateTo({ url })
+        if (url == '/set-tab-bar') {
+          this.showPop()
+        } else {
+          uni.navigateTo({ url })
+        }
       },
       showPop: function () {
         (this.$refs["pop"] as UniElement).style.setProperty("display", "flex")

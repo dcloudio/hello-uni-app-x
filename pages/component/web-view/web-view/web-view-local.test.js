@@ -4,7 +4,7 @@ describe('component-native-web-view', () => {
   if (!process.env.uniTestPlatformInfo.startsWith('web') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let page;
     beforeAll(async () => {
-      page = await program.reLaunch('/pages/component/web-view-local/web-view-local');
+      page = await program.reLaunch('/pages/component/web-view/web-view/web-view-local');
       await page.waitFor(1000);
     });
 

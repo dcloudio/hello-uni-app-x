@@ -1,24 +1,36 @@
 <template>
   <page-head :title="title"></page-head>
-  <view style="padding: 4px;">
+  <view style="padding: 4px">
     <text class="hello-text">
       定位功能默认调用操作系统定位API实现。\n
       部分手机因gms兼容不好可能导致无法定位。\n
       gcj国标、逆地理信息等功能需三方sdk定位。如果需要类似能力可以下载腾讯定位插件，打包自定义基座。参考示例：</text>
-    <u-link :href="'https://ext.dcloud.net.cn/plugin?id=14569'" :text="'https://ext.dcloud.net.cn/plugin?id=14569'" :inWhiteList="true"></u-link>
+    <u-link :href="'https://ext.dcloud.net.cn/plugin?id=14569'" :text="'https://ext.dcloud.net.cn/plugin?id=14569'"
+      :inWhiteList="true"></u-link>
   </view>
 
   <view class="uni-padding-wrap uni-common-mt">
-    <view class="uni-list">
-      <radio-group @change="radioChange">
-        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-          :class="index < items.length - 1 ? 'uni-list-cell-line': ''" :value="item.value"
-          :checked="index === current">
-          {{item.name}}
+    <view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
+    <view class="uni-list" style="margin-bottom: 20px">
+      <radio-group @change="radioChangePV">
+        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in providerList" :key="item.id"
+          :class="index < providerList.length - 1 ? 'uni-list-cell-line' : ''" :value="item.id"
+          :checked="index === currentProvider">
+          {{ item.name }}
         </radio>
       </radio-group>
     </view>
-    <view class="uni-list-cell uni-list-cell-pd">
+    <view class="uni-list-cell-db">定位类型1</view>
+    <view class="uni-list">
+      <radio-group @change="radioChange">
+        <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
+          :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
+          :checked="index === current">
+          {{ item.name }}
+        </radio>
+      </radio-group>
+    </view>
+    <view class="uni-list-cell uni-list-cell-pd" style="margin-top: 20px">
       <view class="uni-list-cell-db">高度信息</view>
       <switch :checked="altitudeSelect" @change="altitudeChange" />
     </view>
@@ -30,17 +42,18 @@
       <view class="uni-list-cell-db">是否解析地址信息</view>
       <switch :checked="geocodeSelect" @change="geocodeChange" />
     </view>
-    <text>{{exeRet}}</text>
+    <text>{{ exeRet }}</text>
     <view class="uni-btn-v">
-      <button class="uni-btn" type="default" @tap="getLocationTap">获取定位</button>
+      <button class="uni-btn" type="default" @tap="getLocationTap">
+        获取定位
+      </button>
     </view>
   </view>
 </template>
 <script lang="uts">
-  type ItemType = {
-    value : 'wgs84' | 'gcj02',
-    name : string,
-  }
+  export type LocationItem = { id : string, name : string, provider ?: UniProvider }
+  export type ItemType = { value : string, name : string }
+
   export default {
     data() {
       return {
@@ -50,19 +63,53 @@
         geocodeSelect: false,
         exeRet: '',
         items: [
-        {
-          value: 'wgs84',
-          name: 'wgs84'
-        },
-        {
-          value: 'gcj02',
-          name: 'gcj02'
-        }
+          {
+            value: 'wgs84',
+            name: 'wgs84'
+          },
+          {
+            value: 'gcj02',
+            name: 'gcj02'
+          }
         ] as ItemType[],
+        providerList: [] as LocationItem[],
         current: 0,
+        currentProvider: 0
       }
     },
+    onLoad: function () {
+      this.getProvider()
+    },
     methods: {
+      getProvider() {
+        uni.getProvider({
+          service: "location",
+          success: (e) => {
+            console.log("location success:" + JSON.stringify(e), e.providers.length);
+            let array = e.provider as string[]
+            array.forEach((value : string) => {
+              let locationProvider = e.providers.find((item) : boolean => {
+                return item.id == value
+              })
+              if (locationProvider != null) {
+                this.providerList.push({
+                  name: locationProvider.description,
+                  id: locationProvider.id,
+                  provider: e.providers.find((item) : boolean => {
+                    return item.id == locationProvider.id
+                  })
+                } as LocationItem);
+              }
+            })
+          },
+          fail: (e) => {
+            console.log("获取支付通道失败：", e);
+          }
+        });
+
+
+
+      },
       altitudeChange: function (e : UniSwitchChangeEvent) {
         this.altitudeSelect = e.detail.value
       },
@@ -80,11 +127,33 @@
           }
         }
       },
+      radioChangePV(e : UniRadioGroupChangeEvent) {
+        for (let i = 0; i < this.providerList.length; i++) {
+          if (this.providerList[i].id === e.detail.value) {
+            this.currentProvider = i;
+            break;
+          }
+        }
+      },
       getLocationTap: function () {
+        if (this.providerList.length == 0) {
+          return
+        }
         uni.showLoading({
           title: '定位中'
         })
+        console.log("provider", this.providerList[this.currentProvider].id)
+        let locationProvider = this.providerList[this.currentProvider]
+
+        if (locationProvider.provider?.isAppExist == false && 'tencent' == locationProvider.provider?.id) {
+          uni.showToast({
+            title: '需要打自定义基座',
+            icon: "error"
+          })
+          return
+        }
         uni.getLocation(({
+          provider: this.providerList[this.currentProvider].id,
           type: this.items[this.current].value,
           altitude: this.altitudeSelect,
           isHighAccuracy: this.isHighAccuracySelect,

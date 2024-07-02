@@ -55,7 +55,6 @@ const pages = [
   '/pages/component/slider/slider-in-swiper',
   //动态内容
   // '/pages/component/picker-view/picker-view',
-  '/pages/component/slider-100/slider-100',
   '/pages/component/switch/switch',
   '/pages/component/image/image',
   '/pages/component/image/image-format',
@@ -73,7 +72,7 @@ const pages = [
   // 动态内容
   // '/pages/component/web-view/web-view',
   // 依赖加载完成回调，单独测试例截图
-  // '/pages/component/web-view/web-view-local',
+  // '/pages/component/web-view/web-view/web-view-local',
   // 动态内容
   // '/pages/component/unicloud-db/unicloud-db',
   '/pages/component/unicloud-db/unicloud-db/contacts/add',
@@ -269,6 +268,7 @@ const pages = [
   '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
+  '/pages/component/slider-100/slider-100',
 ]
 
 if (isApp && !isAppWebview) {
