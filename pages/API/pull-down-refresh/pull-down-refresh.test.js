@@ -1,7 +1,10 @@
 const PAGE_PATH = "/pages/API/pull-down-refresh/pull-down-refresh"
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIos = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
 
 describe("payment", () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
     it('web || app-webview', () => {
       expect(1).toBe(1)
     })
@@ -15,6 +18,11 @@ describe("payment", () => {
     await page.setData({
       pulldownRefreshTriggered: false
     })
+
+    if (isIos) {
+      // 暂时通过点击关闭授权弹框，避免影响 swipe 测试
+      await program.tap({x: 100, y: 500})
+    }
 
     await program.swipe({
       startPoint: {
