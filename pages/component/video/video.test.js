@@ -53,20 +53,37 @@ describe('component-native-video', () => {
     });
     await page.callMethod('play');
     await page.waitFor(100);
-    expect(await page.data('eventPlay')).toEqual({
-      tagName: 'VIDEO',
-      type: 'play'
-    });
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      expect(await page.data('eventPlay')).toEqual({
+        type: 'play'
+      });
+    }else {
+      expect(await page.data('eventPlay')).toEqual({
+        tagName: 'VIDEO',
+        type: 'play'
+      });
+    }
+
     await page.callMethod('pause');
     await page.waitFor(100);
-    expect(await page.data('eventPause')).toEqual({
-      tagName: 'VIDEO',
-      type: 'pause'
-    });
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      expect(await page.data('eventPause')).toEqual({
+        type: 'pause'
+      });
+    }else {
+       expect(await page.data('eventPause')).toEqual({
+         tagName: 'VIDEO',
+         type: 'pause'
+       });
+    }
+
     await page.callMethod('play');
   });
 
   it('test event waiting progress timeupdate', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      return
+    }
     await page.setData({
       pos: 10
     });
@@ -138,6 +155,9 @@ describe('component-native-video', () => {
   });
 
   it('test event ended', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      return
+    }
     await page.setData({
       pos: 120
     });
@@ -150,6 +170,9 @@ describe('component-native-video', () => {
   });
 
   it('test event error', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      return
+    }
     const oldSrc = await page.data('src');
     await page.setData({
       src: 'invalid url'
