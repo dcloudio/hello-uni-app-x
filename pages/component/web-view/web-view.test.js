@@ -93,7 +93,6 @@ describe('component-native-web-view', () => {
       await page.waitFor(1000);
       if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
          expect(await page.data('eventLoad')).toEqual({
-           tagName: 'WEB-VIEW',
            type: 'load',
            src: 'https://www.dcloud.io/'
          });
