@@ -1,6 +1,9 @@
 let page
 
 beforeAll(async () => {
+  if (!process.env.uniTestPlatformInfo.toLowerCase().startsWith('web')) {
+    return
+  }
   page = await program.reLaunch('/pages/component/canvas/canvas')
   await page.waitFor(2000)
 })
