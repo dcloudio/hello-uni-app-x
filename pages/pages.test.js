@@ -326,12 +326,6 @@ if (isWeb) {
   )
 }
 
-// 设置position: fixed的页面不能截取完整内容
-const notFullPages = [
-  '/pages/CSS/layout/position',
-  '/pages/CSS/layout/z-index'
-]
-
 let page;
 let windowInfo
 
@@ -386,10 +380,6 @@ describe("page screenshot test", () => {
     const currentPagePath = pages[pageIndex]
     console.log("Taking screenshot: ", pageIndex, currentPagePath);
     let fullPage = true;
-    if (notFullPages.includes(currentPagePath)) {
-      fullPage = false;
-    }
-
     const screenshotParams = {
       fullPage
     }
