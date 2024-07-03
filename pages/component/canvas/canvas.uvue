@@ -33,6 +33,9 @@
         canvasWidth: 0,
         canvasHeight: 0,
         image: null as Image | null,
+        // 仅测试
+        testToBlobResult: false,
+        testToDataURLResult: false
       }
     },
     onReady() {
@@ -41,6 +44,13 @@
       hidpi(canvas);
       this.canvasWidth = this.canvasContext!.canvas.width;
       this.canvasHeight = this.canvasContext!.canvas.height;
+
+      // #ifdef WEB
+      canvas.toBlob((blob : Blob) => {
+        this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
+      }, 'image/jpeg', 0.95)
+      this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
+      // #endif
     },
     methods: {
       handleCanvasButton(name : string) {
@@ -630,9 +640,8 @@
         context.restore()
       },
       restore() {
-        const context = this.canvasContext!
-
-        ;[3, 2, 1].forEach((item) => {
+        const context = this.canvasContext!;
+        [3, 2, 1].forEach((item) => {
           context.save()
           context.beginPath()
           context.scale(item, item)
