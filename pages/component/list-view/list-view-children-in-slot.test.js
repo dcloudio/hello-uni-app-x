@@ -3,6 +3,7 @@ describe('list-view-children-in-slot', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/list-view/list-view-children-in-slot')
     await page.waitFor('list-view')
+    await page.waitFor(300)
   })
 
   it('basic', async () => {
