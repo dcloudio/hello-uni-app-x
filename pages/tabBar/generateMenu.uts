@@ -1,0 +1,108 @@
+import { pages } from '@/target-pages.json'
+
+type PageGroup = {
+  id: string,
+  name: string,
+  index: number | null
+}
+
+type Page = {
+  path: string,
+  style: UTSJSONObject,
+  group?: PageGroup[] | null
+}
+
+export type MenuItem = {
+  id: string,
+  name: string,
+  index: number,
+  children: (MenuItem | null)[],
+  pages: Page[]
+}
+
+export function generateMenu(tabBarType: string): (MenuItem | null)[] {
+  const res: (MenuItem | null)[] = []
+
+  const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page: Page): boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
+  tabBarPages.forEach(page => {
+    let menuItemArr: (MenuItem | null)[] = res
+    let currentMenu: MenuItem | null = null
+    const groupLength = page.group!.length
+    page.group!.forEach((group, groupIndex) => {
+      const { index, id, name } = group
+
+      const validIndex = isNumber(index) ? index! : menuItemArr.length
+      fillArrayWithNull(menuItemArr, validIndex)
+
+      if (menuItemArr[validIndex] == null) {
+        menuItemArr[validIndex] = {
+          id: id.split('.').slice(-1)[0],
+          name,
+          index: validIndex,
+          children: [] as (MenuItem | null)[],
+          pages: [] as Page[]
+        } as MenuItem
+      }
+
+
+      currentMenu = menuItemArr[validIndex]
+      if (groupIndex < groupLength - 1) {
+        menuItemArr = menuItemArr[validIndex]!.children as (MenuItem | null)[]
+      }
+    })
+
+    currentMenu!.pages.push(page)
+  })
+  return removeNullItem(res)
+}
+
+function hasPageGroup(value: PageGroup[] | null): boolean {
+  // #ifdef APP-ANDROID
+  return value !== null
+  // #endif
+  // #ifndef APP-ANDROID
+  return !!value
+  // #endif
+}
+
+function isNumber(value: number | null): boolean {
+  // #ifdef APP-ANDROID
+  return value !== null
+  // #endif
+  // #ifndef APP-ANDROID
+  return typeof value === 'number'
+  // #endif
+}
+
+function fillArrayWithNull(arr: (MenuItem | null)[], index: number): void {
+  const len = arr.length
+  for (let i = 0;i <= index - (len - 1);i++) {
+    arr.push(null)
+  }
+}
+
+function removeNullItem(arr: (MenuItem | null)[]): (MenuItem | null)[] {
+  const res = arr.filter((item: MenuItem | null): boolean => item !== null)
+  res.forEach(menuItem => {
+    addSetTabBarPage(menuItem!)
+    // #ifdef APP-ANDROID
+    menuItem!.children = removeNullItem(menuItem.children)
+    // #endif
+    // #ifndef APP-ANDROID
+    menuItem!.children = removeNullItem(menuItem!.children)
+    // #endif
+  })
+  return res
+}
+
+function addSetTabBarPage(menuItem: MenuItem) {
+  const { id, name } = menuItem
+  if (id == 'page' && name == '页面和路由') {
+    menuItem.pages.push({
+      path: 'set-tab-bar',
+      style: {
+        navigationBarTitleText: '设置 TabBar'
+      }
+    } as Page)
+  }
+}

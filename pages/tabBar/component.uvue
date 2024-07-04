@@ -26,28 +26,27 @@
 
       <text>---------------</text>
       <uni-collapse>
-        <template v-for="menuItem in menu" :key="menuItem.id">
-          <uni-collapse-item :title="menuItem.name" class="item">
-            <view v-for="page in menuItem.pages" :key="page.path" class="uni-navigate-item" hover-class="is--active"
-              @click="goPage(`/${page.path}`)">
-              <text class="uni-navigate-text">{{
+        <uni-collapse-item v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem!.name"
+          class="item">
+          <view v-for="page in menuItem!.pages" :key="page.path" class="uni-navigate-item" hover-class="is--active"
+            @click="goPage(`/${page.path}`)">
+            <text class="uni-navigate-text">{{
                 page.style["navigationBarTitleText"]
               }}</text>
-              <image :src="arrowRightIcon" class="uni-icon-size"></image>
-            </view>
-            <uni-collapse style="width: 100%" v-for="childMenu in menuItem.children" :key="childMenu.id">
-              <uni-collapse-item :title="childMenu.name" class="item" style="margin-bottom: 0">
-                <view class="uni-navigate-item" hover-class="is--active" v-for="childPage in childMenu.pages"
-                  :key="childPage.path" @click="goPage(`/${childPage.path}`)">
-                  <text class="uni-navigate-text">{{
+            <image :src="arrowRightIcon" class="uni-icon-size"></image>
+          </view>
+          <uni-collapse style="width: 100%" v-for="childMenu in menuItem!.children" :key="childMenu!.id">
+            <uni-collapse-item :title="childMenu!.name" class="item" style="margin-bottom: 0">
+              <view class="uni-navigate-item" hover-class="is--active" v-for="childPage in childMenu!.pages"
+                :key="childPage.path" @click="goPage(`/${childPage.path}`)">
+                <text class="uni-navigate-text">{{
                     childPage.style["navigationBarTitleText"]
                   }}</text>
-                  <image :src="arrowRightIcon" class="uni-icon-size"></image>
-                </view>
-              </uni-collapse-item>
-            </uni-collapse>
-          </uni-collapse-item>
-        </template>
+                <image :src="arrowRightIcon" class="uni-icon-size"></image>
+              </view>
+            </uni-collapse-item>
+          </uni-collapse>
+        </uni-collapse-item>
       </uni-collapse>
 
       <!-- #ifdef UNI-APP-X && APP -->
@@ -60,60 +59,9 @@
 </template>
 
 <script lang="uts">
-  import { pages } from '@/target-pages.json'
-
-  type PagesJsonPageGroup = {
-    id : string,
-    name : string
-  }
-
-  type PagesJsonPage = {
-    path : string,
-    style : UTSJSONObject,
-    group ?: PagesJsonPageGroup[] | null
-  }
-
-  type MenuItem = {
-    id : string,
-    name : string,
-    children : MenuItem[],
-    pages : PagesJsonPage[]
-  }
-  const menu : MenuItem[] = []
-  const menuKeyMap = new Map<string, number>()
-  // #ifdef APP-ANDROID
-  const componentPages = JSON.parse<PagesJsonPage[]>(JSON.stringify(pages))!.filter((page : PagesJsonPage) : boolean => page.path.startsWith('pages/component') && page.group !== null)
-  // #endif
-  // #ifdef WEB || APP-IOS
-  const componentPages = (pages as unknown as PagesJsonPage[]).filter(page => page.path.startsWith('pages/component') && page.group)
-  // #endif
-  componentPages.forEach(page => {
-    let currentArr : MenuItem[] = menu
-    let currentMenu : MenuItem | null = null
-    if (page.group !== null) {
-      page.group!.forEach((item, index) => {
-        const { id, name } = item
-        const ids = id.split('.')
-        const _id = ids[ids.length - 1]
-        if (!menuKeyMap.has(id)) {
-          menuKeyMap.set(id, currentArr.length)
-          currentArr.push({
-            id: _id,
-            name,
-            children: [] as MenuItem[],
-            pages: [] as PagesJsonPage[]
-          } as MenuItem)
-        }
-        currentMenu = currentArr[menuKeyMap.get(id)!]
-        if (index < page.group!.length - 1) {
-          currentArr = currentArr[menuKeyMap.get(id)!].children as MenuItem[]
-        }
-      })
-    }
-    if (currentMenu !== null) {
-      (currentMenu as MenuItem).pages.push(page)
-    }
-  })
+  import { generateMenu } from './generateMenu.uts'
+  import { MenuItem } from './generateMenu.uts'
+  const menu = generateMenu('pages/component')
   // #ifdef UNI-APP-X && APP
   import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
   // #endif
@@ -133,7 +81,7 @@
   export default {
     data() {
       return {
-        menu: menu as MenuItem[],
+        menu: menu as (MenuItem | null)[],
         list: [
           {
             id: 'view',
