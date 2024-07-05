@@ -17,22 +17,28 @@ export type MenuItem = {
   name: string,
   index: number,
   children: (MenuItem | null)[],
-  pages: Page[]
+  pages: (Page | null)[]
 }
 
 export function generateMenu(tabBarType: string): (MenuItem | null)[] {
-  const res: (MenuItem | null)[] = []
+  let res: (MenuItem | null)[] = []
 
   const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page: Page): boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
   tabBarPages.forEach(page => {
     let menuItemArr: (MenuItem | null)[] = res
     let currentMenu: MenuItem | null = null
+    const lastGroup = page.group![page.group!.length - 1]
+    let hasPageGroup = false
+    if (page.path.endsWith(camelToDash(lastGroup.name)) && page.group!.length > 1) {
+      hasPageGroup = true
+      page.group!.pop()
+    }
     const groupLength = page.group!.length
     page.group!.forEach((group, groupIndex) => {
       const { index, id, name } = group
 
       const validIndex = isNumber(index) ? index! : menuItemArr.length
-      fillArrayWithNull(menuItemArr, validIndex)
+      fillMenuArrayWithNull(menuItemArr, validIndex)
 
       if (menuItemArr[validIndex] == null) {
         menuItemArr[validIndex] = {
@@ -40,7 +46,7 @@ export function generateMenu(tabBarType: string): (MenuItem | null)[] {
           name,
           index: validIndex,
           children: [] as (MenuItem | null)[],
-          pages: [] as Page[]
+          pages: [] as (Page | null)[]
         } as MenuItem
       }
 
@@ -50,9 +56,19 @@ export function generateMenu(tabBarType: string): (MenuItem | null)[] {
         menuItemArr = menuItemArr[validIndex]!.children as (MenuItem | null)[]
       }
     })
-
-    currentMenu!.pages.push(page)
+    if (hasPageGroup) {
+      const pageIndex = isNumber(lastGroup.index) ? lastGroup.index! : currentMenu!.pages.length
+      fillPageArrayWithNull(currentMenu!.pages, pageIndex)
+      if (currentMenu!.pages[pageIndex] == null) {
+        currentMenu!.pages[pageIndex] = page
+      }else{
+        currentMenu!.pages.push(page)
+      }
+    } else {
+      currentMenu!.pages.push(page)
+    }
   })
+
   return removeNullItem(res)
 }
 
@@ -74,7 +90,18 @@ function isNumber(value: number | null): boolean {
   // #endif
 }
 
-function fillArrayWithNull(arr: (MenuItem | null)[], index: number): void {
+function camelToDash(camelStr: string): string {
+  return camelStr.replace(/([A-Z])/g, '-$1').toLowerCase()
+}
+
+function fillMenuArrayWithNull(arr: (MenuItem | null)[], index: number): void {
+  const len = arr.length
+  for (let i = 0;i <= index - (len - 1);i++) {
+    arr.push(null)
+  }
+}
+
+function fillPageArrayWithNull(arr: (Page | null)[], index: number): void {
   const len = arr.length
   for (let i = 0;i <= index - (len - 1);i++) {
     arr.push(null)
@@ -86,10 +113,12 @@ function removeNullItem(arr: (MenuItem | null)[]): (MenuItem | null)[] {
   res.forEach(menuItem => {
     addSetTabBarPage(menuItem!)
     // #ifdef APP-ANDROID
-    menuItem!.children = removeNullItem(menuItem.children)
+    menuItem.children = removeNullItem(menuItem.children)
+    menuItem.pages = menuItem.pages.filter((item: Page | null): boolean => item !== null)
     // #endif
     // #ifndef APP-ANDROID
     menuItem!.children = removeNullItem(menuItem!.children)
+    menuItem!.pages = menuItem!.pages.filter((item: Page | null): boolean => item !== null)
     // #endif
   })
   return res
