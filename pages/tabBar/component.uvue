@@ -12,27 +12,12 @@
           :text="'https://uniapp.dcloud.io/uni-app-x/component/'" :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
-        <template v-for="item in list" :key="item.id">
-          <uni-collapse-item :title="item.name" class="item">
-            <view class="uni-navigate-item" :hover-class="page.enable == false ? '' : 'is--active'"
-              v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
-              <text class="uni-navigate-text"
-                :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
-              <image :src="arrowRightIcon" class="uni-icon-size"></image>
-            </view>
-          </uni-collapse-item>
-        </template>
-      </uni-collapse>
-
-      <text>---------------</text>
-      <uni-collapse>
-        <uni-collapse-item v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem!.name"
-          class="item">
+        <uni-collapse-item v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem!.name" class="item">
           <view v-for="page in menuItem!.pages" :key="page!.path" class="uni-navigate-item" hover-class="is--active"
             @click="goPage(`/${page!.path}`)">
             <text class="uni-navigate-text">{{
                 page!.style["navigationBarTitleText"]
-              }}</text>
+            }}</text>
             <image :src="arrowRightIcon" class="uni-icon-size"></image>
           </view>
           <uni-collapse style="width: 100%" v-for="childMenu in menuItem!.children" :key="childMenu!.id">
@@ -41,7 +26,7 @@
                 :key="childPage!.path" @click="goPage(`/${childPage!.path}`)">
                 <text class="uni-navigate-text">{{
                     childPage!.style["navigationBarTitleText"]
-                  }}</text>
+                }}</text>
                 <image :src="arrowRightIcon" class="uni-icon-size"></image>
               </view>
             </uni-collapse-item>
@@ -66,268 +51,15 @@
   import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
   // #endif
 
-  type Page = {
-    name : string
-    enable ?: boolean
-    url ?: string.PageURIString
-  }
-  type ListItem = {
-    id : string
-    name : string
-    pages : Page[]
-    url ?: string
-    enable ?: boolean
-  }
   export default {
     data() {
       return {
         menu: menu as (MenuItem | null)[],
-        list: [
-          {
-            id: 'view',
-            name: '视图容器',
-            pages: [
-              {
-                name: 'view',
-              },
-              {
-                name: 'scroll-view',
-              },
-              {
-                name: 'swiper',
-              },
-              // #ifdef WEB
-              {
-                name: 'movable-view'
-              },
-              {
-                name: 'cover-view'
-              },
-              // #endif
-              {
-                name: 'list-view',
-              },
-              {
-                name: 'sticky-header',
-              },
-              {
-                name: 'sticky-section',
-              },
-              // #ifdef APP
-              {
-                name: 'nested-scroll-header',
-              },
-              {
-                name: 'nested-scroll-body',
-              },
-              // #endif
-            ] as Page[],
-          },
-          {
-            id: 'content',
-            name: '基础内容',
-            pages: [
-              {
-                name: 'text',
-              },
-              {
-                name: 'rich-text',
-                enable: true,
-              },
-              {
-                name: 'progress',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'form',
-            name: '表单组件',
-            pages: [
-              {
-                name: 'button',
-              },
-              {
-                name: 'checkbox',
-              },
-              {
-                name: 'form',
-              },
-              {
-                name: 'input',
-              },
-              // #ifdef WEB
-              {
-                name: 'editor',
-              },
-              {
-                name: 'label',
-              },
-              {
-                name: 'picker',
-              },
-              // #endif
-              {
-                name: 'picker-view',
-              },
-              {
-                name: 'radio',
-              },
-              {
-                name: 'slider',
-              },
-              {
-                name: 'slider-100',
-              },
-              {
-                name: 'switch',
-              },
-              {
-                name: 'textarea',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'nav',
-            name: '导航',
-            pages: [{
-              name: 'navigator',
-              enable: true
-            }] as Page[],
-          },
-          {
-            id: 'media',
-            name: '媒体组件',
-            pages: [
-              {
-                name: 'image',
-                enable: true,
-              },
-              {
-                name: 'video',
-                enable: true,
-              },
-              /* {
-                name: 'animation-view',
-                enable: false,
-              }, */
-            ] as Page[],
-          },
-          // #ifdef WEB
-          {
-            id: 'map',
-            name: '地图',
-            pages: [
-              {
-                name: 'map',
-              }
-            ] as Page[]
-          },
-          // #endif
-          // #ifdef APP || WEB
-          {
-            id: 'canvas',
-            name: '画布',
-            pages: [
-              {
-                name: 'canvas',
-                url: '/pages/component/canvas/canvas',
-              },
-              {
-                name: 'ball',
-                url: '/pages/component/canvas/canvas/ball',
-              }
-            ] as Page[]
-          },
-          // #endif
-          {
-            id: 'web-view',
-            name: '网页',
-            pages: [
-              {
-                name: '网络网页',
-                enable: true,
-                url: '/pages/component/web-view/web-view',
-              },
-              {
-                name: '本地网页',
-                enable: true,
-                url: '/pages/component/web-view-local/web-view-local',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'unicloud-db',
-            name: 'unicloud-db',
-            pages: [
-              {
-                name: '联系人',
-                enable: true,
-                url: '/pages/component/unicloud-db-contacts/list'
-              },
-              {
-                name: 'mixinDatacom',
-                enable: true,
-                url: '/pages/component/mixin-datacom/mixin-datacom'
-              }
-            ] as Page[],
-          },
-          /*
-            {
-              id: 'ad',
-              url: 'ad',
-              name: 'AD组件',
-              enable: false,
-              pages: [] as Page[]
-            }
-            */
-          {
-            id: 'general-attr-event',
-            name: '通用属性和事件',
-            pages: [
-              {
-                name: '通用属性',
-                url: '/pages/component/public-properties/public-properties',
-                enable: true,
-              },
-              {
-                name: '通用事件',
-                url: '/pages/component/public-events/public-events',
-                enable: true,
-              },
-              {
-                name: 'touch事件',
-                url: '/pages/component/public-events/touch-events',
-                enable: true,
-              },
-              {
-                name: 'Transition事件',
-                url: '/pages/component/public-events/transition-events',
-                enable: true,
-              },
-            ] as Page[],
-          }
-        ] as ListItem[],
-        arrowUpIcon: '/static/icons/arrow-up.png' as string.ImageURIString,
-        arrowDownIcon: '/static/icons/arrow-down.png' as string.ImageURIString,
         arrowRightIcon: '/static/icons/arrow-right.png' as string.ImageURIString,
         pageHiden: false
       }
     },
     methods: {
-      goDetailPage(e : Page) {
-        if (e.enable == false) {
-          uni.showToast({
-            title: '暂不支持',
-            icon: 'none'
-          })
-          return
-        }
-        const url =
-          e.url != null ? e.url! : `/pages/component/${e.name}/${e.name}`
-        uni.navigateTo({
-          url,
-        })
-      },
       goPage(url : string) {
         uni.navigateTo({ url })
       },
@@ -349,15 +81,10 @@
       checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
       // #endif
     },
-    onLoad() {
-      // console.log("component page onLoad")
-    },
     onShow() {
-      // console.log("component page onShow")
       this.pageHiden = false
     },
     onHide() {
-      // console.log("component page onHide")
       this.pageHiden = true
     },
     beforeUnmount() {

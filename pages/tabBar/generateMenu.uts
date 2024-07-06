@@ -1,32 +1,32 @@
 import { pages } from '@/target-pages.json'
 
 type PageGroup = {
-  id: string,
-  name: string,
-  index: number | null
+  id : string,
+  name : string,
+  index : number | null
 }
 
 type Page = {
-  path: string,
-  style: UTSJSONObject,
-  group?: PageGroup[] | null
+  path : string,
+  style : UTSJSONObject,
+  group ?: PageGroup[] | null
 }
 
 export type MenuItem = {
-  id: string,
-  name: string,
-  index: number,
-  children: (MenuItem | null)[],
-  pages: (Page | null)[]
+  id : string,
+  name : string,
+  index : number,
+  children : (MenuItem | null)[],
+  pages : (Page | null)[]
 }
 
-export function generateMenu(tabBarType: string): (MenuItem | null)[] {
-  let res: (MenuItem | null)[] = []
+export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
+  let res : (MenuItem | null)[] = []
 
-  const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page: Page): boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
+  const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page : Page) : boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
   tabBarPages.forEach(page => {
-    let menuItemArr: (MenuItem | null)[] = res
-    let currentMenu: MenuItem | null = null
+    let menuItemArr : (MenuItem | null)[] = res
+    let currentMenu : MenuItem | null = null
     const lastGroup = page.group![page.group!.length - 1]
     let hasPageGroup = false
     if (page.path.endsWith(camelToDash(lastGroup.name)) && page.group!.length > 1) {
@@ -61,7 +61,7 @@ export function generateMenu(tabBarType: string): (MenuItem | null)[] {
       fillPageArrayWithNull(currentMenu!.pages, pageIndex)
       if (currentMenu!.pages[pageIndex] == null) {
         currentMenu!.pages[pageIndex] = page
-      }else{
+      } else {
         currentMenu!.pages.push(page)
       }
     } else {
@@ -72,7 +72,7 @@ export function generateMenu(tabBarType: string): (MenuItem | null)[] {
   return removeNullItem(res)
 }
 
-function hasPageGroup(value: PageGroup[] | null): boolean {
+function hasPageGroup(value : PageGroup[] | null) : boolean {
   // #ifdef APP-ANDROID
   return value !== null
   // #endif
@@ -81,7 +81,7 @@ function hasPageGroup(value: PageGroup[] | null): boolean {
   // #endif
 }
 
-function isNumber(value: number | null): boolean {
+function isNumber(value : number | null) : boolean {
   // #ifdef APP-ANDROID
   return value !== null
   // #endif
@@ -90,41 +90,41 @@ function isNumber(value: number | null): boolean {
   // #endif
 }
 
-function camelToDash(camelStr: string): string {
+function camelToDash(camelStr : string) : string {
   return camelStr.replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
-function fillMenuArrayWithNull(arr: (MenuItem | null)[], index: number): void {
+function fillMenuArrayWithNull(arr : (MenuItem | null)[], index : number) : void {
   const len = arr.length
-  for (let i = 0;i <= index - (len - 1);i++) {
+  for (let i = 0; i <= index - (len - 1); i++) {
     arr.push(null)
   }
 }
 
-function fillPageArrayWithNull(arr: (Page | null)[], index: number): void {
+function fillPageArrayWithNull(arr : (Page | null)[], index : number) : void {
   const len = arr.length
-  for (let i = 0;i <= index - (len - 1);i++) {
+  for (let i = 0; i <= index - (len - 1); i++) {
     arr.push(null)
   }
 }
 
-function removeNullItem(arr: (MenuItem | null)[]): (MenuItem | null)[] {
-  const res = arr.filter((item: MenuItem | null): boolean => item !== null)
+function removeNullItem(arr : (MenuItem | null)[]) : (MenuItem | null)[] {
+  const res = arr.filter((item : MenuItem | null) : boolean => item !== null)
   res.forEach(menuItem => {
     addSetTabBarPage(menuItem!)
     // #ifdef APP-ANDROID
     menuItem.children = removeNullItem(menuItem.children)
-    menuItem.pages = menuItem.pages.filter((item: Page | null): boolean => item !== null)
+    menuItem.pages = menuItem.pages.filter((item : Page | null) : boolean => item !== null)
     // #endif
     // #ifndef APP-ANDROID
     menuItem!.children = removeNullItem(menuItem!.children)
-    menuItem!.pages = menuItem!.pages.filter((item: Page | null): boolean => item !== null)
+    menuItem!.pages = menuItem!.pages.filter((item : Page | null) : boolean => item !== null)
     // #endif
   })
   return res
 }
 
-function addSetTabBarPage(menuItem: MenuItem) {
+function addSetTabBarPage(menuItem : MenuItem) {
   const { id, name } = menuItem
   if (id == 'page' && name == '页面和路由') {
     menuItem.pages.push({
