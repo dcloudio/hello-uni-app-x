@@ -120,7 +120,7 @@ const pages = [
   // '/pages/API/get-element-by-id/get-element-by-id',
   // 单独测试例截图
   // '/pages/API/get-element-by-id/get-element-by-id-multiple-root-node',
-  '/pages/API/nodes-info/nodes-info',
+  '/pages/API/create-selector-query/create-selector-query',
   '/pages/API/storage/storage',
   // 单独测试例截图
   // '/pages/API/show-action-sheet/show-action-sheet',
@@ -315,13 +315,13 @@ if (isWeb) {
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
     '/pages/API/make-phone-call/make-phone-call',
-    '/pages/API/inner-audio/inner-audio',
-    '/pages/API/inner-audio/inner-audio-format',
-    '/pages/API/inner-audio/inner-audio-path',
+    '/pages/API/create-inner-audio-context/create-inner-audio-context',
+    '/pages/API/create-inner-audio-context/inner-audio-format',
+    '/pages/API/create-inner-audio-context/inner-audio-path',
     '/pages/API/clipboard/clipboard',
-    '/pages/API/on-compass-change/on-compass-change',
+    '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
-    '/pages/component/canvas/ball',
+    '/pages/component/canvas/canvas/ball',
     '/pages/template/browser-element/browser-element',
   )
 }

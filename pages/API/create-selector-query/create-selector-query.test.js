@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/nodes-info/nodes-info'
+const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query'
 
 const RECT_LEFT = 15;
 const RECT_WIDTH = 150;

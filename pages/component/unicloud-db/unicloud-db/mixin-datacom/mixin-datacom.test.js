@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/component/mixin-datacom/mixin-datacom'
+const PAGE_PATH = '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom'
 
 describe('mixin-datacom', () => {
   if (process.env.uniTestPlatformInfo.startsWith('web')) {
