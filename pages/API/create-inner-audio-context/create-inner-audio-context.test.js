@@ -6,7 +6,7 @@ describe('inner-audio', () => {
     return
   }
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/inner-audio/inner-audio')
+    page = await program.reLaunch('/pages/API/create-inner-audio-context/create-inner-audio-context')
     await page.waitFor('view');
   });
 
