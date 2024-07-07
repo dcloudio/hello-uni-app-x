@@ -268,7 +268,7 @@ const pages = [
   '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
-  '/pages/component/slider-100/slider-100',
+  '/pages/template/slider-100/slider-100',
 ]
 
 if (isApp && !isAppWebview) {
@@ -281,7 +281,7 @@ if (isApp && !isAppWebview) {
     '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
     '/pages/API/save-image-to-photos-album/save-image-to-photos-album',
     '/pages/API/save-video-to-photos-album/save-video-to-photos-album',
-    '/pages/API/facial-recognition-verify/facial-recognition-verify',
+    '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
     '/pages/API/get-univerify-manager/get-univerify-manager',
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
@@ -295,7 +295,7 @@ if (isAndroid && !isAppWebview) {
     '/pages/API/install-apk/install-apk',
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
-    '/pages/API/rewarded-video-ad/rewarded-video-ad',
+    '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',

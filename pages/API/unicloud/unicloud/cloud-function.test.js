@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/unicloud/unicloud/call-function'
+const PAGE_PATH = '/pages/API/unicloud/unicloud/cloud-function'
 
 describe('unicloud-call-function', () => {
   let page

@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/component/slider-100/slider-100'
+const PAGE_PATH = '/pages/template/slider-100/slider-100'
 
 describe('slider', () => {
   let page
