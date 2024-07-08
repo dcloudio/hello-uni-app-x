@@ -1,0 +1,96 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #ifdef APP-ANDROID -->
+    <button class="normal-button" type="default" @click="handleCreateChannel">
+      创建通知渠道
+    </button>
+    <button class="normal-button" type="default" @click="handleGetAllChannels">
+      获取所有通知渠道信息
+    </button>
+    <!-- #endif -->
+    <button class="normal-button" type="default" @click="handleCreateLocalNotification">
+      创建本地通知消息
+    </button>
+    <button class="normal-button" type="default" @click="handleSetBadge">
+      设置角标
+    </button>
+    <button class="normal-button" type="default" @click="handleCleanBadge">
+      清空角标
+    </button>
+    <button class="normal-button" type="default" @click="handleGetClientId">
+      获取cid
+    </button>
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  const handleCreateChannel = () => {
+    // #ifdef APP-ANDROID
+    const manager = uni.getChannelManager()
+    manager.setPushChannel({
+      channelId: "msg-pass",
+      channelDesc: "留言审核通过",
+    } as SetPushChannelOptions)
+    // #endif
+  }
+  const handleGetAllChannels = () => {
+    // #ifdef APP-ANDROID
+    const manager = uni.getChannelManager()
+    console.log("channels : " + manager.getAllChannels());
+    // #endif
+  }
+  const handleCreateLocalNotification = () => {
+    // #ifdef APP-ANDROID
+    if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+      // #endif
+      handleCreateChannel()
+      uni.createPushMessage({
+        title: "halo",
+        content: "world",
+        // cover:true,
+        channelId: "msg-pass",
+        when: Date.now() + 10000,
+        icon: "/static/uni.png",
+        // delay:5,
+        payload: {
+          pkey: "pvalue1"
+        },
+        category: "IM",
+        success(res) {
+          console.log("res: " + res);
+        },
+        fail(e) {
+          console.log("fail :" + e);
+        }
+      })
+      // #ifdef APP-ANDROID
+    } else {
+      uni.showToast({
+        title: "请在设置中开启通知权限",
+        icon: "error"
+      })
+    }
+    // #endif
+  }
+  const handleGetClientId = () => {
+    uni.getPushClientId({
+      complete(e : any) {
+        console.log(e);
+      }
+    })
+  }
+  const handleSetBadge = () => {
+    uni.setAppBadgeNumber(5)
+  }
+  const handleCleanBadge = () => {
+    uni.setAppBadgeNumber(0)
+  }
+</script>
+
+<style>
+  .normal-button {
+    width: 100%;
+  }
+</style>
