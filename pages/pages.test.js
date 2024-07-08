@@ -282,7 +282,8 @@ if (isApp && !isAppWebview) {
     '/pages/API/save-image-to-photos-album/save-image-to-photos-album',
     '/pages/API/save-video-to-photos-album/save-video-to-photos-album',
     '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
-    '/pages/API/get-univerify-manager/get-univerify-manager',
+    // 进入页面崩溃，暂时规避
+    // '/pages/API/get-univerify-manager/get-univerify-manager',
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
     '/pages/template/scroll-sticky/scroll-sticky',
