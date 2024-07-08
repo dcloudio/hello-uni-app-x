@@ -242,6 +242,11 @@ describe('event trigger', () => {
             })
           }
         } else if (isIos) {
+          // 规避系统授权弹框
+          await program.tap({
+            x: 100,
+            y: 500,
+          })
           await program.tap({
             x: 200,
             y: 400,
