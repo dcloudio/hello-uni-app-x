@@ -1,14 +1,9 @@
 describe('list-view-children-in-slot', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
-    it('dummyTest', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/list-view/list-view-children-in-slot')
     await page.waitFor('list-view')
+    await page.waitFor(300)
   })
 
   it('basic', async () => {

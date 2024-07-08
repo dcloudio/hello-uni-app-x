@@ -1,6 +1,6 @@
 const PAGE_PATH = '/pages/component/general-event/general-event'
 
-describe('event trigger sequence', () => {
+describe('event trigger', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
   const isIos = platformInfo.startsWith('ios')
@@ -222,7 +222,7 @@ describe('event trigger sequence', () => {
 
       if (isAndroid || isIos) {
         if (isAndroid) {
-          if (platformInfo.indexOf('6') != -1) {
+          if (platformInfo.indexOf('6') != -1 && platformInfo.indexOf('x86') == -1) {
             await program.tap({
               x: 200,
               y: 700,
@@ -242,6 +242,11 @@ describe('event trigger sequence', () => {
             })
           }
         } else if (isIos) {
+          // 规避系统授权弹框
+          await program.tap({
+            x: 100,
+            y: 500,
+          })
           await program.tap({
             x: 200,
             y: 400,

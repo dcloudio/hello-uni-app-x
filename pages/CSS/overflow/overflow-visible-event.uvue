@@ -24,9 +24,16 @@
       handleClickOverflowPart() {
         console.log("click");
         this.jest_result = true;
+        uni.showToast({"title":"点击红色区域"})
       },
-      handleTouchMoveOverflowPart() {
-        console.log("move");
+      handleTouchMoveOverflowPart(e:UniTouchEvent) {
+        console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY);
+      },
+      handleClick(str : string) {
+        console.log(`点击了 ${str} view`);
+        if (str == 'red') {
+          this.jest_result = true;
+        }
       },
       jest_getRect() {
         const rect = uni.getElementById('child')?.getBoundingClientRect()
@@ -56,5 +63,9 @@
     border-radius: 20px;
     overflow: visible;
     background-color: green;
+  }
+
+  .hover-class {
+    background-color: aqua;
   }
 </style>

@@ -1,0 +1,931 @@
+<template>
+  <view class="page" id="page-canvas">
+    <canvas id="canvas" class="canvas-element"></canvas>
+    <scroll-view class="scroll-view">
+      <view class="grid-view">
+        <view class="grid-item" v-for="(name, index) in names" :key="index">
+          <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</template>
+
+<script>
+  function hidpi(canvas : UniCanvasElement) {
+    const context = canvas.getContext("2d")!;
+    const dpr = uni.getSystemInfoSync().pixelRatio;
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    context.scale(dpr, dpr);
+  }
+
+  export default {
+    data() {
+      const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "pattern"]
+      const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
+      const API_STATE = ["beginPath", "closePath", "restore", "reset", "setTransform", "transform", "rotate", "resetTransform", "save", "scale", "translate"]
+      const API_PROPERTIES = ["setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit", "setFillStyle", "setStrokeStyle", "setGlobalAlpha", "lineDash", "linearGradient", "radialGradient", "textAlign"]
+      return {
+        title: 'Context2D',
+        names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText"] as string[],
+        canvasContext: null as CanvasRenderingContext2D | null,
+        canvasWidth: 0,
+        canvasHeight: 0,
+        image: null as Image | null,
+        // 仅测试
+        testToBlobResult: false,
+        testToDataURLResult: false
+      }
+    },
+    onReady() {
+      let canvas = uni.getElementById("canvas") as UniCanvasElement
+      this.canvasContext = canvas.getContext("2d");
+      hidpi(canvas);
+      this.canvasWidth = this.canvasContext!.canvas.width;
+      this.canvasHeight = this.canvasContext!.canvas.height;
+
+      // #ifdef WEB
+      canvas.toBlob((blob : Blob) => {
+        this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
+      }, 'image/jpeg', 0.95)
+      this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
+      // #endif
+    },
+    methods: {
+      handleCanvasButton(name : string) {
+        switch (name) {
+          case "arc":
+            this.arc();
+            break;
+          case "arcTo":
+            this.arcTo();
+            break;
+          case "beginPath":
+            this.beginPath();
+            break;
+          case "bezierCurveTo":
+            this.bezierCurveTo();
+            break;
+          case "clearRect":
+            this.clearRect();
+            break;
+          case "clip":
+            this.clip();
+            break;
+          case "closePath":
+            this.closePath();
+            break;
+          case "pattern":
+            this.pattern()
+            break;
+          case "linearGradient":
+            this.createLinearGradient();
+            break;
+          case "radialGradient":
+            this.createRadialGradient();
+            break;
+          case "fill":
+            this.fill();
+            break;
+          case "fillRect":
+            this.fillRect();
+            break;
+          case "fillText":
+            this.fillText();
+            break;
+          case "lineTo":
+            this.lineTo();
+            break;
+          case "moveTo":
+            this.moveTo();
+            break;
+          case "quadraticCurve":
+            this.quadraticCurveTo();
+            break;
+          case "rect":
+            this.rect();
+            break;
+          case "reset":
+            this.reset();
+            break;
+          case "resetTransform":
+            this.resetTransform();
+            break;
+          case "restore":
+            this.restore();
+            break;
+          case "rotate":
+            this.rotate();
+            break;
+          case "save":
+            this.save();
+            break;
+          case "scale":
+            this.scale();
+            break;
+          case "setTransform":
+            this.setTransform();
+            break;
+          case "stroke":
+            this.stroke();
+            break;
+          case "strokeRect":
+            this.strokeRect();
+            break;
+          case "strokeText":
+            this.strokeText();
+            break;
+          case "transform":
+            this.transform();
+            break;
+          case "translate":
+            this.translate();
+            break;
+          case "drawImageLocal":
+            this.drawImageLocal()
+            break;
+          case "drawImage":
+            this.drawImage();
+            break;
+          case "measureText":
+            this.measureText();
+            break;
+          case "setFillStyle":
+            this.setFillStyle();
+            break;
+          case "setStrokeStyle":
+            this.setStrokeStyle();
+            break;
+          case "setGlobalAlpha":
+            this.setGlobalAlpha();
+            break;
+          case "setFontSize":
+            this.setFontSize();
+            break;
+          case "setLineCap":
+            this.setLineCap();
+            break;
+          case "setLineJoin":
+            this.setLineJoin();
+            break;
+          case "lineDash":
+            this.lineDash();
+            break;
+          case "setLineWidth":
+            this.setLineWidth();
+            break;
+          case "setMiterLimit":
+            this.setMiterLimit();
+            break;
+          case "textAlign":
+            this.textAlign();
+          default:
+            break;
+        }
+      },
+      arc() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.lineWidth = 2
+        context.arc(75, 75, 50, 0, Math.PI * 2, true)
+        context.moveTo(110, 75)
+        context.arc(75, 75, 35, 0, Math.PI, false)
+        context.moveTo(65, 65)
+        context.arc(60, 65, 5, 0, Math.PI * 2, true)
+        context.moveTo(95, 65)
+        context.arc(90, 65, 5, 0, Math.PI * 2, true)
+        context.stroke()
+
+        context.restore()
+      },
+      arcTo() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.moveTo(150, 20)
+        context.arcTo(150, 100, 50, 20, 30)
+        context.stroke()
+
+        context.fillStyle = "blue"
+        // base point
+        context.fillRect(150, 20, 10, 10)
+
+        context.fillStyle = "red"
+        // control point one
+        context.fillRect(150, 100, 10, 10)
+        // control point two
+        context.fillRect(50, 20, 10, 10)
+        //
+        context.setLineDash([5, 5])
+        context.moveTo(150, 20)
+        context.lineTo(150, 100)
+        context.lineTo(50, 20)
+        context.stroke()
+        context.beginPath()
+        context.arc(120, 38, 30, 0, 2 * Math.PI, true)
+        context.stroke()
+
+        context.restore()
+      },
+      beginPath() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // First path
+        context.beginPath()
+        context.strokeStyle = "blue"
+        context.moveTo(20, 20)
+        context.lineTo(200, 20)
+        context.stroke()
+
+        // Second path
+        context.beginPath()
+        context.strokeStyle = "green"
+        context.moveTo(20, 20)
+        context.lineTo(120, 120)
+        context.stroke()
+
+        context.restore()
+      },
+      textAlign() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.moveTo(150, 0)
+        context.lineTo(150, 150)
+        context.stroke()
+
+        context.font = "30px serif"
+
+        context.textAlign = "left"
+        context.fillText("left-aligned", 150, 40)
+
+        context.textAlign = "center"
+        context.fillText("center-aligned", 150, 85)
+
+        context.textAlign = "right"
+        context.fillText("right-aligned", 150, 130)
+
+        context.restore()
+      },
+      bezierCurveTo() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.moveTo(50, 20)
+        context.bezierCurveTo(230, 30, 150, 60, 50, 100)
+        context.stroke()
+
+        context.fillStyle = "blue"
+        // start point
+        context.fillRect(50, 20, 10, 10)
+        // end point
+        context.fillRect(50, 100, 10, 10)
+
+        context.fillStyle = "red"
+        // control point one
+        context.fillRect(230, 30, 10, 10)
+        // control point two
+        context.fillRect(150, 70, 10, 10)
+
+        context.restore()
+      },
+      clearRect() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // 绘制黄色背景
+        context.beginPath()
+        context.fillStyle = "#ff6"
+        context.fillRect(0, 0, 300, 150)
+
+        // 绘制蓝色三角形
+        context.beginPath()
+        context.fillStyle = "blue"
+        context.moveTo(20, 20)
+        context.lineTo(180, 20)
+        context.lineTo(130, 130)
+        context.closePath()
+        context.fill()
+
+        // 清除一部分画布
+        context.clearRect(10, 10, 120, 100)
+
+        context.restore()
+      },
+      clip() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Create circular clipping region
+        context.beginPath();
+        context.arc(100, 75, 50, 0, Math.PI * 2, true)
+        context.clip()
+
+        // Draw stuff that gets clipped
+        context.fillStyle = "blue"
+        context.fillRect(0, 0, 300, 150)
+        context.fillStyle = "orange"
+        context.fillRect(0, 0, 100, 100)
+
+        context.restore()
+      },
+      closePath() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.lineWidth = 10
+        context.moveTo(20, 20)
+        context.lineTo(20, 100)
+        context.lineTo(70, 100)
+        context.closePath()
+        context.stroke()
+
+        context.restore()
+      },
+      pattern() {
+        const context = this.canvasContext!
+
+        this.image = new Image(100, 100)
+        this.image!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png';
+        // this.image!.src = 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createPattern/canvas_createpattern.png';
+        // Only use the image after it's loaded
+        this.image!.onload = () => {
+          context.save()
+          context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+          const pattern = context.createPattern(this.image!, "repeat")
+          context.fillStyle = pattern
+          context.fillRect(0, 0, 64, 64)
+          context.restore()
+        };
+      },
+      createLinearGradient() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Create a linear gradient
+        // The start gradient point is at x=20, y=0
+        // The end gradient point is at x=220, y=0
+        const gradient = context.createLinearGradient(20, 0, 220, 0)
+
+        // Add three color stops
+        gradient.addColorStop(0, "green")
+        gradient.addColorStop(0.5, "cyan")
+        gradient.addColorStop(1, "green")
+
+        // Set the fill style and draw a rectangle
+        context.fillStyle = gradient
+        context.fillRect(20, 20, 200, 100)
+
+        context.restore()
+      },
+      createRadialGradient() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Create a radial gradient
+        // The inner circle is at x=110, y=90, with radius=30
+        // The outer circle is at x=100, y=100, with radius=70
+        const gradient = context.createRadialGradient(110, 90, 30, 100, 100, 70)
+
+        // Add three color stops
+        gradient.addColorStop(0, "pink")
+        gradient.addColorStop(0.9, "white")
+        gradient.addColorStop(1, "green")
+
+        // Set the fill style and draw a rectangle
+        context.fillStyle = gradient
+        context.fillRect(20, 20, 160, 160)
+
+        context.restore()
+      },
+      fill() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.rect(20, 20, 150, 100)
+        context.strokeStyle = '#00ff00'
+        context.fill()
+
+        context.restore()
+      },
+      fillRect() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.fillStyle = "green"
+        context.fillRect(20, 10, 150, 100)
+
+        context.restore()
+      },
+      fillText() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        console.log("fillText")
+        context.strokeStyle = '#ff0000'
+
+        context.beginPath()
+        context.moveTo(0, 10)
+        context.lineTo(300, 10)
+        context.stroke()
+        // context.save()
+        // context.scale(1.5, 1.5)
+        // context.translate(20, 20)
+        // context.setFontSize(10)
+        context.fillText('Hello World', 0, 30, 300)
+        // context.setFontSize(20)
+        context.fillText('Hello World', 100, 30, 300)
+
+        // context.restore()
+
+        context.beginPath()
+        context.moveTo(0, 30)
+        context.lineTo(300, 30)
+        context.stroke()
+
+        context.restore()
+      },
+      moveTo() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(300, 150)
+        context.stroke()
+
+        context.restore()
+      },
+      lineTo() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.moveTo(20, 20)
+        context.lineTo(20, 100)
+        context.lineTo(70, 100)
+        context.stroke()
+
+        context.restore()
+      },
+      stroke() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.moveTo(20, 20)
+        context.lineTo(20, 100)
+        context.lineTo(70, 100)
+        context.strokeStyle = '#00ff00'
+        context.stroke()
+
+        context.restore()
+      },
+      strokeRect() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.strokeStyle = "green"
+        context.strokeRect(20, 10, 160, 100)
+
+        context.restore()
+      },
+      strokeText() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.font = "10px serif"
+        context.strokeText("Hello world", 50, 90)
+
+        context.font = "30px serif"
+        context.strokeStyle = "blue"
+        context.strokeText("Hello world", 50, 100)
+
+        context.restore()
+      },
+      setTransform() {
+      },
+      rotate() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Point of transform origin
+        context.arc(0, 0, 5, 0, 2 * Math.PI, true)
+        context.fillStyle = "blue"
+        context.fill()
+
+        // Non-rotated rectangle
+        context.fillStyle = "gray"
+        context.fillRect(100, 0, 80, 20)
+        // Rotated rectangle
+        context.rotate((45 * Math.PI) / 180)
+        context.fillStyle = "red"
+        context.fillRect(100, 0, 80, 20)
+
+        // Reset transformation matrix to the identity matrix
+        context.setTransform(1, 0, 0, 1, 0, 0)
+
+        context.restore()
+      },
+      scale() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Scaled rectangle
+        context.scale(9, 3)
+        context.fillStyle = "red"
+        context.fillRect(10, 10, 8, 20)
+
+        // Reset current transformation matrix to the identity matrix
+        context.setTransform(1, 0, 0, 1, 0, 0)
+
+        // Non-scaled rectangle
+        context.fillStyle = "gray"
+        context.fillRect(10, 10, 8, 20)
+
+        context.restore()
+      },
+      reset() {
+        const context = this.canvasContext!
+
+        // Set line width
+        context.lineWidth = 10
+        context.strokeStyle = '#00ff00'
+        // Stroke rect outline
+        context.strokeRect(50, 50, 150, 100)
+
+        // Create filled text
+        context.font = "50px serif";
+        context.fillText("Rect!", 70, 110)
+
+
+        context.lineWidth = 5
+
+        // Stroke out circle
+        context.beginPath();
+        context.arc(300, 100, 50, 0, 2 * Math.PI)
+        context.stroke();
+
+        // Create filled text
+        context.font = "25px sans-serif"
+        context.fillText("Circle!", 265, 100)
+        context.reset()
+
+        hidpi(uni.getElementById("canvas") as UniCanvasElement)
+      },
+      translate() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Moved square
+        context.translate(110, 30)
+        context.fillStyle = "red"
+        context.fillRect(0, 0, 80, 80)
+
+        // Reset current transformation matrix to the identity matrix
+        context.setTransform(1, 0, 0, 1, 0, 0)
+
+        // Unmoved square
+        context.fillStyle = "gray"
+        context.fillRect(0, 0, 80, 80)
+
+        context.restore()
+      },
+      save() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.beginPath()
+        context.strokeStyle = '#00ff00'
+        context.scale(2, 2)
+        context.strokeStyle = '#ff0000'
+        context.rect(0, 0, 100, 100)
+        context.stroke()
+        context.restore()
+
+        context.save()
+        context.rect(0, 0, 50, 50)
+        context.stroke()
+
+        context.restore()
+      },
+      restore() {
+        const context = this.canvasContext!;
+        [3, 2, 1].forEach((item) => {
+          context.save()
+          context.beginPath()
+          context.scale(item, item)
+          context.rect(10, 10, 100, 100)
+          context.stroke()
+          context.restore()
+        })
+      },
+      drawImageLocal() {
+        const context = this.canvasContext!
+
+        let image = new Image(100, 100)
+        image.src = '../../static/1.jpg'
+        image.onload = () => {
+          context.drawImage(image, 0, 0, 100, 100)
+        }
+      },
+      drawImage() {
+        const context = this.canvasContext!
+
+        let image = new Image(100, 100);
+        image.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png'
+        image.onload = () => {
+          context.drawImage(image, 0, 0, 100, 100)
+          uni.getElementById("page-canvas")?.appendChild(image)
+        }
+      },
+      rect() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.beginPath()
+        context.rect(20, 20, 150, 100)
+        context.stroke()
+
+        context.restore()
+      },
+      quadraticCurveTo() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Quadratic Bézier curve
+        context.beginPath()
+        context.moveTo(50, 20)
+        context.quadraticCurveTo(230, 30, 50, 100)
+        context.stroke()
+
+        // Start and end points
+        context.fillStyle = "blue"
+        context.beginPath()
+        context.arc(50, 20, 5, 0, 2 * Math.PI, true) // Start point
+        context.arc(50, 100, 5, 0, 2 * Math.PI, true) // End point
+        context.fill();
+
+        // Control point
+        context.fillStyle = "red"
+        context.beginPath()
+        context.arc(230, 30, 5, 0, 2 * Math.PI, true)
+        context.fill()
+
+        context.restore()
+      },
+      resetTransform() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // Draw a rotated rectangle
+        context.rotate((45 * Math.PI) / 180)
+        context.fillRect(60, 0, 100, 30)
+
+        // Reset transformation matrix to the identity matrix
+        context.resetTransform()
+        context.fillStyle = "red"
+        context.fillRect(60, 0, 100, 30)
+
+        context.restore()
+      },
+      transform() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.transform(1, 0.2, 0.8, 1, 0, 0)
+        context.fillRect(0, 0, 100, 100)
+
+        context.restore()
+      },
+      setFillStyle() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+          context.fillStyle = item
+          context.beginPath()
+          context.rect(0 + 75 * index, 0, 50, 50)
+          context.fill()
+        })
+
+        context.restore()
+      },
+      setStrokeStyle() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
+          context.strokeStyle = item
+          context.beginPath()
+          context.rect(0 + 75 * index, 0, 50, 50)
+          context.stroke()
+        })
+
+        context.restore()
+      },
+      setGlobalAlpha() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.fillStyle = '#000000';
+        [1, 0.5, 0.1].forEach((item : number, index : number) => {
+          context.globalAlpha = item
+          context.beginPath()
+          context.rect(0 + 75 * index, 0, 50, 50)
+          context.fill()
+        })
+        context.globalAlpha = 1
+
+        context.restore()
+      },
+      setFontSize() {
+        const context = this.canvasContext!
+
+        context.save();
+        [10, 20, 30, 40].forEach((item : number, index : number) => {
+          // context.fontSize(item)
+          context.fillText('Hello, world', 20, 20 + 40 * index)
+        })
+
+        context.restore()
+      },
+      setLineCap() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.lineWidth = 10;
+        ['butt', 'round', 'square'].forEach((item : string, index : number) => {
+          context.beginPath()
+          context.lineCap = item
+          context.moveTo(20, 20 + 20 * index)
+          context.lineTo(100, 20 + 20 * index)
+          context.stroke()
+        })
+
+        context.restore()
+      },
+      setLineJoin() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.lineWidth = 10;
+        ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
+          context.beginPath()
+          context.lineJoin = item
+          context.moveTo(20 + 80 * index, 20)
+          context.lineTo(100 + 80 * index, 50)
+          context.lineTo(20 + 80 * index, 100)
+          context.stroke()
+        })
+
+        context.restore()
+      },
+      setLineWidth() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+          context.beginPath()
+          context.lineWidth = item
+          context.moveTo(20, 20 + 20 * index)
+          context.lineTo(100, 20 + 20 * index)
+          context.stroke()
+        })
+
+        context.restore()
+      },
+      lineDash() {
+        const context = this.canvasContext!
+
+        context.save();
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.setLineDash([4, 16])
+
+        // Dashed line with no offset
+        context.beginPath()
+        context.moveTo(0, 50)
+        context.lineTo(300, 50)
+        context.stroke()
+
+        // Dashed line with offset of 4
+        context.beginPath()
+        context.strokeStyle = "red"
+        context.lineDashOffset = 4
+        context.moveTo(0, 100)
+        context.lineTo(300, 100)
+        context.stroke()
+
+        context.restore()
+      },
+      setMiterLimit() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        context.lineWidth = 4;
+        [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
+          context.beginPath()
+          context.miterLimit = item
+          context.moveTo(20 + 80 * index, 20)
+          context.lineTo(100 + 80 * index, 50)
+          context.lineTo(20 + 80 * index, 100)
+          context.stroke()
+        })
+
+        context.restore()
+      },
+      measureText() {
+        const context = this.canvasContext!
+
+        context.save()
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        const text = "uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎"
+
+        context.font = "20px 宋体"
+
+        context.fillStyle = "red"
+        context.fillText(text, 0, 60)
+        const textMetrics = context.measureText(text)
+        context.strokeText(text, 40, 100)
+        context.fillText("measure text width:" + textMetrics.width, 40, 80)
+
+        context.restore()
+      }
+    }
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .scroll-view {
+    flex: 1;
+    padding-bottom: 50px;
+  }
+
+  .canvas-element {
+    width: 100%;
+    height: 250px;
+    background-color: #ffffff;
+  }
+
+  .grid-view {
+    padding: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .grid-item {
+    width: 50%;
+    padding: 5px;
+  }
+
+  .btn-to-image {
+    margin: 10px;
+  }
+</style>

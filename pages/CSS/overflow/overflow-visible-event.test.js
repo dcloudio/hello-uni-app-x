@@ -18,6 +18,8 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
   beforeEach(async () => {
     await page.setData({
       jest_result: false,
+      jest_click_x: -1,
+      jest_click_y: -1
     })
   });
 
