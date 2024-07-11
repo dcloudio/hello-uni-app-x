@@ -125,22 +125,20 @@ describe('component-native-video', () => {
       fullScreen: true,
       direction: 'horizontal'
     });
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    const infos = process.env.uniTestPlatformInfo.split(' ');
+    const version = parseInt(infos[infos.length - 1]);
+    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
       await page.waitFor(5000);
       await program.adbCommand('input tap 10 10');
       start = Date.now();
       await page.waitFor(async () => {
         return (await page.data('eventControlstoggle')) && (await page.data('eventFullscreenclick')) || (Date.now() - start > 500);
       });
-      const infos = process.env.uniTestPlatformInfo.split(' ');
-      const version = parseInt(infos[infos.length - 1]);
-      if (version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
-        expect(await page.data('eventControlstoggle')).toEqual({
-          tagName: 'VIDEO',
-          type: 'controlstoggle',
-          show: true
-        });
-      }
+      expect(await page.data('eventControlstoggle')).toEqual({
+        tagName: 'VIDEO',
+        type: 'controlstoggle',
+        show: true
+      });
       const res = await program.adbCommand('wm size');
       const width = res.data.split(' ').at(-1).split('x')[0];
       const height = res.data.split(' ').at(-1).split('x')[1];
