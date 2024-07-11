@@ -7,6 +7,7 @@ describe('component-native-video', () => {
     return
   }
   let page;
+  let start = 0;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/video/video');
     if(process.env.uniTestPlatformInfo.startsWith('web')){
@@ -52,7 +53,10 @@ describe('component-native-video', () => {
       autoTest: true
     });
     await page.callMethod('play');
-    await page.waitFor(100);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventPlay')) || (Date.now() - start > 500);
+    });
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       // expect(await page.data('eventPlay')).toEqual({
       //   type: 'play'
@@ -65,7 +69,10 @@ describe('component-native-video', () => {
     }
 
     await page.callMethod('pause');
-    await page.waitFor(100);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventPause')) || (Date.now() - start > 500);
+    });
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       // expect(await page.data('eventPause')).toEqual({
       //   type: 'pause'
@@ -80,7 +87,7 @@ describe('component-native-video', () => {
     await page.callMethod('play');
   });
 
-  it('test event waiting progress timeupdate', async () => {
+  it('test event waiting progress', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return
     }
@@ -88,28 +95,19 @@ describe('component-native-video', () => {
       pos: 10
     });
     await page.callMethod('seek');
-    await page.waitFor(100);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() - start > 1000);
+    });
     expect(await page.data('eventWaiting')).toEqual({
       tagName: 'VIDEO',
       type: 'waiting'
     });
-    await page.waitFor(200);
     expect(await page.data('eventProgress')).toEqual({
       tagName: 'VIDEO',
       type: 'progress',
       isBufferedValid: true
     });
-    const infos = process.env.uniTestPlatformInfo.split(' ');
-    const version = parseInt(infos[infos.length - 1]);
-    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
-      await page.waitFor(200);
-      expect(await page.data('eventTimeupdate')).toEqual({
-        tagName: 'VIDEO',
-        type: 'timeupdate',
-        currentTime: 10,
-        duration: 121
-      });
-    }
   });
 
   it('test event fullscreenchange controlstoggle fullscreenclick', async () => {
@@ -117,7 +115,10 @@ describe('component-native-video', () => {
       return;
     }
     await page.callMethod('requestFullScreen');
-    await page.waitFor(500);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventFullscreenchange')) || (Date.now() - start > 1000);
+    });
     expect(await page.data('eventFullscreenchange')).toEqual({
       tagName: 'VIDEO',
       type: 'fullscreenchange',
@@ -127,7 +128,10 @@ describe('component-native-video', () => {
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
       await page.waitFor(5000);
       await program.adbCommand('input tap 10 10');
-      await page.waitFor(100);
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventControlstoggle')) && (await page.data('eventFullscreenclick')) || (Date.now() - start > 500);
+      });
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
       if (version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
@@ -154,7 +158,7 @@ describe('component-native-video', () => {
     await page.callMethod('exitFullScreen');
   });
 
-  it('test event ended', async () => {
+  it('test event ended timeupdate', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return
     }
@@ -162,11 +166,28 @@ describe('component-native-video', () => {
       pos: 120
     });
     await page.callMethod('seek');
-    await page.waitFor(2500);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventEnded')) || (Date.now() - start > 3000);
+    });
     expect(await page.data('eventEnded')).toEqual({
       tagName: 'VIDEO',
       type: 'ended'
     });
+    const infos = process.env.uniTestPlatformInfo.split(' ');
+    const version = parseInt(infos[infos.length - 1]);
+    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventTimeupdate')) || (Date.now() - start > 500);
+      });
+      expect(await page.data('eventTimeupdate')).toEqual({
+        tagName: 'VIDEO',
+        type: 'timeupdate',
+        currentTime: 121,
+        duration: 121
+      });
+    }
   });
 
   it('test event error', async () => {
@@ -177,7 +198,10 @@ describe('component-native-video', () => {
     await page.setData({
       src: 'invalid url'
     });
-    await page.waitFor(300);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventError')) || (Date.now() - start > 1000);
+    });
     expect(await page.data('eventError')).toEqual({
       tagName: 'VIDEO',
       type: 'error',

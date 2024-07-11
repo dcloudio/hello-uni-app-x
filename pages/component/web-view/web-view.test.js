@@ -3,6 +3,7 @@
 describe('component-native-web-view', () => {
   if (!process.env.uniTestPlatformInfo.startsWith('web') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let page;
+    let start = 0;
     beforeAll(async () => {
       page = await program.reLaunch('/pages/component/web-view/web-view');
       await page.waitFor(3000);
@@ -43,7 +44,10 @@ describe('component-native-web-view', () => {
         x: 1,
         y: (info.statusBarHeight + 44) * info.pixelRatio + 1
       });
-      await page.waitFor(100);
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventTouchstart')) && (await page.data('eventTap')) || (Date.now() - start > 500);
+      });
       expect(await page.data('eventTouchstart')).toEqual({
         clientX: 1,
         clientY: 1
@@ -60,7 +64,10 @@ describe('component-native-web-view', () => {
         x: 10,
         y: (info.statusBarHeight + 44) * info.pixelRatio + 10
       });
-      await page.waitFor(100);
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventTouchstart')) && (await page.data('eventTap')) || (Date.now() - start > 500);
+      });
       expect(await page.data('eventTouchstart')).toEqual({
         clientX: 1,
         clientY: 1
@@ -76,7 +83,10 @@ describe('component-native-web-view', () => {
 
     it('test event loading load', async () => {
       await page.callMethod('reload');
-      await page.waitFor(100);
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventLoading')) || (Date.now() - start > 500);
+      });
       if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
         expect(await page.data('eventLoading')).toEqual({
           type: 'loading',
@@ -89,8 +99,10 @@ describe('component-native-web-view', () => {
           src: 'https://www.dcloud.io/'
         });
       }
-
-      await page.waitFor(1000);
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventLoad')) || (Date.now() - start > 5000);
+      });
       if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
          expect(await page.data('eventLoad')).toEqual({
            type: 'load',
@@ -103,7 +115,6 @@ describe('component-native-web-view', () => {
           src: 'https://www.dcloud.io/'
         });
       }
-
     });
 
     it('test event error', async () => {
@@ -113,7 +124,10 @@ describe('component-native-web-view', () => {
         await page.setData({
           src: 'https://www.dclou.io/uni-app-x'
         });
-        await page.waitFor(500);
+        start = Date.now();
+        await page.waitFor(async () => {
+          return (await page.data('eventError')) || (Date.now() - start > 1000);
+        });
         expect(await page.data('eventError')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'error',

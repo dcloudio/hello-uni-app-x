@@ -3,6 +3,7 @@
 describe('component-native-web-view', () => {
   if (!process.env.uniTestPlatformInfo.startsWith('web') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     let page;
+    let start = 0;
     beforeAll(async () => {
       page = await program.reLaunch('/pages/component/web-view/web-view/web-view-local');
       await page.waitFor(1000);
@@ -27,7 +28,10 @@ describe('component-native-web-view', () => {
         autoTest: true
       });
       await page.callMethod('testEventDownload');
-      await page.waitFor(500);
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventDownload')) || (Date.now() - start > 1000);
+      });
       if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
         // expect(await page.data('eventDownload')).toEqual({
         //   tagName: 'WEB-VIEW',
@@ -70,7 +74,10 @@ describe('component-native-web-view', () => {
       const version = parseInt(infos[infos.length - 1]);
       if (process.env.uniTestPlatformInfo.startsWith('android') && version > 6) {
         await page.callMethod('testEventMessage');
-        await page.waitFor(200);
+        start = Date.now();
+        await page.waitFor(async () => {
+          return (await page.data('eventMessage')) || (Date.now() - start > 500);
+        });
         expect(await page.data('eventMessage')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'message',
