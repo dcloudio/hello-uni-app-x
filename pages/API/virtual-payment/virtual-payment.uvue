@@ -1,38 +1,41 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
-    <page-head title="苹果内购支付"></page-head>
-    <view style="padding-left: 20px; padding-right: 20px;">
-      <text>
-        requestVirtualPayment api 适用于消耗性类型、非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
-        1. 消耗性类型：该类型的产品可以设置购买数量，默认是1，最大值是10； \n
-        2. 非消耗性类型、自动续期订阅类型、非自动续期订阅类型: 这些型的产品购买数量设置无效，数量只能是1。
-      </text>
-      <button style="margin-top: 20px;" type="primary" v-for="(item,index) in productList" :key="index"
-        @click="requestVirtualPayment(item)">{{item.name}}</button>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;">
+	<!-- #endif -->
+		<page-head title="苹果内购支付"></page-head>
+		<view style="padding-left: 20px; padding-right: 20px;">
+			<text>
+				requestVirtualPayment api 适用于消耗性类型、非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
+				1. 消耗性类型：该类型的产品可以设置购买数量，默认是1，最大值是10； \n
+				2. 非消耗性类型、自动续期订阅类型、非自动续期订阅类型: 这些类型的产品购买数量设置无效，数量只能是1。
+			</text>
+			<button style="margin-top: 20px;" type="primary" v-for="(item,index) in productList" :key="index"
+				@click="requestVirtualPayment(item)">{{item.name}}</button>
 
-      <text>
-        \nrestoreCompletedTransactions api 适用于非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
-        1. 非消耗性类型: 返回每个已购买的非消耗性类型产品的购买记录；\n
-        2. 自动续期订阅类型: 返回每个已购买的自动续期订阅类型产品的最新购买记录；\n
-        3. 非自动续期订阅类型: 返回每个已购买的非自动续期订阅类型产品的最新购买记录。\n
-        Note: 不能用来恢复消耗性类型的购买记录。
-      </text>
-      <button style="margin-top: 20px;" type="primary" @click="restoreCompletedTransactions">恢复购买订单列表</button>
+			<text>
+				\nrestoreCompletedTransactions api 适用于非消耗性类型、自动续期订阅类型、非自动续期订阅类型产品的购买。\n\n
+				1. 非消耗性类型: 返回每个已购买的非消耗性类型产品的购买记录；\n
+				2. 自动续期订阅类型: 返回每个已购买的自动续期订阅类型产品的最新购买记录，沙盒账号最多可自动续订 12 次；\n
+				3. 非自动续期订阅类型: 返回每个已购买的非自动续期订阅类型产品的最新购买记录, 该类型订阅可以连续多次购买，开发者需要自己的后台计算产品过期的时间。\n
+				Note: 不能用来恢复消耗性类型的购买记录。
+			</text>
+			<button style="margin-top: 20px;" type="primary" @click="restoreCompletedTransactions">恢复购买订单列表</button>
 
-      <text>
-        \ngetUnfinishedTransactions api 适用于获取未完成的各种类型产品的购买记录（用来防止丢单）。\n\n
-        1. 比如用户点击购买已经付款成功，但因网络、手机没电关机等特殊情况，Apple IAP 没有返回客户端对应的购买凭证，从而导致无法finish该交易导致的丢单，可以在需要的地方调用该api获得此类未finished的记录; \n
-        2. 针对消耗性类型产品交易，只能通过该api获取未finished的交易，防止丢单；\n
-        3. 对于其他类型产品未finished交易, 不仅可以通过该api获取，也可以通过restoreCompletedTransactions api（也可以获取已经finished的交易）获取；
-      </text>
-      <button style="margin-top: 20px; margin-bottom: 50px;" type="primary" @click="getUnfinishedTransactions">获取未结束的订单列表</button>
-    </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+			<text>
+				\ngetUnfinishedTransactions api 适用于获取未完成的各种类型产品的购买记录（用来防止丢单）。\n\n
+				1. 比如用户点击购买已经付款成功，但因网络、手机没电关机等特殊情况，Apple IAP
+				没有返回客户端对应的购买凭证，从而导致无法finish该交易导致的丢单，可以在需要的地方调用该api获得此类未finished的交易记录; \n
+				2. 针对消耗性类型产品交易，只能通过该api获取未finished的交易，防止丢单；\n
+				3. 对于其他类型产品未finished交易, 不仅可以通过该api获取，也可以通过restoreCompletedTransactions api (也可获取已经finished的交易)获取；
+			</text>
+			<button style="margin-top: 20px; margin-bottom: 50px;" type="primary"
+				@click="getUnfinishedTransactions">获取未结束的订单列表</button>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
+
 
 <script>
   export type PayItem = { id : string, name : string, quantity ?: number }
@@ -43,34 +46,71 @@
       }
     },
     onLoad: function () {
-      this.productList.push({
-        name: '消耗性产品：个人赞助1元',
-        id: "io.dcloud.uniappx.consumable.sponsor1",
-        quantity: 5
-      } as PayItem);
+			this.productList.push({
+				name: '消耗性产品：个人赞助1元',
+				id: this.isDebug() ? "uniappx.consumable.sponsor_1" : "uniappx.consumable.sponsor1",
+				quantity: 5
+			} as PayItem);
 
-      this.productList.push({
-        name: '消耗性产品：金牌赞助50元',
-        id: "io.dcloud.uniappx.consumable.sponsor50",
-        quantity: 1
-      } as PayItem);
+			this.productList.push({
+				name: '消耗性产品：金牌赞助50元',
+				id: this.isDebug() ? "uniappx.consumable.sponsor_50" : "uniappx.consumable.sponsor50",
+				quantity: 1
+			} as PayItem);
 
-      this.productList.push({
-        name: '非消耗性产品: 赞助特效1元',
-        id: "io.dcloud.uniappx.nonconsumable.skin"
-      } as PayItem);
+			this.productList.push({
+				name: '非消耗性产品: 赞助特效1元',
+				id: this.isDebug() ? "uniappx.nonconsumable.sponsorskin_1" : "uniappx.nonconsumable.sponsorskin1"
+			} as PayItem);
 
-      this.productList.push({
-        name: '自动续期订阅产品：每月定期赞助1元',
-        id: "io.dcloud.uniappx.autorenewable.monthly"
-      } as PayItem);
+			this.productList.push({
+				name: '自动续期订阅产品：每月定期赞助1元',
+				id: this.isDebug() ? "uniappx.autorenewable.monthly_1" : "uniappx.autorenewable.monthly1"
+			} as PayItem);
 
-      this.productList.push({
-        name: '非自动续期订阅产品：月赞助1元',
-        id: "io.dcloud.uniappx.nonrenewable.week"
-      } as PayItem);
+			this.productList.push({
+				name: '非自动续期订阅产品：月赞助1元',
+				id: this.isDebug() ? "uniappx.nonrenewable.monthly_1" : "uniappx.nonrenewable.monthly1"
+			} as PayItem);
+
+			this.productList.push({
+				name: '测试不存在的产品',
+				id: "uniappx.nonrenewable.none"
+			} as PayItem);
     },
     methods: {
+      getPackageName() : string {
+      	const res = uni.getAppBaseInfo();
+      	let packageName : string = ""
+
+      	// #ifdef APP-ANDROID
+      	packageName = res.packageName
+      	// #endif
+
+      	// #ifdef APP-IOS
+      	packageName = res.bundleId
+      	// #endif
+
+      	return packageName
+      },
+      isDebug() : boolean {
+      	if (this.getPackageName() == 'io.dcloud.uniappx') {
+      		return true
+      	}
+      	return false
+      },
+      isProd() : boolean {
+      	if (this.getPackageName() == 'io.dcloud.hellouniappx') {
+      		return true
+      	}
+      	return false
+      },
+      isCustom() : boolean {
+      	if (this.isDebug() == false && this.isProd() == false) {
+      		return true
+      	}
+      	return false
+      },
       requestVirtualPayment(e : PayItem) {
         uni.showLoading({
           title: "",
@@ -78,7 +118,6 @@
         });
         uni.requestVirtualPayment({
           apple: {
-
             productId: e.id,
             appAccountToken: "orderId+accountId",
             quantity: e.quantity ?? 1
