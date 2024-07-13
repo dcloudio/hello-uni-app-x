@@ -49,6 +49,7 @@
           }
         },
         webviewContext: null as WebviewContext | null,
+        webviewElement: null as UniWebViewElement | null,
         loadError: false,
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
@@ -65,7 +66,10 @@
     onReady() {
       // #ifdef APP
       // TODO web 实现createWebviewContext
-      this.webviewContext = uni.createWebviewContext('web-view', this)
+      this.webviewContext = uni.createWebviewContext('web-view',this)
+      this.webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
+      // console.log('url: ',this.webviewElement?.getAttribute("src"));
+      // this.webviewElement?.setAttribute("src","https://ext.dcloud.net.cn/")
       // #endif
     },
     methods: {
@@ -77,6 +81,7 @@
       },
       reload() {
         this.webviewContext?.reload();
+        // this.webviewElement?.reload();
       },
       stop() {
         this.webviewContext?.stop();
