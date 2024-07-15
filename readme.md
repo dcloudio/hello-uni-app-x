@@ -37,4 +37,8 @@ npx husky@9.0.11
 
 `pages.json` 中增加后页面配置后，需要在 [syntaxdoc](http://git.dcloud.io/uni-app-x/syntaxdoc) 仓库的 `modules.json` 中维护目录信息。
 
+如需在本地调试时增加 `tabBar` 页面入口，需要修改 `pages.json` 中 `page` 的 `group` 信息，格式为使用 `,` 分隔的数字字符串。\
+`page.group` 属性中的数字代表该页面在 `pages.json/groups` 中对应位置的下标,
+`pages.json/groups` 中维护了基于 `syntaxdoc/modules.json` 获取的目录信息。
+
 **注意：**调整现有页面的路径或平台兼容性，或移除页面时，如果该页面涉及截图对比测试，需要同时调整 `pages/pages.test.js` 中的页面地址。
