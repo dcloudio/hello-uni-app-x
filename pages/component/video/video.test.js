@@ -214,6 +214,6 @@ describe('component-native-video', () => {
   it('test format', async () => {
     page = await program.navigateTo('/pages/component/video/video-format');
     await page.waitFor(1000);
-    expect(await page.data('isError')).toBe(false);
+    expect((await page.data('isError')).value).toBe(false);
   });
 });
