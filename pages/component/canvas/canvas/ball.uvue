@@ -55,7 +55,7 @@
     private runningFlag : boolean = false
 
     // #ifdef WEB
-    private _bindAnimate: Function = null
+    private _animateResult: number = 0
     // #endif
 
     constructor(ctx : CanvasRenderingContext2D) {
@@ -106,13 +106,13 @@
       if (!this.runningFlag) {
         return
       }
-      requestAnimationFrame(this._bindAnimate)
+      this._animateResult = requestAnimationFrame(this.animate.bind(this))
       // #endif
     }
 
     start() {
       // #ifdef WEB
-      cancelAnimationFrame(this._bindAnimate)
+      cancelAnimationFrame(this._animateResult)
       this.runningFlag = true
       this.animate()
       // #endif
@@ -129,7 +129,7 @@
     stop() {
       // #ifdef WEB
       this.runningFlag = false
-      cancelAnimationFrame(this._bindAnimate)
+      cancelAnimationFrame(this._animateResult)
       // #endif
 
       // #ifdef APP
@@ -144,7 +144,7 @@
     let canvas = uni.getElementById("canvas") as UniCanvasElement
     let canvasContext = canvas.getContext("2d");
     if (canvasContext != null) {
-      const dpr = uni.getSystemInfoSync().pixelRatio
+      const dpr = uni.getDeviceInfo().devicePixelRatio ?? 1;
       canvas.width = canvas.offsetWidth * dpr
       canvas.height = canvas.offsetHeight * dpr
       canvasContext.scale(dpr, dpr)
