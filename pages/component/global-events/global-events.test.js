@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/component/public-events/public-events'
+const PAGE_PATH = '/pages/component/global-events/global-events'
 
 describe('event trigger', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
