@@ -164,4 +164,11 @@ describe('ExtApi-Request', () => {
       expect(res).toBe(true)
     })
   }
+
+  it('Check Respone Json String', async () => {
+    res = await page.callMethod('jest_respone_json_string')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
 });
