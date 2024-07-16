@@ -62,9 +62,6 @@
       this.ctx = ctx
       this.initBall()
       this.ctx.fillStyle = '#007AFF'
-      // #ifdef WEB
-      this._bindAnimate = this.animate.bind(this)
-      // #endif
     }
 
     private getDistance(x : number, y : number) : number {
@@ -106,7 +103,9 @@
       if (!this.runningFlag) {
         return
       }
-      this._animateResult = requestAnimationFrame(this.animate.bind(this))
+      this._animateResult = requestAnimationFrame(() => {
+        this.animate()
+      })
       // #endif
     }
 
