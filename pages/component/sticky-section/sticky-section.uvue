@@ -1,16 +1,19 @@
 <template>
   <page-head title="sticky-section"></page-head>
   <list-view id="list-view" ref="list-view" show-scrollbar=false class="page" :scroll-into-view="scrollIntoView"
-  @scroll="onScroll" @scrollend="onScrollEnd" rebound="false">
+  @scroll="onScroll" @scrollend="onScrollEnd" bounces="false">
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
     </list-item>
-    <sticky-section v-for="(sectionText) in data" :padding="sectionPadding" :push-pinned-header="true">
-      <sticky-header :header-id="sectionText" :id="sectionText">
-        <text class="sticky-header-text">{{sectionText}}</text>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
+      <button @click="appendSectionItem(0)" size="mini">A section 新增5条内容</button>
+    </list-item>
+    <sticky-section v-for="(section) in sectionArray" :padding="sectionPadding" :push-pinned-header="true">
+      <sticky-header :id="section.name">
+        <text class="sticky-header-text">{{section.name}}</text>
       </sticky-header>
-      <list-item v-for="i in 10" class="content-item" :type=10>
-        <text class="text">{{sectionText}}--item--content----{{i}}</text>
+      <list-item v-for="(list) in section.list" class="content-item" :type=10>
+        <text class="text">{{list.text}}</text>
       </list-item>
     </sticky-section>
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type= 30>
@@ -21,14 +24,35 @@
 </template>
 
 <script>
+  export type sectionData={
+  	name:string,
+  	list:sectionListItem[]
+  }
+  export type sectionListItem ={
+    text:string
+  }
   export default {
     data() {
       return {
         data: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'],
         sectionPadding: [0, 10, 0, 10] as Array<number>,
         scrollIntoView: "",
-        scrolling: false
+        scrolling: false,
+        sectionArray:[] as sectionData[],
+        appendId: 0
       }
+    },
+    onLoad() {
+      this.data.forEach(key=> {
+        const list =[] as sectionListItem[]
+        for(let i = 1; i<11; i++) {
+          const item = {text: key+"--item--content----"+i} as sectionListItem
+          list.push(item)
+        }
+        const data = {name: key, list: list} as sectionData
+        this.sectionArray.push(data)
+      }
+      )
     },
     methods: {
       toTop(){
@@ -58,6 +82,18 @@
         if(this.scrollIntoView != "") {
           this.scrollIntoView = ""
         }
+      },
+      appendSectionItem(index: number) {
+        const data = this.sectionArray[index]
+        this.appendId++
+        const list = [
+          {text: data.name+"--item--content----new1--"+this.appendId} as sectionListItem,
+          {text: data.name+"--item--content----new2--"+this.appendId} as sectionListItem,
+          {text: data.name+"--item--content----new3--"+this.appendId} as sectionListItem,
+          {text: data.name+"--item--content----new4--"+this.appendId} as sectionListItem,
+          {text: data.name+"--item--content----new5--"+this.appendId} as sectionListItem
+        ] as sectionListItem[]
+        data.list.unshift(...list)
       }
     }
   }
