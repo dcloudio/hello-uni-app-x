@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/component/public-properties/public-properties'
+const PAGE_PATH = '/pages/component/global-properties/global-properties'
 
 describe('general attribute', () => {
   let page

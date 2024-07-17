@@ -7,10 +7,19 @@
 			<view class="service-item" v-for="(item, index) in serviceList" :key="index">
 				<text class="service-name">{{item.name}}:</text>
 				<view class="provider-list">
+					<!-- #ifdef APP-IOS -->
 					<text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
 						{{item2}}
-						{{item.providerObj.length > 0 ? ':'+ JSON.stringify(item.providerObj[index2]) : '' }}
+						{{item.providerObjMap.length > 0 ? ':' + JSON.stringify(item.providerObjMap[index2]) : '' }}
 					</text>
+					<!-- #endif -->
+					<!-- #ifdef APP-ANDROID -->
+					<text class="provider-item" v-for="(item2, index2) in item.provider" :key="index2">
+						{{item2}}
+						{{item.providerObj.length > 0 ? ':' + JSON.stringify(item.providerObj[index2]) : '' }}
+					</text>
+					<!-- #endif -->
+
 				</view>
 			</view>
 			<button class="btn-get-provider" type="primary" @click="getProviderIds">getProviderIds</button>
@@ -22,14 +31,13 @@
 </template>
 
 <script>
-
 	type ProviderItem = {
 		service : string,
 		name : string,
 		provider : string[],
-		providerObj : UniProvider[]
+		providerObj : UniProvider[],
+		providerObjMap : Object[],
 	}
-
 
 	export default {
 		data() {
@@ -37,11 +45,11 @@
 				title: 'provider',
 				flag: false,
 				serviceList: [
-					{ service: "oauth", name: "登陆", provider: [], providerObj: [] },
-					{ service: "share", name: "分享", provider: [], providerObj: [] },
-					{ service: "payment", name: "支付", provider: [], providerObj: [] },
-					{ service: "push", name: "推送", provider: [], providerObj: [] },
-					{ service: "location", name: "定位", provider: [], providerObj: [] }
+					{ service: "oauth", name: "登陆", provider: [], providerObj: [], providerObjMap: [] },
+					{ service: "share", name: "分享", provider: [], providerObj: [], providerObjMap: [] },
+					{ service: "payment", name: "支付", provider: [], providerObj: [], providerObjMap: [] },
+					{ service: "push", name: "推送", provider: [], providerObj: [], providerObjMap: [] },
+					{ service: "location", name: "定位", provider: [], providerObj: [], providerObjMap: [] }
 				] as ProviderItem[],
 				providerObjList: [] as UniProvider[]
 			}
@@ -74,13 +82,52 @@
 							provider: provider
 						})
 						if (obj != null) {
+							console.log(obj)
+							console.log(JSON.stringify(obj))
 							value.providerObj.push(obj)
-						}
 
+							// #ifdef APP-IOS
+							const providerObjMap = this.getProviderObjectMap(obj)
+							console.log(providerObjMap)
+							value.providerObjMap.push(providerObjMap)
+							// #endif
+						}
 					})
 				})
+			},
+			// #ifdef APP-IOS
+			getProviderObjectMap(provider : UniProvider) {
+
+				const map = new Map()
+				if (this.hasProperty(provider, 'id') && provider.id != null) {
+					map.set('id', provider.id)
+				}
+
+				if (this.hasProperty(provider, 'description') && provider.description != null) {
+					map.set('description', provider.description)
+				}
+
+				if (this.hasProperty(provider, 'isAppExist') && provider.isAppExist != null) {
+					map.set('isAppExist', provider.isAppExist)
+				}
+
+				if (this.hasProperty(provider, 'isWeChatInstalled') && provider.isWeChatInstalled != null) {
+					map.set('isWeChatInstalled', provider.isWeChatInstalled)
+				}
+
+				if (this.hasMethod(provider, 'uniqueMethodForProvider')) {
+					map.set('func-uniqueMethodForProvider', provider.uniqueMethodForProvider())
+				}
+				return Object.fromEntries(map)
+			},
+			hasMethod(provider : UniProvider, methodName : string) {
+				return typeof provider[methodName] === 'function';
+			},
+			hasProperty(provider : UniProvider, propName : string) {
+				return propName in provider
 			}
-		},
+			// #endif
+		}
 	}
 </script>
 

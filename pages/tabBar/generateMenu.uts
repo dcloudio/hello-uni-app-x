@@ -1,5 +1,5 @@
 import { pages, groups } from '@/pages.json'
-
+import { state } from '@/store/index.uts'
 type Group = {
   id : string,
   name : string,
@@ -87,7 +87,7 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
   return removeNullItem(res)
 }
 
-function hasPageGroup(value : string | null) : boolean {
+function hasPageGroup(value ?: string | null) : boolean {
   // #ifdef APP-ANDROID
   return value !== null
   // #endif
@@ -141,7 +141,7 @@ function removeNullItem(arr : (MenuItem | null)[]) : (MenuItem | null)[] {
 
 function addSetTabBarPage(menuItem : MenuItem) {
   const { id, name } = menuItem
-  if (id == 'page' && name == '页面和路由') {
+  if (id == 'page' && name == '页面和路由' && !state.noMatchLeftWindow) {
     menuItem.pages.push({
       path: 'set-tab-bar',
       style: {
