@@ -4,11 +4,11 @@
 	</view>
 </template>
 <script lang="uts">
-	import {
-		LottieAnimationView,
-		LottieAnimation,
-		LottieLoopMode
-	} from 'Lottie'
+	// import {
+	// 	LottieAnimationView,
+	// 	LottieAnimation,
+	// 	LottieLoopMode
+	// } from 'Lottie'
 	import {
 		URL,
 		Bundle
@@ -21,7 +21,7 @@
 	} from "DCloudUTSFoundation"
 
 
-	//原生提供以下属性或方法的实现  
+	//原生提供以下属性或方法的实现
 	export default {
 		/**
 		 * 组件名称，也就是开发者使用的标签
@@ -84,7 +84,7 @@
 						this.playAnimation()
 					}
 				},
-				immediate: false //创建时是否通过此方法更新属性，默认值为false  
+				immediate: false //创建时是否通过此方法更新属性，默认值为false
 			},
 			"loop": {
 				handler(newValue: boolean, oldValue: boolean) {
@@ -94,7 +94,7 @@
 						this.$el.loopMode = LottieLoopMode.playOnce
 					}
 				},
-				immediate: false //创建时是否通过此方法更新属性，默认值为false  
+				immediate: false //创建时是否通过此方法更新属性，默认值为false
 			},
 			"autoplay": {
 				handler(newValue: boolean, oldValue: boolean) {
@@ -102,7 +102,7 @@
 						this.playAnimation()
 					}
 				},
-				immediate: false //创建时是否通过此方法更新属性，默认值为false  
+				immediate: false //创建时是否通过此方法更新属性，默认值为false
 			},
 			"action": {
 				handler(newValue: string, oldValue: string) {
@@ -125,21 +125,21 @@
 						// 非法入参，不管
 					}
 				},
-				immediate: false //创建时是否通过此方法更新属性，默认值为false  
+				immediate: false //创建时是否通过此方法更新属性，默认值为false
 			},
 
 			"hidden": {
 				handler(newValue: boolean, oldValue: boolean) {
 					this.$el.isHidden = this.hidden
 				},
-				immediate: false //创建时是否通过此方法更新属性，默认值为false  
+				immediate: false //创建时是否通过此方法更新属性，默认值为false
 			},
 
 		},
 		expose: ['setRepeatMode'],
 		methods: {
 			// 需要对外暴露的方法
-			// 设置 RepeatMode 
+			// 设置 RepeatMode
 			setRepeatMode(repeatMode: string) {
 				if (repeatMode == "RESTART") {
 					if (this.loop) {
@@ -156,7 +156,7 @@
 				}
 			},
 			// 不对外暴露的方法
-			// 播放动画 
+			// 播放动画
 			playAnimation() {
 				// 构建动画资源 url
 				var animationUrl: URL | null
@@ -188,20 +188,20 @@
 				}
 			}
 		},
-		created() { //创建组件，替换created  
+		created() { //创建组件，替换created
 
 		},
-		NVBeforeLoad() { //组件将要创建，对应前端beforeMount  
-			//可选实现，这里可以提前做一些操作  
+		NVBeforeLoad() { //组件将要创建，对应前端beforeMount
+			//可选实现，这里可以提前做一些操作
 		},
-		NVLoad(): LottieAnimationView { //创建原生View，必须定义返回值类型（Android需要明确知道View类型，需特殊校验）  
+		NVLoad(): LottieAnimationView { //创建原生View，必须定义返回值类型（Android需要明确知道View类型，需特殊校验）
 			// 初始化 Lottie$el
 			const animationView = new LottieAnimationView()
 			// 默认只播放一次动画
 			animationView.loopMode = LottieLoopMode.playOnce
 			return animationView
 		},
-		NVLoaded() { //原生View已创建  
+		NVLoaded() { //原生View已创建
 
 			/// 更新 props 中定义的属性值
 
@@ -216,18 +216,18 @@
 			}
 		},
 
-		NVLayouted() { //原生View布局完成  
-			//可选实现，这里可以做布局后续操作  
+		NVLayouted() { //原生View布局完成
+			//可选实现，这里可以做布局后续操作
 		},
 
-		NVBeforeUnload() { //原生View将释放  
-			//可选实现，这里可以做释放View之前的操作  
+		NVBeforeUnload() { //原生View将释放
+			//可选实现，这里可以做释放View之前的操作
 		},
-		NVUnloaded() { //原生View已释放  
-			//可选实现，这里可以做释放View之后的操作  
+		NVUnloaded() { //原生View已释放
+			//可选实现，这里可以做释放View之后的操作
 		},
-		unmounted() { //组件销毁  
-			//可选实现  
+		unmounted() { //组件销毁
+			//可选实现
 		}
 	}
 </script>
