@@ -171,4 +171,13 @@ describe('ExtApi-Request', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   })
+
+  if(process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')){
+    it('Check Respone With String Generics', async () => {
+      res = await page.callMethod('jest_respone_with_string_generics')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    })
+  }
 });

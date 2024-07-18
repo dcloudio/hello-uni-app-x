@@ -301,7 +301,6 @@
           firstIpv4: false,
           success: (res) => {
             const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
-            console.log("requestCookie ", requestCookie);
             this.jest_result_data = JSON.stringify(requestCookie)
             if (requestCookie instanceof Array) {
               this.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
@@ -358,7 +357,6 @@
           withCredentials: false,
           firstIpv4: false,
           success: (res: RequestSuccess<GETDataType>) => {
-            console.log("success :", res.data?.data);
             this.jest_result = true;
           },
           fail: () => {
@@ -371,7 +369,6 @@
           url: 'https://unidemo.dcloud.net.cn/api/news?column=title,author_name,cover,published_at',
           method: "GET",
           success: (res : RequestSuccess<UTSJSONObject[]>) => {
-            console.log(res)
             if (res.statusCode == 200 && Array.isArray(res.data)) {
               this.jest_result = true
             } else {
@@ -387,11 +384,9 @@
         // #ifdef APP
         testInovkeRequest({
           success:(res: any)=>{
-            console.log("success :", res);
             this.jest_result = true
           },
           fail:(err: any)=>{
-            console.log("fail :", err);
             this.jest_result = false
           }
         } as CommonOptions)
@@ -401,13 +396,28 @@
         uni.request({
           url:"https://request.dcloud.net.cn/api/http/contentType/text/json",
           success:(res: RequestSuccess<any>)=>{
-            console.log("res :", res, typeof res.data);
             this.jest_result = typeof res.data == "object"
           },
           fail:(e: RequestFail)=>{
             this.jest_result = false
           }
         })
+      },
+      jest_respone_with_string_generics(){
+        uni.request<string>({
+          url: this.host + (methodMap['GET'] as string),
+          method: "GET",
+          timeout: null,
+          sslVerify: false,
+          withCredentials: false,
+          firstIpv4: false,
+          success: (res: RequestSuccess<string>) => {
+            this.jest_result = true;
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        });
       }
     }
   }
