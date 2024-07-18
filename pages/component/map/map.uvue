@@ -126,6 +126,16 @@
   	clickable?: boolean;
   }
 
+  type TypeJestResult = {
+    translateMarkerMsg:string,
+    animationEnd:boolean,
+    centerPoints: Points,
+    southwest: Points,
+    northeast: Points,
+    moveToLocationMsg:string,
+    scale:number
+  }
+
   const testMarkers = [{
     id: 0,
     latitude: 39.989631,
@@ -314,7 +324,32 @@
   const location = ref({ longitude: 116.39742, latitude: 39.909 });
   const rotate = ref(0);
   const skew = ref(0);
+  // 自动化测试
   const autoTest = ref(false);
+  const updateAutoTest = (value: boolean) => {
+    autoTest.value = value
+  }
+
+
+  const jestResult = reactive({
+    translateMarkerMsg:"",
+    animationEnd:false,
+    centerPoints: {
+      latitude : 0,
+      longitude : 0
+    },
+    southwest: {
+      latitude : 0,
+      longitude : 0
+    },
+    northeast: {
+      latitude : 0,
+      longitude : 0
+    },
+    moveToLocationMsg:"",
+    scale:0,
+  } as TypeJestResult);
+
 
   onReady(() => {
     map.value = uni.createMapContext("map1", getCurrentInstance()!.proxy!)
@@ -434,13 +469,12 @@
   };
 
 
-  const getCenterLocationTest = ref({});
   const handleGetCenterLocation = () => {
     if (map.value) {
       map.value.getCenterLocation({
         success: ret => {
           // console.log('getCenterLocation',ret);
-          getCenterLocationTest.value = ret;
+          jestResult.centerPoints = ret;
           if(!autoTest.value){
             uni.showModal({
               content: JSON.stringify(ret)
@@ -451,13 +485,13 @@
     }
   };
 
-  const getRegionTest = ref({});
   const handleGetRegion = () => {
     if (map.value) {
       map.value.getRegion({
         success: ret => {
           // console.log('getRegion',JSON.stringify(ret));
-          getRegionTest.value = ret;
+          jestResult.southwest = ret.southwest;
+          jestResult.northeast = ret.northeast
           if(!autoTest.value){
             uni.showModal({
               content: JSON.stringify(ret)
@@ -481,10 +515,12 @@
         rotate:10,
         duration: 2000,
         animationEnd: () => {
-          console.log('动画结束');
+          // console.log('动画结束');
+          jestResult.animationEnd = true;
         },
         success: ret => {
-          console.log('handleTranslateMarker',JSON.stringify(ret));
+          // console.log('handleTranslateMarker',JSON.stringify(ret));
+          jestResult.translateMarkerMsg = ret.errMsg;
         },
         fail: error => {
           console.log(error)
@@ -500,6 +536,7 @@
         success: res => {
             // console.log('getScale',res);
             scale.value = res.scale
+            jestResult.scale = res.scale
             if(!autoTest.value){
               uni.showModal({
                 content: '当前地图的缩放级别为：'+ res.scale
@@ -520,6 +557,7 @@
           longitude: 116.39742,
           success: res => {
             // console.log('moveToLocation',res);
+            jestResult.moveToLocationMsg = res.errMsg;
             if(!autoTest.value){
               uni.showModal({
                 content: JSON.stringify(res)
@@ -575,6 +613,24 @@
       content: JSON.stringify(e)
     });
   };
+
+  defineExpose({
+    jestResult,
+    autoTest,
+    updateAutoTest,
+    addControls,
+    addMarkers,
+    addMarkersLabel,
+    addPolyline,
+    addPolygons,
+    addCircles,
+    includePoint,
+    handleGetCenterLocation,
+    handleGetRegion,
+    handleTranslateMarker,
+    handleMoveToLocation,
+    handleGetScale
+  })
 
 </script>
 
