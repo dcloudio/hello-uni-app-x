@@ -48,7 +48,9 @@ describe('web-map', () => {
   it('handleTranslateMarker', async () => {
     await page.callMethod('handleTranslateMarker')
     await page.waitFor(2000);
-    expect(await program.screenshot()).toSaveImageSnapshot();
+    expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
+        return 'map-handleTranslateMarker'
+      }});
     const translateMarkerRes = await page.data('jestResult')
     expect(translateMarkerRes.animationEnd).toBeTruthy();
     expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
