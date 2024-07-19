@@ -135,6 +135,11 @@
             //TODO: 开发者server验证逻辑
 
             //经过开发者server验证成功后请结束该交易
+            uni.showToast({
+              title: "购买成功：" + res.apple?.payment.productId,
+              icon: 'success'
+            })
+
             this.virtualPaymentContext.finishTransaction({
               transaction: res.apple,
               success: (r) => {
@@ -143,10 +148,6 @@
               fail: (e) => {
                 console.log("关单失败, 该productId= " + res.apple?.payment.productId)
               }
-            })
-            uni.showToast({
-              title: "购买成功：" + res.apple?.payment.productId,
-              icon: 'error'
             })
           },
           fail: (e) => {
@@ -177,7 +178,7 @@
             })
             uni.showToast({
               title: "restore成功的交易个数：" + res.transactions.length,
-              icon: 'error'
+              icon: 'success'
             })
           },
           fail: (e) => {
@@ -205,6 +206,10 @@
               console.log("getUnfinishedTransactions成功的交易productId= " + transaction.payment.productId)
               //TODO: 开发者server验证逻辑
 
+              uni.showToast({
+                title: "获取未结束的订单列表个数：" + res.transactions.length,
+                icon: 'success'
+              })
               //经过开发者server验证成功后请结束该交易
               this.virtualPaymentContext.finishTransaction({
                 transaction: transaction,
@@ -215,11 +220,6 @@
                   console.log("关单失败, 该productId= " + transaction.payment.productId)
                 }
               })
-            })
-
-            uni.showToast({
-              title: "获取未结束的订单列表个数：" + res.transactions.length,
-              icon: 'error'
             })
           },
           fail: (e) => {
