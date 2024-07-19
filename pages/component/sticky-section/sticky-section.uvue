@@ -6,7 +6,10 @@
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
     </list-item>
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
-      <button @click="appendSectionItem(0)" size="mini">A section 新增5条内容</button>
+      <button @click="appendSectionItem(0)" size="mini">第一组 section 新增5条内容</button>
+    </list-item>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
+      <button @click="deleteSection()" size="mini">删除第一组 section</button>
     </list-item>
     <sticky-section v-for="(section) in sectionArray" :key="section.name" :padding="sectionPadding" :push-pinned-header="true">
       <sticky-header :id="section.name">
@@ -94,6 +97,9 @@
           {text: data.name+"--item--content----new5--"+this.appendId} as sectionListItem
         ] as sectionListItem[]
         data.list.unshift(...list)
+      },
+      deleteSection() {
+        this.sectionArray.shift()
       }
     }
   }
