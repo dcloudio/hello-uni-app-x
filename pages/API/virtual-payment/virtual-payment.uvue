@@ -201,15 +201,16 @@
           success: (res) => {
             uni.hideLoading()
             console.log("获取未结束的订单列表个数：" + res.transactions.length)
+            uni.showToast({
+              title: "获取未结束的订单列表个数：" + res.transactions.length,
+              icon: 'success'
+            })
+
             res.transactions.forEach(transaction => {
 
               console.log("getUnfinishedTransactions成功的交易productId= " + transaction.productId)
               //TODO: 开发者server验证逻辑
 
-              uni.showToast({
-                title: "获取未结束的订单列表个数：" + res.transactions.length,
-                icon: 'success'
-              })
               //经过开发者server验证成功后请结束该交易
               this.virtualPaymentContext.finishTransaction({
                 transaction: transaction,
