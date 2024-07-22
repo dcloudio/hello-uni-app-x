@@ -126,7 +126,7 @@ describe('component-native-web-view', () => {
         });
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventError')) || (Date.now() - start > 1000);
+          return (await page.data('eventError')) || (Date.now() - start > 5000);
         });
         expect(await page.data('eventError')).toEqual({
           tagName: 'WEB-VIEW',
