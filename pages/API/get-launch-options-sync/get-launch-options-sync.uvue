@@ -15,6 +15,7 @@ export default {
     return {
       checked: false,
       homePagePath: 'pages/tabBar/component',
+      globalPropertiesPath: 'pages/component/global-properties/global-properties',
       launchOptionsPath: '',
     }
   },
@@ -22,8 +23,14 @@ export default {
     getLaunchOptionsSync() {
       const launchOptions = uni.getLaunchOptionsSync()
       this.launchOptionsPath = launchOptions.path
-
-      if (launchOptions.path == this.homePagePath) {
+      let targetLaunchPath = ''
+      // #ifdef APP
+      targetLaunchPath = this.homePagePath
+      // #endif
+      // #ifdef WEB
+      targetLaunchPath = this.globalPropertiesPath
+      // #endif
+      if (launchOptions.path == targetLaunchPath) {
         this.checked = true
       }
     },
