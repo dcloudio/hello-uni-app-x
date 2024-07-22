@@ -82,7 +82,6 @@
       <enum-data title="设置解码器（仅 App 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
       <enum-data title="设置播放策略（仅 App 平台，播放前设置有效）" :items="playStrategyItemTypes" @change="onPlayStrategyChange"></enum-data>
     </scroll-view>
-    <video v-if="autoTest" :src="localSrc" @error="onError"></video>
   </view>
 </template>
 
@@ -160,9 +159,7 @@
         } as UTSJSONObject,
         // API
         pos: 0,
-        requestFullScreenOptions: {
-          direction: -90
-        } as RequestFullScreenOptions,
+        requestFullScreenOptions: null as RequestFullScreenOptions | null,
         danmu: {
           text: '要显示的文本',
           color: '#FF0000'
@@ -175,7 +172,6 @@
         isPlaying: false,
         isPause: false,
         isError: false,
-        localSrc: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
         eventPlay: null as UTSJSONObject | null,
         eventPause: null as UTSJSONObject | null,
         eventEnded: null as UTSJSONObject | null,
@@ -480,7 +476,7 @@
         uni.downloadFile({
           url: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
           success: (res) => {
-            this.localSrc = res.tempFilePath;
+            this.src = res.tempFilePath;
           },
           fail: (_) => {
             this.isError = true;

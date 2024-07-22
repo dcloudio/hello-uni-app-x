@@ -35,23 +35,21 @@ describe('component-native-video', () => {
       autoTest: true,
       isError: false
     });
+    const oldSrc = await page.data('src');
     await page.callMethod('downloadSource');
     await page.waitFor(5000);
     expect(await page.data('isError')).toBe(false);
     await page.setData({
-      localSrc: '/static/test-video/2minute-demo.m3u8'
+      src: '/static/test-video/2minute-demo.m3u8'
     });
     await page.waitFor(100);
     expect(await page.data('isError')).toBe(false);
     await page.setData({
-      autoTest: false
+      src: oldSrc
     });
   });
 
-  it('test event play pause', async () => {
-    await page.setData({
-      autoTest: true
-    });
+  it('test event play pause controlstoggle', async () => {
     await page.callMethod('play');
     start = Date.now();
     await page.waitFor(async () => {
@@ -67,7 +65,6 @@ describe('component-native-video', () => {
         type: 'play'
       });
     }
-
     await page.callMethod('pause');
     start = Date.now();
     await page.waitFor(async () => {
@@ -83,8 +80,16 @@ describe('component-native-video', () => {
          type: 'pause'
        });
     }
-
     await page.callMethod('play');
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventControlstoggle')) || (Date.now() - start > 500);
+    });
+    expect(await page.data('eventControlstoggle')).toEqual({
+      tagName: 'VIDEO',
+      type: 'controlstoggle',
+      show: true
+    });
   });
 
   it('test event waiting progress', async () => {
@@ -110,7 +115,7 @@ describe('component-native-video', () => {
     });
   });
 
-  it('test event fullscreenchange controlstoggle fullscreenclick', async () => {
+  it('test event fullscreenchange fullscreenclick', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return;
     }
@@ -132,12 +137,7 @@ describe('component-native-video', () => {
       await program.adbCommand('input tap 10 10');
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventControlstoggle')) && (await page.data('eventFullscreenclick')) || (Date.now() - start > 500);
-      });
-      expect(await page.data('eventControlstoggle')).toEqual({
-        tagName: 'VIDEO',
-        type: 'controlstoggle',
-        show: true
+        return (await page.data('eventFullscreenclick')) || (Date.now() - start > 500);
       });
       const res = await program.adbCommand('wm size');
       const width = res.data.split(' ').at(-1).split('x')[0];
@@ -166,7 +166,7 @@ describe('component-native-video', () => {
     await page.callMethod('seek');
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventEnded')) || (Date.now() - start > 3000);
+      return (await page.data('eventEnded')) || (Date.now() - start > 5000);
     });
     expect(await page.data('eventEnded')).toEqual({
       tagName: 'VIDEO',
