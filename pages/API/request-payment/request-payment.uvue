@@ -74,129 +74,129 @@
           }
           // #endif
           // #ifdef APP-IOS
-          if (e.provider != null && !e.provider.isAppExist)) {
+          if (e.provider != null && ((e.provider as UniPaymentWxpayProvider).isWeChatInstalled == undefined || ((e.provider as UniPaymentWxpayProvider).isWeChatInstalled != null && (e.provider as UniPaymentWxpayProvider).isWeChatInstalled == false))) {
             uni.showToast({
               title: "微信没有安装",
               icon: 'error'
             })
           } else {
-              this.payWX()
+            this.payWX()
           }
           // #endif
-      }
-    },
-    payAli() {
-      uni.showLoading({
-        title: "请求中..."
-      })
-      uni.request({
-        url: 'https://demo.dcloud.net.cn/payment/alipay/?total=0.01',
-        method: 'GET',
-        timeout: 6000,
-        success: (res) => {
-          this.orderInfo = JSON.stringify(res.data);
-          console.log("====" + this.orderInfo)
-          uni.hideLoading()
-          uni.requestPayment({
-            provider: "alipay",
-            orderInfo: res.data as string,
-            fail: (res) => {
-              console.log(JSON.stringify(res))
-              this.errorCode = res.errCode
-              uni.showToast({
-                icon: 'error',
-                title: 'errorCode:' + this.errorCode
-              });
-            },
-            success: (res) => {
-              console.log(JSON.stringify(res))
-              uni.showToast({
-                icon: 'success',
-                title: '支付成功'
-              });
-            }
-          })
-        },
-        fail: (e) => {
-          console.log(e)
-          uni.hideLoading()
-        },
-      });
-    },
-    payWX() {
-      uni.showLoading({
-        title: "请求中..."
-      })
-      let url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__uniappx/?total=0.01'
-      const res = uni.getAppBaseInfo();
-      let packageName : string | null
-
-      // #ifdef APP-ANDROID
-      packageName = res.packageName
-      // #endif
-
-      // #ifdef APP-IOS
-      packageName = res.bundleId
-      // #endif
-
-      if (packageName == 'io.dcloud.hellouniappx') {//hello uniappx
-        url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__HelloUniAppX/?total=0.01'
-      }
-      uni.request({
-        url: url,
-        method: 'GET',
-        timeout: 6000,
-        header: {
-          "Content-Type": "application/json"
-        } as UTSJSONObject,
-        success: (res) => {
-          console.log(res.data)
-          uni.hideLoading()
-          uni.requestPayment({
-            provider: "wxpay",
-            orderInfo: JSON.stringify(res.data),
-            fail: (res) => {
-              console.log(JSON.stringify(res))
-              this.errorCode = res.errCode
-              uni.showToast({
-                duration: 5000,
-                icon: 'error',
-                title: 'errorCode:' + this.errorCode,
-              });
-            },
-            success: (res) => {
-              console.log(JSON.stringify(res))
-              uni.showToast({
-                duration: 5000,
-                icon: 'success',
-                title: '支付成功'
-              });
-            }
-          })
-        },
-        fail: (res) => {
-          uni.hideLoading()
-          console.log(res)
-        },
-      });
-    },
-
-    //自动化测试使用
-    jest_pay() {
-      uni.requestPayment({
-        provider: "alipay",
-        orderInfo: this.orderInfo,
-        fail: (res : RequestPaymentFail) => {
-          this.errorCode = res.errCode
-          this.complete = true
-        },
-        success: (res : RequestPaymentSuccess) => {
-          console.log(JSON.stringify(res))
-          this.complete = true
         }
-      } as RequestPaymentOptions)
+      },
+      payAli() {
+        uni.showLoading({
+          title: "请求中..."
+        })
+        uni.request({
+          url: 'https://demo.dcloud.net.cn/payment/alipay/?total=0.01',
+          method: 'GET',
+          timeout: 6000,
+          success: (res) => {
+            this.orderInfo = JSON.stringify(res.data);
+            console.log("====" + this.orderInfo)
+            uni.hideLoading()
+            uni.requestPayment({
+              provider: "alipay",
+              orderInfo: res.data as string,
+              fail: (res) => {
+                console.log(JSON.stringify(res))
+                this.errorCode = res.errCode
+                uni.showToast({
+                  icon: 'error',
+                  title: 'errorCode:' + this.errorCode
+                });
+              },
+              success: (res) => {
+                console.log(JSON.stringify(res))
+                uni.showToast({
+                  icon: 'success',
+                  title: '支付成功'
+                });
+              }
+            })
+          },
+          fail: (e) => {
+            console.log(e)
+            uni.hideLoading()
+          },
+        });
+      },
+      payWX() {
+        uni.showLoading({
+          title: "请求中..."
+        })
+        let url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__uniappx/?total=0.01'
+        const res = uni.getAppBaseInfo();
+        let packageName : string | null
+
+        // #ifdef APP-ANDROID
+        packageName = res.packageName
+        // #endif
+
+        // #ifdef APP-IOS
+        packageName = res.bundleId
+        // #endif
+
+        if (packageName == 'io.dcloud.hellouniappx') {//hello uniappx
+          url = 'https://demo.dcloud.net.cn/payment/wxpayv3.__UNI__HelloUniAppX/?total=0.01'
+        }
+        uni.request({
+          url: url,
+          method: 'GET',
+          timeout: 6000,
+          header: {
+            "Content-Type": "application/json"
+          } as UTSJSONObject,
+          success: (res) => {
+            console.log(res.data)
+            uni.hideLoading()
+            uni.requestPayment({
+              provider: "wxpay",
+              orderInfo: JSON.stringify(res.data),
+              fail: (res) => {
+                console.log(JSON.stringify(res))
+                this.errorCode = res.errCode
+                uni.showToast({
+                  duration: 5000,
+                  icon: 'error',
+                  title: 'errorCode:' + this.errorCode,
+                });
+              },
+              success: (res) => {
+                console.log(JSON.stringify(res))
+                uni.showToast({
+                  duration: 5000,
+                  icon: 'success',
+                  title: '支付成功'
+                });
+              }
+            })
+          },
+          fail: (res) => {
+            uni.hideLoading()
+            console.log(res)
+          },
+        });
+      },
+
+      //自动化测试使用
+      jest_pay() {
+        uni.requestPayment({
+          provider: "alipay",
+          orderInfo: this.orderInfo,
+          fail: (res : RequestPaymentFail) => {
+            this.errorCode = res.errCode
+            this.complete = true
+          },
+          success: (res : RequestPaymentSuccess) => {
+            console.log(JSON.stringify(res))
+            this.complete = true
+          }
+        } as RequestPaymentOptions)
+      }
     }
-  }
   }
 </script>
 
