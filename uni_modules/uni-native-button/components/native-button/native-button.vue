@@ -36,7 +36,7 @@
 			onObjectInit(e : UniObjectInitEvent) {
 				this.button = new NativeButton(e.detail.element);
 				this.button?.updateText(this.value)
-        this.$emit("init")
+				this.$emit("load")
 			},
 			onclick(e: UniObjectCustomEvent) {
 				this.$emit("tap", e)
