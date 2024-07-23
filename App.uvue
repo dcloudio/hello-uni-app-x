@@ -20,9 +20,17 @@
       myMap: new Map<string, any>(),
       func: () : string => {
         return 'globalData func'
-      }
+      },
+      launchOptions: {
+        path: '',
+      } as OnLaunchOptions,
+      onShowOption: {
+        path: ''
+      } as OnShowOptions
     },
-    onLaunch: function () {
+    onLaunch: function (res : OnLaunchOptions) {
+      this.globalData.launchOptions = res
+
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum + 1000)
       console.log('App Launch')
@@ -38,7 +46,9 @@
       //   entryTypes: ['render', 'navigation'],
       // } as PerformanceObserverOptions)
     },
-    onShow: function () {
+    onShow: function (res : OnShowOptions) {
+      this.globalData.onShowOption = res
+
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum + 100)
       console.log('App Show')
@@ -83,12 +93,15 @@
 <style>
   /*每个页面公共css */
   @import "./common/uni.css";
+
   /* #ifdef WEB */
   .uni-top-window uni-tabbar .uni-tabbar {
-  	background-color: #fff !important;
+    background-color: #fff !important;
   }
+
   .uni-app--showleftwindow .uni-page-head-btn {
-  	display: none !important;
+    display: none !important;
   }
+
   /* #endif */
 </style>

@@ -20,6 +20,41 @@ export default {
     }
   },
   methods: {
+    // 自动化测试
+    compareOnLaunchRes() {
+      // #ifdef APP-ANDROID
+
+      return {
+        appOnLaunch: {},
+        launchOptions: {}
+      }
+
+      // #endif
+
+      // #ifndef APP-ANDROID
+
+      const launchOptions = uni.getLaunchOptionsSync();
+      const app = getApp()
+
+      const appOnLaunch = app.globalData.launchOptions;
+      return {
+        appOnLaunch,
+        launchOptions
+      }
+
+      // #endif
+
+    },
+    compareOnShowRes() {
+      const onShowOption = uni.getEnterOptionsSync();
+      const app = getApp()
+
+      const appOnShow = app.globalData.onShowOption
+      return {
+        appOnShow,
+        onShowOption
+      }
+    },
     getLaunchOptionsSync() {
       const launchOptions = uni.getLaunchOptionsSync()
       this.launchOptionsPath = launchOptions.path
