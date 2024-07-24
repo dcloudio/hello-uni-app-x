@@ -34,7 +34,12 @@ npx husky@9.0.11
 如果想要该示例页面在菜单中显示，则需要调整为：`pages/component/button/button/type`\
 如果 API 示例为多个 API 的组合，此时无法以单一 API 名称命名，可以使用 `pages/API/xxx/xxx` 命名示例页面，但在维护 [syntaxdoc](http://git.dcloud.io/uni-app-x/syntaxdoc) `modules.json` 时，需要通过 `items` 节点关联对应 API 信息。\
 
-增加上述示例页面时，相同类型的页面要放在一起，不要随意放置在最后或最前！
+增加上述示例页面时，相同类型的页面要放在一起，不要随意放置在最后或最前！\
+即:\
+pages/component/xxx/xxx 的页面应该相邻放置，\
+pages/API/xxx/xxx 的页面应该相邻放置，\
+pages/CSS/xxx/xxx 的页面应该相邻放置，\
+而不是把新增的页面放在 pages 数组的最后或最前。
 
 增加上述示例页面时，不需要基于平台兼容性补充条件编译，代码提交后，会基于 [syntaxdoc](http://git.dcloud.io/uni-app-x/syntaxdoc) 仓库中的平台兼容性信息，自动生成对应的条件编译代码，并更新 `pages.json`。
 
