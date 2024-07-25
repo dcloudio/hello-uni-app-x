@@ -24,7 +24,7 @@
     data() {
       const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "pattern"]
       const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
-      const API_STATE = ["beginPath", "closePath", "restore", "reset", "setTransform", "transform", "rotate", "resetTransform", "save", "scale", "translate"]
+      const API_STATE = ["beginPath", "closePath",  "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate"]
       const API_PROPERTIES = ["setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit", "setFillStyle", "setStrokeStyle", "setGlobalAlpha", "lineDash", "linearGradient", "radialGradient", "textAlign"]
       return {
         title: 'Context2D',
@@ -123,9 +123,6 @@
             break;
           case "scale":
             this.scale();
-            break;
-          case "setTransform":
-            this.setTransform();
             break;
           case "stroke":
             this.stroke();
@@ -362,7 +359,7 @@
         const context = this.canvasContext!
 
         this.image = new Image(100, 100)
-        this.image!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png';
+        this.image!.src = '../../../static/api.png';
         // this.image!.src = 'https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/createPattern/canvas_createpattern.png';
         // Only use the image after it's loaded
         this.image!.onload = () => {
@@ -370,7 +367,7 @@
           context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
           const pattern = context.createPattern(this.image!, "repeat")
           context.fillStyle = pattern
-          context.fillRect(0, 0, 64, 64)
+          context.fillRect(0, 0, 100, 100)
           context.restore()
         };
       },
@@ -530,8 +527,6 @@
 
         context.restore()
       },
-      setTransform() {
-      },
       rotate() {
         const context = this.canvasContext!
 
@@ -623,7 +618,7 @@
       },
       save() {
         const context = this.canvasContext!
-
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
         context.save()
         context.beginPath()
         context.strokeStyle = '#00ff00'
@@ -641,6 +636,7 @@
       },
       restore() {
         const context = this.canvasContext!;
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
         [3, 2, 1].forEach((item) => {
           context.save()
           context.beginPath()
@@ -652,21 +648,21 @@
       },
       drawImageLocal() {
         const context = this.canvasContext!
-
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
         let image = new Image(100, 100)
-        image.src = '../../static/1.jpg'
+        image.src = '../../../static/uni.png'
         image.onload = () => {
           context.drawImage(image, 0, 0, 100, 100)
         }
       },
       drawImage() {
         const context = this.canvasContext!
-
+        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
         let image = new Image(100, 100);
         image.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png'
         image.onload = () => {
           context.drawImage(image, 0, 0, 100, 100)
-          uni.getElementById("page-canvas")?.appendChild(image)
+          // uni.getElementById("page-canvas")?.appendChild(image)
         }
       },
       rect() {
