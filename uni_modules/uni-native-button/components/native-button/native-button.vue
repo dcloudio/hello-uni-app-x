@@ -1,6 +1,6 @@
 <template>
 
-	<object @init="onObjectInit" @click="onclick"></object>
+	<object @init="onObjectInit" @customClick="onclick"></object>
 
 </template>
 
@@ -39,11 +39,14 @@
 				this.$emit("load")
 			},
 			onclick(e: UniObjectCustomEvent) {
-				this.$emit("tap", e)
+				this.$emit("buttonTap", e)
 			}
 		},
 		unmounted() {
-
+      // #ifdef APP-IOS
+      // iOS平台需要主动释放 uts 实例
+      this.button.destroy()
+      // #endi
 		}
 	}
 </script>
