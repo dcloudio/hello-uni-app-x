@@ -54,15 +54,15 @@
     methods: {
       initProductList() {
         this.productList.push({
-          name: '消耗性产品：个人赞助1元, 数量=5',
+          name: '消耗性产品：个人赞助1元',
           id: this.isDebug() ? "uniappx.consumable.sponsor_1" : "uniappx.consumable.sponsor1",
-          quantity: 5
+          quantity: 1
         } as PayItem);
 
         this.productList.push({
-          name: '消耗性产品：金牌赞助50元',
+          name: '消耗性产品：金牌赞助5元, 数量=2',
           id: this.isDebug() ? "uniappx.consumable.sponsor_50" : "uniappx.consumable.sponsor50",
-          quantity: 1
+          quantity: 2
         } as PayItem);
 
         this.productList.push({
@@ -124,9 +124,10 @@
         });
 
         uni.requestVirtualPayment({
+          //需要将orderId转换为如下符合UUID规则的字符串，然后赋值给参数appAccountToken, 传入不符合UUID规则的字符串无效
           apple: {
             productId: e.id,
-            appAccountToken: "orderId+accountId",
+            appAccountToken: "123eaaaa-e89b-12d3-a456-42661417400b",
             quantity: e.quantity ?? 1,
           },
           success: (res) => {
