@@ -48,7 +48,7 @@
     },
     watch: {
       $route: {
-        immediate: true,
+        // immediate: true,
         handler(newRoute) {
           const width = uni.getSystemInfoSync().windowWidth
           if (width <= 768) {
@@ -58,6 +58,10 @@
           let category
           if (path === '/') {
             category = 'component'
+            uni.redirectTo({
+              url: '/pages/component/global-properties/global-properties'
+            })
+            return
           } else if (path.indexOf('/pages/tabBar') === 0) {
             const indexPageItem = this.indexPage.find(item => item.tabBar === path)
             if (!indexPageItem) {
@@ -67,7 +71,7 @@
             uni.redirectTo({
               url: indexPageItem.index
             })
-            category = path.split('/')[3]
+            return
           } else {
             category = path.split('/')[2]
           }
