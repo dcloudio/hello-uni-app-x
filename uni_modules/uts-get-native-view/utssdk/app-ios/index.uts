@@ -1,0 +1,22 @@
+import { CanWebViewGoBack, CanWebViewGoForward } from "../interface";
+import { WKWebView } from 'WebKit';
+
+export const canWebViewGoBack : CanWebViewGoBack = function (elementId : string) : boolean {
+  // const element = uni.getElementById(elementId)
+  const element = DCGetElementByID.dcGetElementById(elementId)
+  const view = element?.getIOSView();
+  if (view != null && view instanceof WKWebView) {
+    return (view! as WKWebView).canGoBack;
+  }
+  return false;
+}
+
+export const canWebViewGoForward : CanWebViewGoForward = function (elementId : string) : boolean {
+  // const element = uni.getElementById(elementId)
+  const element = DCGetElementByID.dcGetElementById(elementId)
+  const view = element?.getIOSView();
+  if (view != null && view instanceof WKWebView) {
+    return (view! as WKWebView).canGoForward;
+  }
+  return false;
+}
