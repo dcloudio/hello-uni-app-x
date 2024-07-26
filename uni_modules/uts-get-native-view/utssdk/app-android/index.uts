@@ -1,5 +1,6 @@
-import { CanWebViewGoBack, CanWebViewGoForward } from "../interface";
+import { CanWebViewGoBack, CanWebViewGoForward, HasNativeView} from "../interface";
 import WebView from 'android.webkit.WebView';
+import View from "android.view.View"
 
 export const canWebViewGoBack : CanWebViewGoBack = function (elementId : string) : boolean {
   const view = uni.getElementById(elementId)?.getAndroidView<WebView>();
@@ -9,4 +10,9 @@ export const canWebViewGoBack : CanWebViewGoBack = function (elementId : string)
 export const canWebViewGoForward : CanWebViewGoForward = function (elementId : string) : boolean {
   const view = uni.getElementById(elementId)?.getAndroidView<WebView>();
   return view == null ? false : view.canGoForward();
+}
+
+export const hasNativeView : HasNativeView = function (elementId : string) : boolean {
+  const view = uni.getElementById(elementId)?.getAndroidView<View>();
+  return view != null;
 }
