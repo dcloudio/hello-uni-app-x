@@ -19,9 +19,9 @@ extension LottieAnimationSource {
   var animation: LottieAnimation? {
     switch self {
     case .lottieAnimation(let animation):
-      animation
+      return animation
     case .dotLottieFile:
-      dotLottieAnimation?.animation
+      return dotLottieAnimation?.animation
     }
   }
 
@@ -29,9 +29,9 @@ extension LottieAnimationSource {
   var dotLottieAnimation: DotLottieFile.Animation? {
     switch self {
     case .lottieAnimation:
-      nil
+      return nil
     case .dotLottieFile(let dotLottieFile):
-      dotLottieFile.animation()
+      return dotLottieFile.animation()
     }
   }
 }

@@ -185,7 +185,6 @@ struct Entry: Equatable {
       default:
         return isDirectory ? .directory : .file
       }
-
     case .msdos:
       isDirectory = isDirectory || ((centralDirectoryStructure.externalFileAttributes >> 4) == 0x01)
       fallthrough // For all other OSes we can only guess based on the directory suffix char

@@ -305,9 +305,9 @@ extension CALayer {
     // to segments based on the `CAAnimationCalculationMode`, so we can just
     // check the first keyframe.
     if keyframes[0].isHold {
-      .discrete
+      return .discrete
     } else {
-      .linear
+      return .linear
     }
   }
 

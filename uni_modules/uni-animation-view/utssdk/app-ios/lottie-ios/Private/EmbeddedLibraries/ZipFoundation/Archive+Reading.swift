@@ -52,7 +52,6 @@ extension Archive {
         skipCRC32: skipCRC32,
         progress: progress,
         consumer: consumer)
-
     case .directory:
       let consumer = { (_: Data) in
         try fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
@@ -63,7 +62,6 @@ extension Archive {
         skipCRC32: skipCRC32,
         progress: progress,
         consumer: consumer)
-
     case .symlink:
       guard !fileManager.itemExists(at: url) else {
         throw CocoaError(.fileWriteFileExists, userInfo: [NSFilePathErrorKey: url.path])
@@ -123,7 +121,6 @@ extension Archive {
           skipCRC32: skipCRC32,
           progress: progress,
           with: consumer)
-
       case .deflate: checksum = try readCompressed(
           entry: entry,
           bufferSize: bufferSize,
@@ -131,11 +128,9 @@ extension Archive {
           progress: progress,
           with: consumer)
       }
-
     case .directory:
       try consumer(Data())
       progress?.completedUnitCount = totalUnitCountForReading(entry)
-
     case .symlink:
       let localFileHeader = entry.localFileHeader
       let size = Int(localFileHeader.compressedSize)

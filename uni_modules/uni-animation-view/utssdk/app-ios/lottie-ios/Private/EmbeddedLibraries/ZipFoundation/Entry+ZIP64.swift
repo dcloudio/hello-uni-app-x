@@ -121,9 +121,9 @@ extension Entry.ZIP64ExtendedInformation {
     var size: Int {
       switch self {
       case .uncompressedSize, .compressedSize, .relativeOffsetOfLocalHeader:
-        8
+        return 8
       case .diskNumberStart:
-        4
+        return 4
       }
     }
   }

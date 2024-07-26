@@ -15,11 +15,11 @@ public enum ColorFormatDenominator: Hashable {
   var value: Double {
     switch self {
     case .One:
-      1.0
+      return 1.0
     case .OneHundred:
-      100.0
+      return 100.0
     case .TwoFiftyFive:
-      255.0
+      return 255.0
     }
   }
 }

@@ -23,14 +23,14 @@ extension EffectValueType: ClassFamily {
   func getType() -> AnyObject.Type {
     switch self {
     case .slider:
-      Vector1DEffectValue.self
+      return Vector1DEffectValue.self
     case .angle:
-      Vector1DEffectValue.self
+      return Vector1DEffectValue.self
     case .color:
-      ColorEffectValue.self
+      return ColorEffectValue.self
     case .unknown:
       // Unsupported
-      LayerEffect.self
+      return LayerEffect.self
     }
   }
 }
