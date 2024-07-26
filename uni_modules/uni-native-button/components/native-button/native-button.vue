@@ -46,7 +46,7 @@
       // #ifdef APP-IOS
       // iOS平台需要主动释放 uts 实例
       this.button.destroy()
-      // #endi
+      // #endif
 		}
 	}
 </script>
