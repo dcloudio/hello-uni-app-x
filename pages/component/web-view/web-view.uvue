@@ -11,8 +11,8 @@
         <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" maxlength="-1"/>
       </view>
       <view class="uni-row uni-btn-v">
-        <button class="uni-flex-item" type="primary" @click="back">后退</button>
-        <button class="margin-left-5 uni-flex-item" type="primary" @click="forward">前进</button>
+        <button class="uni-flex-item" type="primary" :disabled="!canGoBack" @click="back">后退</button>
+        <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!canGoForward" @click="forward">前进</button>
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+  import { canWebViewGoBack, canWebViewGoForward } from '@/uni_modules/uts-get-native-view';
   export default {
     data() {
       return {
@@ -53,6 +54,8 @@
         loadError: false,
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
+        canGoBack: false,
+        canGoForward: false,
         // 自动化测试
         autoTest: false,
         eventLoading: null as UTSJSONObject | null,
@@ -109,6 +112,8 @@
       },
       loading(event : UniWebViewLoadingEvent) {
         console.log(JSON.stringify(event.detail));
+        this.canGoBack = canWebViewGoBack(this.webviewElement as UniWebViewElement);
+        this.canGoForward = canWebViewGoForward(this.webviewElement as UniWebViewElement);
         if (this.autoTest) {
           this.eventLoading = {
             "tagName": event.target?.tagName,
