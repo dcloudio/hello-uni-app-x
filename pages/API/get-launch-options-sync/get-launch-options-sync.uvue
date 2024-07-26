@@ -10,30 +10,76 @@
 </template>
 
 <script lang="uts">
-export default {
-  data() {
-    return {
-      checked: false,
-      homePagePath: 'pages/tabBar/component',
-      globalPropertiesPath: 'pages/component/global-properties/global-properties',
-      launchOptionsPath: '',
-    }
-  },
-  methods: {
-    getLaunchOptionsSync() {
-      const launchOptions = uni.getLaunchOptionsSync()
-      this.launchOptionsPath = launchOptions.path
-      let targetLaunchPath = ''
-      // #ifdef APP
-      targetLaunchPath = this.homePagePath
-      // #endif
-      // #ifdef WEB
-      targetLaunchPath = this.globalPropertiesPath
-      // #endif
-      if (launchOptions.path == targetLaunchPath) {
-        this.checked = true
+  type OnShowReturn = {
+    appOnShow : OnShowOptions,
+    onShowOption : OnShowOptions
+  }
+
+  type IOnLaunchOptions = {
+    appOnLaunch : OnLaunchOptions,
+    launchOptions : OnLaunchOptions
+  }
+  export default {
+    data() {
+      return {
+        checked: false,
+        homePagePath: 'pages/tabBar/component',
+        globalPropertiesPath: 'pages/component/global-properties/global-properties',
+        launchOptionsPath: '',
       }
     },
-  },
-}
+    methods: {
+      // 自动化测试
+      compareOnLaunchRes() : IOnLaunchOptions {
+        const launchOptions = uni.getLaunchOptionsSync();
+        const app = getApp()
+
+        const appOnLaunch = app.globalData.launchOptions as OnLaunchOptions
+        const res : IOnLaunchOptions = {
+          appOnLaunch,
+          launchOptions
+        }
+        return res
+      },
+      compareOnShowRes() : OnShowReturn {
+
+        // #ifdef APP-ANDROID
+        const res : OnShowReturn = {
+          appOnShow: {
+            path: ''
+          } as OnShowOptions,
+          onShowOption: {
+            path: ''
+          } as OnShowOptions
+        }
+        return res
+        // #endif
+
+        // #ifndef APP-ANDROID
+        const onShowOption = uni.getEnterOptionsSync();
+        const app = getApp()
+
+        const appOnShow = app.globalData.onShowOption as OnShowOptions
+        return {
+          appOnShow,
+          onShowOption
+        }
+        // #endif
+      },
+      getLaunchOptionsSync() {
+        const launchOptions = uni.getLaunchOptionsSync()
+        this.launchOptionsPath = launchOptions.path
+        let targetLaunchPath = ''
+        // #ifdef APP
+        targetLaunchPath = this.homePagePath
+        // #endif
+        // #ifdef WEB
+        targetLaunchPath = this.globalPropertiesPath
+        // #endif
+        if (launchOptions.path == targetLaunchPath) {
+          this.checked = true
+        }
+      },
+    },
+  }
 </script>

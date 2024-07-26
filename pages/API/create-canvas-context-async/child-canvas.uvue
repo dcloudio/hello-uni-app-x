@@ -1,0 +1,44 @@
+<template>
+  <view>
+    <canvas class="child-canvas" id="canvas" style="height: 100px;border: 1px solid red;"></canvas>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        context: null as CanvasRenderingContext2D | null
+      }
+    },
+    getContext() {
+      return {
+        ctx: typeof this.context,
+        hasFillRect: typeof this.context?.fillRect === 'function',
+      }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          component: this,
+          success: (res : CanvasContext) => {
+            console.log('child component', res);
+            this.context = res.getContext('2d');
+            // 若干绘制调用
+            // 绘制红色正方形
+            this.context.fillStyle = "rgb(200, 0, 0)";
+            this.context.fillRect(10, 10, 50, 50);
+
+            // 绘制蓝色半透明正方形
+            this.context.fillStyle = "rgba(0, 0, 200, 0.5)";
+            this.context.fillRect(30, 30, 50, 50);
+            this.context.draw();
+          },
+          fail: (err : UniError) => {
+          }
+        })
+      })
+    }
+  }
+</script>

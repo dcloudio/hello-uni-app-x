@@ -60,6 +60,7 @@ describe('interceptor', () => {
   it('addSwitchTabInterceptor', async () => {
     await page.callMethod('addSwitchTabInterceptor')
     await page.callMethod('switchTab')
+    await page.waitFor(300)
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe('pages/tabBar/API')
   })
@@ -69,6 +70,7 @@ describe('interceptor', () => {
     await currentPage1.callMethod('addSwitchTabInterceptor')
     await currentPage1.callMethod('removeSwitchTabInterceptor')
     await currentPage1.callMethod('switchTab')
+    await page.waitFor(300)
     const currentPage2 = await program.currentPage()
     expect(currentPage2.path).toBe('pages/tabBar/component')
   })

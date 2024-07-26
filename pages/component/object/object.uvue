@@ -1,0 +1,50 @@
+<template>
+  <view>
+    <native-button class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
+      @load="onload"></native-button>
+    <!-- #ifdef APP-ANDROID -->
+    <time-picker class="native-time-picker" :hour=2 :minute=3 @changed="onChanged"></time-picker>
+    <!-- #endif -->
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'Hello',
+        buttonText: "封装object实现的button",
+        isLoad: false
+      }
+    },
+    onLoad() {
+
+    },
+    methods: {
+      ontap(e : UniObjectCustomEvent) {
+        uni.showToast({
+          title: "按钮被点击了"
+        })
+      },
+      onload() {
+        //标记已初始化 用于自动化测试
+        this.isLoad = true
+      },
+      onChanged(e : UniObjectCustomEvent) {
+        console.log("onchanged-----", e.detail)
+      }
+    }
+  }
+</script>
+
+<style>
+  .native-button {
+    height: 100px;
+    width: 100px;
+    margin: 25px auto 25px auto;
+  }
+
+  .native-time-picker {
+    margin: 10px auto 25px auto;
+  }
+</style>
