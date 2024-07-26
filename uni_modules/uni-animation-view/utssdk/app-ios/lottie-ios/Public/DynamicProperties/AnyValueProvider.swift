@@ -49,13 +49,13 @@ extension ValueProvider {
   public var typeErasedStorage: AnyValueProviderStorage {
     switch storage {
     case .closure(let typedClosure):
-      .closure(typedClosure)
+      return .closure(typedClosure)
 
     case .singleValue(let typedValue):
-      .singleValue(typedValue)
+      return .singleValue(typedValue)
 
     case .keyframes(let keyframes):
-      .keyframes(
+      return .keyframes(
         keyframes.map { keyframe in
           keyframe.withValue(keyframe.value as Any)
         },
@@ -88,13 +88,13 @@ public enum ValueProviderStorage<T: AnyInterpolatable> {
   func value(frame: AnimationFrameTime) -> T {
     switch self {
     case .singleValue(let value):
-      value
+      return value
 
     case .closure(let closure):
-      closure(frame)
+      return closure(frame)
 
     case .keyframes(let keyframes):
-      KeyframeInterpolator(keyframes: ContiguousArray(keyframes)).storage.value(frame: frame)
+      return KeyframeInterpolator(keyframes: ContiguousArray(keyframes)).storage.value(frame: frame)
     }
   }
 }
@@ -119,13 +119,13 @@ public enum AnyValueProviderStorage {
   func value(frame: AnimationFrameTime) -> Any {
     switch self {
     case .singleValue(let value):
-      value
+      return value
 
     case .closure(let closure):
-      closure(frame)
+      return closure(frame)
 
     case .keyframes(_, let valueForFrame):
-      valueForFrame(frame)
+      return valueForFrame(frame)
     }
   }
 }

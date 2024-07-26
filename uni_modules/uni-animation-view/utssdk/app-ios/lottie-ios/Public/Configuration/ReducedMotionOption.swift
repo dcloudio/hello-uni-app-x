@@ -43,9 +43,9 @@ extension ReducedMotionOption {
   public var currentReducedMotionMode: ReducedMotionMode {
     switch self {
     case .specific(let specificMode):
-      specificMode
+      return specificMode
     case .dynamic(let optionProvider, _):
-      optionProvider.currentReducedMotionMode
+      return optionProvider.currentReducedMotionMode
     }
   }
 }
@@ -56,11 +56,11 @@ extension ReducedMotionOption: Hashable {
   public static func ==(_ lhs: ReducedMotionOption, _ rhs: ReducedMotionOption) -> Bool {
     switch (lhs, rhs) {
     case (.specific(let lhsMode), .specific(let rhsMode)):
-      lhsMode == rhsMode
+      return lhsMode == rhsMode
     case (.dynamic(_, let lhsDataID), .dynamic(_, dataID: let rhsDataID)):
-      lhsDataID == rhsDataID
+      return lhsDataID == rhsDataID
     case (.dynamic, .specific), (.specific, .dynamic):
-      false
+      return false
     }
   }
 

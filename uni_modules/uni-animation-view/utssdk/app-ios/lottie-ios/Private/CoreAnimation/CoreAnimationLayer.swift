@@ -308,8 +308,8 @@ final class CoreAnimationLayer: BaseAnimationLayer {
     add(timedProgressAnimation, forKey: #keyPath(animationProgress))
   }
 
-  /// Removes the current `CAAnimation`s, and rebuilds new animations
-  /// using the same configuration as the previous animations.
+  // Removes the current `CAAnimation`s, and rebuilds new animations
+  // using the same configuration as the previous animations.
   private func rebuildCurrentAnimation() {
     guard
       // Don't replace any pending animations that are queued to begin
@@ -343,15 +343,15 @@ extension CoreAnimationLayer: RootAnimationLayer {
   var isAnimationPlaying: Bool? {
     switch pendingAnimationConfiguration?.playbackState {
     case .playing:
-      true
+      return true
     case .paused:
-      false
+      return false
     case nil:
       switch playbackState {
       case .playing:
-        animation(forKey: #keyPath(animationProgress)) != nil
+        return animation(forKey: #keyPath(animationProgress)) != nil
       case nil, .paused:
-        false
+        return false
       }
     }
   }
@@ -537,26 +537,11 @@ extension CoreAnimationLayer: RootAnimationLayer {
   /// every frame of every animation. For very large animations with a huge number of layers,
   /// this can be prohibitively expensive.
   func validateReasonableNumberOfTimeRemappingLayers() throws {
-    let numberOfLayersWithTimeRemapping = numberOfLayersWithTimeRemapping
-    let numberOfFrames = Int(animation.framerate * animation.duration)
-    let totalCost = numberOfLayersWithTimeRemapping * numberOfFrames
-
-    /// Cap the cost / complexity of animations that use Core Animation time remapping.
-    ///  - Short, simple animations perform well, but long and complex animations perform poorly.
-    ///  - We count the total number of frames that will need to be manually interpolated, which is
-    ///    the number of layers with time remapping enabled times the total number of frames.
-    ///  - The cap is arbitrary, and is currently:
-    ///      - 1000 layers for a one second animation at 60fp
-    ///      - 500 layers for a two second animation at 60fps, etc
-    ///  - All of the sample animations in the lottie-ios repo below this cap perform well.
-    ///    If users report animations below this cap that perform poorly, we can lower the cap.
-    let maximumAllowedCost = 1000 * 60
-
     try layerContext.compatibilityAssert(
-      totalCost < maximumAllowedCost,
+      numberOfLayersWithTimeRemapping < 500,
       """
-      This animation has a very large number of layers with time remapping (\(numberOfLayersWithTimeRemapping) \
-      layers over \(numberOfFrames) frames) so will perform poorly with the Core Animation rendering engine.
+      This animation has a very large number of layers with time remapping (\(numberOfLayersWithTimeRemapping)),
+      so will perform poorly with the Core Animation rendering engine.
       """)
   }
 

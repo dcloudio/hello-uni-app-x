@@ -37,7 +37,6 @@ final class MainThreadAnimationLayer: CALayer, RootAnimationLayer {
       assetLibrary: animation.assetLibrary,
       layerImageProvider: layerImageProvider,
       layerTextProvider: layerTextProvider,
-      layerFontProvider: layerFontProvider,
       textProvider: textProvider,
       fontProvider: fontProvider,
       frameRate: CGFloat(animation.framerate),
@@ -128,16 +127,16 @@ final class MainThreadAnimationLayer: CALayer, RootAnimationLayer {
 
   public override func display() {
     guard Thread.isMainThread else { return }
-    var newFrame: CGFloat =
-      if
-        let animationKeys = animationKeys(),
-        !animationKeys.isEmpty
-      {
-        presentation()?.currentFrame ?? currentFrame
-      } else {
-        // We ignore the presentation's frame if there's no animation in the layer.
-        currentFrame
-      }
+    var newFrame: CGFloat
+    if
+      let animationKeys = animationKeys(),
+      !animationKeys.isEmpty
+    {
+      newFrame = presentation()?.currentFrame ?? currentFrame
+    } else {
+      // We ignore the presentation's frame if there's no animation in the layer.
+      newFrame = currentFrame
+    }
     if respectAnimationFrameRate {
       newFrame = floor(newFrame)
     }

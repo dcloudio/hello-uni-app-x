@@ -170,7 +170,7 @@ extension LottiePlaybackMode.PlaybackMode {
     .fromProgress(nil, toProgress: toProgress, loopMode: loopMode)
   }
 
-  /// Plays the animation from the current frame to the given frame.
+  // Plays the animation from the current frame to the given frame.
   /// - Parameter toFrame: The end frame of the animation.
   /// - Parameter loopMode: The loop behavior of the animation.
   public static func toFrame(_ toFrame: AnimationFrameTime, loopMode: LottieLoopMode) -> Self {
@@ -211,32 +211,32 @@ extension LottiePlaybackMode {
   func loopMode(_ updatedLoopMode: LottieLoopMode) -> LottiePlaybackMode {
     switch self {
     case .playing(let playbackMode):
-      .playing(playbackMode.loopMode(updatedLoopMode))
+      return .playing(playbackMode.loopMode(updatedLoopMode))
 
     case .fromProgress(let fromProgress, toProgress: let toProgress, _):
-      .playing(.fromProgress(
+      return .playing(.fromProgress(
         fromProgress,
         toProgress: toProgress,
         loopMode: updatedLoopMode))
 
     case .fromFrame(let fromFrame, toFrame: let toFrame, _):
-      .playing(.fromFrame(
+      return .playing(.fromFrame(
         fromFrame,
         toFrame: toFrame,
         loopMode: updatedLoopMode))
 
     case .fromMarker(let fromMarker, let toMarker, let playEndMarkerFrame, _):
-      .playing(.fromMarker(
+      return .playing(.fromMarker(
         fromMarker,
         toMarker: toMarker,
         playEndMarkerFrame: playEndMarkerFrame,
         loopMode: updatedLoopMode))
 
     case .marker(let marker, _):
-      .playing(.marker(marker, loopMode: updatedLoopMode))
+      return .playing(.marker(marker, loopMode: updatedLoopMode))
 
     case .pause, .paused, .progress(_), .time(_), .frame(_), .markers:
-      self
+      return self
     }
   }
 }
@@ -246,15 +246,15 @@ extension LottiePlaybackMode.PlaybackMode {
   func loopMode(_ updatedLoopMode: LottieLoopMode) -> LottiePlaybackMode.PlaybackMode {
     switch self {
     case .fromProgress(let fromProgress, let toProgress, _):
-      .fromProgress(fromProgress, toProgress: toProgress, loopMode: updatedLoopMode)
+      return .fromProgress(fromProgress, toProgress: toProgress, loopMode: updatedLoopMode)
     case .fromFrame(let fromFrame, let toFrame, _):
-      .fromFrame(fromFrame, toFrame: toFrame, loopMode: updatedLoopMode)
+      return .fromFrame(fromFrame, toFrame: toFrame, loopMode: updatedLoopMode)
     case .fromMarker(let fromMarker, let toMarker, let playEndMarkerFrame, _):
-      .fromMarker(fromMarker, toMarker: toMarker, playEndMarkerFrame: playEndMarkerFrame, loopMode: updatedLoopMode)
+      return .fromMarker(fromMarker, toMarker: toMarker, playEndMarkerFrame: playEndMarkerFrame, loopMode: updatedLoopMode)
     case .marker(let marker, _):
-      .marker(marker, loopMode: updatedLoopMode)
+      return .marker(marker, loopMode: updatedLoopMode)
     case .markers:
-      self
+      return self
     }
   }
 }

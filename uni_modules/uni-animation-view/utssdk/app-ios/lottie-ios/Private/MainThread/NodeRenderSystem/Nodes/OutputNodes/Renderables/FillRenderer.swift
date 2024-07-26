@@ -11,18 +11,18 @@ extension FillRule {
   var cgFillRule: CGPathFillRule {
     switch self {
     case .evenOdd:
-      .evenOdd
+      return .evenOdd
     default:
-      .winding
+      return .winding
     }
   }
 
   var caFillRule: CAShapeLayerFillRule {
     switch self {
     case .evenOdd:
-      CAShapeLayerFillRule.evenOdd
+      return CAShapeLayerFillRule.evenOdd
     default:
-      CAShapeLayerFillRule.nonZero
+      return CAShapeLayerFillRule.nonZero
     }
   }
 }

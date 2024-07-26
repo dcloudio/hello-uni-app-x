@@ -83,7 +83,6 @@ extension Archive {
           bufferSize: bufferSize,
           progress: progress,
           provider: provider)
-
       case .deflate:
         (sizeWritten, checksum) = try writeCompressed(
           size: uncompressedSize,
@@ -91,11 +90,9 @@ extension Archive {
           progress: progress,
           provider: provider)
       }
-
     case .directory:
       _ = try provider(0, 0)
       if let progress { progress.completedUnitCount = progress.totalUnitCount }
-
     case .symlink:
       let (linkSizeWritten, linkChecksum) = try writeSymbolicLink(
         size: Int(uncompressedSize),
@@ -229,7 +226,6 @@ extension Archive {
           throw ArchiveError.invalidCentralDirectoryEntryCount
         }
         return (sizeOfCD + UInt64(cdDataLengthChange), numberOfTotalEntries + UInt64(countChange))
-
       case .remove:
         return (sizeOfCD - UInt64(-cdDataLengthChange), numberOfTotalEntries - UInt64(-countChange))
       }

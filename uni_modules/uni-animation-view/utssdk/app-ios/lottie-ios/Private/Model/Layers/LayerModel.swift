@@ -14,19 +14,19 @@ extension LayerType: ClassFamily {
   func getType() -> AnyObject.Type {
     switch self {
     case .precomp:
-      PreCompLayerModel.self
+      return PreCompLayerModel.self
     case .solid:
-      SolidLayerModel.self
+      return SolidLayerModel.self
     case .image:
-      ImageLayerModel.self
+      return ImageLayerModel.self
     case .null:
-      LayerModel.self
+      return LayerModel.self
     case .shape:
-      ShapeLayerModel.self
+      return ShapeLayerModel.self
     case .text:
-      TextLayerModel.self
+      return TextLayerModel.self
     case .unknown:
-      LayerModel.self
+      return LayerModel.self
     }
   }
 }

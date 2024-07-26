@@ -21,10 +21,10 @@ extension LayerEffectType: ClassFamily {
   func getType() -> AnyObject.Type {
     switch self {
     case .dropShadow:
-      DropShadowEffect.self
+      return DropShadowEffect.self
     case .unknown:
       // Unsupported
-      LayerEffect.self
+      return LayerEffect.self
     }
   }
 }

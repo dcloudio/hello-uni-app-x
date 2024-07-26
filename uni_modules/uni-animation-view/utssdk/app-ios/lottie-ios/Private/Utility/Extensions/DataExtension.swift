@@ -22,12 +22,15 @@ extension Data {
       throw DotLottieError.assetNotFound(name: assetName, bundle: bundle)
     }
     #else
-    if let asset = NSDataAsset(name: assetName, bundle: bundle) {
-      self = asset.data
-      return
-    } else {
-      throw DotLottieError.assetNotFound(name: assetName, bundle: bundle)
+    if #available(macOS 10.11, *) {
+      if let asset = NSDataAsset(name: assetName, bundle: bundle) {
+        self = asset.data
+        return
+      } else {
+        throw DotLottieError.assetNotFound(name: assetName, bundle: bundle)
+      }
     }
+    throw DotLottieError.loadingFromAssetNotSupported
     #endif
   }
 }

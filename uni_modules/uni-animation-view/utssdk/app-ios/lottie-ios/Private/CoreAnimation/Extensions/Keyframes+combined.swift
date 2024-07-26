@@ -320,9 +320,9 @@ extension KeyframeGroup {
   /// The value to use for a combined set of keyframes, for the given index
   fileprivate func valueForCombinedKeyframes(at index: Int) -> T {
     if keyframes.count == 1 {
-      keyframes[0].value
+      return keyframes[0].value
     } else {
-      keyframes[index].value
+      return keyframes[index].value
     }
   }
 }

@@ -20,10 +20,10 @@ extension LayerStyleType: ClassFamily {
   func getType() -> AnyObject.Type {
     switch self {
     case .dropShadow:
-      DropShadowStyle.self
+      return DropShadowStyle.self
     case .unknown:
       // Unsupported
-      LayerStyle.self
+      return LayerStyle.self
     }
   }
 }
