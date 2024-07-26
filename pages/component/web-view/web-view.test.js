@@ -143,7 +143,7 @@ describe('component-native-web-view', () => {
       });
     });
 
-    it('checkNativeWebView', () => {
+    it('checkNativeWebView', async () => {
       await page.waitFor(300);
       const has = await page.data('checkNativeWebView')
       expect(has).toBe(true)
