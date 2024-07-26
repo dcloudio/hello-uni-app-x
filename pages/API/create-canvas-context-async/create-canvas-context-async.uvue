@@ -2,48 +2,45 @@
   <view>
     <view>create canvas context async</view>
     <canvas id="canvas" class="canvas-home" style="height: 100px;border: 1px solid blue;"></canvas>
-    <view style="margin-top: 30px;"></view>
+    <view style="margin-top: 30px;"></view>    <view>isCanvasContextNull: {{isCanvasContextNull}}</view>
     <child-canvas class="node-child-component" />
   </view>
 </template>
 
 <script>
   import childCanvas from './child-canvas.uvue';
+
+  type getContext = {
+    ctx : boolean,
+    hasFillRect : boolean
+  }
   export default {
     components: {
       childCanvas
     },
     data() {
       return {
-        context: null as CanvasRenderingContext2D | null
+        isCanvasContextNull: false
       }
     },
     methods: {
-      // 自动化测试
-      getContext() {
-        return {
-          ctx: typeof this.context,
-          hasFillRect: typeof this.context?.fillRect === 'function',
-        }
-      },
+
       drawImage() {
-        console.log(876);
         uni.createCanvasContextAsync({
           id: 'canvas',
           component: null,
           success: (res : CanvasContext) => {
-            this.context = res.getContext('2d');
+            const context = res.getContext('2d')!;
+            this.isCanvasContextNull = true
             // 若干绘制调用
             // 绘制红色正方形
-            this.context.fillStyle = "rgb(200, 0, 0)";
-            this.context.fillRect(10, 10, 50, 50);
+            context.fillStyle = "rgb(200, 0, 0)";
+            context.fillRect(10, 10, 50, 50);
 
             // 绘制蓝色半透明正方形
-            this.context.fillStyle = "rgba(0, 0, 200, 0.5)";
-            this.context.fillRect(30, 30, 50, 50);
-            this.context.draw();
-          },
-          fail: (err : UniError) => {
+            context.fillStyle = "rgba(0, 0, 200, 0.5)";
+            context.fillRect(30, 30, 50, 50);
+            context.draw();
           }
         })
       }
@@ -52,4 +49,4 @@
       this.drawImage()
     }
   }
-</script>
+</script>
