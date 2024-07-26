@@ -60,6 +60,12 @@ describe('nodes-info', () => {
     expect(childData.top > 100).toBe(true)
   })
 
+  it('multi-child', async () => {
+    const pageData = await page.data()
+    expect(pageData.selectCount).toBe(1)
+    expect(pageData.selectAllCount).toBe(2)
+  })
+
   // #ifdef APP
   //检测onResize获取BoundingClientRect信息是否有效
   /* it('check_resizeRectValid', async () => {

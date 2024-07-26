@@ -1,4 +1,7 @@
 <template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
   <view class="page" id="page">
     <page-head :title="title"></page-head>
     <button class="btn btn-get-node-info" @click="getNodeInfo">getNodeInfo</button>
@@ -36,11 +39,19 @@
       </view>
     </view>
     <node-child class="node-child"></node-child>
+    <text>子组件多根节点</text>
+    <multi-child ref="multi-child" id="multi-child"></multi-child>
+    <text>子组件多根节点(仅测试，用于验证查询是否超出范围)</text>
+    <multi-child id="multi-child-2"></multi-child>
   </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script>
   import nodeChild from './nodes-info-child.uvue'
+  import multiChild from './selector-query-child-multi.uvue'
 
   type NodeInfoType = {
     left : number | null,
@@ -53,7 +64,8 @@
 
   export default {
     components: {
-      nodeChild
+      nodeChild,
+      multiChild
     },
     data() {
       return {
@@ -63,7 +75,16 @@
         rootNodeInfo: null as NodeInfoType | null,
         //供自动化测试使用
         // resizeRectValid: false
+        // TODO
+        selectCount: 0,
+        selectAllCount: 0,
       }
+    },
+    onReady() {
+      const instance = (this.$refs['multi-child'] as ComponentPublicInstance)
+      this.selectCount = instance.$data['selectCount'] as Number
+      this.selectAllCount = instance.$data['selectAllCount'] as Number
+      console.log('selectCount', selectCount, selectAllCount)
     },
     onResize() {
       //供自动化测试使用
@@ -130,7 +151,6 @@
 <style>
   .page {
     padding: 15px;
-    flex: 1;
   }
 
   .btn {
