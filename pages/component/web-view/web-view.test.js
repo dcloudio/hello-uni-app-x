@@ -94,7 +94,6 @@ describe('component-native-web-view', () => {
         });
       }else {
         expect(await page.data('eventLoading')).toEqual({
-          tagName: 'WEB-VIEW',
           type: 'loading',
           src: 'https://www.dcloud.io/'
         });
@@ -110,7 +109,6 @@ describe('component-native-web-view', () => {
          });
       }else {
         expect(await page.data('eventLoad')).toEqual({
-          tagName: 'WEB-VIEW',
           type: 'load',
           src: 'https://www.dcloud.io/'
         });
@@ -129,7 +127,6 @@ describe('component-native-web-view', () => {
           return (await page.data('eventError')) || (Date.now() - start > 5000);
         });
         expect(await page.data('eventError')).toEqual({
-          tagName: 'WEB-VIEW',
           type: 'error',
           errCode: 100002,
           errMsg: 'page error',
@@ -145,7 +142,7 @@ describe('component-native-web-view', () => {
 
     it('checkNativeWebView', async () => {
       await page.waitFor(300);
-      const has = await page.data('checkNativeWebView')
+      const has = await page.callMethod('checkNativeWebView')
       expect(has).toBe(true)
     })
   } else {
