@@ -142,6 +142,12 @@ describe('component-native-web-view', () => {
         autoTest: false
       });
     });
+
+    it('checkNativeWebView', () => {
+      await page.waitFor(300);
+      const has = await page.data('checkNativeWebView')
+      expect(has).toBe(true)
+    })
   } else {
     // TODO: web 端暂不支持
     it('web', async () => {
