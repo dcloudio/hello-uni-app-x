@@ -6,6 +6,7 @@ describe('API-loading', () => {
 
   if (
     platformInfo.indexOf('15.5') != -1 ||
+    platformInfo.indexOf('14.5') != -1 ||
     platformInfo.indexOf('13.7') != -1 ||
     platformInfo.indexOf('12.4') != -1
   ) {
