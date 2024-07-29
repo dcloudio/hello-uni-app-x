@@ -18,7 +18,7 @@ describe('get-native-view', () => {
     expect(value).toBe(true)
   })
 
-  //检测intpu标签原生View是否匹配
+  //检测input标签原生View是否匹配
   it('check_input_native_view', async () => {
     page.waitFor(100)
     const value = await page.callMethod('checkInputNativeView')
@@ -32,7 +32,7 @@ describe('get-native-view', () => {
     expect(value).toBe(true)
   })
 
-  //检测view标签原生View是否匹配
+  //检测webview标签原生View是否匹配
   it('check_web_view_native_view', async () => {
     page.waitFor(100)
     const value = await page.callMethod('checkWebViewNativeView')
