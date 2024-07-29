@@ -1,0 +1,42 @@
+describe('get-native-view', () => {
+  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+    it('object', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/API/get-native-view/get-native-view')
+    await page.waitFor('web-view')
+  })
+
+  //检测view标签原生View是否匹配
+  it('check_view_native_view', async () => {
+    page.waitFor(100)
+    const value = await page.callMethod('checkViewNativeView')
+    expect(value).toBe(true)
+  })
+
+  //检测intpu标签原生View是否匹配
+  it('check_input_native_view', async () => {
+    page.waitFor(100)
+    const value = await page.callMethod('checkInputNativeView')
+    expect(value).toBe(true)
+  })
+
+  //检测textarea标签原生View是否匹配
+  it('check_textarea_native_view', async () => {
+    page.waitFor(100)
+    const value = await page.callMethod('checkTextareaNativeView')
+    expect(value).toBe(true)
+  })
+
+  //检测view标签原生View是否匹配
+  it('check_web_view_native_view', async () => {
+    page.waitFor(100)
+    const value = await page.callMethod('checkWebViewNativeView')
+    expect(value).toBe(true)
+  })
+
+})
