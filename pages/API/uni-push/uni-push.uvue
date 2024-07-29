@@ -2,67 +2,95 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
     <!-- #ifdef APP-ANDROID -->
-    <button class="normal-button" type="default" @click="handleCreateChannel">
-      创建通知渠道
+    <button class="normal-button" type="default" @click="handleCreateChannel(true)">
+      创建通知渠道 | setPushChannel
     </button>
     <button class="normal-button" type="default" @click="handleGetAllChannels">
-      获取所有通知渠道信息
+      获取所有通知渠道信息 | getAllChannels
     </button>
     <!-- #endif -->
     <button class="normal-button" type="default" @click="handleCreateLocalNotification">
-      创建本地通知消息
+      创建本地通知消息 | createPushMessage
     </button>
     <button class="normal-button" type="default" @click="handleSetBadge">
-      设置角标
+      设置角标为5 | setAppBadgeNumber(5)
     </button>
     <button class="normal-button" type="default" @click="handleCleanBadge">
-      清空角标
+      清空角标 | setAppBadgeNumber(0)
     </button>
     <button class="normal-button" type="default" @click="handleGetClientId">
-      获取cid
+      获取cid | getPushClientId
     </button>
+
+    <textarea style="flex: 1;width: 100%;" :disabled="true" :value="channelInfo"></textarea>
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script setup>
-  const handleCreateChannel = () => {
+
+  const channelInfo = ref("")
+
+  const handleCreateChannel = (showToast: boolean) => {
     // #ifdef APP-ANDROID
     const manager = uni.getChannelManager()
     manager.setPushChannel({
       channelId: "msg-pass",
       channelDesc: "留言审核通过",
     } as SetPushChannelOptions)
+    if(showToast){
+      uni.showToast({
+        title: "设置渠道成功"
+      })
+    }
     // #endif
   }
   const handleGetAllChannels = () => {
     // #ifdef APP-ANDROID
     const manager = uni.getChannelManager()
     console.log("channels : " + manager.getAllChannels());
+    channelInfo.value = `渠道信息为: \n ${manager.getAllChannels()}`
     // #endif
   }
   const handleCreateLocalNotification = () => {
     // #ifdef APP-ANDROID
     if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
       // #endif
-      handleCreateChannel()
+      handleCreateChannel(false)
+      const date = new Date();
+      const hour = date.getHours()
+      const minute = date.getMinutes()
+      const second = date.getSeconds()
+      const formateTime = (target: number): string =>{
+        return target < 10 ? `0${target}` : `${target}`
+      }
       uni.createPushMessage({
-        title: "halo",
-        content: "world",
-        // cover:true,
+        title: "主标题(title)",
+        content: `内容(content)，创建时间: ${formateTime(hour)}:${formateTime(minute)}:${formateTime(second)}`,
+        cover:false,
         channelId: "msg-pass",
         when: Date.now() + 10000,
         icon: "/static/uni.png",
-        // delay:5,
+        sound:"system",
+        delay:1,
         payload: {
           pkey: "pvalue1"
         },
         category: "IM",
         success(res) {
           console.log("res: " + res);
+          uni.hideToast()
+          uni.showToast({
+            title:"创建本地通知消息成功"
+          })
         },
         fail(e) {
           console.log("fail :" + e);
+          uni.hideToast()
+          uni.showToast({
+            title:"创建本地通知消息失败",
+            icon:"error"
+          })
         }
       })
       // #ifdef APP-ANDROID
@@ -76,16 +104,31 @@
   }
   const handleGetClientId = () => {
     uni.getPushClientId({
-      complete(e : any) {
-        console.log(e);
+      success:(res : GetPushClientIdSuccess)=>{
+        uni.showModal({
+          title:"信息",
+          content: `获取cid : ${res.cid}`
+        })
+      },
+      fail:()=>{
+        uni.showToast({
+          title:`获取cid失败`,
+          icon: "error"
+        })
       }
     })
   }
   const handleSetBadge = () => {
     uni.setAppBadgeNumber(5)
+    uni.showToast({
+      title:"设置应用角标数为5"
+    })
   }
   const handleCleanBadge = () => {
     uni.setAppBadgeNumber(0)
+    uni.showToast({
+      title:"清空应用角标数"
+    })
   }
 </script>
 
