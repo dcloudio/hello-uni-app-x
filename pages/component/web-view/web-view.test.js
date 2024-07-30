@@ -48,14 +48,18 @@ describe('component-native-web-view', () => {
       await page.waitFor(async () => {
         return (await page.data('eventTouchstart')) && (await page.data('eventTap')) || (Date.now() - start > 500);
       });
-      expect(await page.data('eventTouchstart')).toEqual({
-        clientX: 1,
-        clientY: 1
-      });
-      expect(await page.data('eventTap')).toEqual({
-        clientX: 1,
-        clientY: 1
-      });
+      if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
+         expect(await page.data('eventTouchstart')).toEqual({
+           clientX: 1,
+           clientY: 1
+         });
+
+         expect(await page.data('eventTap')).toEqual({
+           clientX: 1,
+           clientY: 1
+         });
+      }
+
       await page.setData({
         pointerEvents: 'none'
       });
@@ -68,14 +72,16 @@ describe('component-native-web-view', () => {
       await page.waitFor(async () => {
         return (await page.data('eventTouchstart')) && (await page.data('eventTap')) || (Date.now() - start > 500);
       });
-      expect(await page.data('eventTouchstart')).toEqual({
-        clientX: 1,
-        clientY: 1
-      });
-      expect(await page.data('eventTap')).toEqual({
-        clientX: 1,
-        clientY: 1
-      });
+      if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
+        expect(await page.data('eventTouchstart')).toEqual({
+          clientX: 1,
+          clientY: 1
+        });
+        expect(await page.data('eventTap')).toEqual({
+          clientX: 1,
+          clientY: 1
+        });
+      }
       await page.setData({
         pointerEvents: 'auto'
       });

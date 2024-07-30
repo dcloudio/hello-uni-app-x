@@ -81,6 +81,7 @@ describe('component-native-image', () => {
     });
     if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       expect(await page.data('eventLoad')).toEqual({
+        tagName: 'IMAGE',
         type: 'load',
         width: 10,
         height: 10
@@ -105,6 +106,7 @@ describe('component-native-image', () => {
     });
     if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       expect(await page.data('eventError')).toEqual({
+        tagName: 'IMAGE',
         type: 'error'
       });
     }else {
