@@ -31,7 +31,7 @@ describe('component-native-list-view-refresh', () => {
     await program.swipe({
       startPoint: {x: 100,y: 400},
       endPoint: {x: 100,y: 500},
-      duration: 1000
+      duration: 100
     })
     await page.waitFor(1500)
     expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
