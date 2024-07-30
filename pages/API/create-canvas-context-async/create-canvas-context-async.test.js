@@ -10,7 +10,7 @@ describe('create-canvas-context-async', () => {
   it('page canvas', async () => {
     await page.waitFor(100)
     const data = await page.data()
-    expect(data.isCanvasContextNull).toBe(true)
+    expect(data.testCreateCanvasContextAsyncSuccess).toBe(true)
   })
 
   it('component canvas', async () => {
