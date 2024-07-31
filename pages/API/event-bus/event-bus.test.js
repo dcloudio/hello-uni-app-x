@@ -52,6 +52,14 @@ describe('event-bus', () => {
     expect(l3).toBe(0)
   })
 
+  it('emit object params', async () => {
+    await page.callMethod('onObj')
+    await page.callMethod('emitWithObj')
+    const objArg = await page.data('objArg')
+    expect(objArg.a).toBe(1)
+    expect(objArg.b).toBe(2)
+  })
+
   it('off-all', async () => {
     await page.callMethod('clear')
     await page.callMethod('on')

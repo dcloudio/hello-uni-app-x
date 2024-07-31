@@ -14,6 +14,12 @@
         <view>
           <view v-for="(item, index) in log" :key="index">{{ item }}</view>
         </view>
+      <button @click="onObj">开始监听 obj 参数</button>
+      <button @click="emitWithObj">触发监听 obj 参数</button>
+      <view class="box">
+        <text>接收到的 obj 参数：</text>
+        <text>{{JSON.stringify(objArg)}}</text>
+      </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -26,6 +32,7 @@
     data() {
       return {
         log: [] as string[],
+        objArg: {},
       }
     },
     methods: {
@@ -41,6 +48,11 @@
       on2() {
         uni.$on('test', this.fn2)
       },
+      onObj() {
+        uni.$on('test-obj', (res: UTSJSONObject) => {
+          this.objArg = res
+        })
+      },
       once() {
         uni.$once('test', this.fn)
       },
@@ -52,6 +64,9 @@
       },
       emit() {
         uni.$emit('test', 'msg:' + Date.now())
+      },
+      emitWithObj() {
+        uni.$emit('test-obj', { a: 1, b: 2 })
       },
       clear() {
         this.log.length = 0
