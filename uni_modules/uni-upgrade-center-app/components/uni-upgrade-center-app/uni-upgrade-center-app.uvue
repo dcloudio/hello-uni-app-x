@@ -228,7 +228,7 @@
               .sort((cur: StoreListItem, next: StoreListItem): number => next.priority - cur.priority)
               .map((item: StoreListItem): string => item.scheme)
               .reduce((promise: Promise<boolean>, cur: string): Promise<boolean> => {
-                openSchemePromise = promise.catch((): Promise<boolean> => openSchema(cur))
+                openSchemePromise = promise.catch<boolean>((): Promise<boolean> => openSchema(cur))
                 return openSchemePromise!
               }, openSchemePromise!)
             return openSchemePromise!

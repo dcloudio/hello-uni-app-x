@@ -177,7 +177,7 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
           	fail: err => {
           		uni.showModal({
           			title: '更新失败',
-          			content: err.message,
+          			content: err.errMsg,
           			showCancel: false
           		});
           	}
