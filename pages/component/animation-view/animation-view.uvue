@@ -7,7 +7,10 @@
         <button @tap="changeAction(1)">测试action play</button>
         <button @tap="changeAction(2)">测试action pause</button>
         <button @tap="changeAction(3)">测试action stop</button>
-        <animation-view ref="animView" :path="animUrl" :autoplay="autoplay" :loop="loop" :action="action"
+        <animation-view ref="animView" v-if="!androidStandardLauncher" :path="animUrl"
+            :autoplay="autoplay"
+            :loop="loop"
+            :action="action"
             :hidden="hidden" @bindended="testAnimEnd"
             :style="{width:widthNum+'rpx',height:heightNum+'px',background:yanse}">
         </animation-view>
@@ -28,8 +31,26 @@
                 widthNum: 750,
                 heightNum: 200,
                 comShow: true,
-                animUrl: "/static/anim_a.json"
+                animUrl: "/static/anim_a.json",
+                androidStandardLauncher:false,
             }
+        },
+
+        onLoad() {
+          // #ifdef APP-ANDROID
+          try{
+            Class.forName("com.airbnb.lottie.LottieAnimationView")
+            androidStandardLauncher = false
+          }catch(e:Exception){
+            androidStandardLauncher = true
+          }
+          if(androidStandardLauncher){
+            uni.showModal({
+              title:'当前示例需要自定义基座运行',
+              showCancel:false
+            })
+          }
+          // #endif
         },
 
         methods: {
