@@ -25,7 +25,7 @@
       const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "pattern"]
       const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
       const API_STATE = ["beginPath", "closePath",  "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate"]
-      const API_PROPERTIES = ["setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit", "setFillStyle", "setStrokeStyle", "setGlobalAlpha", "lineDash", "linearGradient", "radialGradient", "textAlign"]
+      const API_PROPERTIES = ["setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit", "setFillStyle", "setStrokeStyle", "setGlobalAlpha", "setFontSize", "lineDash", "linearGradient", "radialGradient", "textAlign"]
       return {
         title: 'Context2D',
         names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText"] as string[],
@@ -203,7 +203,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.lineWidth = 2
         context.arc(75, 75, 50, 0, Math.PI * 2, true)
@@ -221,7 +221,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(150, 20)
         context.arcTo(150, 100, 50, 20, 30)
@@ -252,7 +252,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // First path
         context.beginPath()
         context.strokeStyle = "blue"
@@ -273,7 +273,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(150, 0)
         context.lineTo(150, 150)
@@ -296,7 +296,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(50, 20)
         context.bezierCurveTo(230, 30, 150, 60, 50, 100)
@@ -320,7 +320,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // 绘制黄色背景
         context.beginPath()
         context.fillStyle = "#ff6"
@@ -344,7 +344,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Create circular clipping region
         context.beginPath();
         context.arc(100, 75, 50, 0, Math.PI * 2, true)
@@ -362,7 +362,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.lineWidth = 10
         context.moveTo(20, 20)
@@ -378,11 +378,10 @@
 
         const image = new Image(100, 100)
         image.src = '../../../static/api.png';
-        // Only use the image after it's loaded
-        image!.onload = () => {
+        image.onload = () => {
           context.save()
-          context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
-          const pattern = context.createPattern(image!, "repeat")
+          this.clearCanvasRect()
+          const pattern = context.createPattern(image, "repeat")
           context.fillStyle = pattern
           context.fillRect(0, 0, 100, 100)
           context.restore()
@@ -392,7 +391,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Create a linear gradient
         // The start gradient point is at x=20, y=0
         // The end gradient point is at x=220, y=0
@@ -413,7 +412,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Create a radial gradient
         // The inner circle is at x=110, y=90, with radius=30
         // The outer circle is at x=100, y=100, with radius=70
@@ -434,7 +433,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.rect(20, 20, 150, 100)
         context.strokeStyle = '#00ff00'
@@ -446,7 +445,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.fillStyle = "green"
         context.fillRect(20, 10, 150, 100)
 
@@ -456,7 +455,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         console.log("fillText")
         context.strokeStyle = '#ff0000'
 
@@ -485,7 +484,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(0, 0)
         context.lineTo(300, 150)
@@ -497,7 +496,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(20, 20)
         context.lineTo(20, 100)
@@ -510,7 +509,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(20, 20)
         context.lineTo(20, 100)
@@ -524,7 +523,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.strokeStyle = "green"
         context.strokeRect(20, 10, 160, 100)
 
@@ -534,7 +533,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.font = "10px serif"
         context.strokeText("Hello world", 50, 90)
 
@@ -548,7 +547,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Point of transform origin
         context.arc(0, 0, 5, 0, 2 * Math.PI, true)
         context.fillStyle = "blue"
@@ -571,7 +570,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Scaled rectangle
         context.scale(9, 3)
         context.fillStyle = "red"
@@ -618,7 +617,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Moved square
         context.translate(110, 30)
         context.fillStyle = "red"
@@ -635,7 +634,7 @@
       },
       save() {
         const context = this.canvasContext!
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.save()
         context.beginPath()
         context.strokeStyle = '#00ff00'
@@ -653,7 +652,7 @@
       },
       restore() {
         const context = this.canvasContext!;
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.clearCanvasRect();
         [3, 2, 1].forEach((item) => {
           context.save()
           context.beginPath()
@@ -665,8 +664,8 @@
       },
       drawImageLocal() {
         const context = this.canvasContext!
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
-        let image = new Image(100, 100)
+        this.clearCanvasRect()
+        const image = new Image(100, 100)
         image.src = '../../../static/uni.png'
         image.onload = () => {
           context.drawImage(image, 0, 0, 100, 100)
@@ -674,8 +673,8 @@
       },
       drawImage() {
         const context = this.canvasContext!
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
-        let image = new Image(100, 100);
+        this.clearCanvasRect()
+        const image = new Image(100, 100);
         image.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png'
         image.onload = () => {
           context.drawImage(image, 0, 0, 100, 100)
@@ -685,7 +684,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.beginPath()
         context.rect(20, 20, 150, 100)
         context.stroke()
@@ -696,7 +695,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Quadratic Bézier curve
         context.beginPath()
         context.moveTo(50, 20)
@@ -722,7 +721,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         // Draw a rotated rectangle
         context.rotate((45 * Math.PI) / 180)
         context.fillRect(60, 0, 100, 30)
@@ -738,7 +737,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.transform(1, 0.2, 0.8, 1, 0, 0)
         context.fillRect(0, 0, 100, 100)
 
@@ -748,7 +747,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.clearCanvasRect();
         ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
           context.fillStyle = item
           context.beginPath()
@@ -762,7 +761,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.clearCanvasRect();
         ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
           context.strokeStyle = item
           context.beginPath()
@@ -776,7 +775,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.fillStyle = '#000000';
         [1, 0.5, 0.1].forEach((item : number, index : number) => {
           context.globalAlpha = item
@@ -793,7 +792,7 @@
 
         context.save();
         [10, 20, 30, 40].forEach((item : number, index : number) => {
-          // context.fontSize(item)
+          context.font = item + 'px serif'
           context.fillText('Hello, world', 20, 20 + 40 * index)
         })
 
@@ -803,7 +802,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.lineWidth = 10;
         ['butt', 'round', 'square'].forEach((item : string, index : number) => {
           context.beginPath()
@@ -819,7 +818,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.lineWidth = 10;
         ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
           context.beginPath()
@@ -836,7 +835,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.clearCanvasRect();
         [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
           context.beginPath()
           context.lineWidth = item
@@ -851,7 +850,7 @@
         const context = this.canvasContext!
 
         context.save();
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.setLineDash([4, 16])
 
         // Dashed line with no offset
@@ -874,7 +873,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         context.lineWidth = 4;
         [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
           context.beginPath()
@@ -891,7 +890,7 @@
         const context = this.canvasContext!
 
         context.save()
-        context.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.clearCanvasRect()
         const text = "uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎"
 
         context.font = "20px 宋体"
@@ -903,6 +902,9 @@
         context.fillText("measure text width:" + textMetrics.width, 40, 80)
 
         context.restore()
+      },
+      clearCanvasRect() {
+        this.canvasContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
       }
     }
   }
