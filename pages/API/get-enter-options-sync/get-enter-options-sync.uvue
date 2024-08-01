@@ -1,61 +1,26 @@
 <template>
   <page-head title="getEnterOptionsSync"></page-head>
   <view class="uni-padding-wrap">
-    <button @click="getEnterOptionsSync">getEnterOptionsSync</button>
-    <view v-if="enterOptionsPath.length > 0" class="uni-common-mt">
-      <text>应用启动路径：</text>
-      <text style="margin-top: 5px">{{ EnterOptionsPath }}</text>
+    <view class="uni-common-mt">
+      <text>应用本次启动路径：</text>
+      <text style="margin-top: 5px">{{ enterOptionsString }}</text>
     </view>
   </view>
 </template>
 
-<script lang="uts">
-  type OnShowReturn = {
-    appOnShow : OnShowOptions,
-    onShowOption : OnShowOptions
-  }
-
+<script>
   export default {
     data() {
       return {
-        checked: false,
-        homePagePath: 'pages/tabBar/component',
-        enterOptionsPath: ''      }
+        enterOptionsString: '',
+        testResult: false      }
     },
-    methods: {
-      // 自动化测试
-      compareOnShowRes() : OnShowReturn {
-
-        // #ifdef APP-ANDROID
-        const res : OnShowReturn = {
-          appOnShow: {
-            path: ''
-          } as OnShowOptions,
-          onShowOption: {
-            path: ''
-          } as OnShowOptions
-        }
-        return res
-        // #endif
-
-        // #ifndef APP-ANDROID
-        const onShowOption = uni.getEnterOptionsSync();
-        const app = getApp()
-
-        const appOnShow = app.globalData.onShowOption as OnShowOptions
-        return {
-          appOnShow,
-          onShowOption
-        }
-        // #endif
-      },
-      getEnterOptionsSync() {
-        const enterOptions = uni.getEnterOptionsSync()
-        this.enterOptionsPath = enterOptions.path
-        if (enterOptions.path == this.homePagePath) {
-          this.checked = true
-        }
-      },
-    },
+    onReady() {
+      const app = getApp()
+      const appOnShow = app.globalData.onShowOption
+      const onShowOption = uni.getEnterOptionsSync()
+      this.enterOptionsString = JSON.stringify(onShowOption, null, 2)
+      this.testResult = (onShowOption.path == appOnShow.path && onShowOption.appScheme == appOnShow.appScheme && onShowOption.appLink == appOnShow.appLink)
+    }
   }
 </script>
