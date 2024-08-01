@@ -66,6 +66,11 @@
               填充负数字符串
             </button>
           </view>
+          <view class="uni-flex uni-row">
+            <button type="default" class="uni-btn btn-complexStaticTest" style="width:100%" @tap="complexStaticTest">
+              字面量读写测试
+            </button>
+          </view>
         </view>
         <view class="uni-padding-wrap">
           <view class="uni-btn-v">
@@ -106,6 +111,7 @@
         data: '' as any,
         apiGetData: '' as any | null,
         storageInfo: '',
+        staticComplexRet:false
       }
     },
     methods: {
@@ -151,6 +157,23 @@
       strMock() {
         this.key = 'key_' + Math.random()
         this.data = '测试字符串数据，长度为16个字符'
+      },
+      complexStaticTest() {
+        uni.setStorageSync("key_complexStaticMock", {
+          name:"张三",
+          age:12
+        })
+        let savedData = uni.getStorageSync("key_complexStaticMock")
+        this.staticComplexRet = false
+        if(savedData instanceof UTSJSONObject){
+          if((savedData as UTSJSONObject).getNumber('age') == 12){
+            this.staticComplexRet = true
+            uni.showToast({
+              icon:'success',
+              title:'测试通过'
+            })
+          }
+        }
       },
       complexMock() {
         this.key = 'key_' + Math.random()
