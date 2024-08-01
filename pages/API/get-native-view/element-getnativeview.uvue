@@ -20,44 +20,63 @@
     },
     methods: {
       checkViewNativeView() : boolean {
+        var viewName = "ViewGroup"
+        // #ifdef APP-IOS
+        viewName = "UIView"
+        // #endif
+        const msg = "检测view组件对应原生"+viewName
         if (checkViewNativeView("view")) {
-          uni.showToast({
-            title: "检测view原生View成功"
-          })
+          this.showTip(msg+"成功")
           return true
         }
-        console.log("检测view原生View失败")
+        this.showTip(msg+"失败")
         return false
       },
       checkInputNativeView() : boolean {
+        var viewName = "AppCompatEditText"
+        // #ifdef APP-IOS
+        viewName = "UITextField"
+        // #endif
+        const msg = "检测input组件对应原生"+viewName
         if (checkInputNativeView("input")) {
-          uni.showToast({
-            title: "检测input原生View成功"
-          })
+          this.showTip(msg+"成功")
           return true
         }
-        console.log("检测input原生View失败")
+        this.showTip(msg+"失败")
         return false
       },
       checkTextareaNativeView() : boolean {
+        var viewName = "ViewGroup"
+        // #ifdef APP-IOS
+        viewName = "AppCompatEditText"
+        // #endif
+        const msg = "检测textarea组件对应原生"+viewName
         if (checkTextareaNativeView("textarea")) {
-          uni.showToast({
-            title: "检测textarea原生View成功"
-          })
+          this.showTip(msg+"成功")
           return true
         }
-        console.log("检测textarea原生View失败")
+        this.showTip(msg+"失败")
         return false
       },
       checkWebViewNativeView() : boolean {
+        var viewName = "WebView"
+        // #ifdef APP-IOS
+        viewName = "WKWebView"
+        // #endif
+        const msg = "检测webview组件对应原生"+viewName
         if (checkWebViewNativeView("webview")) {
-          uni.showToast({
-            title: "检测webview原生View成功"
-          })
+          this.showTip(msg+"成功")
           return true
         }
-        console.log("检测webview原生View失败")
+        this.showTip(msg+"失败")
         return false
+      },
+      showTip(title: string) {
+        console.log("title==="+title)
+        uni.showToast({
+          title: title,
+          icon: "none"
+        })
       }
     }
   }
