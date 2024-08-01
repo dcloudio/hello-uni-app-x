@@ -7,7 +7,7 @@ describe('get-native-view', () => {
   }
   let page
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/get-native-view/get-native-view')
+    page = await program.reLaunch('/pages/API/get-native-view/element-getnativeview')
     await page.waitFor('web-view')
   })
 
