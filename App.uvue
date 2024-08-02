@@ -49,6 +49,14 @@
     onShow: function (res : OnShowOptions) {
       this.globalData.onShowOption = res
 
+      // 处理scheme或通用链接直达
+      let url = this.getRedirectUrl(res.appScheme, res.appLink);
+      if (null != url) {
+        uni.navigateTo({
+          url: url
+        })
+      }
+
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum + 100)
       console.log('App Show')
@@ -85,6 +93,39 @@
       increasetLifeCycleNum() {
         setLifeCycleNum(state.lifeCycleNum + 100)
         console.log('App increasetLifeCycleNum')
+      },
+      getRedirectUrl(scheme : string | null, ulink : string | null) : string | null {
+        //解析scheme或universal link启动直达页面：
+        //scheme格式：uniappx://redirect/pages/component/view/view?key=value  //其中redirect后为页面路径
+        //universal link格式：https://uniappx.dcloud.net.cn/ulink/redirect.html?url=%2Fpages%2Fcomponent%2Fview%2Fview%3Fkey%3Dvalue  //通用链接路径需固定，?后面的url参数为直达页面路径，注意url字段值需做url编码（可使用encodeURIComponent方法）
+        let url : string | null = null;
+        if (null != scheme && scheme.length > 0) {
+          const PATHPRE = 'redirect';
+          let parts : string | null = null;
+          let pos = scheme.search('//');
+          if (pos > 0) {
+            parts = scheme.substring(pos + 2);
+          }
+          if (null != parts && parts.startsWith(PATHPRE)) {
+            url = parts.substring(PATHPRE.length);
+          }
+        } else if (null != ulink && ulink.length > 0) {
+          const PATH = 'ulink/redirect.html';
+          let parts = ulink.split('?');
+          if (parts.length > 1 && parts[0].endsWith(PATH) && parts[1].length > 0) {
+            parts[1].split('&').forEach((e) => {
+              let params = e.split('=');
+              if (params.length > 1 && params[0].length > 0 && params[1].length > 0) {
+                if ('url' == params[0]) {
+                  if (null == url) {
+                    url = decodeURIComponent(params[1]);
+                  }
+                }
+              }
+            });
+          }
+        }
+        return url;
       }
     }
   }
