@@ -14,26 +14,29 @@
       <uni-collapse>
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
           class="item">
-          <view style='padding-left:18px;' v-for="page in menuItem.pages" :key="page!.path" class="uni-navigate-item"
-            hover-class="is--active" @click="goPage(`/${page.path}`)">
-            <text class="uni-navigate-text" :class="{'left-win-active': leftWinActive === page.path && hasLeftWin}">{{
-                page.style["navigationBarTitleText"]
-              }}</text>
-            <image :src="arrowRightIcon" class="uni-icon-size"></image>
-          </view>
-          <uni-collapse style="width: 100%" v-for="childMenu in menuItem.children" :key="childMenu!.id">
-            <uni-collapse-item :title="childMenu.name" class="item"
-              style="margin-bottom: 0;padding-left: 5px;padding-right: 5px;">
-              <view style='padding-left: 18px;' class="uni-navigate-item" hover-class="is--active"
-                v-for="childPage in childMenu.pages" :key="childPage!.path" @click="goPage(`/${childPage.path}`)">
-                <text class="uni-navigate-text"
-                  :class="{'left-win-active': leftWinActive === childPage.path && hasLeftWin}">{{
-                    childPage.style["navigationBarTitleText"]
-                  }}</text>
-                <image :src="arrowRightIcon" class="uni-icon-size"></image>
-              </view>
-            </uni-collapse-item>
-          </uni-collapse>
+          <template v-for="childMenuItem in menuItem.items" :key="childMenuItem!.id">
+            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
+              hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
+              <text class="uni-navigate-text" :class="{
+                  'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
+                }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
+              <image :src="arrowRightIcon" class="uni-icon-size"></image>
+            </view>
+            <uni-collapse v-else style="width: 100%">
+              <uni-collapse-item :title="childMenuItem.name" class="item"
+                style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
+                <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
+                  v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem!.path"
+                  @click="goPage(`/${grandChildMenuItem.path}`)">
+                  <text class="uni-navigate-text" :class="{
+                      'left-win-active':
+                        leftWinActive === grandChildMenuItem.path && hasLeftWin,
+                    }">{{ grandChildMenuItem.style["navigationBarTitleText"] }}</text>
+                  <image :src="arrowRightIcon" class="uni-icon-size"></image>
+                </view>
+              </uni-collapse-item>
+            </uni-collapse>
+          </template>
         </uni-collapse-item>
       </uni-collapse>
     </view>
@@ -73,7 +76,7 @@
         immediate: true,
         handler(newRoute) {
           if (newRoute.matched.length) {
-            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.pages.some(page => this.leftWinActive && this.leftWinActive === page?.path))
+            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
             if (activeCategoryIndex > -1) {
               this.$nextTick(() => {
                 ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex]).$callMethod('openCollapse', true)

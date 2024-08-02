@@ -15,15 +15,17 @@ type PageGroup = {
 type Page = {
   path : string,
   style : UTSJSONObject,
-  group ?: string | null
+  group ?: string | null,
 }
 
 export type MenuItem = {
   id : string,
   name : string,
   index : number,
-  children : (MenuItem | null)[],
-  pages : (Page | null)[]
+  path : string,
+  style : UTSJSONObject,
+  group ?: string | null,
+  items : (MenuItem | null)[]
 }
 
 export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
@@ -37,6 +39,7 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
     let currentGroups : (Group | null)[] | null = groupTree
     const pageGroups : PageGroup[] = []
     groupIndexList.forEach((groupIndex, index) => {
+      // 跳过第一层 component API CSS
       if (index > 0) {
         pageGroups.push({ id: currentGroups![groupIndex]!.id, name: currentGroups![groupIndex]!.name, index: groupIndex } as PageGroup)
       }
@@ -60,27 +63,39 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
           id: id.split('.').slice(-1)[0],
           name,
           index: validIndex,
-          children: [] as (MenuItem | null)[],
-          pages: [] as (Page | null)[]
+          path: '',
+          style: {},
+          group: '',
+          items: [] as (MenuItem | null)[],
         } as MenuItem
       }
 
 
       currentMenu = menuItemArr[validIndex]
       if (groupIndex < groupLength - 1) {
-        menuItemArr = menuItemArr[validIndex]!.children as (MenuItem | null)[]
+        menuItemArr = menuItemArr[validIndex]!.items as (MenuItem | null)[]
       }
     })
+
+    const pageMenuItem : MenuItem = {
+      id: page.path,
+      name: page.style["navigationBarTitleText"] as string,
+      index: lastGroup.index,
+      path: page.path,
+      style: page.style,
+      group: page.group,
+      items: [] as (MenuItem | null)[],
+    }
     if (hasPageGroup) {
       const pageIndex = lastGroup.index
-      fillPageArrayWithNull(currentMenu!.pages, pageIndex)
-      if (currentMenu!.pages[pageIndex] == null) {
-        currentMenu!.pages[pageIndex] = page
+      fillMenuArrayWithNull(currentMenu!.items, pageIndex)
+      if (currentMenu!.items[pageIndex] == null) {
+        currentMenu!.items[pageIndex] = pageMenuItem
       } else {
-        currentMenu!.pages.push(page)
+        currentMenu!.items.push(pageMenuItem)
       }
     } else {
-      currentMenu!.pages.push(page)
+      currentMenu!.items.push(pageMenuItem)
     }
   })
 
@@ -116,24 +131,15 @@ function fillMenuArrayWithNull(arr : (MenuItem | null)[], index : number) : void
   }
 }
 
-function fillPageArrayWithNull(arr : (Page | null)[], index : number) : void {
-  const len = arr.length
-  for (let i = 0; i <= index - (len - 1); i++) {
-    arr.push(null)
-  }
-}
-
 function removeNullItem(arr : (MenuItem | null)[]) : (MenuItem | null)[] {
   const res = arr.filter((item : MenuItem | null) : boolean => item !== null)
   res.forEach(menuItem => {
     addSetTabBarPage(menuItem!)
     // #ifdef APP-ANDROID
-    menuItem.children = removeNullItem(menuItem.children)
-    menuItem.pages = menuItem.pages.filter((item : Page | null) : boolean => item !== null)
+    menuItem.items = removeNullItem(menuItem.items)
     // #endif
     // #ifndef APP-ANDROID
-    menuItem!.children = removeNullItem(menuItem!.children)
-    menuItem!.pages = menuItem!.pages.filter((item : Page | null) : boolean => item !== null)
+    menuItem!.items = removeNullItem(menuItem!.items)
     // #endif
   })
   return res
@@ -142,11 +148,16 @@ function removeNullItem(arr : (MenuItem | null)[]) : (MenuItem | null)[] {
 function addSetTabBarPage(menuItem : MenuItem) {
   const { id, name } = menuItem
   if (id == 'page' && name == '页面和路由' && !state.noMatchLeftWindow) {
-    menuItem.pages.push({
+    menuItem.items.push({
+      id: 'set-tab-bar',
+      name: '设置 TabBar',
+      index: 0,
       path: 'set-tab-bar',
       style: {
         navigationBarTitleText: '设置 TabBar'
-      }
-    } as Page)
+      },
+      group: null,
+      items: []
+    } as MenuItem)
   }
 }
