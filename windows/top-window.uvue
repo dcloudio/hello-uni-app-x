@@ -2,8 +2,8 @@
   <view class="top-window-header">
     <view class="left-header">
       <navigator class="left-header" open-type="reLaunch" url="/pages/component/global-properties/global-properties">
-        <image src="/static/logo.png" class="logo" mode="heightFix"></image>
-        <text>hello uni-app</text>
+        <image src="/static/uni.png" class="logo" mode="heightFix"></image>
+        <text>hello uni-app x</text>
       </navigator>
     </view>
     <custom-tab-bar class="tab-bar-flex" direction="horizontal" :show-icon="false" :selected="current"
@@ -13,8 +13,8 @@
 
 <script lang="uts">
   type IndexPageItem = {
-    tabBar : string;
-    index : string;
+    tabBar : string.PageURIString;
+    indexPageUrl : string.PageURIString;
   }
   type OnTabItemTapEvent = {
     pagePath : string;
@@ -33,16 +33,16 @@
         current: 0,
         indexPage: [{
           tabBar: '/pages/tabBar/component',
-          index: '/pages/component/global-properties/global-properties'
+          indexPageUrl: '/pages/component/global-properties/global-properties'
         }, {
           tabBar: '/pages/tabBar/API',
-          index: '/pages/API/get-app/get-app'
+          indexPageUrl: '/pages/API/get-app/get-app'
         }, {
           tabBar: '/pages/tabBar/CSS',
-          index: '/pages/CSS/layout/width'
+          indexPageUrl: '/pages/CSS/layout/width'
         }, {
           tabBar: '/pages/tabBar/template',
-          index: '/pages/template/long-list/long-list'
+          indexPageUrl: '/pages/template/slider-100/slider-100'
         }] as IndexPageItem[]
       }
     },
@@ -69,7 +69,7 @@
               return
             }
             uni.redirectTo({
-              url: indexPageItem.index
+              url: indexPageItem.indexPageUrl
             })
             return
           } else {
@@ -86,7 +86,7 @@
         for (const item of this.indexPage) {
           if (activeTabBar === item.tabBar) {
             uni.redirectTo({
-              url: item.index
+              url: item.indexPageUrl
             })
           }
         }
