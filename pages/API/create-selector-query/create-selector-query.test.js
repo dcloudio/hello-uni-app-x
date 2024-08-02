@@ -74,6 +74,23 @@ describe('nodes-info', () => {
   }) */
   // #endif
 
+  it('test filelds', async () => {
+    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+      expect(true).toBe(true)
+    } else {
+      const pageData = await page.data()
+      expect(pageData.fieldsResultContainNode).toBe(true)
+    }
+  })
+
+  it('test node', async () => {
+    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+      expect(true).toBe(true)
+    } else {
+      const pageData = await page.data()
+      expect(pageData.nodeResultContainNode).toBe(true)
+    }
+  })
 })
 
 async function getRootNode(selector) {
