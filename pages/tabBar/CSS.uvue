@@ -14,18 +14,20 @@
       <uni-collapse>
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
           class="item">
-          <view v-for="page in menuItem.pages" :key="page!.path" class="uni-navigate-item" hover-class="is--active"
-            @click="goPage(`/${page.path}`)">
+          <view style='padding-left:18px;' v-for="page in menuItem.pages" :key="page!.path" class="uni-navigate-item"
+            hover-class="is--active" @click="goPage(`/${page.path}`)">
             <text class="uni-navigate-text" :class="{'left-win-active': leftWinActive === page.path && hasLeftWin}">{{
                 page.style["navigationBarTitleText"]
               }}</text>
             <image :src="arrowRightIcon" class="uni-icon-size"></image>
           </view>
           <uni-collapse style="width: 100%" v-for="childMenu in menuItem.children" :key="childMenu!.id">
-            <uni-collapse-item :title="childMenu.name" class="item" style="margin-bottom: 0">
-              <view class="uni-navigate-item" hover-class="is--active" v-for="childPage in childMenu.pages"
-                :key="childPage!.path" @click="goPage(`/${childPage.path}`)">
-                <text class="uni-navigate-text">{{
+            <uni-collapse-item :title="childMenu.name" class="item"
+              style="margin-bottom: 0;padding-left: 5px;padding-right: 5px;">
+              <view style='padding-left: 18px;' class="uni-navigate-item" hover-class="is--active"
+                v-for="childPage in childMenu.pages" :key="childPage!.path" @click="goPage(`/${childPage.path}`)">
+                <text class="uni-navigate-text"
+                  :class="{'left-win-active': leftWinActive === childPage.path && hasLeftWin}">{{
                     childPage.style["navigationBarTitleText"]
                   }}</text>
                 <image :src="arrowRightIcon" class="uni-icon-size"></image>
@@ -53,10 +55,10 @@
       }
     },
     computed: {
-      hasLeftWin():boolean{
+      hasLeftWin() : boolean {
         return !state.noMatchLeftWindow
       },
-      leftWinActive():string{
+      leftWinActive() : string {
         return state.leftWinActive.slice(1)
       }
     },
@@ -66,20 +68,20 @@
       },
     },
     // #ifdef WEB
-    watch:{
-    	$route: {
-    		immediate: true,
-    		handler(newRoute) {
-    			if (newRoute.matched.length) {
+    watch: {
+      $route: {
+        immediate: true,
+        handler(newRoute) {
+          if (newRoute.matched.length) {
             const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.pages.some(page => this.leftWinActive && this.leftWinActive === page?.path))
             if (activeCategoryIndex > -1) {
               this.$nextTick(() => {
-               ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex]).$callMethod('openCollapse', true)
+                ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex]).$callMethod('openCollapse', true)
               })
             }
-    			}
-    		}
-    	}
+          }
+        }
+      }
     },
     // #endif
   }
