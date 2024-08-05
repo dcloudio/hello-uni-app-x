@@ -72,4 +72,19 @@ describe('API-toast', () => {
     await toScreenshot('toast-duration-end')
   })
 
+  if(process.env.uniTestPlatformInfo.startsWith('web')){
+    return
+  }
+
+  it("position-toast-test", async () => {
+    const positions = await page.$$('.radio-position')
+    for (let i = 0; i < positions.length; i++) {
+      await positions[i].tap()
+      const positionsText = await positions[i].attribute('value')
+      await page.callMethod('toast2Tap')
+      await page.waitFor(100);
+      await toScreenshot(`position-${positionsText}`)
+    }
+  })
+
 });
