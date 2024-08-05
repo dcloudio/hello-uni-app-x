@@ -15,12 +15,16 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
           class="item">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem!.id">
-            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
-              hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
-              <text class="uni-navigate-text" :class="{
-                  'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
-                }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
-              <image :src="arrowRightIcon" class="uni-icon-size"></image>
+            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px;"
+              :class="{'uni-navigate-item':childMenuItem.path !== 'set-tab-bar' || windowWidth <= 790}"
+              hover-class="is--active"
+              @click="goPage(`/${childMenuItem.path}`)">
+              <template v-if="childMenuItem.path !== 'set-tab-bar' || windowWidth <= 790">
+                <text class="uni-navigate-text"
+                  :class="{'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin}"
+                  >{{ childMenuItem.style["navigationBarTitleText"] }}</text>
+                <image :src="arrowRightIcon" class="uni-icon-size"></image>
+              </template>
             </view>
             <uni-collapse v-else style="width: 100%">
               <uni-collapse-item :title="childMenuItem.name" class="item"
@@ -68,6 +72,9 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.slice(1)
+      },
+      windowWidth() : number {
+        return uni.getSystemInfoSync().windowWidth
       }
     },
     methods: {
