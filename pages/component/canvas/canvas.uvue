@@ -2,11 +2,27 @@
   <view class="page" id="page-canvas">
     <canvas id="canvas" class="canvas-element"></canvas>
     <scroll-view class="scroll-view">
+      <button class="canvas-drawing-button" id="useAsync" @click="useAsync">使用异步方式设置（跨平台推荐)</button>
+      <button class="canvas-drawing-button" id="useSync" @click="useSync">使用同步方式设置</button>
       <!-- #ifdef WEB -->
       <button class="canvas-drawing-button" @click="canvasToBlob">canvasToBlob</button>
+      <view>
+        <text>testToBlobResult: {{testToBlobResult}}</text>
+      </view>
       <!-- #endif -->
-      <button class="canvas-drawing-button" @click="canvasToDataURL">canvasToDataURL</button>
-      <text>{{dataBase64}}</text>
+      <button class="canvas-drawing-button" id="toDataURL" @click="canvasToDataURL">canvasToDataURL</button>
+      <view v-if='dataBase64.length>0' :style="{
+        width: canvasWidth,
+        height: canvasHeight,
+        padding:'10px',
+      }">
+        <text>canvasToDataURL 返回结果：</text>
+        <text>{{dataBase64.slice(0,35)}}...</text>
+        <view>
+          <text>canvasToDataURL 转图片预览：</text>
+        </view>
+        <image mode='aspectFit' :src="dataBase64"></image>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -24,31 +40,19 @@
     data() {
       return {
         title: 'Context2D',
-        canvas: null as UniCanvasElement | null,
-        canvasContext: null as CanvasRenderingContext2D | null,
+        // canvas: null as UniCanvasElement | null,
+        // canvasContext: null as CanvasRenderingContext2D | null,
         canvasWidth: 0,
         canvasHeight: 0,
         dataBase64: '',
         // 仅测试
+        testCanvasContext: false,
         testToBlobResult: false,
         testToDataURLResult: false
       }
     },
     onReady() {
-      let canvas = uni.getElementById("canvas") as UniCanvasElement
-      this.canvasContext = canvas.getContext("2d");
-      hidpi(canvas);
-      this.canvasWidth = this.canvasContext!.canvas.width;
-      this.canvasHeight = this.canvasContext!.canvas.height;
-
-      // #ifdef WEB
-      canvas.toBlob((blob : Blob) => {
-        this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
-      }, 'image/jpeg', 0.95)
-      // #endif
-      this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
-
-      this.canvas = canvas;
+      // this.useAsync()
     },
     methods: {
       // #ifdef WEB
@@ -60,6 +64,87 @@
       // #endif
       canvasToDataURL() {
         this.dataBase64 = this.canvas!.toDataURL()
+      },
+      useAsync() {
+
+        // HBuilderX 4.25+
+        // 异步调用方式, 跨平台写法
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          component: this,
+          success: (context : CanvasContext) => {
+            const canvasContext = context.getContext('2d')!;
+            this.canvasContext = canvasContext
+            this.testCanvasContext = true
+            const canvas = canvasContext.canvas;
+            canvasContext.save()
+            hidpi(canvas);
+            this.canvasWidth = canvas.width;
+            this.canvasHeight = canvas.height;
+            this.drawImage()
+
+            this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
+
+            this.canvas = canvas;
+          }
+        })
+
+      },
+      useSync() {
+
+        let canvas = uni.getElementById("canvas") as UniCanvasElement
+        this.canvasContext = canvas.getContext("2d")
+        this.testCanvasContext = true
+        this.canvasContext!.save()
+        hidpi(canvas);
+        this.canvasWidth = canvas.width;
+        this.canvasHeight = canvas.height;
+        this.arc()
+
+        // #ifdef WEB
+        canvas.toBlob((blob : Blob) => {
+          this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
+        }, 'image/jpeg', 0.95)
+        // #endif
+        this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
+
+        this.canvas = canvas;
+
+      },
+      arc() {
+        const context = this.canvasContext!
+
+        this.clearCanvasRect()
+        context.beginPath()
+        context.lineWidth = 2
+        context.arc(75, 75, 50, 0, Math.PI * 2, true)
+        context.moveTo(110, 75)
+        context.arc(75, 75, 35, 0, Math.PI, false)
+        context.moveTo(65, 65)
+        context.arc(60, 65, 5, 0, Math.PI * 2, true)
+        context.moveTo(95, 65)
+        context.arc(90, 65, 5, 0, Math.PI * 2, true)
+        context.stroke()
+
+        context.restore()
+      },
+      drawImage() {
+        const context = this.canvasContext!
+
+        this.clearCanvasRect()
+        const text = "uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎"
+
+        context.font = "20px 宋体"
+        context.fillStyle = "red"
+        context.fillText(text, 0, 60)
+        const textMetrics = context.measureText(text)
+        context.strokeText(text, 40, 100)
+        context.fillText("measure text width:" + textMetrics.width, 40, 80)
+
+        context.restore()
+      },
+      clearCanvasRect() {
+        this.canvasContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
       }
     }
   }
