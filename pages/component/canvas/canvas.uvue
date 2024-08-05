@@ -2,7 +2,9 @@
   <view class="page" id="page-canvas">
     <canvas id="canvas" class="canvas-element"></canvas>
     <scroll-view class="scroll-view">
+      <!-- #ifdef WEB -->
       <button class="canvas-drawing-button" @click="canvasToBlob">canvasToBlob</button>
+      <!-- #endif -->
       <button class="canvas-drawing-button" @click="canvasToDataURL">canvasToDataURL</button>
       <text>{{dataBase64}}</text>
     </scroll-view>
@@ -49,13 +51,13 @@
       this.canvas = canvas;
     },
     methods: {
+      // #ifdef WEB
       canvasToBlob() {
-        // #ifdef WEB
         this.canvas!.toBlob((blob : Blob) => {
           this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
         }, 'image/jpeg', 0.95)
-        // #endif
       },
+      // #endif
       canvasToDataURL() {
         this.dataBase64 = this.canvas!.toDataURL()
       }
