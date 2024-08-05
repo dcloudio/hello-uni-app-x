@@ -66,6 +66,12 @@ describe('nodes-info', () => {
     expect(pageData.selectAllCount).toBe(2)
   })
 
+  it('multi-child', async () => {
+    const pageData = await page.data()
+    expect(pageData.selectCount).toBe(1)
+    expect(pageData.selectAllCount).toBe(2)
+  })
+
   // #ifdef APP
   //检测onResize获取BoundingClientRect信息是否有效
   /* it('check_resizeRectValid', async () => {
@@ -74,6 +80,23 @@ describe('nodes-info', () => {
   }) */
   // #endif
 
+  it('test filelds', async () => {
+    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+      expect(true).toBe(true)
+    } else {
+      const pageData = await page.data()
+      expect(pageData.fieldsResultContainNode).toBe(true)
+    }
+  })
+
+  it('test node', async () => {
+    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+      expect(true).toBe(true)
+    } else {
+      const pageData = await page.data()
+      expect(pageData.nodeResultContainNode).toBe(true)
+    }
+  })
 })
 
 async function getRootNode(selector) {

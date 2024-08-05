@@ -1,6 +1,7 @@
 <template>
   <view>
-    <canvas class="child-canvas" id="canvas" style="height: 100px;border: 1px solid red;"></canvas>    <view>isCanvasContextNull: {{isCanvasContextNull}}</view>
+    <canvas class="child-canvas" id="canvas" style="height: 100px;border: 1px solid red;"></canvas>
+    <view>isCanvasContextNull: {{isCanvasContextNull}}</view>
   </view>
 </template>
 
@@ -12,17 +13,18 @@
 
   export default {
     data() {
-      return {        isCanvasContextNull : false
+      return {
+        isCanvasContextNull : false
       }
     },
-  
     mounted() {
       this.$nextTick(() => {
         uni.createCanvasContextAsync({
           id: 'canvas',
           component: this,
           success: (res : CanvasContext) => {
-            const context = res.getContext('2d')!;            this.isCanvasContextNull = true
+            const context = res.getContext('2d')!;
+            this.isCanvasContextNull = true
             // 若干绘制调用
             // 绘制红色正方形
             context.fillStyle = "rgb(200, 0, 0)";
@@ -38,4 +40,4 @@
       })
     }
   }
-</script>
+</script>

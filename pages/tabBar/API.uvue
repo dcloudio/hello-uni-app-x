@@ -11,32 +11,39 @@
         <u-link :href="'https://uniapp.dcloud.io/uni-app-x/api/'" :text="'https://uniapp.dcloud.io/uni-app-x/api/'"
           :inWhiteList="true"></u-link>
       </view>
-     <uni-collapse>
-       <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
-         class="item">
-         <view v-for="page in menuItem.pages" :key="page!.path" class="uni-navigate-item"  hover-class="is--active"
-           @click="goPage(`/${page.path}`)">
-           <text class="uni-navigate-text" :class="{'left-win-active': leftWinActive === page.path && hasLeftWin}">{{page.style["navigationBarTitleText"]}}</text>
-           <image :src="arrowRightIcon" class="uni-icon-size"></image>
-         </view>
-         <uni-collapse style="width: 100%" v-for="childMenu in menuItem.children" :key="childMenu!.id">
-           <uni-collapse-item :title="childMenu.name" class="item" style="margin-bottom: 0">
-             <view class="uni-navigate-item" hover-class="is--active" v-for="childPage in childMenu.pages"
-               :key="childPage!.path" @click="goPage(`/${childPage.path}`)">
-               <text class="uni-navigate-text">{{
-                   childPage.style["navigationBarTitleText"]
-                 }}</text>
-               <image :src="arrowRightIcon" class="uni-icon-size"></image>
-             </view>
-           </uni-collapse-item>
-         </uni-collapse>
-       </uni-collapse-item>
-     </uni-collapse>
-     <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup">
-       <view style="width: 90%; background-color: white" @click="stopClickPop">
-         <api-set-tabbar></api-set-tabbar>
-       </view>
-     </view>
+      <uni-collapse>
+        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
+          class="item">
+          <template v-for="childMenuItem in menuItem.items" :key="childMenuItem!.id">
+            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
+              hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
+              <text class="uni-navigate-text" :class="{
+                  'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
+                }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
+              <image :src="arrowRightIcon" class="uni-icon-size"></image>
+            </view>
+            <uni-collapse v-else style="width: 100%">
+              <uni-collapse-item :title="childMenuItem.name" class="item"
+                style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
+                <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
+                  v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem!.path"
+                  @click="goPage(`/${grandChildMenuItem.path}`)">
+                  <text class="uni-navigate-text" :class="{
+                      'left-win-active':
+                        leftWinActive === grandChildMenuItem.path && hasLeftWin,
+                    }">{{ grandChildMenuItem.style["navigationBarTitleText"] }}</text>
+                  <image :src="arrowRightIcon" class="uni-icon-size"></image>
+                </view>
+              </uni-collapse-item>
+            </uni-collapse>
+          </template>
+        </uni-collapse-item>
+      </uni-collapse>
+      <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup">
+        <view style="width: 90%; background-color: white" @click="stopClickPop">
+          <api-set-tabbar></api-set-tabbar>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -56,10 +63,10 @@
       }
     },
     computed: {
-      hasLeftWin():boolean{
+      hasLeftWin() : boolean {
         return !state.noMatchLeftWindow
       },
-      leftWinActive():string{
+      leftWinActive() : string {
         return state.leftWinActive.slice(1)
       }
     },
@@ -68,7 +75,11 @@
         if (url == '/set-tab-bar') {
           this.showPop()
         } else {
-          uni.navigateTo({ url })
+          if(this.hasLeftWin) {
+            uni.reLaunch({ url })
+          } else {
+            uni.navigateTo({ url })
+          }
         }
       },
       showPop: function () {
@@ -82,20 +93,20 @@
       }
     },
     // #ifdef WEB
-    watch:{
-    	$route: {
-    		immediate: true,
-    		handler(newRoute) {
-    			if (newRoute.matched.length) {
-            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.pages.some(page => this.leftWinActive && this.leftWinActive === page?.path))
+    watch: {
+      $route: {
+        immediate: true,
+        handler(newRoute) {
+          if (newRoute.matched.length) {
+            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
             if (activeCategoryIndex > -1) {
               this.$nextTick(() => {
                 ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
               })
             }
-    			}
-    		}
-    	}
+          }
+        }
+      }
     },
     // #endif
   }

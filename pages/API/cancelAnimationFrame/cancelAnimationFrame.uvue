@@ -1,0 +1,46 @@
+<template>
+  <view class="page">
+    <page-head :title="title"></page-head>
+    <button @click="startRequestAnimationFrame">requestAnimationFrame</button>
+    <button @click="stopRequestAnimationFrame">cancelAnimationFrame</button>
+    <text class="frame-count">{{testFrameCount}}</text>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'cancelAnimationFrame',
+        taskId: 0,
+        testFrameCount: 0
+      }
+    },
+    onUnload() {
+      if (this.taskId > 0) {
+        this.stopRequestAnimationFrame()
+      }
+    },
+    methods: {
+      startRequestAnimationFrame() {
+        this.taskId = uni.requestAnimationFrame((_ : number) => {
+          this.testFrameCount++
+          this.startRequestAnimationFrame()
+        })
+      },
+      stopRequestAnimationFrame() {
+        uni.cancelAnimationFrame(this.taskId)
+      }
+    }
+  }
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+  }
+
+  .frame-count {
+    margin-top: 15px;
+  }
+</style>

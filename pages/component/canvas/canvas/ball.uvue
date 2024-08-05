@@ -39,7 +39,7 @@
         this.vy = Math.abs(this.vy)
         return
       }
-      if (this.y > this.width - this.radius) {
+      if (this.y > this.height - this.radius) {
         this.vy = -Math.abs(this.vy)
       }
     }
@@ -51,12 +51,9 @@
     private speed = 3
     private layer = 3
     private ballInlayer = 20
-    private interval : number = 0
     private runningFlag : boolean = false
 
-    // #ifdef WEB
     private _animateResult: number = 0
-    // #endif
 
     constructor(ctx : CanvasRenderingContext2D) {
       this.ctx = ctx
@@ -95,46 +92,24 @@
         // this.ctx.ellipse(item.x, item.y, item.radius, item.radius, 0, 0, Math.PI * 2)
         this.ctx.fill()
       })
-      // #ifdef APP
-      this.ctx.draw()
-      // #endif
 
-      // #ifdef WEB
       if (!this.runningFlag) {
         return
       }
-      this._animateResult = requestAnimationFrame(() => {
+      this._animateResult = uni.requestAnimationFrame((_: number) => {
         this.animate()
       })
-      // #endif
     }
 
     start() {
-      // #ifdef WEB
-      cancelAnimationFrame(this._animateResult)
+      uni.cancelAnimationFrame(this._animateResult)
       this.runningFlag = true
       this.animate()
-      // #endif
-
-      // #ifdef APP
-      //Todo.. requestAnimationFrame
-      clearInterval(this.interval)
-      this.interval = setInterval(() => {
-        this.animate()
-      }, 17)
-      // #endif
     }
 
     stop() {
-      // #ifdef WEB
       this.runningFlag = false
-      cancelAnimationFrame(this._animateResult)
-      // #endif
-
-      // #ifdef APP
-      //Todo.. requestAnimationFrame
-      clearInterval(this.interval)
-      // #endif
+      uni.cancelAnimationFrame(this._animateResult)
     }
   }
 
