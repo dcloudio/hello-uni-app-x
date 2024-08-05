@@ -16,11 +16,6 @@
     tabBar : string.PageURIString;
     indexPageUrl : string.PageURIString;
   }
-  type OnTabItemTapEvent = {
-    pagePath : string;
-    text : string;
-    index : number;
-  }
   export default {
     data() {
       return {
@@ -33,7 +28,7 @@
         current: 0,
         indexPage: [{
           tabBar: '/pages/tabBar/component',
-          indexPageUrl: '/pages/component/global-properties/global-properties'
+          indexPageUrl: '/pages/component/view/view'
         }, {
           tabBar: '/pages/tabBar/API',
           indexPageUrl: '/pages/API/get-app/get-app'
@@ -59,7 +54,7 @@
           if (path === '/') {
             category = 'component'
             uni.redirectTo({
-              url: '/pages/component/global-properties/global-properties'
+              url: '/pages/component/view/view'
             })
             return
           } else if (path.indexOf('/pages/tabBar') === 0) {
@@ -80,8 +75,7 @@
       }
     },
     methods: {
-      // UniEvent类型报错，临时处理
-      toSecondMenu(e : OnTabItemTapEvent) {
+      toSecondMenu(e : OnTabItemTapOption) {
         const activeTabBar = '/' + e.pagePath
         for (const item of this.indexPage) {
           if (activeTabBar === item.tabBar) {
