@@ -6,8 +6,6 @@
       <view>
         <text style="padding: 8px 10px;">获取 CanvasContext</text>
       </view>
-      <button class="canvas-drawing-button" id="useAsync" @click="useAsync">异步方式获取 CanvasContext</button>
-      <button class="canvas-drawing-button" id="useSync" @click="useSync">同步方式获取 CanvasContext</button>
       <view class="text-group">
         <text>获取 CanvasContext 结果：</text>
         <text id="testCanvasContext">{{testCanvasContext}}</text>
@@ -33,7 +31,7 @@
         <text>canvasToDataURL:</text>
         <text>{{dataBase64.slice(0,22)}}...</text>
       </view>
-      <button @click="drawImageAPI">createImage</button>
+      <button @click="onCreateImage">createImage</button>
       <view style="padding: 8px 10px;">CanvasContext API 演示</view>
       <view class="grid-view">
         <view class="grid-item" v-for="(name, index) in names" :key="index">
@@ -55,7 +53,6 @@
     context.scale(dpr, dpr);
   }
 
-
   export default {
     data() {
       const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "pattern"]
@@ -66,7 +63,8 @@
       return {
         title: 'Context2D',
         canvas: null as UniCanvasElement | null,
-        canvasContext: null as CanvasRenderingContext2D | null,
+        canvasContext: null as CanvasContext | null,
+        renderingContext: null as CanvasRenderingContext2D | null,
         canvasWidth: 0,
         canvasHeight: 0,
         dataBase64: '',
@@ -75,100 +73,66 @@
         testToBlobResult: false,
         testToDataURLResult: false,
         names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText"] as string[],
-        image: null as Image | null,
         // 仅测试
         testCreateCanvasContextAsyncSuccess: false,
         testCreateImage: false
       }
     },
     onReady() {
-      this.useAsync()
+      // HBuilderX 4.25+
+      // 异步调用方式, 跨平台写法
+      uni.createCanvasContextAsync({
+        id: 'canvas',
+        component: this,
+        success: (context : CanvasContext) => {
+          this.canvasContext = context;
+          this.renderingContext = context.getContext('2d')!;
+          this.canvas = this.renderingContext!.canvas;
+
+          hidpi(this.canvas!);
+          this.canvasWidth = this.canvas!.width;
+          this.canvasHeight = this.canvas!.height;
+
+          // #ifdef WEB
+          context.toBlob((blob : Blob) => {
+            this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
+          }, 'image/jpeg', 0.95)
+          // #endif
+          this.testToDataURLResult = context.toDataURL().startsWith('data:image/png;base64')
+          this.testCanvasContext = true
+        }
+      })
+
+      // 同步调用方式，仅支持 app/web
+      // let canvas = uni.getElementById("canvas") as UniCanvasElement
+      // this.renderingContext = canvas.getContext("2d")
+      // hidpi(canvas);
+      // this.canvas = canvas;
+      // this.canvasWidth = canvas.width;
+      // this.canvasHeight = canvas.height;
     },
     methods: {
       // #ifdef WEB
       canvasToBlob() {
-        this.canvas!.toBlob((blob : Blob) => {
+        this.canvasContext!.toBlob((blob : Blob) => {
           this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
         }, 'image/jpeg', 0.95)
       },
       // #endif
       canvasToDataURL() {
-        this.dataBase64 = this.canvas!.toDataURL()
+        this.dataBase64 = this.canvasContext!.toDataURL()
       },
-      drawImageAPI() {
-        uni.createCanvasContextAsync({
-          id: 'canvas',
-          success: (res : CanvasContext) => {
-            this.context = res.getContext('2d');
-            this.clearCanvasRect()
-            let image = res.createImage();
-            image.src = "../../static/logo.png"
-            image.onload = () => {
-              this.testCreateImage = true
-              this.context?.drawImage(image, 0, 0, 100, 100);
-            }
-          },
-          fail: (err : UniError) => {
-            console.log(err);
-          }
-        })
-      },
-      useAsync() {
-
-        // HBuilderX 4.25+
-        // 异步调用方式, 跨平台写法
-        uni.createCanvasContextAsync({
-          id: 'canvas',
-          component: this,
-          success: (context : CanvasContext) => {
-            const canvasContext = context.getContext('2d')!;
-            const canvas = canvasContext.canvas;
-            if (this.canvasContext == null) {
-
-
-              this.canvasContext = canvasContext
-              this.testCanvasContext = true
-
-              hidpi(canvas);
-              this.canvasWidth = canvas.width;
-              this.canvasHeight = canvas.height;
-              canvasContext.save()
-            }
-
-            this.measureText()
-            this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
-            this.canvas = canvas;
-          }
-        })
-
-      },
-      useSync() {
-
-        let canvas = uni.getElementById("canvas") as UniCanvasElement
-
-        this.canvasContext = canvas.getContext("2d")
-        this.testCanvasContext = true
-        this.canvasContext!.save()
-        // hidpi(canvas);
-        this.canvasWidth = canvas.width;
-        this.canvasHeight = canvas.height;
-        this.arc()
-
-        // #ifdef WEB
-        canvas.toBlob((blob : Blob) => {
-          this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
-        }, 'image/jpeg', 0.95)
-        // #endif
-        this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
-
-        this.canvas = canvas;
-
-      },
-
-      clearCanvasRect() {
-        this.canvasContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+      onCreateImage() {
+        // let image = this.canvasContext!.createImage();
+        // image.src = "../../static/logo.png"
+        // image.onload = () => {
+        //   this.testCreateImage = true
+        //   this.renderingContext?.drawImage(image, 0, 0, 100, 100);
+        // }
       },
       handleCanvasButton(name : string) {
+        this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        this.renderingContext!.save()
         switch (name) {
           case "arc":
             this.arc();
@@ -295,12 +259,18 @@
           default:
             break;
         }
+        this.renderingContext!.restore()
+      },
+      clearCanvasRect() {
+        this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+      },
+      clearCanvasRectAndRestore() {
+        this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        // this.renderingContext!.restore()
       },
       arc() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.lineWidth = 2
         context.arc(75, 75, 50, 0, Math.PI * 2, true)
@@ -311,14 +281,10 @@
         context.moveTo(95, 65)
         context.arc(90, 65, 5, 0, Math.PI * 2, true)
         context.stroke()
-
-        context.restore()
       },
       arcTo() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(150, 20)
         context.arcTo(150, 100, 50, 20, 30)
@@ -342,14 +308,10 @@
         context.beginPath()
         context.arc(120, 38, 30, 0, 2 * Math.PI, true)
         context.stroke()
-
-        context.restore()
       },
       beginPath() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // First path
         context.beginPath()
         context.strokeStyle = "blue"
@@ -363,14 +325,10 @@
         context.moveTo(20, 20)
         context.lineTo(120, 120)
         context.stroke()
-
-        context.restore()
       },
       textAlign() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(150, 0)
         context.lineTo(150, 150)
@@ -386,14 +344,10 @@
 
         context.textAlign = "right"
         context.fillText("right-aligned", 150, 130)
-
-        context.restore()
       },
       bezierCurveTo() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(50, 20)
         context.bezierCurveTo(230, 30, 150, 60, 50, 100)
@@ -410,14 +364,10 @@
         context.fillRect(230, 30, 10, 10)
         // control point two
         context.fillRect(150, 70, 10, 10)
-
-        context.restore()
       },
       clearRect() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // 绘制黄色背景
         context.beginPath()
         context.fillStyle = "#ff6"
@@ -434,14 +384,10 @@
 
         // 清除一部分画布
         context.clearRect(10, 10, 120, 100)
-
-        context.restore()
       },
       clip() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Create circular clipping region
         context.beginPath();
         context.arc(100, 75, 50, 0, Math.PI * 2, true)
@@ -452,14 +398,10 @@
         context.fillRect(0, 0, 300, 150)
         context.fillStyle = "orange"
         context.fillRect(0, 0, 100, 100)
-
-        context.restore()
       },
       closePath() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.lineWidth = 10
         context.moveTo(20, 20)
@@ -467,11 +409,9 @@
         context.lineTo(70, 100)
         context.closePath()
         context.stroke()
-
-        context.restore()
       },
       pattern() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
         const image = new Image(100, 100)
         image.src = '../../../static/api.png';
@@ -485,10 +425,8 @@
         };
       },
       createLinearGradient() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Create a linear gradient
         // The start gradient point is at x=20, y=0
         // The end gradient point is at x=220, y=0
@@ -502,14 +440,10 @@
         // Set the fill style and draw a rectangle
         context.fillStyle = gradient
         context.fillRect(20, 20, 200, 100)
-
-        context.restore()
       },
       createRadialGradient() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Create a radial gradient
         // The inner circle is at x=110, y=90, with radius=30
         // The outer circle is at x=100, y=100, with radius=70
@@ -523,36 +457,24 @@
         // Set the fill style and draw a rectangle
         context.fillStyle = gradient
         context.fillRect(20, 20, 160, 160)
-
-        context.restore()
       },
       fill() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.rect(20, 20, 150, 100)
         context.strokeStyle = '#00ff00'
         context.fill()
-
-        context.restore()
       },
       fillRect() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.fillStyle = "green"
         context.fillRect(20, 10, 150, 100)
-
-        context.restore()
       },
       fillText() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.strokeStyle = '#ff0000'
 
         context.beginPath()
@@ -573,77 +495,53 @@
         context.moveTo(0, 30)
         context.lineTo(300, 30)
         context.stroke()
-
-        context.restore()
       },
       moveTo() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(0, 0)
         context.lineTo(300, 150)
         context.stroke()
-
-        context.restore()
       },
       lineTo() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(20, 20)
         context.lineTo(20, 100)
         context.lineTo(70, 100)
         context.stroke()
-
-        context.restore()
       },
       stroke() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.moveTo(20, 20)
         context.lineTo(20, 100)
         context.lineTo(70, 100)
         context.strokeStyle = '#00ff00'
         context.stroke()
-
-        context.restore()
       },
       strokeRect() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.strokeStyle = "green"
         context.strokeRect(20, 10, 160, 100)
-
-        context.restore()
       },
       strokeText() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.font = "10px serif"
         context.strokeText("Hello world", 50, 90)
 
         context.font = "30px serif"
         context.strokeStyle = "blue"
         context.strokeText("Hello world", 50, 100)
-
-        context.restore()
       },
       rotate() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Point of transform origin
         context.arc(0, 0, 5, 0, 2 * Math.PI, true)
         context.fillStyle = "blue"
@@ -659,14 +557,10 @@
 
         // Reset transformation matrix to the identity matrix
         context.setTransform(1, 0, 0, 1, 0, 0)
-
-        context.restore()
       },
       scale() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Scaled rectangle
         context.scale(9, 3)
         context.fillStyle = "red"
@@ -678,13 +572,9 @@
         // Non-scaled rectangle
         context.fillStyle = "gray"
         context.fillRect(10, 10, 8, 20)
-
-        context.restore()
       },
       reset() {
-        const context = this.canvasContext!
-        context.save()
-        this.clearCanvasRect()
+        const context = this.renderingContext!
 
         // Set line width
         context.lineWidth = 10
@@ -695,7 +585,6 @@
         // Create filled text
         context.font = "50px serif";
         context.fillText("Rect!", 70, 110)
-
 
         context.lineWidth = 5
 
@@ -710,13 +599,10 @@
         // context.reset()
 
         hidpi(uni.getElementById("canvas") as UniCanvasElement)
-        context.restore()
       },
       translate() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Moved square
         context.translate(110, 30)
         context.fillStyle = "red"
@@ -728,13 +614,10 @@
         // Unmoved square
         context.fillStyle = "gray"
         context.fillRect(0, 0, 80, 80)
-
-        context.restore()
       },
       save() {
-        const context = this.canvasContext!
-        this.clearCanvasRect()
-        context.save()
+        const context = this.renderingContext!
+
         context.beginPath()
         context.strokeStyle = '#00ff00'
         context.scale(2, 2)
@@ -746,12 +629,10 @@
         context.save()
         context.rect(0, 0, 50, 50)
         context.stroke()
-
-        context.restore()
       },
       restore() {
-        const context = this.canvasContext!;
-        this.clearCanvasRect();
+        const context = this.renderingContext!;
+
         [3, 2, 1].forEach((item) => {
           context.save()
           context.beginPath()
@@ -762,8 +643,7 @@
         })
       },
       drawImageLocal() {
-        const context = this.canvasContext!
-        this.clearCanvasRect()
+        const context = this.renderingContext!
         const image = new Image(100, 100)
         image.src = '../../../static/uni.png'
         image.onload = () => {
@@ -771,8 +651,7 @@
         }
       },
       drawImage() {
-        const context = this.canvasContext!
-        this.clearCanvasRect()
+        const context = this.renderingContext!
         const image = new Image(100, 100);
         image.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png'
         image.onload = () => {
@@ -780,21 +659,15 @@
         }
       },
       rect() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.beginPath()
         context.rect(20, 20, 150, 100)
         context.stroke()
-
-        context.restore()
       },
       quadraticCurveTo() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Quadratic Bézier curve
         context.beginPath()
         context.moveTo(50, 20)
@@ -813,14 +686,10 @@
         context.beginPath()
         context.arc(230, 30, 5, 0, 2 * Math.PI, true)
         context.fill()
-
-        context.restore()
       },
       resetTransform() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         // Draw a rotated rectangle
         context.rotate((45 * Math.PI) / 180)
         context.fillRect(60, 0, 100, 30)
@@ -829,52 +698,35 @@
         context.resetTransform()
         context.fillStyle = "red"
         context.fillRect(60, 0, 100, 30)
-
-        context.restore()
       },
       transform() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.transform(1, 0.2, 0.8, 1, 0, 0)
         context.fillRect(0, 0, 100, 100)
-
-        context.restore()
       },
       setFillStyle() {
-        const context = this.canvasContext!
-
-        context.save()
-        this.clearCanvasRect();
+        const context = this.renderingContext!;
         ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
           context.fillStyle = item
           context.beginPath()
           context.rect(0 + 75 * index, 0, 50, 50)
           context.fill()
         })
-
-        context.restore()
       },
       setStrokeStyle() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!;
 
-        context.save()
-        this.clearCanvasRect();
         ['#fef957', 'rgb(242,159,63)', 'rgb(242,117,63)', '#e87e51'].forEach((item : string, index : number) => {
           context.strokeStyle = item
           context.beginPath()
           context.rect(0 + 75 * index, 0, 50, 50)
           context.stroke()
         })
-
-        context.restore()
       },
       setGlobalAlpha() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.fillStyle = '#000000';
         [1, 0.5, 0.1].forEach((item : number, index : number) => {
           context.globalAlpha = item
@@ -883,25 +735,18 @@
           context.fill()
         })
         context.globalAlpha = 1
-
-        context.restore()
       },
       setFontSize() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!;
 
-        context.save();
         [10, 20, 30, 40].forEach((item : number, index : number) => {
           context.font = item + 'px serif'
           context.fillText('Hello, world', 20, 20 + 40 * index)
         })
-
-        context.restore()
       },
       setLineCap() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.lineWidth = 10;
         ['butt', 'round', 'square'].forEach((item : string, index : number) => {
           context.beginPath()
@@ -910,14 +755,10 @@
           context.lineTo(100, 20 + 20 * index)
           context.stroke()
         })
-
-        context.restore()
       },
       setLineJoin() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.lineWidth = 10;
         ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
           context.beginPath()
@@ -927,14 +768,10 @@
           context.lineTo(20 + 80 * index, 100)
           context.stroke()
         })
-
-        context.restore()
       },
       setLineWidth() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!;
 
-        context.save()
-        this.clearCanvasRect();
         [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
           context.beginPath()
           context.lineWidth = item
@@ -942,14 +779,10 @@
           context.lineTo(100, 20 + 20 * index)
           context.stroke()
         })
-
-        context.restore()
       },
       lineDash() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save();
-        this.clearCanvasRect()
         context.setLineDash([4, 16])
 
         // Dashed line with no offset
@@ -965,14 +798,10 @@
         context.moveTo(0, 100)
         context.lineTo(300, 100)
         context.stroke()
-
-        context.restore()
       },
       setMiterLimit() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         context.lineWidth = 4;
         [2, 4, 6, 8, 10].forEach((item : number, index : number) => {
           context.beginPath()
@@ -982,14 +811,10 @@
           context.lineTo(20 + 80 * index, 100)
           context.stroke()
         })
-
-        context.restore()
       },
       measureText() {
-        const context = this.canvasContext!
+        const context = this.renderingContext!
 
-        context.save()
-        this.clearCanvasRect()
         const text = "uni-app x，是下一代 uni-app，是一个跨平台应用开发引擎"
 
         context.font = "20px 宋体"
@@ -999,8 +824,6 @@
         const textMetrics = context.measureText(text)
         context.strokeText(text, 40, 100)
         context.fillText("measure text width:" + textMetrics.width, 40, 80)
-
-        context.restore()
       }
     }
   }
