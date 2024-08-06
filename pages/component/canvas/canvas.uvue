@@ -33,7 +33,7 @@
         <text>canvasToDataURL:</text>
         <text>{{dataBase64.slice(0,22)}}...</text>
       </view>
-      <button @click="drawImageAPI">drawImage</button>
+      <button @click="drawImageAPI">createImage</button>
       <view style="padding: 8px 10px;">CanvasContext API 演示</view>
       <view class="grid-view">
         <view class="grid-item" v-for="(name, index) in names" :key="index">
@@ -100,7 +100,6 @@
           success: (res : CanvasContext) => {
             this.context = res.getContext('2d');
             this.clearCanvasRect()
-            // hidpi(this.context.canvas);
             let image = res.createImage();
             image.src = "../../static/logo.png"
             image.onload = () => {
@@ -111,7 +110,7 @@
           fail: (err : UniError) => {
             console.log(err);
           }
-        } as CreateCanvasContextAsyncOptions)
+        })
       },
       useAsync() {
 
