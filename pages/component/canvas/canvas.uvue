@@ -72,7 +72,7 @@
         testCanvasContext: false,
         testToBlobResult: false,
         testToDataURLResult: false,
-        names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText"] as string[],
+        names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"] as string[],
         // 仅测试
         testCreateCanvasContextAsyncSuccess: false,
         testCreateImage: false
@@ -256,6 +256,10 @@
             break;
           case "textAlign":
             this.textAlign();
+            break;
+          case "path2D":
+            this.path2DMethods();
+            break;
           default:
             break;
         }
@@ -824,6 +828,31 @@
         const textMetrics = context.measureText(text)
         context.strokeText(text, 40, 100)
         context.fillText("measure text width:" + textMetrics.width, 40, 80)
+      },
+      path2DMethods() {
+        const context = this.renderingContext!
+
+        context.beginPath()
+        const path2D = new Path2D();
+        const amplitude  = 64;
+        const wavelength = 64;
+        for (let i = 0; i < 5; i++) {
+            const x1 = 0 + (i * wavelength);
+            const y1 = 128;
+            const x2 = x1 + wavelength / 4;
+            const y2 = y1 - amplitude;
+            const x3 = x1 + 3 * wavelength / 4;
+            const y3 = y1 + amplitude;
+            const x4 = x1 + wavelength;
+            const y4 = y1;
+            context.moveTo(x1, y1);
+            path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
+        }
+        context.stroke(path2D);
+
+        const path2DRect = new Path2D();
+        path2DRect.rect(10, 10, 100, 20);
+        context.fill(path2DRect);
       }
     }
   }
