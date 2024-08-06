@@ -94,12 +94,14 @@
           id: 'canvas',
           component: this,
           success: (context : CanvasContext) => {
+            const canvasContext = context.getContext('2d')!;
+            const canvas = canvasContext.canvas;
             if (this.canvasContext == null) {
 
-              const canvasContext = context.getContext('2d')!;
+
               this.canvasContext = canvasContext
               this.testCanvasContext = true
-              const canvas = canvasContext.canvas;
+
               hidpi(canvas);
               this.canvasWidth = canvas.width;
               this.canvasHeight = canvas.height;
@@ -107,7 +109,6 @@
             }
 
             this.measureText()
-            const canvas = this.canvasContext.canvas
             this.testToDataURLResult = canvas.toDataURL().startsWith('data:image/png;base64')
             this.canvas = canvas;
           }
