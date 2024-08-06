@@ -16,6 +16,12 @@
         <text>测试 ToDataURL 结果：</text>
         <text id="testToDataURLResult">{{testToDataURLResult}}</text>
       </view>
+
+      <view class="text-group">
+        <text>测试 createImage 结果：</text>
+        <text id="testCreateImage">{{testCreateImage}}</text>
+      </view>
+
       <!-- #ifdef WEB -->
       <button class="canvas-drawing-button" @click="canvasToBlob">canvasToBlob</button>
       <view>
@@ -27,6 +33,7 @@
         <text>canvasToDataURL:</text>
         <text>{{dataBase64.slice(0,22)}}...</text>
       </view>
+      <button @click="drawImageAPI">drawImage</button>
       <view style="padding: 8px 10px;">CanvasContext API 演示</view>
       <view class="grid-view">
         <view class="grid-item" v-for="(name, index) in names" :key="index">
@@ -70,6 +77,7 @@
         image: null as Image | null,
         // 仅测试
         testCreateCanvasContextAsyncSuccess: false,
+        testCreateImage: false
       }
     },
     onReady() {
@@ -85,6 +93,25 @@
       // #endif
       canvasToDataURL() {
         this.dataBase64 = this.canvas!.toDataURL()
+      },
+      drawImageAPI() {
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          success: (res : CanvasContext) => {
+            this.context = res.getContext('2d');
+            this.clearCanvasRect()
+            // hidpi(this.context.canvas);
+            let image = res.createImage();
+            image.src = "../../static/logo.png"
+            image.onload = () => {
+              this.testCreateImage = true
+              this.context?.drawImage(image, 0, 0, 100, 100);
+            }
+          },
+          fail: (err : UniError) => {
+            console.log(err);
+          }
+        } as CreateCanvasContextAsyncOptions)
       },
       useAsync() {
 

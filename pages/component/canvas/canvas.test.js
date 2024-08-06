@@ -30,13 +30,19 @@ describe('Canvas.uvue', () => {
 
   })
   it("测试同步创建canvas上下文", async () => {
-   await page.callMethod('useAsync');
-   const element = await page.$('#testCanvasContext')
-   expect(await element.text()).toBe('true')
+    await page.callMethod('useAsync');
+    const element = await page.$('#testCanvasContext')
+    expect(await element.text()).toBe('true')
   })
   it('测试 canvasToDataURL', async () => {
     await page.callMethod('canvasToDataURL');
     const element = await page.$('#testToDataURLResult')
+    expect(await element.text()).toBe('true')
+  })
+  it('测试 createImage', async () => {
+    await page.callMethod('drawImageAPI');
+    await page.waitFor(500) // 加载图片
+    const element = await page.$('#testCreateImage')
     expect(await element.text()).toBe('true')
   })
 })
