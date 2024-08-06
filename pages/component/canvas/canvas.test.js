@@ -23,21 +23,20 @@ describe('Canvas.uvue', () => {
       expect(true).toBe(true)
     }
   })
-  it("测试异步方式", async () => {
+  it("测试异步创建canvas上下文", async () => {
     await page.callMethod('useAsync');
-    const {
-      testCanvasContext,
-      testToDataURLResult
-    } = await page.data()
-    expect(testCanvasContext).toBe(true)
-    await page.callMethod('canvasToDataURL');
-    expect(testToDataURLResult).toBe(true)
+    const element = await page.$('#testCanvasContext')
+    expect(await element.text()).toBe('true')
+
   })
-  it("测试同步方式", async () => {
-    await page.callMethod('useSync');
-    const data = await page.data()
-    expect(data.testCanvasContext).toBe(true)
+  it("测试同步创建canvas上下文", async () => {
+   await page.callMethod('useAsync');
+   const element = await page.$('#testCanvasContext')
+   expect(await element.text()).toBe('true')
+  })
+  it('测试 canvasToDataURL', async () => {
     await page.callMethod('canvasToDataURL');
-    expect(data.testToDataURLResult).toBe(true)
+    const element = await page.$('#testToDataURLResult')
+    expect(await element.text()).toBe('true')
   })
 })
