@@ -54,14 +54,7 @@
 			}
 		},
 		methods: {
-      clearProviderObj() {
-      	this.serviceList.forEach((item : ProviderItem) => {
-      		item.providerObj = []
-      		item.providerObjMap = []
-      	})
-      },
 			getProviderSync() {
-        this.clearProviderObj()
 				this.serviceList.forEach((item : ProviderItem) => {
 					let provider = uni.getProviderSync({
 						service: item.service
@@ -71,7 +64,6 @@
 				})
 			},
 			getProvider() {
-        this.clearProviderObj()
 				this.serviceList.forEach((item : ProviderItem) => {
 					uni.getProvider({
 						service: item.service,
@@ -87,18 +79,17 @@
 			updateProvider(service : string, provider ?: string[] | null) {
 				const item : ProviderItem | null = this.serviceList.find((item : ProviderItem) : boolean => {
 					item.providerObj = []
+          item.providerObjMap = []
 					return item.service == service
 				});
 				if (item != null && provider != null) {
 					item.provider = provider
 				}
-
 			},
 			getProviderObjectById() {
 				this.flag = true
 				this.getProvider()
 				let objList = []
-        this.clearProviderObj()
 				this.serviceList.forEach((value) => {
 					value.provider.forEach((provider) => {
 						let obj = uni.getProviderObjectById({
