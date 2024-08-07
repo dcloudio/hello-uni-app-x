@@ -26,14 +26,14 @@
         service: "payment",
         success: (e) => {
           console.log("payment success:" + JSON.stringify(e));
-          let array = e.provider as string[]
+          let array = e.providerIds as string[]
           array.forEach((value : string) => {
             switch (value) {
               case 'alipay':
                 this.providerList.push({
                   name: '支付宝',
                   id: "alipay",
-                  provider: e.providers.find((item) : boolean => {
+                  provider: e.providerObjects.find((item) : boolean => {
                     return item.id == 'alipay'
                   })
                 } as PayItem);
@@ -42,7 +42,7 @@
                 this.providerList.push({
                   name: '微信',
                   id: "wxpay",
-                  provider: e.providers.find((item) : boolean => {
+                  provider: e.providerObjects.find((item) : boolean => {
                     return item.id == 'wxpay'
                   })
                 } as PayItem);

@@ -88,17 +88,17 @@
         uni.getProvider({
           service: "location",
           success: (e) => {
-            console.log("location success:" + JSON.stringify(e), e.providers.length);
-            let array = e.provider as string[]
+            console.log("location success:" + JSON.stringify(e), e.providerObjects.length);
+            let array = e.providerIds as string[]
             array.forEach((value : string) => {
-              let locationProvider = e.providers.find((item) : boolean => {
+              let locationProvider = e.providerObjects.find((item) : boolean => {
                 return item.id == value
               })
               if (locationProvider != null) {
                 this.providerList.push({
                   name: locationProvider.description,
                   id: locationProvider.id,
-                  provider: e.providers.find((item) : boolean => {
+                  provider: e.providerObjects.find((item) : boolean => {
                     return item.id == locationProvider.id
                   })
                 } as LocationItem);
