@@ -40,10 +40,22 @@ describe('Canvas.uvue', () => {
     expect(await element.text()).toBe('true')
   })
   // 配合安卓注释
-  // it('测试 createImage', async () => {
-  //   await page.callMethod('onCreateImage');
-  //   await page.waitFor(500) // 加载图片
-  //   const element = await page.$('#testCreateImage')
-  //   expect(await element.text()).toBe('true')
-  // })
+  it('测试 createImage', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('web')) {
+      // web skip
+      expect(true).toBe(true)
+    } else {
+      await page.callMethod('onCreateImage');
+      await page.waitFor(500) // 加载图片
+      const element = await page.$('#testCreateImage')
+      expect(await element.text()).toBe('true')
+    }
+  })
+  it('测试 testCreatePath2D', async () => {
+    // onCreatePath2D
+    await page.callMethod('onCreatePath2D');
+    await page.waitFor(50)
+    const element = await page.$('#testCreatePath2D')
+    expect(await element.text()).toBe('true')
+  })
 })
