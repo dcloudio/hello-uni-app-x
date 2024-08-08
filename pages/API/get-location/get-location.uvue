@@ -10,6 +10,7 @@
     </view>
 
     <view class="uni-padding-wrap uni-common-mt">
+      <!-- #ifdef APP -->
       <view class="uni-list-cell-db">定位服务商provider(如系统定位，腾讯定位等)</view>
       <view class="uni-list" style="margin-bottom: 20px">
         <radio-group @change="radioChangePV">
@@ -20,6 +21,7 @@
           </radio>
         </radio-group>
       </view>
+      <!-- #endif -->
       <view class="uni-list-cell-db">定位类型</view>
       <view class="uni-list">
         <radio-group @change="radioChange">
@@ -55,7 +57,7 @@
 </template>
 <script lang="uts">
   export type LocationItem = { id : string, name : string, provider ?: UniProvider }
-  export type ItemType = { value : string, name : string }
+  export type ItemType = { value : 'wgs84' | 'gcj02', name : 'wgs84' | 'gcj02' }
 
   export default {
     data() {
@@ -81,10 +83,13 @@
       }
     },
     onLoad: function () {
+      // #ifdef APP
       this.getProvider()
+      // #endif
     },
     methods: {
       getProvider() {
+        // #ifdef APP
         uni.getProvider({
           service: "location",
           success: (e) => {
@@ -116,6 +121,7 @@
             this.currentProvider = index
           }
         })
+        // #endif
       },
       altitudeChange: function (e : UniSwitchChangeEvent) {
         this.altitudeSelect = e.detail.value
@@ -148,6 +154,7 @@
         }
       },
       getLocationTap: function () {
+        // #ifdef APP
         if (this.providerList.length == 0) {
           uni.showToast({
             title: '未获取到provider，请确定基座中包含location功能',
@@ -156,11 +163,14 @@
           console.log("未获取到provider，请确定基座中包含location功能")
           return
         }
+        // #endif
         uni.showLoading({
           title: '定位中'
         })
         uni.getLocation(({
+          // #ifdef APP
           provider: this.providerList[this.currentProvider].id,
+          // #endif
           type: this.items[this.current].value,
           altitude: this.altitudeSelect,
           isHighAccuracy: this.isHighAccuracySelect,
