@@ -22,10 +22,7 @@
 
 				</view>
 			</view>
-			<button class="btn-get-provider" type="primary" @click="getProviderSync">getProviderSync</button>
 			<button class="btn-get-provider" type="primary" @click="getProvider">getProvider</button>
-			<button class="btn-get-provider" type="primary"
-				@click="getProviderObjectById">getProviderObjectById</button>
 		</view>
 	<!-- #ifdef APP -->
 	</scroll-view>
@@ -50,25 +47,19 @@
 					{ service: "payment", name: "支付", provider: [], providerObj: [], providerObjMap: [] },
 					{ service: "location", name: "定位", provider: [], providerObj: [], providerObjMap: [] }
 				] as ProviderItem[],
-				providerObjList: [] as UniProvider[]
+				providerIds: [] as string[]
 			}
 		},
 		methods: {
-			getProviderSync() {
-				this.serviceList.forEach((item : ProviderItem) => {
-					let provider = uni.getProviderSync({
-						service: item.service
-					} as GetProviderOptions)
-
-					this.updateProvider(item.service, provider.providerIds);
-				})
-			},
 			getProvider() {
 				this.serviceList.forEach((item : ProviderItem) => {
 					uni.getProvider({
 						service: item.service,
 						success: (e) => {
-							this.updateProvider(item.service, e.providerIds);
+							e.providerIds.forEach((value) => {
+								this.providerIds.push(value)
+							})
+							this.updateProvider(item.service, e.providerIds, e.providerObjects);
 						},
 						fail: (e) => {
 							console.log("获取provider失败：", e);
@@ -76,46 +67,31 @@
 					} as GetProviderOptions)
 				})
 			},
-			updateProvider(service : string, provider ?: string[] | null) {
+			updateProvider(service : string, provider ?: string[] | null, uniProvider : UniProvider[]) {
 				const item : ProviderItem | null = this.serviceList.find((item : ProviderItem) : boolean => {
-					item.providerObj = []
-          item.providerObjMap = []
 					return item.service == service
 				});
 				if (item != null && provider != null) {
 					item.provider = provider
+					item.providerObj = uniProvider
+					item.providerObj.forEach((obj) => {
+						// #ifdef APP-ANDROID
+						if (obj instanceof UniPaymentWxpayProvider) {//判断微信是否安装
+							var isWeChatInstalled = (obj as UniPaymentWxpayProvider).isWeChatInstalled
+							console.log(isWeChatInstalled)
+						}
+						// #endif
+
+						// #ifdef APP-IOS
+						const providerObjMap = this.getProviderObjectMap(obj)
+						console.log(providerObjMap)
+						value.providerObjMap.push(providerObjMap)
+						// #endif
+
+					})
 				}
 			},
-			getProviderObjectById() {
-				this.flag = true
-				this.getProvider()
-				let objList = []
-				this.serviceList.forEach((value) => {
-					value.provider.forEach((provider) => {
-						let obj = uni.getProviderObjectById({
-							service: value.service,
-							provider: provider
-						})
-						if (obj != null) {
-							console.log(obj)
-							console.log(JSON.stringify(obj))
-							value.providerObj.push(obj)
-							// #ifdef APP-ANDROID
-							if (obj instanceof UniPaymentWxpayProvider) {//判断微信是否安装
-								var isWeChatInstalled = (obj as UniPaymentWxpayProvider).isWeChatInstalled
-								console.log(isWeChatInstalled)
-							}
-							// #endif
 
-							// #ifdef APP-IOS
-							const providerObjMap = this.getProviderObjectMap(obj)
-							console.log(providerObjMap)
-							value.providerObjMap.push(providerObjMap)
-							// #endif
-						}
-					})
-				})
-			},
 			// #ifdef APP-IOS
 			getProviderObjectMap(provider : UniProvider) {
 
