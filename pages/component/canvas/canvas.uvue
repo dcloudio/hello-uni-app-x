@@ -55,10 +55,10 @@
 
   export default {
     data() {
-      const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "pattern"]
+      const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "createPattern","getSetImageData"]
       const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
       const API_STATE = ["beginPath", "closePath", "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate"]
-      const API_PROPERTIES = ["setLineCap", "setLineJoin", "setLineWidth", "setMiterLimit", "setFillStyle", "setStrokeStyle", "setGlobalAlpha", "setFontSize", "lineDash", "linearGradient", "radialGradient", "textAlign"]
+      const API_PROPERTIES = ["lineCap", "lineJoin", "lineWidth", "miterLimit", "fillStyle", "strokeStyle", "globalAlpha", "font", "setLineDash", "createLinearGradient", "createRadialGradient", "textAlign"]
 
       return {
         title: 'Context2D',
@@ -72,7 +72,7 @@
         testCanvasContext: false,
         testToBlobResult: false,
         testToDataURLResult: false,
-        names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"] as string[],
+        names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"].sort() as string[],
         // 仅测试
         testCreateCanvasContextAsyncSuccess: false,
         testCreateImage: false
@@ -155,13 +155,16 @@
           case "closePath":
             this.closePath();
             break;
-          case "pattern":
+          case "getSetImageData":
+            this.getSetImageData();
+            break;
+          case "createPattern":
             this.pattern()
             break;
-          case "linearGradient":
+          case "createLinearGradient":
             this.createLinearGradient();
             break;
-          case "radialGradient":
+          case "createRadialGradient":
             this.createRadialGradient();
             break;
           case "fill":
@@ -227,31 +230,31 @@
           case "measureText":
             this.measureText();
             break;
-          case "setFillStyle":
+          case "fillStyle":
             this.setFillStyle();
             break;
-          case "setStrokeStyle":
+          case "strokeStyle":
             this.setStrokeStyle();
             break;
-          case "setGlobalAlpha":
+          case "globalAlpha":
             this.setGlobalAlpha();
             break;
-          case "setFontSize":
+          case "font":
             this.setFontSize();
             break;
-          case "setLineCap":
+          case "lineCap":
             this.setLineCap();
             break;
-          case "setLineJoin":
+          case "lineJoin":
             this.setLineJoin();
             break;
-          case "lineDash":
+          case "setLineDash":
             this.lineDash();
             break;
-          case "setLineWidth":
+          case "lineWidth":
             this.setLineWidth();
             break;
-          case "setMiterLimit":
+          case "miterLimit":
             this.setMiterLimit();
             break;
           case "textAlign":
@@ -349,6 +352,24 @@
         context.textAlign = "right"
         context.fillText("right-aligned", 150, 130)
       },
+      getSetImageData(){
+        const context = this.renderingContext!
+        // Create path
+        context.moveTo(0, 70);
+        context.lineTo(80, 0);
+        context.lineTo(210, 110);
+        context.lineTo(30, 110);
+        context.lineTo(160, 0);
+        context.lineTo(240, 70);
+        context.closePath();
+
+        // Fill path
+        context.fillStyle = "green";
+        context.fill();
+
+        let imageData = context.getImageData(0, 0, context.canvas.width/2, context.canvas.height/2)
+        context.putImageData(imageData, context.canvas.width/2, context.canvas.height/2)
+      },
       bezierCurveTo() {
         const context = this.renderingContext!
 
@@ -424,7 +445,7 @@
           this.clearCanvasRect()
           const pattern = context.createPattern(image, "repeat")
           context.fillStyle = pattern
-          context.fillRect(0, 0, 100, 100)
+          context.fillRect(0, 0, 400, 400)
           context.restore()
         };
       },
