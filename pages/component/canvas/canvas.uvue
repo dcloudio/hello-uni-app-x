@@ -20,6 +20,11 @@
         <text id="testCreateImage">{{testCreateImage}}</text>
       </view>
 
+      <view class="text-group">
+        <text>测试 createPath2D 结果：</text>
+        <text id="testCreatePath2D">{{testCreatePath2D}}</text>
+      </view>
+
       <!-- #ifdef WEB -->
       <button class="canvas-drawing-button" @click="canvasToBlob">canvasToBlob</button>
       <view>
@@ -32,6 +37,7 @@
         <text>{{dataBase64.slice(0,22)}}...</text>
       </view>
       <button @click="onCreateImage">createImage</button>
+      <button @click="onCreatePath2D">createPath2D</button>
       <view style="padding: 8px 10px;">CanvasContext API 演示</view>
       <view class="grid-view">
         <view class="grid-item" v-for="(name, index) in names" :key="index">
@@ -75,7 +81,8 @@
         names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"] as string[],
         // 仅测试
         testCreateCanvasContextAsyncSuccess: false,
-        testCreateImage: false
+        testCreateImage: false,
+        testCreatePath2D: false
       }
     },
     onReady() {
@@ -123,12 +130,34 @@
         this.dataBase64 = this.canvasContext!.toDataURL()
       },
       onCreateImage() {
-        // let image = this.canvasContext!.createImage();
-        // image.src = "../../static/logo.png"
-        // image.onload = () => {
-        //   this.testCreateImage = true
-        //   this.renderingContext?.drawImage(image, 0, 0, 100, 100);
-        // }
+        this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        let image = this.canvasContext!.createImage();
+        image.src = "../../static/logo.png"
+        image.onload = () => {
+          this.testCreateImage = true
+          this.renderingContext?.drawImage(image, 0, 0, 100, 100);
+        }
+      },
+      onCreatePath2D() {
+        this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+        const context = this.renderingContext!
+        let path2D = this.canvasContext!.createPath2D()
+        this.testCreatePath2D = true
+        const amplitude = 64;
+        const wavelength = 64;
+        for (let i = 0; i < 5; i++) {
+          const x1 = 0 + (i * wavelength);
+          const y1 = 128;
+          const x2 = x1 + wavelength / 4;
+          const y2 = y1 - amplitude;
+          const x3 = x1 + 3 * wavelength / 4;
+          const y3 = y1 + amplitude;
+          const x4 = x1 + wavelength;
+          const y4 = y1;
+          context.moveTo(x1, y1);
+          path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
+        }
+        context.stroke(path2D);
       },
       handleCanvasButton(name : string) {
         this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
@@ -834,19 +863,19 @@
 
         context.beginPath()
         const path2D = new Path2D();
-        const amplitude  = 64;
+        const amplitude = 64;
         const wavelength = 64;
         for (let i = 0; i < 5; i++) {
-            const x1 = 0 + (i * wavelength);
-            const y1 = 128;
-            const x2 = x1 + wavelength / 4;
-            const y2 = y1 - amplitude;
-            const x3 = x1 + 3 * wavelength / 4;
-            const y3 = y1 + amplitude;
-            const x4 = x1 + wavelength;
-            const y4 = y1;
-            context.moveTo(x1, y1);
-            path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
+          const x1 = 0 + (i * wavelength);
+          const y1 = 128;
+          const x2 = x1 + wavelength / 4;
+          const y2 = y1 - amplitude;
+          const x3 = x1 + 3 * wavelength / 4;
+          const y3 = y1 + amplitude;
+          const x4 = x1 + wavelength;
+          const y4 = y1;
+          context.moveTo(x1, y1);
+          path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
         }
         context.stroke(path2D);
 
