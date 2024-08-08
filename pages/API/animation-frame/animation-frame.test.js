@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/cancel-animation-frame/cancel-animation-frame'
+const PAGE_PATH = '/pages/API/animation-frame/animation-frame'
 
 describe('API-cancelAnimationFrame', () => {
   let page
