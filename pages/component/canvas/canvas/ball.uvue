@@ -1,10 +1,13 @@
 <template>
   <view class="page-body">
     <canvas id="canvas" class="canvas"></canvas>
+    <text class="fps">FPS: {{fpsString}}</text>
   </view>
 </template>
 
 <script setup>
+  let fpsString = ref("-/-ms")
+
   class Ball {
     private width : number
     private height : number
@@ -53,7 +56,9 @@
     private ballInlayer = 20
     private runningFlag : boolean = false
 
-    private _animateResult: number = 0
+    private _animateTaskId: number = 0
+    private frameCount = 0
+    private lastTime = 0
 
     constructor(ctx : CanvasRenderingContext2D) {
       this.ctx = ctx
@@ -96,20 +101,31 @@
       if (!this.runningFlag) {
         return
       }
-      this._animateResult = requestAnimationFrame((_: number) => {
+      this._animateTaskId = requestAnimationFrame((timestamp: number) => {
         this.animate()
+        this.updateFPS(timestamp)
       })
     }
 
+    updateFPS(timestamp : number) {
+      this.frameCount++
+      if (timestamp - this.lastTime >= 1000) {
+        const timeOfFrame = (1000 / this.frameCount)
+        fpsString.value = `${this.frameCount} / ${timeOfFrame.toFixed(3)}ms`
+        this.frameCount = 0
+        this.lastTime = timestamp
+      }
+    }
+
     start() {
-      cancelAnimationFrame(this._animateResult)
+      cancelAnimationFrame(this._animateTaskId)
       this.runningFlag = true
       this.animate()
     }
 
     stop() {
       this.runningFlag = false
-      cancelAnimationFrame(this._animateResult)
+      cancelAnimationFrame(this._animateTaskId)
     }
   }
 
@@ -154,5 +170,10 @@
     height: 300px;
     margin: auto;
     background-color: #fff;
+  }
+
+  .fps {
+    margin-left: 15px;
+    margin-top: 30px;
   }
 </style>
