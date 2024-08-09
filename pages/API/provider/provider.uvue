@@ -47,7 +47,8 @@
 					{ service: "payment", name: "支付", provider: [], providerObj: [], providerObjMap: [] },
 					{ service: "location", name: "定位", provider: [], providerObj: [], providerObjMap: [] }
 				] as ProviderItem[],
-				providerIds: [] as string[]
+				providerIds: [] as string[],
+        providerObjects : [] as UniProvider[],
 			}
 		},
 		methods: {
@@ -73,8 +74,10 @@
 				});
 				if (item != null && provider != null) {
 					item.provider = provider
+
 					item.providerObj = uniProvider
 					item.providerObj.forEach((obj) => {
+            this.providerObjects.push(obj)
 						// #ifdef APP-ANDROID
 						if (obj instanceof UniPaymentWxpayProvider) {//判断微信是否安装
 							var isWeChatInstalled = (obj as UniPaymentWxpayProvider).isWeChatInstalled
