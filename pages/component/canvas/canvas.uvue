@@ -38,6 +38,8 @@
       </view>
       <button @click="onCreateImage">createImage</button>
       <button @click="onCreatePath2D">createPath2D</button>
+      <button @click="startAnimationFrame">requestAnimationFrame</button>
+      <button @click="stopAnimationFrame">cancelAnimationFrame</button>
       <view style="padding: 8px 10px;">CanvasContext API 演示</view>
       <navigator url="./canvas-context">
         <button>CanvasContext API</button>
@@ -66,13 +68,17 @@
         canvasWidth: 0,
         canvasHeight: 0,
         dataBase64: '',
+        taskId: 0,
+        lastTime: 0,
+        frameCount: 0,
         // 仅测试
         testCanvasContext: false,
         testToBlobResult: false,
         testToDataURLResult: false,
         testCreateCanvasContextAsyncSuccess: false,
         testCreateImage: false,
-        testCreatePath2D: false
+        testCreatePath2D: false,
+        testFrameCount: 0
       }
     },
     onReady() {
@@ -107,6 +113,11 @@
       // this.canvas = canvas;
       // this.canvasWidth = canvas.width;
       // this.canvasHeight = canvas.height;
+    },
+    onUnload() {
+      if (this.taskId > 0) {
+        this.stopAnimationFrame()
+      }
     },
     methods: {
       // #ifdef WEB
@@ -148,6 +159,30 @@
           path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
         }
         context.stroke(path2D);
+      },
+      startAnimationFrame() {
+        if (this.taskId > 0) {
+          this.stopAnimationFrame()
+        }
+        this.taskId = this.canvasContext!.requestAnimationFrame((timestamp : number) => {
+          this.testFrameCount++
+          this.updateFPS(timestamp)
+          this.startAnimationFrame()
+        })
+      },
+      stopAnimationFrame() {
+        this.canvasContext!.cancelAnimationFrame(this.taskId)
+        this.taskId = 0
+      },
+      updateFPS(timestamp : number) {
+        this.frameCount++
+        if (timestamp - this.lastTime >= 1000) {
+          const timeOfFrame = (1000 / this.frameCount)
+          this.renderingContext!.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
+          this.renderingContext!.fillText(`${this.frameCount} / ${timeOfFrame.toFixed(3)}ms`, 10, 18)
+          this.frameCount = 0
+          this.lastTime = timestamp
+        }
       }
     }
   }
