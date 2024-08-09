@@ -55,11 +55,13 @@
           success: (res) => {
             console.log('downloadFile success, res is', res.tempFilePath)
             self.imageSrc = res.tempFilePath;
-            uni.hideLoading();
           },
           fail: (err) => {
             console.log('downloadFile fail, err is:', err)
+          },
+          complete: (res) => {
             uni.hideLoading();
+            this.task = null;
           }
         });
         this.task?.onProgressUpdate((update) => {
