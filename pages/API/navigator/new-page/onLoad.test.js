@@ -10,7 +10,9 @@ describe("onLoad", () => {
     await page.waitFor('view');
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
     await page.waitFor(1000);
-    const image = await program.screenshot({fullPage: true});
+    const image = await program.screenshot({
+      fullPage: true
+    });
     expect(image).toSaveImageSnapshot();
   });
   it("navigateTo", async () => {
@@ -127,4 +129,19 @@ describe("onLoad", () => {
       failureThresholdType: "percent",
     });
   });
+  it('onLoad 参数 decode', async () => {
+    page = await program.reLaunch(PAGE_PATH);
+    await page.waitFor("view");
+    const TEXT = '中文测试'
+    uni.navigateTo({
+      url: INTERMEDIATE_PAGE_PATH + '?data=' + encodeURIComponent(TEXT),
+      success() {
+
+      }
+    })
+    await page.waitFor(1000);
+    page = await program.currentPage();
+    const data = await page.data();
+    expect(data.data).toBe(TEXT);
+  })
 });
