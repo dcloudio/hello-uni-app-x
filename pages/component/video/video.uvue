@@ -10,6 +10,9 @@
       :http-cache="httpCache" :play-strategy="playStrategy" :danmu-list="danmuList" @play="onPlay" @pause="onPause"
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
+      <!-- #ifdef APP-ANDROID -->
+      <image class="custom-play-btn" v-if="customPlayBtnEnable" v-show="customPlayBtnShow" src="/static/play.png" @tap="play" />
+      <!-- #endif -->
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
       <view class="uni-btn-v">
@@ -17,6 +20,12 @@
           <button type="primary" @click="pause">视频格式示例</button>
         </navigator>
       </view>
+      <!-- #ifdef APP-ANDROID -->
+      <view class="uni-flex uni-btn-v" style="justify-content: space-between;">
+        <text class="uni-title">中间播放按钮是否替换为子组件</text>
+        <switch :checked="customPlayBtnEnable" :disabled="!customPlayBtnShow" @change="onCustomPlayBtnEnableChange" />
+      </view>
+      <!-- #endif -->
       <view class="uni-title">
         <text class="uni-title-text">API示例</text>
       </View>
@@ -167,6 +176,8 @@
         rate: 1,
         rateItemTypes: [{ "value": 0, "name": "0.5" }, { "value": 1, "name": "0.8" }, { "value": 2, "name": "1.0" }, { "value": 3, "name": "1.25" }, { "value": 4, "name": "1.5" }] as ItemType[],
         rateItems: [0.5, 0.8, 1.0, 1.25, 1.5],
+        customPlayBtnEnable: false,
+        customPlayBtnShow: true,
         // 自动化测试
         autoTest: false,
         isPlaying: false,
@@ -216,6 +227,7 @@
         console.log("stop");
         uni.getElementById<UniVideoElement>("video")?.stop(); //泛型写法测试
         // this.videoContext?.stop();
+        this.customPlayBtnShow = true;
       },
       sendDanmu: function () {
         console.log("sendDanmu -> " + this.danmu);
@@ -364,11 +376,15 @@
         this.header = json as UTSJSONObject;
         console.log("header -> " + JSON.stringify(this.header))
       },
+      onCustomPlayBtnEnableChange: function (event : UniSwitchChangeEvent) {
+      	this.customPlayBtnEnable = event.detail.value;
+      },
       // 事件
       onPlay: function (res : UniEvent) {
         console.log(res.type);
         this.isPlaying = true;
         this.isPause = false;
+        this.customPlayBtnShow = false;
         if (this.autoTest) {
           this.eventPlay = {
             "tagName": res.target?.tagName,
@@ -501,5 +517,14 @@
 
   .margin-10 {
     margin: 10px;
+  }
+
+  .custom-play-btn {
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
   }
 </style>
