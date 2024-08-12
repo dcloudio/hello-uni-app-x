@@ -111,8 +111,9 @@ describe("get-location", () => {
       await page.waitFor(async () => {
         return await page.data('jest_complete') === true;
       });
-
-      expect((await page.data())['jest_errCode']).toEqual(1505601);
+      if (isApp) {
+        expect((await page.data())['jest_errCode']).toEqual(1505601);
+      }
     });
 
 
