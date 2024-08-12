@@ -39,7 +39,7 @@ describe("get-location", () => {
         expect((await page.data())['jest_latitude']).toBeLessThanOrEqual(90);
         //判断海拔是否正确
         expect((await page.data())['jest_altitude']).toEqual(expect.any(Number));
-        expect((await page.data())['jest_altitude']).not.toEqual('0');
+        expect((await page.data())['jest_altitude']).not.toEqual(0);
       }
     });
 
@@ -94,7 +94,7 @@ describe("get-location", () => {
         //如果定位出错
         expect((await page.data())['jest_errCode']).toEqual(expect.any(Number));
       } else {
-        expect((await page.data())['jest_altitude']).toEqual('0');
+        expect((await page.data())['jest_altitude']).toEqual(0);
       }
     });
 
@@ -146,7 +146,7 @@ describe("get-location", () => {
           expect((await page.data())['jest_latitude']).toBeLessThanOrEqual(90);
           //判断海拔是否正确
           expect((await page.data())['jest_altitude']).toEqual(expect.any(Number));
-          expect((await page.data())['jest_altitude']).not.toEqual('0');
+          expect((await page.data())['jest_altitude']).not.toEqual(0);
         }
     });
 
