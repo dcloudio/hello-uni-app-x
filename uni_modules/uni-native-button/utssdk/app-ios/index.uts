@@ -2,19 +2,19 @@ import { UIButton, UIControl,ButtonType } from "UIKit"
 
 export class NativeButton {
 
-	element : UniObjectElement;
+	element : UniNativeViewElement;
 	button : UIButton;
 
-	constructor(element : UniObjectElement) {
+	constructor(element : UniNativeViewElement) {
 		this.element = element;
 		this.button = new UIButton(type=UIButton.ButtonType.system)
 		super.init()
-		
+
 		// 在 swift target-action 对应的方法需要以OC的方式来调用，那么OC语言中用Selector来表示一个方法的名称（又称方法选择器），创建一个Selector可以使用 Selector("functionName") 的方式。
 		const method = Selector("buttonClickAction")
 		// button 添加点击回调
 		button.addTarget(this, action = method, for = UIControl.Event.touchUpInside)
-		
+
 		this.bind();
 	}
 
@@ -34,7 +34,7 @@ export class NativeButton {
 	 */
 	@objc buttonClickAction() {
 		// 发送事件
-		let event = new UniObjectCustomEvent("customClick")
+		let event = new UniNativeViewEvent("customClick")
 		this.element.dispatchEvent(event)
 	}
 
