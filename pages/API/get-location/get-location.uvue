@@ -79,7 +79,18 @@
         ] as ItemType[],
         providerList: [] as LocationItem[],
         current: 0,
-        currentProvider: 0
+        currentProvider: 0,
+        jest_provider: String,
+        jest_type: String,
+        jest_isAltitude: Boolean,
+        jest_isGeocode: Boolean,
+        jest_isHighAccuracy: Boolean,
+        jest_altitude: Number,
+        jest_longitude: Number,
+        jest_latitude: Number,
+        jest_address: String,
+        jest_errCode: Number,
+        jest_complete: Boolean
       }
     },
     onLoad: function () {
@@ -177,24 +188,44 @@
           geocode: this.geocodeSelect,
           success: (res : any) => {
             uni.hideLoading()
-            console.log(res);
             this.exeRet = JSON.stringify(res)
           },
           fail: (res : any) => {
             uni.hideLoading()
-            console.log(res);
             this.exeRet = JSON.stringify(res)
           },
           complete: (res : any) => {
             uni.hideLoading()
-            console.log(res);
             this.exeRet = JSON.stringify(res)
           }
         }));
+      },
 
-
+      // 仅用于自动化测试
+      jestGetLocation() {
+        this.jest_complete = false
+        this.jest_errCode = 0
+        uni.getLocation(({
+          // #ifdef APP
+          provider: this.jest_provider,
+          // #endif
+          type: this.jest_type,
+          altitude: this.jest_isAltitude,
+          isHighAccuracy: this.jest_isHighAccuracy,
+          geocode: this.jest_isGeocode,
+          success: (res : any) => {
+            this.jest_address = res.address
+            this.jest_longitude = res.longitude
+            this.jest_latitude = res.latitude
+            this.jest_altitude = res.altitude
+            this.jest_complete = true
+          },
+          fail: (err : any) => {
+            this.jest_errCode = err.errCode
+            this.jest_complete = true
+          }
+        }));
       }
-
     }
   }
 </script>
