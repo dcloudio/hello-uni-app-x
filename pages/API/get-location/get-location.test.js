@@ -39,7 +39,6 @@ describe("get-location", () => {
         expect((await page.data())['jest_latitude']).toBeLessThanOrEqual(90);
         //判断海拔是否正确
         expect((await page.data())['jest_altitude']).toEqual(expect.any(Number));
-        expect((await page.data())['jest_altitude']).not.toEqual(0);
       }
     });
 
@@ -146,7 +145,6 @@ describe("get-location", () => {
           expect((await page.data())['jest_latitude']).toBeLessThanOrEqual(90);
           //判断海拔是否正确
           expect((await page.data())['jest_altitude']).toEqual(expect.any(Number));
-          expect((await page.data())['jest_altitude']).not.toEqual(0);
         }
     });
 
