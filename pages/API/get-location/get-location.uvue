@@ -56,8 +56,9 @@
   <!-- #endif -->
 </template>
 <script lang="uts">
+  type GetLocationType = 'wgs84' | 'gcj02'
   export type LocationItem = { id : string, name : string, provider ?: UniProvider }
-  export type ItemType = { value : 'wgs84' | 'gcj02', name : 'wgs84' | 'gcj02' }
+  export type ItemType = { value : GetLocationType, name : GetLocationType }
 
   export default {
     data() {
@@ -81,13 +82,13 @@
         current: 0,
         currentProvider: 0,
         jest_provider: '',
-        jest_type: '',
+        jest_type: 'wgs84' as GetLocationType,
         jest_isAltitude: false,
         jest_isGeocode: false,
         jest_isHighAccuracy: false,
-        jest_altitude: 0,
-        jest_longitude: 0,
-        jest_latitude: 0,
+        jest_altitude: -1000,
+        jest_longitude: 200,
+        jest_latitude: 100,
         jest_address: '',
         jest_errCode: 0,
         jest_complete: false
@@ -222,7 +223,7 @@
             this.jest_altitude = res.altitude
             this.jest_complete = true
           },
-          fail: (err ) => {
+          fail: (err) => {
             this.jest_errCode = err.errCode
             this.jest_complete = true
           }
