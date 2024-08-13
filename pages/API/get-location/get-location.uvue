@@ -102,31 +102,18 @@
     methods: {
       getProvider() {
         // #ifdef APP
-        uni.getProvider({
-          service: "location",
-          success: (e) => {
-            console.log("location success:" + JSON.stringify(e), e.providerObjects.length);
-            let array = e.providerIds as string[]
-            array.forEach((value : string) => {
-              let locationProvider = e.providerObjects.find((item) : boolean => {
-                return item.id == value
-              })
-              if (locationProvider != null) {
-                this.providerList.push({
-                  name: locationProvider.description,
-                  id: locationProvider.id,
-                  provider: e.providerObjects.find((item) : boolean => {
-                    return item.id == locationProvider.id
-                  })
-                } as LocationItem);
-              }
-            })
-          },
-          fail: (e) => {
-            console.log("获取定位服务商失败：", e);
-          }
-        });
 
+        let provider = uni.getProviderSync({
+          service: "location",
+        } as GetProviderSyncOptions)
+        console.log(provider)
+        provider.providerObjects.forEach((value : UniProvider) => {
+          this.providerList.push({
+            name: value.description,
+            id: value.id,
+            provider: value
+          } as LocationItem);
+        })
 
         this.providerList.forEach((value, index) => {
           if (value.id == "system") {
