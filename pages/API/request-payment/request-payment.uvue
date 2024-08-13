@@ -22,40 +22,30 @@
       }
     },
     onLoad: function () {
-      uni.getProvider({
+      let provider = uni.getProviderSync({
         service: "payment",
-        success: (e) => {
-          console.log("payment success:" + JSON.stringify(e));
-          let array = e.providerIds as string[]
-          array.forEach((value : string) => {
-            switch (value) {
-              case 'alipay':
-                this.providerList.push({
-                  name: '支付宝',
-                  id: "alipay",
-                  provider: e.providerObjects.find((item) : boolean => {
-                    return item.id == 'alipay'
-                  })
-                } as PayItem);
-                break;
-              case 'wxpay':
-                this.providerList.push({
-                  name: '微信',
-                  id: "wxpay",
-                  provider: e.providerObjects.find((item) : boolean => {
-                    return item.id == 'wxpay'
-                  })
-                } as PayItem);
-                break;
-              default:
-                break;
-            }
-          })
-        },
-        fail: (e) => {
-          console.log("获取支付通道失败：", e);
+      } as GetProviderSyncOptions)
+      console.log(provider)
+      provider.providerObjects.forEach((value : UniProvider) => {
+        switch (value.id) {
+          case 'alipay':
+            this.providerList.push({
+              name: '支付宝',
+              id: "alipay",
+              provider: value
+            } as PayItem);
+            break;
+          case 'wxpay':
+            this.providerList.push({
+              name: '微信',
+              id: "wxpay",
+              provider: value
+            } as PayItem);
+            break;
+          default:
+            break;
         }
-      });
+      })
     },
     methods: {
       requestPayment(e : PayItem) {
