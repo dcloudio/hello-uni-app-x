@@ -48,24 +48,28 @@
 					{ service: "location", name: "定位", provider: [], providerObj: [], providerObjMap: [] }
 				] as ProviderItem[],
 				providerIds: [] as string[],
-        providerObjects : [] as UniProvider[],
+				providerObjects: [] as UniProvider[],
 			}
 		},
 		methods: {
 			getProvider() {
 				this.serviceList.forEach((item : ProviderItem) => {
-					uni.getProvider({
+					var provider = uni.getProviderSync({
 						service: item.service,
-						success: (e) => {
-							e.providerIds.forEach((value) => {
-								this.providerIds.push(value)
-							})
-							this.updateProvider(item.service, e.providerIds, e.providerObjects);
-						},
-						fail: (e) => {
-							console.log("获取provider失败：", e);
-						}
-					} as GetProviderOptions)
+						// success: (e) => {
+						// 	// e.providerIds.forEach((value) => {
+						// 	// 	this.providerIds.push(value)
+						// 	// })
+						// 	// this.updateProvider(item.service, e.providerIds, e.providerObjects);
+						// },
+						// fail: (e) => {
+						// 	console.log("获取provider失败：", e);
+						// }
+					} as GetProviderSyncOptions)
+					provider.providerIds.forEach((value) => {
+						this.providerIds.push(value)
+					})
+					this.updateProvider(item.service, provider.providerIds, provider.providerObjects);
 				})
 			},
 			updateProvider(service : string, provider ?: string[] | null, uniProvider : UniProvider[]) {
@@ -77,7 +81,7 @@
 
 					item.providerObj = uniProvider
 					item.providerObj.forEach((obj) => {
-            this.providerObjects.push(obj)
+						this.providerObjects.push(obj)
 						// #ifdef APP-ANDROID
 						if (obj instanceof UniPaymentWxpayProvider) {//判断微信是否安装
 							var isWeChatInstalled = (obj as UniPaymentWxpayProvider).isWeChatInstalled
