@@ -8,11 +8,11 @@ describe('PickerView.uvue', () => {
     await page.callMethod('setEventCallbackNum', 0)
     pickerViewEl = await page.$('.picker-view')
   })
-  
+
   afterEach(async () => {
     await page.callMethod('setEventCallbackNum', 0)
   })
-  
+
   async function toScreenshot(imgName) {
     const image = await program.screenshot();
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
@@ -20,7 +20,7 @@ describe('PickerView.uvue', () => {
     }})
     await page.waitFor(500);
   }
-  
+
   it('value', async () => {
     await page.callMethod('setValue')
     await page.waitFor(1000)
@@ -46,7 +46,7 @@ describe('PickerView.uvue', () => {
     const els1 = await page.$$('.picker-view-column')
     expect(els1.length).toBe(3)
   })
-  
+
   it('indicator-style', async () => {
     // App端动态设置indicatorStyle无效
     const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
@@ -55,9 +55,9 @@ describe('PickerView.uvue', () => {
     })
     await page.waitFor(500)
     expect(await pickerViewEl.attribute('indicatorStyle')).toBe(indicatorStyle)
-    await toScreenshot('indicator-style')
+    await toScreenshot('picker-view-indicator-style')
   })
-  
+
   if(process.env.uniTestPlatformInfo.startsWith('web')){
     // indicator-class、mask-style、mask-class 仅web支持
     it('indicator-class', async () => {
@@ -66,7 +66,7 @@ describe('PickerView.uvue', () => {
         indicatorClass:"indicator-test",//设置indicatorClass为indicator-test
       })
       expect(await pickerViewEl.attribute('indicatorClass')).toBe("indicator-test")
-      await toScreenshot('indicator-class')
+      await toScreenshot('picker-view-web-indicator-class')
       await page.setData({
         indicatorClass:"",//清空indicatorClass
       })
@@ -75,17 +75,17 @@ describe('PickerView.uvue', () => {
       const maskStyle = "background-image: linear-gradient(to bottom, #d8e5ff, rgba(216, 229, 255, 0));"
       await page.setData({maskStyle})
       expect(await pickerViewEl.attribute('maskStyle')).toBe(maskStyle)
-      await toScreenshot('mask-style')
+      await toScreenshot('picker-view-web-mask-style')
     })
     it('mask-class', async () => {
       await page.setData({maskClass:"mask-test"})
       expect(await pickerViewEl.attribute('maskClass')).toBe("mask-test")
-      await toScreenshot('mask-class')
+      await toScreenshot('picker-view-web-mask-class')
     })
     return
   }
- 
-  
+
+
   it('mask-top-bottom-style', async () => {
     // App端动态设置mask-top-style、mask-bottom-style无效
     const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
@@ -98,9 +98,9 @@ describe('PickerView.uvue', () => {
     expect(await pickerViewEl.attribute('mask-top-style')).toBe(linearToTop)
     expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)
     await page.waitFor(2000)
-    await toScreenshot('mask-top-bottom-style')
+    await toScreenshot('picker-view-app-mask-top-bottom-style')
   })
-  
+
   it('reopen-picker-view-page', async () => {
     page = await program.switchTab('/pages/tabBar/component')
     await page.waitFor(500)
