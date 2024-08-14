@@ -11,7 +11,8 @@
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
       <!-- #ifdef APP-ANDROID -->
-      <image class="custom-play-btn" v-if="customPlayBtnEnable" v-show="customPlayBtnShow" src="/static/play.png" @tap="play" />
+      <image v-if="subCompEnable && subCompShow" class="img-fast-backward" src="../../../static/test-video/fast-backward.png" @tap="fastBackward"></image>
+      <image v-if="subCompEnable && subCompShow" class="img-fast-forward" src="../../../static/test-video/fast-forward.png" @tap="fastForward"></image>
       <!-- #endif -->
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
@@ -21,9 +22,9 @@
         </navigator>
       </view>
       <!-- #ifdef APP-ANDROID -->
-      <view class="uni-flex uni-btn-v" style="justify-content: space-between;">
-        <text class="uni-title">中间播放按钮是否替换为子组件</text>
-        <switch :checked="customPlayBtnEnable" :disabled="!customPlayBtnShow" @change="onCustomPlayBtnEnableChange" />
+      <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
+        <text class="uni-title" style="width: 80%;">子组件实现快进、快退功能（全屏后显示）</text>
+        <switch :checked="subCompEnable" @change="onSubCompEnableChange" />
       </view>
       <!-- #endif -->
       <view class="uni-title">
@@ -37,7 +38,7 @@
       </view>
       <view class="uni-btn-v">
         <input class="input" placeholder="输入要跳转的位置,单位s" type="number" @input="onSeekInput"></input>
-        <button type="primary" @click="seek">跳转到指定位置</button>
+        <button type="primary" @click="seek(this.pos)">跳转到指定位置</button>
       </view>
       <view class="uni-btn-v">
         <enum-data title="选择进入全屏时的视频方向" :items="directionItemTypes" @change="onRequestFullScreenDirectionChange"></enum-data>
@@ -96,6 +97,9 @@
 
 <script>
   import { ItemType } from '@/components/enum-data/enum-data';
+  // #ifdef APP-ANDROID
+  import ViewGroup from 'android.view.ViewGroup';
+  // #endif
   export default {
     onReady() {
       this.videoContext = uni.createVideoContext('video');
@@ -176,8 +180,10 @@
         rate: 1,
         rateItemTypes: [{ "value": 0, "name": "0.5" }, { "value": 1, "name": "0.8" }, { "value": 2, "name": "1.0" }, { "value": 3, "name": "1.25" }, { "value": 4, "name": "1.5" }] as ItemType[],
         rateItems: [0.5, 0.8, 1.0, 1.25, 1.5],
-        customPlayBtnEnable: false,
-        customPlayBtnShow: true,
+        subCompEnable: false,
+        subCompShow: false,
+        curPos: 0,
+        endPos: 0,
         // 自动化测试
         autoTest: false,
         isPlaying: false,
@@ -208,9 +214,9 @@
         (uni.getElementById("video") as UniVideoElement).pause(); //as写法测试。注意id不对时as会崩溃
         // this.videoContext?.pause();
       },
-      seek: function () {
-        console.log("seek -> " + this.pos);
-        this.videoContext?.seek(this.pos);
+      seek: function (pos : number) {
+        console.log("seek -> " + pos);
+        this.videoContext?.seek(pos);
       },
       onSeekInput: function (event : UniInputEvent) {
         this.pos = parseInt(event.detail.value);
@@ -227,7 +233,6 @@
         console.log("stop");
         uni.getElementById<UniVideoElement>("video")?.stop(); //泛型写法测试
         // this.videoContext?.stop();
-        this.customPlayBtnShow = true;
       },
       sendDanmu: function () {
         console.log("sendDanmu -> " + this.danmu);
@@ -244,6 +249,16 @@
       },
       onPlaybackRateChange: function (value : number) {
         this.rate = this.rateItems[value];
+      },
+      fastBackward: function () {
+        let pos = this.curPos - 15;
+        if (pos < 0) pos = 0;
+        this.seek(pos);
+      },
+      fastForward: function () {
+        let pos = this.curPos + 15;
+        if (pos > this.endPos) pos = this.endPos;
+        this.seek(pos);
       },
       // 属性
       onSrcComfirm: function (event : UniInputConfirmEvent) {
@@ -376,15 +391,14 @@
         this.header = json as UTSJSONObject;
         console.log("header -> " + JSON.stringify(this.header))
       },
-      onCustomPlayBtnEnableChange: function (event : UniSwitchChangeEvent) {
-      	this.customPlayBtnEnable = event.detail.value;
+      onSubCompEnableChange: function (event : UniSwitchChangeEvent) {
+      	this.subCompEnable = event.detail.value;
       },
       // 事件
       onPlay: function (res : UniEvent) {
         console.log(res.type);
         this.isPlaying = true;
         this.isPause = false;
-        this.customPlayBtnShow = false;
         if (this.autoTest) {
           this.eventPlay = {
             "tagName": res.target?.tagName,
@@ -414,6 +428,8 @@
       },
       onTimeUpdate: function (res : UniVideoTimeUpdateEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        this.curPos = res.detail.currentTime;
+        this.endPos = res.detail.duration;
         if (this.autoTest) {
           this.eventTimeupdate = {
             "tagName": res.target?.tagName,
@@ -425,6 +441,7 @@
       },
       onFullScreenChange: function (res : UniVideoFullScreenChangeEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        this.subCompShow = res.detail.fullScreen;
         if (this.autoTest) {
           this.eventFullscreenchange = {
             "tagName": res.target?.tagName,
@@ -498,7 +515,13 @@
             this.isError = true;
           }
         })
+      },
+      // #ifdef APP-ANDROID
+      hasSubComponent() : boolean {
+        const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
+        return view == null ? false : view.getChildCount() > 1;
       }
+      // #endif
     }
   }
 </script>
@@ -519,12 +542,21 @@
     margin: 10px;
   }
 
-  .custom-play-btn {
-    width: 60px;
-    height: 60px;
+  .img-fast-backward {
+    width: 40px;
+    height: 40px;
     top: 50%;
-    left: 50%;
+    left: 12%;
     transform: translate(-50%, -50%);
+    position: absolute;
+  }
+
+  .img-fast-forward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    right: 12%;
+    transform: translate(50%, -50%);
     position: absolute;
   }
 </style>
