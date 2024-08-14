@@ -4,8 +4,8 @@
     <!-- #endif -->
     <view>
       <page-head title="rich-text-complex"></page-head>
-      <view class="uni-padding-wrap uni-common-mt">
-        <rich-text :nodes="htmlString" @itemclick="itemClick"></rich-text>
+      <view class="uni-padding-wrap uni-common-mt" @click="testClick('触发父 view click 事件')">
+        <rich-text :nodes="htmlString" @itemclick="itemClick" @click="testClick('触发 richtext click 事件')"></rich-text>
       </view>
     </view>
     <!-- #ifdef APP -->
@@ -33,6 +33,10 @@
           content:clicktext,
           showCancel:false
         });
+      },
+      testClick(e:string) {
+        // 测试点击rich-text是否正常触发自身及父节点 click 事件
+        console.log(e)
       }
     }
   }
