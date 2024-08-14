@@ -105,10 +105,7 @@ describe('component-native-video', () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return
     }
-    await page.setData({
-      pos: 10
-    });
-    await page.callMethod('seek');
+    await page.callMethod('seek', 10);
     start = Date.now();
     await page.waitFor(async () => {
       return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() - start > 1000);
@@ -169,10 +166,7 @@ describe('component-native-video', () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       return
     }
-    await page.setData({
-      pos: 120
-    });
-    await page.callMethod('seek');
+    await page.callMethod('seek', 120);
     start = Date.now();
     await page.waitFor(async () => {
       return (await page.data('eventEnded')) || (Date.now() - start > 5000);
@@ -218,6 +212,16 @@ describe('component-native-video', () => {
       autoTest: false,
       src: oldSrc
     });
+  });
+
+  it('test sub component', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) return
+    await page.setData({
+      subCompEnable: true,
+      subCompShow: true
+    });
+    await page.waitFor(100);
+    expect(await page.callMethod('hasSubComponent')).toBe(true);
   });
 
   it('test format', async () => {
