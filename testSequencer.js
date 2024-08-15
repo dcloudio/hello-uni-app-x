@@ -2,6 +2,7 @@ const Sequencer = require("@jest/test-sequencer").default
 const sortTestFilePaths = [
   "pages/API/pull-down-refresh/pull-down-refresh.test.js",
   "pages/component/global-events/global-events.test.js",
+  "pages/component/list-view/list-view-refresh.test.js"
 ]
 class CustomSequencer extends Sequencer {
   sort(tests) {
