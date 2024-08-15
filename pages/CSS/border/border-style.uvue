@@ -58,11 +58,38 @@
           style="border-style: none; border-width: 5px;"
         ></view>
       </view>
+
+      <view @click="changeBorderStyle">
+        <text>border-style: 点击切换</text>
+        <view
+          class="common"
+          :style="borderStyle"
+        ></view>
+      </view>
     </view>
     <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script>
+	export default {
+		data() {
+			return {
+        isSolid : false,
+				borderStyle: "border-style: none; border-width: 5px;",
+			}
+		},
+    methods: {
+      changeBorderStyle() {
+        this.isSolid = !this.isSolid;
+        const solid = "border-style: solid; border-width: 5px;";
+        const none = "";
+        this.borderStyle = this.isSolid ? solid : none;
+      }
+    }
+	}
+</script>
 
 <style>
 .common {
