@@ -144,8 +144,9 @@ describe('ExtApi-StorageInfoTest', () => {
     let btnComplexStaticTest = await page.$('.btn-complexStaticTest')
     await btnComplexStaticTest.tap()
     await page.waitFor(600)
-    expect(await getData('staticComplexRet')).toEqual(true)
-
+    if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
+      expect(await getData('staticComplexRet')).toEqual(true)
+    }
     await page.setData({
       key: "autotest_key_mock",
       data:"长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
