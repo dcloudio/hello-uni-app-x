@@ -138,7 +138,7 @@ describe('component-native-video', () => {
     });
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
-    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+    if (process.env.uniTestPlatformInfo.startsWith('android') && process.env.android_cpu_type != 'x86' && process.env.android_cpu_type != 'x86_64' && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
       await page.waitFor(5000);
       await program.adbCommand('input tap 10 10');
       start = Date.now();
