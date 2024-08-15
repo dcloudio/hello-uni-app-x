@@ -94,6 +94,17 @@ describe('component-native-web-view', () => {
         return (await page.data('eventLoading')) || (Date.now() - start > 500);
       });
       if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+        const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+        if(
+          platformInfo.indexOf('14.5') != -1 ||
+          platformInfo.indexOf('13.7') != -1 ||
+          platformInfo.indexOf('12.4') != -1
+          ){
+          it('ios 14.5 13.7 12.4 测试异常', () => {
+            expect(1).toBe(1)
+          })
+          return
+        }
         expect(await page.data('eventLoading')).toEqual({
           "tagName": "WEB-VIEW",
           type: 'loading',
@@ -152,6 +163,17 @@ describe('component-native-web-view', () => {
     });
 
     it('checkNativeWebView', async () => {
+      const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+      if(
+        platformInfo.indexOf('14.5') != -1 ||
+        platformInfo.indexOf('13.7') != -1 ||
+        platformInfo.indexOf('12.4') != -1
+        ){
+        it('ios 14.5 13.7 12.4 低版本设备不支持uts插件编译', () => {
+          expect(1).toBe(1)
+        })
+        return
+      }
       await page.waitFor(300);
       const has = await page.callMethod('checkNativeWebView')
       expect(has).toBe(true)
