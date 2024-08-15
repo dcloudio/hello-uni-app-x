@@ -80,7 +80,8 @@ const pages = [
   // '/pages/component/unicloud-db/unicloud-db/contacts/edit',
   // 动态内容
   // '/pages/component/unicloud-db/unicloud-db/contacts/detail',
-  '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
+  // 动态内容
+  // '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
   // 单独测试例截图
   // '/pages/component/global-properties/global-properties',
   '/pages/component/global-events/global-events',

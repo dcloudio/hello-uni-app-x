@@ -2,32 +2,34 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex:1">
   <!-- #endif -->
-    <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap">
-      <view class="image-container">
-        <image class="image" :src="beforeCompressPath" mode="aspectFit"></image>
-        <image class="image" :src="afterCompressPath" mode="aspectFit"></image>
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap">
+        <view class="image-container">
+          <image class="image" :src="beforeCompressPath" mode="aspectFit"></image>
+          <image class="image" :src="afterCompressPath" mode="aspectFit"></image>
+        </view>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩前图片信息</text>
+        </view>
+        <text>{{beforeCompressImageInfo}}</text>
+        <view class="uni-title">
+          <text class="uni-subtitle-text">压缩后图片信息</text>
+        </view>
+        <text>{{afterCompressImageInfo}}</text>
+        <view class="uni-btn-v">
+          <button type="primary" @click="chooseImage">从相册中选取待压缩的图片</button>
+        </view>
+        <view class="uni-btn-v">
+          <button type="primary" @click="compressImage">压缩图片</button>
+        </view>
       </view>
-      <view class="uni-title">
-        <text class="uni-subtitle-text">压缩前图片信息</text>
-      </view>
-      <text>{{beforeCompressImageInfo}}</text>
-      <view class="uni-title">
-        <text class="uni-subtitle-text">压缩后图片信息</text>
-      </view>
-      <text>{{afterCompressImageInfo}}</text>
-      <view class="uni-btn-v">
-        <button type="primary" @click="chooseImage">从相册中选取待压缩的图片</button>
-      </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="compressImage">压缩图片</button>
-      </view>
+      <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
+        @confirm="onQualityConfirm"></input-data>
+      <input-data title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
+      <input-data title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
+      <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
     </view>
-    <input-data defaultValue="80" title="压缩质量，范围0～100，数值越小，质量越低，压缩率越高（仅对jpg有效）" type="number"
-      @confirm="onQualityConfirm"></input-data>
-    <input-data title="压缩后图片的宽度，单位px" type="string" @confirm="onCompressedWidthConfirm"></input-data>
-    <input-data title="压缩后图片的高度，单位px" type="string" @confirm="onCompressedHeightConfirm"></input-data>
-    <input-data defaultValue="0" title="旋转度数，范围0～360" type="number" @confirm="onRotateConfirm"></input-data>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -144,7 +146,7 @@
             uni.getImageInfo({
               src: res.tempFilePath,
               success: (_res) => {
-                let beforeCompressSize: number, afterComoressSize: number;
+                let beforeCompressSize : number, afterComoressSize : number;
                 // #ifdef APP-ANDROID
                 beforeCompressSize = new FileInputStream(UTSAndroid.convert2AbsFullPath(this.imageSrcForTest)).available();
                 afterComoressSize = new FileInputStream(res.tempFilePath.substring("file://".length)).available();
