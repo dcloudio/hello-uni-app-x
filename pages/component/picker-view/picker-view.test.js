@@ -14,7 +14,7 @@ describe('PickerView.uvue', () => {
   })
 
   async function toScreenshot(imgName) {
-    const image = await program.screenshot();
+    const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
       return imgName
     }})
