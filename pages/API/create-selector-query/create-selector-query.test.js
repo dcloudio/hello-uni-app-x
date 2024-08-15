@@ -57,6 +57,7 @@ describe('nodes-info', () => {
   it('get-node-info-child', async () => {
     const child = await page.$('.node-child')
     const childData = await child.data()
+    console.log('get-node-info-child.childData.top', childData.top);
     expect(childData.top > 100).toBe(true)
   })
 
