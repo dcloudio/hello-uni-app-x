@@ -477,7 +477,7 @@
           this.eventProgress = {
             "tagName": res.target?.tagName,
             "type": res.type,
-            "isBufferedValid": res.detail.buffered > 0
+            "isBufferedValid": res.detail.buffered >= 0
           };
         }
       },
@@ -519,7 +519,7 @@
       // #ifdef APP-ANDROID
       hasSubComponent() : boolean {
         const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
-        return view == null ? false : view.getChildCount() > 1;
+        return view == null ? false : view.getChildAt(0) instanceof ViewGroup;
       }
       // #endif
     }
