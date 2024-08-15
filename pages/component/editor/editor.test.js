@@ -47,19 +47,16 @@ describe('editor.uvue', () => {
 
   it('clear', async () => {
     await page.callMethod('clear')
-    await page.waitFor(500)
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
   })
 
   it('undo-redo', async () => {
-    await page.callMethod('insertDate')
     await page.callMethod('insertDivider')
     await page.waitFor(500)
     await page.callMethod('undo')
     await page.waitFor(500)
     expect(await page.data('undoTest')).toBe(true)
     await page.callMethod('redo')
-    await page.waitFor(500)
     expect(await page.data('redoTest')).toBe(true)
   })
 
@@ -82,7 +79,6 @@ describe('editor.uvue', () => {
               ])
       await page.waitFor(500)
       await page.callMethod('removeFormat')
-      await page.waitFor(500)
       expect(await page.data('removeFormatTest')).toBe(true)
       expect(await page.data('formats')).toEqual({})
   })
