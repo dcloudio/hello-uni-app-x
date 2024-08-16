@@ -1308,7 +1308,8 @@ describe('ExtApi-FileManagerTest', () => {
     let bytesWritten = await getData("bytesWritten")
     let lastFailError = await getData("lastFailError")
     if(bytesWritten != 7){
-       console.log('writeTest',lastFailError.errCode,lastFailError.errMsg,bytesWritten)
+      let writeData = await getData("writeData")
+       console.log('writeTest',lastFailError.errCode,lastFailError.errMsg,bytesWritten,writeData)
     }
 
     expect(bytesWritten).toEqual(7)
