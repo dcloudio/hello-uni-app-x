@@ -1,24 +1,23 @@
 import { TimePicker } from "android.widget"
-import { View } from "android.view"
 
 export class NativeTimePicker {
 	$element : UniNativeViewElement;
 
 	constructor(element : UniNativeViewElement, hour: number, minute: number) {
 		this.$element = element;
-		bindView(hour, minute);
+		this.bindView(hour, minute);
 	}
 
 	picker : TimePicker | null = null;
 	bindView(hour: number, minute: number) {
-		this.picker = new TimePicker($element.getAndroidActivity()!);  //构建原生view
-		$element.bindAndroidView(picker!);
-		setHour(hour)
-		setMinute(minute)
+		this.picker = new TimePicker(this.$element.getAndroidActivity()!);  //构建原生view
+		this.$element.bindAndroidView(this.picker!);
+		this.setHour(hour)
+		this.setMinute(minute)
 		this.picker?.setOnTimeChangedListener((_, hourOfDay, minute) => {
 			const detail = {"hour": hourOfDay, "minute": minute}
 			const event = new UniNativeViewEvent("timechanged", detail)
-			$element.dispatchEvent(event)
+			this.$element.dispatchEvent(event)
 		})
 	}
 
