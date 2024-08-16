@@ -93,7 +93,6 @@ const pages = [
   // '/pages/component/nested-scroll-body/nested-scroll-body',
   // 单独测试例截图
   // '/pages/component/swiper/swiper-list-view',
-  '/pages/component/list-view/list-view-refresh',
   // 单独测试例截图
   // '/pages/component/list-view/issue-2199',
 
@@ -255,7 +254,8 @@ const pages = [
   '/pages/template/half-screen/half-screen',
   // 动态内容
   // '/pages/template/long-list/long-list',
-  '/pages/template/long-list2/long-list2',
+  // 动态内容
+  // '/pages/template/long-list2/long-list2',
   '/pages/template/long-list-nested/long-list-nested',
   '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/navbar-lite/navbar-lite',
@@ -346,7 +346,6 @@ function getWaitForTagName(pagePath) {
   }
   if (
     pagePath === '/pages/component/global-events/transition-events' ||
-    pagePath === '/pages/component/list-view/list-view-refresh' ||
     pagePath === '/pages/API/env/env'
   ) {
     return 'text'
