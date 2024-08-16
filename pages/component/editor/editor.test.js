@@ -76,8 +76,12 @@ describe('editor.uvue', () => {
     await page.waitFor(async () => {
       return await page.data('insertImageTest') === true || (Date.now() - start1 > 2000)
     })
+  })
+
+  it('insertImage-screenshot', async () => {
     await setBlur()
-    await page.waitFor(2000)
+    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:2000
+    await page.waitFor(waitTime)
     expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
