@@ -1092,13 +1092,14 @@
             }
             console.log("success", res)
             this.bytesWritten = res.bytesWritten
+            this.lastFailError=new UniError('uni-fileSystemManager', 0,'writeTest success:'+ JSON.stringify(res))
           },
           fail: (res : IUniError) => {
             if (this.logAble) {
               this.log += 'writeTest fail:' + JSON.stringify(res) + '\n\n'
             }
             console.log('fail', res)
-                        this.lastFailError=new UniError(res.errSubject, res.errCode, res.errMsg)
+                        this.lastFailError=new UniError(res.errSubject, res.errCode,'writeTest:'+ res.errMsg)
 
           },
           complete: (_) => {
