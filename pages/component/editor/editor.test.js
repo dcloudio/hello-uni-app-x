@@ -16,6 +16,14 @@ describe('editor.uvue', () => {
     await page.setData({autoTest:true})
   });
 
+  async function setBlur() {
+    const start = Date.now();
+    await page.callMethod('blur')
+    await page.waitFor(async () => {
+      return await page.data('blurTest') === true || (Date.now() - start > 2000)
+    })
+  }
+
   it('editor-wrapper', async () => {
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
     expect(await editor.attribute("read-only")).toBe("false")
@@ -41,8 +49,9 @@ describe('editor.uvue', () => {
   });
 
   it('editor-screenshot', async () => {
-    expect(await program.screenshot()).toSaveImageSnapshot();
+    await setBlur()
     await page.waitFor(500);
+    expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
   it('clear', async () => {
@@ -61,7 +70,13 @@ describe('editor.uvue', () => {
   })
 
   it('insertImage', async () => {
+    await page.waitFor(500)
     await page.callMethod('insertImage','https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
+    const start1 = Date.now();
+    await page.waitFor(async () => {
+      return await page.data('insertImageTest') === true || (Date.now() - start1 > 2000)
+    })
+    await setBlur()
     await page.waitFor(2000)
     expect(await program.screenshot()).toSaveImageSnapshot();
   })

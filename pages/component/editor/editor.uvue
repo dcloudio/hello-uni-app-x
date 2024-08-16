@@ -75,9 +75,9 @@
 						show-img-resize @statuschange="onStatusChange" :read-only="readOnly" @ready="onEditorReady">
 					</editor>
 				</view>
-				<view>
-					<button @tap="getCon">打印文本内容</button>
-				</view>
+        <view>
+          <button @tap="getCon">打印文本内容</button>
+        </view>
 			</view>
 		</view>
 	</view>
@@ -99,7 +99,9 @@
         autoTest:false,
         undoTest:false,
         redoTest:false,
-        removeFormatTest:false
+        removeFormatTest:false,
+        insertImageTest:false,
+        blurTest:false
 			}
 		},
 		onLoad() {
@@ -135,6 +137,17 @@
           fail: (err) => {
           	console.log(err)
           }
+      	})
+      },
+      blur() {
+      	this.editorCtx.blur({
+      		success: (res) => {
+      			console.log('编辑器失焦：', res)
+            this.blurTest = true
+      		},
+      		fail: (err) => {
+      			console.log(err)
+      		}
       	})
       },
       getCon() {
@@ -224,8 +237,9 @@
         this.editorCtx.insertImage({
           src:image,
           alt: '图像',
-          success: function() {
+          success: ()=> {
             console.log('insert image success')
+            this.insertImageTest = true
           }
         })
       },
