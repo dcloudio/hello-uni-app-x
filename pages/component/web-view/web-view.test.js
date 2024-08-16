@@ -100,10 +100,8 @@ describe('component-native-web-view', () => {
           platformInfo.indexOf('13.7') != -1 ||
           platformInfo.indexOf('12.4') != -1
           ){
-          it('ios 14.5 13.7 12.4 测试异常', () => {
             expect(1).toBe(1)
-          })
-          return
+            return
         }
         expect(await page.data('eventLoading')).toEqual({
           "tagName": "WEB-VIEW",
@@ -169,10 +167,8 @@ describe('component-native-web-view', () => {
         platformInfo.indexOf('13.7') != -1 ||
         platformInfo.indexOf('12.4') != -1
         ){
-        it('ios 14.5 13.7 12.4 低版本设备不支持uts插件编译', () => {
           expect(1).toBe(1)
-        })
-        return
+          return
       }
       await page.waitFor(300);
       const has = await page.callMethod('checkNativeWebView')
