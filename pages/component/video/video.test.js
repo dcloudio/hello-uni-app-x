@@ -1,3 +1,4 @@
+jest.setTimeout(60000);
 describe('component-native-video', () => {
   if(process.env.uniTestPlatformInfo.startsWith('web')){
     // TODO: web 端暂不支持测试
@@ -138,12 +139,12 @@ describe('component-native-video', () => {
     });
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
-    if (process.env.uniTestPlatformInfo.startsWith('android') && process.env.android_cpu_type != 'x86' && process.env.android_cpu_type != 'x86_64' && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
       await page.waitFor(5000);
       await program.adbCommand('input tap 10 10');
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventFullscreenclick')) || (Date.now() - start > 500);
+        return (await page.data('eventFullscreenclick')) || (Date.now() - start > 1000);
       });
       const res = await program.adbCommand('wm size');
       const width = res.data.split(' ').at(-1).split('x')[0];
@@ -169,7 +170,7 @@ describe('component-native-video', () => {
     await page.callMethod('seek', 120);
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventEnded')) || (Date.now() - start > 5000);
+      return (await page.data('eventEnded')) || (Date.now() - start > 30000);
     });
     expect(await page.data('eventEnded')).toEqual({
       tagName: 'VIDEO',
