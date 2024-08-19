@@ -37,11 +37,11 @@
 </template>
 
 <script>
+  type Indicator = "number" | "default" | "none"
   type ItemType = {
-    value : string,
+    value : Indicator,
     name : string
   }
-
   export default {
     data() {
       return {
@@ -56,7 +56,7 @@
           value: "none",
           name: "不显示"
         }] as ItemType[],
-        currentIndicator: "default",
+        currentIndicator: "default" as Indicator,
         isLoop: true
       }
     },
@@ -80,7 +80,7 @@
         })
       },
       onIndicatorChanged(e : UniRadioGroupChangeEvent) {
-        this.currentIndicator = e.detail.value
+        this.currentIndicator = e.detail.value as Indicator
       },
       onCheckboxChange(_ : UniCheckboxGroupChangeEvent) {
         this.isLoop = !this.isLoop
