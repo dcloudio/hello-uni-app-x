@@ -1,5 +1,6 @@
 const Sequencer = require("@jest/test-sequencer").default
 const sortTestFilePaths = [
+  "pages/component/view/view.test.js",
   "pages/API/pull-down-refresh/pull-down-refresh.test.js",
   "pages/component/global-events/global-events.test.js",
   "pages/component/list-view/list-view-refresh.test.js"
