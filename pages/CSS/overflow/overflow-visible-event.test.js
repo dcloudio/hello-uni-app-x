@@ -62,4 +62,16 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   })
+
+  it('Check Overflow Visible Deep Level Click', async () => {
+    await page.callMethod('jest_scrollToDeepOverflow')
+    await page.waitFor(500);
+    const point_x = await page.data('jest_click_x');
+    const point_y = await page.data('jest_click_y');
+    console.log("input tap" + " " + point_x + " " + point_y);
+    await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    await page.waitFor(500);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
 });
