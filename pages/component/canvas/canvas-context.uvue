@@ -34,6 +34,7 @@
         renderingContext: null as CanvasRenderingContext2D | null,
         canvasWidth: 0,
         canvasHeight: 0,
+        fontLoaded: false,
         names: [...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"].sort() as string[]
       }
     },
@@ -810,32 +811,40 @@
       },
       fontTTF() {
         const context = this.renderingContext!
-        const fontMap = new Map<string,UTSJSONObject>([
-          ["AlimamaDaoLiTiOTF", {path: "/static/font/AlimamaDaoLiTi.otf", text: "阿里妈妈刀隶体字体otf加载成功"} as UTSJSONObject],
-          ["AlimamaDaoLiTiWOFF", {path: "/static/font/AlimamaDaoLiTi.woff", text: "阿里妈妈刀隶体字体Woff加载成功"} as UTSJSONObject],
-          ["iconfont-star", {path: "/static/fonts/icon-star.ttf", text: "\ue879"} as UTSJSONObject ],
+        const fontMap = new Map<string, UTSJSONObject>([
+          ["AlimamaDaoLiTiOTF", { path: "/static/font/AlimamaDaoLiTi.otf", text: "阿里妈妈刀隶体字体otf加载成功" } as UTSJSONObject],
+          ["AlimamaDaoLiTiWOFF", { path: "/static/font/AlimamaDaoLiTi.woff", text: "阿里妈妈刀隶体字体Woff加载成功" } as UTSJSONObject],
+          ["iconfont-star", { path: "/static/fonts/icon-star.ttf", text: "\ue879" } as UTSJSONObject],
         ]);
-
         var yOffset = 0
-        fontMap.forEach((value: UTSJSONObject, key: string)=>{
+
+        var drawFont = (key : string, value : UTSJSONObject) => {
+          console.log(`${key}字体加载成功`)
+          context.save()
+          const text = value["text"] as string
+          context.font = `20px ${key}`
+          context.fillStyle = "red"
+          yOffset += 25
+          context.fillText(text, 0, yOffset)
+          yOffset += 25
+          context.strokeText(text, 0, yOffset)
+          context.restore()
+        }
+        fontMap.forEach((value : UTSJSONObject, key : string) => {
           console.log(`key:${key} value:${value["path"]}`)
+          if (this.fontLoaded) {
+            drawFont(key, value)
+          } else {
             uni.loadFontFace({
-        		family: key,
-        		source: `url('${value["path"]}')`,
-        		success: () => {
-        			console.log(`${key}字体加载成功`)
-        			context.save()
-        			const text = value["text"] as string
-        			context.font = `20px ${key}`
-        			context.fillStyle = "red"
-              yOffset += 25
-        			context.fillText(text, 0, yOffset)
-              yOffset += 25
-        			context.strokeText(text, 0, yOffset)
-        			context.restore()
-        		}
-        	})
+              family: key,
+              source: `url('${value["path"]}')`,
+              success: () => {
+                drawFont(key, value)
+              }
+            })
+          }
         })
+        this.fontLoaded = true
       }
     }
   }
