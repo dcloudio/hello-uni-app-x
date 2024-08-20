@@ -18,6 +18,7 @@ describe('rich-text-test', () => {
 
 
   it('richt-text-height', async () => {
+    await page.waitFor(1000);
     let beforeValue = await page.data('richTextHeight')
     await page.callMethod('changeText')
     await page.waitFor(500)
