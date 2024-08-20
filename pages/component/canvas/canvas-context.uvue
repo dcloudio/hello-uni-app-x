@@ -24,7 +24,7 @@
     data() {
       const API_PATH = ["arc", "arcTo", "bezierCurveTo", "quadraticCurve", "moveTo", "lineTo", "rect", "clip", "createPattern", "getSetImageData"]
       const API_DRAW = ["stroke", "strokeRect", "strokeText", "fill", "fillRect", "fillText", "drawImage", "drawImageLocal", "clearRect"]
-      const API_STATE = ["beginPath", "closePath", "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate"]
+      const API_STATE = ["beginPath", "closePath", "reset", "transform", "rotate", "resetTransform", "save", "restore", "scale", "translate", "fontTTF"]
       const API_PROPERTIES = ["lineCap", "lineJoin", "lineWidth", "miterLimit", "fillStyle", "strokeStyle", "globalAlpha", "font", "setLineDash", "createLinearGradient", "createRadialGradient", "textAlign"]
 
       return {
@@ -197,6 +197,9 @@
             break;
           case "path2D":
             this.path2DMethods();
+            break;
+          case "fontTTF":
+            this.fontTTF();
             break;
           default:
             break;
@@ -783,7 +786,6 @@
       },
       path2DMethods() {
         const context = this.renderingContext!
-
         context.beginPath()
         const path2D = new Path2D();
         const amplitude = 64;
@@ -805,6 +807,35 @@
         const path2DRect = new Path2D();
         path2DRect.rect(10, 10, 100, 20);
         context.fill(path2DRect);
+      },
+      fontTTF() {
+        const context = this.renderingContext!
+        const fontMap = new Map<string,UTSJSONObject>([
+          ["AlimamaDaoLiTiOTF", {path: "/static/font/AlimamaDaoLiTi.otf", text: "阿里妈妈刀隶体字体otf加载成功"} as UTSJSONObject],
+          ["AlimamaDaoLiTiWOFF", {path: "/static/font/AlimamaDaoLiTi.woff", text: "阿里妈妈刀隶体字体Woff加载成功"} as UTSJSONObject],
+          ["iconfont-star", {path: "/static/fonts/icon-star.ttf", text: "\ue879"} as UTSJSONObject ],
+        ]);
+
+        var yOffset = 0
+        fontMap.forEach((value: UTSJSONObject, key: string)=>{
+          console.log(`key:${key} value:${value["path"]}`)
+            uni.loadFontFace({
+        		family: key,
+        		source: `url('${value["path"]}')`,
+        		success: () => {
+        			console.log(`${key}字体加载成功`)
+        			context.save()
+        			const text = value["text"] as String
+        			context.font = `20px ${key}`
+        			context.fillStyle = "red"
+              yOffset += 25
+        			context.fillText(text, 0, yOffset)
+              yOffset += 25
+        			context.strokeText(text, 0, yOffset)
+        			context.restore()
+        		}
+        	})
+        })
       }
     }
   }
@@ -837,5 +868,4 @@
     width: 50%;
     padding: 5px;
   }
-
 </style>
