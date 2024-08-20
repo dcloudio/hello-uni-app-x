@@ -20,19 +20,16 @@ describe('component-native-scroll-view', () => {
     // 纵向滚动
     await page.setData({scrollTop: 100})
     await page.waitFor(1000)
-    // bug:在web端scroll事件event参数中detail类型报错
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
-      // 设置top 是否触发scroll 事件
-      const topScrollDetail = await page.data('scrollDetailTest')
-      console.log('topScrollDetail:', topScrollDetail)
-      expect(topScrollDetail.scrollLeft).toBe(0)
-      // Android 差异scrollTop：99.809525
-      expect([100, 99.809525]).toContain(topScrollDetail.scrollTop);
-      expect(topScrollDetail.scrollHeight).toBeGreaterThan(0)
-      expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
-      expect(topScrollDetail.deltaX).toBe(0)
-      expect(topScrollDetail.deltaY).not.toBe(0)
-    }
+    // 设置top 是否触发scroll 事件
+    const topScrollDetail = await page.data('scrollDetailTest')
+    // console.log('topScrollDetail:', topScrollDetail)
+    expect(topScrollDetail.scrollLeft).toBe(0)
+    // Android 差异scrollTop：99.809525
+    expect([100, 99.809525]).toContain(topScrollDetail.scrollTop);
+    expect(topScrollDetail.scrollHeight).toBeGreaterThan(0)
+    expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
+    expect(topScrollDetail.deltaX).toBe(0)
+    expect(topScrollDetail.deltaY).not.toBe(0)
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
@@ -40,19 +37,17 @@ describe('component-native-scroll-view', () => {
     // 横向滚动
     await page.setData({scrollLeft:220})
     await page.waitFor(600)
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
-      //设置left 是否触发scroll 事件
-      const leftScrollDetail = await page.data('scrollDetailTest')
-      console.log('leftScrollDetail:', leftScrollDetail)
-      // Android 差异scrollLeft：219.80952
-      expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
-      expect(leftScrollDetail.scrollTop).toBe(0)
-      expect(leftScrollDetail.scrollHeight).toBeGreaterThan(0)
-      expect(leftScrollDetail.scrollWidth).toBeGreaterThan(0)
-      // 在安卓差异 -99.809525
-      expect([-100, -99.809525]).toContain(leftScrollDetail.deltaX);
-      expect(leftScrollDetail.deltaY).toBe(0)
-    }
+    //设置left 是否触发scroll 事件
+    const leftScrollDetail = await page.data('scrollDetailTest')
+    // console.log('leftScrollDetail:', leftScrollDetail)
+    // Android 差异scrollLeft：219.80952
+    expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
+    expect(leftScrollDetail.scrollTop).toBe(0)
+    expect(leftScrollDetail.scrollHeight).toBeGreaterThan(0)
+    expect(leftScrollDetail.scrollWidth).toBeGreaterThan(0)
+    // 在安卓差异 -99.809525
+    expect([-100, -99.809525]).toContain(leftScrollDetail.deltaX);
+    expect(leftScrollDetail.deltaY).toBe(0)
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
@@ -74,7 +69,7 @@ describe('component-native-scroll-view', () => {
   if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
     it('Event scrollend-滚动结束时触发仅App端支持',async()=>{
       const endDetail = await page.data('scrollEndDetailTest')
-      console.log('scrollEndDetailTest:', endDetail)
+      // console.log('scrollEndDetailTest:', endDetail)
       expect(endDetail.scrollLeft).toBe(0)
       expect(endDetail.scrollTop).toBe(0)
       expect(endDetail.deltaY).toBe(0)
