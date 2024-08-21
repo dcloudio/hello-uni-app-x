@@ -156,7 +156,7 @@ const pages = [
   '/pages/API/get-network-type/get-network-type',
   '/pages/API/page-scroll-to/page-scroll-to',
   '/pages/API/event-bus/event-bus',
-  '/pages/API/get-battery-info/get-battery-info',
+  // '/pages/API/get-battery-info/get-battery-info',
   '/pages/API/get-window-info/get-window-info',
   '/pages/API/rpx2px/rpx2px',
   '/pages/API/request-payment/request-payment/request-payment-uni-pay',
@@ -271,6 +271,12 @@ const pages = [
   '/pages/template/test-background-color-content/test-background-color-content',
   '/pages/template/slider-100/slider-100',
 ]
+
+if (isAndroid && isWeb) {
+  pages.push(
+    '/pages/API/get-battery-info/get-battery-info',
+  )
+}
 
 if (isApp && !isAppWebview) {
   pages.push(
