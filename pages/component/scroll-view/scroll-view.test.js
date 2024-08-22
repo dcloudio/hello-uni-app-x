@@ -3,17 +3,7 @@ describe('component-native-scroll-view', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/scroll-view/scroll-view');
-    await page.waitFor(300);
-  });
-
-  it('scroll-view-screenshot', async () => {
-    //禁止滚动条
-    await page.setData({
-        showScrollbar: false
-    })
-    await page.waitFor(300);
-    const image = await program.screenshot({fullPage: true});
-    expect(image).toSaveImageSnapshot();
+    await page.waitFor("view");
   });
 
   it('Event scroll-vertical',async()=>{
@@ -34,12 +24,9 @@ describe('component-native-scroll-view', () => {
   })
 
   it('Event scroll-horizontal',async()=>{
-    console.log('data-1:', await page.data())
     // 横向滚动
     await page.setData({scrollLeft:220})
-    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 4000:1000
-    await page.waitFor(waitTime)
-    console.log('data-2:', await page.data())
+    await page.waitFor(1000)
     //设置left 是否触发scroll 事件
     const leftScrollDetail = await page.data('scrollDetailTest')
     console.log('leftScrollDetail:', leftScrollDetail)
@@ -53,6 +40,17 @@ describe('component-native-scroll-view', () => {
     expect(leftScrollDetail.deltaY).toBe(0)
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
+
+  // 移后：此测试用例在某些mac-chrome会影响scroll-horizontal的deltaX结果
+  it('scroll-view-screenshot', async () => {
+    //禁止滚动条
+    await page.setData({
+        showScrollbar: false
+    })
+    await page.waitFor(300);
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
+  });
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
     // 滚动到底部scrollTop:300,是否触发scrolltolower事件
