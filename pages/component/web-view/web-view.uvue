@@ -33,6 +33,13 @@
         </view>
       </view>
       <!-- #endif -->
+      <!-- #ifdef APP-IOS -->
+      <view class="uni-row uni-btn-v" v-if="isProd() === false">
+        <view class="uni-row uni-flex-item align-items-center">
+          <text>前进、后退功能在Windows端需要打自定义基座，MAC端需要配置Xcode环境后进行真机运行或者打自定义基座</text>
+        </view>
+      </view>
+      <!-- #endif -->
     </view>
     <!-- #endif -->
   </scroll-view>
@@ -78,6 +85,22 @@
       // #endif
     },
     methods: {
+      getPackageName() : string {
+        const res = uni.getAppBaseInfo();
+        let packageName : string = ""
+
+        // #ifdef APP-IOS
+        packageName = res.bundleId
+        // #endif
+
+        return packageName
+      },
+      isProd(): boolean {
+        if (this.getPackageName() == 'io.dcloud.hellouniappx') {
+          return true
+        }
+        return false
+      },
       back() {
         this.webviewContext?.back();
       },
