@@ -264,32 +264,28 @@
 				options['qr_code'] = false;
 				options = objectAssign(options, data);
 				if (options['provider'] == "appleiap") {
-					// #ifndef APP
+					// 苹果虚拟支付走特殊逻辑
+					// #ifdef APP-IOS
+					return this._appleiapCreateOrder(options);
+					// #endif
+					// #ifndef APP-IOS
 					uni.showModal({
 						title: "提示",
-						content: "苹果内购只支持app发起",
+						content: "请在iOS系统中执行",
 						showCancel: false
 					})
 					// #endif
-					// #ifdef APP
-					uni.showModal({
-						title: "提示",
-						content: "uni-app x 暂不支持苹果内购",
-						showCancel: false
-					})
-					// #endif
-					return;
 				}
 				// #ifdef APP
 				if (options['provider'] == "wxpay") {
-          // #ifdef  uniVersion < 4.11
-          uni.showModal({
-            title: "提示",
-            content: "请先升级HBX至4.11",
-            showCancel: false
-          })
-          return;
-          // #endif
+					// #ifdef  uniVersion < 4.11
+					uni.showModal({
+						title: "提示",
+						content: "请先升级HBX至4.11",
+						showCancel: false
+					})
+					return;
+					// #endif
 				}
 				// #endif
 
@@ -376,15 +372,16 @@
 				// #ifndef H5
 				let _order = res.get('order');
 				let orderStr = typeof _order == "string" ? _order as string : JSON.stringify(_order) as string;
+				console.log('orderStr: ', orderStr)
 				uni.requestPayment({
 					provider: res['provider'] as string,
 					orderInfo: orderStr,
-					success: (res : RequestPaymentSuccess) => {
-						console.log(JSON.stringify(res))
+					success: (res) => {
+						console.log("requestPaymentSuccess", JSON.stringify(res))
 						this._getOrder();
 					},
-					fail: (err : RequestPaymentFail) => {
-						console.log("RequestPaymentFail", JSON.stringify(err))
+					fail: (err) => {
+						console.log("requestPaymentFail", JSON.stringify(err))
 						let errCode = err.errCode;
 						let errMsg = err.errMsg;
 						if (errCode == 700713) {
@@ -399,7 +396,7 @@
 							this.$emit("fail", err);
 						}
 					}
-				} as RequestPaymentOptions);
+				});
 				// #endif
 			},
 			// 打开弹窗
@@ -413,66 +410,99 @@
 				popupRef.close();
 			},
 			// 查询订单（查询支付情况）
-			async getOrder(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async getOrder(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.getOrder(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 发起退款（此接口需要admin角色才可以访问）
-			async refund(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async refund(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.refund(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 查询退款（查询退款情况）
-			async getRefund(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async getRefund(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.getRefund(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 关闭订单
-			async closeOrder(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async closeOrder(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.closeOrder(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 获取支持的支付供应商
-			async getPayProviderFromCloud(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async getPayProviderFromCloud(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.getPayProviderFromCloud(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 获取支付配置内的appid（主要用于获取获取微信公众号的appid，用以获取code）
-			async getProviderAppId(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async getProviderAppId(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.getProviderAppId(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 根据code获取openid
-			async getOpenid(data : UTSJSONObject) : Promise<UTSJSONObject | null> {
+			async getOpenid(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
 					let res = await uniPayCo.getOpenid(data);
 					return res;
 				} catch (err) {
-					return null
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
+				}
+			},
+			// 验证iosIap苹果内购支付凭据
+			async verifyReceiptFromAppleiap(data : UTSJSONObject) : Promise<UTSJSONObject> {
+				try {
+					let res = await uniPayCo.verifyReceiptFromAppleiap(data);
+					return res;
+				} catch (err) {
+					return {
+						errCode: -1,
+						errMsg: (err as Error).message
+					}
 				}
 			},
 			// 支付成功后的逻辑
@@ -526,7 +556,7 @@
 					out_trade_no,
 					await_notify: true
 				});
-				if (res != null) {
+				if (res['errCode'] == 0) {
 					let has_paid = res.getBoolean('has_paid');
 					if (has_paid != null && has_paid == true) {
 						this.closePopup("qrcodePopup");
@@ -544,6 +574,173 @@
 				if (provider != _provider) {
 					this.createOrder({ provider: provider })
 				}
+			},
+			// 苹果虚拟支付支付逻辑
+			async _appleiapCreateOrder(options : UTSJSONObject) : Promise<void>{
+				// #ifndef APP-IOS
+				uni.showToast({
+					title: "请在iOS系统中打开",
+					icon: "none"
+				})
+				// #endif
+				// #ifdef APP-IOS
+				const virtualPaymentManager = uni.getVirtualPaymentManager();
+				let createOrderData = {
+					provider: options.provider,
+					total_fee: options.total_fee,
+					order_no: options.order_no,
+					out_trade_no: options.out_trade_no,
+					description: options.description,
+					type: options.type,
+					apple_virtual: options.apple_virtual,
+					custom: options.custom,
+				} as UTSJSONObject;
+				let	res = await uniPayCo.createOrder(createOrderData);
+				if (res.errCode === 0) {
+					this.$emit("create", res);
+					this.res = res;
+					uni.showLoading({
+						title: '支付请求中...'
+					});
+					try {
+						// 请求苹果支付
+						if (this.debug) console.log("正在请求苹果服务器", res.out_trade_no);
+						uni.requestVirtualPayment({
+							apple: {
+								productId: options.getJSON('apple_virtual')!.getString('product_id')!,
+								appAccountToken: res.appleiap_account_token,
+								quantity: options.getJSON('apple_virtual')!.getNumber('buy_quantity')! || 1,
+							},
+							success: async (requestPaymentRes) => {
+								uni.hideLoading()
+								let transaction = requestPaymentRes?.apple;
+								if (this.debug) console.log('用户支付成功', transaction);
+								let transactionIdentifier : string = transaction.transactionIdentifier;
+								let transactionDate : string = transaction.transactionDate;
+								let outTradeNo : string = res.out_trade_no;
+								uni.showLoading({
+									title: '正在处理支付结果...'
+								});
+								// 云端请求苹果服务器验证票据
+								let verifyRes = await this.verifyReceiptFromAppleiap({
+									out_trade_no: outTradeNo,
+									transaction_receipt: transaction.jsonRepresentation,
+									transaction_identifier: transactionIdentifier
+								});
+								if (verifyRes.errCode === 0) {
+									if (verifyRes.repeat) {
+										uni.showModal({
+											title: "提示",
+											content: `当前道具只能购买一次`,
+											showCancel: false,
+											confirmText: "好的"
+										});
+									} else {
+										//经过开发者server验证成功后请结束该交易
+										virtualPaymentManager.finishTransaction({
+											transaction: transaction,
+											success: (r) => {
+												if (this.debug) console.log("关单成功, 该productId= " + transaction.productId)
+											},
+											fail: (e) => {
+												if (this.debug) console.log("关单失败, 该productId= " + transaction.roductId)
+											}
+										});
+										uni.hideLoading();
+										this.paySuccess(verifyRes);
+									}
+								} else {
+									if (this.debug) console.log('verifyRes: ', verifyRes)
+								}
+							},
+							fail: (err) => {
+								uni.hideLoading();
+								if (this.debug) console.log("购买失败：errSubject= " + err.errSubject + ", errCode= " + err.errCode + ", errMsg= " + err.errMsg);
+								if ([700601].indexOf(err.errCode) > -1 || err.errMsg.indexOf("cancel") > -1) {
+									this.$emit("cancel", err);
+								} else {
+									this.$emit("fail", err);
+								}
+							}
+						});
+					} catch (err) {
+						let code = err.errCode || err.code;
+						if (code === 2) {
+							// 用户取消支付
+							if (this.debug) console.log("用户取消支付");
+							this.$emit("cancel", err);
+						} else {
+							// 发起支付失败
+							console.error("appleiapCreateOrder:fail", err);
+							this.$emit("fail", err);
+						}
+						uni.hideLoading();
+					}
+				}
+				// #endif
+			},
+			// 苹果虚拟支付未完成订单检测
+			appleiapRestore() {
+				// #ifdef APP-IOS
+				uni.showLoading({
+					title: "",
+					mask: true
+				});
+				try {
+					const virtualPaymentManager = uni.getVirtualPaymentManager();
+					virtualPaymentManager.getUnfinishedTransactions({
+						success: async (res) => {
+							uni.hideLoading()
+							console.log("获取未结束的订单列表个数：" + res.transactions.length)
+							res.transactions.forEach(async transaction => {
+								console.log("getUnfinishedTransactions成功的交易productId= " + transaction.productId);
+
+								let appAccountToken : string = transaction.appAccountToken;
+								let transactionIdentifier : string = transaction.transactionIdentifier;
+								//let originalTransactionIdentifier : string = transaction.originalTransactionIdentifier;
+								let transactionDate : string = transaction.transactionDate;
+
+								// 云端请求苹果服务器验证票据
+								let verifyRes = await this.verifyReceiptFromAppleiap({
+									appleiap_account_token: appAccountToken,
+									transaction_receipt: transaction.jsonRepresentation,
+									transaction_identifier: transactionIdentifier,
+								});
+								if (verifyRes.errCode === 0 || !appAccountToken) {
+									// 经过开发者server验证成功后请结束该交易
+									virtualPaymentManager.finishTransaction({
+										transaction: transaction,
+										success: (r) => {
+											if (this.debug) console.log("关单成功, 该productId= " + transaction.productId)
+										},
+										fail: (e) => {
+											if (this.debug) console.log("关单失败, 该productId= " + transaction.productId)
+										}
+									});
+									uni.hideLoading();
+									// 如果是自动续期，则不跳页面
+									if (!verifyRes.is_subscribe && verifyRes.pay_order) {
+										this.paySuccess(verifyRes);
+									}
+								} else {
+									if (this.debug) console.log('verifyRes: ', verifyRes)
+								}
+							})
+						},
+						fail: (e) => {
+							uni.hideLoading()
+							console.log("获取未结束的订单列表失败：errSubject= " + e.errSubject + ", errCode= " + e.errCode + ", errMsg= " + e.errMsg)
+							uni.showToast({
+								title: "获取未结束的订单列表失败：errCode= " + e.errCode,
+								icon: 'error'
+							});
+						}
+					})
+				} catch(err){
+					console.error('err: ', err)
+					uni.hideLoading()
+				}
+				// #endif
 			}
 		},
 		watch: {
@@ -839,7 +1036,7 @@
 				margin-bottom: 6rpx;
 
 				.qrcode-popup-info-fee {
-					.text{
+					.text {
 						color: red;
 						font-size: 60rpx;
 						font-weight: bold;

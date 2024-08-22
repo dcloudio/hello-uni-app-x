@@ -109,12 +109,15 @@ module.exports = {
 			"alipayRootCertPath": path.join(__dirname, 'alipay/alipayRootCert.crt'), // 支付宝根证书路径
 		}
 	},
-	// ios内购相关（uniapp-x暂不支持）
+	// 苹果虚拟支付相关
 	"appleiap": {
-		// ios内购支付
+		// 苹果虚拟支付支付，参数获取地址：https://appstoreconnect.apple.com/access/integrations/api/subs
 		"app": {
-			"password": "", // App 专用共享密钥，App 专用共享密钥是用于接收此 App 自动续期订阅收据的唯一代码。如果您要将此 App 转让给其他开发者或不想公开主共享密钥，建议使用 App 专用共享密钥。非自动续订场景不需要此参数
-			"timeout": 10000, // 请求超时时间，单位：毫秒
+			"appId": "", // 密钥ID
+			"issuerId": "", // Issuer ID
+			"bundleId": "", // 正式包名（如果dev包名和正式包名一致，则只填bundleId即可）
+			"devBundleId": "", // dev包名（如果dev包名和正式包名一致，则devBundleId可不填）
+			"appCertPath": path.join(__dirname, 'appleiap/apiclient_cert.p8'), // 证书路径
 			"sandbox": true, // 是否是沙箱环境
 		},
 	}
