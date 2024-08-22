@@ -27,9 +27,12 @@
 		<!-- #endif -->
 
 		<button class="button" @click="getOrderPopup(true)">查询支付状态</button>
-		<button class="button" @click="pageTo('/uni_modules/uni-pay-x/pages/success/success?out_trade_no=test2024030501-1&order_no=test2024030501&total_fee=1&adpid=1000000001&return_url=/pages/API/request-payment-uni-pay/order-detail')">支付成功页面示例</button>
+		<button class="button" @click="pageTo('/uni_modules/uni-pay-x/pages/success/success?out_trade_no=test2024030501-1&order_no=test2024030501&total_fee=1&adpid=1000000001&return_url=/pages/API/request-payment/request-payment/order-detail')">支付成功页面示例</button>
+    <!-- #ifdef APP-IOS -->
+    <button class="button" @click="pageTo('/pages/API/virtual-payment/virtual-payment-uni-pay')">苹果虚拟支付示例（iOS内购）</button>
+    <!-- #endif -->
 		<!-- 查询支付的弹窗 -->
-		<uni-pay-popup ref="getOrderPopupRef" type="bottom">
+		<uni-pay-popup ref="getOrderPopupRef" type="center">
 			<scroll-view direction="vertical" class="get-order-popup">
 				<view class="label">插件支付单号：</view>
 				<view class="mt20">
@@ -90,7 +93,7 @@
 		<button class="button" v-if="h5Env === 'h5-weixin'" @click="getWeiXinJsCode('snsapi_base')">公众号获取openid示例</button>
 		<!-- #endif -->
 		<!-- 统一支付组件，注意：vue3下ref不可以等于组件名，因此这里ref="pay" 而不能是 ref="uniPay" -->
-		<uni-pay ref="payRef" :adpid="adpid" height="900rpx" return-url="/pages/API/request-payment-uni-pay/order-detail" logo="/static/logo.png" @success="onSuccess" @create="onCreate"
+		<uni-pay ref="payRef" :adpid="adpid" height="900rpx" return-url="/pages/API/request-payment/request-payment/order-detail" logo="/static/logo.png" @success="onSuccess" @create="onCreate"
 			@fail="onFail" @cancel="onCancel"></uni-pay>
 	</view>
 </template>
@@ -251,7 +254,7 @@
 					getOrderData['out_trade_no'] = this.out_trade_no;
 				}
 				let res = await payInstance.getOrder(getOrderData);
-				if (res != null && res['errCode'] == 0) {
+				if (res['errCode'] == 0) {
 					this.getOrderRes = res.getJSON('pay_order') as UTSJSONObject;
 					let obj = {
 						"-1": "已关闭",
@@ -275,7 +278,7 @@
 				let res = await payInstance.refund({
 					out_trade_no: this.out_trade_no, // 插件支付单号
 				});
-				if (res != null && res['errCode'] == 0) {
+				if (res['errCode'] == 0) {
 					uni.showToast({
 						title: res['errMsg'] as string,
 						icon: "none"
@@ -288,7 +291,7 @@
 				let res = await payInstance.getRefund({
 					out_trade_no: this.out_trade_no, // 插件支付单号
 				});
-				if (res != null && res['errCode'] == 0) {
+				if (res['errCode'] == 0) {
 					uni.showModal({
 						content: res['errMsg'] as string,
 						showCancel: false
@@ -301,7 +304,7 @@
 				let res = await payInstance.closeOrder({
 					out_trade_no: this.out_trade_no, // 插件支付单号
 				});
-				if (res != null && res['errCode'] == 0) {
+				if (res['errCode'] == 0) {
 					uni.showModal({
 						content: res['errMsg'] as string,
 						showCancel: false
@@ -316,7 +319,7 @@
 					provider: "wxpay",
 					provider_pay_type: "jsapi"
 				});
-				if (res != null && res['appid'] != null && res['appid'] != "") {
+				if (res['appid'] != null && res['appid'] != "") {
 					let appid = res['appid'] as string;
 					let redirect_uri = window.location.href.split("?")[0];
 					let url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`;
@@ -327,7 +330,7 @@
 			async getOpenid(data:UTSJSONObject) : Promise<void> {
 				const payInstance = this.$refs["payRef"] as UniPayComponentPublicInstance;
 				let res = await payInstance.getOpenid(data);
-				if (res != null && res['openid'] != null && res['openid'] != "") {
+				if (res['openid'] != null && res['openid'] != "") {
 					let openid = res['openid'] as string;
 					let code = data['code'] as string;
 					this.openid = openid;

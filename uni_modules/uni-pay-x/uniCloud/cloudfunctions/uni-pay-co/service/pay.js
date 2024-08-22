@@ -32,7 +32,7 @@ class service {
 	getConfig() {
 		return config;
 	}
-	
+
 	/**
 	 * 支付成功 - 异步通知
 	 */
@@ -157,7 +157,7 @@ class service {
 
 		return libs.common.returnNotifySUCCESS({ provider, provider_pay_type });
 	}
-	
+
 	/**
 	 * 微信虚拟支付异步通知
 	 */
@@ -187,6 +187,7 @@ class service {
 			clientInfo, // 客户端信息
 			cloudInfo, // 云端信息
 			wxpay_virtual, // 仅用于微信虚拟支付
+			apple_virtual, // 仅用于苹果虚拟支付
 		} = data;
 		let subject = description;
 		let body = description;
@@ -202,6 +203,13 @@ class service {
 				throw { errCode: ERROR[51011] };
 			}
 			if (typeof wxpay_virtual.buy_quantity !== "number" || wxpay_virtual.buy_quantity <= 0) {
+				throw { errCode: ERROR[51012] };
+			}
+		} else if (provider === "appleiap") {
+			if (typeof apple_virtual !== "object") {
+				throw { errCode: ERROR[51013] };
+			}
+			if (typeof apple_virtual.buy_quantity !== "number" || apple_virtual.buy_quantity <= 0) {
 				throw { errCode: ERROR[51012] };
 			}
 		} else {
@@ -319,7 +327,7 @@ class service {
 					// 微信虚拟支付扩展数据
 					expand_data = {
 						mode: wxpay_virtual.mode, // short_series_coin 代币充值; short_series_goods 道具直购
-						buy_quantity: wxpay_virtual.buy_quantity, 
+						buy_quantity: wxpay_virtual.buy_quantity,
 						rate: uniPayConifg.rate || 100,
 						sandbox: uniPayConifg.sandbox,
 					};
@@ -344,7 +352,7 @@ class service {
 					} else if (getOrderInfoParam.mode === "short_series_goods") {
 						// 计算支付金额
 						total_fee = expand_data.buy_quantity * expand_data.goods_price;
-					} 
+					}
 				}
 				orderInfo = await uniPayInstance.getOrderInfo(getOrderInfoParam);
 				if (qr_code && orderInfo.codeUrl) {
@@ -397,6 +405,11 @@ class service {
 				let userInfo = await dao.uniIdUsers.findById(user_id);
 				if (userInfo) nickname = userInfo.nickname;
 			}
+			let appleiap_account_token;
+			if (provider === "appleiap") {
+				appleiap_account_token = libs.crypto.generateUUID();
+				res.appleiap_account_token = appleiap_account_token;
+			}
 			await dao.uniPayOrders.add({
 				provider,
 				provider_pay_type,
@@ -419,6 +432,7 @@ class service {
 				custom,
 				create_date,
 				expand_data,
+				appleiap_account_token, // 苹果虚拟支付专用字段
 				stat_data: {
 					platform: stat_platform,
 					app_version: clientInfo.appVersion,
@@ -466,7 +480,7 @@ class service {
 			payOrderInfo = await dao.uniPayOrders.find({
 				out_trade_no
 			});
-		} 
+		}
 		if (!payOrderInfo) {
 			throw { errCode: ERROR[52001] };
 		}
@@ -487,7 +501,7 @@ class service {
 			console.log('queryRes: ', queryRes)
 		} else {
 			// 无uniPayInstance.orderQuery函数时的兼容处理
-			if ([1,2].indexOf(payOrderInfo.status) > -1) {
+			if ([1, 2].indexOf(payOrderInfo.status) > -1) {
 				queryRes = {
 					tradeState: "SUCCESS",
 					tradeStateDesc: "订单已支付"
@@ -610,7 +624,7 @@ class service {
 			if (errMsg) {
 				if (errMsg.indexOf("verify failure") > -1) {
 					throw { errCode: ERROR[53005] };
-				} 
+				}
 				if (errMsg.indexOf("header too long") > -1) {
 					throw { errCode: ERROR[53005] };
 				}
@@ -754,7 +768,7 @@ class service {
 		});
 		let wxpayResult = (provider === "wxpay" && closeOrderRes.resultCode === "SUCCESS");
 		let alipayResult = (provider === "alipay" && closeOrderRes.code === "10000");
-		
+
 		if (wxpayResult || alipayResult) {
 			// 修改订单状态为已取消
 			await dao.uniPayOrders.update({
@@ -806,8 +820,8 @@ class service {
 					uniPayConifg = wxpayVirtualPayConifg;
 					needCacheSessionKey = true;
 				}
-			} catch(err){}
-			
+			} catch (err) {}
+
 			let res = await libs.wxpay.getOpenid({
 				config: uniPayConifg,
 				code,
@@ -860,62 +874,207 @@ class service {
 	async verifyReceiptFromAppleiap(data) {
 		let {
 			out_trade_no,
+			appleiap_account_token,
 			transaction_receipt,
 			transaction_identifier,
+			clientInfo,
 		} = data;
 		if (!out_trade_no) {
-			throw { errCode: ERROR[51001] };
+			if (!appleiap_account_token) {
+				return {
+					errCode: 0,
+					errMsg: "Invalid out_trade_no"
+				}
+			}
+			appleiap_account_token = appleiap_account_token.toLowerCase(); // 转小写
+			let payOrderInfo = await dao.uniPayOrders.find({
+				provider: "appleiap",
+				appleiap_account_token
+			});
+			if (!payOrderInfo || !payOrderInfo.out_trade_no) {
+				return {
+					errCode: 0,
+					errMsg: "Invalid out_trade_no"
+				}
+			}
+			out_trade_no = payOrderInfo.out_trade_no;
 		}
-		// 初始化uniPayInstance
-		let uniPayInstance = await this.initUniPayInstance({ provider: "appleiap", provider_pay_type: "app" });
-		let verifyReceiptRes = await uniPayInstance.verifyReceipt({
-			receiptData: transaction_receipt
-		});
-		let userOrderSuccess = false;
-		let pay_date;
-		if (verifyReceiptRes.tradeState !== "SUCCESS") {
-			throw { errCode: ERROR[54002] };
-		}
-		// 支付成功
-		pay_date = Number(verifyReceiptRes.receipt.receipt_creation_date_ms);
-		let inAppList = verifyReceiptRes.receipt.in_app;
-		let inApp = inAppList.find((item) => {
-			return item.transaction_id === transaction_identifier;
-		});
-		if (!inApp) {
-			// 校验不通过
-			throw { errCode: ERROR[54002] };
-		}
-		let quantity = inApp.quantity; // 购买数量
-		let product_id = inApp.product_id; // 对应的内购产品id
-		let transaction_id = inApp.transaction_id; // 本次交易id
-		
-		if ((Date.now() - 1000 * 3600 * 24) > pay_date) {
-			// 订单已超24小时，不做处理，通知前端直接关闭订单。
-			return {
-				errCode: 0,
-				errMsg: "ok"
-			};
-		}
-		// 查询该transaction_id是否使用过，如果已使用，则不做处理，通知前端直接关闭订单。
-		let findOrderInfo = await dao.uniPayOrders.find({
-			transaction_id,
-		});
-		if (findOrderInfo) {
-			return {
-				errCode: 0,
-				errMsg: "ok"
-			};
-		}
-		// 否则，执行用户回调
-		// 用户自己的逻辑处理 开始-----------------------------------------------------------
-		let orderPaySuccess;
+
 		let payOrderInfo = await dao.uniPayOrders.find({
 			out_trade_no,
 		});
 		if (!payOrderInfo) {
 			throw { errCode: ERROR[52001] };
 		}
+		const verifyReceipt = async (uniPayConifg) => {
+			const jwt = libs.jsonwebtoken;
+			const fs = require('fs');
+			const privateKey = fs.readFileSync(uniPayConifg.appCertPath, 'utf8');
+			const header = {
+				alg: 'ES256',
+				kid: uniPayConifg.appId, // 替换为您的密钥ID
+				typ: "JWT"
+			};
+			const nowTime = Date.now();
+			const bundleId = uniPayConifg.sandbox ? uniPayConifg.devBundleId || uniPayConifg.bundleId : uniPayConifg.bundleId;
+			const payload = {
+				iss: uniPayConifg.issuerId, // 替换为您的团队ID
+				iat: Math.floor(nowTime / 1000), // 当前时间戳
+				exp: Math.floor(nowTime / 1000) + 3600, // 当前时间戳加1小时
+				aud: 'appstoreconnect-v1',
+				bid: bundleId
+			};
+
+			const iapToken = jwt.sign(payload, privateKey, {
+				algorithm: 'ES256',
+				header: header
+			});
+			const serviceUrl = uniPayConifg.sandbox ? "https://api.storekit-sandbox.itunes.apple.com" : "https://api.appstoreconnect.apple.com";
+			const url = `${serviceUrl}/inApps/v1/transactions/${transaction_identifier}`;
+			let requestRes;
+
+			// 如果请求苹果服务器失败，则重试5次
+			for (let i = 0; i <= 5; i++) {
+				try {
+					requestRes = await uniCloud.request({
+						method: "GET",
+						header: {
+							'Authorization': `Bearer ${iapToken}`,
+							'Content-Type': 'application/json'
+						},
+						url
+					});
+					break;
+				} catch (err) {
+					// console.log('errCode: ', err.code || err.errCode, 'errMsg: ', err.message || err.errMsg)
+				}
+			}
+
+			if (requestRes.statusCode !== 200) {
+				return {};
+			}
+
+			const signedInfoTokenArr = requestRes.data.signedTransactionInfo.split('.');
+			const signedInfoString = Buffer.from(signedInfoTokenArr[1], 'base64').toString('utf8');
+			const verifyReceiptRes = JSON.parse(signedInfoString);
+			const appAccountToken = verifyReceiptRes.appAccountToken.toLowerCase();
+			verifyReceiptRes.tradeState = verifyReceiptRes.inAppOwnershipType === "PURCHASED" && payOrderInfo.appleiap_account_token === appAccountToken ? "SUCCESS" : "fail";
+			return verifyReceiptRes;
+		};
+
+		let uniPayConifg = await this.getUniPayConfig({ provider: "appleiap", provider_pay_type: "app" });
+		let verifyReceiptRes = await verifyReceipt(uniPayConifg);
+		let userOrderSuccess = false;
+		let pay_date;
+		if (verifyReceiptRes.tradeState !== "SUCCESS") {
+			// 尝试使用相反的环境再次验证
+			console.log('尝试使用相反的环境再次验证: ');
+			verifyReceiptRes = await verifyReceipt({
+				...uniPayConifg,
+				sandbox: !uniPayConifg.sandbox
+			});
+			if (verifyReceiptRes.tradeState !== "SUCCESS") {
+				// 如果还是不成功，则校验不通过
+				throw { errCode: ERROR[54002] };
+			}
+		}
+
+		//console.log('verifyReceiptRes: ', verifyReceiptRes)
+
+		let isSubscribe = false;
+		if (["Auto-Renewable Subscription"].indexOf(verifyReceiptRes.type) > -1) {
+			isSubscribe = true; // 标记为自动订阅订单
+		}
+
+		// 支付成功
+		pay_date = Number(verifyReceiptRes.purchaseDate);
+		let quantity = verifyReceiptRes.quantity; // 购买数量
+		let product_id = verifyReceiptRes.productId; // 对应的内购产品id
+		let transaction_id = verifyReceiptRes.transactionId; // 本次交易id
+		let original_transaction_id = verifyReceiptRes.originalTransactionId; // 原始交易id
+		if ((Date.now() - 1000 * 3600 * 72) > pay_date && !isSubscribe) {
+			// 非自动订阅订单，若超72小时，不做处理，通知前端直接关闭订单。
+			return {
+				errCode: 0,
+				errMsg: "ok"
+			};
+		}
+		if (isSubscribe && original_transaction_id !== transaction_id) {
+			let findOrderInfo = await dao.uniPayOrders.find({
+				appleiap_account_token: payOrderInfo.appleiap_account_token,
+				user_order_success: _.exists(true)
+			});
+			if (findOrderInfo) {
+				// 自动订阅产品自动续期时需要创建新的支付订单
+				let quantity = verifyReceiptRes.quantity;
+				let goods_price = parseFloat((verifyReceiptRes.price / 1000).toFixed(2));
+				let total_fee = parseFloat((goods_price * 100 * quantity).toFixed(2));
+				let description = "[自动续期]" + payOrderInfo.description.replace(/\[自动续期\]/g, '');
+				// 添加数据库(数据库的out_trade_no字段需设置为唯一索引)
+				let stat_platform = clientInfo.platform;
+				if (stat_platform === "app") {
+					stat_platform = clientInfo.os;
+				}
+				// 创建新的支付订单
+				let addId = await dao.uniPayOrders.add({
+					provider: payOrderInfo.provider,
+					provider_pay_type: payOrderInfo.provider_pay_type,
+					uni_platform: clientInfo.platform,
+					status: 0,
+					type: payOrderInfo.type,
+					order_no: payOrderInfo.order_no,
+					out_trade_no: transaction_id,
+					user_id: payOrderInfo.user_id,
+					nickname: payOrderInfo.nickname,
+					device_id: clientInfo.deviceId,
+					client_ip: clientInfo.client_ip,
+					openid: payOrderInfo.openid,
+					description,
+					total_fee,
+					refund_fee: 0,
+					refund_count: 0,
+					provider_appid: uniPayConifg.appId,
+					appid: clientInfo.appId,
+					custom: payOrderInfo.custom,
+					create_date: Date.now(),
+					expand_data: payOrderInfo.expand_data,
+					appleiap_account_token, // 苹果虚拟支付专用字段
+					stat_data: {
+						platform: stat_platform,
+						app_version: clientInfo.appVersion,
+						app_version_code: clientInfo.appVersionCode,
+						app_wgt_version: clientInfo.appWgtVersion,
+						os: clientInfo.os,
+						ua: clientInfo.ua,
+						channel: clientInfo.channel ? clientInfo.channel : String(clientInfo.scene),
+						scene: clientInfo.scene
+					}
+				});
+				payOrderInfo = await dao.uniPayOrders.find({
+					_id: addId,
+				});
+				out_trade_no = transaction_id;
+			}
+		}
+
+		// 查询该transaction_id是否使用过，如果已使用，则不做处理，通知前端直接关闭订单。
+		let findOrderInfo = await dao.uniPayOrders.find({
+			transaction_id,
+		});
+		const repeatReceipt = () => {
+			return {
+				errCode: 0,
+				errMsg: "ok",
+				repeat: true, // 代表重复通知了
+			};
+		};
+		if (findOrderInfo) {
+			// 不允许重复通知
+			return repeatReceipt();
+		}
+		// 否则，执行用户回调
+		// 用户自己的逻辑处理 开始-----------------------------------------------------------
+		let orderPaySuccess;
 		try {
 			// 加载自定义异步回调函数
 			orderPaySuccess = require(`../notify/${payOrderInfo.type}`);
@@ -923,7 +1082,7 @@ class service {
 			console.log(err);
 		}
 		if (typeof orderPaySuccess === "function") {
-			payOrderInfo = await dao.uniPayOrders.updateAndReturn({
+			let newPayOrderInfo = await dao.uniPayOrders.updateAndReturn({
 				whereJson: {
 					status: 0, // status:0 为必须条件，防止重复推送时的错误
 					out_trade_no: out_trade_no, // 商户订单号
@@ -936,6 +1095,11 @@ class service {
 					original_data: verifyReceiptRes
 				}
 			});
+			if (!newPayOrderInfo) {
+				// 不允许重复通知
+				return repeatReceipt();
+			}
+			payOrderInfo = newPayOrderInfo;
 			console.log('用户自己的回调逻辑 - 开始执行');
 			userOrderSuccess = await orderPaySuccess({
 				verifyResult: verifyReceiptRes,
@@ -969,9 +1133,10 @@ class service {
 			status: payOrderInfo.status, // 标记当前支付订单状态 -1：已关闭 0：未支付 1：已支付 2：已部分退款 3：已全额退款
 			user_order_success: payOrderInfo.user_order_success, // 用户异步通知逻辑是否全部执行完成，且无异常（建议前端通过此参数是否为true来判断是否支付成功）
 			pay_order: payOrderInfo,
+			is_subscribe: isSubscribe
 		};
 	}
-	
+
 	/**
 	 * 获取对应支付配置
 	 * let uniPayConifg = await this.getUniPayConfig({ provider, provider_pay_type });
@@ -1007,7 +1172,7 @@ class service {
 			if (uniPayConifg.version === 3) {
 				try {
 					uniPayInstance = uniPay.initWeixinV3(uniPayConifg);
-				} catch(err){
+				} catch (err) {
 					console.error(err);
 					let errMsg = err.message;
 					if (errMsg && errMsg.indexOf("invalid base64 body") > -1) {
@@ -1022,33 +1187,87 @@ class service {
 			// 支付宝
 			uniPayInstance = uniPay.initAlipay(uniPayConifg);
 		} else if (provider === "appleiap") {
-			// ios内购
+			// 苹果虚拟支付
 			uniPayInstance = uniPay.initAppleIapPayment(uniPayConifg);
 		} else if (provider === "wxpay-virtual") {
 			// 微信虚拟支付
 			// 还需要额外传accessToken
-			let cacheKey = {
-				appId: uniPayConifg.appId,
-				platform: "weixin-mp"
-			}
-			let cacheInfo = await dao.opendbOpenData.getAccessToken(cacheKey);
-			if (cacheInfo) {
-				// 缓存有值
-				uniPayConifg.accessToken = cacheInfo.access_token;
-			} else {
-				// 缓存无值
-				let getAccessTokenRes = await libs.wxpay.getAccessToken(uniPayConifg);
-				uniPayConifg.accessToken = getAccessTokenRes.accessToken;
-				// 缓存accessToken
-				await dao.opendbOpenData.setAccessToken(cacheKey, {
-					access_token: getAccessTokenRes.accessToken,
-				}, getAccessTokenRes.expiresIn);
-			}
+			uniPayConifg.accessToken = await this.getAccessToken(data);
 			uniPayInstance = uniPay.initWeixinVirtualPayment(uniPayConifg);
 		} else {
 			throw new Error(`${provider} : 不支持的支付方式`);
 		}
 		return uniPayInstance;
+	}
+
+	/**
+	 * 获取accessToken
+	 * let uniPayInstance = await service.pay.getAccessToken({ provider, provider_pay_type });
+	 */
+	async getAccessToken(data = {}) {
+		let uniPayConifg = await this.getUniPayConfig(data);
+		let cacheKey = {
+			appId: uniPayConifg.appId,
+			platform: "weixin-mp"
+		}
+		let cacheInfo = await dao.opendbOpenData.getAccessToken(cacheKey);
+		if (cacheInfo) {
+			// 缓存有值
+			return cacheInfo.access_token;
+		} else {
+			// 缓存无值
+			let getAccessTokenRes = await libs.wxpay.getAccessToken(uniPayConifg);
+			let accessToken = getAccessTokenRes.accessToken;
+			// 缓存accessToken
+			await dao.opendbOpenData.setAccessToken(cacheKey, {
+				access_token: getAccessTokenRes.accessToken,
+			}, getAccessTokenRes.expiresIn);
+			return accessToken;
+		}
+	}
+
+	/**
+	 * 获取sessionKey
+	 * let sessionKey = await service.pay.getSessionKey({ provider, provider_pay_type, openid });
+	 */
+	async getSessionKey(data = {}) {
+		let {
+			openid,
+		} = data;
+		// 获取用户的sessionKey
+		let uniPayConifg = await this.getUniPayConfig(data);
+		let { session_key } = await dao.opendbOpenData.getSessionKey({
+			appId: uniPayConifg.appId,
+			platform: "weixin-mp",
+			openid
+		});
+		return session_key;
+	}
+
+	/**
+	 * 请求微信小程序虚拟支付API
+	 * let res = await service.pay.requestWxpayVirtualApi(data);
+	 */
+	async requestWxpayVirtualApi(options = {}) {
+		let {
+			method,
+			data = {}
+		} = options;
+		// 微信虚拟支付固定参数
+		let provider = "wxpay-virtual";
+		let provider_pay_type = "mp";
+		// 获得微信小程序虚拟支付实例
+		let uniPayInstance = await this.initUniPayInstance({ provider, provider_pay_type });
+		// 调用微信小程序虚拟支付云端API
+
+		if (["currencyPay"].indexOf(method) > -1) {
+			if (!data.sessionKey) {
+				data.sessionKey = await this.getSessionKey({ ...data, provider, provider_pay_type });
+			}
+		}
+
+		let res = await uniPayInstance[method](data);
+		return res;
 	}
 
 }
