@@ -34,9 +34,12 @@ describe('component-native-scroll-view', () => {
   })
 
   it('Event scroll-horizontal',async()=>{
+    console.log('data-1:', await page.data())
     // 横向滚动
     await page.setData({scrollLeft:220})
-    await page.waitFor(1000)
+    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 4000:1000
+    await page.waitFor(waitTime)
+    console.log('data-2:', await page.data())
     //设置left 是否触发scroll 事件
     const leftScrollDetail = await page.data('scrollDetailTest')
     console.log('leftScrollDetail:', leftScrollDetail)
