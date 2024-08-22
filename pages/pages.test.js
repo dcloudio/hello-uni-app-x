@@ -317,7 +317,6 @@ if (isWeb) {
     '/pages/component/movable-view/movable-view',
     '/pages/component/label/label',
     '/pages/component/picker/picker',
-    '/pages/component/map/map',
     '/pages/component/editor/editor',
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
