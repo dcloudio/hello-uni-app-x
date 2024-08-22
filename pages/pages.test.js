@@ -318,7 +318,6 @@ if (isWeb) {
     '/pages/component/label/label',
     '/pages/component/picker/picker',
     '/pages/component/map/map',
-    '/pages/component/cover-view/cover-view',
     '/pages/component/editor/editor',
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
