@@ -2,11 +2,35 @@
   <view class="page-body">
     <canvas id="canvas" class="canvas"></canvas>
     <text class="fps">FPS: {{fpsString}}</text>
+    <view class="item">
+      <text class="item-label">Speed</text>
+      <text class="item-value">{{ballSpeed}}</text>
+      <view class="item-fill"></view>
+      <button size="mini" @click="lessClick('speed')">-</button>
+      <button size="mini" @click="plusClick('speed')">+</button>
+    </view>
+    <view class="item">
+      <text class="item-label">Layer</text>
+      <text class="item-value">{{ballLayer}}</text>
+      <view class="item-fill"></view>
+      <button size="mini" @click="lessClick('layer')">-</button>
+      <button size="mini" @click="plusClick('layer')">+</button>
+    </view>
+    <view class="item">
+      <text class="item-label">Inlayer</text>
+      <text class="item-value">{{ballInlayer}}</text>
+      <view class="item-fill"></view>
+      <button size="mini" @click="lessClick('inLayer')">-</button>
+      <button size="mini" @click="plusClick('inLayer')">+</button>
+    </view>
   </view>
 </template>
 
 <script setup>
   let fpsString = ref("-/-ms")
+  let ballSpeed = ref(3)
+  let ballLayer = ref(3)
+  let ballInlayer = ref(20)
 
   class Ball {
     private width : number
@@ -51,12 +75,12 @@
   class BallAnimation {
     private ctx : CanvasRenderingContext2D
     private ballList : Array<Ball> = []
-    private speed = 3
-    private layer = 3
-    private ballInlayer = 20
+    private _speed = 3
+    private _layer = 3
+    private _ballInlayer = 20
     private runningFlag : boolean = false
 
-    private _animateTaskId: number = 0
+    private _animateTaskId : number = 0
     private frameCount = 0
     private lastTime = 0
 
@@ -73,10 +97,10 @@
     private initBall() {
       const canvasWidth = this.ctx.canvas.offsetWidth;
       const canvasHeight = this.ctx.canvas.offsetHeight;
-      for (let i = 0; i < this.layer; i++) {
-        let radius = this.getDistance(canvasWidth / 2, canvasHeight / 2) / this.layer * i
-        for (let j = 0; j < this.ballInlayer; j++) {
-          let deg = j * 2 * Math.PI / this.ballInlayer,
+      for (let i = 0; i < this._layer; i++) {
+        let radius = this.getDistance(canvasWidth / 2, canvasHeight / 2) / this._layer * i
+        for (let j = 0; j < this._ballInlayer; j++) {
+          let deg = j * 2 * Math.PI / this._ballInlayer,
             sin = Math.sin(deg),
             cos = Math.cos(deg),
             x = radius * cos + canvasWidth / 2,
@@ -86,6 +110,35 @@
           this.ballList.push(new Ball(canvasWidth, canvasHeight, x, y, vx, vy))
         }
       }
+    }
+
+    private reset() {
+      this.ballList.length = 0
+      this.initBall()
+    }
+
+    public get speed() : number {
+      return this._speed
+    }
+    public set speed(value : number) {
+      this._speed = value
+      this.reset()
+    }
+
+    public get layer() : number {
+      return this._layer
+    }
+    public set layer(value : number) {
+      this._layer = value
+      this.reset()
+    }
+
+    public get inLayer() : number {
+      return this._ballInlayer
+    }
+    public set inLayer(value : number) {
+      this._ballInlayer = value
+      this.reset()
     }
 
     public animate() {
@@ -101,7 +154,7 @@
       if (!this.runningFlag) {
         return
       }
-      this._animateTaskId = requestAnimationFrame((timestamp: number) => {
+      this._animateTaskId = requestAnimationFrame((timestamp : number) => {
         this.animate()
         this.updateFPS(timestamp)
       })
@@ -146,6 +199,32 @@
     }
   })
 
+  let lessClick = (type : string) => {
+    if (type == 'speed') {
+      animation!.speed--;
+      ballSpeed.value = animation!.speed
+    } else if (type == 'layer') {
+      animation!.layer--;
+      ballLayer.value = animation!.layer
+    } else if (type == 'inLayer') {
+      animation!.inLayer--;
+      ballInlayer.value = animation!.inLayer
+    }
+  }
+
+  let plusClick = (type : string) => {
+    if (type == 'speed') {
+      animation!.speed++;
+      ballSpeed.value = animation!.speed
+    } else if (type == 'layer') {
+      animation!.layer++;
+      ballLayer.value = animation!.layer
+    } else if (type == 'inLayer') {
+      animation!.inLayer++;
+      ballInlayer.value = animation!.inLayer
+    }
+  }
+
   onUnload(() => {
     animation?.stop()
     animation = null
@@ -165,6 +244,10 @@
     text-align: center;
   }
 
+  .page-body {
+    padding: 15px;
+  }
+
   .canvas {
     width: 300px;
     height: 300px;
@@ -173,7 +256,27 @@
   }
 
   .fps {
-    margin-left: 15px;
     margin-top: 30px;
+    margin-bottom: 20px;
+  }
+
+  .item {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .item-label {
+    width: 120px;
+  }
+
+  .item-value {
+    margin-left: 5px;
+    color: cornflowerblue;
+    width: 50px;
+  }
+
+  .item-fill {
+    flex: 1;
   }
 </style>
