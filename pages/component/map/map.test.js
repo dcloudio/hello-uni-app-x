@@ -9,8 +9,10 @@ describe('web-map', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
+    await page.waitFor('map');
     // 等待地图加载完成
-    await page.waitFor(4000);
+    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:4000
+    await page.waitFor(waitTime)
     await page.callMethod('updateAutoTest',true)
   });
 
