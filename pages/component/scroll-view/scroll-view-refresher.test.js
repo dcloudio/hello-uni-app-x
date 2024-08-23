@@ -1,7 +1,7 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('component-native-scroll-view-refresher', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('android') && !process.env.uniTestPlatformInfo.startsWith('web') || process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
