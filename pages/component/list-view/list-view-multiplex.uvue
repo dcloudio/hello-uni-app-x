@@ -6,8 +6,15 @@
     </scroll-view>
     <list-view v-show="list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
       <list-item v-for="index in item_count" class="item" @click="itemClick(index)">
-        <text >item-------<text>{{index}}</text></text>
+        <view style="flex-direction: row;">
+          <text >item-------<text>{{index}}</text></text>
+          <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
+            <text>scroll-view{{index}}：</text>
+            <text class="tip_text" v-for="tab in 5">元素{{tab}}</text>
+          </scroll-view>
+        </view>
         <text v-show="displayArrow" >item-------<text>{{index}}</text></text>
+
         <switch :checked="true"></switch>
       </list-item>
     </list-view>
@@ -64,6 +71,20 @@
   }
   .button_item {
     width: 200px;
+  }
+
+  .scroll_item {
+    flex: 1;
+    flex-direction: row;
+    overflow: hidden;
+    margin-left: 10px;
+  }
+
+  .tip_text {
+    border-style: solid;
+    border-radius: 3px;
+    border-width: 1px;
+    margin: 0px 10px;
   }
 
 </style>
