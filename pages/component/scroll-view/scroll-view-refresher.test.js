@@ -1,5 +1,7 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
 describe('component-native-scroll-view-refresher', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('other platform', () => {
@@ -30,7 +32,7 @@ describe('component-native-scroll-view-refresher', () => {
     await page.waitFor(2000);
     expect(await page.data('refresherrefreshTimes')).toBe(1)
     // 手动设置下拉刷新状态refresher-triggered为true时，在web和iOS不触发@refresherpulling事件
-    if(process.env.uniTestPlatformInfo.startsWith('android')){
+    if(isAndroid){
       expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
       expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
     }
@@ -39,17 +41,34 @@ describe('component-native-scroll-view-refresher', () => {
   });
 
   // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件，安卓端仅测android 10.0.0_x86
-  if(!process.env.uniTestPlatformInfo.startsWith('web')){
+  if(!platformInfo.startsWith('web')){
     it('check_refresherabort', async () => {
-      await program.swipe({
-        startPoint: {x: 100,y: 500},
-        endPoint: {x: 100,y: 630},
-        duration: 1000
-      })
+      if(isIos){
+        await program.swipe({
+          startPoint: {x: 100,y: 500},
+          endPoint: {x: 100,y: 630},
+          duration: 1000
+        })
+      }else if(isAndroid){
+        if(platformInfo.indexOf('12') != -1){
+          await program.swipe({
+            startPoint: {x: 100,y: 600},
+            endPoint: {x: 100,y: 730},
+            duration: 100
+          })
+        }else{
+          await program.swipe({
+            startPoint: {x: 100,y: 400},
+            endPoint: {x: 100,y: 500},
+            duration: 100
+          })
+        }
+      }
       await page.waitFor(1500)
-      console.log(process.env.uniTestPlatformInfo,'onRefresherabortTest',await page.data('onRefresherabortTest'))
+      console.log('onRefresherpullingTest',await page.data('onRefresherpullingTest'))
+      console.log(platformInfo,'onRefresherabortTest',await page.data('onRefresherabortTest'))
       // 下拉刷新被中止，在iOS不触发@refresherabort事件
-      if(process.env.uniTestPlatformInfo.startsWith('android 10.0.0_x86')){
+      if(platformInfo.startsWith('android 10.0.0_x86') || isIos){
         expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
       }
     });
