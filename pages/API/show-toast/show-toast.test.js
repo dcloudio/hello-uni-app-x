@@ -49,7 +49,7 @@ describe('API-toast', () => {
       const iconText = await icons[i].text()
       await page.callMethod('toast1Tap')
       await page.waitFor(100);
-      await toScreenshot(`${iconText}`)
+      await toScreenshot(`${iconText}-toast`)
     }
   })
 
@@ -83,7 +83,7 @@ describe('API-toast', () => {
       const positionsText = await positions[i].attribute('value')
       await page.callMethod('toast2Tap')
       await page.waitFor(100);
-      await toScreenshot(`position-${positionsText}`)
+      await toScreenshot(`toast-position-${positionsText}`)
     }
   })
 
