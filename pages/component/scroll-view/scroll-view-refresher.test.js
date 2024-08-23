@@ -40,7 +40,8 @@ describe('component-native-scroll-view-refresher', () => {
     expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
   });
 
-  // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件，安卓端仅测android 10.0.0_x86
+  // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件
+  // 安卓端仅测'android 11.0.0'、'android 10.0.0_x86_64'、'android 10.0.0_x86'
   if(!platformInfo.startsWith('web')){
     it('check_refresherabort', async () => {
       if(isIos){
@@ -50,25 +51,16 @@ describe('component-native-scroll-view-refresher', () => {
           duration: 1000
         })
       }else if(isAndroid){
-        if(platformInfo.indexOf('12') != -1){
-          await program.swipe({
-            startPoint: {x: 100,y: 600},
-            endPoint: {x: 100,y: 730},
-            duration: 100
-          })
-        }else{
-          await program.swipe({
-            startPoint: {x: 100,y: 400},
-            endPoint: {x: 100,y: 500},
-            duration: 100
-          })
-        }
+        await program.swipe({
+          startPoint: {x: 100,y: 400},
+          endPoint: {x: 100,y: 500},
+          duration: 1000
+        })
       }
       await page.waitFor(1500)
       console.log('onRefresherpullingTest',await page.data('onRefresherpullingTest'))
       console.log(platformInfo,'onRefresherabortTest',await page.data('onRefresherabortTest'))
-      // 下拉刷新被中止，在iOS不触发@refresherabort事件
-      if(platformInfo.startsWith('android 10.0.0_x86') || isIos){
+      if(isIos || platformInfo.startsWith('android 10') || platformInfo.startsWith('android 11')){
         expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
       }
     });
