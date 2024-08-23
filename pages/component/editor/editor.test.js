@@ -27,6 +27,7 @@ describe('editor.uvue', () => {
   it('editor-wrapper', async () => {
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
     expect(await editor.attribute("read-only")).toBe("false")
+    expect(await program.screenshot()).toSaveImageSnapshot();
   });
 
   it('editor-toolbar', async () => {
