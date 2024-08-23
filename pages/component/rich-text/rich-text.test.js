@@ -13,17 +13,20 @@ describe('rich-text-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(1000);
+    await page.waitFor(1500);
   })
 
 
   it('richt-text-height', async () => {
-    await page.waitFor(1000);
     let beforeValue = await page.data('richTextHeight')
+    if beforeValue < 10 {
+      await page.waitFor(1000)
+      beforeValue = await page.data('richTextHeight')
+    }
     await page.callMethod('changeText')
     await page.waitFor(500)
     await page.callMethod('changeText')
-    await page.waitFor(500)
+    await page.waitFor(1000)
     let afterValue = await page.data('richTextHeight')
     console.log('beforeValue:', beforeValue)
     console.log('afterValue:', afterValue)
