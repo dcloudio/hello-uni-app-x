@@ -35,9 +35,10 @@ describe('dialog page', () => {
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // 不应触发父页面的生命周期,应该触发:
-    // 1. openDialogPage sucess & complete callback
+    // 1. openDialogPage success & complete callback
     // 2. dialog page 生命周期
-    expect(lifecycleNum).toBe(7)
+    expect(lifecycleNum).toBe(13)
+    await page.callMethod('setLifeCycleNum', 0)
   });
 
   it('closeDialogPage', async () => {
@@ -53,13 +54,15 @@ describe('dialog page', () => {
     // closeDialogPage success & complete callback 应被触发
     // dialogPage onUnload 应被触发
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(4)
+    expect(lifecycleNum).toBe(-3)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('openDialog with wrong path', async () => {
     await page.callMethod('openDialog1WrongPath')
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(1)
+    expect(lifecycleNum).toBe(-3)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('navigateTo nextPage & open Dialog', async () => {
@@ -83,7 +86,8 @@ describe('dialog page', () => {
     });
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(-3)
+    expect(lifecycleNum).toBe(-4)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('dialog1 navigateBack', async () => {
@@ -101,7 +105,8 @@ describe('dialog page', () => {
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // onBackPress 生命周期应该被触发
-    expect(lifecycleNum).toBe(-2)
+    expect(lifecycleNum).toBe(1)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('open dialog2', async () => {
@@ -112,7 +117,8 @@ describe('dialog page', () => {
     }
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // 应触发前一个 dialogPage 的 onHide
-    expect(lifecycleNum).toBe(2)
+    expect(lifecycleNum).toBe(4)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('closeDialogPage', async () => {
@@ -120,7 +126,7 @@ describe('dialog page', () => {
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // 应触发 success & complete 回调
     // 应触发 dialogPage 的 unload，下层的 dialogPage 会先 show 再 unload
-    expect(lifecycleNum).toBe(-5)
+    expect(lifecycleNum).toBe(-7)
 
     const image = await program.screenshot({
       deviceShot: true,
@@ -130,6 +136,7 @@ describe('dialog page', () => {
       }
     });
     expect(image).toSaveImageSnapshot();
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('open multiple dialog page', async () => {
@@ -147,7 +154,7 @@ describe('dialog page', () => {
     });
     expect(image1).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(-1)
+    expect(lifecycleNum).toBe(4)
 
     await page.callMethod('openDialog2')
     await page.waitFor(1000)
@@ -163,7 +170,8 @@ describe('dialog page', () => {
     });
     expect(image2).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(3)
+    expect(lifecycleNum).toBe(8)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('openDialogPage to home page', async () => {
@@ -173,7 +181,8 @@ describe('dialog page', () => {
       await page.waitFor(2000)
     }
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(7)
+    expect(lifecycleNum).toBe(4)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('dialog2 navigateBack', async () => {
@@ -191,7 +200,8 @@ describe('dialog page', () => {
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // onBackPress 生命周期应该被触发
-    expect(lifecycleNum).toBe(9)
+    expect(lifecycleNum).toBe(2)
+    await page.callMethod('setLifeCycleNum', 0)
   })
 
   it('close specified dialogPage', async () => {
@@ -209,7 +219,7 @@ describe('dialog page', () => {
     });
     expect(image1).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(13)
+    expect(lifecycleNum).toBe(4)
 
     await page.callMethod('openDialog1')
     await page.waitFor(1000)
@@ -225,7 +235,7 @@ describe('dialog page', () => {
     });
     expect(image2).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(19)
+    expect(lifecycleNum).toBe(16)
 
     await page.callMethod('closeSpecifiedDialog', 0)
     const image3 = await program.screenshot({
@@ -237,7 +247,7 @@ describe('dialog page', () => {
     });
     expect(image3).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(16)
+    expect(lifecycleNum).toBe(13)
 
     await page.callMethod('closeSpecifiedDialog', 1)
     const image4 = await program.screenshot({
@@ -249,7 +259,7 @@ describe('dialog page', () => {
     });
     expect(image4).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(14)
+    expect(lifecycleNum).toBe(11)
 
     await page.callMethod('closeSpecifiedDialog', 0)
     const image5 = await program.screenshot({
@@ -261,7 +271,7 @@ describe('dialog page', () => {
     });
     expect(image5).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(11)
+    expect(lifecycleNum).toBe(8)
   })
 
 

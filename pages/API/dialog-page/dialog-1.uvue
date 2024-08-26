@@ -55,6 +55,14 @@
         // 自动化测试
         setLifeCycleNum(state.lifeCycleNum + 1)
       }
+      this.$dialogPage.$emit('fn1', {from: 'dialog1'})
+      this.$dialogPage.$emit('fn2', null)
+      this.$dialogPage.$off('fn2')
+      this.$dialogPage.$emit('fn1', {from: 'dialog1'})
+      this.$dialogPage.$emit('fn2', null)
+      this.$dialogPage.$emit('fnOnce', null)
+      this.$dialogPage.$emit('fnOnce', null)
+
     },
     onHide() {
       console.log('dialog 1 onHide')
@@ -67,6 +75,7 @@
       setLifeCycleNum(state.lifeCycleNum - 5)
     },
     onBackPress(options : OnBackPressOptions) : boolean | null {
+      console.log('dialogPage1 onBackPress', options)
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum + 1)
       return true

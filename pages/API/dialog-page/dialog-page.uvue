@@ -1,5 +1,5 @@
 <template>
-  <view class='uni-padding-wrap'>
+  <view class="uni-padding-wrap">
     <button class="uni-common-mt" id="go-next-page" @click="goNextPage">go next page</button>
     <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">open dialog 1</button>
     <button class="uni-common-mt" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">open dialog page 1 with
@@ -40,7 +40,7 @@
         })
       },
       openDialog1() {
-        uni.openDialogPage({
+        const dialogPage = uni.openDialogPage({
           url: '/pages/API/dialog-page/dialog-1?name=dialog1',
           success(res) {
             console.log('openDialogPage1 success', res)
@@ -56,7 +56,27 @@
             // 自动化测试
             setLifeCycleNum(state.lifeCycleNum + 1)
           }
-        })
+        })!
+        const fn1 = (options: any | null) => {
+          console.log('dialogPage1 be triggered fn1', options)
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+        const fn11 = (options: any | null) => {
+          console.log('dialogPage1 be triggered fn11', options)
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+        const fn2 = (options: any | null) => {
+          console.log('dialogPage1 be triggered fn2', options)
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+        const fnOnce = (options: any | null) => {
+          console.log('dialogPage1 be triggered fnOnce', options)
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+        dialogPage.$on('fn1', fn1)
+        dialogPage.$on('fn1', fn11)
+        dialogPage.$on('fn2', fn2)
+        dialogPage.$once('fnOnce', fnOnce)
       },
       openDialog2() {
         uni.openDialogPage({
