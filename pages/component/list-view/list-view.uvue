@@ -1,9 +1,9 @@
 <script>
   type ScrollEventTest = {
-    type: string;
-    target: UniElement | null;
-    currentTarget: UniElement | null;
-    direction?:string
+    type : string;
+    target : UniElement | null;
+    currentTarget : UniElement | null;
+    direction ?: string
   }
   import { ItemType } from '@/components/enum-data/enum-data'
   export default {
@@ -31,11 +31,11 @@
         state: 3,
         reset: true,
         // 自动化测试
-        isScrollTest:'',
-        isScrolltolowerTest:'',
-        isScrolltoupperTest:'',
-        scrollDetailTest:null as UniScrollEventDetail|null,
-        scrollEndDetailTest:null as UniScrollEventDetail|null,
+        isScrollTest: '',
+        isScrolltolowerTest: '',
+        isScrolltoupperTest: '',
+        scrollDetailTest: null as UniScrollEventDetail | null,
+        scrollEndDetailTest: null as UniScrollEventDetail | null,
       }
     },
     onLoad() {
@@ -83,38 +83,38 @@
       list_view_scrolltoupper(e : UniScrollToUpperEvent) {
         console.log("滚动到顶部/左边，会触发 scrolltoupper 事件  direction=" + e.detail.direction)
         this.checkEventTest({
-          type:e.type,
-          target:e.target,
-          currentTarget:e.currentTarget,
-          direction:e.detail.direction,
-        } as ScrollEventTest,'scrolltoupper')
+          type: e.type,
+          target: e.target,
+          currentTarget: e.currentTarget,
+          direction: e.detail.direction,
+        } as ScrollEventTest, 'scrolltoupper')
       },
       list_view_scrolltolower(e : UniScrollToLowerEvent) {
         console.log("滚动到底部/右边，会触发 scrolltolower 事件  direction=" + e.detail.direction)
         this.checkEventTest({
-          type:e.type,
-          target:e.target,
-          currentTarget:e.currentTarget,
-          direction:e.detail.direction,
-        } as ScrollEventTest,'scrolltolower')
+          type: e.type,
+          target: e.target,
+          currentTarget: e.currentTarget,
+          direction: e.detail.direction,
+        } as ScrollEventTest, 'scrolltolower')
       },
-      list_view_scroll(e:UniScrollEvent) {
+      list_view_scroll(e : UniScrollEvent) {
         console.log("滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}")
         this.scrollDetailTest = e.detail
         this.checkEventTest({
-          type:e.type,
-          target:e.target,
-          currentTarget:e.currentTarget
-        } as ScrollEventTest,'scroll')
+          type: e.type,
+          target: e.target,
+          currentTarget: e.currentTarget
+        } as ScrollEventTest, 'scroll')
       },
-      list_view_scrollend(e:UniScrollEvent){
-        console.log("滚动结束时触发",e.detail)
+      list_view_scrollend(e : UniScrollEvent) {
+        console.log("滚动结束时触发", e.detail)
         this.scrollEndDetailTest = e.detail
         this.checkEventTest({
-          type:e.type,
-          target:e.target,
-          currentTarget:e.currentTarget
-        } as ScrollEventTest,'scrollend')
+          type: e.type,
+          target: e.target,
+          currentTarget: e.currentTarget
+        } as ScrollEventTest, 'scrollend')
       },
       list_item_click() { console.log("list-item组件被点击时触发") },
       list_item_touchstart() { console.log("手指触摸list-item组件动作开始") },
@@ -152,18 +152,18 @@
       confirm_refresher_background_input(value : string) { this.refresher_background_input = value },
       item_change_size_enum(index : number) { this.scrollIntoView = "item---" + index },
       // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
-      checkEventTest(e:ScrollEventTest, eventName:String){
+      checkEventTest(e : ScrollEventTest, eventName : String) {
         const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
         const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
-        switch (eventName){
+        switch (eventName) {
           case 'scroll':
             this.isScrollTest = result
             break;
           case 'scrolltolower':
-            this.isScrolltolowerTest =  result + `-${e.direction}`
+            this.isScrolltolowerTest = result + `-${e.direction}`
             break;
           case 'scrolltoupper':
-            this.isScrolltoupperTest =  result + `-${e.direction}`
+            this.isScrolltoupperTest = result + `-${e.direction}`
             break;
           default:
             break;

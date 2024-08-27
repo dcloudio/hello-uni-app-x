@@ -13,7 +13,9 @@ describe('editor.uvue', () => {
     await page.waitFor('view');
     editor = await page.$('#editor');
     await page.waitFor(3000);
-    await page.setData({autoTest:true})
+    await page.setData({
+      autoTest: true
+    })
   });
 
   async function setBlur() {
@@ -38,7 +40,7 @@ describe('editor.uvue', () => {
       const getFormats = await page.data('formats')
       const name = await iconfontsEl[i].attribute('data-name')
       options.push({
-        insert:'文本内容' + name,
+        insert: '文本内容' + name,
         attributes: getFormats
       })
       await page.callMethod('setContents', options)
@@ -72,7 +74,7 @@ describe('editor.uvue', () => {
 
   it('insertImage', async () => {
     await page.waitFor(500)
-    await page.callMethod('insertImage','https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
+    await page.callMethod('insertImage', 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
     const start1 = Date.now();
     await page.waitFor(async () => {
       return await page.data('insertImageTest') === true || (Date.now() - start1 > 2000)
@@ -81,26 +83,24 @@ describe('editor.uvue', () => {
 
   it('insertImage-screenshot', async () => {
     await setBlur()
-    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:2000
+    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000 : 2000
     await page.waitFor(waitTime)
     expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
   it('removeFormat', async () => {
-      const bgcolorEl = await page.$('.icon-fontbgcolor');
-      await bgcolorEl.tap()
-      await page.waitFor(500)
-      const getFormats = await page.data('formats')
-      await page.callMethod('setContents', [
-                {
-                  insert: '设置字体样式bgcolor',
-                  attributes: getFormats
-                }
-              ])
-      await page.waitFor(500)
-      await page.callMethod('removeFormat')
-      expect(await page.data('removeFormatTest')).toBe(true)
-      expect(await page.data('formats')).toEqual({})
+    const bgcolorEl = await page.$('.icon-fontbgcolor');
+    await bgcolorEl.tap()
+    await page.waitFor(500)
+    const getFormats = await page.data('formats')
+    await page.callMethod('setContents', [{
+      insert: '设置字体样式bgcolor',
+      attributes: getFormats
+    }])
+    await page.waitFor(500)
+    await page.callMethod('removeFormat')
+    expect(await page.data('removeFormatTest')).toBe(true)
+    expect(await page.data('formats')).toEqual({})
   })
 
 });

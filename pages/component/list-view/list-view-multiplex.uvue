@@ -7,13 +7,13 @@
     <list-view v-show="list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
       <list-item v-for="index in item_count" class="item" @click="itemClick(index)">
         <view style="flex-direction: row;">
-          <text >item-------<text>{{index}}</text></text>
+          <text>item-------<text>{{index}}</text></text>
           <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
             <text>scroll-view{{index}}：</text>
             <text class="tip_text" v-for="tab in 5">元素{{tab}}</text>
           </scroll-view>
         </view>
-        <text v-show="displayArrow" >item-------<text>{{index}}</text></text>
+        <text v-show="displayArrow">item-------<text>{{index}}</text></text>
 
         <switch :checked="true"></switch>
       </list-item>
@@ -22,20 +22,20 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				item_count: 20,
+  export default {
+    data() {
+      return {
+        item_count: 20,
         list_show: true,
-        listViewElement: null as UniListViewElement|null,
+        listViewElement: null as UniListViewElement | null,
         displayArrow: false
-			}
-		},
+      }
+    },
     onReady() {
       this.listViewElement = uni.getElementById<UniListViewElement>('listview')
     },
-		methods: {
-      onScrollTolower(_: ScrollToLowerEvent) {
+    methods: {
+      onScrollTolower(_ : ScrollToLowerEvent) {
         setTimeout(() => {
           this.item_count += 20
         }, 300)
@@ -44,22 +44,22 @@
       listViewScrollByY(y : number) {
         this.listViewElement?.scrollBy(0, y)
       },
-      itemClick(index: number) {
-        console.log("itemTextClick---"+index)
+      itemClick(index : number) {
+        console.log("itemTextClick---" + index)
       },
       delayShow() {
         this.list_show = !this.list_show
         this.item_count += 20
         //延时显示list-view 测试list-item延时显示bug
-        setTimeout(()=>{
+        setTimeout(() => {
           this.list_show = !this.list_show
         }, 400)
       },
       switchItemContent() {
         this.displayArrow = !this.displayArrow
       }
-		}
-	}
+    }
+  }
 </script>
 
 <style>
@@ -69,6 +69,7 @@
     background-color: #fff;
     border-radius: 5px;
   }
+
   .button_item {
     width: 200px;
   }
@@ -86,5 +87,4 @@
     border-width: 1px;
     margin: 0px 10px;
   }
-
 </style>

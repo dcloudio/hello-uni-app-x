@@ -25,15 +25,15 @@ export type MenuItem = {
   path : string,
   style : UTSJSONObject,
   group ?: string | null,
-  items: MenuItem[]
+  items : MenuItem[]
 }
 
-export function generateMenu(tabBarType: string): MenuItem[] {
-  let res: MenuItem[] = []
+export function generateMenu(tabBarType : string) : MenuItem[] {
+  let res : MenuItem[] = []
   const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page : Page) : boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
   const groupTree = JSON.parse<(Group | null)[]>(JSON.stringify(groups))
   tabBarPages.forEach(page => {
-    let menuItemArr: MenuItem[] = res
+    let menuItemArr : MenuItem[] = res
     let currentMenu : MenuItem | null = null
     const groupIndexList = page.group!.split(',').map((index : string) : number => parseInt(index))
     let currentGroups : (Group | null)[] | null = groupTree
@@ -115,7 +115,7 @@ function camelToDash(camelStr : string) : string {
   return camelStr.replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
-function fillMenuArrayWithEmptyMenuItem(arr: MenuItem[], index: number): void {
+function fillMenuArrayWithEmptyMenuItem(arr : MenuItem[], index : number) : void {
   const len = arr.length
   for (let i = 0; i <= index - (len - 1); i++) {
     arr.push({
@@ -130,8 +130,8 @@ function fillMenuArrayWithEmptyMenuItem(arr: MenuItem[], index: number): void {
   }
 }
 
-function removeEmptyItem(arr: MenuItem[]): MenuItem[] {
-  const res = arr.filter((item: MenuItem): boolean => item.name !== 'empty')
+function removeEmptyItem(arr : MenuItem[]) : MenuItem[] {
+  const res = arr.filter((item : MenuItem) : boolean => item.name !== 'empty')
   res.forEach(menuItem => {
     addSetTabBarPage(menuItem)
     // #ifdef APP-ANDROID
