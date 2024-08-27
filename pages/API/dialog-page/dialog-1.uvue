@@ -46,7 +46,7 @@
       const parentPage = this.$getParentPage()!
       const grandParentPage = parentPage.$getParentPage()
       const dialogPages = parentPage.$getDialogPages()
-      const dialogPage = this.$dialogPage
+      const dialogPage = this.$dialogPage!
       if (
         currentPages.length == 1 &&
         grandParentPage == null &&
@@ -55,13 +55,13 @@
         // 自动化测试
         setLifeCycleNum(state.lifeCycleNum + 1)
       }
-      this.$dialogPage.$emit('fn1', {from: 'dialog1'})
-      this.$dialogPage.$emit('fn2', null)
-      this.$dialogPage.$off('fn2')
-      this.$dialogPage.$emit('fn1', {from: 'dialog1'})
-      this.$dialogPage.$emit('fn2', null)
-      this.$dialogPage.$emit('fnOnce', null)
-      this.$dialogPage.$emit('fnOnce', null)
+      dialogPage.$emit('fn1', {from: 'dialog1'})
+      dialogPage.$emit('fn2', null)
+      dialogPage.$off('fn2', null)
+      dialogPage.$emit('fn1', {from: 'dialog1'})
+      dialogPage.$emit('fn2', null)
+      dialogPage.$emit('fnOnce', null)
+      dialogPage.$emit('fnOnce', null)
 
     },
     onHide() {
