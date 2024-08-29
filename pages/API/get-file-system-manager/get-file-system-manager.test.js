@@ -1411,7 +1411,7 @@ describe('ExtApi-FileManagerTest', () => {
 		console.log('ftruncateFileTest', '7')
 	});
 
-	//testAppendFileBuffer 
+	//testAppendFileBuffer
 	it('testAppendFileBuffer', async () => {
 		if (!isAndroid()) {
 			return
@@ -1421,66 +1421,66 @@ describe('ExtApi-FileManagerTest', () => {
 		await btnWrite.tap()
 		await isDone()
 		let arrayBufferRes = await getData("arrayBufferRes")
-		expect(bytesWritten).toEqual(21)
+		expect(arrayBufferRes).toEqual(21)
 	});
-	
+
 	it('testAppendFileBufferSync', async () => {
 		if (!isAndroid()) {
 			return
 		}
-	
+
 		var btnWrite = await page.$('#btn-appendfilesync-buffer')
 		await btnWrite.tap()
 		await isDone()
 		let arrayBufferRes = await getData("arrayBufferRes")
-		expect(bytesWritten).toEqual(20)
+		expect(arrayBufferRes).toEqual(20)
 	});
-	
+
 	it('testWriteReadSyncBuffer', async () => {
 		if (!isAndroid()) {
 			return
 		}
-	
+
 		var btnWrite = await page.$('#btn-writereadsync-buffer')
 		await btnWrite.tap()
 		await isDone()
 		let arrayBufferRes = await getData("arrayBufferRes")
-		expect(bytesWritten).toEqual(1.11)
+		expect(arrayBufferRes).toEqual(1.11)
 	});
-	
+
 	it('testWriteReadBuffer', async () => {
 		if (!isAndroid()) {
 			return
 		}
-	
+
 		var btnWrite = await page.$('#btn-writeread-buffer')
 		await btnWrite.tap()
 		await isDone()
 		let arrayBufferRes = await getData("arrayBufferRes")
-		expect(bytesWritten).toEqual(1.24)
+		expect(arrayBufferRes).toEqual(1.24)
 	});
-	
+
 	it('testWriteReadFileSyncBuffer', async () => {
 		if (!isAndroid()) {
 			return
 		}
-	
+
 		var btnWrite = await page.$('#btn-writereadfilesync-buffer')
 		await btnWrite.tap()
 		await isDone()
 		let arrayBufferRes = await getData("arrayBufferRes")
-		expect(bytesWritten).toEqual(1.333)
+		expect(arrayBufferRes).toEqual(1.333)
 	});
-	
+
 	it('testReadFileBuffer', async () => {
 		if (!isAndroid()) {
 			return
 		}
-	
+
 		var btnWrite = await page.$('#btn-writereadfile-buffer')
 		await btnWrite.tap()
 		await isDone()
 		let arrayBufferRes = await getData("arrayBufferRes")
-		expect(bytesWritten).toEqual(1.2222222)
+		expect(arrayBufferRes).toEqual(1.2222222)
 	});
 });
