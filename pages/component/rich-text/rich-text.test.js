@@ -19,7 +19,7 @@ describe('rich-text-test', () => {
 
   it('richt-text-height', async () => {
     let beforeValue = await page.data('richTextHeight')
-    if beforeValue < 10 {
+    if (beforeValue < 10) {
       await page.waitFor(1000)
       beforeValue = await page.data('richTextHeight')
     }
