@@ -108,10 +108,16 @@
         } as GetProviderSyncOptions)
         console.log(provider)
         provider.providerObjects.forEach((value : UniProvider) => {
+          var currentProvider = value
+          if (value.id == 'system') {
+            currentProvider = value as UniLocationSystemProvider
+          } else if (value.id == 'tencent') {
+            currentProvider = value as UniLocationTencentProvider
+          }
           this.providerList.push({
-            name: value.description,
-            id: value.id,
-            provider: value
+            name: currentProvider.description,
+            id: currentProvider.id,
+            provider: currentProvider
           } as LocationItem);
         })
 
