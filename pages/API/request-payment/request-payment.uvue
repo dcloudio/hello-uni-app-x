@@ -29,17 +29,21 @@
       provider.providerObjects.forEach((value : UniProvider) => {
         switch (value.id) {
           case 'alipay':
+            var aliPayProvider = value as UniPaymentAlipayProvider
+            console.log('alipay', aliPayProvider)
             this.providerList.push({
-              name: '支付宝',
-              id: "alipay",
-              provider: value
+              name: aliPayProvider.description,
+              id: aliPayProvider.id,
+              provider: aliPayProvider
             } as PayItem);
             break;
           case 'wxpay':
+            var wxPayProvider = value as UniPaymentWxpayProvider
+            console.log('wxpay', wxPayProvider)
             this.providerList.push({
-              name: '微信',
-              id: "wxpay",
-              provider: value
+              name: wxPayProvider.description,
+              id: wxPayProvider.id,
+              provider: wxPayProvider
             } as PayItem);
             break;
           default:
@@ -51,7 +55,7 @@
       requestPayment(e : PayItem) {
         const provider = e.id
         if (provider == "alipay") {
-          this.payAli()
+          this.payAli(provider)
         } else if (provider == "wxpay") {
           // #ifdef APP-ANDROID
           if (e.provider != null && e.provider instanceof UniPaymentWxpayProvider && !((e.provider as UniPaymentWxpayProvider).isWeChatInstalled)) {
@@ -60,7 +64,7 @@
               icon: 'error'
             })
           } else {
-            this.payWX()
+            this.payWX(provider)
           }
           // #endif
           // #ifdef APP-IOS
@@ -70,12 +74,12 @@
               icon: 'error'
             })
           } else {
-            this.payWX()
+            this.payWX(provider)
           }
           // #endif
         }
       },
-      payAli() {
+      payAli(id:string) {
         uni.showLoading({
           title: "请求中..."
         })
@@ -88,7 +92,7 @@
             console.log("====" + this.orderInfo)
             uni.hideLoading()
             uni.requestPayment({
-              provider: "alipay",
+              provider: id,
               orderInfo: res.data as string,
               fail: (res) => {
                 console.log(JSON.stringify(res))
@@ -113,7 +117,7 @@
           },
         });
       },
-      payWX() {
+      payWX(id:string) {
         uni.showLoading({
           title: "请求中..."
         })
@@ -143,7 +147,7 @@
             console.log(res.data)
             uni.hideLoading()
             uni.requestPayment({
-              provider: "wxpay",
+              provider: id,
               orderInfo: JSON.stringify(res.data),
               fail: (res) => {
                 console.log(JSON.stringify(res))

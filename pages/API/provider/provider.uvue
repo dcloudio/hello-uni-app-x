@@ -34,10 +34,12 @@
         title: 'provider',
         flag: false,
         serviceList: [
-          { service: "payment", name: "支付", provider: [], providerObj: []},
-          { service: "location", name: "定位", provider: [], providerObj: []}
+          { service: "payment", name: "支付", provider: [], providerObj: [] },
+          { service: "location", name: "定位", provider: [], providerObj: [] }
         ] as ProviderItem[],
+        //自动化测试使用
         providerIds: [] as string[],
+
         providerObjects: [] as UniProvider[],
       }
     },
@@ -47,32 +49,26 @@
           var provider = uni.getProviderSync({
             service: item.service,
           } as GetProviderSyncOptions)
-          console.log('getProvider',provider,provider.providerIds.length)
           provider.providerIds.forEach((value) => {
-             console.log('getProvider','value',value)
             this.providerIds.push(value)
           })
           this.updateProvider(item.service, provider.providerIds, provider.providerObjects);
         })
       },
       updateProvider(service : string, provider : string[] | null, uniProvider : UniProvider[]) {
+        //这里需要从新从serviceList 获取item，不能直接用forEach 里面的item，目前存在bug,后续会解决这个问题
         const item : ProviderItem | null = this.serviceList.find((item : ProviderItem) : boolean => {
           return item.service == service
         });
+
         if (item != null && provider != null) {
           item.provider = provider
-
           item.providerObj = uniProvider
           item.providerObj.forEach((obj) => {
             this.providerObjects.push(obj)
-            // #ifdef APP-ANDROID
-            if (obj instanceof UniPaymentWxpayProvider) {//判断微信是否安装
-              var isWeChatInstalled = (obj as UniPaymentWxpayProvider).isWeChatInstalled
-              console.log(isWeChatInstalled)
-            }
-            // #endif
           })
         }
+
       }
     }
   }
