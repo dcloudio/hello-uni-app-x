@@ -48,7 +48,7 @@ describe('component-native-scroll-view-refresher', () => {
         await program.swipe({
           startPoint: {x: 100,y: 500},
           endPoint: {x: 100,y: 630},
-          duration: 1000
+          duration: 100
         })
       }else if(isAndroid){
         await program.swipe({
