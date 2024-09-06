@@ -7,7 +7,7 @@ describe('event trigger', () => {
     })
     return
   }
-  
+
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
   const isIos = platformInfo.startsWith('ios')
@@ -29,7 +29,7 @@ describe('event trigger', () => {
           clientY: 101,
           screenX: 101,
           screenY: 101
-        }, ],
+        },],
         changedTouches: [{
           identifier: 1,
           pageX: 101,
@@ -38,7 +38,7 @@ describe('event trigger', () => {
           clientY: 101,
           screenX: 101,
           screenY: 101
-        }, ],
+        },],
       })
       const touchStartTouchTargetIdentifier = isAndroid ? '1.0' : '1'
       const touchStartTouchTargetValue = isAndroid ? '101.0' : '101'
@@ -90,7 +90,7 @@ describe('event trigger', () => {
           clientY: 102,
           screenX: 102,
           screenY: 102
-        }, ],
+        },],
       })
 
       const touchMoveTouchTargetIdentifier = isAndroid ? '1.0' : '1'
@@ -142,7 +142,7 @@ describe('event trigger', () => {
           clientY: 103,
           screenX: 103,
           screenY: 103
-        }, ],
+        },],
       })
       const touchEndTouchTargetIdentifier = isAndroid ? '1.0' : '1'
       const touchEndTouchTargetValue = isAndroid ? '103.0' : '103'
@@ -306,7 +306,7 @@ describe('event trigger', () => {
     }
   })
 
-  it.only('mock tap event', async () => {
+  it('mock tap event', async () => {
 
     // ios only 坐标换算准确
     if (isIos) {
@@ -346,4 +346,4 @@ describe('event trigger', () => {
 
 
   })
-})
+})
