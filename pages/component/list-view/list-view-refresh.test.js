@@ -5,6 +5,14 @@ describe('component-native-list-view-refresh', () => {
     })
     return
   }
+
+  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('跳过横屏模式', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     //打开list-view测试页

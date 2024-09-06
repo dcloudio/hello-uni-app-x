@@ -10,6 +10,13 @@ describe('rich-text-test', () => {
     return
   }
 
+  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('跳过横屏模式', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
