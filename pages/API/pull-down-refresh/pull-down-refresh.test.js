@@ -11,6 +11,13 @@ describe("payment", () => {
     return
   }
 
+  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('跳过横屏模式', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   it("trigger pulldown refresh by swipe", async () => {
     const page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
