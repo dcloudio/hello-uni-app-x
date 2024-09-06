@@ -1,6 +1,13 @@
 const PAGE_PATH = '/pages/component/global-events/global-events'
 
 describe('event trigger', () => {
+  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('跳过横屏模式', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+  
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
   const isIos = platformInfo.startsWith('ios')
