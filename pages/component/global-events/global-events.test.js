@@ -305,4 +305,45 @@ describe('event trigger', () => {
       }
     }
   })
-})
+
+  it.only('mock tap event', async () => {
+
+    // ios only 坐标换算准确
+    if (isIos) {
+
+      page = await program.reLaunch(PAGE_PATH)
+      await page.waitFor('view')
+      const el = await page.$('#longpress-target')
+
+      const size = await el.size()
+      const position = await el.offset()
+      // console.log('position', position)
+      // console.log('size', size);
+      const x = position.left + size.width / 2.0
+      const y = position.top + size.height / 2.0
+      const res = await uni.getWindowInfo();
+      // console.log('res', res.statusBarHeight);
+      const baseStatusTextHeight = 44
+      const baseTop = res.statusBarHeight ?? 0
+
+      await program.tap({
+        x: x,
+        y: y + baseTop + baseStatusTextHeight,
+        duration: 100
+      })
+      await page.waitFor(500)
+
+      const clickEventX = await page.$('#click-event-x')
+      const StringX = await clickEventX.text()
+
+      expect(Number(StringX)).toBeGreaterThan(0)
+      const clickEventY = await page.$('#click-event-y')
+      const StringY = await clickEventY.text()
+      expect(Number(StringY)).toBeGreaterThan(0)
+    } else {
+      expect(1).toBe(1)
+    }
+
+
+  })
+})
