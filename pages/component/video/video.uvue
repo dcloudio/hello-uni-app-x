@@ -15,6 +15,9 @@
         src="../../../static/test-video/fast-backward.png" @tap="fastBackward"></image>
       <image v-if="subCompEnable && subCompShow" class="img-fast-forward"
         src="../../../static/test-video/fast-forward.png" @tap="fastForward"></image>
+      <input id="input-send-danmu" class="input-send-danmu" v-if="subCompEnable && subCompShow" placeholder="请输入弹幕内容"
+        placeholder-style="color: white;" confirm-type="send" @confirm="onSendDanmuConfirm"
+        @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
       <!-- #endif -->
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
@@ -25,7 +28,7 @@
       </view>
       <!-- #ifdef APP-ANDROID -->
       <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
-        <text class="uni-title" style="width: 80%;">子组件实现快进、快退功能（全屏后显示）</text>
+        <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
         <switch :checked="subCompEnable" @change="onSubCompEnableChange" />
       </view>
       <!-- #endif -->
@@ -275,6 +278,23 @@
         let pos = this.curPos + 15;
         if (pos > this.endPos) pos = this.endPos;
         this.seek(pos);
+      },
+      onSendDanmuConfirm: function (event : UniInputConfirmEvent) {
+        this.videoContext?.sendDanmu({
+          text: event.detail.value,
+          color: '#ff0000'
+        } as Danmu);
+      },
+      onSendDanmuKeyboardHeightChange: function (event : UniInputKeyboardHeightChangeEvent) {
+        const element = uni.getElementById('input-send-danmu') as UniElement;
+        if (event.detail.height.toInt() == 0) {
+          element.style.setProperty('bottom', '50px');
+        } else {
+          element.style.setProperty('bottom', event.detail.height + element.getBoundingClientRect().height);
+        }
+      },
+      onSendDanmuBlur: function (_ : UniInputBlurEvent) {
+        (uni.getElementById('input-send-danmu') as UniElement).style.setProperty('bottom', '50px');
       },
       // 属性
       onSrcComfirm: function (event : UniInputConfirmEvent) {
@@ -574,5 +594,15 @@
     right: 12%;
     transform: translate(50%, -50%);
     position: absolute;
+  }
+
+  .input-send-danmu {
+    height: 40px;
+    padding: 8px 13px;
+    margin: 0 var(--status-bar-height);
+    bottom: 50px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #FFF;
   }
 </style>
