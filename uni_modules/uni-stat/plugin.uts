@@ -1,0 +1,26 @@
+import { Stat } from '@/uni_modules/uni-stat'
+//  // UniStatOptions, UniStatCollectItemsOptions
+
+// 实例统计sdk
+const stat_instance = Stat.getInstance()
+
+const lifecycle = defineMixin({
+	// onLaunch(options : OnLaunchOptions) { stat_instance.onLaunch(options, this) },
+  // @ts-ignore
+	onLoad() { stat_instance.onLoad(this) },
+  // @ts-ignore
+	onShow() { stat_instance.onShow(this) },
+  // @ts-ignore
+	onHide() { stat_instance.onHide(this) },
+  // @ts-ignore
+	onUnload() { stat_instance.onUnload(this) },
+	// onError(error : string) { stat_instance.onError(error) }
+})
+
+
+export const uniStat = definePlugin({
+	install(app : VueApp, options : UTSJSONObject) {
+		stat_instance.init(options)
+		app.mixin(lifecycle)
+	}
+})

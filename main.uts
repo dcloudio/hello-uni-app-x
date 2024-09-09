@@ -1,11 +1,23 @@
 // 仅测试 console.log 时机问题
 import './test-main-console.uts'
-
+import { uniStat } from '@/uni_modules/uni-stat/plugin.uts'
 import App from './App.uvue'
 
 import { createSSRApp } from 'vue'
+
+// 统计配置
+const collectItems = {
+	uniStatPageLog: true
+}
+
+const statOptions = {
+	debug: false,
+	collectItems: collectItems,
+}
+
 export function createApp() {
   const app = createSSRApp(App)
+  app.use(uniStat, statOptions)
   // app.mixin({
   //   onReady() {
   //     setTimeout(() => {
