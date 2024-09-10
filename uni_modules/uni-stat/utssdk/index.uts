@@ -1,0 +1,29 @@
+import { Report, ReportOptions, ReportSuccess, ReportFail } from './interface.uts'
+import { Stat } from './common/core/stat.uts'
+const stat = Stat.getInstance()
+
+
+export const report : Report = function (options : ReportOptions) {
+	const name = options.name
+	const option = options.options
+
+	stat.appEvent(name, option, (type : boolean, msg : string) => {
+		if (type) {
+			const res : ReportSuccess = {
+				errMsg: 'report:ok',
+			}
+			options.success?.(res)
+			options.complete?.(res)
+		} else {
+			const err : ReportFail = {
+				errMsg: 'report fail:' + msg,
+			}
+			options.fail?.(err)
+			options.complete?.(err)
+		}
+	})
+}
+
+export { Stat } from './common/core/stat.uts'
+// // --- 导出统计类型 ---
+export { UniStatOptions, UniStatCollectItemsOptions } from './interface.uts'

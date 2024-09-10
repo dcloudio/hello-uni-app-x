@@ -45,6 +45,17 @@
       // observer1.observe({
       //   entryTypes: ['render', 'navigation'],
       // } as PerformanceObserverOptions)
+
+      // 统计上报 - 应用启动
+      uni.report({
+      	name: 'uni-app-launch',
+      	options: res,
+      	success(res_data) {
+      		console.log(res_data);
+      	}, fail(err_data) {
+      		console.log(err_data);
+      	}
+      })
     },
     onShow: function (res : OnShowOptions) {
       this.globalData.onShowOption = res
@@ -60,11 +71,31 @@
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum + 100)
       console.log('App Show')
+
+      // 统计上报 - 应用显示
+      uni.report({
+      	name: 'uni-app-show',
+      	success(res_data) {
+      		console.log(res_data);
+      	}, fail(err_data) {
+      		console.log(err_data);
+      	}
+      })
     },
     onHide: function () {
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum - 100)
       console.log('App Hide')
+
+      // 统计上报 - 应用进入后台
+      uni.report({
+      	name: 'uni-app-hide',
+      	success(res) {
+      		console.log(res);
+      	}, fail(err) {
+      		console.log(err);
+      	}
+      })
     },
     // #ifdef APP-ANDROID
     onLastPageBackPress: function () {
@@ -87,6 +118,18 @@
     },
     onExit() {
       console.log('App Exit')
+    },
+    onError(err : any) {
+    	// 统计上报 - 应用发生错误
+    	uni.report({
+    		name: 'uni-app-error',
+    		options: err,
+    		success(res) {
+    			console.log(res);
+    		}, fail(err) {
+    			console.log(err);
+    		}
+    	})
     },
     // #endif
     methods: {
