@@ -43,10 +43,10 @@
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum + 1)
       const currentPages = getCurrentPages()
-      const parentPage = this.getParentPage()!
+      const parentPage = this.$page.getParentPage()!
       const grandParentPage = parentPage.getParentPage()
       const dialogPages = parentPage.getDialogPages()
-      const dialogPage = this.$dialogPage!
+      const dialogPage = this.$page as UniDialogPage
       if (
         currentPages.length == 1 &&
         grandParentPage == null &&
@@ -126,7 +126,7 @@
       },
       closeThisDialog() {
         uni.closeDialogPage({
-          dialogPage: this.$dialogPage,
+          dialogPage: this.$page as UniDialogPage,
           success(res) {
             console.log('closeThisDialog success', res)
             // 自动化测试
