@@ -1,0 +1,47 @@
+<template>
+	<native-view @init="onviewinit" @customClick="ontap"></native-view>
+</template>
+<script lang="uts">
+	import { NativeButton } from "@/uni_modules/native-button";
+	export default {
+		data() {
+			return {
+				button: null as NativeButton | null,
+				value: ""
+			}
+		},
+		props: {
+			"text": {
+				type: String,
+				default: ''
+			}
+		},
+		watch: {
+			"text": {
+				handler(newValue : string, oldValue : string) {
+					this.value = newValue
+					this.updateText(newValue)
+				},
+				immediate: true
+			},
+		},
+		methods: {
+			//native-view初始化时触发此方法
+			onviewinit(e : UniNativeViewInitEvent) {
+				//获取UniNativeViewElement 传递给NativeButton插件
+				this.button = new NativeButton(e.detail.element);
+				this.button?.updateText(this.value)
+			},
+			ontap(e: UniNativeViewEvent) {
+				this.$emit("buttonTap", e)
+			},
+			updateText(value: string) {
+				this.button?.updateText(value)
+			}
+		},
+		unmounted() {
+			// iOS平台需要主动释放 uts 实例
+			this.button?.destroy()
+		}
+	}
+</script>
