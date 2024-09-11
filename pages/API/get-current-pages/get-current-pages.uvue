@@ -12,7 +12,15 @@
             <text style="margin-top: 5px">index: {{ index }}, route: {{ page.route }}</text>
           </template>
         </view>
+        <button class="uni-common-mt" @click="check$page">check $page</button>
+        <button class="uni-common-mt" @click="checkEventBus">check eventBus</button>
+        <button class="uni-common-mt" @click="checkGetParentPage">check getParentPage</button>
+        <button class="uni-common-mt" @click="checkGetDialogPages">check getDialogPages</button>
+        <button id="check-get-element-by-id-btn" class="uni-common-mt" @click="checkGetElementById">check
+          getElementById</button>
+        <button class="uni-common-mt" @click="checkGetAndroidView">check getAndroidView</button>
       </view>
+
 
       <page-head title="currentPageStyle"></page-head>
       <template v-for="(item, index) in PageStyleArray">
@@ -60,6 +68,7 @@
         pages: [] as Page[],
         PageStyleArray: PageStyleArray as PageStyleItem[],
         currentPageStyle: {} as UTSJSONObject,
+        testing: false
       }
     },
     computed: {
@@ -125,12 +134,86 @@
         uni.navigateTo({
           url: '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh'
         });
-      }
-      // getCurrentPage(): Page {
-      //   const pages = getCurrentPages();
-      //   const currentPage = pages[pages.length - 1];
-      //   return currentPage;
-      // }
+      },
+      getCurrentPage() : UniPage {
+        const pages = getCurrentPages()
+        return pages[pages.length - 1]
+      },
+      check$page() : boolean {
+        const page = this.getCurrentPage()
+        let res = this.$page === page
+        if(this.testing){
+          res = res && page.options.get('test') == '123'
+        }
+        console.log('check $page', res)
+        return res
+      },
+      checkEventBus() : boolean {
+        const page = this.getCurrentPage()
+        let num = 0
+        const fn1 = (args : any | null) => {
+          console.log('fn1 triggred', args)
+          num++
+        }
+        const fn2 = (args : any | null) => {
+          console.log('fn2 triggred', args)
+          num++
+        }
+        const fn3 = (args : any | null) => {
+          console.log('fn3 triggred', args)
+          num++
+        }
+
+        page.on('fn12', fn1)
+        page.on('fn12', fn2)
+        page.once('fn3', fn3)
+
+        page.emit('fn12', { name: 'name' })
+        page.emit('fn12', { age: 20 })
+        page.off('fn12', fn1)
+        page.emit('fn12', null)
+
+        page.emit('fn3', { name: 'name' })
+        page.emit('fn3', { age: 20 })
+        page.emit('fn3', null)
+
+        const res = num == 6
+        console.log('check eventBus', res)
+        return res
+      },
+      checkGetParentPage() : boolean {
+        const page = this.getCurrentPage()
+        const parentPage = page.getParentPage()
+        const res = parentPage == null
+        console.log('check getParentPage', res)
+        return res
+      },
+      checkGetDialogPages() : boolean {
+        const page = this.getCurrentPage()
+        const dialogPages = page.getDialogPages()
+        const res = Array.isArray(dialogPages) && dialogPages.length == 0
+        console.log('check getDialogPages', res)
+        return res
+      },
+      checkGetElementById() : boolean {
+        const page = this.getCurrentPage()
+        const element = page.getElementById('check-get-element-by-id-btn')
+        const res = element != null
+        console.log('check getElementById', res)
+        return res
+      },
+      checkGetAndroidView() : boolean {
+        const page = this.getCurrentPage()
+        const androidView = page.getAndroidView()
+        // #ifdef APP-ANDROID
+        const res = androidView != null
+        // #endif
+        // #ifndef APP-ANDROID
+        const res = androidView == null
+        // #endif
+        console.log('check getAndroidView', res)
+        return res
+      },
     },
   }
 </script>
