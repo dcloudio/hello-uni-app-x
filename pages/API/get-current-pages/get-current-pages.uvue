@@ -198,7 +198,14 @@
       checkGetElementById() : boolean {
         const page = this.getCurrentPage()
         const element = page.getElementById('check-get-element-by-id-btn')
-        const res = element != null
+        let res = element != null
+        // #ifndef APP-ANDROID
+        if(res){
+          const elPage = element.getPage()
+          console.log('elPage', elPage)
+          res = elPage === page
+        }
+        // #endif
         console.log('check getElementById', res)
         return res
       },
