@@ -29,7 +29,7 @@ describe('event trigger', () => {
           clientY: 101,
           screenX: 101,
           screenY: 101
-        },],
+        }, ],
         changedTouches: [{
           identifier: 1,
           pageX: 101,
@@ -38,7 +38,7 @@ describe('event trigger', () => {
           clientY: 101,
           screenX: 101,
           screenY: 101
-        },],
+        }, ],
       })
       const touchStartTouchTargetIdentifier = isAndroid ? '1.0' : '1'
       const touchStartTouchTargetValue = isAndroid ? '101.0' : '101'
@@ -90,7 +90,7 @@ describe('event trigger', () => {
           clientY: 102,
           screenX: 102,
           screenY: 102
-        },],
+        }, ],
       })
 
       const touchMoveTouchTargetIdentifier = isAndroid ? '1.0' : '1'
@@ -142,7 +142,7 @@ describe('event trigger', () => {
           clientY: 103,
           screenX: 103,
           screenY: 103
-        },],
+        }, ],
       })
       const touchEndTouchTargetIdentifier = isAndroid ? '1.0' : '1'
       const touchEndTouchTargetValue = isAndroid ? '103.0' : '103'
@@ -228,38 +228,18 @@ describe('event trigger', () => {
       expect(await longPressChangedTouchScreenY.text()).toBe(longPressTouchTargetValue)
 
       if (isAndroid || isIos) {
-        if (isAndroid) {
-          if (platformInfo.indexOf('6') != -1 && platformInfo.indexOf('x86') == -1) {
-            await program.tap({
-              x: 200,
-              y: 700,
-              duration: 1000
-            })
-          } else if (platformInfo.indexOf('12') != -1) {
-            await program.tap({
-              x: 300,
-              y: 1100,
-              duration: 1000
-            })
-          } else {
-            await program.tap({
-              x: 200,
-              y: 1000,
-              duration: 1000
-            })
-          }
-        } else if (isIos) {
+        if (isIos) {
           // 规避系统授权弹框
           await program.tap({
             x: 100,
             y: 500,
           })
-          await program.tap({
-            x: 200,
-            y: 400,
-            duration: 1000
-          })
         }
+        await program.tap({
+          x: 200,
+          y: 400,
+          duration: 1000
+        })
         const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
         expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
         expect(longPressTouchIdentifierText).toBeTruthy()
@@ -343,7 +323,5 @@ describe('event trigger', () => {
     } else {
       expect(1).toBe(1)
     }
-
-
   })
 })
