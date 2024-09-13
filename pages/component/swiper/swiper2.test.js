@@ -19,9 +19,12 @@ describe('swiper-touch-test', () => {
 
   it('swiper-touch-test', async () => {
 
+    let x = await page.data('swipeX')
+    let y = await page.data('swipeY')
+
     await program.swipe({
-      startPoint: {x: 246,y: 193},
-      endPoint: {x: 1,y: 193},
+      startPoint: {x: x,y: y},
+      endPoint: {x: 10,y: y},
       duration: 200
     })
 
