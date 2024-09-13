@@ -5,7 +5,7 @@
     <view>
       <page-head title="swiper,可滑动视图"></page-head>
       <view class="uni-margin-wrap">
-        <swiper class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect"
+        <swiper id="swiper-view" class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect"
           :rebound="reboundSelect" :interval="intervalSelect" :circular="circularSelect"
           :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive"
           :disable-touch="disableTouchSelect" :current="currentVal" :current-item-id="currentItemIdVal"
@@ -122,8 +122,17 @@
         animationfinishDetailTest: null as UniSwiperAnimationFinishEventDetail | null,
         isChangeTest: '',
         isTransitionTest: '',
-        isAnimationfinishTest: ''
+        isAnimationfinishTest: '',
+        swipeX: 0,
+        swipeY: 0
       }
+    },
+    onReady() {
+      // 获取模拟滑动手势的起始点
+      let ele = uni.getElementById("swiper-view")
+      let eleRect = ele?.getBoundingClientRect()
+      this.swipeX = eleRect!.width - 10
+      this.swipeY += eleRect!.y + uni.getSystemInfoSync().safeArea.top + 44 + 35
     },
     methods: {
       swipertouchStart(e: UniTouchEvent) {
