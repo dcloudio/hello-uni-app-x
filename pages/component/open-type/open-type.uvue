@@ -1,0 +1,36 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <button id="opentype"  style="margin: 12px;" type="primary" open-type="agreePrivacyAuthorization" @click="agree">agreePrivacyAuthorization</button>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        isAgreeRes: false,
+        log: "",
+      }
+    },
+    methods: {
+      agree() {
+        // #ifdef APP-ANDROID
+
+        let res = UTSAndroid.isPrivacyAgree()
+        this.isAgreeRes = res
+         uni.showToast({
+           title:'isPrivacyAgree:'+res
+         })
+        // #endif
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>
