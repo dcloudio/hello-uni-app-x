@@ -10,45 +10,39 @@ describe('inner-audio', () => {
     await page.waitFor('view');
   });
 
-  function getData(key = '') {
-    return new Promise(async (resolve, reject) => {
-      const data = await page.data()
-      resolve(key ? data[key] : data)
-    })
-  }
-
   it('onCanplay',async()=>{
     await page.waitFor(1000)
     await page.waitFor(async()=>{
-      return await getData('isCanplay')
+      return await page.data('isCanplay')
     })
-    expect(await getData('buffered')).toBeGreaterThan(0)
+    expect(await page.data('buffered')).toBeGreaterThan(0)
   })
 
   it('play-onPlay-onTimeUpdate', async () => {
     await page.callMethod('play')
     await page.waitFor(3000);
-    expect(await getData('isPlaying')).toBeTruthy()
-    console.log("duration：",await getData('duration'),"currentTime：",await getData('currentTime'))
-    expect(await getData('duration')).toBeCloseTo(175.109, 0);
-    // console.log("isPaused",await getData('isPaused'))
-    // expect(await getData('currentTime')).toBeGreaterThan(0);
-    // expect(await getData('isPaused')).toBeFalsy();
+    expect(await page.data('isPlaying')).toBeTruthy()
+    console.log("duration：",await page.data('duration'),"currentTime：",await page.data('currentTime'))
+    expect(await page.data('duration')).toBeCloseTo(175.109, 0);
+    // console.log("isPaused",await page.data('isPaused'))
+    // expect(await page.data('currentTime')).toBeGreaterThan(0);
+    // expect(await page.data('isPaused')).toBeFalsy();
   });
 
   it('seek-onSeeking-onSeeked', async () => {
     await page.callMethod('onchange',20)
     await page.waitFor(500);
-    expect(await getData('onSeekingTest')).toBeTruthy();
-    // expect(await getData('onWaitingTest')).toBeTruthy();
-    expect(await getData('onSeekedTest')).toBeTruthy();
+    console.log("seek-onSeeking-onSeeked：",await page.data())
+    expect(await page.data('onSeekingTest')).toBeTruthy();
+    // expect(await page.data('onWaitingTest')).toBeTruthy();
+    expect(await page.data('onSeekedTest')).toBeTruthy();
   });
 
   it('pause-onPause', async () => {
     await page.callMethod('pause')
     await page.waitFor(500);
-    expect(await getData('isPlaying')).toBeFalsy()
-    // expect(await getData('isPaused')).toBeTruthy();
+    expect(await page.data('isPlaying')).toBeFalsy()
+    // expect(await page.data('isPaused')).toBeTruthy();
   });
 
   it('stop-onStop', async () => {
@@ -58,8 +52,8 @@ describe('inner-audio', () => {
     await page.callMethod('stop')
     await page.callMethod('stop')
     await page.waitFor(1000);
-    expect(await getData('isPlaying')).toBeFalsy()
-    // expect(await getData('isPaused')).toBeTruthy();
+    expect(await page.data('isPlaying')).toBeFalsy()
+    // expect(await page.data('isPaused')).toBeTruthy();
   });
 
   it('onEnded', async () => {
@@ -67,7 +61,7 @@ describe('inner-audio', () => {
     await page.waitFor(500);
     await page.callMethod('play')
     await page.waitFor(3000);
-    // expect(await getData('isPlayEnd')).toBeTruthy();
+    // expect(await page.data('isPlayEnd')).toBeTruthy();
   });
 
 });
