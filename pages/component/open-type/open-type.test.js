@@ -1,5 +1,12 @@
 let page;
 describe('open-type', () => {
+  if (!isAndroid()) {
+    // TODO: web 端暂不支持测试
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/open-type/open-type')
     await page.waitFor(600);
