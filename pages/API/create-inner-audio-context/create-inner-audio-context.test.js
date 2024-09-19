@@ -20,7 +20,8 @@ describe('inner-audio', () => {
 
   it('play-onPlay-onTimeUpdate', async () => {
     await page.callMethod('play')
-    await page.waitFor(3000);
+    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 5000:3000
+    await page.waitFor(waitTime)
     expect(await page.data('isPlaying')).toBeTruthy()
     console.log("duration：",await page.data('duration'),"currentTime：",await page.data('currentTime'))
     expect(await page.data('duration')).toBeCloseTo(175.109, 0);
@@ -29,9 +30,14 @@ describe('inner-audio', () => {
     // expect(await page.data('isPaused')).toBeFalsy();
   });
 
+  it('screenshot', async () => {
+    expect(await program.screenshot()).toSaveImageSnapshot();
+  });
+
   it('seek-onSeeking-onSeeked', async () => {
     await page.callMethod('onchange',20)
-    await page.waitFor(500);
+    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 1500:500
+    await page.waitFor(waitTime)
     console.log("seek-onSeeking-onSeeked：",await page.data())
     expect(await page.data('onSeekingTest')).toBeTruthy();
     // expect(await page.data('onWaitingTest')).toBeTruthy();
