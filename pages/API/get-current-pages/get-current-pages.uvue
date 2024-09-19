@@ -92,7 +92,7 @@
         this.pages.length = 0
         const pages = getCurrentPages()
         this.pages.push(new Page(pages[0].route))
-        if (this.pages[0].route.includes('/tabBar/')) {
+        if (this.pages[0].route.includes('/tabBar/') || this.pages[0].route == '/') {
           this.checked = true
         }
         for (let i = 1; i < pages.length; i++) {
@@ -142,8 +142,14 @@
       check$page() : boolean {
         const page = this.getCurrentPage()
         let res = this.$page === page
-        if(this.testing){
-          res = res && page.options.get('test') == '123' && page.route == 'pages/API/get-current-pages/get-current-pages'
+        if (this.testing) {
+          res = res && page.options.get('test') == '123'
+          // #ifdef WEB
+          res = page.route == '/pages/API/get-current-pages/get-current-pages'
+          // #endif
+          // #ifndef WEB
+          res = page.route == 'pages/API/get-current-pages/get-current-pages'
+          // #endif
         }
         console.log('check $page', res)
         return res
@@ -200,7 +206,7 @@
         const element = page.getElementById('check-get-element-by-id-btn')
         let res = element != null
         // #ifndef APP-ANDROID
-        if(res){
+        if (res) {
           const elPage = element!.getPage()
           console.log('elPage', elPage)
           res = elPage === page
