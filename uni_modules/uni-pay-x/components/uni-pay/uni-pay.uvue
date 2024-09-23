@@ -585,6 +585,33 @@
 				// #endif
 				// #ifdef APP-IOS
 				const virtualPaymentManager = uni.getVirtualPaymentManager();
+				if (options.apple_virtual['product_type'] == 'nonconsumable') {
+					uni.showLoading({
+						title: "请求中...",
+						mask: true
+					})
+					let purchased = await new Promise((resolve, reject) => {
+						 // 如果是非消耗性产品只能购买一次，需要先判断下
+						 virtualPaymentManager.restoreTransactions({
+							 success: (res) => {
+								 let transactions = res.transactions;
+								 let index = res.transactions.findIndex(transaction => {
+									 return transaction.productId == options.apple_virtual['product_id']
+								 })
+								 resolve(index > -1 ? true : false);
+							 }
+						 });
+					});
+					uni.hideLoading()
+					if (purchased) {
+						uni.showModal({
+							title: "提示",
+							content: "您已购买过此商品，请勿重复购买",
+							showCancel: false
+						});
+						return;
+					}
+				}
 				let createOrderData = {
 					provider: options.provider,
 					total_fee: options.total_fee,

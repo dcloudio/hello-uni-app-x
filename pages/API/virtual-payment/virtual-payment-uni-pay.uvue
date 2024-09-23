@@ -48,6 +48,7 @@
             "goods_price": 1, // 单价（元）
             "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
             "product_id": this.isDebug() ? "uniappx.consumable.sponsor_1" : "uniappx.consumable.sponsor1",
+            "product_type": "consumable", // 消耗性类型
             "title": "消耗性产品：赞助"
           },
           {
@@ -55,6 +56,7 @@
             "goods_price": 5, // 单价（元）
             "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
             "product_id": this.isDebug() ? "uniappx.consumable.sponsor_50" : "uniappx.consumable.sponsor50",
+            "product_type": "consumable", // 消耗性类型
             "title": "消耗性产品：赞助"
           },
           {
@@ -62,6 +64,7 @@
             "goods_price": 1, // 单价（元）
             "buy_quantity": 1, // 数量（非消耗性: 数量只能是1，且一个该类型产品一个appleId只能购买一次）
             "product_id": this.isDebug() ? "uniappx.nonconsumable.sponsorskin_1" : "uniappx.nonconsumable.sponsorskin1",
+            "product_type": "nonconsumable", // 非消耗性类型
             "title": "非消耗性产品: 赞助"
           },
           // {
@@ -69,6 +72,7 @@
           //   "goods_price": 1, // 单价（元）
           //   "buy_quantity": 1, // 数量（自动续期订阅产品: 数量只能是1）
           //   "product_id": this.isDebug() ? "uniappx.autorenewable.monthly_1" : "uniappx.autorenewable.monthly1",
+          //   "product_type": "autorenewable", // 自动续期订阅产品
           //   "title": "自动续期订阅产品：每月定期赞助", // 注意自动续期订阅产品在沙盒模式下，实际周期会缩短到几分钟续期一次（即现实世界几分钟 = 沙盒世界1个月）
           // },
           {
@@ -76,6 +80,7 @@
             "goods_price": 1, // 单价（元）
             "buy_quantity": 1, // 数量（非自动续期订阅产品: 数量只能是1）
             "product_id": this.isDebug() ? "uniappx.nonrenewable.monthly_1" : "uniappx.nonrenewable.monthly1",
+            "product_type": "nonrenewable", // 非自动续期订阅产品
             "title": "非自动续期订阅产品：月赞助",
           },
           // {
@@ -83,6 +88,7 @@
           //   "goods_price": 1, // 单价（元）
           //   "buy_quantity": 1, // 数量
           //   "product_id": "uniappx.nonrenewable.none",
+          //   "product_type": "consumable", // 消耗性类型
           //   "title": "测试不存在的产品"
           // }
         ] as Array<UTSJSONObject>
@@ -113,6 +119,7 @@
         });
         let buy_quantity = productInfo.getNumber('buy_quantity') || 1;
         let goods_price = productInfo.getNumber('goods_price');
+        let product_type = productInfo['product_type'];
         // 发起支付
         this.$refs.payRef.createOrder({
           provider: "appleiap", // 支付供应商（这里固定为appleiap，代表苹果虚拟支付）
@@ -126,6 +133,7 @@
             product_id: this.product_id, // 产品id
             goods_price: goods_price, // 单价
             buy_quantity: buy_quantity, // 购买数量
+            product_type: product_type // 产品类型
           },
           // 自定义数据
           custom: {}
