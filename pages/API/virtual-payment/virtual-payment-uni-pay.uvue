@@ -29,52 +29,7 @@
 
         loading: false, // 支付按钮是否在loading中
         disabled: true, // 支付按钮是否禁用
-        product_id: "", // 用户选择的商品id
-        // 出售的苹果虚拟商品列表
-        productList: [
-          {
-            "description": "为DCloud提供的免费软件进行赞助",
-            "goods_price": 1, // 单价（元）
-            "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
-            "product_id": "uniappx.consumable.sponsor_1",
-            "title": "消耗性产品：赞助"
-          },
-          {
-            "description": "为DCloud提供的免费软件进行赞助",
-            "goods_price": 5, // 单价（元）
-            "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
-            "product_id": "uniappx.consumable.sponsor_50",
-            "title": "消耗性产品：赞助"
-          },
-          {
-            "description": "为DCloud提供的免费软件进行赞助",
-            "goods_price": 1, // 单价（元）
-            "buy_quantity": 1, // 数量（非消耗性: 数量只能是1，且一个该类型产品一个appleId只能购买一次）
-            "product_id": "uniappx.nonconsumable.sponsorskin_1",
-            "title": "非消耗性产品: 赞助"
-          },
-          {
-            "description": "为DCloud提供的免费软件进行赞助",
-            "goods_price": 1, // 单价（元）
-            "buy_quantity": 1, // 数量（自动续期订阅产品: 数量只能是1）
-            "product_id": "uniappx.autorenewable.monthly_1",
-            "title": "自动续期订阅产品：每月定期赞助", // 注意自动续期订阅产品在沙盒模式下，实际周期会缩短到几分钟续期一次（即现实世界几分钟 = 沙盒世界1个月）
-          },
-          {
-            "description": "为DCloud提供的免费软件进行赞助",
-            "goods_price": 1, // 单价（元）
-            "buy_quantity": 1, // 数量（非自动续期订阅产品: 数量只能是1）
-            "product_id": "uniappx.nonrenewable.monthly_1",
-            "title": "非自动续期订阅产品：月赞助",
-          },
-          {
-            "description": "为DCloud提供的免费软件进行赞助",
-            "goods_price": 1, // 单价（元）
-            "buy_quantity": 1, // 数量
-            "product_id": "uniappx.nonrenewable.none",
-            "title": "测试不存在的产品"
-          }
-        ] as Array<UTSJSONObject>,
+        product_id: "" // 用户选择的商品id
       }
     },
     onLoad: function () {
@@ -84,6 +39,55 @@
 
     },
     onUnload() { },
+    computed: {
+      // 出售的苹果虚拟商品列表
+      productList() {
+        return [
+          {
+            "description": "为DCloud提供的免费软件进行赞助",
+            "goods_price": 1, // 单价（元）
+            "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
+            "product_id": this.isDebug() ? "uniappx.consumable.sponsor_1" : "uniappx.consumable.sponsor1",
+            "title": "消耗性产品：赞助"
+          },
+          {
+            "description": "为DCloud提供的免费软件进行赞助",
+            "goods_price": 5, // 单价（元）
+            "buy_quantity": 1, // 数量（消耗性类型: 数量默认是1，最大值是10）
+            "product_id": this.isDebug() ? "uniappx.consumable.sponsor_50" : "uniappx.consumable.sponsor50",
+            "title": "消耗性产品：赞助"
+          },
+          {
+            "description": "为DCloud提供的免费软件进行赞助",
+            "goods_price": 1, // 单价（元）
+            "buy_quantity": 1, // 数量（非消耗性: 数量只能是1，且一个该类型产品一个appleId只能购买一次）
+            "product_id": this.isDebug() ? "uniappx.nonconsumable.sponsorskin_1" : "uniappx.nonconsumable.sponsorskin1",
+            "title": "非消耗性产品: 赞助"
+          },
+          // {
+          //   "description": "为DCloud提供的免费软件进行赞助",
+          //   "goods_price": 1, // 单价（元）
+          //   "buy_quantity": 1, // 数量（自动续期订阅产品: 数量只能是1）
+          //   "product_id": this.isDebug() ? "uniappx.autorenewable.monthly_1" : "uniappx.autorenewable.monthly1",
+          //   "title": "自动续期订阅产品：每月定期赞助", // 注意自动续期订阅产品在沙盒模式下，实际周期会缩短到几分钟续期一次（即现实世界几分钟 = 沙盒世界1个月）
+          // },
+          {
+            "description": "为DCloud提供的免费软件进行赞助",
+            "goods_price": 1, // 单价（元）
+            "buy_quantity": 1, // 数量（非自动续期订阅产品: 数量只能是1）
+            "product_id": this.isDebug() ? "uniappx.nonrenewable.monthly_1" : "uniappx.nonrenewable.monthly1",
+            "title": "非自动续期订阅产品：月赞助",
+          },
+          // {
+          //   "description": "为DCloud提供的免费软件进行赞助",
+          //   "goods_price": 1, // 单价（元）
+          //   "buy_quantity": 1, // 数量
+          //   "product_id": "uniappx.nonrenewable.none",
+          //   "title": "测试不存在的产品"
+          // }
+        ] as Array<UTSJSONObject>
+      }
+    },
     methods: {
       // 支付组件加载完毕后执行
       onMounted(insideData : any) {
@@ -160,6 +164,26 @@
       },
       applePriceClick(item : any) {
         this.product_id = item['product_id'] as string;
+      },
+      getPackageName() : string {
+        const res = uni.getAppBaseInfo();
+        let packageName : string = ""
+
+        // #ifdef APP-ANDROID
+        packageName = res.packageName
+        // #endif
+
+        // #ifdef APP-IOS
+        packageName = res.bundleId
+        // #endif
+
+        return packageName
+      },
+      isDebug() : boolean {
+        if (this.getPackageName() == 'io.dcloud.uniappx') {
+          return true
+        }
+        return false
       }
     }
   }
