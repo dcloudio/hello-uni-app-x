@@ -20,6 +20,7 @@
           <text>接收到的 obj 参数：</text>
           <text>{{JSON.stringify(objArg)}}</text>
         </view>
+        <button @click="testReturnId">测试返回 id</button>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -71,6 +72,19 @@
       clear() {
         this.log.length = 0
       },
+      testReturnId(){
+        const id1 = uni.$on('test-return-id', this.fn)
+        uni.$emit('test-return-id', '触发 test-return-id $on fn')
+        uni.$off('test-return-id', id1)
+        uni.$emit('test-return-id', '触发 test-return-id $on fn')
+
+        uni.$once('test-return-id', this.fn)
+        uni.$emit('test-return-id', '触发 test-return-id $once fn')
+        uni.$emit('test-return-id', '触发 test-return-id $once fn')
+        const id2 = uni.$once('test-id', this.fn)
+        uni.$off('test-return-id', id2)
+        uni.$emit('test-return-id', '触发 test-return-id $once fn')
+      }
     },
   }
 </script>
