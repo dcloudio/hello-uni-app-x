@@ -9,7 +9,6 @@
       <!-- #ifdef APP-ANDROID -->
        <button class="uni-common-mt" id="privacy_test" @click="privacy">隐私协议</button>
       <!-- #endif -->
-
   </view>
 </template>
 
@@ -44,43 +43,23 @@
         })
       },
       openDialog1() {
-        const dialogPage = uni.openDialogPage({
-            url: '/pages/API/dialog-page/dialog-1?name=dialog1',
-            success(res) {
-              console.log('openDialogPage1 success', res)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum + 1)
-            },
-            fail(err) {
-              console.log('openDialogPage1 fail', err)
-              setLifeCycleNum(state.lifeCycleNum - 4)
-            },
-            complete(res) {
-              console.log('openDialogPage1 complete', res)
-              // 自动化测试
-              setLifeCycleNum(state.lifeCycleNum + 1)
-            }
-          }) !
-          const fn1 = (options: any | null) => {
-            console.log('dialogPage1 be triggered fn1', options)
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+          success(res) {
+            console.log('openDialogPage1 success', res)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(err) {
+            console.log('openDialogPage1 fail', err)
+            setLifeCycleNum(state.lifeCycleNum - 4)
+          },
+          complete(res) {
+            console.log('openDialogPage1 complete', res)
+            // 自动化测试
             setLifeCycleNum(state.lifeCycleNum + 1)
           }
-        const fn11 = (options: any | null) => {
-          console.log('dialogPage1 be triggered fn11', options)
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        }
-        const fn2 = (options: any | null) => {
-          console.log('dialogPage1 be triggered fn2', options)
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        }
-        const fnOnce = (options: any | null) => {
-          console.log('dialogPage1 be triggered fnOnce', options)
-          setLifeCycleNum(state.lifeCycleNum + 1)
-        }
-        dialogPage.on('fn1', fn1)
-        dialogPage.on('fn1', fn11)
-        dialogPage.on('fn2', fn2)
-        dialogPage.once('fnOnce', fnOnce)
+        })
       },
       openDialog2() {
         uni.openDialogPage({
@@ -194,12 +173,7 @@
       },
       getLifeCycleNum(): number {
         return state.lifeCycleNum
-      },
-      privacy() {
-          uni.openDialogPage({
-            url: '/pages/API/dialog-page/dialog-privacytest',
-          })
-      },
+      }
     }
   }
 </script>
