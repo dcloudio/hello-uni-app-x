@@ -39,9 +39,6 @@
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
-        <button class="uni-common-mt" @click="checkEventBus">
-          check eventBus
-        </button>
         <button class="uni-common-mt" @click="checkGetAndroidApplication">
           check getAndroidApplication
         </button>
@@ -173,39 +170,6 @@
       // 自动化测试
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
-      },
-      checkEventBus() : boolean {
-        const app = getApp()
-        let num = 0
-        const fn1 = (args : any | null) => {
-          console.log('fn1 triggred', args)
-          num++
-        }
-        const fn2 = (args : any | null) => {
-          console.log('fn2 triggred', args)
-          num++
-        }
-        const fn3 = (args : any | null) => {
-          console.log('fn3 triggred', args)
-          num++
-        }
-
-        app.on('fn12', fn1)
-        app.on('fn12', fn2)
-        app.once('fn3', fn3)
-
-        app.emit('fn12', { name: 'name' })
-        app.emit('fn12', { age: 20 })
-        app.off('fn12', fn1)
-        app.emit('fn12', null)
-
-        app.emit('fn3', { name: 'name' })
-        app.emit('fn3', { age: 20 })
-        app.emit('fn3', null)
-
-        const res = num == 6
-        console.log('check eventBus', res)
-        return res
       },
       checkGetAndroidApplication() : boolean {
         const app = getApp()
