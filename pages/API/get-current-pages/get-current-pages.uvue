@@ -13,7 +13,6 @@
           </template>
         </view>
         <button class="uni-common-mt" @click="check$page">check $page</button>
-        <button class="uni-common-mt" @click="checkEventBus">check eventBus</button>
         <button class="uni-common-mt" @click="checkGetParentPage">check getParentPage</button>
         <button class="uni-common-mt" @click="checkGetDialogPages">check getDialogPages</button>
         <button id="check-get-element-by-id-btn" class="uni-common-mt" @click="checkGetElementById">check
@@ -152,39 +151,6 @@
           // #endif
         }
         console.log('check $page', res)
-        return res
-      },
-      checkEventBus() : boolean {
-        const page = this.getCurrentPage()
-        let num = 0
-        const fn1 = (args : any | null) => {
-          console.log('fn1 triggred', args)
-          num++
-        }
-        const fn2 = (args : any | null) => {
-          console.log('fn2 triggred', args)
-          num++
-        }
-        const fn3 = (args : any | null) => {
-          console.log('fn3 triggred', args)
-          num++
-        }
-
-        page.on('fn12', fn1)
-        page.on('fn12', fn2)
-        page.once('fn3', fn3)
-
-        page.emit('fn12', { name: 'name' })
-        page.emit('fn12', { age: 20 })
-        page.off('fn12', fn1)
-        page.emit('fn12', null)
-
-        page.emit('fn3', { name: 'name' })
-        page.emit('fn3', { age: 20 })
-        page.emit('fn3', null)
-
-        const res = num == 6
-        console.log('check eventBus', res)
         return res
       },
       checkGetParentPage() : boolean {

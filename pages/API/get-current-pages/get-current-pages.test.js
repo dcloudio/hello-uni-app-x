@@ -66,10 +66,6 @@ describe('getCurrentPages', () => {
     const res = await page.callMethod('check$page')
     expect(res).toBe(true)
   })
-  it('eventBus', async () => {
-    const res = await page.callMethod('checkEventBus')
-    expect(res).toBe(true)
-  })
   it('getParentPage', async () => {
     const res = await page.callMethod('checkGetParentPage')
     expect(res).toBe(true)
