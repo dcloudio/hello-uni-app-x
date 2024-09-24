@@ -3,7 +3,7 @@ const PAGE_PATH = '/pages/component/rich-text/rich-text'
 describe('rich-text-test', () => {
 
   // 先屏蔽 android 及 web 平台
-  if (process.env.uniTestPlatformInfo.startsWith('android') || process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (process.env.uniTestPlatformInfo.startsWith('web')) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -32,5 +32,24 @@ describe('rich-text-test', () => {
     console.log('afterValue:', afterValue)
     expect(beforeValue).toBe(afterValue)
   })
+
+  it('test selectable itemclick', async () => {
+    await page.setData({
+      autoTest: true,
+      isItemClickTrigger: false
+    });
+    await page.waitFor(1000);
+    const info = await page.callMethod('getWindowInfoForTest');
+    const rect = await page.callMethod('getBoundingClientRectForTest');
+    await program.tap({
+      x: (rect.right - rect.left) / 2,
+      y: info.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
+    });
+    await page.waitFor(1000);
+    expect(await page.data('isItemClickTrigger')).toBe(true);
+    await page.setData({
+      autoTest: false
+    });
+  });
 
 })
