@@ -42,7 +42,7 @@ describe('component-native-web-view', () => {
       const info = await page.callMethod('getWindowInfo');
       await program.tap({
         x: 1,
-        y: (info.statusBarHeight + 44) * info.pixelRatio + 1
+        y: info.statusBarHeight + 44 + 1
       });
       start = Date.now();
       await page.waitFor(async () => {
@@ -66,7 +66,7 @@ describe('component-native-web-view', () => {
       await page.waitFor(100);
       await program.tap({
         x: 10,
-        y: (info.statusBarHeight + 44) * info.pixelRatio + 10
+        y: info.statusBarHeight + 44 + 10
       });
       start = Date.now();
       await page.waitFor(async () => {
