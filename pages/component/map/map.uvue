@@ -1,90 +1,141 @@
 <template>
   <view class="content">
-    <map class="map" id="map1" ref="map1" :controls="controls" :scale="scale" :longitude="location.longitude"
-      :latitude="location.latitude" :show-location="showLocation" :enable-3D="enable3D" :rotate="rotate" :skew="skew"
+    <map class="map" id="map1" ref="map1" :longitude="location.longitude" :latitude="location.latitude" :scale="scale"
+      :markers="markers" :include-points="includePoints" :polyline="polyline" :polygons="polygons" :circles="circles"
+      :controls="controls" :show-location="showLocation" :enable-3D="enable3D" :rotate="rotate" :skew="skew"
       :show-compass="showCompass" :enable-overlooking="enableOverlooking" :enable-zoom="enableZoom"
       :enable-scroll="enableScroll" :enable-rotate="enableRotate" :enable-satellite="enableSatellite"
-      :enable-traffic="enableTraffic" :markers="markers" :polyline="polyline" :circles="circles" :polygons="polygons"
-      :include-points="includePoints" @tap="maptap" @controltap="oncontroltap" @markertap="onmarkertap"
-      @callouttap="oncallouttap" @poitap="onpoitap" @updated="onupdated" @regionchange="onregionchange"></map>
+      :enable-traffic="enableTraffic" @markertap="onmarkertap" @callouttap="oncallouttap" @controltap="oncontroltap"
+      @regionchange="onregionchange" @tap="maptap" @updated="onupdated" @poitap="onpoitap"></map>
     <scroll-view class="scrollview" scroll-y="true">
+      <view class="tips">注意：需要正确配置地图服务商的Key才能正常显示地图组件</view>
+      <view class="uni-title">
+        <text class="uni-title-text">属性示例</text>
+      </View>
+      <input-data defaultValue="13" title="scale: 缩放级别，取值范围为5-18" type="number"
+        @confirm="confirm_scale_input"></input-data>
+      <boolean-data :defaultValue="showLocation" title="开启显示带有方向的当前定位点" @change="change_show_location"></boolean-data>
 
-      <button class="button" @click="changeScale">changeScale</button>
-      <button class="button" @click="addMarkers">addMarkers</button>
-      <button class="button" @click="addPolyline">addPolyline</button>
-      <button class="button" @click="addPolygons">addPolygons</button>
-      <button class="button" @click="addCircles">addCircles</button>
-      <button class="button" @click="includePoint">includePoints</button>
-      <button class="button" @click="handleGetCenterLocation">getCenterLocation</button>
-      <button class="button" @click="handleGetRegion">getRegion</button>
-      <button class="button" @click="handleTranslateMarker">translateMarker</button>
+      <button class="button" @click="addControls">控件</button>
+      <button class="button" @click="addMarkers">标记点</button>
+      <button class="button" @click="addMarkersLabel">为标记点旁边增加标签</button>
+      <button class="button" @click="addPolyline">路线</button>
+      <button class="button" @click="addPolygons">多边形</button>
+      <button class="button" @click="addCircles">圆</button>
+      <button class="button" @click="includePoint">缩放视野以包含所有给定的坐标点</button>
+      <view class="uni-title">
+        <text class="uni-title-text">方法示例</text>
+      </View>
+      <button class="button" @click="handleGetCenterLocation">获取当前地图中心的经纬度</button>
+      <button class="button" @click="handleGetRegion">获取当前地图的视野范围</button>
+      <button class="button" @click="handleTranslateMarker">平移marker</button>
+      <button class="button" @click="handleMoveToLocation">将地图中心移动到当前定位点</button>
+      <button class="button" @click="handleGetScale">获取当前地图的缩放级别</button>
 
     </scroll-view>
   </view>
 </template>
 
-<script lang="uts">
+<script setup lang="uts">
   type Anchor = {
-    x : number,
-    y : number
+    x: number,
+    y: number
   }
 
   type Callout = {
-    content : string,
-    color : string,
-    fontSize : number,
-    borderRadius : number,
-    borderWidth : number,
-    borderColor : string,
-    bgColor : string,
-    padding : string,
-    display : string
+    content: string,
+    color: string,
+    fontSize: number,
+    borderRadius: number,
+    borderWidth: number,
+    borderColor: string,
+    bgColor: string,
+    padding: number,
+    display: string
+  }
+
+  type Label = {
+    content: string,
+    color: string,
+    fontSize: number,
+    x: number,
+    y: number,
+    borderColor: string
+    borderWidth: number,
+    borderRadius: number,
+    bgColor: string,
+    padding: number
   }
 
   type Markers = {
-    id : string | number,
-    latitude : number,
-    longitude : number,
-    title : string
-    zIndex : string,
-    iconPath : string,
-    rotate ?: number,
-    width : number,
-    height : number,
-    anchor : Anchor,
-    callout : Callout
+    id: number,
+    latitude: number,
+    longitude: number,
+    title?: string,
+    iconPath: string,
+    zIndex?: string,
+    rotate?: number,
+    width?: number,
+    height?: number,
+    label?: Label,
+    anchor?: Anchor,
+    callout?: Callout
   }
 
   type Points = {
-    latitude : number,
-    longitude : number
+    latitude: number,
+    longitude: number
   }
 
   type Polyline = {
-    points : Points[],
-    color : string,
-    width : number,
-    dottedLine : boolean,
-    arrowLine : boolean,
-    borderColor : string,
-    borderWidth : number
+    points: Points[],
+    color: string,
+    width: number,
+    dottedLine: boolean,
+    arrowLine: boolean,
+    borderColor: string,
+    borderWidth: number
   }
 
   type Polygons = {
-    points : Points[];
-    fillColor : string;
-    strokeWidth : number;
-    strokeColor : string;
-    zIndex : number;
+    points: Points[];
+    fillColor: string;
+    strokeWidth: number;
+    strokeColor: string;
+    zIndex: number;
   }
 
   type Circles = {
-    latitude : number;
-    longitude : number;
-    radius : number;
-    strokeWidth : number;
-    color : string;
-    fillColor : string;
+    latitude: number;
+    longitude: number;
+    radius: number;
+    strokeWidth: number;
+    color: string;
+    fillColor: string;
+  }
+
+  type PositionType = {
+    left: number,
+    top: number,
+    width: number,
+    height: number
+  }
+
+  type ControlsType = {
+    id?: number;
+    position: PositionType;
+    iconPath: string;
+    clickable?: boolean;
+  }
+
+  type TypeJestResult = {
+    translateMarkerMsg: string,
+    animationEnd: boolean,
+    centerPoints: Points,
+    southwest: Points,
+    northeast: Points,
+    moveToLocationMsg: string,
+    scale: number
   }
 
   const testMarkers = [{
@@ -109,7 +160,7 @@
       borderWidth: 1,
       borderColor: '#333300',
       bgColor: '#CCFF99',
-      padding: '5',
+      padding: 5,
       display: 'ALWAYS'
     }
   },
@@ -130,15 +181,16 @@
       content: '首都北京\n天安门',
       color: '#00BFFF',
       fontSize: 12,
-      borderRadius: 2,
-      borderWidth: 0,
+      borderRadius: 10,
+      borderWidth: 2,
       borderColor: '#333300',
       bgColor: '#CCFF11',
-      padding: '1',
+      padding: 5,
       display: 'ALWAYS'
     }
   }
   ];
+
 
   const testPolyline = [{
     points: [{
@@ -179,7 +231,7 @@
     }],
     color: '#CCFFFF',
     width: 5,
-    dottedLine: true,
+    dottedLine: false,
     arrowLine: true,
     borderColor: '#CC0000',
     borderWidth: 3
@@ -269,169 +321,318 @@
   }
   ];
 
-  export default {
-    data() {
-      return {
-        location: {
-          longitude: 116.3974770000,
-          latitude: 39.9086920000
-        },
-        controls: [{
-          id: 1,
-          position: {
-            left: 5,
-            top: 180,
-            width: 30,
-            height: 30
-          },
-          iconPath: '../../../static/uni.png',
-          clickable: true
-        }],
-        showLocation: false,
-        scale: 13,
-        showCompass: true,
-        enable3D: true,
-        enableOverlooking: true,
-        enableZoom: true,
-        enableScroll: true,
-        enableRotate: true,
-        enableSatellite: false,
-        enableTraffic: false,
-        polyline: [] as Polyline[],
-        markers: [] as Markers[],
-        polygons: [] as Polygons[],
-        circles: [] as Circles[],
-        includePoints: [] as Points[],
-        rotate: 0,
-        skew: 0,
-        map: null as MapContext | null,
-        // 自动化测试
-        autoTest: false,
-        getCenterLocationTest:{},
-        getRegionTest:{},
-      }
-    },
-    onReady() {
-      this.map = uni.createMapContext("map1", this);
-    },
-    methods: {
-      changeScale() {
-        this.scale = this.scale == 9 ? 15 : 9;
-      },
-      enableThreeD(e) {
-        this.enable3D = e.detail.value;
-      },
-      changeShowCompass(e) {
-        this.showCompass = e.detail.value;
-      },
-      changeEnableOverlooking(e) {
-        this.enableOverlooking = e.detail.value;
-      },
-      changeEnableZoom(e) {
-        this.enableZoom = e.detail.value;
-      },
-      changeEnableScroll(e) {
-        this.enableScroll = e.detail.value;
-      },
-      changeEnableRotate(e) {
-        this.enableRotate = e.detail.value;
-      },
-      changeEnableSatellite(e) {
-        this.enableSatellite = e.detail.value;
-      },
-      changeEnableTraffic(e) {
-        this.enableTraffic = e.detail.value;
-      },
-      addMarkers() {
-        this.markers = testMarkers;
-      },
-      addPolyline() {
-        this.polyline = testPolyline;
-      },
 
-      addPolygons() {
-        this.polygons = testPolygons;
-      },
-
-      addCircles() {
-        this.circles = testCircles;
-      },
-      includePoint() {
-        this.includePoints = testIncludePoints;
-      },
-      handleGetCenterLocation() {
-        this.map!.getCenterLocation({
-          success: ret => {
-            console.log(JSON.stringify(ret));
-            this.getCenterLocationTest = ret
-            if(!this.autoTest){
-              uni.showModal({
-                content: JSON.stringify(ret)
-              })
-            }
-          }
-        })
-      },
-      handleGetRegion() {
-        this.map!.getRegion({
-          success: ret => {
-            console.log(JSON.stringify(ret));
-            this.getRegionTest = ret
-            if(!this.autoTest){
-              uni.showModal({
-                content: JSON.stringify(ret)
-              })
-            }
-          }
-        })
-      },
-
-      handleTranslateMarker() {
-        this.map!.translateMarker({
-          markerId: 1,
-          destination: {
-            latitude: 39.989631,
-            longitude: 116.481018
-          },
-          duration: 2000,
-          success: ret => {
-            console.log(JSON.stringify(ret));
-          }
-        });
-      },
-      maptap(e) {
-        uni.showModal({
-          content: JSON.stringify(e)
-        })
-      },
-      onmarkertap(e) {
-        uni.showModal({
-          content: JSON.stringify(e)
-        })
-      },
-      oncontroltap(e) {
-        uni.showModal({
-          content: JSON.stringify(e)
-        })
-      },
-      oncallouttap(e) {
-        uni.showModal({
-          content: JSON.stringify(e)
-        })
-      },
-      onupdated(e) {
-        console.log(JSON.stringify(e))
-      },
-      onregionchange(e) {
-        console.log(JSON.stringify(e));
-      },
-      onpoitap(e) {
-        uni.showModal({
-          content: JSON.stringify(e)
-        })
-      }
-    }
+  const map = ref(null as MapContext | null);
+  const location = ref({ longitude: 116.39742, latitude: 39.909 });
+  const rotate = ref(0);
+  const skew = ref(0);
+  // 自动化测试
+  const autoTest = ref(false);
+  const updateAutoTest = (value: boolean) => {
+    autoTest.value = value
   }
+
+
+  const jestResult = reactive({
+    translateMarkerMsg: "",
+    animationEnd: false,
+    centerPoints: {
+      latitude: 0,
+      longitude: 0
+    },
+    southwest: {
+      latitude: 0,
+      longitude: 0
+    },
+    northeast: {
+      latitude: 0,
+      longitude: 0
+    },
+    moveToLocationMsg: "",
+    scale: 0,
+  } as TypeJestResult);
+
+
+  onReady(() => {
+    map.value = uni.createMapContext("map1", getCurrentInstance()!.proxy!)
+  });
+
+  const scale = ref(13);
+  const confirm_scale_input = (value: number) => {
+    scale.value = value
+  };
+
+  const controls = ref([] as ControlsType[]);
+  const addControls = () => {
+    controls.value.push({
+      id: 1,
+      position: {
+        left: 5,
+        top: 180,
+        width: 30,
+        height: 30
+      },
+      iconPath: '../../../static/uni.png',
+      clickable: true
+    })
+  }
+
+  const showLocation = ref(false);
+  const change_show_location = (checked: boolean) => {
+    showLocation.value = checked
+  }
+
+  const includePoints = ref([] as Points[]);
+  const includePoint = () => {
+    includePoints.value = testIncludePoints;
+  };
+
+
+  const markers = reactive([] as Markers[]);
+  const addMarkers = () => {
+    markers.push(...testMarkers);
+  };
+
+  const addMarkersLabel = () => {
+    markers.forEach((marker, index) => {
+      marker.label = {
+        content: 'Hello Label' + (index + 1),
+        color: '#aa00ff',
+        fontSize: 12,
+        x: 5,
+        y: 0,
+        borderColor: '#333300',
+        borderWidth: 2,
+        borderRadius: 20,
+        bgColor: '#aaffff',
+        padding: 10
+      };
+    });
+  };
+
+
+  const polyline = ref([] as Polyline[]);
+  const addPolyline = () => {
+    scale.value = 12;
+    polyline.value = testPolyline;
+  };
+
+
+  const polygons = ref([] as Polygons[]);
+  const addPolygons = () => {
+    scale.value = 10;
+    polygons.value = testPolygons;
+  };
+
+
+  const circles = ref([] as Circles[]);
+  const addCircles = () => {
+    scale.value = 10;
+    circles.value = testCircles;
+  };
+
+  const showCompass = ref(true);
+  const enable3D = ref(true);
+  const enableOverlooking = ref(true);
+  const enableZoom = ref(true);
+  const enableScroll = ref(true);
+  const enableRotate = ref(true);
+  const enableSatellite = ref(false);
+  const enableTraffic = ref(false);
+
+  const enableThreeD = (e) => {
+    enable3D.value = e.detail.value;
+  }
+  const changeShowCompass = (e) => {
+    showCompass.value = e.detail.value;
+  }
+  const changeEnableOverlooking = (e) => {
+    enableOverlooking.value = e.detail.value;
+  };
+
+  const changeEnableZoom = (e) => {
+    enableZoom.value = e.detail.value;
+  };
+
+  const changeEnableScroll = (e) => {
+    enableScroll.value = e.detail.value;
+  };
+
+  const changeEnableRotate = (e) => {
+    enableRotate.value = e.detail.value;
+  };
+
+  const changeEnableSatellite = (e) => {
+    enableSatellite.value = e.detail.value;
+  };
+
+  const changeEnableTraffic = (e) => {
+    enableTraffic.value = e.detail.value;
+  };
+
+
+  const handleGetCenterLocation = () => {
+    if (map.value) {
+      map.value.getCenterLocation({
+        success: ret => {
+          // console.log('getCenterLocation',ret);
+          jestResult.centerPoints = ret;
+          if (!autoTest.value) {
+            uni.showModal({
+              content: JSON.stringify(ret)
+            });
+          }
+        }
+      });
+    }
+  };
+
+  const handleGetRegion = () => {
+    if (map.value) {
+      map.value.getRegion({
+        success: ret => {
+          // console.log('getRegion',JSON.stringify(ret));
+          jestResult.southwest = ret.southwest;
+          jestResult.northeast = ret.northeast
+          if (!autoTest.value) {
+            uni.showModal({
+              content: JSON.stringify(ret)
+            });
+          }
+        }
+      });
+    }
+  };
+
+
+  const handleTranslateMarker = () => {
+    if (map.value) {
+      map.value.translateMarker({
+        markerId: 1,
+        destination: {
+          latitude: 39.989631,
+          longitude: 116.481018
+        },
+        autoRotate: true,
+        rotate: 10,
+        duration: 2000,
+        animationEnd: () => {
+          // console.log('动画结束');
+          jestResult.animationEnd = true;
+        },
+        success: ret => {
+          // console.log('handleTranslateMarker',JSON.stringify(ret));
+          jestResult.translateMarkerMsg = ret.errMsg;
+        },
+        fail: error => {
+          console.log(error)
+        }
+      });
+    }
+  };
+
+
+  const handleGetScale = () => {
+    if (map.value) {
+      map.value.getScale({
+        success: res => {
+          // console.log('getScale',res);
+          scale.value = res.scale
+          jestResult.scale = res.scale
+          if (!autoTest.value) {
+            uni.showModal({
+              content: '当前地图的缩放级别为：' + res.scale
+            });
+          }
+        },
+        fail: error => {
+          console.log(error)
+        },
+      });
+    }
+  };
+
+  const handleMoveToLocation = () => {
+    if (map.value) {
+      map.value.moveToLocation({
+        latitude: 39.909,
+        longitude: 116.39742,
+        success: res => {
+          // console.log('moveToLocation',res);
+          jestResult.moveToLocationMsg = res.errMsg;
+          if (!autoTest.value) {
+            uni.showModal({
+              content: JSON.stringify(res)
+            });
+          }
+        },
+        fail: error => {
+          console.log(error)
+        }
+      });
+    }
+  };
+
+  const maptap = (e: UniEvent) => {
+    // console.log('点击地图时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  const onmarkertap = (e: UniEvent) => {
+    // console.log('点击标记点时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  const oncontroltap = (e: UniEvent) => {
+    // console.log('点击控件时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  const oncallouttap = (e: UniEvent) => {
+    // console.log('点击标记点对应的气泡时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  const onupdated = (e: UniEvent) => {
+    console.log('在地图渲染更新完成时触发', e)
+  };
+
+  const onregionchange = (e: UniEvent) => {
+    console.log('视野发生变化时触发', e)
+  };
+
+  const onpoitap = (e: UniEvent) => {
+    // console.log('点击地图poi点时触发',e)
+    uni.showModal({
+      content: JSON.stringify(e)
+    });
+  };
+
+  defineExpose({
+    jestResult,
+    autoTest,
+    updateAutoTest,
+    addControls,
+    addMarkers,
+    addMarkersLabel,
+    addPolyline,
+    addPolygons,
+    addCircles,
+    includePoint,
+    handleGetCenterLocation,
+    handleGetRegion,
+    handleTranslateMarker,
+    handleMoveToLocation,
+    handleGetScale
+  })
 </script>
 
 <style>
@@ -441,7 +642,7 @@
 
   .map {
     width: 100%;
-    height: 250px;
+    height: 300px;
     background-color: #f0f0f0;
   }
 
@@ -464,5 +665,11 @@
   .button {
     margin-top: 5px;
     margin-bottom: 5px;
+  }
+
+  .tips {
+    font-size: 12px;
+    margin-top: 15px;
+    opacity: .8;
   }
 </style>

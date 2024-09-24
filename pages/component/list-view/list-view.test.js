@@ -38,22 +38,15 @@ describe('component-native-list-view', () => {
     await page.waitFor(600)
     await page.callMethod('confirm_scroll_top_input', 300)
     await page.waitFor(600)
-    // 在web端scroll事件event参数中detail类型报错，先忽略测试
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
-      const scrollDetail = await page.data('scrollDetailTest')
-      console.log('scrollDetailTest:', scrollDetail)
-      expect(scrollDetail.scrollLeft).toBe(0)
-      // 在安卓端差异 299.8095
-      expect([300, 299.8095]).toContain(scrollDetail.scrollTop);
-      expect(scrollDetail.scrollHeight).toBeGreaterThan(0)
-      // 在安卓端 "scrollWidth":0
-      if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-        expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
-      }
-      expect(scrollDetail.deltaX).toBe(0)
-      // 在安卓端差异 299.8095
-      expect([300, 299.8095]).toContain(scrollDetail.deltaY);
-    }
+    const scrollDetail = await page.data('scrollDetailTest')
+    // console.log('scrollDetailTest:', scrollDetail)
+    expect(scrollDetail.scrollLeft).toBe(0)
+    // scrollTop和deltaY 在安卓端差异 299.8095
+    expect([300, 299.8095]).toContain(scrollDetail.scrollTop);
+    expect(scrollDetail.scrollHeight).toBeGreaterThan(0)
+    expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
+    expect(scrollDetail.deltaX).toBe(0)
+    expect([300, 299.8095]).toContain(scrollDetail.deltaY);
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
@@ -67,7 +60,7 @@ describe('component-native-list-view', () => {
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
     // 滚动到顶部50,是否触发scrolltoupper事件
     await page.callMethod('confirm_scroll_top_input', 50)
-    await page.waitFor(2000)
+    await page.waitFor(1000)
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
@@ -88,14 +81,13 @@ describe('component-native-list-view', () => {
     })
     await page.waitFor(600)
     const endDetail = await page.data('scrollEndDetailTest')
-    console.log('scrollEndDetailTest:', endDetail)
+    // console.log('scrollEndDetailTest:', endDetail)
     expect(endDetail.deltaY).toBe(0)
     expect(endDetail.deltaX).toBe(0)
     expect(endDetail.scrollLeft).toBe(0)
     expect(endDetail.scrollTop).toBeGreaterThan(0)
     expect(endDetail.scrollHeight).toBeGreaterThan(0)
-    // 在安卓端 "scrollWidth":0
-    // expect(endDetail.scrollWidth).toBeGreaterThan(0)
+    expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
   //检测竖向可滚动区域
@@ -134,6 +126,8 @@ describe('component-native-list-view', () => {
     })
     await page.waitFor(2000)
     expect(await page.data('refresherrefresh')).toBe(true)
+    //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
+    await page.waitFor(1000)
   })
 
   //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误

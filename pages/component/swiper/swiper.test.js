@@ -91,10 +91,7 @@ describe('test swiper', () => {
 
   it('Event transitiont', async () => {
     const transitionDetailInfo = await page.data('transitionDetailTest')
-    // bug：在iOS端，swiper首次横向滑动切换@transition事件参数e.detail.dy为1错误，暂时忽略测试
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
-      expect(transitionDetailInfo.dy).toBe(0)
-    }
+    expect(transitionDetailInfo.dy).toBe(0)
     expect(transitionDetailInfo.dx).not.toBe(0)
     expect(await page.data('isTransitionTest')).toBe('transition:Success')
   });
@@ -111,15 +108,12 @@ describe('test swiper', () => {
 
   it('Event animationfinish', async () => {
     await page.waitFor(1000)
-    // bug：在android端第一次触发@animationfinish 得到detail中的source为空，第二次触发时正常得到source: 'autoplay'
-    if(!process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-      const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
-      if(process.env.uniTestPlatformInfo.startsWith('web')){
-        expect(animationfinishDetailInfo).toEqual(webDetailRes)
-      }else{
-        expect(animationfinishDetailInfo).toEqual(appDetailRes)
-      }
-      expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
+    const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
+    if(process.env.uniTestPlatformInfo.startsWith('web')){
+      expect(animationfinishDetailInfo).toEqual(webDetailRes)
+    }else{
+      expect(animationfinishDetailInfo).toEqual(appDetailRes)
     }
+    expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
   });
 });

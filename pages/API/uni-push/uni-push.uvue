@@ -1,0 +1,199 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+    <!-- #ifdef APP-ANDROID -->
+    <button class="normal-button" type="default" @click="handleCreateChannel(true)">
+      创建通知渠道 | setPushChannel
+    </button>
+    <button class="normal-button" type="default" @click="handleGetAllChannels">
+      获取所有通知渠道信息 | getAllChannels
+    </button>
+    <!-- #endif -->
+    <button class="normal-button" type="default" @click="handleCreateLocalNotification">
+      创建本地通知消息 | createPushMessage
+    </button>
+    <text class="instructions">
+      不同手机厂商的角标显示规则不同，有部分设备的rom版本不支持显示角标，另有部分rom需要在应用的通知管理里开启`桌面角标`配置，才可以设置角标成功。\n
+      部分rom需要在设置中同时开启`通知开关`和`桌面角标`配置，才允许设置角标，例如鸿蒙4.2。 \n
+      另外针对高版本小米设备，会借助创建通知栏消息来设置角标数，所以设置时需要注意是否有权限创建通知栏消息。
+    </text>
+
+    <button class="normal-button" type="default" @click="handleSetBadge">
+      设置角标为5 | setAppBadgeNumber(5)
+    </button>
+    <button class="normal-button" type="default" @click="handleCleanBadge">
+      清空角标 | setAppBadgeNumber(0)
+    </button>
+    <button class="normal-button" type="default" @click="handleGetClientId">
+      获取cid | getPushClientId
+    </button>
+
+    <textarea style="flex: 1;width: 100%;" :disabled="true" :value="channelInfo"></textarea>
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup>
+  const channelInfo = ref("")
+
+  onMounted(() => {
+    uni.onPushMessage((res : OnPushMessageCallbackResult) => {
+      uni.showModal({
+        title: "onPushMessage回调信息",
+        content: `type：${res.type} \n data：${JSON.stringify(res.data)}`
+      })
+    })
+  })
+
+  const handleCreateChannel = (showToast : boolean) => {
+    // #ifdef APP-ANDROID
+    const manager = uni.getPushChannelManager()
+    manager.setPushChannel({
+      channelId: "msg-pass",
+      channelDesc: "留言审核通过",
+      soundName: "#填写配置的声音文件名#",
+      enableLights: true,
+      enableVibration: true,
+      importance: 4,
+      lockscreenVisibility: 1
+    } as SetPushChannelOptions)
+    if (showToast) {
+      uni.showToast({
+        title: "设置渠道成功"
+      })
+    }
+    // #endif
+  }
+  const handleGetAllChannels = () => {
+    // #ifdef APP-ANDROID
+    const manager = uni.getPushChannelManager()
+    console.log("channels : " + manager.getAllChannels());
+    channelInfo.value = `渠道信息为: \n ${manager.getAllChannels()}`
+    // #endif
+  }
+  const handleCreateLocalNotification = () => {
+    if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+      handleCreateChannel(false)
+      const date = new Date();
+      const hour = date.getHours()
+      const minute = date.getMinutes()
+      const second = date.getSeconds()
+      const formateTime = (target : number) : string => {
+        return target < 10 ? `0${target}` : `${target}`
+      }
+      uni.createPushMessage({
+        title: "主标题(title)",
+        content: `内容(content)，创建时间: ${formateTime(hour)}:${formateTime(minute)}:${formateTime(second)}`,
+        cover: false,
+        channelId: "msg-pass",
+        when: Date.now() + 10000,
+        icon: "/static/uni.png",
+        sound: "system",
+        delay: 1,
+        payload: {
+          pkey: "pvalue1"
+        },
+        category: "IM",
+        success(res) {
+          console.log("res: " + res);
+          uni.hideToast()
+          uni.showToast({
+            title: "创建本地通知消息成功"
+          })
+        },
+        fail(e) {
+          console.log("fail :" + e);
+          uni.hideToast()
+          uni.showToast({
+            title: "创建本地通知消息失败",
+            icon: "error"
+          })
+        }
+      })
+    } else {
+      uni.showToast({
+        title: "请在设置中开启通知权限",
+        icon: "error"
+      })
+    }
+  }
+  const handleGetClientId = () => {
+    uni.showLoading({
+      title: "正在获取cid",
+    })
+    uni.getPushClientId({
+      success: (res : GetPushClientIdSuccess) => {
+        uni.hideLoading()
+        uni.showModal({
+          title: "信息",
+          content: `cid : ${res.cid}`
+        })
+      },
+      fail: () => {
+        uni.hideLoading()
+        uni.showToast({
+          title: `获取cid失败`,
+          icon: "error"
+        })
+      }
+    })
+  }
+  const handleSetBadge = () => {
+    if (uni.getDeviceInfo().deviceBrand?.toLowerCase() == "xiaomi") {
+      if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+        uni.setAppBadgeNumber(5, {
+          title: "AppName",
+          content: "您有5条未读消息"
+        } as BadgeOptions)
+        uni.showToast({
+          title: "设置应用角标数为5"
+        })
+      } else {
+        uni.showToast({
+          title: "请在设置中开启通知权限",
+          icon: "error"
+        })
+      }
+
+    } else {
+      uni.setAppBadgeNumber(5)
+      uni.showToast({
+        title: "设置应用角标数为5"
+      })
+    }
+  }
+  const handleCleanBadge = () => {
+    if (uni.getDeviceInfo().deviceBrand?.toLowerCase() == "xiaomi") {
+      if (uni.getAppAuthorizeSetting().notificationAuthorized == "authorized") {
+        uni.setAppBadgeNumber(0, {} as BadgeOptions)
+        uni.showToast({
+          title: "清空应用角标数"
+        })
+      }else{
+        uni.showToast({
+          title: "请在设置中开启通知权限",
+          icon: "error"
+        })
+      }
+    } else {
+      uni.setAppBadgeNumber(0)
+      uni.showToast({
+        title: "清空应用角标数"
+      })
+    }
+
+  }
+</script>
+
+<style>
+  .normal-button {
+    width: 100%;
+  }
+
+  .instructions {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #eee;
+  }
+</style>

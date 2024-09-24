@@ -61,7 +61,6 @@
               },
               success: (res) => {
                 console.log('uploadImage success, res is:', res)
-                uni.hideLoading();
                 uni.showToast({
                   title: '上传成功',
                   icon: 'success',
@@ -71,12 +70,15 @@
               },
               fail: (err) => {
                 console.log('uploadImage fail', err);
-                uni.hideLoading();
                 uni.showModal({
                   content: err.errMsg,
                   showCancel: false
                 });
               },
+              complete: (res) => {
+                uni.hideLoading();
+                this.task = null
+              }
             });
           },
           fail: (err) => {
@@ -87,7 +89,7 @@
       //自动化测试例专用
       jest_uploadFile() {
         const imageSrc = "/static/uni.png";
-        this.task = uni.uploadFile({
+        uni.uploadFile({
           url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
           filePath: imageSrc,
           name: 'file',
@@ -160,7 +162,7 @@
       },
       jest_cookie_upload(needCookie : boolean) {
         const imageSrc = "/static/uni.png";
-        this.task = uni.uploadFile({
+        uni.uploadFile({
           url: 'https://request.dcloud.net.cn/api/http/header/upload',
           filePath: imageSrc,
           name: 'file',
@@ -180,7 +182,7 @@
       },
       jest_files_upload() {
         const imageSrc = "/static/uni.png";
-        this.task = uni.uploadFile({
+        uni.uploadFile({
           url: 'https://unidemo.dcloud.net.cn/upload',
           files: [
             {
@@ -206,11 +208,9 @@
         // #ifdef APP
         testInovkeUploadFile({
           success: (res : any) => {
-            console.log("success :", res);
             this.jest_result = true
           },
           fail: (err : any) => {
-            console.log("fail :", err);
             this.jest_result = false
           }
         } as CommonOptions)

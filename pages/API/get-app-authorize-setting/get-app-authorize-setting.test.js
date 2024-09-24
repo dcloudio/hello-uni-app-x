@@ -21,6 +21,15 @@ describe('ExtApi-GetAppAuthorizeSetting', () => {
     await page.waitFor(600);
     res = await uni.getAppAuthorizeSetting();
   });
+
+  it('Check albumAuthorized', async () => {
+    expect(commonSupportList).toContain(res.albumAuthorized)
+  });
+
+  it('Check bluetoothAuthorized', async () => {
+    expect(commonSupportList).toContain(res.bluetoothAuthorized)
+  });
+
   it('Check cameraAuthorized', async () => {
     expect(commonSupportList).toContain(res.cameraAuthorized)
   });

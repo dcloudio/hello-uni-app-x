@@ -16,9 +16,18 @@ describe('editor.uvue', () => {
     await page.setData({autoTest:true})
   });
 
+  async function setBlur() {
+    const start = Date.now();
+    await page.callMethod('blur')
+    await page.waitFor(async () => {
+      return await page.data('blurTest') === true || (Date.now() - start > 2000)
+    })
+  }
+
   it('editor-wrapper', async () => {
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
     expect(await editor.attribute("read-only")).toBe("false")
+    expect(await program.screenshot()).toSaveImageSnapshot();
   });
 
   it('editor-toolbar', async () => {
@@ -41,31 +50,39 @@ describe('editor.uvue', () => {
   });
 
   it('editor-screenshot', async () => {
-    expect(await program.screenshot()).toSaveImageSnapshot();
+    await setBlur()
     await page.waitFor(500);
+    expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
   it('clear', async () => {
     await page.callMethod('clear')
-    await page.waitFor(500)
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
   })
 
   it('undo-redo', async () => {
-    await page.callMethod('insertDate')
     await page.callMethod('insertDivider')
     await page.waitFor(500)
     await page.callMethod('undo')
     await page.waitFor(500)
     expect(await page.data('undoTest')).toBe(true)
     await page.callMethod('redo')
-    await page.waitFor(500)
     expect(await page.data('redoTest')).toBe(true)
   })
 
   it('insertImage', async () => {
+    await page.waitFor(500)
     await page.callMethod('insertImage','https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
-    await page.waitFor(2000)
+    const start1 = Date.now();
+    await page.waitFor(async () => {
+      return await page.data('insertImageTest') === true || (Date.now() - start1 > 2000)
+    })
+  })
+
+  it('insertImage-screenshot', async () => {
+    await setBlur()
+    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:2000
+    await page.waitFor(waitTime)
     expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
@@ -82,7 +99,6 @@ describe('editor.uvue', () => {
               ])
       await page.waitFor(500)
       await page.callMethod('removeFormat')
-      await page.waitFor(500)
       expect(await page.data('removeFormatTest')).toBe(true)
       expect(await page.data('formats')).toEqual({})
   })

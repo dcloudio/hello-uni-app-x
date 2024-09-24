@@ -82,6 +82,19 @@ util.aes.decrypt = function(obj) {
 	return decrypted;
 };
 
+util.generateUUID = function() {
+	// 获取当前时间戳
+	let timestamp = Date.now().toString(16);
+	while (timestamp.length < 16) {
+		timestamp = timestamp + "0";
+	}
+	// 生成随机数部分
+	const randomHex = crypto.randomBytes(10).toString('hex');
+	// 结合时间戳和随机数，并按照UUID格式排列
+	const uuid = `${timestamp.slice(0, 8)}-${timestamp.slice(8, 12)}-${randomHex.slice(0, 4)}-${randomHex.slice(4, 8)}-${randomHex.slice(8)}`;
+	return uuid.toLowerCase();
+};
+
 module.exports = util;
 
 // aes192算法 - 加密

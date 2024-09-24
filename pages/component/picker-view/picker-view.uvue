@@ -6,8 +6,13 @@
         日期：{{year}}年{{month}}月{{day}}日
       </view>
     </view>
-    <picker-view class="picker-view" :indicator-style="indicatorStyle" :value="value" @change="bindChange"
-      :mask-top-style="maskTopStyle" :mask-bottom-style="maskBottomStyle">
+    <picker-view class="picker-view" :value="value" @change="bindChange"
+      :indicator-style="indicatorStyle"
+      :indicator-class="indicatorClass"
+      :mask-style="maskStyle"
+      :mask-class="maskClass"
+      :mask-top-style="maskTopStyle"
+      :mask-bottom-style="maskBottomStyle">
       <picker-view-column class="picker-view-column">
         <view class="item" v-for="(item,index) in years" :key="index"><text class="text">{{item}}年</text></view>
       </picker-view-column>
@@ -53,6 +58,10 @@
         value: [_year - 2000, _month - 1, _day - 1] as number[],
         result: [] as number[],
         indicatorStyle: 'height: 50px;',
+        // 自动化测试
+        indicatorClass: '',
+        maskStyle: '',
+        maskClass: '',
         maskTopStyle: '',
         maskBottomStyle: ''
       }
@@ -75,7 +84,6 @@
         if (e.type === 'change') {
           this.setEventCallbackNum(state.eventCallbackNum + 2)
         }
-
         const val = e.detail.value
         this.result = val
         this.year = this.years[val[0]]
@@ -98,13 +106,20 @@
     height: 320px;
     margin-top: 10px;
   }
-
   .item {
     height: 50px;
   }
-
   .text {
     line-height: 50px;
     text-align: center;
+  }
+  /* 自动化测试 */
+  .indicator-test{
+    height: 50px;
+    border:#0055ff solid 1px;
+    background:rgba(0, 170, 0, 0.4);
+  }
+  .mask-test{
+    background-image: linear-gradient(to bottom, #d8e5ff, rgba(216, 229, 255, 0));
   }
 </style>

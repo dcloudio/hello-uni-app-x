@@ -95,6 +95,7 @@ module.exports = {
 			clientInfo, // 兼容云对象调用云对象模式
 			cloudInfo, // 兼容云对象调用云对象模式
 			wxpay_virtual, // 仅用于微信虚拟支付
+			apple_virtual, // 仅用于苹果虚拟支付
 		} = data;
 
 		if (!clientInfo) clientInfo = this.getClientInfo();
@@ -118,6 +119,7 @@ module.exports = {
 			clientInfo,
 			cloudInfo,
 			wxpay_virtual,
+			apple_virtual,
 		});
 		// uniappx-特殊处理
 		if (typeof res.order === "object" && typeof res.order["timestamp"] === "string") {
@@ -266,13 +268,17 @@ module.exports = {
 	async verifyReceiptFromAppleiap(data) {
 		let {
 			out_trade_no,
+			appleiap_account_token,
 			transaction_receipt,
 			transaction_identifier,
 		} = data;
+		const clientInfo = this.getClientInfo();
 		return await service.pay.verifyReceiptFromAppleiap({
 			out_trade_no,
+			appleiap_account_token,
 			transaction_receipt,
-			transaction_identifier
+			transaction_identifier,
+			clientInfo,
 		});
 	},
 
@@ -288,6 +294,27 @@ module.exports = {
 			clientInfo,
 			cloudInfo
 		});
+	},
+	/**
+	 * 请求微信小程序虚拟支付API
+	 */
+	async requestWxpayVirtualApi(data) {
+		const clientInfo = this.getClientInfo();
+		if (clientInfo.source !== "function") {
+			throw new Error("requestWxpayVirtualApi只能通过云端调云端的方式调用");
+		}
+		let res = await service.pay.requestWxpayVirtualApi(data);
+		return res;
+	},
+	
+	/**
+	 * 测试请求，仅为了确保是否请求能调通
+	 */
+	async test(data) {
+		return {
+			errCode: 0,
+			errMsg: "ok"
+		};
 	},
 
 }

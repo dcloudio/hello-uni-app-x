@@ -1,11 +1,11 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-
 describe('component-native-input', () => {
-
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIos = platformInfo.startsWith('ios')
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input')
-    await page.waitFor(3000);
+    await page.waitFor('view');
   });
 
   // it("beforeAllTestScreenshot", async () => {
@@ -188,7 +188,7 @@ describe('component-native-input', () => {
     await page.setData({
       focusedForKeyboardHeightChangeTest: true
     })
-    await page.waitFor(5000);
+    await page.waitFor(2000);
 
     const keyboardHeight = await page.data('keyboardHeight');
     console.log("keyboardHeight :", keyboardHeight);

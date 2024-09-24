@@ -44,7 +44,8 @@
         nviBarHeight: 0,
         naviElement: null as UniElement | null,
         titleElement: null as UniElement | null,
-        searchElement: null as UniElement | null
+        searchElement: null as UniElement | null,
+        seatElement: null as UniElement | null
       }
     },
     onLoad() {
@@ -57,11 +58,16 @@
       this.naviElement = this.$refs['navigatorbar'] as UniElement;
       this.searchElement = this.$refs['searchbar'] as UniElement;
       this.titleElement = this.$refs['title'] as UniElement;
-      //适配不同状态栏高度
-      this.naviElement?.style?.setProperty('padding-top', this.statusBarHeight+'px');
-      this.naviElement?.style?.setProperty('height', (NAVIBARHEIGHT+this.statusBarHeight)+'px');
-      let seatElement = this.$refs['seatbar'] as UniElement;
-      seatElement.style.setProperty('height', (NAVIBARHEIGHT+this.statusBarHeight)+'px');
+      this.seatElement = this.$refs['seatbar'] as UniElement;
+      this.setStyle();
+    },
+    onResize(_ : OnResizeOptions) {
+      // #ifdef APP-ANDROID
+      // 监听多窗口模式
+      this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
+      this.nviBarHeight = NAVIBARHEIGHT + this.statusBarHeight;
+      this.setStyle();
+      // #endif
     },
     methods: {
       onScroll(e : ScrollEvent) {
@@ -78,6 +84,11 @@
           title: '暂不支持',
           icon: 'none'
         });
+      },
+      setStyle() {
+        this.naviElement?.style?.setProperty('padding-top', this.statusBarHeight + 'px');
+        this.naviElement?.style?.setProperty('height', (NAVIBARHEIGHT + this.statusBarHeight) + 'px');
+        this.seatElement?.style?.setProperty('height', (NAVIBARHEIGHT + this.statusBarHeight) + 'px');
       }
     }
   }

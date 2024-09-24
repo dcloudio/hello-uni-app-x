@@ -1,5 +1,5 @@
 <template>
-	<view class="popup-root" v-if="isOpen" v-show="isShow" @click="clickMask">
+	<view class="popup-root" :class="'popup-'+type" v-if="isOpen" v-show="isShow" @click="clickMask">
 		<view @click.stop>
 			<slot></slot>
 		</view>
@@ -20,6 +20,10 @@
 				type: Boolean,
 				default: true
 			},
+			type: {
+				type: String,
+				default: "center"
+			}
 		},
 		watch: {
 			// 设置show = true 时，如果没有 open 需要设置为 open
@@ -77,5 +81,8 @@
 		justify-content: center;
 		align-items: center;
 		z-index: 99;
+	}
+	.popup-bottom {
+		justify-content: flex-end;
 	}
 </style>

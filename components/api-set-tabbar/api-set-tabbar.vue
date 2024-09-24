@@ -6,6 +6,8 @@
     <button class="button" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
     <button class="button" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
     <button class="button" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
+    <button class="button" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
+    <button class="button" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>
     <view class="btn-area">
       <!-- <button class="button" type="primary" @click="navigateBack">关闭</button> -->
     </view>
@@ -21,7 +23,9 @@
         hasShownTabBarRedDot: false,
         hasCustomedStyle: false,
         hasCustomedItem: false,
-        hasHiddenTabBar: false
+        hasHiddenTabBar: false,
+        hasHiddenTabBarItem: false,
+        hasSetLongTitle: false,
       }
     },
     destroyed() {
@@ -56,8 +60,58 @@
         } as SetTabBarItemOptions
         uni.setTabBarItem(tabBarOptions)
       }
+
+      if (this.hasHiddenTabBarItem || this.hasSetLongTitle) {
+        let tabBarOptions = {
+          visible: true,
+          index: 1,
+          text: '接口',
+          iconPath: '/static/api.png',
+          selectedIconPath: '/static/apiHL.png'
+        } as SetTabBarItemOptions
+        uni.setTabBarItem(tabBarOptions)
+      }
     },
     methods: {
+      setTabBarTitle(){
+        let tabBarOptions = {
+          visible: true,
+          index: 1,
+          text: '接口',
+          iconPath: '/static/api.png',
+          selectedIconPath: '/static/apiHL.png'
+        } as SetTabBarItemOptions
+
+        if (!this.hasSetLongTitle) {
+          tabBarOptions.text = "超长标题内容超长标题内容超长标题内容超长标题测试";
+          tabBarOptions.iconPath = "";
+          tabBarOptions.selectedIconPath = "";
+        } else {
+          tabBarOptions.text = "接口";
+          tabBarOptions.iconPath = "/static/api.png";
+          tabBarOptions.selectedIconPath = "/static/apiHL.png";
+        }
+        uni.setTabBarItem(tabBarOptions)
+        this.hasSetLongTitle = !this.hasSetLongTitle
+      },
+      hideTabBarItem(){
+
+        let tabBarOptions = {
+          visible: true,
+          index: 1,
+          text: '接口',
+          iconPath: '/static/api.png',
+          selectedIconPath: '/static/apiHL.png'
+        } as SetTabBarItemOptions
+
+        if (!this.hasHiddenTabBarItem) {
+          tabBarOptions.visible = false;
+        } else {
+          tabBarOptions.visible = true;
+        }
+        uni.setTabBarItem(tabBarOptions)
+        this.hasHiddenTabBarItem = !this.hasHiddenTabBarItem
+      },
       navigateBack() {
         this.$emit('unmount')
       },

@@ -2,7 +2,7 @@
 
 describe('component-native-image', () => {
   let page;
-
+  let start = 0;
   async function getWindowInfo() {
     const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
     await windowInfoPage.waitFor(600);
@@ -75,9 +75,13 @@ describe('component-native-image', () => {
       autoTest: true,
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     });
-    await page.waitFor(1000);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventLoad')) || (Date.now() - start > 1000);
+    });
     if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       expect(await page.data('eventLoad')).toEqual({
+        tagName: 'IMAGE',
         type: 'load',
         width: 10,
         height: 10
@@ -96,9 +100,13 @@ describe('component-native-image', () => {
     await page.setData({
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/404.png'
     });
-    await page.waitFor(500);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventError')) || (Date.now() - start > 1000);
+    });
     if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       expect(await page.data('eventError')).toEqual({
+        tagName: 'IMAGE',
         type: 'error'
       });
     }else {

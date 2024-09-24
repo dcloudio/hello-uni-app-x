@@ -1,27 +1,43 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;background-color: #f8f8f8;" enable-back-to-top="true">
+  <scroll-view style="flex: 1; background-color: #f8f8f8" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
-      <view class="uni-header-logo">
+      <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/cssIndex.png"></image>
       </view>
-      <view class="uni-text-box">
+      <view v-if="!hasLeftWin" class="uni-text-box">
         <text class="hello-text">uni-app x目前已支持的CSS属性，展示样式仅供参考，文档详见：</text>
         <u-link :href="'https://uniapp.dcloud.io/uni-app-x/css/'" :text="'https://uniapp.dcloud.io/uni-app-x/css/'"
           :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
-        <template v-for="item in list" :key="item.id">
-          <uni-collapse-item :title="item.name" class="item">
-            <view class="uni-navigate-item" :hover-class="page.enable == false?'':'is--active'"
-              v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
-              <text class="uni-navigate-text"
-                :class="page.enable == false ? 'text-disabled' : ''">{{ page.name }}</text>
+        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
+          class="item">
+          <template v-for="childMenuItem in menuItem.items" :key="childMenuItem!.id">
+            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
+              hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
+              <text class="uni-navigate-text" :class="{
+                  'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
+                }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
               <image :src="arrowRightIcon" class="uni-icon-size"></image>
             </view>
-          </uni-collapse-item>
-        </template>
+            <uni-collapse v-else style="width: 100%">
+              <uni-collapse-item :title="childMenuItem.name" class="item"
+                style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
+                <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
+                  v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem!.path"
+                  @click="goPage(`/${grandChildMenuItem.path}`)">
+                  <text class="uni-navigate-text" :class="{
+                      'left-win-active':
+                        leftWinActive === grandChildMenuItem.path && hasLeftWin,
+                    }">{{ grandChildMenuItem.style["navigationBarTitleText"] }}</text>
+                  <image :src="arrowRightIcon" class="uni-icon-size"></image>
+                </view>
+              </uni-collapse-item>
+            </uni-collapse>
+          </template>
+        </uni-collapse-item>
       </uni-collapse>
     </view>
   <!-- #ifdef APP -->
@@ -30,375 +46,51 @@
 </template>
 
 <script lang="uts">
-  type Page = {
-    name : string
-    enable ?: boolean
-    url ?: string
-  }
-  type ListItem = {
-    id : string
-    name : string
-    pages : Page[]
-    url ?: string
-    enable ?: boolean
-  }
+  import { generateMenu } from './generateMenu.uts'
+  import { MenuItem } from './generateMenu.uts'
+  const menu = generateMenu('pages/CSS')
+  import { state } from '@/store/index.uts'
   export default {
     data() {
       return {
-        list: [
-          {
-            id: 'background',
-            name: 'background',
-            pages: [
-              {
-                name: 'background-color',
-                url: '/pages/CSS/background/background-color',
-              },
-              {
-                name: 'background-image',
-                url: '/pages/CSS/background/background-image',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'border',
-            name: 'border',
-            pages: [
-              {
-                name: 'border',
-                url: '/pages/CSS/border/border',
-              },
-              {
-                name: 'border-width',
-                url: '/pages/CSS/border/border-width',
-              },
-              {
-                name: 'border-style',
-                url: '/pages/CSS/border/border-style',
-              },
-              {
-                name: 'border-color',
-                url: '/pages/CSS/border/border-color',
-              },
-              {
-                name: 'border-radius',
-                url: '/pages/CSS/border/border-radius',
-              },
-              {
-                name: 'border-top',
-                url: '/pages/CSS/border/border-top',
-              },
-              {
-                name: 'border-bottom',
-                url: '/pages/CSS/border/border-bottom',
-              },
-              {
-                name: 'border-left',
-                url: '/pages/CSS/border/border-left',
-              },
-              {
-                name: 'border-right',
-                url: '/pages/CSS/border/border-right',
-              },
-              {
-                name: 'border属性复合示例',
-                url: '/pages/CSS/border/complex-border/complex-border',
-              },
-              {
-                name: 'border动态修改样式',
-                url: '/pages/CSS/border/dynamic-border'
-              },
-            ] as Page[],
-          },
-          {
-            id: 'box-shadow',
-            name: 'box-shadow',
-            pages: [
-              {
-                name: 'box-shadow',
-                url: '/pages/CSS/box-shadow/box-shadow',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'display',
-            name: 'display',
-            pages: [
-              {
-                name: 'flex',
-                url: '/pages/CSS/display/flex',
-              },
-              {
-                name: 'none',
-                url: '/pages/CSS/display/none',
-              }
-            ] as Page[],
-          },
-          {
-            id: 'flex',
-            name: 'flex',
-            pages: [
-              {
-                name: 'align-content',
-                url: '/pages/CSS/flex/align-content',
-              },
-              {
-                name: 'align-items',
-                url: '/pages/CSS/flex/align-items',
-              },
-              {
-                name: 'flex-basis',
-                url: '/pages/CSS/flex/flex-basis',
-              },
-              {
-                name: 'flex-direction',
-                url: '/pages/CSS/flex/flex-direction',
-              },
-              {
-                name: 'flex-flow',
-                url: '/pages/CSS/flex/flex-flow',
-              },
-              {
-                name: 'flex-grow',
-                url: '/pages/CSS/flex/flex-grow',
-              },
-              {
-                name: 'flex-shrink',
-                url: '/pages/CSS/flex/flex-shrink',
-              },
-              {
-                name: 'flex',
-                url: '/pages/CSS/flex/flex',
-              },
-              {
-                name: 'justify-content',
-                url: '/pages/CSS/flex/justify-content',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'layout',
-            name: 'layout',
-            pages: [
-              {
-                name: 'height',
-                url: '/pages/CSS/layout/height',
-              },
-              {
-                name: 'max-height',
-                url: '/pages/CSS/layout/max-height',
-              },
-              {
-                name: 'max-width',
-                url: '/pages/CSS/layout/max-width',
-              },
-              {
-                name: 'min-height',
-                url: '/pages/CSS/layout/min-height',
-              },
-              {
-                name: 'min-width',
-                url: '/pages/CSS/layout/min-width',
-              },
-              {
-                name: 'position',
-                url: '/pages/CSS/layout/position',
-              },
-              {
-                name: 'width',
-                url: '/pages/CSS/layout/width',
-              },
-              {
-                name: 'z-index',
-                url: '/pages/CSS/layout/z-index',
-              },
-              {
-                name: 'visibility',
-                url: '/pages/CSS/layout/visibility',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'margin',
-            name: 'margin',
-            pages: [
-              {
-                name: 'margin-bottom',
-                url: '/pages/CSS/margin/margin-bottom',
-              },
-              {
-                name: 'margin-left',
-                url: '/pages/CSS/margin/margin-left',
-              },
-              {
-                name: 'margin-right',
-                url: '/pages/CSS/margin/margin-right',
-              },
-              {
-                name: 'margin-top',
-                url: '/pages/CSS/margin/margin-top',
-              },
-              {
-                name: 'margin',
-                url: '/pages/CSS/margin/margin',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'padding',
-            name: 'padding',
-            pages: [
-              {
-                name: 'padding-bottom',
-                url: '/pages/CSS/padding/padding-bottom',
-              },
-              {
-                name: 'padding-left',
-                url: '/pages/CSS/padding/padding-left',
-              },
-              {
-                name: 'padding-right',
-                url: '/pages/CSS/padding/padding-right',
-              },
-              {
-                name: 'padding-top',
-                url: '/pages/CSS/padding/padding-top',
-              },
-              {
-                name: 'padding',
-                url: '/pages/CSS/padding/padding',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'overflow',
-            name: 'overflow',
-            pages: [
-              {
-                name: 'overflow',
-                url: '/pages/CSS/overflow/overflow',
-              },
-              {
-                name: 'overflow-visible-event',
-                url: '/pages/CSS/overflow/overflow-visible-event'
-              }
-            ] as Page[],
-          },
-          {
-            id: 'text',
-            name: 'text',
-            pages: [
-              {
-                name: 'color',
-                url: '/pages/CSS/text/color',
-              },
-              {
-                name: 'font-family',
-                url: '/pages/CSS/text/font-family',
-              },
-              {
-                name: 'font-size',
-                url: '/pages/CSS/text/font-size',
-              },
-              {
-                name: 'font-style',
-                url: '/pages/CSS/text/font-style',
-              },
-              {
-                name: 'font-weight',
-                url: '/pages/CSS/text/font-weight',
-              },
-              {
-                name: 'letter-spacing',
-                url: '/pages/CSS/text/letter-spacing',
-              },
-              {
-                name: 'line-height',
-                url: '/pages/CSS/text/line-height',
-              },
-              {
-                name: 'text-align',
-                url: '/pages/CSS/text/text-align',
-              },
-              {
-                name: 'text-overflow',
-                url: '/pages/CSS/text/text-overflow',
-              },
-              {
-                name: 'text-decoration-line',
-                url: '/pages/CSS/text/text-decoration-line',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'transform',
-            name: 'transform',
-            pages: [
-              {
-                name: 'translate',
-                url: '/pages/CSS/transform/translate',
-              },
-              {
-                name: 'scale',
-                url: '/pages/CSS/transform/scale',
-              },
-              {
-                name: 'rotate',
-                url: '/pages/CSS/transform/rotate',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'transition',
-            name: 'transition',
-            pages: [
-              {
-                name: 'transition',
-                url: '/pages/CSS/transition/transition',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'pointer-events',
-            name: 'pointer-events',
-            pages: [
-              {
-                name: 'pointer-events',
-                url: '/pages/CSS/pointer-events/pointer-events',
-              },
-            ] as Page[],
-          },
-          {
-            id: 'variable',
-            name: 'variable',
-            pages: [
-              {
-                name: 'variable',
-                url: '/pages/CSS/variable/variable',
-              },
-            ] as Page[],
-          }
-        ] as ListItem[],
-        arrowUpIcon: '/static/icons/arrow-up.png',
-        arrowDownIcon: '/static/icons/arrow-down.png',
+        menu: menu as (MenuItem | null)[],
         arrowRightIcon: '/static/icons/arrow-right.png',
       }
     },
+    computed: {
+      hasLeftWin() : boolean {
+        return !state.noMatchLeftWindow
+      },
+      leftWinActive() : string {
+        return state.leftWinActive.slice(1)
+      }
+    },
     methods: {
-      goDetailPage(e : Page) {
-        if (e.enable == false) {
-          uni.showToast({
-            icon: 'none',
-            title: '暂不支持',
-          })
-          return
+      goPage(url : string) {
+        if(this.hasLeftWin) {
+          uni.reLaunch({ url })
+        } else {
+          uni.navigateTo({ url })
         }
-        const url = e.url != null ? e.url! : `/pages/CSS/${e.name}/${e.name}`
-        uni.navigateTo({
-          url,
-        })
       },
     },
+    // #ifdef WEB
+    watch: {
+      $route: {
+        immediate: true,
+        handler(newRoute) {
+          if (newRoute.matched.length) {
+            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
+            if (activeCategoryIndex > -1) {
+              this.$nextTick(() => {
+                ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex]).$callMethod('openCollapse', true)
+              })
+            }
+          }
+        }
+      }
+    },
+    // #endif
   }
 </script>
 

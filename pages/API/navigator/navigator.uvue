@@ -53,6 +53,7 @@
 
 <script lang="uts">
   import { state, setLifeCycleNum } from '@/store/index.uts'
+  type AnimationType = "slide-in-right" | "slide-in-left" | "slide-in-top" | "slide-in-bottom" | "pop-in" | "fade-in" | "zoom-out" | "zoom-fade-out" | "none" | "auto"
 
   export default {
     data() {
@@ -62,7 +63,6 @@
         onReadyTime: 0,
         onHideTime: 0,
         animationTypeList: [
-          // #ifdef APP-ANDROID
           'slide-in-right',
           'slide-in-left',
           'slide-in-top',
@@ -72,7 +72,6 @@
           'zoom-out',
           'zoom-fade-out',
           'none'
-          // #endif
         ]
       }
     },
@@ -141,7 +140,7 @@
           },
         })
       },
-      navigateToAnimationType(animationType: string) {
+      navigateToAnimationType(animationType: AnimationType) {
         uni.navigateTo({
           url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
           animationType: animationType,

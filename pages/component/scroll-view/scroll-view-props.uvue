@@ -1,29 +1,28 @@
 <template>
   <view class="page-scroll-view">
     <page-head title="非下拉刷新的scroll-view属性示例"></page-head>
-    <view class="uni-margin-wrap">
-      <!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
-      <scroll-view v-if="scrollX" direction="horizontal" :scroll-top="scrollTop" :scroll-left="scrollLeft"
-        :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
-        :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
-        style="flex-direction: row;width: 100%;height: 100%;" :show-scrollbar="showScrollbar" :bounces="bounces"
-        @scrolltoupper="scrolltoupper" @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend"
-        ref="scrollViewX" id="scrollViewX">
-        <view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
-          <text class="uni-text">{{item.label}}</text>
-        </view>
-      </scroll-view>
-      <scroll-view v-else direction="vertical" :scroll-top="scrollTop" :scroll-left="scrollLeft"
-        :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
-        :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
-        :show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper" @touchmove="onTouchMove"
-        @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY"
-        style="width: 100%;height: 100%;">
-        <view class="item" :id="item.id" v-for="(item,_) in items">
-          <text class="uni-text">{{item.label}}</text>
-        </view>
-      </scroll-view>
-    </view>
+
+    <!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
+    <scroll-view v-if="scrollX" direction="horizontal" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+      :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
+      :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
+      style="flex-direction: row;" class="uni-margin-wrap" :show-scrollbar="showScrollbar" :bounces="bounces"
+      @scrolltoupper="scrolltoupper" @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend"
+      ref="scrollViewX" id="scrollViewX">
+      <view class="item" :id="'horizontal_'+item.id" v-for="(item,_) in items">
+        <text class="uni-text">{{item.label}}</text>
+      </view>
+    </scroll-view>
+    <scroll-view v-else direction="vertical" :scroll-top="scrollTop" :scroll-left="scrollLeft"
+      :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
+      :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation"
+      :show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper" @touchmove="onTouchMove"
+      @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY"
+      class="uni-margin-wrap">
+      <view class="item" :id="item.id" v-for="(item,_) in items">
+        <text class="uni-text">{{item.label}}</text>
+      </view>
+    </scroll-view>
 
     <scroll-view class="uni-list" :showScrollbar="true" :scroll-y="true">
       <view class="uni-list-cell uni-list-cell-padding">

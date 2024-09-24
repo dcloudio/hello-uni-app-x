@@ -10,6 +10,10 @@
       :http-cache="httpCache" :play-strategy="playStrategy" :danmu-list="danmuList" @play="onPlay" @pause="onPause"
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
+      <!-- #ifdef APP-ANDROID -->
+      <image v-if="subCompEnable && subCompShow" class="img-fast-backward" src="../../../static/test-video/fast-backward.png" @tap="fastBackward"></image>
+      <image v-if="subCompEnable && subCompShow" class="img-fast-forward" src="../../../static/test-video/fast-forward.png" @tap="fastForward"></image>
+      <!-- #endif -->
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
       <view class="uni-btn-v">
@@ -17,6 +21,12 @@
           <button type="primary" @click="pause">视频格式示例</button>
         </navigator>
       </view>
+      <!-- #ifdef APP-ANDROID -->
+      <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
+        <text class="uni-title" style="width: 80%;">子组件实现快进、快退功能（全屏后显示）</text>
+        <switch :checked="subCompEnable" @change="onSubCompEnableChange" />
+      </view>
+      <!-- #endif -->
       <view class="uni-title">
         <text class="uni-title-text">API示例</text>
       </View>
@@ -28,7 +38,7 @@
       </view>
       <view class="uni-btn-v">
         <input class="input" placeholder="输入要跳转的位置,单位s" type="number" @input="onSeekInput"></input>
-        <button type="primary" @click="seek">跳转到指定位置</button>
+        <button type="primary" @click="seek(this.pos)">跳转到指定位置</button>
       </view>
       <view class="uni-btn-v">
         <enum-data title="选择进入全屏时的视频方向" :items="directionItemTypes" @change="onRequestFullScreenDirectionChange"></enum-data>
@@ -82,15 +92,18 @@
       <enum-data title="设置解码器（仅 App 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
       <enum-data title="设置播放策略（仅 App 平台，播放前设置有效）" :items="playStrategyItemTypes" @change="onPlayStrategyChange"></enum-data>
     </scroll-view>
-    <video v-if="autoTest" :src="localSrc" @error="onError"></video>
   </view>
 </template>
 
 <script>
   import { ItemType } from '@/components/enum-data/enum-data';
+  // #ifdef APP-ANDROID
+  import ViewGroup from 'android.view.ViewGroup';
+  // #endif
   export default {
     onReady() {
-      this.videoContext = uni.createVideoContext('video', this);
+      this.videoContext = uni.createVideoContext('video');
+      // this.videoContext = uni.createVideoContext('video', this);
     },
     data() {
       return {
@@ -159,9 +172,7 @@
         } as UTSJSONObject,
         // API
         pos: 0,
-        requestFullScreenOptions: {
-          direction: -90
-        } as RequestFullScreenOptions,
+        requestFullScreenOptions: null as RequestFullScreenOptions | null,
         danmu: {
           text: '要显示的文本',
           color: '#FF0000'
@@ -169,12 +180,15 @@
         rate: 1,
         rateItemTypes: [{ "value": 0, "name": "0.5" }, { "value": 1, "name": "0.8" }, { "value": 2, "name": "1.0" }, { "value": 3, "name": "1.25" }, { "value": 4, "name": "1.5" }] as ItemType[],
         rateItems: [0.5, 0.8, 1.0, 1.25, 1.5],
+        subCompEnable: false,
+        subCompShow: false,
+        curPos: 0,
+        endPos: 0,
         // 自动化测试
         autoTest: false,
         isPlaying: false,
         isPause: false,
         isError: false,
-        localSrc: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
         eventPlay: null as UTSJSONObject | null,
         eventPause: null as UTSJSONObject | null,
         eventEnded: null as UTSJSONObject | null,
@@ -200,9 +214,9 @@
         (uni.getElementById("video") as UniVideoElement).pause(); //as写法测试。注意id不对时as会崩溃
         // this.videoContext?.pause();
       },
-      seek: function () {
-        console.log("seek -> " + this.pos);
-        this.videoContext?.seek(this.pos);
+      seek: function (pos : number) {
+        console.log("seek -> " + pos);
+        this.videoContext?.seek(pos);
       },
       onSeekInput: function (event : UniInputEvent) {
         this.pos = parseInt(event.detail.value);
@@ -235,6 +249,16 @@
       },
       onPlaybackRateChange: function (value : number) {
         this.rate = this.rateItems[value];
+      },
+      fastBackward: function () {
+        let pos = this.curPos - 15;
+        if (pos < 0) pos = 0;
+        this.seek(pos);
+      },
+      fastForward: function () {
+        let pos = this.curPos + 15;
+        if (pos > this.endPos) pos = this.endPos;
+        this.seek(pos);
       },
       // 属性
       onSrcComfirm: function (event : UniInputConfirmEvent) {
@@ -367,6 +391,9 @@
         this.header = json as UTSJSONObject;
         console.log("header -> " + JSON.stringify(this.header))
       },
+      onSubCompEnableChange: function (event : UniSwitchChangeEvent) {
+      	this.subCompEnable = event.detail.value;
+      },
       // 事件
       onPlay: function (res : UniEvent) {
         console.log(res.type);
@@ -401,17 +428,20 @@
       },
       onTimeUpdate: function (res : UniVideoTimeUpdateEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        this.curPos = res.detail.currentTime;
+        this.endPos = res.detail.duration;
         if (this.autoTest) {
           this.eventTimeupdate = {
             "tagName": res.target?.tagName,
             "type": res.type,
-            "currentTime": Math.round(res.detail.currentTime),
-            "duration": res.detail.duration.toInt()
+            "currentTime": Math.trunc(res.detail.currentTime),
+            "duration": Math.trunc(res.detail.duration)
           };
         }
       },
       onFullScreenChange: function (res : UniVideoFullScreenChangeEvent) {
         console.log(res.type + " -> " + JSON.stringify(res.detail));
+        this.subCompShow = res.detail.fullScreen;
         if (this.autoTest) {
           this.eventFullscreenchange = {
             "tagName": res.target?.tagName,
@@ -447,7 +477,7 @@
           this.eventProgress = {
             "tagName": res.target?.tagName,
             "type": res.type,
-            "isBufferedValid": res.detail.buffered > 0
+            "isBufferedValid": res.detail.buffered >= 0
           };
         }
       },
@@ -457,10 +487,10 @@
           this.eventFullscreenclick = {
             "tagName": res.target?.tagName,
             "type": res.type,
-            "screenX": res.detail.screenX.toInt(),
-            "screenY": res.detail.screenY.toInt(),
-            "screenWidth": res.detail.screenWidth.toInt(),
-            "screenHeight": res.detail.screenHeight.toInt()
+            "screenX": Math.trunc(res.detail.screenX),
+            "screenY": Math.trunc(res.detail.screenY),
+            "screenWidth": Math.trunc(res.detail.screenWidth),
+            "screenHeight": Math.trunc(res.detail.screenHeight)
           };
         }
       },
@@ -479,13 +509,19 @@
         uni.downloadFile({
           url: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
           success: (res) => {
-            this.localSrc = res.tempFilePath;
+            this.src = res.tempFilePath;
           },
           fail: (_) => {
             this.isError = true;
           }
         })
+      },
+      // #ifdef APP-ANDROID
+      hasSubComponent() : boolean {
+        const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
+        return view == null ? false : view.getChildAt(0) instanceof ViewGroup;
       }
+      // #endif
     }
   }
 </script>
@@ -504,5 +540,23 @@
 
   .margin-10 {
     margin: 10px;
+  }
+
+  .img-fast-backward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    left: 12%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+  }
+
+  .img-fast-forward {
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    right: 12%;
+    transform: translate(50%, -50%);
+    position: absolute;
   }
 </style>

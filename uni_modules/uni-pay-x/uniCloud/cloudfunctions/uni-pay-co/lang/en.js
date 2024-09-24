@@ -16,6 +16,7 @@ const sentence = {
 	51010: 'Invalid out_trade_no or transaction_id',
 	51011: 'Invalid wxpay_virtual',
 	51012: 'Invalid buy_quantity',
+	51013: 'Invalid apple_virtual',
 	52001: 'NotExist payOrder',
 	52002: 'NotExist notifyUrl',
 	53001: 'Create payment error',

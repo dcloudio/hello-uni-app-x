@@ -1,42 +1,42 @@
-function getData(key = '') {
-  return new Promise(async (resolve, reject) => {
-    const data = await page.data()
-    resolve(key ? data[key] : data)
-  })
-}
 
 const PAGE_PATH = '/pages/component/picker-view/picker-view'
-
-let page
-beforeAll(async () => {
-  page = await program.reLaunch(PAGE_PATH)
-  await page.waitFor('view')
-  await page.callMethod('setEventCallbackNum', 0)
-})
-
-afterEach(async () => {
-  await page.callMethod('setEventCallbackNum', 0)
-})
-
+let page,pickerViewEl;
 describe('PickerView.uvue', () => {
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view')
+    await page.callMethod('setEventCallbackNum', 0)
+    pickerViewEl = await page.$('.picker-view')
+  })
+
+  afterEach(async () => {
+    await page.callMethod('setEventCallbackNum', 0)
+  })
+
+  async function toScreenshot(imgName) {
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return imgName
+    }})
+    await page.waitFor(500);
+  }
+
   it('value', async () => {
-    const el = await page.$('.picker-view')
     await page.callMethod('setValue')
     await page.waitFor(1000)
-    const newValue1 = await el.property('value')
+    const newValue1 = await pickerViewEl.property('value')
     // TODO
     expect(newValue1.toString()).toEqual('0,0,0')
     if (process.env.UNI_PLATFORM === 'app-android') {
-      expect(await getData('result')).toEqual([0, 0, 0])
+      expect(await page.data('result')).toEqual([0, 0, 0])
     }
-
     await page.callMethod('setValue1')
     await page.waitFor(1000)
-    const newValue2 = await el.property('value')
+    const newValue2 = await pickerViewEl.property('value')
     // TODO
     expect(newValue2.toString()).toEqual('10,10,10')
     if (process.env.UNI_PLATFORM === 'app-android') {
-      expect(await getData('result')).toEqual([10, 10, 10])
+      expect(await page.data('result')).toEqual([10, 10, 10])
     }
   })
 
@@ -46,27 +46,59 @@ describe('PickerView.uvue', () => {
     const els1 = await page.$$('.picker-view-column')
     expect(els1.length).toBe(3)
   })
+
   it('indicator-style', async () => {
-    const el = await page.$('.picker-view')
+    // App端动态设置indicatorStyle无效
+    const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
     await page.setData({
-      indicatorStyle: 'height: 100px;',
+      indicatorStyle
     })
     await page.waitFor(500)
-    expect(await el.attribute('indicatorStyle')).toBe('height: 100px;')
+    expect(await pickerViewEl.attribute('indicatorStyle')).toBe(indicatorStyle)
+    await toScreenshot('picker-view-indicator-style')
   })
-  it('mask-top-style', async () => {
-    const el = await page.$('.picker-view')
-    await page.setData({
-      maskTopStyle: 'background: #ffffff;',
+
+  if(process.env.uniTestPlatformInfo.startsWith('web')){
+    // indicator-class、mask-style、mask-class 仅web支持
+    it('indicator-class', async () => {
+      await page.setData({
+        indicatorStyle:"",//清空indicatorStyle
+        indicatorClass:"indicator-test",//设置indicatorClass为indicator-test
+      })
+      expect(await pickerViewEl.attribute('indicatorClass')).toBe("indicator-test")
+      await toScreenshot('picker-view-web-indicator-class')
+      await page.setData({
+        indicatorClass:"",//清空indicatorClass
+      })
     })
-    expect(await el.attribute('mask-top-style')).toBe('background: #ffffff;')
-  })
-  it('mask-bottom-style', async () => {
-    const el = await page.$('.picker-view')
-    await page.setData({
-      maskBottomStyle: 'background: #ffffff;',
+    it('mask-style', async () => {
+      const maskStyle = "background-image: linear-gradient(to bottom, #d8e5ff, rgba(216, 229, 255, 0));"
+      await page.setData({maskStyle})
+      expect(await pickerViewEl.attribute('maskStyle')).toBe(maskStyle)
+      await toScreenshot('picker-view-web-mask-style')
     })
-    expect(await el.attribute('mask-bottom-style')).toBe('background: #ffffff;')
+    it('mask-class', async () => {
+      await page.setData({maskClass:"mask-test"})
+      expect(await pickerViewEl.attribute('maskClass')).toBe("mask-test")
+      await toScreenshot('picker-view-web-mask-class')
+    })
+    return
+  }
+
+
+  it('mask-top-bottom-style', async () => {
+    // App端动态设置mask-top-style、mask-bottom-style无效
+    const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
+    const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
+    await page.setData({
+      maskTopStyle: linearToTop,
+      maskBottomStyle: linearToBottom,
+    })
+    await page.waitFor(500)
+    expect(await pickerViewEl.attribute('mask-top-style')).toBe(linearToTop)
+    expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)
+    await page.waitFor(2000)
+    await toScreenshot('picker-view-app-mask-top-bottom-style')
   })
 
   it('reopen-picker-view-page', async () => {
@@ -86,16 +118,6 @@ describe('PickerView.uvue', () => {
   })
 
   it('trigger UniPickerViewChangeEvent', async () => {
-
-    // if web skip todo
-    if (
-      process.env.uniTestPlatformInfo.startsWith('web')
-    ) {
-      expect(1).toBe(1)
-      return
-    }
-
-    const el = await page.$('.picker-view')
     await page.callMethod('setValue')
     await page.waitFor(1500)
     const eventCallbackNum = await page.callMethod('getEventCallbackNum')

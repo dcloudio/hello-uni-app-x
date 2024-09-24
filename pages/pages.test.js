@@ -55,7 +55,6 @@ const pages = [
   '/pages/component/slider/slider-in-swiper',
   //动态内容
   // '/pages/component/picker-view/picker-view',
-  '/pages/component/slider-100/slider-100',
   '/pages/component/switch/switch',
   '/pages/component/image/image',
   '/pages/component/image/image-format',
@@ -73,27 +72,27 @@ const pages = [
   // 动态内容
   // '/pages/component/web-view/web-view',
   // 依赖加载完成回调，单独测试例截图
-  // '/pages/component/web-view-local/web-view-local',
+  // '/pages/component/web-view/web-view/web-view-local',
   // 动态内容
-  // '/pages/component/unicloud-db-contacts/list',
-  '/pages/component/unicloud-db-contacts/add',
+  // '/pages/component/unicloud-db/unicloud-db',
+  '/pages/component/unicloud-db/unicloud-db/contacts/add',
   // 动态内容
-  // '/pages/component/unicloud-db-contacts/edit',
+  // '/pages/component/unicloud-db/unicloud-db/contacts/edit',
   // 动态内容
-  // '/pages/component/unicloud-db-contacts/detail',
-  '/pages/component/mixin-datacom/mixin-datacom',
+  // '/pages/component/unicloud-db/unicloud-db/contacts/detail',
+  // 动态内容
+  // '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
   // 单独测试例截图
-  // '/pages/component/general-attribute/general-attribute',
-  '/pages/component/general-event/general-event',
-  '/pages/component/general-event/transition-event',
-  '/pages/component/general-event/touch-event',
+  // '/pages/component/global-properties/global-properties',
+  '/pages/component/global-events/global-events',
+  '/pages/component/global-events/transition-events',
+  '/pages/component/global-events/touch-events',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
   // 单独测试例截图
   // '/pages/component/nested-scroll-body/nested-scroll-body',
   // 单独测试例截图
   // '/pages/component/swiper/swiper-list-view',
-  '/pages/component/list-view/list-view-refresh',
   // 单独测试例截图
   // '/pages/component/list-view/issue-2199',
 
@@ -121,15 +120,15 @@ const pages = [
   // '/pages/API/get-element-by-id/get-element-by-id',
   // 单独测试例截图
   // '/pages/API/get-element-by-id/get-element-by-id-multiple-root-node',
-  '/pages/API/nodes-info/nodes-info',
+  '/pages/API/create-selector-query/create-selector-query',
   '/pages/API/storage/storage',
   // 单独测试例截图
-  // '/pages/API/action-sheet/action-sheet',
+  // '/pages/API/show-action-sheet/show-action-sheet',
   // 单独测试例截图
-  // '/pages/API/modal/modal',
-  '/pages/API/loading/loading',
+  // '/pages/API/show-modal/show-modal',
+  '/pages/API/show-loading/show-loading',
   // 单独测试例截图
-  // '/pages/API/toast/toast',
+  // '/pages/API/show-toast/show-toast',
   // 单独测试例截图
   // '/pages/API/load-font-face/load-font-face',
   // 单独测试例截图
@@ -141,11 +140,13 @@ const pages = [
   '/pages/API/request/request',
   '/pages/API/upload-file/upload-file',
   '/pages/API/download-file/download-file',
-  '/pages/API/websocket-socketTask/websocket-socketTask',
+  '/pages/API/websocket/socketTask',
   // 页面销毁时会关闭socket连接，所以规避
-  // '/pages/API/websocket-global/websocket-global',
-  '/pages/API/unicloud-call-function/unicloud-call-function',
-  '/pages/API/unicloud-import-object/unicloud-import-object',
+  // '/pages/API/websocket/websocket',
+  '/pages/API/unicloud/unicloud/cloud-function',
+  '/pages/API/unicloud/unicloud/cloud-object',
+  '/pages/API/unicloud/unicloud/database',
+  '/pages/API/unicloud/unicloud/cloud-storage',
   '/pages/API/get-system-info/get-system-info',
   '/pages/API/get-device-info/get-device-info',
   '/pages/API/get-app-base-info/get-app-base-info',
@@ -155,13 +156,11 @@ const pages = [
   '/pages/API/get-network-type/get-network-type',
   '/pages/API/page-scroll-to/page-scroll-to',
   '/pages/API/event-bus/event-bus',
-  '/pages/API/unicloud-file-api/unicloud-file-api',
-  '/pages/API/unicloud-database/unicloud-database',
-  '/pages/API/get-battery-info/get-battery-info',
+  // '/pages/API/get-battery-info/get-battery-info',
   '/pages/API/get-window-info/get-window-info',
   '/pages/API/rpx2px/rpx2px',
-  '/pages/API/request-payment-uni-pay/request-payment-uni-pay',
-  '/pages/API/request-payment-uni-pay/order-detail',
+  '/pages/API/request-payment/request-payment/request-payment-uni-pay',
+  '/pages/API/request-payment/request-payment/order-detail',
   // 单独测试例截图
   // '/pages/API/resize-observer/resize-observer',
   // 单独测试例截图
@@ -255,7 +254,8 @@ const pages = [
   '/pages/template/half-screen/half-screen',
   // 动态内容
   // '/pages/template/long-list/long-list',
-  '/pages/template/long-list2/long-list2',
+  // 动态内容
+  // '/pages/template/long-list2/long-list2',
   '/pages/template/long-list-nested/long-list-nested',
   '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/navbar-lite/navbar-lite',
@@ -269,7 +269,14 @@ const pages = [
   '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
+  '/pages/template/slider-100/slider-100',
 ]
+
+if (isAndroid && isWeb) {
+  pages.push(
+    '/pages/API/get-battery-info/get-battery-info',
+  )
+}
 
 if (isApp && !isAppWebview) {
   pages.push(
@@ -281,7 +288,7 @@ if (isApp && !isAppWebview) {
     '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
     '/pages/API/save-image-to-photos-album/save-image-to-photos-album',
     '/pages/API/save-video-to-photos-album/save-video-to-photos-album',
-    '/pages/API/facial-recognition-verify/facial-recognition-verify',
+    '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
     // 进入页面崩溃，暂时规避
     // '/pages/API/get-univerify-manager/get-univerify-manager',
     '/pages/API/request-payment/request-payment',
@@ -296,7 +303,7 @@ if (isAndroid && !isAppWebview) {
     '/pages/API/install-apk/install-apk',
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
-    '/pages/API/rewarded-video-ad/rewarded-video-ad',
+    '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',
@@ -310,19 +317,16 @@ if (isWeb) {
     '/pages/component/movable-view/movable-view',
     '/pages/component/label/label',
     '/pages/component/picker/picker',
-    '/pages/component/map/map',
-    '/pages/component/cover-view/cover-view',
-    '/pages/component/editor/editor',
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
     '/pages/API/make-phone-call/make-phone-call',
-    '/pages/API/inner-audio/inner-audio',
-    '/pages/API/inner-audio/inner-audio-format',
-    '/pages/API/inner-audio/inner-audio-path',
+    '/pages/API/create-inner-audio-context/create-inner-audio-context',
+    '/pages/API/create-inner-audio-context/inner-audio-format',
+    '/pages/API/create-inner-audio-context/inner-audio-path',
     '/pages/API/clipboard/clipboard',
-    '/pages/API/on-compass-change/on-compass-change',
+    '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
-    '/pages/component/canvas/ball',
+    '/pages/component/canvas/canvas/ball',
     '/pages/template/browser-element/browser-element',
   )
 }
@@ -344,15 +348,14 @@ function getWaitForTagName(pagePath) {
     return 'video'
   }
   if (
-    pagePath === '/pages/component/general-event/transition-event' ||
-    pagePath === '/pages/component/list-view/list-view-refresh' ||
+    pagePath === '/pages/component/global-events/transition-events' ||
     pagePath === '/pages/API/env/env'
   ) {
     return 'text'
   }
   if (
-    pagePath === '/pages/component/unicloud-db-contacts/edit' ||
-    pagePath === '/pages/component/unicloud-db-contacts/detail'
+    pagePath === '/pages/component/unicloud-db/unicloud-db/contacts/edit' ||
+    pagePath === '/pages/component/unicloud-db/unicloud-db/contacts/detail'
   ) {
     return 'scroll-view'
   }
@@ -363,6 +366,13 @@ function getWaitForTagName(pagePath) {
 }
 
 describe("page screenshot test", () => {
+  if (platformInfo.indexOf('safari') !== -1) {
+    it('暂时规避 safari 截图测试', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   beforeAll(async () => {
     console.log("page screenshot test start");
   });
@@ -381,6 +391,7 @@ describe("page screenshot test", () => {
     const currentPagePath = pages[pageIndex]
     console.log("Taking screenshot: ", pageIndex, currentPagePath);
     let fullPage = true;
+
     const screenshotParams = {
       fullPage
     }

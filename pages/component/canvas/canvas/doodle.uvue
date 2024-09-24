@@ -1,0 +1,79 @@
+<template>
+  <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd"></canvas>
+  <button @click="doClear()">清空</button>
+</template>
+
+<script>
+  type Point = {
+    x : number
+    y : number
+  };
+
+  export default {
+    data() {
+      return {
+        lastPointX: 0,
+        lastPointY: 0,
+        canvasElement: null as UniCanvasElement | null,
+        renderingContext: null as CanvasRenderingContext2D | null,
+      }
+    },
+    onReady() {
+      this.canvasElement = uni.getElementById('tablet') as UniCanvasElement
+      this.renderingContext = this.canvasElement!.getContext("2d")!
+
+      const dpr = uni.getDeviceInfo().devicePixelRatio ?? 1;
+      this.canvasElement!.width = this.canvasElement!.offsetWidth * dpr
+      this.canvasElement!.height = this.canvasElement!.offsetHeight * dpr
+      this.renderingContext!.scale(dpr, dpr)
+    },
+    methods: {
+      touchStart(event : TouchEvent) {
+        const position = this.getPosition(event)
+        this.lastPointX = position.x
+        this.lastPointY = position.y
+      },
+      touchMove(event : TouchEvent) {
+        const position = this.getPosition(event)
+        const x = position.x
+        const y = position.y
+
+        const ctx = this.renderingContext!
+        ctx.lineWidth = 5
+        ctx.lineCap = "round"
+        ctx.lineJoin = "round"
+        ctx.beginPath()
+        ctx.moveTo(this.lastPointX, this.lastPointY)
+        ctx.lineTo(x, y)
+        ctx.stroke()
+
+        this.lastPointX = x
+        this.lastPointY = y
+      },
+      touchEnd(_ : TouchEvent) {
+      },
+      doClear() {
+        if (this.renderingContext != null) {
+          this.renderingContext!.clearRect(0, 0, this.canvasElement!.width, this.canvasElement!.height)
+        }
+      },
+      getPosition(event : TouchEvent) : Point {
+        const elRect = this.canvasElement!.getBoundingClientRect()
+        const touch = event.touches[0]
+        return {
+          x: touch.clientX - elRect.left,
+          y: touch.clientY - elRect.top
+        } as Point
+      }
+    }
+  }
+</script>
+
+<style>
+  .drawing {
+    width: 100%;
+    height: 500px;
+    background-color: lightgray;
+    margin-bottom: 15px;
+  }
+</style>

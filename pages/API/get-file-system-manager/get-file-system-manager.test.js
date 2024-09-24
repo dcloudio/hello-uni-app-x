@@ -1306,6 +1306,12 @@ describe('ExtApi-FileManagerTest', () => {
     await btnWrite.tap()
     await isDone()
     let bytesWritten = await getData("bytesWritten")
+    let lastFailError = await getData("lastFailError")
+    if(bytesWritten != 7){
+      let writeData = await getData("writeData")
+       console.log('writeTest',lastFailError.errCode,lastFailError.errMsg,bytesWritten,writeData)
+    }
+
     expect(bytesWritten).toEqual(7)
     console.log('writeTest', '2')
     //writeSyncTest

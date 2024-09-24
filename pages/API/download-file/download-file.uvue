@@ -55,11 +55,13 @@
           success: (res) => {
             console.log('downloadFile success, res is', res.tempFilePath)
             self.imageSrc = res.tempFilePath;
-            uni.hideLoading();
           },
           fail: (err) => {
             console.log('downloadFile fail, err is:', err)
+          },
+          complete: (res) => {
             uni.hideLoading();
+            this.task = null;
           }
         });
         this.task?.onProgressUpdate((update) => {
@@ -140,11 +142,9 @@
         // #ifdef APP
         testInovkeDownloadFile({
           success:(res: any)=>{
-            console.log("success :", res);
             this.jest_result = true
           },
           fail:(err: any)=>{
-            console.log("fail :", err);
             this.jest_result = false
           }
         } as CommonOptions)
@@ -155,7 +155,6 @@
           url: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
           success: (res: DownloadFileSuccess) => {
             this.jest_result = true;
-            console.log("res :", res);
           },
           fail: () => {
             this.jest_result = false;

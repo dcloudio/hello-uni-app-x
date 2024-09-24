@@ -1,0 +1,55 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view class="page">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="grid-view">
+      <slider ref="slider" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
+        @change="sliderChange" :value="sliderValue" :block-size="20" :show-value="true" />
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'slider 滑块 x 100',
+        sliderValue: 50
+      }
+    },
+    methods: {
+      sliderChange(e : UniSliderChangeEvent) {
+        this.updateSliderValue(e.detail.value)
+      },
+      sliderChanging(e : UniSliderChangeEvent) {
+        this.updateSliderValue(e.detail.value)
+      },
+      updateSliderValue(value : number) {
+        // TODO 跳过vue框架，直接修改原生组件
+        (this.$refs["slider"] as UniSliderElement[]).forEach((item) => {
+          item.value = value
+        });
+      }
+    },
+  }
+</script>
+
+<style>
+  .page {
+    flex: 1;
+  }
+
+  .grid-view {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .slider {
+    width: 25%;
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
+</style>

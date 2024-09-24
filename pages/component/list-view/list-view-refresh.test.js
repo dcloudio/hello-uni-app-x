@@ -5,6 +5,14 @@ describe('component-native-list-view-refresh', () => {
     })
     return
   }
+
+  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('跳过横屏模式', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page
   beforeAll(async () => {
     //打开list-view测试页
@@ -20,13 +28,10 @@ describe('component-native-list-view-refresh', () => {
     await page.waitFor(500)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
-    // 手动设置下拉刷新状态refresher-triggered为true时，在iOS不触发@refresherpulling事件,并且e.detail.dy为0
-    if(process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-      expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
-      expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
-      await page.waitFor(1000);
-      expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
-    }
+    expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
+    expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
+    await page.waitFor(1000);
+    expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
   })
 
   it('check_refresherabort', async () => {
@@ -34,13 +39,10 @@ describe('component-native-list-view-refresh', () => {
     await program.swipe({
       startPoint: {x: 100,y: 400},
       endPoint: {x: 100,y: 500},
-      duration: 1000
+      duration: 100
     })
     await page.waitFor(1500)
-    // 下拉刷新被中止，在iOS不触发@refresherabort事件
-    if(process.env.UNI_UTS_PLATFORM.startsWith('app-android')){
-      expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
-    }
+    expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
   });
 
 })

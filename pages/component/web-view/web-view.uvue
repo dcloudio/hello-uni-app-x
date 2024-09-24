@@ -1,8 +1,9 @@
 <template>
   <scroll-view class="uni-flex-item">
-    <web-view id="web-view" class="uni-flex-item" :src="src" :webview-styles="webview_styles"
-      :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess"
-      @message="message" @error="error" @loading="loading" @load="load" @download="download">
+    <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
+      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess"
+      :verticalScrollBarAccess="verticalScrollBarAccess" @message="message" @error="error" @loading="loading"
+      @load="load" @download="download" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
@@ -10,8 +11,8 @@
         <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" maxlength="-1"/>
       </view>
       <view class="uni-row uni-btn-v">
-        <button class="uni-flex-item" type="primary" @click="back">后退</button>
-        <button class="margin-left-5 uni-flex-item" type="primary" @click="forward">前进</button>
+        <button class="uni-flex-item" type="primary" :disabled="!canGoBack" @click="back">后退</button>
+        <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!canGoForward" @click="forward">前进</button>
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
@@ -38,6 +39,9 @@
 </template>
 
 <script>
+  // #ifdef APP
+  import { canWebViewGoBack, canWebViewGoForward, hasNativeView} from '@/uni_modules/uts-get-native-view';
+  // #endif
   export default {
     data() {
       return {
@@ -48,20 +52,29 @@
           }
         },
         webviewContext: null as WebviewContext | null,
+        webviewElement: null as UniWebViewElement | null,
         loadError: false,
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
+        canGoBack: false,
+        canGoForward: false,
         // 自动化测试
         autoTest: false,
         eventLoading: null as UTSJSONObject | null,
         eventLoad: null as UTSJSONObject | null,
-        eventError: null as UTSJSONObject | null
+        eventError: null as UTSJSONObject | null,
+        eventTouchstart: null as UTSJSONObject | null,
+        eventTap: null as UTSJSONObject | null,
+        pointerEvents: 'auto'
       }
     },
     onReady() {
       // #ifdef APP
       // TODO web 实现createWebviewContext
-      this.webviewContext = uni.createWebviewContext('web-view', this)
+      this.webviewContext = uni.createWebviewContext('web-view',this)
+      this.webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
+      // console.log('url: ',this.webviewElement?.getAttribute("src"));
+      // this.webviewElement?.setAttribute("src","https://ext.dcloud.net.cn/")
       // #endif
     },
     methods: {
@@ -73,6 +86,7 @@
       },
       reload() {
         this.webviewContext?.reload();
+        // this.webviewElement?.reload();
       },
       stop() {
         this.webviewContext?.stop();
@@ -110,6 +124,10 @@
       },
       load(event : UniWebViewLoadEvent) {
         console.log(JSON.stringify(event.detail));
+        // #ifdef APP
+        this.canGoBack = canWebViewGoBack('web-view');
+        this.canGoForward = canWebViewGoForward('web-view');
+        // #endif
         if (this.autoTest) {
           this.eventLoad = {
             "tagName": event.target?.tagName,
@@ -137,6 +155,35 @@
       },
       changeVerticalScrollBarAccess(event : UniSwitchChangeEvent) {
         this.verticalScrollBarAccess = event.detail.value;
+      },
+      // 自动化测试
+      touchstart(event : UniTouchEvent) {
+        if (this.autoTest) {
+          this.eventTouchstart = {
+            clientX: Math.ceil(event.touches[0].clientX),
+            clientY: Math.ceil(event.touches[0].clientY)
+          };
+        }
+      },
+      tap(event : UniPointerEvent) {
+        if (this.autoTest) {
+          this.eventTap = {
+            clientX: Math.ceil(event.clientX),
+            clientY: Math.ceil(event.clientY)
+          };
+        }
+      },
+      getWindowInfo() : GetWindowInfoResult {
+        return uni.getWindowInfo();
+      },
+      //自动化测试专用
+      checkNativeWebView(): boolean {
+        // #ifdef APP
+        return hasNativeView('web-view')
+        // #endif
+        // #ifdef WEB
+        return true
+        // #endif
       }
     }
   }
