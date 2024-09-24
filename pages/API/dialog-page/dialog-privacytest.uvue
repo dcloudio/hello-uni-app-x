@@ -1,0 +1,63 @@
+<template>
+  <view class="dialog-container">
+    <view class="dialog-content">
+      <text style="text-align: center;margin: 12px;font-size: 20px;"> 隐私协议弹框</text>
+      <button type="primary" style="margin-top: 12px;margin-bottom: 12px;" open-type="agreePrivacyAuthorization"
+        @click="agree">同意</button>
+      <button @click="reject">拒绝</button>
+    </view>
+  </view>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+
+      }
+    },
+    methods: {
+      agree() {
+        // #ifdef APP-ANDROID
+        uni.showToast({
+          title: 'isPrivacyAgree:' + UTSAndroid.isPrivacyAgree()
+        })
+        uni.closeDialogPage({
+          dialogPage: this.$page as UniDialogPage
+        })
+        // #endif
+      },
+      reject() {
+        // #ifdef APP-ANDROID
+        UTSAndroid.setPrivacyAgree(false)
+        uni.showToast({
+          title: 'isPrivacyAgree:' + UTSAndroid.isPrivacyAgree()
+        })
+        uni.closeDialogPage({
+          dialogPage: this.$page as UniDialogPage
+        })
+        // #endif
+      }
+    }
+  }
+</script>
+<style>
+  .dialog-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dialog-content {
+    width: 80%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .mt-10 {
+    margin-top: 10px;
+  }
+</style>
