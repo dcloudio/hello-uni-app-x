@@ -16,12 +16,17 @@
         @confirm="confirm_scale_input"></input-data>
       <boolean-data :defaultValue="showLocation" title="开启显示带有方向的当前定位点" @change="change_show_location"></boolean-data>
 
+
       <button class="button" @click="addControls">控件</button>
-      <button class="button" @click="addMarkers">标记点</button>
+      <button class="button" @click="addMarkers">添加标记点</button>
       <button class="button" @click="addMarkersLabel">为标记点旁边增加标签</button>
-      <button class="button" @click="addPolyline">路线</button>
-      <button class="button" @click="addPolygons">多边形</button>
-      <button class="button" @click="addCircles">圆</button>
+      <button class="button" @click="deleteMarker">移除ID为4的标记点和标签</button>
+      <button class="button" @click="addPolyline">添加路线</button>
+      <button class="button" @click="removePolyline">移除一条路线</button>
+      <button class="button" @click="addPolygons">添加多边形</button>
+      <button class="button" @click="removePolygon">移除一个多边形</button>
+      <button class="button" @click="addCircles">添加圆</button>
+      <button class="button" @click="removeCircle">移除一个圆</button>
       <button class="button" @click="includePoint">缩放视野以包含所有给定的坐标点</button>
       <view class="uni-title">
         <text class="uni-title-text">方法示例</text>
@@ -38,104 +43,104 @@
 
 <script setup lang="uts">
   type Anchor = {
-    x: number,
-    y: number
+    x : number,
+    y : number
   }
 
   type Callout = {
-    content: string,
-    color: string,
-    fontSize: number,
-    borderRadius: number,
-    borderWidth: number,
-    borderColor: string,
-    bgColor: string,
-    padding: number,
-    display: string
+    content : string,
+    color : string,
+    fontSize : number,
+    borderRadius : number,
+    borderWidth : number,
+    borderColor : string,
+    bgColor : string,
+    padding : number,
+    display : string
   }
 
   type Label = {
-    content: string,
-    color: string,
-    fontSize: number,
-    x: number,
-    y: number,
-    borderColor: string
-    borderWidth: number,
-    borderRadius: number,
-    bgColor: string,
-    padding: number
+    content : string,
+    color : string,
+    fontSize : number,
+    x : number,
+    y : number,
+    borderColor : string
+    borderWidth : number,
+    borderRadius : number,
+    bgColor : string,
+    padding : number
   }
 
   type Markers = {
-    id: number,
-    latitude: number,
-    longitude: number,
-    title?: string,
-    iconPath: string,
-    zIndex?: string,
-    rotate?: number,
-    width?: number,
-    height?: number,
-    label?: Label,
-    anchor?: Anchor,
-    callout?: Callout
+    id : number,
+    latitude : number,
+    longitude : number,
+    title ?: string,
+    iconPath : string,
+    zIndex ?: string,
+    rotate ?: number,
+    width ?: number,
+    height ?: number,
+    label ?: Label,
+    anchor ?: Anchor,
+    callout ?: Callout
   }
 
   type Points = {
-    latitude: number,
-    longitude: number
+    latitude : number,
+    longitude : number
   }
 
   type Polyline = {
-    points: Points[],
-    color: string,
-    width: number,
-    dottedLine: boolean,
-    arrowLine: boolean,
-    borderColor: string,
-    borderWidth: number
+    points : Points[],
+    color : string,
+    width : number,
+    dottedLine : boolean,
+    arrowLine : boolean,
+    borderColor : string,
+    borderWidth : number
   }
 
   type Polygons = {
-    points: Points[];
-    fillColor: string;
-    strokeWidth: number;
-    strokeColor: string;
-    zIndex: number;
+    points : Points[];
+    fillColor : string;
+    strokeWidth : number;
+    strokeColor : string;
+    zIndex : number;
   }
 
   type Circles = {
-    latitude: number;
-    longitude: number;
-    radius: number;
-    strokeWidth: number;
-    color: string;
-    fillColor: string;
+    latitude : number;
+    longitude : number;
+    radius : number;
+    strokeWidth : number;
+    color : string;
+    fillColor : string;
   }
 
   type PositionType = {
-    left: number,
-    top: number,
-    width: number,
-    height: number
+    left : number,
+    top : number,
+    width : number,
+    height : number
   }
 
   type ControlsType = {
-    id?: number;
-    position: PositionType;
-    iconPath: string;
-    clickable?: boolean;
+    id ?: number;
+    position : PositionType;
+    iconPath : string;
+    clickable ?: boolean;
   }
 
   type TypeJestResult = {
-    translateMarkerMsg: string,
-    animationEnd: boolean,
-    centerPoints: Points,
-    southwest: Points,
-    northeast: Points,
-    moveToLocationMsg: string,
-    scale: number
+    translateMarkerMsg : string,
+    animationEnd : boolean,
+    centerPoints : Points,
+    southwest : Points,
+    northeast : Points,
+    moveToLocationMsg : string,
+    scale : number
   }
 
   const testMarkers = [{
@@ -188,7 +193,82 @@
       padding: 5,
       display: 'ALWAYS'
     }
-  }
+  },
+  {
+    id: 2,
+    latitude: 39.894793,
+    longitude: 116.321592,
+    title: '北京西站',
+    zIndex: '1',
+    iconPath: '../../../static/location.png',
+    width: 40,
+    height: 40,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '北京西站',
+      color: '#ffffff',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#ff5500',
+      padding: 5,
+      display: 'ALWAYS'
+    }
+  },
+  {
+    id: 3,
+    latitude: 39.902344,
+    longitude: 116.484822,
+    title: '北京东站',
+    zIndex: '1',
+    iconPath: '../../../static/location.png',
+    width: 20,
+    height: 20,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '北京东站',
+      color: '#ffffff',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#ff5500',
+      padding: 5,
+      display: 'ALWAYS'
+    }
+  },
+  {
+    id: 4,
+    latitude: 39.865011,
+    longitude: 116.379007,
+    title: '北京南站',
+    zIndex: '1',
+    iconPath: '../../../static/location.png',
+    width: 40,
+    height: 40,
+    anchor: {
+      x: 0.5,
+      y: 1
+    },
+    callout: {
+      content: '北京南站',
+      color: '#ffffff',
+      fontSize: 12,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#333300',
+      bgColor: '#00aa00',
+      padding: 5,
+      display: 'ALWAYS'
+    }
+  },
   ];
 
 
@@ -328,7 +408,7 @@
   const skew = ref(0);
   // 自动化测试
   const autoTest = ref(false);
-  const updateAutoTest = (value: boolean) => {
+  const updateAutoTest = (value : boolean) => {
     autoTest.value = value
   }
 
@@ -358,7 +438,7 @@
   });
 
   const scale = ref(13);
-  const confirm_scale_input = (value: number) => {
+  const confirm_scale_input = (value : number) => {
     scale.value = value
   };
 
@@ -378,7 +458,7 @@
   }
 
   const showLocation = ref(false);
-  const change_show_location = (checked: boolean) => {
+  const change_show_location = (checked : boolean) => {
     showLocation.value = checked
   }
 
@@ -390,7 +470,21 @@
 
   const markers = reactive([] as Markers[]);
   const addMarkers = () => {
+    scale.value = 11
     markers.push(...testMarkers);
+  };
+
+  const removeMarker = () => {
+    const index = markers.findIndex(marker => marker.id === 4);
+    if (index !== -1) {
+      delete markers[index].label;
+      markers.splice(index, 1);
+    }else{
+      uni.showToast({
+        title: '未找到该标记点',
+        icon: 'none'
+      });
+    }
   };
 
   const addMarkersLabel = () => {
@@ -413,8 +507,13 @@
 
   const polyline = ref([] as Polyline[]);
   const addPolyline = () => {
-    scale.value = 12;
+    scale.value = 11;
     polyline.value = testPolyline;
+  };
+  const removePolyline = () => {
+    if (polyline.value.length > 1) {
+      polyline.value.splice(0, 1);
+    }
   };
 
 
@@ -423,6 +522,11 @@
     scale.value = 10;
     polygons.value = testPolygons;
   };
+  const removePolygon = () => {
+    if (polygons.value.length > 1) {
+      polygons.value.splice(0, 1);
+    }
+  };
 
 
   const circles = ref([] as Circles[]);
@@ -430,6 +534,12 @@
     scale.value = 10;
     circles.value = testCircles;
   };
+  const removeCircle = () => {
+    if (circles.value.length > 1) {
+      circles.value.splice(0, 1);
+    }
+  };
+
 
   const showCompass = ref(true);
   const enable3D = ref(true);
@@ -528,6 +638,22 @@
           console.log(error)
         }
       });
+      map.value.translateMarker({
+        markerId: 2,
+        destination: {
+          latitude: 39.902344,
+          longitude: 116.484822,
+        },
+        autoRotate: true,
+        rotate: 0,
+        duration: 2000,
+        success: ret => {
+          console.log('handleTranslateMarker',JSON.stringify(ret));
+        },
+        fail: error => {
+          console.log(error)
+        }
+      });
     }
   };
 
@@ -573,43 +699,43 @@
     }
   };
 
-  const maptap = (e: UniEvent) => {
+  const maptap = (e : UniEvent) => {
     // console.log('点击地图时触发',e)
     uni.showModal({
       content: JSON.stringify(e)
     });
   };
 
-  const onmarkertap = (e: UniEvent) => {
+  const onmarkertap = (e : UniEvent) => {
     // console.log('点击标记点时触发',e)
     uni.showModal({
       content: JSON.stringify(e)
     });
   };
 
-  const oncontroltap = (e: UniEvent) => {
+  const oncontroltap = (e : UniEvent) => {
     // console.log('点击控件时触发',e)
     uni.showModal({
       content: JSON.stringify(e)
     });
   };
 
-  const oncallouttap = (e: UniEvent) => {
+  const oncallouttap = (e : UniEvent) => {
     // console.log('点击标记点对应的气泡时触发',e)
     uni.showModal({
       content: JSON.stringify(e)
     });
   };
 
-  const onupdated = (e: UniEvent) => {
+  const onupdated = (e : UniEvent) => {
     console.log('在地图渲染更新完成时触发', e)
   };
 
-  const onregionchange = (e: UniEvent) => {
+  const onregionchange = (e : UniEvent) => {
     console.log('视野发生变化时触发', e)
   };
 
-  const onpoitap = (e: UniEvent) => {
+  const onpoitap = (e : UniEvent) => {
     // console.log('点击地图poi点时触发',e)
     uni.showModal({
       content: JSON.stringify(e)
@@ -623,9 +749,13 @@
     addControls,
     addMarkers,
     addMarkersLabel,
+    removeMarker,
     addPolyline,
+    removePolyline,
     addPolygons,
+    removePolygon,
     addCircles,
+    removeCircle,
     includePoint,
     handleGetCenterLocation,
     handleGetRegion,

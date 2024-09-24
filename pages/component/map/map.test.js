@@ -17,7 +17,7 @@ describe('web-map', () => {
   });
 
   it('Check MapMethods', async () => {
-    const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','addPolyline', 'addPolygons', 'addCircles','includePoint']
+    const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
     for (var i = 0; i < mapMethods.length; i++) {
       await page.callMethod(mapMethods[i])
       await page.waitFor(500);
