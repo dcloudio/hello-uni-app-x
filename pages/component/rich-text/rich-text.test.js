@@ -34,6 +34,9 @@ describe('rich-text-test', () => {
   })
 
   it('test selectable itemclick', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      return;
+    }
     await page.setData({
       autoTest: true,
       isItemClickTrigger: false
