@@ -56,6 +56,13 @@ describe('ExtApi-GetSystemInfo', () => {
         expect(['light', 'dark', 'auto']).toContain(value);
       }
     }
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      if (res.safeAreaInsets.bottom > 0) {
+        expect(res.safeAreaInsets.top + 44 + res.windowHeight).toBe(res.screenHeight);
+      } else {
+        expect(res.safeAreaInsets.top + 44 + res.windowHeight).toBe(res.safeArea.bottom);
+      }
+    }
   });
   it('Check GetSystemInfoSync required properties', async () => {
     for (let i = 0; i < requiredProperties.length; i++) {
