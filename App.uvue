@@ -29,6 +29,7 @@
       } as OnShowOptions
     },
     onLaunch: function (res : OnLaunchOptions) {
+
       this.globalData.launchOptions = res
 
       // 自动化测试
@@ -56,6 +57,30 @@
       		console.log(err);
       	}
       })
+      // #ifdef APP
+      if (process.env.NODE_ENV === 'development') {
+        //真机运行可以去掉此注释
+         //  uni.getPrivacySetting({
+         //   success(res){
+         //      if(res.needAuthorization){
+         //        uni.openDialogPage({
+         //          url: '/pages/API/dialog-page/dialog-privacytest',
+         //        })
+         //      }
+         //   }
+         // })
+      }else {
+         uni.getPrivacySetting({
+           success(res1){
+              if(res1.needAuthorization){
+                uni.openDialogPage({
+                  url: '/pages/API/dialog-page/dialog-privacytest',
+                })
+              }
+           }
+         })
+      }
+      // #endif
     },
     onShow: function (res : OnShowOptions) {
       this.globalData.onShowOption = res

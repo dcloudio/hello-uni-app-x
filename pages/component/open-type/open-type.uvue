@@ -2,7 +2,8 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex:1">
   <!-- #endif -->
-    <button id="opentype"  style="margin: 12px;" type="primary" open-type="agreePrivacyAuthorization" @click="agree">agreePrivacyAuthorization</button>
+    <button id="opentype" style="margin: 12px;" type="primary"
+      open-type="agreePrivacyAuthorization">agreePrivacyAuthorization</button>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -16,17 +17,15 @@
         log: "",
       }
     },
+    onLoad() {
+      uni.onPrivacyAuthorizationChange((callback) => {
+        this.isAgreeRes = !callback.needAuthorization
+        uni.showToast({
+          title: 'isPrivacyAgree:' + this.isAgreeRes
+        })
+      })
+    },
     methods: {
-      agree() {
-        // #ifdef APP-ANDROID
-
-        let res = UTSAndroid.isPrivacyAgree()
-        this.isAgreeRes = res
-         uni.showToast({
-           title:'isPrivacyAgree:'+res
-         })
-        // #endif
-      }
     }
   }
 </script>
