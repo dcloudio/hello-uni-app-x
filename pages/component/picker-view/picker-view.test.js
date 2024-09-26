@@ -85,49 +85,45 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
-    it('platform APP WEBVIEW', () => {
-      expect(1).toBe(1)
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true') {
+    it('mask-top-bottom-style', async () => {
+      // App端动态设置mask-top-style、mask-bottom-style无效
+      const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
+      const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
+      await page.setData({
+        maskTopStyle: linearToTop,
+        maskBottomStyle: linearToBottom,
+      })
+      await page.waitFor(500)
+      expect(await pickerViewEl.attribute('mask-top-style')).toBe(linearToTop)
+      expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)
+      await page.waitFor(2000)
+      await toScreenshot('picker-view-app-mask-top-bottom-style')
     })
-    return
+
+    it('reopen-picker-view-page', async () => {
+      page = await program.switchTab('/pages/tabBar/component')
+      await page.waitFor(500)
+      page = await program.navigateTo(PAGE_PATH)
+      await page.waitFor(500)
+      const date = new Date()
+      const {
+        year,
+        month,
+        day
+      } = await page.data()
+      expect(year).toEqual(date.getFullYear())
+      expect(month).toEqual(date.getMonth() + 1)
+      expect(day).toEqual(date.getDate())
+    })
+
+    it('trigger UniPickerViewChangeEvent', async () => {
+      await page.callMethod('setValue')
+      await page.waitFor(1500)
+      const eventCallbackNum = await page.callMethod('getEventCallbackNum')
+      // 3 times 3*3
+      expect(eventCallbackNum).toBe(9)
+    })
   }
 
-  it('mask-top-bottom-style', async () => {
-    // App端动态设置mask-top-style、mask-bottom-style无效
-    const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
-    const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
-    await page.setData({
-      maskTopStyle: linearToTop,
-      maskBottomStyle: linearToBottom,
-    })
-    await page.waitFor(500)
-    expect(await pickerViewEl.attribute('mask-top-style')).toBe(linearToTop)
-    expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)
-    await page.waitFor(2000)
-    await toScreenshot('picker-view-app-mask-top-bottom-style')
-  })
-
-  it('reopen-picker-view-page', async () => {
-    page = await program.switchTab('/pages/tabBar/component')
-    await page.waitFor(500)
-    page = await program.navigateTo(PAGE_PATH)
-    await page.waitFor(500)
-    const date = new Date()
-    const {
-      year,
-      month,
-      day
-    } = await page.data()
-    expect(year).toEqual(date.getFullYear())
-    expect(month).toEqual(date.getMonth() + 1)
-    expect(day).toEqual(date.getDate())
-  })
-
-  it('trigger UniPickerViewChangeEvent', async () => {
-    await page.callMethod('setValue')
-    await page.waitFor(1500)
-    const eventCallbackNum = await page.callMethod('getEventCallbackNum')
-    // 3 times 3*3
-    expect(eventCallbackNum).toBe(9)
-  })
 })
