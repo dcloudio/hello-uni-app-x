@@ -16,11 +16,14 @@
   export default {
     data() {
       return {
-
+        number: 0
       }
     },
+    unmounted() {
+      uni.offPrivacyAuthorizationChange(this.number)
+    },
     onLoad() {
-      uni.onPrivacyAuthorizationChange((callback) => {
+     this.number = uni.onPrivacyAuthorizationChange((callback) => {
         uni.showToast({
           title: 'isPrivacyAgree:' + !callback.needAuthorization
         })

@@ -15,10 +15,15 @@
       return {
         isAgreeRes: false,
         log: "",
+        number: 0
       }
     },
+    unmounted() {
+      console.log('unmounted', this.number)
+      uni.offPrivacyAuthorizationChange(this.number)
+    },
     onLoad() {
-      uni.onPrivacyAuthorizationChange((callback) => {
+      this.number = uni.onPrivacyAuthorizationChange((callback) => {
         this.isAgreeRes = !callback.needAuthorization
         uni.showToast({
           title: 'isPrivacyAgree:' + this.isAgreeRes
