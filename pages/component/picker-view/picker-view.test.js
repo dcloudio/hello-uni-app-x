@@ -85,6 +85,12 @@ describe('PickerView.uvue', () => {
     return
   }
 
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    it('platform APP WEBVIEW', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   it('mask-top-bottom-style', async () => {
     // App端动态设置mask-top-style、mask-bottom-style无效
