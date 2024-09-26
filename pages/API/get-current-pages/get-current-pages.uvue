@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view class="page-scroll-view">
-    <!-- #endif -->
+  <!-- #endif -->
     <view>
       <page-head title="getCurrentPages"></page-head>
       <view class="uni-padding-wrap">
@@ -9,9 +9,7 @@
         <view v-if="pages.length" style="padding: 15px 0px">
           <text>当前页面栈中 {{ pages.length }} 个页面，列表如下：</text>
           <template v-for="(page, index) in pages" :key="page.route">
-            <text style="margin-top: 5px"
-              >index: {{ index }}, route: {{ page.route }}</text
-            >
+            <text style="margin-top: 5px">index: {{ index }}, route: {{ page.route }}</text>
           </template>
         </view>
         <button class="uni-common-mt" @click="check$page">check $page</button>
@@ -21,11 +19,7 @@
         <button class="uni-common-mt" @click="checkGetDialogPages">
           check getDialogPages
         </button>
-        <button
-          id="check-get-element-by-id-btn"
-          class="uni-common-mt"
-          @click="checkGetElementById"
-        >
+        <button id="check-get-element-by-id-btn" class="uni-common-mt" @click="checkGetElementById">
           check getElementById
         </button>
         <button class="uni-common-mt" @click="checkGetAndroidView">
@@ -35,11 +29,7 @@
 
       <page-head title="currentPageStyle"></page-head>
       <template v-for="(item, index) in PageStyleArray">
-        <view
-          class="page-style-item"
-          v-if="currentPageStyle[item.key] != null"
-          :key="index"
-        >
+        <view class="page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
           <view class="item-text">
             <text class="item-text-key">{{ item.key }}:</text>
             <text class="item-text-value">{{
@@ -47,30 +37,17 @@
             }}</text>
           </view>
           <view class="set-value" v-if="item.type == 'boolean'">
-            <switch
-              :checked="currentPageStyle.getBoolean(item.key)"
-              @change="switchChange(item.key, $event as UniSwitchChangeEvent)"
-            >
+            <switch :checked="currentPageStyle.getBoolean(item.key)"
+              @change="switchChange(item.key, $event as UniSwitchChangeEvent)">
             </switch>
           </view>
           <view class="set-value" v-else-if="item.type == 'number'">
-            <slider
-              :value="currentPageStyle.getNumber(item.key)"
-              :show-value="true"
-              @change="sliderChange(item.key, $event as UniSliderChangeEvent)"
-            />
+            <slider :value="currentPageStyle.getNumber(item.key)" :show-value="true"
+              @change="sliderChange(item.key, $event as UniSliderChangeEvent)" />
           </view>
           <view class="set-value" v-else-if="item.type == 'string'">
-            <radio-group
-              class="radio-set-value"
-              @change="radioChange(item.key, $event as RadioGroupChangeEvent)"
-            >
-              <radio
-                class="radio-value"
-                v-for="(item2, index2) in item.value"
-                :key="index2"
-                :value="item2"
-                >{{ item2 }}
+            <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
+              <radio class="radio-value" v-for="(item2, index2) in item.value" :key="index2" :value="item2">{{ item2 }}
               </radio>
             </radio-group>
           </view>
@@ -80,7 +57,7 @@
         go set disable pullDownRefresh
       </button>
     </view>
-    <!-- #ifdef APP -->
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -108,7 +85,10 @@
         return JSON.stringify(this.currentPageStyle)
       }
     },
-    onLoad() {
+    onLoad(options : OnLoadOptions) {
+      if (options instanceof UTSJSONObject) {
+        this.checked = true
+      }
       this.getPageStyle();
     },
     onPullDownRefresh() {
@@ -124,7 +104,7 @@
         this.pages.length = 0
         const pages = getCurrentPages()
         this.pages.push(new Page(pages[0].route))
-        if (this.pages[0].route.includes('/tabBar/') || this.pages[0].route == '/') {
+        if (this.checked && (this.pages[0].route.includes('/tabBar/') || this.pages[0].route == '/')) {
           this.checked = true
         }
         for (let i = 1; i < pages.length; i++) {
@@ -175,7 +155,7 @@
         const page = this.getCurrentPage()
         let res = this.$page === page
         if (this.testing && res) {
-          res = page.options.get('test') == '123'
+          res = page.options['test'] == '123'
           if (res) {
             // #ifdef WEB
             res = page.route == '/pages/API/get-current-pages/get-current-pages'
@@ -233,43 +213,43 @@
 </script>
 
 <style>
-.page {
-  flex: 1;
-  padding: 10px;
-}
+  .page {
+    flex: 1;
+    padding: 10px;
+  }
 
-.page-style {
-  margin-top: 15px;
-}
+  .page-style {
+    margin-top: 15px;
+  }
 
-.page-style-item {
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #ffffff;
-  border-radius: 5px;
-}
+  .page-style-item {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+  }
 
-.item-text {
-  flex-direction: row;
-}
+  .item-text {
+    flex-direction: row;
+  }
 
-.item-text-key {
-  font-weight: bold;
-}
+  .item-text-key {
+    font-weight: bold;
+  }
 
-.item-text-value {
-  margin-left: 5px;
-}
+  .item-text-value {
+    margin-left: 5px;
+  }
 
-.set-value {
-  margin-top: 10px;
-}
+  .set-value {
+    margin-top: 10px;
+  }
 
-.radio-set-value {
-  flex-direction: row;
-}
+  .radio-set-value {
+    flex-direction: row;
+  }
 
-.radio-value {
-  margin-left: 10px;
-}
+  .radio-value {
+    margin-left: 10px;
+  }
 </style>
