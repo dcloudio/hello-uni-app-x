@@ -4,6 +4,11 @@
   <!-- #endif -->
     <button id="opentype" style="margin: 12px;" type="primary"
       open-type="agreePrivacyAuthorization">agreePrivacyAuthorization</button>
+
+    <button style="margin: 12px;" type="warn" @click="reset">resetPrivacyAuthorization</button>
+
+    <text style="margin: 12px; color:red; font-size: 18px;">当前隐私政策状态：{{ state }}</text>
+    <text style="margin: 12px; color:darkred; font-size: 16px;">true = 已同意隐私协议； false = 未同意隐私协议</text>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -15,7 +20,8 @@
       return {
         isAgreeRes: false,
         log: "",
-        number: 0
+        number: 0,
+        state: false
       }
     },
     unmounted() {
@@ -23,14 +29,24 @@
       uni.offPrivacyAuthorizationChange(this.number)
     },
     onLoad() {
+      uni.getPrivacySetting({
+        success: (res) => {
+          this.state = !res.needAuthorization
+        }
+      })
+
       this.number = uni.onPrivacyAuthorizationChange((callback) => {
         this.isAgreeRes = !callback.needAuthorization
+        this.state = this.isAgreeRes
         uni.showToast({
           title: 'isPrivacyAgree:' + this.isAgreeRes
         })
       })
     },
     methods: {
+      reset() {
+        uni.resetPrivacyAuthorization()
+      }
     }
   }
 </script>
