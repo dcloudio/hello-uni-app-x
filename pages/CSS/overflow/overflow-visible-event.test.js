@@ -1,13 +1,13 @@
 // uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('android')) {
+  let isAndroid = process.env.uniTestPlatformInfo.startsWith('android')
+  if (!process.env.uniTestPlatformInfo.startsWith('android') && !process.env.uniTestPlatformInfo.toLowerCase().includes('ios')) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
     return
   }
-
 
 	let page;
   let res;
@@ -27,7 +27,11 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     res = await page.callMethod('jest_getRect')
     const point_x = await page.data('jest_click_x');
     const point_y = await page.data('jest_click_y');
-    await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    if (isAndroid){
+      await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    } else {
+      await program.tap({x: point_x, y: point_y})
+    }
     await page.waitFor(500);
     res = await page.data('jest_result');
     expect(res).toBe(true)
@@ -41,7 +45,21 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     const distance = 100;
     const destY = point_y + 100
     const duration = 1000
-    await program.adbCommand("input swipe" + " " + point_x + " " + point_y + " " + point_x + " " + destY + " " + duration)
+    if (isAndroid) {
+      await program.adbCommand("input swipe" + " " + point_x + " " + point_y + " " + point_x + " " + destY + " " + duration)
+    } else {
+      await program.swipe({
+            startPoint: {
+              x: point_x,
+              y: point_y
+            },
+            endPoint: {
+              x: point_x,
+              y: destY
+            },
+            duration: duration
+          })
+    }
     await page.waitFor(1500);
     await page.callMethod('jest_getParentRect')
     const currentParentTop = await page.data('jest_parent_top');
@@ -57,7 +75,11 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     const point_x = await page.data('jest_click_x');
     const point_y = await page.data('jest_click_y');
     console.log("input tap" + " " + point_x + " " + point_y);
-    await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    if (isAndroid) {
+      await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    } else {
+      await program.tap({x: point_x, y: point_y})
+    }
     await page.waitFor(500);
     res = await page.data('jest_result');
     expect(res).toBe(true)
@@ -69,7 +91,11 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     const point_x = await page.data('jest_click_x');
     const point_y = await page.data('jest_click_y');
     console.log("input tap" + " " + point_x + " " + point_y);
-    await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    if (isAndroid) {
+      await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    } else {
+      await program.tap({x: point_x, y: point_y})
+    }
     await page.waitFor(500);
     res = await page.data('jest_result');
     expect(res).toBe(true)

@@ -100,7 +100,10 @@
       jest_getRect() {
         const rect = uni.getElementById('child')?.getBoundingClientRect()
         if (rect != null) {
-          const ratio = uni.getSystemInfoSync().devicePixelRatio
+          let ratio = 1
+          // #ifdef APP-ANDROID
+          ratio = uni.getSystemInfoSync().devicePixelRatio
+          // #endif
           this.jest_click_x = rect.x * ratio + 10
           this.jest_click_y = rect.bottom * ratio - 10
         }
@@ -110,7 +113,10 @@
         if (transform != null) {
           let value = transform as string
           value = value.split(",")[1].slice(0, -3)
-          const ratio = uni.getSystemInfoSync().devicePixelRatio
+          let ratio = 1
+          // #ifdef APP-ANDROID
+          ratio = uni.getSystemInfoSync().devicePixelRatio
+          // #endif
           this.jest_parent_top = Math.round((parseFloat(value) * ratio))
         }
       },
@@ -119,7 +125,10 @@
         if (rect != null) {
           const systemInfo = uni.getSystemInfoSync()
           const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
-          const ratio = systemInfo.devicePixelRatio
+          let ratio = 1
+          // #ifdef APP-ANDROID
+          ratio = systemInfo.devicePixelRatio
+          // #endif
           this.jest_click_x = rect.x * ratio + 10
           this.jest_click_y = (rect.top + titleBarHeight + 10) * ratio
         }
@@ -131,7 +140,10 @@
           scrollView.scrollTo(0, rect.top)
           setTimeout(() => {
             const systemInfo = uni.getSystemInfoSync()
-            const ratio = systemInfo.devicePixelRatio
+            let ratio = 1
+            // #ifdef APP-ANDROID
+            ratio = systemInfo.devicePixelRatio
+            // #endif
             const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
             const afterRect = uni.getElementById('deep-overflow')?.getBoundingClientRect()
             if (afterRect != null) {
