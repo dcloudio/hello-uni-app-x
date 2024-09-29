@@ -101,9 +101,9 @@
         const rect = uni.getElementById('child')?.getBoundingClientRect()
         if (rect != null) {
           let ratio = 1
-          // #ifdef APP-ANDROID
-          ratio = uni.getSystemInfoSync().devicePixelRatio
-          // #endif
+          if (uni.getSystemInfoSync().platform == 'android'){
+            ratio = uni.getSystemInfoSync().devicePixelRatio
+          }
           this.jest_click_x = rect.x * ratio + 10
           this.jest_click_y = rect.bottom * ratio - 10
         }
@@ -114,9 +114,9 @@
           let value = transform as string
           value = value.split(",")[1].slice(0, -3)
           let ratio = 1
-          // #ifdef APP-ANDROID
-          ratio = uni.getSystemInfoSync().devicePixelRatio
-          // #endif
+          if (uni.getSystemInfoSync().platform == 'android'){
+            ratio = uni.getSystemInfoSync().devicePixelRatio
+          }
           this.jest_parent_top = Math.round((parseFloat(value) * ratio))
         }
       },
@@ -126,9 +126,9 @@
           const systemInfo = uni.getSystemInfoSync()
           const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
           let ratio = 1
-          // #ifdef APP-ANDROID
-          ratio = systemInfo.devicePixelRatio
-          // #endif
+          if (uni.getSystemInfoSync().platform == 'android'){
+            ratio = uni.getSystemInfoSync().devicePixelRatio
+          }
           this.jest_click_x = rect.x * ratio + 10
           this.jest_click_y = (rect.top + titleBarHeight + 10) * ratio
         }
@@ -141,9 +141,9 @@
           setTimeout(() => {
             const systemInfo = uni.getSystemInfoSync()
             let ratio = 1
-            // #ifdef APP-ANDROID
-            ratio = systemInfo.devicePixelRatio
-            // #endif
+            if (uni.getSystemInfoSync().platform == 'android'){
+              ratio = uni.getSystemInfoSync().devicePixelRatio
+            }
             const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
             const afterRect = uni.getElementById('deep-overflow')?.getBoundingClientRect()
             if (afterRect != null) {
