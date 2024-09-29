@@ -383,22 +383,28 @@
   };
 
   const removeMarker = () => {
+    // #ifdef APP
+    mapContext.value?.removeMarkers({markerIds:[4]})
+    // #endif
+    // #ifdef WEB
     const index = markers.value.findIndex((marker: Marker):boolean=>{
        return marker.id == 4
     });
     if (index != -1) {
-      mapContext.value?.removeMarkers({markerIds:[4]})
+      delete markers.value[index].label;
+      markers.value.splice(index, 1);
     } else {
       uni.showToast({
         title: '未找到该标记点',
         icon: 'none'
       });
     }
+    // #endif
   };
 
   // #ifdef WEB
   const addMarkersLabel = () => {
-    markers.forEach((marker, index) => {
+    markers.value.forEach((marker, index) => {
       marker.label = {
         content: 'Hello Label' + (index + 1),
         color: '#aa00ff',
