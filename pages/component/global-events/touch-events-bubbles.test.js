@@ -28,12 +28,12 @@ describe('touch-events-test', () => {
 
     let iconRect = await page.data('iconRect')
     let x = iconRect.x + iconRect.width / 2.0
-    let y = iconRect.y + 5
+    let y = iconRect.y + 25
 
     // 滑动事件
     await program.swipe({
       startPoint: {x: x, y: y},
-      endPoint: {x: x,y: y+35},
+      endPoint: {x: x,y: y+15},
       duration: 200
     })
 
@@ -47,12 +47,12 @@ describe('touch-events-test', () => {
 
     let viewEleRect = await page.data('viewEleRect')
     let x = viewEleRect.x + viewEleRect.width / 2.0
-    let y = viewEleRect.y + 5
+    let y = viewEleRect.y + 25
 
     // 滑动事件
     await program.swipe({
       startPoint: {x: x, y: y},
-      endPoint: {x: x,y: y+35},
+      endPoint: {x: x,y: y+15},
       duration: 200
     })
 
