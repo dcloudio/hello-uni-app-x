@@ -30,6 +30,12 @@ describe('text-props', () => {
         expect(width).toBe(0)
         expect(height).toBe(0)
       }
+      const element3 = await page.$('#empty-text3')
+      if (element3 != null) {
+        const { width, height } = await element3.size()
+        expect(width).toBe(0)
+        expect(height).toBe(0)
+      }
       await page.setData({
         autoTest: false
       })
