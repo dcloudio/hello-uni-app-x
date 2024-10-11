@@ -24,5 +24,12 @@ describe('ExtApi-GetWindowInfo', () => {
         expect(value).toBeGreaterThanOrEqual(0);
       }
     }
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      if (res.safeAreaInsets.bottom > 0) {
+        expect(res.safeAreaInsets.top + 44 + res.windowHeight).toBe(res.screenHeight);
+      } else {
+        expect(res.safeAreaInsets.top + 44 + res.windowHeight).toBe(res.safeArea.bottom);
+      }
+    }
   });
 });

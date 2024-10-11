@@ -1,70 +1,71 @@
 <template>
-	<scroll-view style="flex:1;" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
-		refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore" refresher-max-drag-distance="200px">
-		<view style="height: 25px;"></view>
-		<view v-for="i in 20" class="content-item">
-			<text class="text">item-{{i}}</text>
-		</view>
-		<refresh-box slot="refresher" :state="state"></refresh-box>
-	</scroll-view>
+  <scroll-view style="flex:1;" :refresher-enabled="true" :refresher-triggered="refresherTriggered"
+    refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
+    @refresherrestore="onRefreshrestore" refresher-max-drag-distance="200px">
+    <view style="height: 25px;"></view>
+    <view v-for="i in 20" class="content-item">
+      <text class="text">item-{{i}}</text>
+    </view>
+    <refresh-box slot="refresher" :state="state"></refresh-box>
+  </scroll-view>
 </template>
 
 <script>
-	import refreshBox from './refresh-box/refresh-box.uvue';
-	export default {
-		components: { refreshBox },
-		data() {
-			return {
-				refresherTriggered: false,
-				pullingDistance: 0,
-				resetting: false
-			}
-		},
-		computed: {
-			state() : number {
-				if (this.resetting) {
-					return 3;
-				}
-				if (this.refresherTriggered) {
-					return 2
-				}
-				if (this.pullingDistance > 45) {
-					return 1
-				} else {
-					return 0;
-				}
-			}
-		},
-		methods: {
-			onRefresherpulling(e : RefresherEvent) {
-				this.pullingDistance = e.detail.dy;
-			},
-			onRefresherrefresh() {
-				this.refresherTriggered = true
-				setTimeout(() => {
-					this.refresherTriggered = false
-					this.resetting = true;
-				}, 1500)
-			},
+  import refreshBox from './refresh-box/refresh-box.uvue';
+  export default {
+    components: { refreshBox },
+    data() {
+      return {
+        refresherTriggered: false,
+        pullingDistance: 0,
+        resetting: false
+      }
+    },
+    computed: {
+      state() : number {
+        if (this.resetting) {
+          return 3;
+        }
+        if (this.refresherTriggered) {
+          return 2
+        }
+        if (this.pullingDistance > 45) {
+          return 1
+        } else {
+          return 0;
+        }
+      }
+    },
+    methods: {
+      onRefresherpulling(e : RefresherEvent) {
+        this.pullingDistance = e.detail.dy;
+      },
+      onRefresherrefresh() {
+        this.refresherTriggered = true
+        setTimeout(() => {
+          this.refresherTriggered = false
+          this.resetting = true;
+        }, 1500)
+      },
       onRefreshrestore() {
         this.pullingDistance = 0
-      	this.resetting = false;
+        this.resetting = false;
       }
-		}
-	}
+    }
+  }
 </script>
 
 <style>
-	.content-item {
-		padding: 15px;
-		margin: 5px 0;
-		background-color: #fff;
-		border-radius: 5px;
-	}
+  .content-item {
+    padding: 15px;
+    margin: 5px 0;
+    background-color: #fff;
+    border-radius: 5px;
+  }
 
-	.text {
-		font-size: 14px;
-		color: #666;
-		line-height: 20px;
-	}
+  .text {
+    font-size: 14px;
+    color: #666;
+    line-height: 20px;
+  }
 </style>

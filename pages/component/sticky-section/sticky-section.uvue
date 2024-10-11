@@ -1,17 +1,18 @@
 <template>
   <page-head title="sticky-section"></page-head>
   <list-view id="list-view" ref="list-view" show-scrollbar=false class="page" :scroll-into-view="scrollIntoView"
-  @scroll="onScroll" @scrollend="onScrollEnd" bounces="false">
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
+    @scroll="onScroll" @scrollend="onScrollEnd" bounces="false">
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
     </list-item>
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="appendSectionItem(0)" size="mini">第一组 section 新增5条内容</button>
     </list-item>
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type = 20>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="deleteSection()" size="mini">删除第一组 section</button>
     </list-item>
-    <sticky-section v-for="(section) in sectionArray" :key="section.name" :padding="sectionPadding" :push-pinned-header="true">
+    <sticky-section v-for="(section) in sectionArray" :key="section.name" :padding="sectionPadding"
+      :push-pinned-header="true">
       <sticky-header :id="section.name">
         <text class="sticky-header-text">{{section.name}}</text>
       </sticky-header>
@@ -19,7 +20,7 @@
         <text class="text">{{list.text}}</text>
       </list-item>
     </sticky-section>
-    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type= 30>
+    <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=30>
       <!-- <text style="color: #aaa">到底了</text> -->
       <button @click="toTop" size="mini">回到顶部</button>
     </list-item>
@@ -27,12 +28,12 @@
 </template>
 
 <script>
-  export type sectionData={
-  	name:string,
-  	list:sectionListItem[]
+  export type sectionData = {
+    name : string,
+    list : sectionListItem[]
   }
-  export type sectionListItem ={
-    text:string
+  export type sectionListItem = {
+    text : string
   }
   export default {
     data() {
@@ -41,24 +42,24 @@
         sectionPadding: [0, 10, 0, 10] as Array<number>,
         scrollIntoView: "",
         scrolling: false,
-        sectionArray:[] as sectionData[],
+        sectionArray: [] as sectionData[],
         appendId: 0
       }
     },
     onLoad() {
-      this.data.forEach(key=> {
-        const list =[] as sectionListItem[]
-        for(let i = 1; i<11; i++) {
-          const item = {text: key+"--item--content----"+i} as sectionListItem
+      this.data.forEach(key => {
+        const list = [] as sectionListItem[]
+        for (let i = 1; i < 11; i++) {
+          const item = { text: key + "--item--content----" + i } as sectionListItem
           list.push(item)
         }
-        const data = {name: key, list: list} as sectionData
+        const data = { name: key, list: list } as sectionData
         this.sectionArray.push(data)
       }
       )
     },
     methods: {
-      toTop(){
+      toTop() {
         this.scrollIntoView = ""
         uni.getElementById("list-view")!.scrollTop = 0
       },
@@ -82,19 +83,19 @@
       onScrollEnd() {
         this.scrolling = false
         //滚动后重置scrollIntoView = ""
-        if(this.scrollIntoView != "") {
+        if (this.scrollIntoView != "") {
           this.scrollIntoView = ""
         }
       },
-      appendSectionItem(index: number) {
+      appendSectionItem(index : number) {
         const data = this.sectionArray[index]
         this.appendId++
         const list = [
-          {text: data.name+"--item--content----new1--"+this.appendId} as sectionListItem,
-          {text: data.name+"--item--content----new2--"+this.appendId} as sectionListItem,
-          {text: data.name+"--item--content----new3--"+this.appendId} as sectionListItem,
-          {text: data.name+"--item--content----new4--"+this.appendId} as sectionListItem,
-          {text: data.name+"--item--content----new5--"+this.appendId} as sectionListItem
+          { text: data.name + "--item--content----new1--" + this.appendId } as sectionListItem,
+          { text: data.name + "--item--content----new2--" + this.appendId } as sectionListItem,
+          { text: data.name + "--item--content----new3--" + this.appendId } as sectionListItem,
+          { text: data.name + "--item--content----new4--" + this.appendId } as sectionListItem,
+          { text: data.name + "--item--content----new5--" + this.appendId } as sectionListItem
         ] as sectionListItem[]
         data.list.unshift(...list)
       },

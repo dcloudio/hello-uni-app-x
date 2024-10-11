@@ -47,4 +47,8 @@ describe('getApp', () => {
     expect(newLifeCycleNum - oldLifeCycleNum).toBe(100)
     await page.callMethod('setLifeCycleNum', oldLifeCycleNum)
   })
+  it('getAndroidApplication', async () => {
+    const res = await page.callMethod('checkGetAndroidApplication')
+    expect(res).toBe(true)
+  })
 })

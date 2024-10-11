@@ -22,6 +22,7 @@
       </view>
     </view>
   </view>
+  <rich-text v-if="autoTest" id="test-rich-text" :nodes="testNodes" :selectable="true" @itemclick="itemClickForTest" style="position: fixed;width: 100px;height: 100px;"></rich-text>
 </template>
 
 <script>
@@ -30,7 +31,11 @@
       return {
         text: "<span>hello uni-app x!</span><br/><span>uni-app x，终极跨平台方案</span>",
         richTextHeight: 0,
-        richTextElement: null as UniElement | null
+        richTextElement: null as UniElement | null,
+        // 自动化测试
+        autoTest: false,
+        testNodes: '<img src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"></img>',
+        isItemClickTrigger: false
       }
     },
     onReady() {
@@ -56,6 +61,16 @@
           this.richTextHeight = elRect.height
           console.log('richTextHeight:', this.richTextHeight)
         }
+      },
+      // 自动化测试
+      itemClickForTest(_ : RichTextItemClickEvent) {
+        this.isItemClickTrigger = true;
+      },
+      getBoundingClientRectForTest() : DOMRect {
+        return uni.getElementById('test-rich-text')?.getBoundingClientRect()!;
+      },
+      getWindowInfoForTest() : GetWindowInfoResult {
+        return uni.getWindowInfo();
       }
     }
   }

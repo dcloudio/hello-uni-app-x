@@ -39,6 +39,9 @@
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
+        <button class="uni-common-mt" @click="checkGetAndroidApplication">
+          check getAndroidApplication
+        </button>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -161,12 +164,24 @@
       },
       _increasetLifeCycleNum: function () {
         const app = getApp()
-        app.increasetLifeCycleNum()
+        app.vm!.increasetLifeCycleNum()
         this.lifeCycleNum = state.lifeCycleNum
       },
       // 自动化测试
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
+      },
+      checkGetAndroidApplication() : boolean {
+        // #ifdef APP-ANDROID
+        const res = true
+        // #endif
+        // #ifndef APP-ANDROID
+        const app = getApp()
+        const androidApplication = app.getAndroidApplication()
+        const res = androidApplication == null
+        // #endif
+        console.log('check getAndroidApplication', res)
+        return res
       }
     },
   }

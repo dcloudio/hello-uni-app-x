@@ -17,8 +17,7 @@
     <view class="uni-list uni-common-pl">
       <radio-group @change="radioChange" class="radio-group">
         <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item"
-          :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item"
-          :checked="index === current">
+          :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item" :checked="index === current">
           {{ item }}
         </radio>
       </radio-group>
@@ -45,15 +44,15 @@
       }
     },
     methods: {
-      bindOsThemeChange(): number {
+      bindOsThemeChange() : number {
         //注册osTheme变化监听
-        return uni.onOsThemeChange((res: OsThemeChangeResult)=> {
+        return uni.onOsThemeChange((res : OsThemeChangeResult) => {
           this.osTheme = res.osTheme
         })
       },
-      bindAppThemeChange(): number {
+      bindAppThemeChange() : number {
         //注册appTheme变化监听
-        return uni.onAppThemeChange((res: AppThemeChangeResult) => {
+        return uni.onAppThemeChange((res : AppThemeChangeResult) => {
           this.appTheme = res.appTheme
         })
       },
@@ -62,16 +61,16 @@
         this.setAppTheme(theme)
         uni.showToast({
           icon: 'none',
-          title: '当前选中:'+theme,
+          title: '当前选中:' + theme,
         })
       },
-      setAppTheme(value: string) {
+      setAppTheme(value : string) {
         uni.setAppTheme({
           theme: value,
-          success: function() {
+          success: function () {
             console.log("设置appTheme为", value, "成功")
           },
-          fail: function(e: IAppThemeFail) {
+          fail: function (e : IAppThemeFail) {
             console.log("设置appTheme为", value, "失败,原因:", e.errMsg)
           }
         })
@@ -79,7 +78,7 @@
     },
     onReady() {
       uni.getSystemInfo({
-        success: (res:GetSystemInfoResult) => {
+        success: (res : GetSystemInfoResult) => {
           this.osTheme = res.osTheme!
           this.originalTheme = res.appTheme!
           this.appTheme = res.appTheme == "auto" ? res.osTheme! : res.appTheme!
@@ -94,8 +93,8 @@
       uni.offAppThemeChange(this.appThemeChangeId)
       uni.offOsThemeChange(this.osThemeChangeId)
       uni.showToast({
-        "position":"bottom",
-        "title":"已停止监听主题切换"
+        "position": "bottom",
+        "title": "已停止监听主题切换"
       })
     }
   }
@@ -107,6 +106,7 @@
     flex-direction: row;
     justify-content: space-between;
   }
+
   .uni-list-cell {
     justify-content: flex-start;
   }
