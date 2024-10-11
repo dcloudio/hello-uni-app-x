@@ -15,7 +15,14 @@
       <input-data defaultValue="13" title="scale: 缩放级别，取值范围为5-18" type="number"
         @confirm="confirm_scale_input"></input-data>
       <boolean-data :defaultValue="showLocation" title="开启显示带有方向的当前定位点" @change="change_show_location"></boolean-data>
-
+      <boolean-data :default-value="enable3D" title="3D效果" @change="change_enable_3d"></boolean-data>
+      <boolean-data :default-value="showCompass" title="显示指南针" @change="change_show_campass"></boolean-data>
+      <boolean-data :default-value="enableOverlooking" title="俯视支持" @change="change_enable_overlooking"></boolean-data>
+      <boolean-data :default-value="enableRotate" title="旋转支持" @change="change_enable_rotate"></boolean-data>
+      <boolean-data :default-value="enableZoom" title="缩放支持" @change="change_enable_zoom"></boolean-data>
+      <boolean-data :default-value="enableScroll" title="拖动支持" @change="change_enable_scroll"></boolean-data>
+      <boolean-data :default-value="enableSatellite" title="卫星图" @change="change_enable_satellite"></boolean-data>
+      <boolean-data :default-value="enableTraffic" title="实时路况" @change="change_enable_traffic"></boolean-data>
 
       <button class="button" @click="addControls">控件</button>
       <button class="button" @click="addMarkers">添加标记点</button>
@@ -365,8 +372,48 @@
   }
 
   const showLocation = ref(false);
+  const enable3D = ref(false);
+  const showCompass = ref(false);
+  const enableOverlooking = ref(false);
+  const enableRotate = ref(false);
+  const enableZoom = ref(true);
+  const enableScroll = ref(true);
+  const enableSatellite = ref(false);
+  const enableTraffic = ref(false);
   const change_show_location = (checked : boolean) => {
     showLocation.value = checked
+  }
+
+  const change_enable_3d = (checked : boolean) => {
+    enable3D.value = checked
+  }
+
+  const change_show_campass = (checked : boolean) => {
+    showCompass.value = checked
+  }
+
+  const change_enable_overlooking = (checked : boolean) => {
+    enableOverlooking.value = checked
+  }
+
+  const change_enable_rotate = (checked : boolean) => {
+    enableRotate.value = checked
+  }
+
+  const change_enable_zoom = (checked : boolean) => {
+    enableZoom.value = checked
+  }
+
+  const change_enable_scroll = (checked : boolean) => {
+    enableScroll.value = checked
+  }
+
+  const change_enable_satellite = (checked : boolean) => {
+    enableSatellite.value = checked
+  }
+
+  const change_enable_traffic = (checked : boolean) => {
+    enableTraffic.value = checked
   }
 
   const includePoints = ref([] as LocationObject[]);
@@ -456,47 +503,6 @@
       circles.value = JSON.parse<Circle[]>(JSON.stringify(testCircles))!.slice(1);
     }
   };
-
-
-  const showCompass = ref(true);
-  const enable3D = ref(true);
-  const enableOverlooking = ref(true);
-  const enableZoom = ref(true);
-  const enableScroll = ref(true);
-  const enableRotate = ref(true);
-  const enableSatellite = ref(false);
-  const enableTraffic = ref(false);
-
-  const enableThreeD = (e) => {
-    enable3D.value = e.detail.value;
-  }
-  const changeShowCompass = (e) => {
-    showCompass.value = e.detail.value;
-  }
-  const changeEnableOverlooking = (e) => {
-    enableOverlooking.value = e.detail.value;
-  };
-
-  const changeEnableZoom = (e) => {
-    enableZoom.value = e.detail.value;
-  };
-
-  const changeEnableScroll = (e) => {
-    enableScroll.value = e.detail.value;
-  };
-
-  const changeEnableRotate = (e) => {
-    enableRotate.value = e.detail.value;
-  };
-
-  const changeEnableSatellite = (e) => {
-    enableSatellite.value = e.detail.value;
-  };
-
-  const changeEnableTraffic = (e) => {
-    enableTraffic.value = e.detail.value;
-  };
-
 
   const handleGetCenterLocation = () => {
       mapContext.value?.getCenterLocation({
@@ -612,7 +618,7 @@
       });
   };
 
-  const maptap = (e : UniMapUpdatedEvent) => {
+  const maptap = (e : UniMapTapEvent) => {
     // console.log('点击地图时触发',e)
     uni.showModal({
       content: JSON.stringify(e)
