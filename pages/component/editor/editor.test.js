@@ -1,10 +1,8 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 jest.setTimeout(30000);
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('android')
-const isIos = platformInfo.startsWith('ios')
 describe('editor.uvue', () => {
-  if (isAndroid || isIos) {
+  console.log('process.env',process.env)
+  if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW || !process.env.uniTestPlatformInfo.startsWith('web')) {
     it('app', () => {
       expect(1).toBe(1)
     })
