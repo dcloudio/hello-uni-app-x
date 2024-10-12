@@ -1,48 +1,45 @@
 <template>
 	<native-view @init="onviewinit" @customClick="ontap"></native-view>
 </template>
-<script lang="uts">
+<script setup lang="uts">
 	import { NativeButton } from "@/uni_modules/native-button";
-	export default {
-		data() {
-			return {
-				button: null as NativeButton | null,
-				value: ""
-			}
-		},
-		props: {
-			"text": {
-				type: String,
-				default: ''
-			}
-		},
-		watch: {
-			"text": {
-				handler(newValue : string, oldValue : string) {
-					this.value = newValue
-					this.updateText(newValue)
-				},
-				immediate: true
-			},
-		},
-		methods: {
-			//native-view初始化时触发此方法
-			onviewinit(e : UniNativeViewInitEvent) {
-				//获取UniNativeViewElement 传递给NativeButton对象
-				this.button = new NativeButton(e.detail.element);
-				this.button?.updateText(this.value)
-        this.$emit("load")
-			},
-			ontap(e: UniNativeViewEvent) {
-				this.$emit("buttonTap", e)
-			},
-			updateText(value: string) {
-				this.button?.updateText(value)
-			}
-		},
-		unmounted() {
-			// iOS平台需要主动释放 uts 实例
-			this.button?.destroy()
-		}
+	let button : NativeButton | null = null
+
+	//声明属性
+	const props = defineProps<{ text : string }>()
+
+	//声明事件
+	const emit = defineEmits<{
+		(e : "load") : void
+		(e : "buttonTap", event : UniNativeViewEvent) : void
+	}>()
+
+	//声明方法
+	function updateText(value : string) {
+		button?.updateText(value)
+	}
+
+	//监听属性变化
+	watchEffect(() => {
+		// console.log("watchEffect   "+props.text)
+		const text = props.text
+		updateText(text)
+	})
+
+	//native-view初始化时触发此方法
+	function onviewinit(e : UniNativeViewInitEvent) {
+		//获取UniNativeViewElement 传递给NativeButton对象
+		button = new NativeButton(e.detail.element);
+		updateText(props.text)
+		emit("load")
+	}
+
+	function ontap(e : UniNativeViewEvent) {
+		emit("buttonTap", e)
+	}
+
+	function onUnmounted() {
+		// iOS平台需要主动释放 uts 实例
+		button?.destroy()
 	}
 </script>
