@@ -58,27 +58,16 @@
       	}
       })
       // #ifdef APP
-      if (process.env.NODE_ENV === 'development') {
-        //真机运行可以去掉此注释
-         //  uni.getPrivacySetting({
-         //   success(res){
-         //      if(res.needAuthorization){
-         //        uni.openDialogPage({
-         //          url: '/pages/API/dialog-page/dialog-privacytest',
-         //        })
-         //      }
-         //   }
-         // })
-      }else {
-         uni.getPrivacySetting({
-           success(res1){
-              if(res1.needAuthorization){
-                uni.openDialogPage({
-                  url: '/pages/API/dialog-page/dialog-privacytest',
-                })
-              }
-           }
-         })
+      if (process.env.NODE_ENV !== 'development') { //真机运行可以注释此条件
+        uni.getPrivacySetting({
+          success(res1){
+             if(res1.needAuthorization){
+               uni.openDialogPage({
+                 url: '/pages/privacy',
+               })
+             }
+          }
+        })
       }
       // #endif
     },
