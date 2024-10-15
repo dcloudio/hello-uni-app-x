@@ -290,7 +290,6 @@ describe('event trigger', () => {
 
     // ios only 坐标换算准确
     if (isIos) {
-
       page = await program.reLaunch(PAGE_PATH)
       await page.waitFor('view')
 
@@ -298,9 +297,9 @@ describe('event trigger', () => {
         x,
         y
       ] = await page.callMethod('jest_getRect')
-
       expect(x > 0).toBe(true)
-      expect(y > 0).toBe(true)      await program.tap({
+      expect(y > 0).toBe(true)
+      await program.tap({
         x: x,
         y: y
       })
@@ -317,4 +316,4 @@ describe('event trigger', () => {
       expect(1).toBe(1)
     }
   })
-})
+})
