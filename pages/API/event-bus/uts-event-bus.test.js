@@ -1,14 +1,16 @@
 // uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 const PAGE_PATH = '/pages/API/event-bus/uts-event-bus'
 
-if ( !process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+
+describe('event-bus', () => {
+
+  if ( !process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
     return;
   }
 
-describe('event-bus', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
