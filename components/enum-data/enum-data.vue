@@ -1,5 +1,5 @@
 <script lang="uts">
-  import { ItemType } from './enum-data'
+  import { ItemType } from './enum-data-types'
 
   export default {
     emits: ['change'],
