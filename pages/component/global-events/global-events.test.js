@@ -292,25 +292,20 @@ describe('event trigger', () => {
 
       page = await program.reLaunch(PAGE_PATH)
       await page.waitFor('view')
-      const el = await page.$('#longpress-target')
 
-      const size = await el.size()
-      const position = await el.offset()
-      // console.log('position', position)
-      // console.log('size', size);
-      const x = position.left + size.width / 2.0
-      const y = position.top + size.height / 2.0
-      const res = await uni.getWindowInfo();
-      // console.log('res', res.statusBarHeight);
-      const baseStatusTextHeight = 44
-      const baseTop = res.statusBarHeight ?? 0
+      const [
+        x,
+        y
+      ] = await page.callMethod('jest_getRect')
+
+      expect(x > 0).toBe(true)
+      expect(y > 0).toBe(true)
 
       await program.tap({
         x: x,
-        y: y + baseTop + baseStatusTextHeight,
-        duration: 100
+        y: y
       })
-      await page.waitFor(500)
+      await page.waitFor(200)
 
       const clickEventX = await page.$('#click-event-x')
       const StringX = await clickEventX.text()
@@ -324,3 +319,4 @@ describe('event trigger', () => {
     }
   })
 })
+
