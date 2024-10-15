@@ -48,6 +48,7 @@
       // } as PerformanceObserverOptions)
 
       // 统计上报 - 应用启动
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       uni.report({
       	name: 'uni-app-launch',
       	options: res,
@@ -57,6 +58,7 @@
       		console.log(err);
       	}
       })
+      // #endif
       // #ifdef APP
       if (process.env.NODE_ENV !== 'development') { //真机运行可以注释此条件
         uni.getPrivacySetting({
@@ -86,6 +88,7 @@
       setLifeCycleNum(state.lifeCycleNum + 100)
       console.log('App Show')
 
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       // 统计上报 - 应用显示
       uni.report({
       	name: 'uni-app-show',
@@ -95,12 +98,14 @@
       		console.log(err);
       	}
       })
+      // #endif
     },
     onHide: function () {
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum - 100)
       console.log('App Hide')
 
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       // 统计上报 - 应用进入后台
       uni.report({
       	name: 'uni-app-hide',
@@ -110,6 +115,7 @@
       		console.log(err);
       	}
       })
+      // #endif
     },
     // #ifdef APP-ANDROID
     onLastPageBackPress: function () {
@@ -134,6 +140,7 @@
       console.log('App Exit')
     },
     onError(err : any) {
+      // #ifdef APP-ANDROID || APP-IOS || WEB
     	// 统计上报 - 应用发生错误
     	uni.report({
     		name: 'uni-app-error',
@@ -144,6 +151,7 @@
     			console.log(err);
     		}
     	})
+      // #endif
     },
     // #endif
     methods: {
