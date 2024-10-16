@@ -39,9 +39,10 @@
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
-        <button class="uni-common-mt" @click="checkGetAndroidApplication">
-          check getAndroidApplication
+        <button class="uni-common-mt" @click="getAndroidApplication">
+          getAndroidApplication
         </button>
+        <text class="uni-common-mt">androidApplication is null: {{ androidApplication == null }}</text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -100,6 +101,7 @@
         } as MyGlobalData,
         newGlobalDataFuncRes: '',
         lifeCycleNum: 0,
+        androidApplication: null as any | null
       }
     },
     onReady() {
@@ -171,17 +173,10 @@
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
       },
-      checkGetAndroidApplication() : boolean {
-        // #ifdef APP-ANDROID
-        const res = true
-        // #endif
-        // #ifndef APP-ANDROID
+      getAndroidApplication() : boolean {
         const app = getApp()
-        const androidApplication = app.getAndroidApplication()
-        const res = androidApplication == null
-        // #endif
-        console.log('check getAndroidApplication', res)
-        return res
+        this.androidApplication = app.getAndroidApplication()
+        return this.androidApplication !== null
       }
     },
   }
