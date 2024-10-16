@@ -5,8 +5,8 @@
         :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
       <view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
     </view>
-    <view ref="boxRef" class="uni-collapse-item__content">
-      <view ref="contentRef" class="uni-collapse-item__content-box">
+    <view ref="boxRef" class="uni-collapse-item__content" :class="{'box-open--active':is_open}">
+      <view ref="contentRef" class="uni-collapse-item__content-box" :class="{'content-open--active':!box_is_open}">
         <slot></slot>
       </view>
     </view>
@@ -36,6 +36,7 @@
       return {
         height: 0,
         is_open: this.open as boolean,
+        box_is_open:this.open as boolean,
         boxNode: null as UniElement | null,
         contentNode: null as UniElement | null,
       };
@@ -66,6 +67,12 @@
         this.openOrClose(open)
       },
       openOrClose(open : boolean) {
+        // #ifdef MP-WEIXIN
+        setTimeout(()=>{
+        	this.box_is_open = !open
+        },10)
+        // #endif
+        // #ifndef MP-WEIXIN
         const boxNode = this.boxNode?.style!;
         const contentNode = this.contentNode?.style!;
         let hide = open ? 'flex' : 'none';
@@ -76,24 +83,25 @@
           contentNode.setProperty('transform', ani_transform);
           contentNode.setProperty('opacity', opacity);
         })
+        // #endif
       }
     }
   }
 </script>
 
-<style scoped>
+<style>
   .uni-collapse-item {
     background-color: #fff;
   }
 
-  .uni-collapse-item__title {
+  .uni-collapse-item .uni-collapse-item__title {
     flex-direction: row;
     align-items: center;
     padding: 12px;
     background-color: #fff;
   }
 
-  .down_arrow {
+  .uni-collapse-item .down_arrow {
     width: 8px;
     height: 8px;
     transform: rotate(45deg);
@@ -104,37 +112,46 @@
     transition-duration: 0.2s;
   }
 
-  .down_arrow--active {
+  .uni-collapse-item .down_arrow--active {
     transform: rotate(-135deg);
     margin-top: 0px;
   }
 
-  .uni-collapse-item__title-text {
+  .uni-collapse-item .uni-collapse-item__title-text {
     flex: 1;
     color: #000;
     font-size: 14px;
     font-weight: 400;
   }
 
-  .open--active {
+  .uni-collapse-item .open--active {
     /* background-color: #f0f0f0; */
     color: #bbb;
   }
 
-  .is-disabled {
+  .uni-collapse-item .is-disabled {
     color: #999;
   }
 
-  .uni-collapse-item__content {
+  .uni-collapse-item .uni-collapse-item__content {
     display: none;
     position: relative;
+    overflow: hidden;
+  }
+  .uni-collapse-item .box-open--active {
+  	display: flex;
   }
 
-  .uni-collapse-item__content-box {
+  .uni-collapse-item .uni-collapse-item__content-box {
     width: 100%;
     transition-property: transform, opacity;
     transition-duration: 0.2s;
     transform: translateY(-100%);
     opacity: 0;
+  }
+
+  .uni-collapse-item .content-open--active {
+  	transform: translateY(0%);
+  	opacity: 1;
   }
 </style>
