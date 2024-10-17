@@ -44,6 +44,7 @@
       <button class="button" @click="handleGetRegion">获取当前地图的视野范围</button>
       <button class="button" @click="handleTranslateMarker">平移marker</button>
       <button class="button" @click="handleMoveToLocation">将地图中心移动到指定坐标</button>
+      <button class="button" @click="handleMoveToMyLocation">将地图中心移动到当前位置</button>
       <button class="button" @click="handleGetScale">获取当前地图的缩放级别</button>
 
     </scroll-view>
@@ -617,6 +618,19 @@
         }
       });
   };
+
+  const handleMoveToMyLocation = () => {
+    mapContext.value?.moveToLocation({
+      success: res => {
+        uni.showModal({
+          content: '地图中心已经移动到当前位置'
+        })
+      },
+      fail: error => {
+        console.log(error);
+      }
+    })
+  }
 
   const maptap = (e : UniMapTapEvent) => {
     // console.log('点击地图时触发',e)
