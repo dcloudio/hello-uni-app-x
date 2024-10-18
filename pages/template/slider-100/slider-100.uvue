@@ -10,6 +10,7 @@
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
+  <view :style="{'height': safeAreaInsetsBottom}"></view>
 </template>
 
 <script>
@@ -17,8 +18,12 @@
     data() {
       return {
         title: 'slider 滑块 x 100',
-        sliderValue: 50
+        sliderValue: 50,
+        safeAreaInsetsBottom: 0
       }
+    },
+    onReady() {
+      this.safeAreaInsetsBottom = uni.getWindowInfo().safeAreaInsets.bottom;
     },
     methods: {
       sliderChange(e : UniSliderChangeEvent) {
