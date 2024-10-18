@@ -101,11 +101,16 @@
         const rect = uni.getElementById('child')?.getBoundingClientRect()
         if (rect != null) {
           let ratio = 1
+          const systemInfo = uni.getSystemInfoSync()
+          const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+
           if (uni.getSystemInfoSync().platform == 'android'){
             ratio = uni.getSystemInfoSync().devicePixelRatio
           }
-          this.jest_click_x = rect.x * ratio + 10
-          this.jest_click_y = rect.bottom * ratio - 10
+          const systemInfo = uni.getSystemInfoSync()
+          const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+          this.jest_click_x = rect.x * ratio + 30
+          this.jest_click_y = (rect.bottom + titleBarHeight - 40) * ratio
         }
       },
       jest_getParentRect() {
@@ -129,8 +134,8 @@
           if (uni.getSystemInfoSync().platform == 'android'){
             ratio = uni.getSystemInfoSync().devicePixelRatio
           }
-          this.jest_click_x = rect.x * ratio + 10
-          this.jest_click_y = (rect.top + titleBarHeight + 10) * ratio
+          this.jest_click_x = rect.x * ratio + 30
+          this.jest_click_y = (rect.top + titleBarHeight + 30) * ratio
         }
       },
       jest_scrollToDeepOverflow() {
@@ -147,8 +152,8 @@
             const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
             const afterRect = uni.getElementById('deep-overflow')?.getBoundingClientRect()
             if (afterRect != null) {
-              this.jest_click_x = afterRect.x * ratio + 10
-              this.jest_click_y = (afterRect.top + titleBarHeight + 10) * ratio
+              this.jest_click_x = afterRect.x * ratio + 30
+              this.jest_click_y = (afterRect.top + titleBarHeight + 30) * ratio
             }
           }, 200)
         }
