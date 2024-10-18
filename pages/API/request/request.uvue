@@ -301,7 +301,7 @@
           withCredentials: false,
           firstIpv4: false,
           success: (res) => {
-            const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+            const requestCookie = (JSON.parse(JSON.stringify(res.data)) as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
             this.jest_result_data = JSON.stringify(requestCookie)
             if (requestCookie instanceof Array) {
               this.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
