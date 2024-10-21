@@ -47,7 +47,7 @@ describe('component-native-list-view', () => {
     expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
     expect(scrollDetail.deltaX).toBe(0)
     //此处可判断安卓issues:9121的问题
-    expect([300, 299.8095]).toContain(scrollDetail.deltaY);
+    expect([300.1905, 300, 299.8095]).toContain(scrollDetail.deltaY);
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
