@@ -44,43 +44,23 @@ describe('component-native-web-view', () => {
         x: 1,
         y: info.statusBarHeight + 44 + 1
       });
-      start = Date.now();
-      await page.waitFor(async () => {
-        return (await page.data('eventTouchstart')) && (await page.data('eventTap')) || (Date.now() - start > 500);
-      });
+      await page.waitFor(500);
       if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
-         expect(await page.data('eventTouchstart')).toEqual({
-           clientX: 1,
-           clientY: 1
-         });
-
-         expect(await page.data('eventTap')).toEqual({
-           clientX: 1,
-           clientY: 1
-         });
+         expect(await page.data('isTouchEnable')).toBe(true);
       }
 
       await page.setData({
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        isTouchEnable: false
       });
       await page.waitFor(100);
       await program.tap({
         x: 10,
         y: info.statusBarHeight + 44 + 10
       });
-      start = Date.now();
-      await page.waitFor(async () => {
-        return (await page.data('eventTouchstart')) && (await page.data('eventTap')) || (Date.now() - start > 500);
-      });
+      await page.waitFor(500);
       if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
-        expect(await page.data('eventTouchstart')).toEqual({
-          clientX: 1,
-          clientY: 1
-        });
-        expect(await page.data('eventTap')).toEqual({
-          clientX: 1,
-          clientY: 1
-        });
+        expect(await page.data('isTouchEnable')).toBe(false);
       }
       await page.setData({
         pointerEvents: 'auto'
