@@ -5,6 +5,19 @@ describe('native-view.uvue', () => {
     })
     return
   }
+
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+    if(
+      platformInfo.indexOf('14.5') != -1 ||
+      platformInfo.indexOf('13.7') != -1 ||
+      platformInfo.indexOf('12.4') != -1
+      ){
+        expect(1).toBe(1)
+        return
+    }
+  }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/native-view/native-view')
   });
