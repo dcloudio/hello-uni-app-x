@@ -71,9 +71,8 @@
         eventLoading: null as UTSJSONObject | null,
         eventLoad: null as UTSJSONObject | null,
         eventError: null as UTSJSONObject | null,
-        eventTouchstart: null as UTSJSONObject | null,
-        eventTap: null as UTSJSONObject | null,
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        isTouchEnable: false
       }
     },
     onReady() {
@@ -183,18 +182,12 @@
       // 自动化测试
       touchstart(event : UniTouchEvent) {
         if (this.autoTest) {
-          this.eventTouchstart = {
-            clientX: Math.ceil(event.touches[0].clientX),
-            clientY: Math.ceil(event.touches[0].clientY)
-          };
+          isTouchEnable = event.touches[0].clientX > 0 && event.touches[0].clientY > 0;
         }
       },
       tap(event : UniPointerEvent) {
         if (this.autoTest) {
-          this.eventTap = {
-            clientX: Math.ceil(event.clientX),
-            clientY: Math.ceil(event.clientY)
-          };
+          isTouchEnable = event.clientX > 0 && event.clientY > 0;
         }
       },
       getWindowInfo() : GetWindowInfoResult {
