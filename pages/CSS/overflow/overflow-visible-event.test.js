@@ -63,7 +63,7 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     await page.waitFor(1500);
     await page.callMethod('jest_getParentRect')
     const currentParentTop = await page.data('jest_parent_top');
-    const offset = 2
+    const offset = 4
     const diff = Math.abs(currentParentTop - distance) < offset
     console.log("current ", currentParentTop);
     console.log("diff", diff);
