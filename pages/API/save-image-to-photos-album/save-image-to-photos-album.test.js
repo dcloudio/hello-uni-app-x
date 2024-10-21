@@ -1,6 +1,9 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+
+
 describe('API-saveImageToPhotosAlbum', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (!isAndroid) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
@@ -14,11 +17,9 @@ describe('API-saveImageToPhotosAlbum', () => {
   });
 
   it('test saveImageToPhotosAlbum', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
-      await program.adbCommand(
-        'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
-      await page.waitFor(500);
-    }
+    await program.adbCommand(
+      'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
+    await page.waitFor(500);
     await page.callMethod('saveImage');
     expect(await page.data('success')).toBe(true);
   });
