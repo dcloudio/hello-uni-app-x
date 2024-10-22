@@ -3,13 +3,25 @@ const PAGE_PATH = '/pages/API/event-bus/uts-event-bus'
 
 
 describe('event-bus', () => {
-
-  if ( !process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  const platformInfo = process.env.uniTestPlatformInfo.toLowerCase()
+  if (!platformInfo.startsWith('ios')) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
     return;
   }
+
+  if (
+    platformInfo.indexOf('14.5') != -1 ||
+    platformInfo.indexOf('13.7') != -1 ||
+    platformInfo.indexOf('12.4') != -1
+  ) {
+    it('iOS 14.5 13.7 12.4 不支持依赖uts插件测试', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
 
   let page
   beforeAll(async () => {
