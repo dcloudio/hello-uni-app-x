@@ -55,4 +55,12 @@ describe('rich-text-test', () => {
     });
   });
 
+  it('rich-text parent click', async () => {
+    const element = await page.$('#rich-text-parent')
+    await element.tap()
+    await page.waitFor(500)
+    const element2 = await page.$('#rich-text-str')
+    expect(await element2.text()).toBe("true")
+  })
+
 })
