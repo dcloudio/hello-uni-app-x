@@ -16,9 +16,13 @@
         <text class="uni-subtitle-text">selectable</text>
         <button type="default" @click="changeText">修改文本内容</button>
       </view>
-      <view class="text-box">
+      <view class="text-box" id="rich-text-parent" @click="richTextParentClick">
         <rich-text id="richtext" style="border: 1px; border-style: solid; border-color: red;" :selectable="true"
           :nodes="text"></rich-text>
+        <view>
+          <text>rich-text-parent</text>
+          <text id='rich-text-str'>{{richTextStr}}</text>
+        </view>
       </view>
     </view>
   </view>
@@ -35,7 +39,8 @@
         // 自动化测试
         autoTest: false,
         testNodes: '<img src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png"></img>',
-        isItemClickTrigger: false
+        isItemClickTrigger: false,
+        richTextStr: false
       }
     },
     onReady() {
@@ -71,6 +76,9 @@
       },
       getWindowInfoForTest() : GetWindowInfoResult {
         return uni.getWindowInfo();
+      },
+      richTextParentClick() {
+        this.richTextStr = true;
       }
     }
   }
