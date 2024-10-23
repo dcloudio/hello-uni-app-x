@@ -1,60 +1,118 @@
 <template>
-  <view id="viewshot">
-    <button class="button" @click="shareText('https://uniapp.dcloud.io/uni-app-x','分享到')">分享文本</button>
-    <button class="button" @click="shareSnapShot">指定view截图并分享</button>
-  </view>
+	<view id="viewshot">
+		<button class="button" @click="shareText()">分享文本</button>
+		<button class="button" @click="sharePrivateImg()">分享私有目录图片</button>
+		<button class="button" @click="sharePubImg()">选择图片并分享</button>
+		<button class="button" @click="shareSnapShot()">指定view截图并分享</button>
+	</view>
 </template>
 
 <script>
-  import Intent from 'android.content.Intent';
-  import File from 'java.io.File';
+	import Intent from 'android.content.Intent';
+	import File from 'java.io.File';
+	export default {
+		data() {
+			return {
+				summary: '欢迎使用hello uniapp-x'
+			}
+		},
+		methods: {
 
-  export default {
-    data() {
-      return {
+			shareText() {
+				uni.shareWithSystem({
+					summary: this.summary,
+					href: 'https://uniapp.dcloud.io',
+					success(res) {
+						console.log('success')
+						// 分享完成，请注意此时不一定是成功分享
+					},
+					fail(res) {
+						console.log('fail')
+						// 分享失败
+					},
+					complete(res) {
 
-      }
-    },
-    methods: {
-      shareText(text : string, title : string) {
-        const context = UTSAndroid.getUniActivity()!;
-        const intent = new Intent(Intent.ACTION_SEND)
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, text);
-        context.startActivity(Intent.createChooser(intent, title));
-        // 这里是简单的文本分享示例，如需分享文件图片，需要使用fileProvider
-      },
-      shareSnapShot() {
-        uni.getElementById("viewshot")?.takeSnapshot(
-          {
-            success: function (res) {
-              // 打印截图文件临时路径
-              console.log(res.tempFilePath)
-              const context = UTSAndroid.getUniActivity()!;
-              const intent = new Intent(Intent.ACTION_SEND)
-              intent.setType("image/*");
-              let file = new File(res.tempFilePath)
-              const uri = UTSAndroid.getFileProviderUri(file) //3.99支持
-              intent.putExtra(Intent.EXTRA_STREAM, uri);
-              context.startActivity(Intent.createChooser(intent, "分享到"));
-            },
-            fail: function (res) {
-              console.log(res)
-              uni.showToast({
-                icon: 'error',
-                title: '截图失败'
-              })
-            }
-          }
-        )
-      },
+					}
+				} )
+			},
+			sharePrivateImg() {
+				const imageSrc : string = "/static/logo.png";
+				uni.shareWithSystem({
+					summary: this.summary,
+					href: 'https://uniapp.dcloud.io',
+					imageUrl:imageSrc,
+					success(res) {
+						console.log('success')
+						// 分享完成，请注意此时不一定是成功分享
+					},
+					fail(res) {
+						console.log('fail')
+						// 分享失败
+					},
+					complete(res) {
 
-    }
-  }
+					}
+				} )
+			},
+			sharePubImg() {
+				uni.chooseImage({
+					count: 3,
+					success(e) {
+						console.log(JSON.stringify(e))
+						// const imageSrc : string = "/static/logo.png";
+						// var imageList = new UTSArray<string>()
+						// imageList.push(imageSrc)
+						// imageList.push(imageSrc)
+						uni.shareWithSystem({
+							summary: this.summary,
+							href: 'https://uniapp.dcloud.io',
+							imageUrlList:e.tempFilePaths,
+							success(res) {
+								console.log('success')
+								// 分享完成，请注意此时不一定是成功分享
+							},
+							fail(res) {
+								console.log('fail')
+								// 分享失败
+							},
+							complete(res) {
+
+							}
+						} )
+					}
+				})
+			},
+			shareSnapShot() {
+				uni.getElementById("viewshot")?.takeSnapshot(
+					{
+						success: function (res) {
+							// 打印截图文件临时路径
+							console.log(res.tempFilePath)
+							const context = UTSAndroid.getUniActivity()!;
+							const intent = new Intent(Intent.ACTION_SEND)
+							intent.setType("image/*");
+							let file = new File(res.tempFilePath)
+							const uri = UTSAndroid.getFileProviderUri(file) //3.99支持
+							intent.putExtra(Intent.EXTRA_STREAM, uri);
+							context.startActivity(Intent.createChooser(intent, "分享到"));
+						},
+						fail: function (res) {
+							console.log(res)
+							uni.showToast({
+								icon: 'error',
+								title: '截图失败'
+							})
+						}
+					}
+				)
+			},
+
+		}
+	}
 </script>
 
 <style>
-  .button {
-    margin: 15px;
-  }
+	.button {
+		margin: 15px;
+	}
 </style>
