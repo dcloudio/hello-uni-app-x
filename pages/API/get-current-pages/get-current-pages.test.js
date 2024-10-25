@@ -1,5 +1,5 @@
 const HOME_PAGE_PATH = '/pages/tabBar/component'
-const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages'
+const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 
 describe('getCurrentPages', () => {
   let page
@@ -25,8 +25,6 @@ describe('getCurrentPages', () => {
     expect(data.checked).toBe(true)
   })
   it('page-style', async () => {
-    page = await program.navigateTo(PAGE_PATH)
-
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
     const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
@@ -62,5 +60,26 @@ describe('getCurrentPages', () => {
     expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-js-get-current-pages-page-style-after-set-page-style'
     }});
+  })
+  it('$page', async () => {
+    await page.setData({testing: true})
+    const res = await page.callMethod('check$page')
+    expect(res).toBe(true)
+  })
+  it('getParentPage', async () => {
+    const res = await page.callMethod('checkGetParentPage')
+    expect(res).toBe(true)
+  })
+  it('getDialogPages', async () => {
+    const res = await page.callMethod('checkGetDialogPages')
+    expect(res).toBe(true)
+  })
+  it('getElementById', async () => {
+    const res = await page.callMethod('checkGetElementById')
+    expect(res).toBe(true)
+  })
+  it('getAndroidView', async () => {
+    const res = await page.callMethod('checkGetAndroidView')
+    expect(res).toBe(true)
   })
 })

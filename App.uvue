@@ -29,6 +29,7 @@
       } as OnShowOptions
     },
     onLaunch: function (res : OnLaunchOptions) {
+
       this.globalData.launchOptions = res
 
       // 自动化测试
@@ -47,15 +48,28 @@
       // } as PerformanceObserverOptions)
 
       // 统计上报 - 应用启动
-      // uni.report({
-      // 	name: 'uni-app-launch',
-      // 	options: res,
-      // 	success(res_data) {
-      // 		console.log(res_data);
-      // 	}, fail(err_data) {
-      // 		console.log(err_data);
-      // 	}
-      // })
+      uni.report({
+      	name: 'uni-app-launch',
+      	options: res,
+      	success(res_data) {
+      		console.log(res_data);
+      	}, fail(err) {
+      		console.log(err);
+      	}
+      })
+      // #ifdef APP
+      if (process.env.NODE_ENV !== 'development') { //真机运行可以注释此条件
+        uni.getPrivacySetting({
+          success(res1){
+             if(res1.needAuthorization){
+               uni.openDialogPage({
+                 url: '/pages/component/button/privacy',
+               })
+             }
+          }
+        })
+      }
+      // #endif
     },
     onShow: function (res : OnShowOptions) {
       this.globalData.onShowOption = res
@@ -73,14 +87,14 @@
       console.log('App Show')
 
       // 统计上报 - 应用显示
-      // uni.report({
-      // 	name: 'uni-app-show',
-      // 	success(res_data) {
-      // 		console.log(res_data);
-      // 	}, fail(err_data) {
-      // 		console.log(err_data);
-      // 	}
-      // })
+      uni.report({
+      	name: 'uni-app-show',
+      	success(res_data) {
+      		console.log(res_data);
+      	}, fail(err) {
+      		console.log(err);
+      	}
+      })
     },
     onHide: function () {
       // 自动化测试
@@ -119,18 +133,18 @@
     onExit() {
       console.log('App Exit')
     },
-    // onError(err : any) {
-    // 	// 统计上报 - 应用发生错误
-    // 	uni.report({
-    // 		name: 'uni-app-error',
-    // 		options: err,
-    // 		success(res) {
-    // 			console.log(res);
-    // 		}, fail(err) {
-    // 			console.log(err);
-    // 		}
-    // 	})
-    // },
+    onError(err : any) {
+    	// 统计上报 - 应用发生错误
+    	uni.report({
+    		name: 'uni-app-error',
+    		options: err,
+    		success(res) {
+    			console.log(res);
+    		}, fail(err) {
+    			console.log(err);
+    		}
+    	})
+    },
     // #endif
     methods: {
       increasetLifeCycleNum() {
@@ -182,10 +196,5 @@
   .uni-top-window uni-tabbar .uni-tabbar {
     background-color: #fff !important;
   }
-
-  .uni-app--showleftwindow .uni-page-head-btn {
-    display: none !important;
-  }
-
   /* #endif */
 </style>

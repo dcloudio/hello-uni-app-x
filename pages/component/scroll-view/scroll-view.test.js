@@ -79,4 +79,12 @@ describe('component-native-scroll-view', () => {
       expect(endDetail.scrollWidth).toBeGreaterThan(0)
     })
   }
+
+  it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
+    await page.callMethod('setVerticalScrollBy', 120)
+    await page.waitFor(600)
+    const scrollDetail = await page.data('scrollDetailTest')
+    console.log('setVerticalScrollBy scrollDetail:', scrollDetail)
+    expect(scrollDetail.scrollTop).toBeGreaterThan(119)
+  })
 });

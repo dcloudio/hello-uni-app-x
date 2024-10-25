@@ -1,0 +1,73 @@
+<template>
+  <view class="def-picker">
+    <native-view style="width: 100%; height: 100%;" @init="onviewinit" @timechanged="ontimechanged"></native-view>
+  </view>
+</template>
+
+<script lang="uts">
+	import { NativeTimePicker } from "@/uni_modules/native-time-picker";
+
+
+	export default {
+
+		data() {
+			return {
+				picker: null as NativeTimePicker | null,
+				hourValue: 0 as number,
+				minuteValue: 0 as number
+			}
+		},
+		props: {
+			"hour": {
+				type: Number,
+				default: 0
+			},
+			"minute": {
+				type: Number,
+				default: 0
+			}
+		},
+		watch: {
+			"hour": {
+				handler(newValue : number, oldValue : number) {
+					if (newValue < 23 && newValue >= 0) {
+						this.hourValue = newValue
+						this.picker?.setHour(this.hourValue)
+					}
+				},
+				immediate: true
+			},
+			"minute": {
+				handler(newValue : number, oldValue : number) {
+					if (newValue < 59 && newValue >= 0) {
+						this.minuteValue = newValue
+						this.picker?.setMinute(this.minuteValue)
+					}
+
+				},
+				immediate: true
+			},
+		},
+		methods: {
+			onviewinit(e : UniNativeViewInitEvent) {
+				this.picker = new NativeTimePicker(e.detail.element, this.hourValue, this.minuteValue);
+				this.$emit("load")
+			},
+			ontimechanged(e : UniNativeViewEvent) {
+				this.$emit("changed", e)
+			}
+		},
+		unmounted() {
+
+		}
+	}
+</script>
+
+<style>
+	.def-picker {
+		min-width: 300px;
+		min-height: 380px;
+    max-width: 400px;
+    max-height: 400px;
+	}
+</style>

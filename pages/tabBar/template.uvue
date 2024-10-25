@@ -12,7 +12,8 @@
       </view>
       <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
         <view class="uni-panel-h" @click="triggerCollapse(index, item)">
-          <text class="uni-panel-text" :class="item.enable == false || item.open == true ? 'text-disabled' : '',item.url == leftWinActive && item.pages.length == 0 ? 'left-win-active' : ''">{{ item.name }}</text>
+          <text class="uni-panel-text"
+            :class="item.enable == false || item.open == true ? 'text-disabled' : '',item.url == leftWinActive && item.pages.length == 0 ? 'left-win-active' : ''">{{ item.name }}</text>
           <image :src="
               item.pages.length > 0
                 ? item.open
@@ -23,9 +24,11 @@
           </image>
         </view>
         <view v-if="item.open">
-          <view style="padding-left: 18px;" class="uni-navigate-item" :hover-class="page.enable == false ? '' : 'is--active'"
-            v-for="(page, key) in item.pages" :key="key" @click="goDetailPage(page)">
-            <text class="uni-navigate-text" :class="{'left-win-active': leftWinActive === page.url  && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
+          <view style="padding-left: 18px;" class="uni-navigate-item"
+            :hover-class="page.enable == false ? '' : 'is--active'" v-for="(page, key) in item.pages" :key="key"
+            @click="goDetailPage(page)">
+            <text class="uni-navigate-text"
+              :class="{'left-win-active': leftWinActive === page.url  && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
             <image :src="arrowRightIcon" class="uni-icon-size"></image>
           </view>
         </view>
@@ -225,10 +228,10 @@
       }
     },
     computed: {
-      hasLeftWin():boolean{
+      hasLeftWin() : boolean {
         return !state.noMatchLeftWindow
       },
-      leftWinActive():string{
+      leftWinActive() : string {
         return state.leftWinActive.split('/')[3]
       }
     },
@@ -263,7 +266,7 @@
           e.url.indexOf('platform') > -1
             ? e.url
             : `/pages/template/${e.url}/${e.url}`
-        if(this.hasLeftWin) {
+        if (this.hasLeftWin) {
           uni.reLaunch({ url })
         } else {
           uni.navigateTo({ url })
@@ -272,23 +275,23 @@
     },
     // #ifdef WEB
     watch: {
-    	$route: {
-    		immediate: true,
-    		handler(newRoute) {
-    			if (newRoute.matched.length) {
-    				let path = newRoute.path.split('/')[3]
-    				for (const item of this.list) {
-    					if (Array.isArray(item.pages)) {
-    						for (const page of item.pages) {
-    							if (page.url && page.url === path) {
-    								item.open = true
-    							}
-    						}
-    					}
-    				}
-    			}
-    		}
-    	}
+      $route: {
+        immediate: true,
+        handler(newRoute) {
+          if (newRoute.matched.length) {
+            let path = newRoute.path.split('/')[3]
+            for (const item of this.list) {
+              if (Array.isArray(item.pages)) {
+                for (const page of item.pages) {
+                  if (page.url && page.url === path) {
+                    item.open = true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     // #endif
   }

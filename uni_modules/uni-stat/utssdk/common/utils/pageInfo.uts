@@ -149,11 +149,11 @@ export const get_version = () : string => {
  * 获取渠道
  */
 export const get_channel = () : string => {
-  // const platformName = get_platform_name()
-  let channel = ''
-  // if (platformName === 'n') {
-  //   channel = plus.runtime.channel
-  // }
+  const platformName = get_platform_name()
+  let channel:string = ''
+  if (platformName === 'n') {
+    channel = sysAppBase.channel ?? ''
+  }
   // if (platformName === 'wx') {
   //   // TODO 需要调研小程序二维码渠道如何获取;
   // }
@@ -224,19 +224,16 @@ export const get_page_name = (routepath : string) : string => {
   if (page.route != routepath) {
     const pages = getCurrentPages()
     // 如果传入路由与当前页面不同，则从页面栈找一个，如果找不到返回空
-    let page_now = pages.find((v) : boolean => {
-      if (v.route == routepath) {
-        return true;
-      }
-      return false
-    })
+    let page_now = pages.find((p): boolean => p.route == routepath)
     if (page_now == null) {
       return ''
     }
-    page = page_now
+    // @ts-ignore
+    page = page_now.vm!
   }
 
-  const pageStyle = page.$getPageStyle()
+    // @ts-ignore
+  const pageStyle = (page.$page as UniPage).getPageStyle()
   const titleText = pageStyle['navigationBarTitleText'] ?? ''
   return titleText as string
 }
@@ -251,7 +248,8 @@ export const get_page_vm = () : Page | null => {
   }
   let page = pages[pages.length - 1]
   // TODO 正常来说，调用当前方法的地方只在 生命周期内，数组内最少会有一个页面，所以理论上是不存在获取不到的情况的
-  return page
+  // @ts-ignore
+  return page.vm
 }
 
 
@@ -416,6 +414,7 @@ export const uni_cloud_config = () : UniCloudInitOptions | null => {
 export const get_space = (config : UniCloudInitOptions) : UniCloudInitOptions | null => {
   const uniCloudConfig = uni_cloud_config()
   if (uniCloudConfig == null) {
+    console.log(config);
     // #ifdef APP-ANDROID
     if (config.spaceId != '') {
       return config

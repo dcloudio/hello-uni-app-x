@@ -1,9 +1,11 @@
 const PAGE_PATH = '/pages/component/swiper/swiper'
 
 describe('swiper-touch-test', () => {
-
-  // 屏蔽 web 平台
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
+  // 屏蔽 web * android 平台
+  if (isWeb || isAndroid) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

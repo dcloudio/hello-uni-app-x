@@ -12,14 +12,29 @@
             <text style="margin-top: 5px">index: {{ index }}, route: {{ page.route }}</text>
           </template>
         </view>
+        <button class="uni-common-mt" @click="check$page">check $page</button>
+        <button class="uni-common-mt" @click="checkGetParentPage">
+          check getParentPage
+        </button>
+        <button class="uni-common-mt" @click="checkGetDialogPages">
+          check getDialogPages
+        </button>
+        <button id="check-get-element-by-id-btn" class="uni-common-mt" @click="checkGetElementById">
+          check getElementById
+        </button>
+        <button class="uni-common-mt" @click="checkGetAndroidView">
+          check getAndroidView
+        </button>
       </view>
 
       <page-head title="currentPageStyle"></page-head>
       <template v-for="(item, index) in PageStyleArray">
-        <view class="page-style-item" v-if="currentPageStyle[item.key]!=null" :key="index">
+        <view class="page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
           <view class="item-text">
-            <text class="item-text-key">{{item.key}}:</text>
-            <text class="item-text-value">{{currentPageStyle[item.key]}}</text>
+            <text class="item-text-key">{{ item.key }}:</text>
+            <text class="item-text-value">{{
+              currentPageStyle[item.key]
+            }}</text>
           </view>
           <view class="set-value" v-if="item.type == 'boolean'">
             <switch :checked="currentPageStyle.getBoolean(item.key)"
@@ -32,13 +47,15 @@
           </view>
           <view class="set-value" v-else-if="item.type == 'string'">
             <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-              <radio class="radio-value" v-for="(item2, index2) in item.value" :key="index2" :value="item2">{{item2}}
+              <radio class="radio-value" v-for="(item2, index2) in item.value" :key="index2" :value="item2">{{ item2 }}
               </radio>
             </radio-group>
           </view>
         </view>
       </template>
-      <button style='margin: 10px;' @click="goSetDisablePullDownRefresh">go set disable pullDownRefresh</button>
+      <button style="margin: 10px" @click="goSetDisablePullDownRefresh">
+        go set disable pullDownRefresh
+      </button>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -60,6 +77,7 @@
         pages: [] as Page[],
         PageStyleArray: PageStyleArray as PageStyleItem[],
         currentPageStyle: {} as UTSJSONObject,
+        testing: false
       }
     },
     computed: {
@@ -67,7 +85,15 @@
         return JSON.stringify(this.currentPageStyle)
       }
     },
-    onLoad() {
+    onLoad(options : OnLoadOptions) {
+      // #ifndef APP-ANDROID
+      if (options instanceof UTSJSONObject) {
+        this.checked = true
+      }
+      // #endif
+      // #ifdef APP-ANDROID
+      this.checked = true
+      // #endif
       this.getPageStyle();
     },
     onPullDownRefresh() {
@@ -83,7 +109,7 @@
         this.pages.length = 0
         const pages = getCurrentPages()
         this.pages.push(new Page(pages[0].route))
-        if (this.pages[0].route.includes('/tabBar/')) {
+        if (this.checked && (this.pages[0].route.includes('/tabBar/') || this.pages[0].route == '/')) {
           this.checked = true
         }
         for (let i = 1; i < pages.length; i++) {
@@ -112,25 +138,86 @@
       getPageStyle() : UTSJSONObject {
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
-        this.currentPageStyle = currentPage.$getPageStyle()
+        this.currentPageStyle = currentPage.getPageStyle()
         return this.currentPageStyle;
       },
       setPageStyle(style : UTSJSONObject) {
         console.log('setPageStyle:', style);
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
-        currentPage.$setPageStyle(style);
+        currentPage.setPageStyle(style);
       },
       goSetDisablePullDownRefresh() {
         uni.navigateTo({
           url: '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh'
         });
-      }
-      // getCurrentPage(): Page {
-      //   const pages = getCurrentPages();
-      //   const currentPage = pages[pages.length - 1];
-      //   return currentPage;
-      // }
+      },
+      getCurrentPage() : UniPage {
+        const pages = getCurrentPages()
+        return pages[pages.length - 1]
+      },
+      check$page() : boolean {
+        const page = this.getCurrentPage()
+        let res = this.$page === page
+        if (this.testing && res) {
+          res = page.options['test'] == '123'
+          if (res) {
+            // #ifdef WEB
+            res = page.route == '/pages/API/get-current-pages/get-current-pages'
+            // #endif
+            // #ifndef WEB
+            res = page.route == 'pages/API/get-current-pages/get-current-pages'
+            // #endif
+          }
+        }
+        console.log('check $page', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        return res
+      },
+      checkGetParentPage() : boolean {
+        const page = this.getCurrentPage()
+        const parentPage = page.getParentPage()
+        const res = parentPage == null
+        console.log('check getParentPage', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        return res
+      },
+      checkGetDialogPages() : boolean {
+        const page = this.getCurrentPage()
+        const dialogPages = page.getDialogPages()
+        const res = Array.isArray(dialogPages) && dialogPages.length == 0
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        console.log('check getDialogPages', res)
+        return res
+      },
+      checkGetElementById() : boolean {
+        const page = this.getCurrentPage()
+        const element = page.getElementById('check-get-element-by-id-btn')
+        let res = element != null
+        // #ifndef APP-ANDROID
+        if (res) {
+          const elPage = element!.getPage()
+          console.log('elPage', elPage)
+          res = elPage === page
+        }
+        // #endif
+        console.log('check getElementById', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        return res
+      },
+      checkGetAndroidView() : boolean {
+        const page = this.getCurrentPage()
+        const androidView = page.getAndroidView()
+        // #ifdef APP-ANDROID
+        const res = androidView != null
+        // #endif
+        // #ifndef APP-ANDROID
+        const res = androidView == null
+        // #endif
+        console.log('check getAndroidView', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        return res
+      },
     },
   }
 </script>

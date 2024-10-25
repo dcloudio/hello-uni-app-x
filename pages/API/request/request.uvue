@@ -77,7 +77,7 @@
   // #endif
 
   class GETDataType {
-    data: UTSJSONObject | null = null
+    data : UTSJSONObject | null = null
   }
 
   const duration = 2000
@@ -260,7 +260,7 @@
           },
         });
       },
-      jest_set_cookie_expires(){
+      jest_set_cookie_expires() {
         uni.request({
           url: this.host + "/api/http/header/setCookie?expires=5",
           method: "GET",
@@ -301,7 +301,7 @@
           withCredentials: false,
           firstIpv4: false,
           success: (res) => {
-            const requestCookie = (res.data as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
+            const requestCookie = (JSON.parse(JSON.stringify(res.data)) as UTSJSONObject).getJSON("data")?.getAny("requestCookie")
             this.jest_result_data = JSON.stringify(requestCookie)
             if (requestCookie instanceof Array) {
               this.jest_result = needCookie ? requestCookie.length > 0 : requestCookie.length == 0
@@ -334,7 +334,7 @@
         uni.request({
           url: "https://unidemo.dcloud.net.cn/api/banner/36kr",
           method: "GET",
-          data:{
+          data: {
             column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
           },
           timeout: 6000,
@@ -357,7 +357,7 @@
           sslVerify: false,
           withCredentials: false,
           firstIpv4: false,
-          success: (res: RequestSuccess<GETDataType>) => {
+          success: (res : RequestSuccess<GETDataType>) => {
             this.jest_result = true;
           },
           fail: () => {
@@ -381,30 +381,30 @@
           }
         });
       },
-      jest_uts_module_invoked(){
+      jest_uts_module_invoked() {
         // #ifdef APP
         testInovkeRequest({
-          success:(res: any)=>{
+          success: (res : any) => {
             this.jest_result = true
           },
-          fail:(err: any)=>{
+          fail: (err : any) => {
             this.jest_result = false
           }
         } as CommonOptions)
         // #endif
       },
-      jest_respone_json_string(){
+      jest_respone_json_string() {
         uni.request({
-          url:"https://request.dcloud.net.cn/api/http/contentType/text/json",
-          success:(res: RequestSuccess<any>)=>{
+          url: "https://request.dcloud.net.cn/api/http/contentType/text/json",
+          success: (res : RequestSuccess<any>) => {
             this.jest_result = typeof res.data == "object"
           },
-          fail:(e: RequestFail)=>{
+          fail: (e : RequestFail) => {
             this.jest_result = false
           }
         })
       },
-      jest_respone_with_string_generics(){
+      jest_respone_with_string_generics() {
         uni.request<string>({
           url: this.host + (methodMap['GET'] as string),
           method: "GET",
@@ -412,7 +412,7 @@
           sslVerify: false,
           withCredentials: false,
           firstIpv4: false,
-          success: (res: RequestSuccess<string>) => {
+          success: (res : RequestSuccess<string>) => {
             this.jest_result = true;
           },
           fail: () => {

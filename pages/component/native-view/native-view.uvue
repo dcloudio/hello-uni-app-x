@@ -1,0 +1,64 @@
+<template>
+  <view>
+    <text class="tips">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
+    <!-- native-button 通过 native-view 绑定原生button 实现的UTS插件-标准模式组件 -->
+    <native-button class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
+      @load="onload"></native-button>
+    <!-- native-time-picker 通过 native-view 绑定原生time-picker 实现的UTS插件-标准模式组件 -->
+    <native-time-picker class="native-time-picker" :hour=2 :minute=3 @changed="onChanged"></native-time-picker>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        title: 'Hello',
+        buttonText: "native-button",
+        isLoad: false,
+        clickCount: 0
+      }
+    },
+    onLoad() {
+
+    },
+    methods: {
+      ontap(e : UniNativeViewEvent) {
+        uni.showToast({
+          title: "按钮被点击了"
+        })
+        this.clickCount ++
+        this.buttonText = "native-button"+this.clickCount
+      },
+      onload() {
+        //标记已初始化 用于自动化测试
+        this.isLoad = true
+      },
+      onChanged(e : UniNativeViewEvent) {
+        console.log("onchanged-----", e.detail)
+      }
+    }
+  }
+</script>
+
+<style>
+
+  .tips {
+    font-size: 14px;
+    color: #BEBEBE;
+    margin: 25px auto 25px auto;
+    text-align: center;
+  }
+
+  .native-button {
+    height: 100px;
+    width: 100px;
+    margin: 25px auto 25px auto;
+  }
+
+  .native-time-picker {
+    margin: 10px auto 25px auto;
+    border-style: solid;
+    border-radius: 5px;
+  }
+</style>

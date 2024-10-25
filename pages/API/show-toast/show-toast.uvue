@@ -24,7 +24,8 @@
       </view>
       <view class="uni-title uni-list-cell-padding">提示的延迟时间，默认：1500（单位毫秒）</view>
       <view class="uni-list-cell-padding">
-        <slider @change="sliderChange" foreColor="#007AFF" :value="intervalSelect" :min="1500" :max="5000" :show-value="true" />
+        <slider @change="sliderChange" foreColor="#007AFF" :value="intervalSelect" :min="1500" :max="5000"
+          :show-value="true" />
       </view>
       <view class="uni-btn-v">
         <button class="uni-btn-v" type="default" @tap="toast1Tap" id="btn-toast-default">点击弹出toast</button>
@@ -35,11 +36,11 @@
         <text class="uni-title-text uni-common-mb"> 设置position，仅App生效 </text>
       </view>
       <view class="uni-list uni-common-pl">
-         <radio-group @change="radioChangePosition">
-           <radio class="uni-list-cell uni-list-cell-pd radio-position" v-for="(position, index) in position_enum" :key="position.value"
-             :class="index < position_enum.length - 1 ? 'uni-list-cell-line' : ''" :value="position.value"
-             :checked="index === position_current">{{position.name}}</radio>
-         </radio-group>
+        <radio-group @change="radioChangePosition">
+          <radio class="uni-list-cell uni-list-cell-pd radio-position" v-for="(position, index) in position_enum"
+            :key="position.value" :class="index < position_enum.length - 1 ? 'uni-list-cell-line' : ''"
+            :value="position.value" :checked="index === position_current">{{position.name}}</radio>
+        </radio-group>
       </view>
       <button class="uni-btn uni-btn-v uni-common-mb" type="default" @tap="toast2Tap">点击弹出设置position的toast</button>
       <!-- #endif -->
@@ -64,16 +65,16 @@
       return {
         title: 'toast',
         exeRet: '',
-        imageSelect:false,
+        imageSelect: false,
         maskSelect: false,
         intervalSelect: 1500,
-        position_current:0,
+        position_current: 0,
         position_enum: [
           { "value": "top", "name": "top: 居上显示（Android 暂不支持）" },
           { "value": "center", "name": "center: 居中显示（Android 暂不支持）" },
           { "value": "bottom", "name": "bottom: 居底显示" },
         ] as PositionItemType[],
-        icon_current:0,
+        icon_current: 0,
         icon_enum: [
           {
             value: 'success',
@@ -145,7 +146,23 @@
           title: "默认",
           icon: this.icon_enum[this.icon_current].value,
           duration: this.intervalSelect,
-          image: this.imageSelect? "/static/uni.png" : null ,
+          image: this.imageSelect ? "/static/uni.png" : null,
+          mask: this.maskSelect,
+          success: (res) => {
+            // console.log('success:',res)
+            this.exeRet = "success:" + JSON.stringify(res)
+          },
+          fail: (res) => {
+            this.exeRet = "fail:" + JSON.stringify(res)
+          },
+        })
+      },
+      toast3Tap: function () {
+        uni.showToast({
+          title: "默认",
+          icon: 'none',
+          duration: this.intervalSelect,
+          image: this.imageSelect ? "/static/uni.png" : null,
           mask: this.maskSelect,
           success: (res) => {
             // console.log('success:',res)
@@ -177,4 +194,3 @@
     }
   }
 </script>
-

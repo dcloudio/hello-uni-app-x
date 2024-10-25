@@ -11,10 +11,8 @@ beforeAll(async () => {
 describe('Canvas.uvue', () => {
   it('toBlob', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('web')) {
-      const {
-        testToBlobResult,
-        testToDataURLResult
-      } = await page.data()
+      const testToBlobResult = await page.data('testToBlobResult')
+      const testToDataURLResult = await page.data('testToDataURLResult')
 
       expect(testToBlobResult).toBe(true)
       expect(testToDataURLResult).toBe(true)

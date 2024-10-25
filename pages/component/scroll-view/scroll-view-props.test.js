@@ -97,4 +97,15 @@ describe('component-native-scroll-view-props', () => {
       expect(image).toSaveImageSnapshot();
     })
 
+
+    //截图末尾位置元素
+    it('scroll-view-props-last-item-screenshot', async () => {
+      //滚动到末尾位置
+      await page.setData({
+          scrollLeft: 10000
+      })
+      await page.waitFor(300);
+      const image = await program.screenshot({fullPage: true});
+      expect(image).toSaveImageSnapshot();
+    })
 });
