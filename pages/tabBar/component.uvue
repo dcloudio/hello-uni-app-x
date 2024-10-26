@@ -113,7 +113,19 @@
     // #endif
     onReady() {
       // #ifdef UNI-APP-X && APP
-      checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+      uni.getPrivacySetting({
+        success(res) {
+          if (res.needAuthorization) {
+            uni.onPrivacyAuthorizationChange((res) => {
+              if (!res.needAuthorization) {
+                checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+              }
+            })
+          } else {
+            checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+          }
+        }
+      })
       // #endif
     },
     onShow() {
