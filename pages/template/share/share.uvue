@@ -3,12 +3,15 @@
 		<button class="button" @click="shareText()">分享文本</button>
 		<button class="button" @click="shareLink()">分享链接</button>
 		<button class="button" @click="sharePrivateImg()">分享单个本地图片</button>
-		<button class="button" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
 		<button class="button" @click="sharePrivateImgs()">分享多个本地图片</button>
-		<button class="button" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
-		<button class="button" @click="shareAll()">分享链接、文本、多张图片</button>
-		<button class="button" @click="sharePubImg()">选择图片并分享</button>
-		<button class="button" @click="shareSnapShot()">指定view截图并分享</button>
+		<button class="button" @click="shareAll()">分享链接、文本、一张图片</button>
+
+		<button class="button" type="primary" @click="shareErrorLink()">分享链接(格式错误)</button>
+		<button class="button" type="primary" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
+		<button class="button" type="primary" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
+
+		<button class="button" type="warn" @click="sharePubImg()">选择图片并分享</button>
+		<button class="button" type="warn" @click="shareSnapShot()">指定view截图并分享</button>
 	</view>
 </template>
 
@@ -49,6 +52,25 @@
 				uni.hideToast()
 				uni.shareWithSystem({
 					href: 'https://uniapp.dcloud.io',
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			shareErrorLink() {
+				uni.hideToast()
+				uni.shareWithSystem({
+					href: 'htp:11',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -164,13 +186,9 @@
 			},
 			shareAll() {
 				uni.hideToast()
-				const errorImageSrc1 : string = "/static/test-image/logo.jpg1";
-				const errorImageSrc2 : string = "/static/test-image/logo.jpg1";
-				const imageSrc : string = "/static/test-image/logo.jpg";
+				const imageSrc : string = "/static/test-video/fast-forward.png";
 				let imageUrlList : string[] = Array()
 				imageUrlList.push(imageSrc)
-				imageUrlList.push(errorImageSrc1)
-				imageUrlList.push(errorImageSrc2)
 				uni.shareWithSystem({
 					summary: this.summary,
 					href: 'https://uniapp.dcloud.io',
@@ -227,7 +245,7 @@
 				uni.getElementById("viewshot")?.takeSnapshot(
 					{
 						success: function (res) {
-							// #ifdef APP-ANDROIDn
+							// #ifdef APP-ANDROID
 							// 打印截图文件临时路径
 							console.log(res.tempFilePath)
 							const context = UTSAndroid.getUniActivity()!;
@@ -280,6 +298,7 @@
 
 <style>
 	.button {
-		margin: 15px;
+		margin: 20px;
+		margin-bottom: 0px;
 	}
 </style>
