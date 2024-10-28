@@ -6,6 +6,13 @@ const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
 describe('dialog page', () => {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+		it('skip app-webview', () => {
+			expect(1).toBe(1)
+		})
+		return
+	}
+
   let page;
   let initLifeCycleNum;
   let lifecycleNum;

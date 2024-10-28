@@ -417,6 +417,6 @@ describe("page screenshot test", () => {
         return `__pages_test__/${currentPagePath.replace(/\//g, "-").substring(1)}`
       }
     })
-    await page.waitFor(500);
+    await page.waitFor(800);
   });
 });
