@@ -1,15 +1,23 @@
 <template>
 	<view id="viewshot">
 		<button class="button" @click="shareText()">分享文本</button>
-		<button class="button" @click="sharePrivateImg()">分享私有目录图片</button>
+		<button class="button" @click="shareLink()">分享链接</button>
+		<button class="button" @click="sharePrivateImg()">分享单个本地图片</button>
+		<button class="button" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
+		<button class="button" @click="sharePrivateImgs()">分享多个本地图片</button>
+		<button class="button" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
+		<button class="button" @click="shareAll()">分享链接、文本、多张图片</button>
 		<button class="button" @click="sharePubImg()">选择图片并分享</button>
 		<button class="button" @click="shareSnapShot()">指定view截图并分享</button>
 	</view>
 </template>
 
 <script>
+	// #ifdef APP-ANDROID
 	import Intent from 'android.content.Intent';
 	import File from 'java.io.File';
+	// #endif
+
 	export default {
 		data() {
 			return {
@@ -19,73 +27,207 @@
 		methods: {
 
 			shareText() {
+				uni.hideToast()
 				uni.shareWithSystem({
 					summary: this.summary,
-					href: 'https://uniapp.dcloud.io',
 					success(res) {
-						console.log('success')
-						// 分享完成，请注意此时不一定是成功分享
+						console.log('Shared----------------------------success')
 					},
 					fail(res) {
-						console.log('fail')
-						// 分享失败
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
 					},
 					complete(res) {
 
 					}
-				} )
+				})
+			},
+			shareLink() {
+				uni.hideToast()
+				uni.shareWithSystem({
+					href: 'https://uniapp.dcloud.io',
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
 			},
 			sharePrivateImg() {
-				const imageSrc : string = "/static/logo.png";
+				uni.hideToast()
+				const imageSrc : string = "/static/test-image/logo.gif";
 				uni.shareWithSystem({
-					summary: this.summary,
-					href: 'https://uniapp.dcloud.io',
-					imageUrl:imageSrc,
+					imageUrl: imageSrc,
 					success(res) {
-						console.log('success')
+						console.log('Shared----------------------------success')
 						// 分享完成，请注意此时不一定是成功分享
 					},
 					fail(res) {
-						console.log('fail')
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
 						// 分享失败
 					},
 					complete(res) {
 
 					}
-				} )
+				})
+			},
+			sharePrivateErrorImg() {
+				uni.hideToast()
+				const imageSrc : string = "/static/test-image/logo.jpg11";
+				uni.shareWithSystem({
+					imageUrl: imageSrc,
+					success(res) {
+						console.log('Shared----------------------------success')
+						// 分享完成，请注意此时不一定是成功分享
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+						// 分享失败
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateImgs() {
+				uni.hideToast()
+				const errorImageSrc1 : string = "/static/test-image/logo.gif";
+				const errorImageSrc2 : string = "/static/test-image/logo.png";
+				const imageSrc : string = "/static/test-image/logo.jpg";
+				let imageUrlList : string[] = Array()
+				imageUrlList.push(imageSrc)
+				imageUrlList.push(errorImageSrc1)
+				imageUrlList.push(errorImageSrc2)
+				uni.shareWithSystem({
+					imageUrlList: imageUrlList,
+					success(res) {
+						console.log('Shared----------------------------success')
+						// 分享完成，请注意此时不一定是成功分享
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateErrorImgs() {
+				uni.hideToast()
+				const errorImageSrc1 : string = "/static/test-image/logo.jpg1";
+				const errorImageSrc2 : string = "/static/test-image/logo.jpg2";
+				const imageSrc : string = "/static/test-image/logo.jpg";
+				let imageUrlList : string[] = Array()
+				imageUrlList.push(imageSrc)
+				imageUrlList.push(errorImageSrc1)
+				imageUrlList.push(errorImageSrc2)
+				uni.shareWithSystem({
+					imageUrlList: imageUrlList,
+					success(res) {
+						console.log('Shared----------------------------success')
+						// 分享完成，请注意此时不一定是成功分享
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			shareAll() {
+				uni.hideToast()
+				const errorImageSrc1 : string = "/static/test-image/logo.jpg1";
+				const errorImageSrc2 : string = "/static/test-image/logo.jpg1";
+				const imageSrc : string = "/static/test-image/logo.jpg";
+				let imageUrlList : string[] = Array()
+				imageUrlList.push(imageSrc)
+				imageUrlList.push(errorImageSrc1)
+				imageUrlList.push(errorImageSrc2)
+				uni.shareWithSystem({
+					summary: this.summary,
+					href: 'https://uniapp.dcloud.io',
+					imageUrlList: imageUrlList,
+					success(res) {
+						console.log('Shared----------------------------success')
+						// 分享完成，请注意此时不一定是成功分享
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
 			},
 			sharePubImg() {
+				uni.hideToast()
 				uni.chooseImage({
 					count: 3,
+					sourceType: ['camera', 'album'],
 					success(e) {
+						console.log(e)
 						console.log(JSON.stringify(e))
-						// const imageSrc : string = "/static/logo.png";
-						// var imageList = new UTSArray<string>()
-						// imageList.push(imageSrc)
-						// imageList.push(imageSrc)
 						uni.shareWithSystem({
 							summary: this.summary,
 							href: 'https://uniapp.dcloud.io',
-							imageUrlList:e.tempFilePaths,
+							imageUrlList: e.tempFilePaths,
 							success(res) {
-								console.log('success')
+								console.log('Shared----------------------------success')
 								// 分享完成，请注意此时不一定是成功分享
 							},
 							fail(res) {
-								console.log('fail')
-								// 分享失败
+								console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+
+								uni.showToast({
+									icon: "error",
+									title: "errorCode=" + res.errCode
+								})
 							},
 							complete(res) {
 
 							}
-						} )
+						})
 					}
 				})
 			},
 			shareSnapShot() {
+				uni.hideToast()
 				uni.getElementById("viewshot")?.takeSnapshot(
 					{
 						success: function (res) {
+							// #ifdef APP-ANDROIDn
 							// 打印截图文件临时路径
 							console.log(res.tempFilePath)
 							const context = UTSAndroid.getUniActivity()!;
@@ -95,6 +237,31 @@
 							const uri = UTSAndroid.getFileProviderUri(file) //3.99支持
 							intent.putExtra(Intent.EXTRA_STREAM, uri);
 							context.startActivity(Intent.createChooser(intent, "分享到"));
+							// #endif
+
+							// #ifdef APP-IOS
+							uni.shareWithSystem({
+								summary: this.summary,
+								href: 'https://uniapp.dcloud.io',
+								imageUrl: res.tempFilePath,
+								success(res) {
+									console.log('Shared----------------------------success')
+									// 分享完成，请注意此时不一定是成功分享
+								},
+								fail(res) {
+									console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+
+									uni.showToast({
+										icon: "error",
+										title: "errorCode=" + res.errCode
+									})
+								},
+								complete(res) {
+
+								}
+							})
+							// #endif
+
 						},
 						fail: function (res) {
 							console.log(res)
