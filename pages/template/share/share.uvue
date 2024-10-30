@@ -1,18 +1,31 @@
 <template>
-	<view id="viewshot">
-		<button class="button" @click="shareText()">分享文本</button>
-		<button class="button" @click="shareLink()">分享链接</button>
-		<button class="button" @click="sharePrivateImg()">分享单个本地图片</button>
-		<button class="button" @click="sharePrivateImgs()">分享多个本地图片</button>
-		<button class="button" @click="shareAll()">分享链接、文本、一张图片</button>
+	<!-- #ifdef APP -->
+	<scroll-view direction="vertical" style="flex:1; margin-bottom: 50px;">
+	<!-- #endif -->
+		<view id="viewshot">
+			<button class="button" @click="shareText()">分享文本</button>
+			<button class="button" @click="shareLink()">分享链接</button>
+			<button class="button" @click="sharePrivateImg()">分享单个本地图片</button>
+			<button class="button" @click="sharePrivateImgs()">分享多个本地图片</button>
+			<button class="button" @click="shareAll()">分享链接、文本、一张图片</button>
+			<button class="button" @click="sharePrivateVideo()">分享video文件(单个)</button>
+			<button class="button" @click="sharePrivateVideos()">分享video文件(多个)</button>
+			<button class="button" @click="sharePrivateAudio()">分享Audio文件(单个)</button>
+			<button class="button" @click="sharePrivateAudios()">分享Audio文件(多个)</button>
+			<button class="button" @click="sharePrivateFile()">分享文件(单个)</button>
+			<button class="button" @click="sharePrivateFiles()">分享文件(多个)</button>
 
-		<button class="button" type="primary" @click="shareErrorLink()">分享链接(格式错误)</button>
-		<button class="button" type="primary" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
-		<button class="button" type="primary" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
+			<button class="button" type="primary" @click="shareErrorLink()">分享链接(格式错误)</button>
+			<button class="button" type="primary" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
+			<button class="button" type="primary" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
+			<button class="button" type="primary" @click="sharePrivateErrorMedias()">分享多媒体文件(错误路径)</button>
+			<button class="button" type="primary" @click="sharePrivateErrorFiles()">分享文件(错误路径)</button>
 
-		<button class="button" type="warn" @click="sharePubImg()">选择图片并分享</button>
-		<button class="button" type="warn" @click="shareSnapShot()">指定view截图并分享</button>
-	</view>
+			<button class="button" type="warn" @click="sharePubImg()">选择图片并分享</button>
+			<button class="button" type="warn" @click="sharePubMedias()">选择media并分享</button>
+			<button class="button" type="warn" @click="shareSnapShot()">指定view截图并分享</button>
+		</view>
+	</scroll-view>
 </template>
 
 <script>
@@ -28,7 +41,206 @@
 			}
 		},
 		methods: {
+			sharePrivateErrorFiles() {
+				uni.hideToast()
+				const path1 : string = "/static/filemanager1/to.zip";
+				const path2 : string = "/static/filemanager/11.txt.br";
 
+				uni.shareWithSystem({
+					filePathList: [path1, path2],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateFile() {
+				uni.hideToast()
+				const path1 : string = "/static/filemanager/to.zip";
+
+				uni.shareWithSystem({
+					filePathList: [path1],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateFiles() {
+				uni.hideToast()
+				const path1 : string = "/static/filemanager/to.zip";
+				const path2 : string = "/static/filemanager/1.txt.br";
+
+				uni.shareWithSystem({
+					filePathList: [path1, path2],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateAudio() {
+				uni.hideToast()
+				const path1 : string = "/static/test-audio/ForElise.mp3";
+
+				uni.shareWithSystem({
+					mediaPathList: [path1],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateAudios() {
+				uni.hideToast()
+				const path1 : string = "/static/test-audio/ForElise.mp3";
+				const path2 : string = "/static/test-audio/ForElise.mp3";
+
+				uni.shareWithSystem({
+					mediaPathList: [path1, path2],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+			},
+			sharePrivateErrorMedias() {
+				uni.hideToast()
+				const path1 : string = "/static/test-video/10second-demo1.mp4";
+				const path2 : string = "/static/test-audio/ForElise.mp32";
+
+				uni.shareWithSystem({
+					mediaPathList: [path1, path2],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+
+			},
+			sharePrivateVideo() {
+				uni.hideToast()
+				const path1 : string = "/static/test-video/10second-demo.mp4";
+				uni.shareWithSystem({
+					mediaPathList: [path1],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+
+			},
+			sharePrivateVideos() {
+				uni.hideToast()
+				const path1 : string = "/static/test-video/10second-demo.mp4";
+				const path2 : string = "/static/test-video/10second-demo.mp4";
+
+				uni.shareWithSystem({
+					mediaPathList: [path1, path2],
+					success(res) {
+						console.log('Shared----------------------------success')
+					},
+					fail(res) {
+						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+						uni.showToast({
+							icon: "error",
+							title: "errorCode=" + res.errCode
+						})
+					},
+					complete(res) {
+
+					}
+				})
+
+			},
+			sharePubMedias() {
+				uni.hideToast()
+
+				uni.chooseVideo({
+					success(res) {
+						uni.shareWithSystem({
+							mediaPathList: [res.tempFilePath],
+							success(res) {
+								console.log('Shared----------------------------success')
+							},
+							fail(res) {
+								console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
+								uni.showToast({
+									icon: "error",
+									title: "errorCode=" + res.errCode
+								})
+							},
+							complete(res) {
+
+							}
+						})
+					}
+
+				})
+			},
 			shareText() {
 				uni.hideToast()
 				uni.shareWithSystem({
@@ -136,9 +348,10 @@
 				const errorImageSrc2 : string = "/static/test-image/logo.png";
 				const imageSrc : string = "/static/test-image/logo.jpg";
 				let imageUrlList : string[] = Array()
+				imageUrlList.push(errorImageSrc2)
 				imageUrlList.push(imageSrc)
 				imageUrlList.push(errorImageSrc1)
-				imageUrlList.push(errorImageSrc2)
+
 				uni.shareWithSystem({
 					imageUrlList: imageUrlList,
 					success(res) {
@@ -160,7 +373,7 @@
 			sharePrivateErrorImgs() {
 				uni.hideToast()
 				const errorImageSrc1 : string = "/static/test-image/logo.jpg1";
-				const errorImageSrc2 : string = "/static/test-image/logo.jpg2";
+				const errorImageSrc2 : string = "/static/test-image/logo.jpg3";
 				const imageSrc : string = "/static/test-image/logo.jpg";
 				let imageUrlList : string[] = Array()
 				imageUrlList.push(imageSrc)
@@ -218,8 +431,8 @@
 						console.log(e)
 						console.log(JSON.stringify(e))
 						uni.shareWithSystem({
-							summary: this.summary,
-							href: 'https://uniapp.dcloud.io',
+							// summary: "aa",
+							// href: 'https://uniapp.dcloud.io',
 							imageUrlList: e.tempFilePaths,
 							success(res) {
 								console.log('Shared----------------------------success')
@@ -245,7 +458,7 @@
 				uni.getElementById("viewshot")?.takeSnapshot(
 					{
 						success: function (res) {
-							// #ifdef APP-ANDROID
+							// #ifdef APP-ANDROIDn
 							// 打印截图文件临时路径
 							console.log(res.tempFilePath)
 							const context = UTSAndroid.getUniActivity()!;
@@ -259,8 +472,6 @@
 
 							// #ifdef APP-IOS
 							uni.shareWithSystem({
-								summary: this.summary,
-								href: 'https://uniapp.dcloud.io',
 								imageUrl: res.tempFilePath,
 								success(res) {
 									console.log('Shared----------------------------success')
@@ -298,7 +509,8 @@
 
 <style>
 	.button {
-		margin: 20px;
-		margin-bottom: 0px;
+		margin-left: 30px;
+		margin-right: 30px;
+		margin-bottom: 15px;
 	}
 </style>
