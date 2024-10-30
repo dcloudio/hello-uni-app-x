@@ -4,18 +4,14 @@
 	<!-- #endif -->
 		<view id="viewshot">
 			<button class="button" @click="shareText()">分享文本</button>
-			<button class="button" @click="shareLink()">分享链接</button>
 			<button class="button" @click="sharePrivateImg()">分享单个本地图片</button>
 			<button class="button" @click="sharePrivateImgs()">分享多个本地图片</button>
 			<button class="button" @click="shareAll()">分享链接、文本、一张图片</button>
 			<button class="button" @click="sharePrivateVideo()">分享video文件(单个)</button>
 			<button class="button" @click="sharePrivateVideos()">分享video文件(多个)</button>
-			<button class="button" @click="sharePrivateAudio()">分享Audio文件(单个)</button>
-			<button class="button" @click="sharePrivateAudios()">分享Audio文件(多个)</button>
 			<button class="button" @click="sharePrivateFile()">分享文件(单个)</button>
 			<button class="button" @click="sharePrivateFiles()">分享文件(多个)</button>
 
-			<button class="button" type="primary" @click="shareErrorLink()">分享链接(格式错误)</button>
 			<button class="button" type="primary" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
 			<button class="button" type="primary" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
 			<button class="button" type="primary" @click="sharePrivateErrorMedias()">分享多媒体文件(错误路径)</button>
@@ -29,10 +25,6 @@
 </template>
 
 <script>
-	// #ifdef APP-ANDROID
-	import Intent from 'android.content.Intent';
-	import File from 'java.io.File';
-	// #endif
 
 	export default {
 		data() {
@@ -48,6 +40,7 @@
 
 				uni.shareWithSystem({
 					filePathList: [path1, path2],
+					type:'file',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -69,6 +62,7 @@
 
 				uni.shareWithSystem({
 					filePathList: [path1],
+					type:'file',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -91,49 +85,7 @@
 
 				uni.shareWithSystem({
 					filePathList: [path1, path2],
-					success(res) {
-						console.log('Shared----------------------------success')
-					},
-					fail(res) {
-						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
-						uni.showToast({
-							icon: "error",
-							title: "errorCode=" + res.errCode
-						})
-					},
-					complete(res) {
-
-					}
-				})
-			},
-			sharePrivateAudio() {
-				uni.hideToast()
-				const path1 : string = "/static/test-audio/ForElise.mp3";
-
-				uni.shareWithSystem({
-					mediaPathList: [path1],
-					success(res) {
-						console.log('Shared----------------------------success')
-					},
-					fail(res) {
-						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
-						uni.showToast({
-							icon: "error",
-							title: "errorCode=" + res.errCode
-						})
-					},
-					complete(res) {
-
-					}
-				})
-			},
-			sharePrivateAudios() {
-				uni.hideToast()
-				const path1 : string = "/static/test-audio/ForElise.mp3";
-				const path2 : string = "/static/test-audio/ForElise.mp3";
-
-				uni.shareWithSystem({
-					mediaPathList: [path1, path2],
+					type:'file',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -156,6 +108,7 @@
 
 				uni.shareWithSystem({
 					mediaPathList: [path1, path2],
+					type:'video',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -177,6 +130,7 @@
 				const path1 : string = "/static/test-video/10second-demo.mp4";
 				uni.shareWithSystem({
 					mediaPathList: [path1],
+					type:'video',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -200,6 +154,7 @@
 
 				uni.shareWithSystem({
 					mediaPathList: [path1, path2],
+					type:'video',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -223,6 +178,7 @@
 					success(res) {
 						uni.shareWithSystem({
 							mediaPathList: [res.tempFilePath],
+							type:'video',
 							success(res) {
 								console.log('Shared----------------------------success')
 							},
@@ -260,48 +216,11 @@
 					}
 				})
 			},
-			shareLink() {
-				uni.hideToast()
-				uni.shareWithSystem({
-					href: 'https://uniapp.dcloud.io',
-					success(res) {
-						console.log('Shared----------------------------success')
-					},
-					fail(res) {
-						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
-						uni.showToast({
-							icon: "error",
-							title: "errorCode=" + res.errCode
-						})
-					},
-					complete(res) {
-
-					}
-				})
-			},
-			shareErrorLink() {
-				uni.hideToast()
-				uni.shareWithSystem({
-					href: 'htp:11',
-					success(res) {
-						console.log('Shared----------------------------success')
-					},
-					fail(res) {
-						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
-						uni.showToast({
-							icon: "error",
-							title: "errorCode=" + res.errCode
-						})
-					},
-					complete(res) {
-
-					}
-				})
-			},
 			sharePrivateImg() {
 				uni.hideToast()
 				const imageSrc : string = "/static/test-image/logo.gif";
 				uni.shareWithSystem({
+					type:'image',
 					imageUrl: imageSrc,
 					success(res) {
 						console.log('Shared----------------------------success')
@@ -324,6 +243,7 @@
 				uni.hideToast()
 				const imageSrc : string = "/static/test-image/logo.jpg11";
 				uni.shareWithSystem({
+					type:'image',
 					imageUrl: imageSrc,
 					success(res) {
 						console.log('Shared----------------------------success')
@@ -353,6 +273,7 @@
 				imageUrlList.push(errorImageSrc1)
 
 				uni.shareWithSystem({
+					type:'image',
 					imageUrlList: imageUrlList,
 					success(res) {
 						console.log('Shared----------------------------success')
@@ -380,6 +301,7 @@
 				imageUrlList.push(errorImageSrc1)
 				imageUrlList.push(errorImageSrc2)
 				uni.shareWithSystem({
+					type:'image',
 					imageUrlList: imageUrlList,
 					success(res) {
 						console.log('Shared----------------------------success')
@@ -403,6 +325,7 @@
 				let imageUrlList : string[] = Array()
 				imageUrlList.push(imageSrc)
 				uni.shareWithSystem({
+					type:'image',
 					summary: this.summary,
 					href: 'https://uniapp.dcloud.io',
 					imageUrlList: imageUrlList,
@@ -434,6 +357,7 @@
 							// summary: "aa",
 							// href: 'https://uniapp.dcloud.io',
 							imageUrlList: e.tempFilePaths,
+							type:'image',
 							success(res) {
 								console.log('Shared----------------------------success')
 								// 分享完成，请注意此时不一定是成功分享
@@ -458,21 +382,10 @@
 				uni.getElementById("viewshot")?.takeSnapshot(
 					{
 						success: function (res) {
-							// #ifdef APP-ANDROIDn
-							// 打印截图文件临时路径
-							console.log(res.tempFilePath)
-							const context = UTSAndroid.getUniActivity()!;
-							const intent = new Intent(Intent.ACTION_SEND)
-							intent.setType("image/*");
-							let file = new File(res.tempFilePath)
-							const uri = UTSAndroid.getFileProviderUri(file) //3.99支持
-							intent.putExtra(Intent.EXTRA_STREAM, uri);
-							context.startActivity(Intent.createChooser(intent, "分享到"));
-							// #endif
-
-							// #ifdef APP-IOS
+						
 							uni.shareWithSystem({
 								imageUrl: res.tempFilePath,
+								type:'image',
 								success(res) {
 									console.log('Shared----------------------------success')
 									// 分享完成，请注意此时不一定是成功分享
@@ -489,7 +402,6 @@
 
 								}
 							})
-							// #endif
 
 						},
 						fail: function (res) {
