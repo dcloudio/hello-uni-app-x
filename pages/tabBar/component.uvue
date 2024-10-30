@@ -39,10 +39,6 @@
           </template>
         </uni-collapse-item>
       </uni-collapse>
-
-      <!-- #ifdef UNI-APP-X && APP -->
-      <uni-upgrade-center-app ref="upgradePopup" @show="upgradePopupShow" @close="upgradePopupClose" />
-      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -80,19 +76,7 @@
         } else {
           uni.navigateTo({ url })
         }
-      },
-      // #ifdef UNI-APP-X && APP
-      upgradePopupShow() {
-        console.log('upgradePopup show');
-        if (!this.pageHiden) {
-          uni.hideTabBar()?.catch(_ => { })
-        }
       }
-      , upgradePopupClose() {
-        console.log('upgradePopup close');
-        uni.showTabBar()?.catch(_ => { })
-      }
-      // #endif
     },
     // #ifdef WEB
     watch: {
@@ -118,11 +102,11 @@
           if (res.needAuthorization) {
             uni.onPrivacyAuthorizationChange((res) => {
               if (!res.needAuthorization) {
-                checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+                checkUpdate()
               }
             })
           } else {
-            checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+            checkUpdate()
           }
         }
       })
