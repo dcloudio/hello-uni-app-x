@@ -1,3 +1,5 @@
+## 0.9.0（2024-10-30）
+- **重要更新** 在 uni-app x 项目中弃用之前弹窗方案使用[dialogPage](https://doc.dcloud.net.cn/uni-app-x/api/dialog-page.html)实现，需要 `HBuilderX 4.31+`
 ## 0.8.5（2024-10-26）
 - 优化 去除不必要代码
 ## 0.8.4（2024-10-26）
