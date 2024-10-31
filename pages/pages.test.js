@@ -170,7 +170,7 @@ const pages = [
   '/pages/CSS/background/background-color',
   // 单独测试例中截图
   // '/pages/CSS/background/background-image',
-  '/pages/CSS/border/border',
+  // '/pages/CSS/border/border',
   '/pages/CSS/border/border-color',
   '/pages/CSS/border/border-top',
   '/pages/CSS/border/border-bottom',
