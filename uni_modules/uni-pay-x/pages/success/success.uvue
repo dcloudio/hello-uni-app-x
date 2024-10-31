@@ -40,7 +40,7 @@
 					adpid: "",
 					order_no: "",
 					out_trade_no: "",
-					total_fee: null,
+					total_fee: 0,
 					pay_date: "",
 					return_url: ""
 				} as UTSJSONObject,
@@ -55,9 +55,11 @@
 		// 监听 - 页面每次【加载时】执行(如：前进)
 		onLoad(options) {
 			this.myOptions['adpid'] = options['adpid'];
-			this.myOptions['order_no'] = options['order_no'];
+			this.myOptions['order_no'] = options['order_no'] != null ? options['order_no'] : "-";
 			this.myOptions['out_trade_no'] = options['out_trade_no'];
-			this.myOptions['total_fee'] = parseFloat(options['total_fee'] as string);
+			if (options['total_fee'] != null) {
+				this.myOptions['total_fee'] = parseFloat(options['total_fee'] as string);
+			}
 			this.myOptions['pay_date'] = options['pay_date'];
 			this.myOptions['return_url'] = options['return_url'];
 		},
@@ -84,7 +86,7 @@
 				console.log("ad-error", e);
 			},
 			amountFormat(totalFee : number | null) :string{
-				if (totalFee == null) {
+				if (totalFee == null || totalFee == 0) {
 					return "0";
 				} else {
 					return (totalFee / 100).toFixed(2)
