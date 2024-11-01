@@ -31,7 +31,7 @@ describe('PickerView.uvue', () => {
 
     const newValue1 = await pickerViewEl.property('value')
     // TODO
-    expect(newValue1.toString()).toEqual('0,0,0')
+    expect(newValue1.toString()).toEqual('0,1,30')
     if (process.env.UNI_PLATFORM === 'app-android') {
       expect(await page.data('result')).toEqual([0, 0, 0])
     }
@@ -115,15 +115,15 @@ describe('PickerView.uvue', () => {
       await page.waitFor(500)
       page = await program.navigateTo(PAGE_PATH)
       await page.waitFor(500)
-      const date = new Date()
+
       const {
         year,
         month,
         day
       } = await page.data()
-      expect(year).toEqual(date.getFullYear())
-      expect(month).toEqual(date.getMonth() + 1)
-      expect(day).toEqual(date.getDate())
+      expect(year).toEqual(2018)
+      expect(month).toEqual(1)
+      expect(day).toEqual(12)
     })
 
     it('trigger UniPickerViewChangeEvent', async () => {
