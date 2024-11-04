@@ -29,7 +29,7 @@
             description: '本地路径：/static方式',
             src: '/static/test-audio/ForElise.mp3'
           },
-          {
+          {     
             description: '本地路径：../static/',
             src: '../../../static/test-audio/ForElise.mp3'
           },
@@ -43,13 +43,24 @@
           },
           {
             description: '错误路径',
-            src: '../static/test-audio/ForElise.mp3'
+            src: '../static/test-audio/ForElise22.mp3'
           },
         ] as Array<AudioPath>
       }
     },
     onReady() {
       this._audioContext = uni.createInnerAudioContext();
+	  this._audioContext!.onPlay(() => {
+	    console.log('开始播放');
+	  });
+	  this._audioContext!.onEnded(() => {
+	    console.log('播放结束');
+	    this.isPlaying = false;
+	  });
+	  this._audioContext!.onError((err) => {
+	    this.isPlaying = false;
+	     console.log('err', err);
+	  });
     },
     onUnload() {
       if (this._audioContext != null) {
@@ -62,8 +73,8 @@
         this._audioContext!.pause();
         this.isPlaying = false;
       },
-      play(audioUrl, index) {
-        // console.log(index,audioUrl);
+      play(audioUrl:string, index:number) {
+        console.log(index,audioUrl);
         if (this.isPlaying && this.playIndex == index) {
           this.pause();
           return;
@@ -72,17 +83,6 @@
         this._audioContext!.src = audioUrl;
         this._audioContext!.play();
         this.isPlaying = true;
-        this._audioContext!.onPlay(() => {
-          console.log('开始播放');
-        });
-        this._audioContext!.onEnded(() => {
-          console.log('播放结束');
-          this.isPlaying = false;
-        });
-        this._audioContext!.onError((err) => {
-          this.isPlaying = false;
-          console.log('err', err);
-        });
       }
     }
   }
