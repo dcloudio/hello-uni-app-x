@@ -1,4 +1,7 @@
 <template>
+  	<!-- #ifdef APP -->
+    <scroll-view style="flex: 1;">
+    <!-- #endif -->
   <view class="uni-padding-wrap">
     <page-head title="audio"></page-head>
     <view class="uni-common-mt">
@@ -27,7 +30,7 @@
     <button :disabled="isPlaying" type="primary" @click="play" class="uni-btn">播放</button>
     <button :disabled="!isPlaying" type="primary" @click="pause" class="uni-btn">暂停</button>
     <button :disabled="!isPlaying && !isPaused" type="primary" @click="stop" class="uni-btn">停止</button>
-    <button type="primary" @click="onchange(20)" class="uni-btn">跳转到指定位置20</button>
+    <button type="primary" @click="onchangeValue(20)" class="uni-btn">跳转到指定位置20</button>
 
     <view class="uni-title">
       <text class="uni-title-text">格式/路径示例</text>
@@ -39,6 +42,9 @@
       <button type="primary" @click="pause">音频路径示例</button>
     </navigator>
   </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="uts">
   const audioUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
@@ -87,24 +93,30 @@
           this.isCanplay = true;
           // 当音频可以播放时，获取缓冲信息
           this.buffered = this._audioContext!.buffered;
-          this.duration = this._audioContext!.duration || 0;
+          this.duration = this._audioContext!.duration
         });
       },
       onchanging() {
         this._isChanging = true;
       },
-      onchange(e) {
+      onchange(e : UniSliderChangeEvent) {
         console.log(e, 'e');
-        let pos = typeof e === "number" ? e : e.detail.value;
+        let pos =  e.detail.value;
         this._audioContext!.seek(pos);
         this.onSeeking()
         this.onSeeked()
         this._isChanging = false;
       },
+	  onchangeValue(pos:number) {
+	    this._audioContext!.seek(pos);
+	    this.onSeeking()
+	    this.onSeeked()
+	    this._isChanging = false;
+	  },
       startTimeInput(e : InputEvent) {
-        let startTimeValue = Number(e.detail.value)
+        let startTimeValue = parseInt(e.detail.value)
         this._audioContext!.startTime = startTimeValue;
-        this.onchange(startTimeValue)
+        this.onchangeValue(startTimeValue)
       },
       setAutoplay() {
         this._audioContext!.autoplay = !this._audioContext!.autoplay;
@@ -125,7 +137,7 @@
         this._audioContext!.play();
         this.isPlayEnd = false;
         if (this._audioContext!.startTime > 0) {
-          this.onchange(this._audioContext!.startTime)
+          this.onchangeValue(this._audioContext!.startTime)
         }
         this._audioContext!.onPlay(() => {
           this.isPaused = false;
@@ -157,8 +169,8 @@
       onTimeUpdate() {
         this._audioContext!.onTimeUpdate(() => {
           // console.log('onTimeUpdate:音频播放进度更新事件,currentTime',this._audioContext!.currentTime);
-          if (this._isChanging === true) { return; }
-          this.currentTime = this._audioContext!.currentTime || 0;
+          if (this._isChanging) { return; }
+          this.currentTime = this._audioContext!.currentTime
           console.log('currentTime', this.currentTime);
           if (this.currentTime > this.buffered) {
             console.log('缓冲不足');
