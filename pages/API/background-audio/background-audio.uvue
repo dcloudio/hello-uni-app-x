@@ -68,7 +68,7 @@
 				bgAudioMannager.title = '致爱丽丝'+this.count++;
 				bgAudioMannager.singer = '暂无2'+this.count++;
 				bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
-				this.bgAudioMannager!!.src = this.dataUrl;
+				this.bgAudioMannager!.src = this.dataUrl;
 				this.bgAudioMannager?.play()
 			})
 			bgAudioMannager.onPrev(() => {
@@ -76,7 +76,7 @@
 				this.bgAudioMannager?.stop()
 				bgAudioMannager.title = '致爱丽丝'+this.count--;
 				bgAudioMannager.singer = '暂无'+this.count--;
-				this.bgAudioMannager!!.src = this.dataUrl;
+				this.bgAudioMannager!.src = this.dataUrl;
 				this.bgAudioMannager?.play()
 			})
 			// bgAudioMannager.onTimeUpdate((e) => {
@@ -91,17 +91,17 @@
 		methods: {
 			play: function () {
 				console.log('play')
-				this.bgAudioMannager!!.src = this.dataUrl;
+				this.bgAudioMannager!.src = this.dataUrl;
 				// #ifdef APP-ANDROID
 				if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, ["android.permission.POST_NOTIFICATIONS"])) {
-					this.bgAudioMannager!!.play()
+					this.bgAudioMannager!.play()
 				} else {
 					// 检查当前 Android 版本和 targetSdkVersion
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 						// Android 13 及以上版本
 						if ((UTSAndroid.getAppContext() as Application).applicationInfo.targetSdkVersion >= 33) {
 							UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, ["android.permission.POST_NOTIFICATIONS"], (_ : boolean, p : string[]) => {
-								this.bgAudioMannager!!.play()
+								this.bgAudioMannager!.play()
 							}, (_ : boolean, p : string[]) => {
 								uni.showToast({
 									title: "权限被拒绝了",

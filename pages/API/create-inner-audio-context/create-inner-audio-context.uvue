@@ -1,4 +1,7 @@
 <template>
+  	<!-- #ifdef APP -->
+    <scroll-view style="flex: 1;">
+    <!-- #endif -->
   <view class="uni-padding-wrap">
     <page-head title="audio"></page-head>
     <view class="uni-common-mt">
@@ -39,6 +42,9 @@
       <button type="primary" @click="pause">音频路径示例</button>
     </navigator>
   </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="uts">
   const audioUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
@@ -163,8 +169,8 @@
       onTimeUpdate() {
         this._audioContext!.onTimeUpdate(() => {
           // console.log('onTimeUpdate:音频播放进度更新事件,currentTime',this._audioContext!.currentTime);
-          if (this._isChanging === true) { return; }
-          this.currentTime = this._audioContext!.currentTime ?? 0;
+          if (this._isChanging) { return; }
+          this.currentTime = this._audioContext!.currentTime
           console.log('currentTime', this.currentTime);
           if (this.currentTime > this.buffered) {
             console.log('缓冲不足');

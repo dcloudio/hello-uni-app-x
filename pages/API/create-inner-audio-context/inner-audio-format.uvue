@@ -94,6 +94,20 @@
 		},
 		onReady() {
 			this._audioContext = uni.createInnerAudioContext();
+			this._audioContext!.onPlay(() => {
+				console.log('开始播放');
+			});
+			this._audioContext!.onPause(()=>{
+				console.log('播放暂停');
+			})
+			this._audioContext!.onEnded(() => {
+				console.log('播放结束');
+				this.isPlaying = false;
+			});
+			this._audioContext!.onError((err) => {
+				this.isPlaying = false;
+				console.log('err', err);
+			});
 		},
 		onUnload() {
 			if (this._audioContext != null) {
@@ -116,17 +130,6 @@
 				this._audioContext!.src = audioUrl;
 				this._audioContext!.play();
 				this.isPlaying = true;
-				this._audioContext!.onPlay(() => {
-					console.log('开始播放');
-				});
-				this._audioContext!.onEnded(() => {
-					console.log('播放结束');
-					this.isPlaying = false;
-				});
-				this._audioContext!.onError((err) => {
-					this.isPlaying = false;
-					console.log('err', err);
-				});
 			},
 		},
 	}
