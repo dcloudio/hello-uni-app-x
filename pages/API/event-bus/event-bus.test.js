@@ -86,4 +86,21 @@ describe('event-bus', () => {
     expect(logs[0]).toBe('触发 test-return-id $on fn')
     expect(logs[1]).toBe('触发 test-return-id $once fn')
   })
+  it('test $emit no args', async () => {
+    await page.callMethod('clear')
+    expect((await page.data()).log.length).toBe(0)
+    await page.callMethod('testEmitNoArgs')
+    const logs = await page.data('log')
+    expect(logs.length).toBe(1)
+    expect(logs[0]).toBe('test-emit-no-args')
+  })
+  it('test $emit multiple args', async () => {
+    await page.callMethod('clear')
+    expect((await page.data()).log.length).toBe(0)
+    await page.callMethod('testEmitMultipleArgs')
+    const logs = await page.data('log')
+    expect(logs.length).toBe(1)
+    expect(logs[0]).toBe('arg1_2')
+  })
+  
 })
