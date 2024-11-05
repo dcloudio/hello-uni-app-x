@@ -1,6 +1,8 @@
 <template>
-  <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd"></canvas>
-  <button @click="doClear()">清空</button>
+  <view>
+    <canvas class="drawing" id="tablet" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd"></canvas>
+    <button @click="doClear()">清空</button>
+  </view>
 </template>
 
 <script>
@@ -14,18 +16,32 @@
       return {
         lastPointX: 0,
         lastPointY: 0,
-        canvasElement: null as UniCanvasElement | null,
+        offsetX: 0,
+        offsetY: 0,
         renderingContext: null as CanvasRenderingContext2D | null,
       }
     },
     onReady() {
-      this.canvasElement = uni.getElementById('tablet') as UniCanvasElement
-      this.renderingContext = this.canvasElement!.getContext("2d")!
+      uni.createCanvasContextAsync({
+        id: 'tablet',
+        // component: this,
+        success: (context : CanvasContext) => {
+          console.log('success');
+          this.renderingContext = context.getContext('2d')!;
+          const canvas = this.renderingContext!.canvas;
 
-      const dpr = uni.getDeviceInfo().devicePixelRatio ?? 1;
-      this.canvasElement!.width = this.canvasElement!.offsetWidth * dpr
-      this.canvasElement!.height = this.canvasElement!.offsetHeight * dpr
-      this.renderingContext!.scale(dpr, dpr)
+          const dpr = uni.getDeviceInfo().devicePixelRatio ?? 1;
+          canvas.width = canvas.offsetWidth * dpr
+          canvas.height = canvas.offsetHeight * dpr
+          this.renderingContext!.scale(dpr, dpr)
+
+          // #ifndef MP
+          const elRect = canvas.getBoundingClientRect()
+          this.offsetX = elRect.left
+          this.offsetY = elRect.top
+          // #endif
+        }
+      })
     },
     methods: {
       touchStart(event : TouchEvent) {
@@ -54,16 +70,24 @@
       },
       doClear() {
         if (this.renderingContext != null) {
-          this.renderingContext!.clearRect(0, 0, this.canvasElement!.width, this.canvasElement!.height)
+          this.renderingContext!.clearRect(0, 0, this.renderingContext!.canvas.width, this.renderingContext!.canvas.height)
         }
       },
       getPosition(event : TouchEvent) : Point {
-        const elRect = this.canvasElement!.getBoundingClientRect()
         const touch = event.touches[0]
+        // #ifndef MP-WEIXIN
         return {
-          x: touch.clientX - elRect.left,
-          y: touch.clientY - elRect.top
+          x: touch.clientX - this.offsetX,
+          y: touch.clientY - this.offsetY
         } as Point
+        // #endif
+
+        // #ifdef MP-WEIXIN
+        return {
+          x: touch.x,
+          y: touch.y
+        } as Point
+        // #endif
       }
     }
   }
