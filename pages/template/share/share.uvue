@@ -15,7 +15,6 @@
 			<button class="button" @click="sharePrivateFile()">分享文件(单个)</button>
 			<button class="button" @click="sharePrivateFiles()">分享文件(多个)</button>
 
-			<button class="button" type="primary" @click="shareErrorLink()">分享链接(格式错误)</button>
 			<button class="button" type="primary" @click="sharePrivateErrorImg()">分享单个本地图片(错误路径)</button>
 			<button class="button" type="primary" @click="sharePrivateErrorImgs()">分享多个本地图片(含有错误路径)</button>
 			<button class="button" type="primary" @click="sharePrivateErrorVideos()">分享Video文件(错误路径)</button>
@@ -23,7 +22,7 @@
 			<button class="button" type="primary" @click="sharePrivateErrorFiles()">分享文件(错误路径)</button>
 
 			<button class="button" type="warn" @click="sharePubImg()">选择图片并分享</button>
-			<button class="button" type="warn" @click="sharePubMedias()">选择media并分享</button>
+			<button class="button" type="warn" @click="sharePubMedias()">选择video并分享</button>
 			<button class="button" type="warn" @click="shareSnapShot()">指定view截图并分享</button>
 		</view>
 	</scroll-view>
@@ -44,6 +43,7 @@
 
 				uni.shareWithSystem({
 					audioPaths: [path1, path2],
+					type:'audio',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -67,6 +67,7 @@
 
 				uni.shareWithSystem({
 					filePaths: [path1, path2],
+					type:'file',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -88,6 +89,7 @@
 
 				uni.shareWithSystem({
 					filePaths: [path1],
+					type:'file',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -110,6 +112,7 @@
 
 				uni.shareWithSystem({
 					filePaths: [path1, path2],
+					type:'file',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -131,6 +134,7 @@
 
 				uni.shareWithSystem({
 					audioPaths: [path1],
+					type:'audio',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -153,6 +157,7 @@
 
 				uni.shareWithSystem({
 					audioPaths: [path1, path2],
+					type:'audio',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -175,6 +180,7 @@
 
 				uni.shareWithSystem({
 					videoPaths: [path1, path2],
+					type:'video',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -196,6 +202,7 @@
 				const path1 : string = "/static/test-video/10second-demo.mp4";
 				uni.shareWithSystem({
 					videoPaths: [path1],
+					type:'video',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -219,6 +226,7 @@
 
 				uni.shareWithSystem({
 					videoPaths: [path1, path2],
+					type:'video',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -242,6 +250,7 @@
 					success(res) {
 						uni.shareWithSystem({
 							videoPaths: [res.tempFilePath],
+							type:'video',
 							success(res) {
 								console.log('Shared----------------------------success')
 							},
@@ -264,6 +273,7 @@
 				uni.hideToast()
 				uni.shareWithSystem({
 					summary: this.summary,
+					type:'text',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -282,26 +292,8 @@
 			shareLink() {
 				uni.hideToast()
 				uni.shareWithSystem({
+					type:'text',
 					href: 'https://uniapp.dcloud.io',
-					success(res) {
-						console.log('Shared----------------------------success')
-					},
-					fail(res) {
-						console.log('Share failed, ' + "res.errCode =" + res.errCode + '---res.errMsg= ' + res.errMsg)
-						uni.showToast({
-							icon: "error",
-							title: "errorCode=" + res.errCode
-						})
-					},
-					complete(res) {
-
-					}
-				})
-			},
-			shareErrorLink() {
-				uni.hideToast()
-				uni.shareWithSystem({
-					href: 'htp:11',
 					success(res) {
 						console.log('Shared----------------------------success')
 					},
@@ -321,6 +313,7 @@
 				uni.hideToast()
 				const imageSrc : string = "/static/test-image/logo.gif";
 				uni.shareWithSystem({
+					type:'image',
 					imageUrl: imageSrc,
 					success(res) {
 						console.log('Shared----------------------------success')
@@ -344,6 +337,7 @@
 				const imageSrc : string = "/static/test-image/logo.jpg11";
 				uni.shareWithSystem({
 					imageUrl: imageSrc,
+					type:'image',
 					success(res) {
 						console.log('Shared----------------------------success')
 						// 分享完成，请注意此时不一定是成功分享
@@ -369,10 +363,11 @@
 				let imageUrlList : string[] = Array()
 				imageUrlList.push(errorImageSrc2)
 				imageUrlList.push(imageSrc)
-				imageUrlList.push(errorImageSrc1)
+				// imageUrlList.push(errorImageSrc1)
 
 				uni.shareWithSystem({
 					imagePaths: imageUrlList,
+					type:'image',
 					success(res) {
 						console.log('Shared----------------------------success')
 						// 分享完成，请注意此时不一定是成功分享
@@ -400,6 +395,7 @@
 				imageUrlList.push(errorImageSrc2)
 				uni.shareWithSystem({
 					imagePaths: imageUrlList,
+					type:'image',
 					success(res) {
 						console.log('Shared----------------------------success')
 						// 分享完成，请注意此时不一定是成功分享
@@ -425,6 +421,7 @@
 					summary: this.summary,
 					href: 'https://uniapp.dcloud.io',
 					imagePaths: imageUrlList,
+					type:'image',
 					success(res) {
 						console.log('Shared----------------------------success')
 						// 分享完成，请注意此时不一定是成功分享
@@ -453,6 +450,7 @@
 							// summary: "aa",
 							// href: 'https://uniapp.dcloud.io',
 							imagePaths: e.tempFilePaths,
+							type:'image',
 							success(res) {
 								console.log('Shared----------------------------success')
 								// 分享完成，请注意此时不一定是成功分享
@@ -479,6 +477,7 @@
 						success: function (res) {
 							uni.shareWithSystem({
 								imageUrl: res.tempFilePath,
+								type:'image',
 								success(res) {
 									console.log('Shared----------------------------success')
 									// 分享完成，请注意此时不一定是成功分享
