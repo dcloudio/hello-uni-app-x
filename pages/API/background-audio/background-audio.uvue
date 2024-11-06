@@ -23,13 +23,6 @@
 	</view>
 </template>
 <script>
-	// #ifdef APP-ANDROID
-	import Build from 'android.os.Build'
-	import Application from 'android.app.Application'
-	// #endif
-	// import {
-	// 	*
-	// } from "@/uni_modules/uni-getBackgroundAudioManager"
 	export default {
 		data() {
 			return {
@@ -39,7 +32,7 @@
 				playing: false,
 				playTime: 0,
 				formatedPlayTime: '00:00:00',
-				count:100,
+				count: 100,
 			}
 		},
 		onLoad: function () {
@@ -65,8 +58,8 @@
 			bgAudioMannager.onNext(() => {
 				console.log("下一曲");
 				this.bgAudioMannager?.stop()
-				bgAudioMannager.title = '致爱丽丝'+this.count++;
-				bgAudioMannager.singer = '暂无2'+this.count++;
+				bgAudioMannager.title = '致爱丽丝' + this.count++;
+				bgAudioMannager.singer = '暂无2' + this.count++;
 				bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
 				this.bgAudioMannager!.src = this.dataUrl;
 				this.bgAudioMannager?.play()
@@ -74,8 +67,8 @@
 			bgAudioMannager.onPrev(() => {
 				console.log("上一曲");
 				this.bgAudioMannager?.stop()
-				bgAudioMannager.title = '致爱丽丝'+this.count--;
-				bgAudioMannager.singer = '暂无'+this.count--;
+				bgAudioMannager.title = '致爱丽丝' + this.count--;
+				bgAudioMannager.singer = '暂无' + this.count--;
 				this.bgAudioMannager!.src = this.dataUrl;
 				this.bgAudioMannager?.play()
 			})
@@ -92,35 +85,7 @@
 			play: function () {
 				console.log('play')
 				this.bgAudioMannager!.src = this.dataUrl;
-				// #ifdef APP-ANDROID
-				if (UTSAndroid.checkSystemPermissionGranted(UTSAndroid.getUniActivity()!, ["android.permission.POST_NOTIFICATIONS"])) {
-					this.bgAudioMannager!.play()
-				} else {
-					// 检查当前 Android 版本和 targetSdkVersion
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-						// Android 13 及以上版本
-						if ((UTSAndroid.getAppContext() as Application).applicationInfo.targetSdkVersion >= 33) {
-							UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, ["android.permission.POST_NOTIFICATIONS"], (_ : boolean, p : string[]) => {
-								this.bgAudioMannager!.play()
-							}, (_ : boolean, p : string[]) => {
-								uni.showToast({
-									title: "权限被拒绝了",
-									position: "bottom"
-								})
-								console.log(p)
-							})
-						} else {
-							uni.showToast({
-								title: '请手动打开通知权限'
-							})
-						}
-					} else {
-						uni.showToast({
-							title: '请手动打开通知权限'
-						})
-					}
-				}
-				// #endif
+				this.bgAudioMannager!.play()
 			},
 			pause: function () {
 				this.bgAudioMannager?.pause();
