@@ -1,7 +1,7 @@
 <template>
   <view class="page" id="page-canvas">
     <canvas id="canvas" class="canvas-element"></canvas>
-    <scroll-view class="scroll-view">
+    <scroll-view class="scroll-view" scroll-y="true">
       <view class="grid-view">
         <view class="grid-item" v-for="(name, index) in names" :key="index">
           <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
@@ -54,8 +54,6 @@
           this.canvasHeight = this.canvas!.height;
         }
       })
-
-      console.log(this.names);
 
       // 同步调用方式，仅支持 app/web
       // let canvas = uni.getElementById("canvas") as UniCanvasElement
@@ -788,7 +786,7 @@
       path2DMethods() {
         const context = this.renderingContext!
         context.beginPath()
-        const path2D = new Path2D();
+        const path2D = this.canvasContext!.createPath2D();
         const amplitude = 64;
         const wavelength = 64;
         for (let i = 0; i < 5; i++) {
@@ -801,12 +799,12 @@
           const x4 = x1 + wavelength;
           const y4 = y1;
           context.moveTo(x1, y1);
-          path2D.bezierCurveTo(x2, y2, x3, y3, x4, y4);
+          path2D!.bezierCurveTo(x2, y2, x3, y3, x4, y4);
         }
         context.stroke(path2D);
 
-        const path2DRect = new Path2D();
-        path2DRect.rect(10, 10, 100, 20);
+        const path2DRect = this.canvasContext!.createPath2D();
+        path2DRect!.rect(10, 10, 100, 20);
         context.fill(path2DRect);
       },
       fontTTF() {
@@ -853,12 +851,17 @@
 <style>
   .page {
     flex: 1;
-    height: 100%;
     overflow: hidden;
+    /* #ifdef MP-WEIXIN */
+    height: 100vh;
+    /* #endif */
   }
 
   .scroll-view {
     flex: 1;
+    /* #ifdef MP-WEIXIN */
+    overflow: hidden;
+    /* #endif */
   }
 
   .canvas-element {
