@@ -112,7 +112,9 @@
         data: '' as any,
         apiGetData: '' as any | null,
         storageInfo: '',
-        staticComplexRet: false
+        staticComplexRet: false,
+        jest_saveUTSJSONObjectSyncResult: false,
+        jest_saveUTSJSONObjectAsyncResult: false
       }
     },
     methods: {
@@ -369,6 +371,25 @@
           showCancel: false,
         })
       },
+      jest_saveUTSJSONObject: function () {
+        const key = 'test_key_saveUTSJSONObject'
+        uni.setStorageSync(key, {
+          a: {
+            b: 1
+          }
+        })
+        const dataSync = uni.getStorageSync(key)
+        this.jest_saveUTSJSONObjectSyncResult = dataSync instanceof UTSJSONObject && dataSync['a'] instanceof UTSJSONObject
+        uni.getStorage({
+          key,
+          success: (res) => {
+            const data = res.data
+            this.jest_saveUTSJSONObjectAsyncResult = data instanceof UTSJSONObject && data['a'] instanceof UTSJSONObject
+            console.log('this.jest_saveUTSJSONObjectSyncResult: ' + this.jest_saveUTSJSONObjectSyncResult)
+            console.log('this.jest_saveUTSJSONObjectAsyncResult: ' + this.jest_saveUTSJSONObjectAsyncResult)
+          }
+        })
+      }
     },
   }
 </script>
