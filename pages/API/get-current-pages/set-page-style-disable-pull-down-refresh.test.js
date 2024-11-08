@@ -13,8 +13,11 @@ describe('getCurrentPages', () => {
 
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    const currentPageStyle = (await page.data()).currentPageStyle
+    const isEnablePullDownRefresh1 = currentPageStyle.enablePullDownRefresh
     expect(isEnablePullDownRefresh1).toBe(false)
+    //校验pageStyle数据是否完整
+    expect(currentPageStyle.navigationStyle != undefined && currentPageStyle.onReachBottomDistance != undefined).toBe(true)
 
     await page.callMethod('setPageStyle', true)
     await page.waitFor(200)
