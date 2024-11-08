@@ -60,6 +60,18 @@ describe('getCurrentPages', () => {
     expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-js-get-current-pages-page-style-after-set-page-style'
     }});
+
+    // setPageStyle
+    await page.callMethod('setPageStyle', {
+      hideBottomNavigationIndicator: true,
+      hideStatusBar: true
+    })
+    await page.waitFor(500)
+    const image4 = await program.screenshot({fullPage: true});
+    expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
+    }});
+
   })
   it('$page', async () => {
     await page.setData({testing: true})
