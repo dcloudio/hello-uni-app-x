@@ -113,8 +113,8 @@
         apiGetData: '' as any | null,
         storageInfo: '',
         staticComplexRet: false,
-        jest_saveUTSJSONObjectSyncResult: false,
-        jest_saveUTSJSONObjectAsyncResult: false
+        jest_saveUTSJSONObjectSyncResult: 0,
+        jest_saveUTSJSONObjectAsyncResult: 0
       }
     },
     methods: {
@@ -378,13 +378,15 @@
             b: 1
           }
         })
-        const dataSync = uni.getStorageSync(key)
-        this.jest_saveUTSJSONObjectSyncResult = dataSync instanceof UTSJSONObject && dataSync['a'] instanceof UTSJSONObject
+        const dataSync = uni.getStorageSync(key) as UTSJSONObject
+        const dataSyncA = dataSync['a'] as UTSJSONObject
+        this.jest_saveUTSJSONObjectSyncResult = dataSyncA.get('b') as number
         uni.getStorage({
           key,
           success: (res) => {
-            const data = res.data
-            this.jest_saveUTSJSONObjectAsyncResult = data instanceof UTSJSONObject && data['a'] instanceof UTSJSONObject
+            const dataAsync = res.data as UTSJSONObject
+            const dataAsyncA = dataAsync['a'] as UTSJSONObject
+            this.jest_saveUTSJSONObjectAsyncResult = dataAsyncA.get('b') as number
             console.log('this.jest_saveUTSJSONObjectSyncResult: ' + this.jest_saveUTSJSONObjectSyncResult)
             console.log('this.jest_saveUTSJSONObjectAsyncResult: ' + this.jest_saveUTSJSONObjectAsyncResult)
           }

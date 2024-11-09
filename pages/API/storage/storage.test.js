@@ -306,8 +306,8 @@ describe('ExtApi-StorageInfoTest', () => {
       jest_saveUTSJSONObjectSyncResult,
       jest_saveUTSJSONObjectAsyncResult
     } = await page.data()
-    expect(jest_saveUTSJSONObjectSyncResult).toBe(true)
-    expect(jest_saveUTSJSONObjectAsyncResult).toBe(true)
+    expect(jest_saveUTSJSONObjectSyncResult).toBe(1)
+    expect(jest_saveUTSJSONObjectAsyncResult).toBe(1)
   })
 
 });
