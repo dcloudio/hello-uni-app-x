@@ -16,6 +16,12 @@
   } from '@/store/index.uts'
 
   export default {
+    data() {
+      return {
+        jest_click_x: -1,
+        jest_click_y: -1
+      }
+    },
     onLoad() {
       console.log('dialogPage parent onLoad')
     },
@@ -170,6 +176,23 @@
       },
       getLifeCycleNum(): number {
         return state.lifeCycleNum
+      },
+      jest_OpenDialog1(){
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-1?name=dialog1'
+        })
+      },
+      jest_CloseDialog1(){
+        uni.closeDialogPage({})
+      },
+      jest_getTapPoint(){
+        const systemInfo = uni.getSystemInfoSync()
+        let ratio = 1
+        if (systemInfo.platform == 'android'){
+          ratio = systemInfo.devicePixelRatio
+        }
+        this.jest_click_x = systemInfo.screenWidth / 2 * ratio
+        this.jest_click_y = systemInfo.statusBarHeight * ratio + 10
       }
     }
   }
