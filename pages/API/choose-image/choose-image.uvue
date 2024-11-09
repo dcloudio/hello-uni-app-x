@@ -33,6 +33,16 @@
                 confirm-type="done" />
             </view>
           </view>
+
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              屏幕方向
+            </view>
+            <view class="uni-list-cell-right" @click="chooseOrientationType">
+              <text class="click-t">{{orientationType[orientationTypeIndex]}}</text>
+            </view>
+          </view>
+
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
               图像裁剪
@@ -112,6 +122,11 @@
     ['original'],
     ['compressed', 'original']
   ]
+  var orientationTypeArray = [
+    'portrait',
+    'landscape',
+    'auto'
+  ]
   export default {
     data() {
       return {
@@ -121,6 +136,8 @@
         sourceType: ['拍照', '相册', '拍照或相册'],
         sizeTypeIndex: 2,
         sizeType: ['压缩', '原图', '压缩或原图'],
+        orientationTypeIndex: 0,
+        orientationType: ['竖屏', '横屏', '自动'],
         countIndex: 8,
         count: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         isCrop: false,
@@ -137,6 +154,8 @@
       this.sizeTypeIndex = 2
       this.sizeType = ['压缩', '原图', '压缩或原图']
       this.countIndex = 8
+      this.orientationTypeIndex = 0
+      this.orientationType = ['竖屏', '横屏', '自动']
     },
     methods: {
       cropHeightConfim(e : InputConfirmEvent) {
@@ -197,6 +216,14 @@
           }
         })
       },
+      chooseOrientationType(){
+        uni.showActionSheet({
+          itemList: ['竖屏', '横屏', '自动'],
+          success: (e) => {
+            this.orientationTypeIndex = e.tapIndex!
+          }
+        })
+      },
       chooseImageCount(event : InputConfirmEvent) {
         let count = parseInt(event.detail.value) - 1
         if (count < 0) {
@@ -222,6 +249,7 @@
           sizeType: sizeTypeArray[this.sizeTypeIndex],
           crop: this.isCrop ? { "quality": this.cropPercent, "width": this.cropWidth, "height": this.cropHeight, "resize": this.cropResize } as ChooseImageCropOptions : null,
           count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
+          pageOrientation: orientationTypeArray[this.orientationTypeIndex],
           success: (res) => {
             this.imageList = this.imageList.concat(res.tempFilePaths);
           },
