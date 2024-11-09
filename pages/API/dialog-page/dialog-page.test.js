@@ -2,6 +2,7 @@ jest.setTimeout(20000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
+const isAndroid = platformInfo.startsWith('android')
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
@@ -281,6 +282,32 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(2)
   })
 
+
+  it('input-hold-keyboard in dialog', async () => {
+    await page.callMethod('jest_OpenDialog1')
+    await page.waitFor(2000);
+    await page.callMethod('jest_getTapPoint')
+    const point_x = await page.data('jest_click_x');
+    const point_y = await page.data('jest_click_y');
+    if (isAndroid){
+      await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+      console.log("input tap" + " " + point_x + " " + point_y);
+    } else {
+      await program.tap({x: point_x, y: point_y})
+    }
+
+    await page.waitFor(1000);
+    const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: 200,
+        }
+    })
+    expect(image).toSaveImageSnapshot()
+    await page.waitFor(2000);
+    await page.callMethod('jest_CloseDialog1')
+  })
 
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', initLifeCycleNum)
