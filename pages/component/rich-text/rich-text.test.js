@@ -51,6 +51,18 @@ describe('rich-text-test', () => {
     await page.waitFor(1000);
     expect(await page.data('isItemClickTrigger')).toBe(true);
     await page.setData({
+      isItemClickTrigger: false
+    });
+    await program.navigateTo("/pages/component/rich-text/rich-text-tags");
+    await page.waitFor(500);
+    await program.navigateBack();
+    await program.tap({
+      x: (rect.right - rect.left) / 2,
+      y: info.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
+    });
+    await page.waitFor(1000);
+    expect(await page.data('isItemClickTrigger')).toBe(true);
+    await page.setData({
       autoTest: false
     });
   });
