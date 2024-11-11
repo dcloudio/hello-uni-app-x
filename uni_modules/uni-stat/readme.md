@@ -1,5 +1,7 @@
-# uni-app x 专用的 uni 统计插件
+# uni 统计 for uni-app x
 > 注意：当前版本 uni 统计仅支持 uni-app x ,与 uni统计1.0和uni统计2.0 数据不兼容。
+> uni统计for uni-app x需要单独下载使用，无需在 manifest.json 中配置开关，只需在前端代码中配置即可。
+> 依赖 `Hbuilder X Alpha版 4.32+`
 
 ## 配置 uni统计后台
 与uni统计2.0后台配置一样，只是数据不互通，详情参考 [创建 admin 项目](https://uniapp.dcloud.net.cn/uni-stat-v2.html#%E5%90%8E%E5%8F%B0%E6%8A%A5%E8%A1%A8%E9%85%8D%E7%BD%AE)
@@ -51,10 +53,10 @@ const statOptions = {
 
 export function createApp() {
 	const app = createSSRApp(App)
-	
+
 	// 载入uni统计插件 ，use 第二个参数不能为空，如需使用默认配置，请传入 {}
 	app.use(uniStat, statOptions)
-	
+
 	return {
 		app
 	}
@@ -125,8 +127,8 @@ export function createApp() {
 ### 影响范围
 `uni-app-launch` 是整个统计的入口，会采集应用启动的相关数据会影响的统计数据为：
 - 日活
-- 新增 
-- 总设备数 
+- 新增
+- 总设备数
 
 `uni-app-show` 是应用从后台进入前台调用，会影响：
 - 日活
