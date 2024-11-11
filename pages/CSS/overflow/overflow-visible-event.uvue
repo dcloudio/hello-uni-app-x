@@ -97,8 +97,8 @@
           this.jest_result = true;
         }
       },
-      jest_getRect() {
-        const rect = uni.getElementById('child')?.getBoundingClientRect()
+      async jest_getRect() {
+        const rect = await uni.getElementById('child')!.getBoundingClientRectAsync()
         if (rect != null) {
           let ratio = 1
           if (uni.getSystemInfoSync().platform == 'android'){
@@ -120,8 +120,8 @@
           this.jest_parent_top = Math.round((parseFloat(value) * ratio))
         }
       },
-      jest_getAbsoluteViewRect() {
-        const rect = uni.getElementById('absolute-view')?.getBoundingClientRect()
+      async jest_getAbsoluteViewRect() {
+        const rect = await uni.getElementById('absolute-view')!.getBoundingClientRectAsync()
         if (rect != null) {
           const systemInfo = uni.getSystemInfoSync()
           const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
@@ -133,9 +133,9 @@
           this.jest_click_y = (rect.top + titleBarHeight) * ratio + 30
         }
       },
-      jest_scrollToDeepOverflow() {
+      async jest_scrollToDeepOverflow() {
         const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
-        const rect = uni.getElementById('deep-overflow')?.getBoundingClientRect()
+        const rect = await uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()
         if (rect != null) {
           scrollView.scrollTo(0, rect.top)
           setTimeout(() => {
@@ -145,11 +145,12 @@
               ratio = uni.getSystemInfoSync().devicePixelRatio
             }
             const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
-            const afterRect = uni.getElementById('deep-overflow')?.getBoundingClientRect()
-            if (afterRect != null) {
-              this.jest_click_x = afterRect.x * ratio + 30
-              this.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
-            }
+            uni.getElementById('deep-overflow')!.getBoundingClientRectAsync().then((afterRect: DOMRect) => {
+              if (afterRect != null) {
+                this.jest_click_x = afterRect.x * ratio + 30
+                this.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
+              }
+            })
           }, 200)
         }
       }
