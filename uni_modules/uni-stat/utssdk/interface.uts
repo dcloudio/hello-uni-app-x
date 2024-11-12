@@ -1,4 +1,7 @@
 export type ReportSuccess = {
+  /**
+	* 成功的详细信息
+	*/
 	errMsg : string,
 }
 
@@ -9,12 +12,9 @@ export type ReportFail = {
 	errMsg : string,
 }
 
-
-
 export type ReportOptions = {
 	/**
-	 * 自定义事件名称
-	 * 内置名称(不允许覆盖)：
+	 * 自定义事件名称，内置名称(不允许覆盖)：
 	 * uni-app-launch ： 应用启动
 	 * uni-app-show		： 应用进入前台
 	 * uni-app-hide		： 应用进入后台
@@ -34,28 +34,24 @@ export type ReportOptions = {
 		*/
 	fail ?: (res : ReportFail) => void
 	/**
-		* 接口调用成功的回调
+		* 接口调用成功的回调函数
 		*/
 	complete ?: (res : any) => void
 }
 
-export type ReportResult = {
-
-}
+export type ReportResult = {}
 
 /**
 * 自定义事件信息
 * @param {ReportOptions} options
 *
-*
-* @tutorial https://uniapp.dcloud.net.cn/xxxx
 * @platforms APP-IOS = ^9.0,APP-ANDROID = ^22
 * @since 4.25
 */
 
 export type Report = (options : ReportOptions) => void
 
-interface Uni {
+export interface Uni {
 	/**
 	 * 统计自定义事件
 	 * @description 统计自定义事件上报
@@ -71,46 +67,21 @@ interface Uni {
 	 * ```
 	 * @remark
 	 * - 该接口需要同步调用
-	 * @uniPlatform {
-	 *    "app": {
-	 *        "android": {
-	 *            "osVer": "4.4.4",
-	 *            "uniVer": "3.6.11",
-	 *            "unixVer": "3.9.0"
-	 *        },
-	 *        "ios": {
-	 *            "osVer": "9.0",
-	 *            "uniVer": "3.6.11",
-	 *            "unixVer": "3.9.0"
-	 *        }
-	 *    }
-	 * }
-	 * @uniVueVersion 2,3  //支持的vue版本
-	 *
 	 */
 	report(options : ReportOptions) : void,
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // 统计插件参数类型
 export type UniStatOptions = {
-	/* 是否开启debug模式，默认 false */
+	/**
+   * 是否开启debug模式
+   * @defaultValue false
+   */
 	debug ?: boolean
-	/* 前端数据上报周期 ，默认 10s ，单位s */
+	/**
+   * 前端数据上报周期 ，单位s
+   * @defaultValue 10
+   */
 	reportInterval ?: number
 	/* 多服务空间配置 */
 	uniCloud ?: UniCloudInitOptions
@@ -119,9 +90,15 @@ export type UniStatOptions = {
 }
 
 export type UniStatCollectItemsOptions = {
-	/* 是否开启推送PushClientID的采集，默认false */
+	/**
+   * 是否开启推送PushClientID的采集
+   * @defaultValue false
+   */
 	uniPushClientID ?: boolean
-	/* 是否开启页面数据采集，默认true */
+	/**
+   * 是否开启页面数据采集
+   * @defaultValue true
+   */
 	uniStatPageLog ?: boolean
 }
 
@@ -194,7 +171,6 @@ export type PageParams = {
 	urlref_tt ?: string
 }
 
-
 /**
  * 上传 unicloud 参数
  */
@@ -223,13 +199,15 @@ export type CustomUnicloudConfig = {
 	secretId ?: string
 }
 
+/**
+ * 事件类型
+ */
 export type EventParams = {
 	/** 事件名字*/
 	key : string
 	/** 事件内容 */
 	value ?: string
 }
-
 
 /**
  * 统计默认值
@@ -329,7 +307,6 @@ export type StatDefault = {
 	/** 错误信息 */
 	em ?:string
 }
-
 
 /**
  * 应用首次启动上报参数
@@ -470,7 +447,6 @@ export type PageReportParams = {
 	t : number
 	/** 上报时机，参看 ReprotCstType */
 	cst ?: number
-
 }
 
 export type ErrorCallback = (is_err : boolean, errMsg : string) => void
