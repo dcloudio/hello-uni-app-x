@@ -5,7 +5,8 @@
 		<view class="uni-padding-wrap">
 			<page-head title="audio"></page-head>
 			<view class="uni-common-mt">
-				<slider :value="position" :min="0" :max="duration" @changing="onchanging" @change="onchange"></slider>
+				<slider ref="slider" :value="position" :min="0" :max="duration" @changing="onchanging"
+					@change="onchange"></slider>
 			</view>
 			<view class="uni-title">
 				<text class="uni-title-text">属性示例</text>
@@ -42,7 +43,7 @@
 			</View>
 			<button :disabled="isPlaying" type="primary" @click="play" class="uni-btn">播放</button>
 			<button :disabled="!isPlaying" type="primary" @click="pause" class="uni-btn">暂停</button>
-			<button :disabled="!isPlaying && !isPaused" type="primary" @click="stop" class="uni-btn">停止</button>
+			<button :disabled="!isPlaying" type="primary" @click="stop" class="uni-btn">停止</button>
 			<button type="primary" @click="onchangeValue(20)" class="uni-btn">跳转到指定位置20</button>
 			<button type="primary" @click="onTimeUpdate" class="uni-btn">onTimeUpdate</button>
 			<button type="primary" @click="offTimeUpdate" class="uni-btn">offTimeUpdate</button>
@@ -130,7 +131,9 @@
 		},
 		onUnload() {
 			if (this._audioContext != null && this.isPlaying) {
-				this.stop();
+				if (this.isPlaying) {
+					this.stop();
+				}
 				this._audioContext!.destroy()
 			}
 		},
@@ -232,6 +235,7 @@
 					this.isPlaying = false;
 					this.isPaused = true;
 					this.isPlayEnd = true;
+					(this.$refs["slider"] as UniSliderElement).value = 0
 				});
 			},
 			onError() {
