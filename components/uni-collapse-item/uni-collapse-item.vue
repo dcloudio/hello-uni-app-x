@@ -1,13 +1,12 @@
 <template>
   <view class="uni-collapse-item">
     <view class="uni-collapse-item__title" @click="openCollapse(!is_open)">
-      <text class="uni-collapse-item__title-text"
-        :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
+      <text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
       <view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
     </view>
     <view ref="boxRef" class="uni-collapse-item__content" :class="{'box-open--active':is_open}">
-      <view ref="contentRef" class="uni-collapse-item__content-box" :class="{'content-open--active':!box_is_open}">
-        <slot></slot>
+      <view ref="contentRef" class="uni-collapse-item__content-box" :class="{'content-open--active':box_is_open}">
+       <slot></slot>
       </view>
     </view>
   </view>
@@ -36,7 +35,7 @@
       return {
         height: 0,
         is_open: this.open as boolean,
-        box_is_open:this.open as boolean,
+        box_is_open: this.open as boolean,
         boxNode: null as UniElement | null,
         contentNode: null as UniElement | null,
       };
@@ -68,9 +67,9 @@
       },
       openOrClose(open : boolean) {
         // #ifdef MP-WEIXIN
-        setTimeout(()=>{
-        	this.box_is_open = !open
-        },10)
+        setTimeout(() => {
+          this.box_is_open = open
+        }, 10)
         // #endif
         // #ifndef MP-WEIXIN
         const boxNode = this.boxNode?.style!;
@@ -80,8 +79,10 @@
         let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
         boxNode.setProperty('display', hide);
         this.$nextTick(() => {
-          contentNode.setProperty('transform', ani_transform);
-          contentNode.setProperty('opacity', opacity);
+          setTimeout(() => {
+            contentNode.setProperty('transform', ani_transform);
+            contentNode.setProperty('opacity', opacity);
+          }, 10)
         })
         // #endif
       }
@@ -138,8 +139,9 @@
     position: relative;
     overflow: hidden;
   }
+
   .uni-collapse-item .box-open--active {
-  	display: flex;
+    display: flex;
   }
 
   .uni-collapse-item .uni-collapse-item__content-box {
@@ -149,9 +151,10 @@
     transform: translateY(-100%);
     opacity: 0;
   }
-
+  /* #ifdef MP-WEIXIN */
   .uni-collapse-item .content-open--active {
-  	transform: translateY(0%);
-  	opacity: 1;
+    transform: translateY(0%);
+    opacity: 1;
   }
+  /* #endif */
 </style>
