@@ -1,0 +1,52 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <text class="instructions">
+      当前页面调用API均为模拟，请查看文档，在特定场景下使用以下 API。请在main.uts中设置统计debug配置为true，并点击按钮查控制台输出。
+    </text>
+    <button class="normal-button" type="default" @click="handleAppLunch">
+      创建本地通知消息 | createPushMessage
+    </button>
+
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+
+      }
+    },
+    methods: {
+      handleAppLunch() {
+        const options = uni.getLaunchOptionsSync()
+        uni.report({
+          name: 'uni-app-launch',
+          options: options,
+          success(data) {
+            console.log(data);
+          }, fail(err) {
+            console.log(err);
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  .normal-button {
+    width: 100%;
+  }
+
+  .instructions {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #eee;
+  }
+</style>

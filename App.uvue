@@ -48,15 +48,17 @@
       // } as PerformanceObserverOptions)
 
       // 统计上报 - 应用启动
-      // uni.report({
-      // 	name: 'uni-app-launch',
-      // 	options: res,
-      // 	success(res_data) {
-      // 		console.log(res_data);
-      // 	}, fail(err) {
-      // 		console.log(err);
-      // 	}
-      // })
+      // #ifdef APP-ANDROID || APP-IOS || WEB
+      uni.report({
+      	name: 'uni-app-launch',
+      	options: res,
+      	success(res_data) {
+      		console.log(res_data);
+      	}, fail(err) {
+      		console.log(err);
+      	}
+      })
+      // #endif
       // #ifdef APP
       if (process.env.NODE_ENV !== 'development') { //真机运行可以注释此条件
         uni.getPrivacySetting({
@@ -86,30 +88,34 @@
       setLifeCycleNum(state.lifeCycleNum + 100)
       console.log('App Show')
 
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       // 统计上报 - 应用显示
-      // uni.report({
-      // 	name: 'uni-app-show',
-      // 	success(res_data) {
-      // 		console.log(res_data);
-      // 	}, fail(err) {
-      // 		console.log(err);
-      // 	}
-      // })
+      uni.report({
+      	name: 'uni-app-show',
+      	success(res_data) {
+      		console.log(res_data);
+      	}, fail(err) {
+      		console.log(err);
+      	}
+      })
+      // #endif
     },
     onHide: function () {
       // 自动化测试
       setLifeCycleNum(state.lifeCycleNum - 100)
       console.log('App Hide')
 
+      // #ifdef APP-ANDROID || APP-IOS || WEB
       // 统计上报 - 应用进入后台
-      // uni.report({
-      // 	name: 'uni-app-hide',
-      // 	success(res) {
-      // 		console.log(res);
-      // 	}, fail(err) {
-      // 		console.log(err);
-      // 	}
-      // })
+      uni.report({
+      	name: 'uni-app-hide',
+      	success(res) {
+      		console.log(res);
+      	}, fail(err) {
+      		console.log(err);
+      	}
+      })
+      // #endif
     },
     // #ifdef APP-ANDROID
     onLastPageBackPress: function () {
@@ -136,18 +142,18 @@
     // #endif
     onError(err : any) {
       console.log('App onError', err)
-    //   // #ifdef APP-ANDROID || APP-IOS || WEB
-    // 	// 统计上报 - 应用发生错误
-    // 	uni.report({
-    // 		name: 'uni-app-error',
-    // 		options: err,
-    // 		success(res) {
-    // 			console.log(res);
-    // 		}, fail(err) {
-    // 			console.log(err);
-    // 		}
-    // 	})
-    //   // #endif
+      // #ifdef APP-ANDROID || APP-IOS || WEB
+    	// 统计上报 - 应用发生错误
+    	uni.report({
+    		name: 'uni-app-error',
+    		options: err,
+    		success(res) {
+    			console.log(res);
+    		}, fail(err) {
+    			console.log(err);
+    		}
+    	})
+      // #endif
     },
     methods: {
       increasetLifeCycleNum() {
