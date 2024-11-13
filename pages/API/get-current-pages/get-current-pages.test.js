@@ -1,5 +1,7 @@
 const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
 
 describe('getCurrentPages', () => {
   let page
@@ -92,6 +94,6 @@ describe('getCurrentPages', () => {
   })
   it('getAndroidView', async () => {
     const res = await page.callMethod('checkGetAndroidView')
-    expect(res).toBe(true)
+    expect(res).toBe(isAndroid)
   })
 })
