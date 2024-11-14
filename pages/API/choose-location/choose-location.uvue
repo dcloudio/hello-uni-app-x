@@ -3,22 +3,22 @@
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <view style="background:#FFFFFF; padding:40rpx;">
-        <view class="uni-hello-text uni-center">当前位置信息</view>
-        <block v-if="hasLocation === false">
+        <view class="uni-hello-text uni-center">位置信息</view>
+        <view v-if="!hasLocation">
           <view class="uni-h2 uni-center uni-common-mt">未选择位置</view>
-        </block>
-        <block v-if="hasLocation === true">
+        </view>
+        <view v-if="hasLocation">
           <view class="uni-hello-text uni-center" style="margin-top:10px;">
             {{locationAddress}}
           </view>
-          <view class="uni-h2 uni-center uni-common-mt">
+         <view class="uni-h2 uni-center uni-common-mt" v-if="location.latitude.length>1">
             <text>E: {{location.longitude[0]}}°{{location.longitude[1]}}′</text>
             <text>\nN: {{location.latitude[0]}}°{{location.latitude[1]}}′</text>
           </view>
-        </block>
+        </view>
       </view>
       <view class="uni-btn-v">
-        <view class="tips">注意：需要正确配置地图服务商的Key才能正常选择位置</view>
+        <view class="tips">注意：Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置</view>
         <button type="primary" @tap="chooseLocation">选择位置</button>
         <button @tap="clear">清空</button>
       </view>
@@ -26,24 +26,19 @@
   </view>
 </template>
 <script lang="uts">
-  function formatLocation(longitude, latitude) {
-    if (typeof longitude === 'string' && typeof latitude === 'string') {
-      longitude = parseFloat(longitude)
-      latitude = parseFloat(latitude)
-    }
-    longitude = longitude.toFixed(2)
-    latitude = latitude.toFixed(2)
-    return {
-      longitude: longitude.toString().split('.'),
-      latitude: latitude.toString().split('.')
-    }
+  type Location = {
+    latitude: string[]
+    longitude: string[]
   }
   export default {
     data() {
       return {
         title: 'chooseLocation',
         hasLocation: false,
-        location: {},
+        location: {
+          latitude: [],
+          longitude: []
+        } as Location,
         locationAddress: ''
       }
     },
@@ -51,12 +46,26 @@
       chooseLocation: function () {
         uni.chooseLocation({
           success: (res) => {
-            console.log(res, 123)
+            console.log('chooseLocation success', res)
             this.hasLocation = true
-            this.location = formatLocation(res.longitude, res.latitude)
+            this.location = this.formatLocation(res.longitude, res.latitude)
             this.locationAddress = res.address
           }
         })
+      },
+      formatLocation: function(longitude:number, latitude:number):Location {
+        const longitudeArr = longitude.toString().split('.')
+        const latitudeArr = latitude.toString().split('.')
+        if(longitudeArr.length>1){
+          longitudeArr[1] = longitudeArr[1].substring(0,2)
+        }
+        if(latitudeArr.length>1){
+          latitudeArr[1] = latitudeArr[1].substring(0,2)
+        }
+        return {
+          longitude: longitudeArr,
+          latitude: latitudeArr
+        }
       },
       clear: function () {
         this.hasLocation = false
