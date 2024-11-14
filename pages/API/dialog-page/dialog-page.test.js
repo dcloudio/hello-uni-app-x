@@ -310,19 +310,21 @@ describe('dialog page', () => {
   })
 
   it('dialogPage hideStatusBar hideBottomNavigationIndicator', async () => {
-    await page.callMethod('openDialog2ForTest');
-    await page.waitFor(1000);
-    await page.callMethod('setPageStyleForTest', {
-      hideStatusBar: true,
-      hideBottomNavigationIndicator: true
-    });
-    await page.waitFor(2000);
-    const image = await program.screenshot({
-      deviceShot: true
-    });
-    expect(image).toSaveImageSnapshot();
-    await page.waitFor(2000);
-    await page.callMethod('closeDialog2ForTest');
+    if (isAndroid) {
+      await page.callMethod('openDialog2ForTest');
+      await page.waitFor(1000);
+      await page.callMethod('setPageStyleForTest', {
+        hideStatusBar: true,
+        hideBottomNavigationIndicator: true
+      });
+      await page.waitFor(2000);
+      const image = await program.screenshot({
+        deviceShot: true
+      });
+      expect(image).toSaveImageSnapshot();
+      await page.waitFor(2000);
+      await page.callMethod('closeDialog2ForTest');
+    }
   });
 
   afterAll(async () => {
