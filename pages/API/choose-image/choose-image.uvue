@@ -46,10 +46,10 @@
           <!-- #ifdef APP-ANDROID -->
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              系统相册
+              相册模式
             </view>
-            <view class="uni-list-cell-right">
-              <switch :checked="useSystemChecked" @change="useSystemChange"></switch>
+            <view class="uni-list-cell-right" @click="albumModeChange">
+              <text class="click-t">{{albumModeType[albumModeTypeIndex]}}</text>
             </view>
           </view>
           <!-- #endif -->
@@ -137,6 +137,10 @@
     'landscape',
     'auto'
   ]
+  var albumModeTypeArray = [
+    "custom",
+    "system"
+  ]
   export default {
     data() {
       return {
@@ -148,14 +152,15 @@
         sizeType: ['压缩', '原图', '压缩或原图'],
         orientationTypeIndex: 0,
         orientationType: ['竖屏', '横屏', '自动'],
+        albumModeTypeIndex:0,
+        albumModeType:["自定义相册","系统相册"],
         countIndex: 8,
         count: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         isCrop: false,
         cropPercent: 80,
         cropWidth: 100,
         cropHeight: 100,
-        cropResize: false,
-        useSystemChecked:false
+        cropResize: false
       }
     },
     onUnload() {
@@ -202,8 +207,13 @@
           })
         }
       },
-      useSystemChange(e : UniSwitchChangeEvent){
-        this.useSystemChecked = e.detail.value
+      albumModeChange(){
+        uni.showActionSheet({
+          itemList: this.albumModeType,
+          success: (e) => {
+            this.albumModeTypeIndex = e.tapIndex!
+          }
+        })
       },
       cropResizeChange(e : UniSwitchChangeEvent) {
         this.cropResize = e.detail.value
@@ -264,7 +274,7 @@
           crop: this.isCrop ? { "quality": this.cropPercent, "width": this.cropWidth, "height": this.cropHeight, "resize": this.cropResize } as ChooseImageCropOptions : null,
           count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
           pageOrientation: orientationTypeArray[this.orientationTypeIndex],
-          useSystem:this.useSystemChecked,
+          albumMode: albumModeTypeArray[this.albumModeTypeIndex],
           success: (res) => {
             this.imageList = this.imageList.concat(res.tempFilePaths);
           },
