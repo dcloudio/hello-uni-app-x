@@ -1,7 +1,7 @@
 
 import { Report } from "./report.uts";
 import { StatType } from "./stat-type";
-import { EventParams, UniStatOptions, ErrorCallback } from '../../interface.uts'
+import { EventParams, UniStatOptions, ErrorCallback,ReportErrorCode } from '../../interface.uts'
 import { is_page, is_page_report, get_space, is_push_clientid, calibration } from '../utils/pageInfo.uts'
 import { Config } from "../config";
 
@@ -222,10 +222,9 @@ export class Stat {
 		// 生命周期监听，暂时无用，需要手动调用api
 	}
 	// 自定义参数上报
-	// fn : ErrorCallback
 	appEvent(name : string, options : any | null = null, fn : ErrorCallback) {
 		if (!Stat.is_register) {
-			fn(false, '统计服务尚未初始化，请在main.uts中引入统计插件。')
+			fn(false, 61001 as ReportErrorCode)
 			return
 		}
 		// const names = ['uni-app-launch', 'uni-app-show', 'uni-app-hide', 'uni-app-error']
@@ -235,50 +234,59 @@ export class Stat {
 		// 	return
 		// }
 		if (name == 'uni-app-launch' && options == null) {
-			fn(false, 'uniStatReport options参数错误，请检查！')
+			fn(false, 61002 as ReportErrorCode)
 			return
 		}
-		fn(true, 'report:ok')
+		
 		if (name == 'uni-app-launch') {
-
-			// StatType.LifeCycleLaunch, null, options as OnLaunchOptions
 			this.registerEvent(StatType.LifeCycleLaunch, null, options)
+			// 61001 占位，无实际用途
+			fn(true, 61001 as ReportErrorCode)
 			return
 		}
 		if (name == 'uni-app-show') {
 			this.registerEvent(StatType.LifeCycleAppShow, null, null)
+			// 61001 占位，无实际用途
+			fn(true, 61001 as ReportErrorCode)
 			return
 		}
 		if (name == 'uni-app-hide') {
 			this.registerEvent(StatType.LifeCycleAppHide, null, null)
+			// 61001 占位，无实际用途
+			fn(true, 61001 as ReportErrorCode)
 			return
 		}
 
 		if (name == 'uni-page-show') {
 			this.report.pageShow(options as Page)
+			// 61001 占位，无实际用途
+			fn(true, 61001 as ReportErrorCode)
 			return
 		}
 
 		if (name == 'uni-page-hide') {
 			this.report.pageHide(options as Page)
+			// 61001 占位，无实际用途
+			fn(true, 61001 as ReportErrorCode)
 			return
 		}
 
 		if (name == 'uni-app-error') {
-
 			this.registerEvent(StatType.LifeCycleError, null, null, options)
+			// 61001 占位，无实际用途
+			fn(true, 61001 as ReportErrorCode)
 			return
 		}
 
 		// 校验 type 参数
 		const is_calibration = calibration(name, options)
-		if (is_calibration) {
+		if (is_calibration != null) {
+			fn(false, is_calibration)
 			return
 		}
 
 		if (name === 'title') {
 			this.report._navigationBarTitle.report = (options as string)
-			return
 		}
 
 		const value = (typeof options === 'object' ? JSON.stringify(options) : options) as string
@@ -286,7 +294,6 @@ export class Stat {
 			key: name,
 			value: value as string,
 		}
-
 		this.report.sendEventRequest(data)
 	}
 }
