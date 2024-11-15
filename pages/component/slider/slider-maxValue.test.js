@@ -27,7 +27,7 @@ describe('touch-events-test', () => {
   it('test-slider-max-value', async () => {
 
     let iconRect = await page.data('sliderRect')
-    let x = iconRect.x + 15
+    let x = iconRect.x + 25
     let y = iconRect.y + 15
 
     // 滑动事件
