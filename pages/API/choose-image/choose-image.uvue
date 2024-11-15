@@ -273,8 +273,12 @@
           sizeType: sizeTypeArray[this.sizeTypeIndex],
           crop: this.isCrop ? { "quality": this.cropPercent, "width": this.cropWidth, "height": this.cropHeight, "resize": this.cropResize } as ChooseImageCropOptions : null,
           count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
+          // #ifdef APP
           pageOrientation: orientationTypeArray[this.orientationTypeIndex],
+          // #endif
+          // #ifdef APP-ANDROID
           albumMode: albumModeTypeArray[this.albumModeTypeIndex],
+          // #endif
           success: (res) => {
             this.imageList = this.imageList.concat(res.tempFilePaths);
           },
