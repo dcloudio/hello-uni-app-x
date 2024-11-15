@@ -294,6 +294,7 @@ if (isApp && !isAppWebview) {
     // '/pages/API/get-univerify-manager/get-univerify-manager',
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
+    '/pages/API/share-with-system/share-with-system',
     '/pages/template/scroll-sticky/scroll-sticky',
   )
 }
@@ -308,7 +309,6 @@ if (isAndroid && !isAppWebview) {
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',
-    '/pages/template/share/share',
   )
 }
 
