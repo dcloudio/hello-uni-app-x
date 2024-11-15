@@ -39,8 +39,8 @@ describe('event trigger', () => {
           screenY: 101
         }, ],
       })
-      const touchStartTouchTargetIdentifier = isAndroid ? '1.0' : '1'
-      const touchStartTouchTargetValue = isAndroid ? '101.0' : '101'
+      const touchStartTouchTargetIdentifier = '1'
+      const touchStartTouchTargetValue = '101'
       const touchStartTouchIdentifier = await page.$('#touch-start-touch-identifier')
       expect(await touchStartTouchIdentifier.text()).toBe(touchStartTouchTargetIdentifier)
       const touchStartTouchPageX = await page.$('#touch-start-touch-page-x')
@@ -92,8 +92,8 @@ describe('event trigger', () => {
         }, ],
       })
 
-      const touchMoveTouchTargetIdentifier = isAndroid ? '1.0' : '1'
-      const touchMoveTouchTargetValue = isAndroid ? '102.0' : '102'
+      const touchMoveTouchTargetIdentifier = '1'
+      const touchMoveTouchTargetValue = '102'
       const touchMoveTouchIdentifier = await page.$('#touch-move-touch-identifier')
       expect(await touchMoveTouchIdentifier.text()).toBe(touchMoveTouchTargetIdentifier)
       const touchMoveTouchPageX = await page.$('#touch-move-touch-page-x')
@@ -143,8 +143,8 @@ describe('event trigger', () => {
           screenY: 103
         }, ],
       })
-      const touchEndTouchTargetIdentifier = isAndroid ? '1.0' : '1'
-      const touchEndTouchTargetValue = isAndroid ? '103.0' : '103'
+      const touchEndTouchTargetIdentifier = '1'
+      const touchEndTouchTargetValue = '103'
       const touchEndTouchIdentifier = await page.$('#touch-end-touch-identifier')
       expect(await touchEndTouchIdentifier.text()).toBe(touchEndTouchTargetIdentifier)
       const touchEndTouchPageX = await page.$('#touch-end-touch-page-x')
@@ -179,8 +179,8 @@ describe('event trigger', () => {
   it('click', async () => {
     const el = await page.$('#longpress-target')
     await el.tap()
-    const targetX = isAndroid ? '0.0' : '0'
-    const targetY = isAndroid ? '0.0' : '0'
+    const targetX = '0'
+    const targetY = '0'
     const tapEventX = await page.$('#tap-event-x')
     expect(await tapEventX.text()).toBe(targetX)
     const tapEventY = await page.$('#tap-event-y')
@@ -195,8 +195,8 @@ describe('event trigger', () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       const el = await page.$('#longpress-target')
       await el.longpress()
-      const longPressTouchTargetIdentifier = isAndroid ? '1.0' : '1'
-      const longPressTouchTargetValue = isAndroid ? '0.0' : '0'
+      const longPressTouchTargetIdentifier = '1'
+      const longPressTouchTargetValue = '0'
       const longPressTouchIdentifier = await page.$('#long-press-touch-identifier')
       expect(await longPressTouchIdentifier.text()).toBe(longPressTouchTargetIdentifier)
       const longPressTouchPageX = await page.$('#long-press-touch-page-x')
@@ -319,4 +319,3 @@ describe('event trigger', () => {
     }
   })
 })
-
