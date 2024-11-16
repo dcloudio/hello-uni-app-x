@@ -39,7 +39,8 @@
           latitude: [],
           longitude: []
         } as Location,
-        locationAddress: ''
+        locationAddress: '',
+        dialogPagesNum: -1
       }
     },
     methods: {
@@ -52,6 +53,12 @@
             this.locationAddress = res.address
           }
         })
+        setTimeout(() => {
+          const pages = getCurrentPages()
+          const page = pages[pages.length - 1]
+          const dialogPages = page.getDialogPages()
+          this.dialogPagesNum = dialogPages.length
+        }, 500)
       },
       formatLocation: function(longitude:number, latitude:number):Location {
         const longitudeArr = longitude.toString().split('.')
