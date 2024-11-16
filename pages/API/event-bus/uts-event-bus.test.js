@@ -36,12 +36,29 @@ describe('event-bus', () => {
     const l1 = (await page.data()).log.length
     expect(l1).toBeGreaterThan(0)
 
+    await page.callMethod('clear')
+    await page.callMethod('emitUtsMessageUTSObject')
+    const data = await page.data()
+    console.log(data)
+    expect(data.log.length).toBe(1)
+    expect(data.log[0].name).toMatch('金运大厦')
+
+    await page.callMethod('clear')
+    await page.callMethod('emitUtsMessages')
+    const l12 = (await page.data()).log.length
+    expect(l12).toBe(2)
+
+    await page.callMethod('clear')
+    await page.callMethod('emitUtsMessageNoArgument')
+    const l13 = (await page.data()).log.length
+    expect(l13).toBe(0)
 
     await page.callMethod('clear')
     await page.callMethod('offUts')
     await page.callMethod('emitFromUts')
     const l2 = (await page.data()).log.length
     expect(l2).toBe(0)
+
 
     await page.callMethod('clear')
     await page.callMethod('UtsOnJS')
