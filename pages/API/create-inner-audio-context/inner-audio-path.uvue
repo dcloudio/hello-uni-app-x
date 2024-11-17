@@ -1,6 +1,7 @@
 <template>
-  <page-head :title="title"></page-head>
-  <view class="uni-padding-wrap uni-common-mt">
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
     <view class="uni-title">
       <text class="uni-title-text">音频路径示例</text>
     </view>
@@ -9,7 +10,9 @@
       <image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/pause.png':'/static/play.png'"
         @click="play(item.src,index)"></image>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script>
@@ -20,25 +23,30 @@
   export default {
     data() {
       return {
-        title: 'audio-path',
         playIndex: 0,
         isPlaying: false,
-		nativePath:uni.env.CACHE_PATH+'uni-audio/test/test.mp3' as string,
-		sdcardPath :'sdcard/uni-audio/test.mp3',
+        // #ifdef APP
+        nativePath: uni.env.CACHE_PATH + 'uni-audio/test/test.mp3' as string,
+        // #endif
+        // #ifdef APP-ANDROID
+        sdcardPath: 'sdcard/uni-audio/test.mp3',
+        // #endif
         _audioContext: null as InnerAudioContext | null,
         supportPaths: [
           {
             description: '本地路径：/static方式',
             src: '/static/test-audio/ForElise.mp3'
           },
-          {     
+          {
             description: '本地路径：../static/',
             src: '../../../static/test-audio/ForElise.mp3'
           },
-		  {
-		    description: '本地路径：env方式',
-		    src: 'env'
-		  },
+          // #ifdef APP
+          {
+            description: '本地路径：env方式',
+            src: 'env'
+          },
+          // #endif
           {
             description: '网络路径',
             src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.mp3'
@@ -56,36 +64,38 @@
     },
     onReady() {
       this._audioContext = uni.createInnerAudioContext();
-	  this._audioContext!.onPlay(() => {
-	    console.log('开始播放');
-	  });
-	  this._audioContext!.onEnded(() => {
-	    console.log('播放结束');
-	    this.isPlaying = false;
-	  });
-	  this._audioContext!.onError((err) => {
-	    this.isPlaying = false;
-	     console.log('err', err);
-	  });
-	  
-	 const fileManager = uni.getFileSystemManager()
-	 try {
-		 fileManager.rmdirSync(uni.env.CACHE_PATH+'uni-audio/test',true)
-	 } catch (e) {
-	 }
-	 
-	 try {
-	 	fileManager.mkdirSync(uni.env.CACHE_PATH+'uni-audio/test',true)
-	 } catch (e) {
-	 }
-	 try{
-		 fileManager.copyFileSync(
-		 			'/static/test-audio/ForElise.mp3',
-		 			this.nativePath)
-	 } catch(e){
-	 }
+      this._audioContext!.onPlay(() => {
+        console.log('开始播放');
+      });
+      this._audioContext!.onEnded(() => {
+        console.log('播放结束');
+        this.isPlaying = false;
+      });
+      this._audioContext!.onError((err) => {
+        this.isPlaying = false;
+        console.log('err', err);
+      });
+
+      // #ifdef APP
+      const fileManager = uni.getFileSystemManager()
+      try {
+        fileManager.rmdirSync(uni.env.CACHE_PATH + 'uni-audio/test', true)
+      } catch (e) {
+      }
+
+      try {
+        fileManager.mkdirSync(uni.env.CACHE_PATH + 'uni-audio/test', true)
+      } catch (e) {
+      }
+      try {
+        fileManager.copyFileSync(
+          '/static/test-audio/ForElise.mp3',
+          this.nativePath)
+      } catch (e) {
+      }
+      // #endif
     },
-	
+
     onUnload() {
       if (this._audioContext != null) {
         this.pause();
@@ -97,16 +107,18 @@
         this._audioContext!.pause();
         this.isPlaying = false;
       },
-      play(audioUrl:string, index:number) {
-        console.log(index,audioUrl);
+      play(audioUrl : string, index : number) {
+        console.log(index, audioUrl);
         if (this.isPlaying && this.playIndex == index) {
           this.pause();
           return;
         }
-		if(audioUrl == 'env'){
-			audioUrl=this.nativePath
-		}
-	
+        // #ifdef APP
+        if (audioUrl == 'env') {
+          audioUrl = this.nativePath
+        }
+        // #endif
+
         this.playIndex = index
         this._audioContext!.src = audioUrl;
         this._audioContext!.play();
