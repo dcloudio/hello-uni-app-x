@@ -1,6 +1,9 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view>
+    <!-- #ifdef APP -->
     <!-- #ifdef APP-ANDROID -->
     <button class="normal-button" type="default" @click="handleCreateChannel(true)">
       创建通知渠道 | setPushChannel
@@ -8,6 +11,7 @@
     <button class="normal-button" type="default" @click="handleGetAllChannels">
       获取所有通知渠道信息 | getAllChannels
     </button>
+    <textarea style="width: 100%;" :disabled="true" :value="channelInfo"></textarea>
     <!-- #endif -->
     <button class="normal-button" type="default" @click="handleCreateLocalNotification">
       创建本地通知消息 | createPushMessage
@@ -17,18 +21,18 @@
       部分rom需要在设置中同时开启`通知开关`和`桌面角标`配置，才允许设置角标，例如鸿蒙4.2。 \n
       另外针对高版本小米设备，会借助创建通知栏消息来设置角标数，所以设置时需要注意是否有权限创建通知栏消息。
     </text>
-
     <button class="normal-button" type="default" @click="handleSetBadge">
       设置角标为5 | setAppBadgeNumber(5)
     </button>
     <button class="normal-button" type="default" @click="handleCleanBadge">
       清空角标 | setAppBadgeNumber(0)
     </button>
-    <button class="normal-button" type="default" @click="handleGetClientId">
+    <!-- #endif -->
+    <button class="normal-button uni-common-mb" type="default" @click="handleGetClientId">
       获取cid | getPushClientId
     </button>
-
-    <textarea style="flex: 1;width: 100%;" :disabled="true" :value="channelInfo"></textarea>
+  </view>
+  <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -129,7 +133,12 @@
           content: `cid : ${res.cid}`
         })
       },
-      fail: () => {
+      fail: (err) => {
+        if (err.message.includes('uniPush is not enabled')) {
+            console.error('请先开通uni-push，详见文档：https://uniapp.dcloud.net.cn/unipush-v2.html#%E7%AC%AC%E4%B8%80%E6%AD%A5-%E5%BC%80%E9%80%9A');
+        } else {
+            console.error(err);
+        }
         uni.hideLoading()
         uni.showToast({
           title: `获取cid失败`,
