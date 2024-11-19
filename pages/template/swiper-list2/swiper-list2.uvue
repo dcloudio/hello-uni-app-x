@@ -53,9 +53,11 @@
       }
     },
     onReady() {
-      this.tabScrollView = this.$refs['tabScroll'] as UniElement
-      this.swiperWidth = (this.$refs["swiper"] as UniElement).getBoundingClientRect().width
-      this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
+      this.tabScrollView = this.$refs['tabScroll'] as UniElement;
+      (this.$refs["swiper"] as UniElement).getBoundingClientRectAsync().then((res : DOMRect) => {
+        this.swiperWidth = res.width
+        this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
+      });
     },
     methods: {
       onTabClick(index : number) {
@@ -124,7 +126,15 @@
         // 滚动到水平中心位置
         const target_x = lerpNumber(current_node.offsetLeft, move_to_node.offsetLeft, percentage)
         const center_x = target_x + move_to_node.offsetWidth / 2 - this.swiperWidth / 2
+        // app 平台后续支持 scrollTo()
+        // #ifndef MP-WEIXIN
         this.tabScrollView!.scrollLeft = center_x
+        // #endif
+        // #ifdef MP-WEIXIN
+        this.tabScrollView!.scrollTo({
+          left: center_x
+        })
+        // #endif
       }
     }
   }
