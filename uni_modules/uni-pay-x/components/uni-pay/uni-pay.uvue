@@ -333,7 +333,10 @@
 						this.$emit("fail", res);
 					}
 				} catch (err) {
-					this.$emit("fail", err);
+					this.$emit("fail", {
+						errCode: -1,
+						errMsg: (err as Error).message
+					});
 				}
 			},
 			// 调起支付
@@ -362,7 +365,7 @@
 				} else {
 					// 外部浏览器支付
 					let codeUrl = order['codeUrl'];
-					let mwebUrl = order['mwebUrl'] || order['mweb_url'];
+					let mwebUrl = order['h5Url'] || order['mwebUrl'] || order['mweb_url'];
 					setTimeout(() => {
 						this.openPopup("payConfirmPopup");
 						window.location.href = codeUrl || mwebUrl;
@@ -393,7 +396,10 @@
 						} else {
 							// 发起支付失败
 							console.error("uni.requestPayment:fail", err);
-							this.$emit("fail", err);
+							this.$emit("fail", {
+								errCode: errCode,
+								errMsg: errMsg
+							});
 						}
 					}
 				});
@@ -686,7 +692,10 @@
 								if ([700601].indexOf(err.errCode) > -1 || err.errMsg.indexOf("cancel") > -1) {
 									this.$emit("cancel", err);
 								} else {
-									this.$emit("fail", err);
+									this.$emit("fail", {
+										errCode: err.errCode,
+										errMsg: err.errMsg
+									});
 								}
 							}
 						});
@@ -699,7 +708,10 @@
 						} else {
 							// 发起支付失败
 							console.error("appleiapCreateOrder:fail", err);
-							this.$emit("fail", err);
+							this.$emit("fail", {
+								errCode: code,
+								errMsg: err.errMsg || err.message
+							});
 						}
 						uni.hideLoading();
 					}
