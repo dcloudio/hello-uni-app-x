@@ -1483,4 +1483,22 @@ describe('ExtApi-FileManagerTest', () => {
 		let arrayBufferRes = await getData("arrayBufferRes")
 		expect(arrayBufferRes).toEqual(1.2222222)
 	});
+
+  it('testReadAssetFile', async () => {
+  	if (!isAndroid()) {
+  		return
+  	}
+
+    await page.setData({
+			basePath: '/static/uni-app-x/version.json',
+			logAble: false,
+      readFileRet: "",
+			readFile: '/version.json'
+		})
+    let btnReadFileButton = await page.$('#btn-read-file-sync')
+    await btnReadFileButton.tap()
+    await isDone()
+    let readFileRet = await getData('readFileRet')
+    expect(readFileRet.length>0).toBe(true)
+  });
 });

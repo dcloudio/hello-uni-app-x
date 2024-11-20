@@ -75,5 +75,16 @@ describe('inner-audio', () => {
     await page.waitFor(3000);
     // expect(await page.data('isPlayEnd')).toBeTruthy();
   });
-
+  it('onEnded-android', async () => {
+    if (!process.env.uniTestPlatformInfo.startsWith('android')) {
+      expect(1).toBe(1)
+      return
+    }
+    await page.setData({
+    	isPlayEnd: false
+    })
+    await page.callMethod('setSrc','/static/uni-autoTest/alert2s.mp3')
+    await page.waitFor(3000);
+    expect(await page.data('isPlayEnd')).toBeTruthy();
+  });
 });
