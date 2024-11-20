@@ -83,7 +83,7 @@ describe('inner-audio', () => {
     await page.setData({
     	isPlayEnd: false
     })
-    await page.callMethod('setSrc','/static/uni-autoTest/alert2s.mp3')
+    await page.callMethod('setSrc','file:///android_asset/uni-autoTest/alert2s.mp3')
     await page.waitFor(3000);
     expect(await page.data('isPlayEnd')).toBeTruthy();
   });
