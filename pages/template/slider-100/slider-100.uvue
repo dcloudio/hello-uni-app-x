@@ -33,10 +33,16 @@
         this.updateSliderValue(e.detail.value)
       },
       updateSliderValue(value : number) {
+        // #ifndef MP
         // TODO 跳过vue框架，直接修改原生组件
         (this.$refs["slider"] as UniSliderElement[]).forEach((item) => {
           item.value = value
         });
+        // #endif
+
+        // #ifdef MP
+        this.sliderValue = value
+        // #endif
       }
     },
   }
