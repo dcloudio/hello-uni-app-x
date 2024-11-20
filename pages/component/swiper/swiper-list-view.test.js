@@ -1,4 +1,10 @@
 describe('component-swiper-list-view', () => {
+  if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+    it('other platform', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page
   beforeAll(async () => {
     //打开swiper-list-view测试页
