@@ -12,6 +12,10 @@
           <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
           <button type="primary" @tap="downloadImage">下载</button>
         </view>
+        <view v-else style="margin: 10px;">
+          <text class="uni-hello-text">下载接口的Content-Disposition中的filename非法值例子</text>
+          <button type="primary" @tap="downloadErrorFilename">下载</button>
+        </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -65,6 +69,17 @@
         });
         this.task?.onProgressUpdate((update) => {
           console.log("progress : ", update.progress);
+        })
+      },
+      downloadErrorFilename(){
+        uni.downloadFile({
+          url:"https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/file/test9.txt",
+          success: (res) => {
+            console.log('downloadFile success, res is', res.tempFilePath)
+          },
+          fail: (err) => {
+            console.log('downloadFile fail, err is:', err)
+          }
         })
       },
       //自动化测试例专用
