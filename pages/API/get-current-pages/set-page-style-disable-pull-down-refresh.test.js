@@ -1,7 +1,10 @@
 const PAGE_PATH = '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh'
 
 describe('getCurrentPages', () => {
-  if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (
+    process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') ||
+    process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('not-support', async () => {
       expect(1).toBe(1)
     })

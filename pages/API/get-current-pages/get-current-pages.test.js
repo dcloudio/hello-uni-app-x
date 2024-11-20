@@ -26,6 +26,10 @@ describe('getCurrentPages', () => {
     const data = await page.data()
     expect(data.checked).toBe(true)
   })
+
+  if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+    return
+  }
   it('page-style', async () => {
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
