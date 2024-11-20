@@ -1490,7 +1490,7 @@ describe('ExtApi-FileManagerTest', () => {
   	}
 
     await page.setData({
-			basePath: '/static/uni-app-x/version.json',
+			basePath: 'file:///android_asset/uni-app-x',
 			logAble: false,
       readFileRet: "",
 			readFile: '/version.json'
