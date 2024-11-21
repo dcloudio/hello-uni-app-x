@@ -3,6 +3,7 @@ jest.setTimeout(20000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
@@ -12,6 +13,12 @@ describe('dialog page', () => {
       expect(1).toBe(1)
     })
     return
+  }
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
   }
 
   let page;

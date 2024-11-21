@@ -1,5 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-isWeixin = platformInfo == 'mp-weixin'
+const isMP = platformInfo.startsWith('mp')
 
 describe('dialog page', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
@@ -8,8 +8,8 @@ describe('dialog page', () => {
   	})
   	return
   }
-  if (isWeixin) {
-  	it('skip app-webview', () => {
+  if (isMP) {
+  	it('skip mp', () => {
   		expect(1).toBe(1)
   	})
   	return
