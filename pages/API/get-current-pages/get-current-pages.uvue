@@ -25,6 +25,12 @@
         <button class="uni-common-mt" @click="checkGetAndroidView">
           check getAndroidView
         </button>
+        <button class="uni-common-mt" @click="checkGetIOSView">
+          check getIOSView
+        </button>
+        <button class="uni-common-mt" @click="checkGetHTMLElement">
+          check getHTMLElement
+        </button>
       </view>
       <!-- #ifndef MP -->
       <page-head title="currentPageStyle"></page-head>
@@ -87,12 +93,12 @@
       }
     },
     onLoad(options : OnLoadOptions) {
-      // #ifndef APP-ANDROID
+      // #ifdef APP-IOS || WEB
       if (options instanceof UTSJSONObject) {
         this.checked = true
       }
       // #endif
-      // #ifdef APP-ANDROID
+      // #ifndef APP-IOS || WEB
       this.checked = true
       // #endif
       this.getPageStyle();
@@ -211,6 +217,22 @@
         const androidView = page.getAndroidView()
         const res = androidView != null
         console.log('check getAndroidView', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        return res
+      },
+      checkGetIOSView() : boolean {
+        const page = this.getCurrentPage()
+        const IOSView = page.getIOSView()
+        const res = IOSView != null
+        console.log('check getIOSView', res)
+        uni.showToast(res ? { title: 'check success' } : { title: '仅 IOS uts 插件环境支持', icon: 'error' })
+        return res
+      },
+      checkGetHTMLElement() : boolean {
+        const page = this.getCurrentPage()
+        const HTMLView = page.getHTMLElement()
+        const res = HTMLView != null
+        console.log('check getHTMLElement', res)
         uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
         return res
       },

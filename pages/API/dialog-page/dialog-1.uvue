@@ -1,14 +1,32 @@
 <template>
   <view id="dialog1" class="dialog-container">
     <view class="dialog-content">
-      <text>title: {{title}}</text>
+      <text>title: {{ title }}</text>
       <text class="mt-10">onBackPress return true</text>
-      <button class="mt-10" id="dialog1-go-next-page" @click="goNextPage">go next page</button>
-      <button class="mt-10" id="dialog1-open-dialog2" @click="openDialog2">openDialog2</button>
-      <button class="mt-10" id="dialog1-close-dialog" @click="closeDialog">closeDialog</button>
-      <button class="mt-10" id="dialog1-close-this-dialog" @click="closeThisDialog">closeThisDialog</button>
+      <button class="mt-10" id="dialog1-go-next-page" @click="goNextPage">
+        go next page
+      </button>
+      <button class="mt-10" id="dialog1-open-dialog2" @click="openDialog2">
+        openDialog2
+      </button>
+      <button class="mt-10" id="dialog1-close-dialog" @click="closeDialog">
+        closeDialog
+      </button>
+      <button class="mt-10" id="dialog1-close-this-dialog" @click="closeThisDialog">
+        closeThisDialog
+      </button>
+      <button class="mt-10" @click="checkGetParentPage">
+        check getParentPage
+      </button>
+      <button class="mt-10" @click="checkGetElementById">
+        check getElementById
+      </button>
+      <button class="mt-10" @click="toggleBackgroundColor">
+        toggleBackgroundColor
+      </button>
       <button class="mt-10" id="dialog1-back" @click="back">back</button>
-      <input class="uni-common-mt" style="border-width: 1px;border-style: solid;" :focus="true" value="DialogPage中焦点测试"/>
+      <input class="uni-common-mt" style="border-width: 1px; border-style: solid" :focus="true"
+        value="DialogPage中焦点测试" />
     </view>
   </view>
 </template>
@@ -23,6 +41,7 @@
     data() {
       return {
         title: 'dialog 1',
+        backgroundColorContent: 'transparent'
       }
     },
     onLoad(options : OnLoadOptions) {
@@ -135,6 +154,39 @@
             // 自动化测试
             setLifeCycleNum(state.lifeCycleNum + 1)
           }
+        })
+      },
+      checkGetParentPage() : boolean {
+        const parentPage = this.$page.getParentPage()
+        console.log('checkGetParentPage', parentPage)
+        const res = parentPage != null
+        uni.showToast(res ? {
+          title: 'check success'
+        } : {
+          title: 'check fail',
+          icon: 'error'
+        })
+        return res
+      },
+      checkGetElementById() : boolean {
+        const page = this.$page
+        const element = page.getElementById('dialog1-go-next-page')
+        let res = element != null
+        // #ifndef APP-ANDROID
+        if (res) {
+          const elPage = element!.getPage()
+          console.log('elPage', elPage)
+          res = elPage === page
+        }
+        // #endif
+        console.log('check getElementById', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
+        return res
+      },
+      toggleBackgroundColor() {
+        this.backgroundColorContent = this.backgroundColorContent == 'transparent' ? 'rgb(0, 122, 255)' : 'transparent'
+        this.$page.setPageStyle({
+          backgroundColorContent: this.backgroundColorContent
         })
       },
       back() {

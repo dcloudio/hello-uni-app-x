@@ -177,18 +177,18 @@
       getLifeCycleNum(): number {
         return state.lifeCycleNum
       },
-      jest_OpenDialog1(){
+      jest_OpenDialog1() {
         uni.openDialogPage({
           url: '/pages/API/dialog-page/dialog-1?name=dialog1'
         })
       },
-      jest_CloseDialog1(){
+      jest_CloseDialog1() {
         uni.closeDialogPage({})
       },
-      jest_getTapPoint(){
+      jest_getTapPoint() {
         const systemInfo = uni.getSystemInfoSync()
         let ratio = 1
-        if (systemInfo.platform == 'android'){
+        if (systemInfo.platform == 'android') {
           ratio = systemInfo.devicePixelRatio
         }
         this.jest_click_x = systemInfo.screenWidth / 2 * ratio
@@ -202,10 +202,61 @@
       closeDialog2ForTest() {
         uni.closeDialogPage({});
       },
-      setPageStyleForTest(style : UTSJSONObject) {
+      setPageStyleForTest(style: UTSJSONObject) {
         const pages = this.$page.getDialogPages();
         if (pages.length > 0) pages[pages.length - 1].setPageStyle(style);
-      }
+      },
+      getDialogPage(): UniPage | null {
+        const dialogPages = this.$page.getDialogPages()
+        return dialogPages.length > 0 ? dialogPages[0] : null
+      },
+      dialogPageCheckGetDialogPages(): boolean {
+        const dialogPage = this.getDialogPage() !
+        const dialogPages = dialogPage.getDialogPages()
+        const res = dialogPages.length == 0
+        return res
+      },
+      dialogPageGetPageStyle(): UTSJSONObject {
+        const dialogPage = this.getDialogPage() !
+        return dialogPage.getPageStyle()
+      },
+      dialogPageSetPageStyle() {
+        const dialogPage = this.getDialogPage() !
+        dialogPage.setPageStyle({
+          backgroundColorContent: 'red'
+        })
+      },
+      dialogPageCheckGetElementById(): boolean {
+        const dialogPage = this.getDialogPage() !
+        const element = dialogPage.getElementById('dialog1-go-next-page')
+        let res = element != null
+        // #ifndef APP-ANDROID
+        if (res) {
+          const elPage = element!.getPage()
+          console.log('elPage', elPage)
+          res = elPage === dialogPage
+        }
+        // #endif
+        return res
+      },
+      dialogCheckGetAndroidView(): boolean {
+        const dialogPage = this.getDialogPage() !
+        const androidView = dialogPage.getAndroidView()
+        const res = androidView != null
+        return res
+      },
+      dialogCheckGetIOSView(): boolean {
+        const dialogPage = this.getDialogPage() !
+        const IOSView = dialogPage.getIOSView()
+        const res = IOSView != null
+        return res
+      },
+      dialogCheckGetHTMLElement(): boolean {
+        const dialogPage = this.getDialogPage() !
+        const HTMLView = dialogPage.getHTMLElement()
+        const res = HTMLView != null
+        return res
+      },
     }
   }
 </script>

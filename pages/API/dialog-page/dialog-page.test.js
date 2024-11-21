@@ -3,16 +3,23 @@ jest.setTimeout(20000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
 describe('dialog page', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-		it('skip app-webview', () => {
-			expect(1).toBe(1)
-		})
-		return
-	}
+    it('skip app-webview', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
 
   let page;
   let initLifeCycleNum;
@@ -48,6 +55,18 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(7)
     await page.callMethod('setLifeCycleNum', 0)
   });
+  it('check dialogPage methods', async () => {
+    expect(await page.callMethod('dialogPageCheckGetDialogPages')).toBe(true)
+    let dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
+    expect(dialogPageStyle.backgroundColorContent).not.toBe('red')
+    await page.callMethod('dialogPageSetPageStyle')
+    dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
+    expect(dialogPageStyle.backgroundColorContent).toBe('red')
+    expect(await page.callMethod('dialogPageCheckGetElementById')).toBe(true)
+    expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    expect(await page.callMethod('dialogCheckGetIOSView')).toBe(false)
+    expect(await page.callMethod('dialogCheckGetHTMLElement')).toBe(isWeb)
+  })
 
   it('closeDialogPage', async () => {
     await page.callMethod('closeDialog');
@@ -289,20 +308,23 @@ describe('dialog page', () => {
     await page.callMethod('jest_getTapPoint')
     const point_x = await page.data('jest_click_x');
     const point_y = await page.data('jest_click_y');
-    if (isAndroid){
+    if (isAndroid) {
       await program.adbCommand("input tap" + " " + point_x + " " + point_y)
       console.log("input tap" + " " + point_x + " " + point_y);
     } else {
-      await program.tap({x: point_x, y: point_y})
+      await program.tap({
+        x: point_x,
+        y: point_y
+      })
     }
 
     await page.waitFor(1000);
     const image = await program.screenshot({
-        deviceShot: true,
-        area: {
-          x: 0,
-          y: 200,
-        }
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: 200,
+      }
     })
     expect(image).toSaveImageSnapshot()
     await page.waitFor(2000);

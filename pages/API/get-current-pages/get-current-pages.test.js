@@ -2,6 +2,7 @@ const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
 
 describe('getCurrentPages', () => {
   let page
@@ -99,5 +100,13 @@ describe('getCurrentPages', () => {
   it('getAndroidView', async () => {
     const res = await page.callMethod('checkGetAndroidView')
     expect(res).toBe(isAndroid)
+  })
+  it('getIOSView', async () => {
+    const res = await page.callMethod('checkGetIOSView')
+    expect(res).toBe(false)
+  })
+  it('getHTMLElement', async () => {
+    const res = await page.callMethod('checkGetHTMLElement')
+    expect(res).toBe(isWeb)
   })
 })
