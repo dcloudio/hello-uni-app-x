@@ -1,3 +1,5 @@
+## 1.1.4（2024-11-21）
+新增 参数payload的接收和验证示例
 ## 1.1.3（2024-11-11）
 优化 chooseLocation 函数供 uni-app x 的 uni.chooseLocation 使用
 ## 1.1.2（2024-10-21）

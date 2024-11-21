@@ -21,6 +21,16 @@ const $ = _.aggregate;
 
 const opendbPoiDB = db.collection("opendb-poi");
 
+class MyError extends Error {
+	constructor(errMsg, errCode = -1) {
+		super(errMsg);
+		this.err = {
+			errCode,
+			errMsg
+		}
+	}
+}
+
 module.exports = {
 	_before: function() {
 		// 如果配置中心不存在地图配置，则使用本地地图配置
@@ -33,7 +43,6 @@ module.exports = {
 			provider = defaultProvider,
 				needOriginalResult = false
 		} = params[0] || {};
-		console.log('provider: ', provider)
 		const key = UniMapConfig.key[provider] || LocalMapConfig.key[provider];
 		if (!key) {
 			throw { errCode: -1, errMsg: `请在uni-config-center/uni-map/config.js中或LocalMapConfig中配置地图供应商${provider}对应的key` };
@@ -45,10 +54,39 @@ module.exports = {
 			needOriginalResult
 		});
 		this.uniMap = uniMap;
+		// // 在这里可以做一些统一的前置处理，比如权限校验、参数校验等
+		// let {
+		//   payload, // payload参数为前端传递的参数，可以在前端调用uni.chooseLocation时传递
+		// } = this.getParams()[0] || {};
+		// if (!payload) {
+		//   throw new MyError("payload参数不能为空", -1);
+		// }
+		// // 如果业务在uniCloud上，则直接在这里写判断逻辑即可
+		// if (true) {
+		// 	throw new MyError("权限不足", -1);
+		// }
+
+		// // 如果业务不在uniCloud上，可通过 uniCloud.request 调用自己的服务进行校验
+		// const requestRes = await uniCloud.request({
+		//   method: 'POST',
+		//   url: '你自己的接口地址',
+		//   data: payload,
+		// });
+		// // 约定errCode不为0代表校验失败，errMsg为失败原因
+		// if (requestRes.data.errCode !== 0) {
+		//   throw new MyError(requestRes.data.errMsg, requestRes.data.errCode);
+		// }
+
 	},
-	_after: function(error, res) {
-		if (error) {
-			throw error; // 如果方法抛出错误，也直接抛出不处理
+	_after: function(err, res) {
+		if (err) {
+			if (err.err) {
+				return err.err;
+			}
+			if (err.errCode) {
+				return err;
+			}
+			throw err; // 如果方法抛出错误，也直接抛出不处理
 		}
 		console.log("result", res.result);
 		return res;
@@ -61,12 +99,14 @@ module.exports = {
 			data,
 			needOriginalResult
 		} = parame;
-		// 初始化实例
 		// 获取uniMap实例
 		const uniMap = this.uniMap;
 		// 调用API
 		let result = await uniMap[action](data);
 		res.result = needOriginalResult ? result.originalResult : result;
+		// 模拟错误
+		// res.errCode = 121;
+		// res.errMsg = '此key每日调用量已达到上限'
 		return res;
 	},
 	// 经纬度坐标转地址
@@ -448,7 +488,7 @@ module.exports = {
 
 /**
  * 生成在指定经纬度圆内的随机坐标
- 
+
 const latitude = 39.908823; // 指定纬度
 const longitude = 116.39747; // 指定经度
 const radiusInKm = 10; // 指定圆的半径（单位：千米）
@@ -484,7 +524,7 @@ function getRandomCoordinateWithinRadius(longitude, latitude, radiusInKm) {
 
 /**
  * 计算坐标B在坐标A的方向，0代表正西方 90 代表正北方
- 
+
 const latitude = 39.908823; // 指定纬度
 const longitude = 116.39747; // 指定经度
 const radiusInKm = 10; // 指定圆的半径（单位：千米）
