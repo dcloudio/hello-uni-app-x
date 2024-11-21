@@ -5,19 +5,27 @@
       <text>当前应用隐私授权状态:</text>
       <text>{{ appPrivacy }}</text>
     </view>
+    <!-- #ifdef MP-WEIXIN -->
+    <view class="item-box">
+      <text>隐私授权协议的名称:</text>
+      <text>{{ privacyContractName }}</text>
+    </view>
+    <!-- #endif -->
     <view>
       <button class="privacy-button" type="primary" @tap="getPrivacySetting">
         获取隐私协议授权状态
       </button>
       <button class="privacy-button" type="primary" open-type="agreePrivacyAuthorization">
-        同意隐私协议
+        同意隐私协议专用按钮
       </button>
+      <!-- #ifdef APP -->
       <button class="privacy-button" type="primary" @tap="resetPrivacyAuthorization">
         重置隐私协议授权状态
       </button>
       <button class="privacy-button" @tap="openPrivacyDialog">
         显示隐私政策弹框
       </button>
+      <!-- #endif -->
     </view>
 	</view>
 </template>
@@ -28,10 +36,12 @@
 			return {
 			  title: '隐私信息授权',
 			  appPrivacy: '未获取',
+        privacyContractName: "",
         listenId: 0
 			}
 		},
     onReady() {
+      // #ifdef APP
       //添加 隐私协议监听
       const id = uni.onPrivacyAuthorizationChange((res) => {
          this.appPrivacy = res.needAuthorization ? "未同意" : "已同意"
@@ -46,8 +56,10 @@
         "position": "bottom",
         "title": "开启监听隐私协议状态"
       })
+      // #endif
     },
     onUnload() {
+      // #ifdef APP
       //注销监听
       uni.offPrivacyAuthorizationChange(this.listenId)
       this.listenId = 0;
@@ -55,12 +67,16 @@
         "position": "bottom",
         "title": "已停止监听隐私协议状态"
       })
+      // #endif
     },
 		methods: {
 			getPrivacySetting() {
 			  uni.getPrivacySetting({
 			    success: (res) => {
 			      this.appPrivacy = res.needAuthorization ? "未同意" : "已同意"
+            // #ifdef MP-WEIXIN
+            this.privacyContractName = res.privacyContractName
+            // #endif
 			    }
 			  })
 			},
