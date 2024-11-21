@@ -11,6 +11,25 @@ describe('component-native-textarea', () => {
     await page.waitFor(1000);
   });
 
+  beforeEach(async () => {
+    await page.setData({
+      jest_result: false,
+    })
+  });
+
+  if(process.env.uniTestPlatformInfo.startsWith('android')){
+    it("input event triggered when the default value is", async () => {
+        await program.adbCommand("input text 1")
+        await page.waitFor(2000)
+        let res = await page.data('jest_result');
+        expect(res).toBe(true)
+    })
+    it("reset status", async () => {
+      await program.adbCommand("input keyevent KEYCODE_DEL")
+      await page.waitFor(2000)
+    })
+  }
+
   it('focus', async () => {
     expect(await textarea.attribute("focus")).toBe("true")
     await page.setData({
