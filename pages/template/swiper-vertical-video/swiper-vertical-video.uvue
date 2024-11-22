@@ -14,13 +14,13 @@
           <image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png"
             mode="widthFix"></image>
         </view>
-        <view class="video-info" v-if="0">
+        <view class="video-info" v-if="showDebugInfo">
           <text class="video-info-text">容器：第 {{i}} 个</text>
           <text class="video-info-text">内容：{{item.content}}</text>
         </view>
       </swiper-item>
     </swiper>
-    <view class="debug-info" v-if="0">
+    <view class="debug-info" v-if="showDebugInfo">
       <text class="status-text">debug-info 播放状态:</text>
       <text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{ value }}</text>
     </view>
@@ -40,7 +40,8 @@
         visibleList: [] as ListItem[],// 提高性能 可见的只有3个
         current: 0 as number,
         index: 0,
-        state: ["pause", "unPlay", "unPlay"] as string[]
+        state: ["pause", "unPlay", "unPlay"] as string[],
+        showDebugInfo: false as boolean
       }
     },
     created() {
