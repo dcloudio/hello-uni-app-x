@@ -40,7 +40,7 @@
         visibleList: [] as ListItem[],// 提高性能 可见的只有3个
         current: 0 as number,
         index: 0,
-        state: ["unPlay", "unPlay", "unPlay"] as string[]
+        state: ["pause", "unPlay", "unPlay"] as string[]
       }
     },
     created() {
@@ -86,9 +86,9 @@
       }
     },
     onReady() {
-      // 一启动完成，就播放第一个
-      this.doPlay(0);
       // #ifdef APP || MP
+      //  非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
+      this.doPlay(0);
       //App端适配不同状态栏高度
       let backElement = this.$refs['back'] as UniElement;
       backElement.style.setProperty('top', uni.getSystemInfoSync().statusBarHeight+'px');
