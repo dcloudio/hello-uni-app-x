@@ -6,6 +6,7 @@
         <text class="uni-hello-text">位置信息</text>
         <text v-if="!hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
         <view v-if="hasLocation" style="align-items: center;">
+          <text class="uni-common-mt">{{locationName}}</text>
           <text class="uni-common-mt">{{locationAddress}}</text>
           <view class="uni-common-mt" v-if="location.latitude.length>1">
             <text>E: {{location.longitude[0]}}°{{location.longitude[1]}}′</text>
@@ -15,8 +16,8 @@
       </view>
       <view class="uni-btn-v">
         <text class="tips">注意：Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置</text>
-        <button type="primary" @tap="chooseLocation">选择位置</button>
-        <button @tap="clear">清空</button>
+        <button class="btn" type="primary" @tap="chooseLocation">选择位置</button>
+        <button class="btn" @tap="clear">清空</button>
       </view>
     </view>
   </view>
@@ -35,6 +36,7 @@
           latitude: [],
           longitude: []
         } as Location,
+        locationName: '',
         locationAddress: '',
         dialogPagesNum: -1
       }
@@ -46,6 +48,7 @@
             console.log('chooseLocation success', res)
             this.hasLocation = true
             this.location = this.formatLocation(res.longitude, res.latitude)
+            this.locationName = res.name
             this.locationAddress = res.address
           }
         })
@@ -91,5 +94,8 @@
     font-size: 12px;
     margin: 15px 0;
     opacity: .8;
+  }
+  .btn {
+    margin-top: 10px;
   }
 </style>
