@@ -13,8 +13,7 @@ describe('getCurrentPages', () => {
   let page
   it('page-style', async () => {
     page = await program.navigateTo(PAGE_PATH)
-
-    await page.callMethod('getPageStyle')
+    //onLoad会对currentPageStyle赋值
     await page.waitFor(200)
     const currentPageStyle = (await page.data()).currentPageStyle
     const isEnablePullDownRefresh1 = currentPageStyle.enablePullDownRefresh
