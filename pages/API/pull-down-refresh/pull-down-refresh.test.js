@@ -4,8 +4,12 @@ const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 
 describe("payment", () => {
-  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
-    it('web || app-webview', () => {
+  if (
+    isWeb ||
+    process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' ||
+    platformInfo.startsWith('mp')
+  ) {
+    it('web || app-webview || mp', () => {
       expect(1).toBe(1)
     })
     return

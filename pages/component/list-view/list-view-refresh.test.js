@@ -1,5 +1,8 @@
 describe('component-native-list-view-refresh', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (
+    process.env.uniTestPlatformInfo.startsWith('web') ||
+    process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })

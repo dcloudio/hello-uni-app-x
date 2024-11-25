@@ -5,6 +5,12 @@ const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-3";
 let page;
 
 describe("onLoad", () => {
+ if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   it("adjustData", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');

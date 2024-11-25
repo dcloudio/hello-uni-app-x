@@ -50,7 +50,7 @@ describe('component-native-scroll-view-refresher', () => {
 
   // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件
   // 安卓端仅测'android 11.0.0'、'android 10.0.0_x86_64'、'android 10.0.0_x86'
-  if(!platformInfo.startsWith('web')){
+  if(!platformInfo.startsWith('web') && !platformInfo.startsWith('mp')){
     it('check_refresherabort', async () => {
       if(isIos){
         await program.swipe({
