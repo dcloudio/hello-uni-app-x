@@ -11,7 +11,7 @@
 					@click="play(item.src,index)"></image>
 			</view>
 			<view class="formats" v-for="(item,index) in notSupportFormats" :key="index">
-				<text class="uni-subtitle-text">{{item.format}}(Android/web 不支持)</text>
+				<text class="uni-subtitle-text">{{ item.format + (item.support) }}</text>
 				<image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/pause.png':'/static/play.png'"
 					@click="play(item.src,index)"></image>
 			</view>
@@ -25,6 +25,7 @@
 <script>
 	type AudioFormat = {
 		format : string
+		support: string | null
 		src : string
 	}
 	export default {
@@ -55,11 +56,6 @@
 						format: 'flac',
 						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.flac'
 					},
-
-					{
-						format: 'ogg',
-						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.ogg'
-					},
 					{
 						format: 'wav',
 						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.wav'
@@ -67,19 +63,28 @@
 				] as Array<AudioFormat>,
 				notSupportFormats: [
 					{
+						format: 'ogg',
+						support: '(iOS 不支持)',
+						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.ogg'
+					},
+					{
 						format: 'wma',
+						support: '(iOS/Android/web 不支持)',
 						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.wma'
 					},
 					{
 						format: 'aiff',
+						support: '(Android/web 不支持)',
 						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.aiff'
 					},
 					{
 						format: 'caf',
+						support: '(Android/web 不支持)',
 						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.caf'
 					},
 					{
 						format: '错误格式',
+						support: '(iOS/Android/web 不支持)',
 						src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.wmaa'
 					},
 				] as Array<AudioFormat>
@@ -90,7 +95,7 @@
 			this._audioContext!.onPlay(() => {
 				console.log('开始播放');
 			});
-			this._audioContext!.onPause(()=>{
+			this._audioContext!.onPause(() => {
 				console.log('播放暂停');
 			})
 			this._audioContext!.onEnded(() => {
