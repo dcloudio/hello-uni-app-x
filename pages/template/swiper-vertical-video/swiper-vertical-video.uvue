@@ -8,18 +8,19 @@
       <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
         <video @click="changeState(i)" ref="video" class="video-box" :id="'video-'+i"
           @loadstart="onLoadstart(i)" :src="item.src" :poster="item.poster_src" :autoplay="false"
+          :show-progress="false" :show-fullscreen-btn="false" :show-play-btn="false"
           :show-center-play-btn="false" :loop="true" @play="onPlay(i)" @pause="onPause(i)" http-cache="true"></video>
         <view class="video-cover" @click="changeState(i)">
           <image v-if="state[i] === 'pause'" class="play-btn" src="/static/template/swiper-vertical-video/play.png"
             mode="widthFix"></image>
         </view>
-        <view class="video-info" v-if="0">
+        <view class="video-info" v-if="showDebugInfo">
           <text class="video-info-text">容器：第 {{i}} 个</text>
           <text class="video-info-text">内容：{{item.content}}</text>
         </view>
       </swiper-item>
     </swiper>
-    <view class="debug-info" v-if="0">
+    <view class="debug-info" v-if="showDebugInfo">
       <text class="status-text">debug-info 播放状态:</text>
       <text class="status-text" v-for="(value,index) in state">第{{index+1}}个:{{ value }}</text>
     </view>
@@ -39,7 +40,8 @@
         visibleList: [] as ListItem[],// 提高性能 可见的只有3个
         current: 0 as number,
         index: 0,
-        state: ["unPlay", "unPlay", "unPlay"] as string[]
+        state: ["pause", "unPlay", "unPlay"] as string[],
+        showDebugInfo: false as boolean
       }
     },
     created() {
@@ -85,9 +87,9 @@
       }
     },
     onReady() {
-      // 一启动完成，就播放第一个
-      this.doPlay(0);
       // #ifdef APP || MP
+      //  非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
+      this.doPlay(0);
       //App端适配不同状态栏高度
       let backElement = this.$refs['back'] as UniElement;
       backElement.style.setProperty('top', uni.getSystemInfoSync().statusBarHeight+'px');

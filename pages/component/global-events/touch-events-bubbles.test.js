@@ -3,7 +3,11 @@ const PAGE_PATH = '/pages/component/global-events/touch-events-bubbles'
 describe('touch-events-test', () => {
 
   // 先屏蔽 android 及 web 平台
-  if (process.env.uniTestPlatformInfo.startsWith('android') || process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (
+    process.env.uniTestPlatformInfo.startsWith('android') ||
+    process.env.uniTestPlatformInfo.startsWith('web') ||
+    process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

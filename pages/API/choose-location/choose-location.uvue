@@ -6,6 +6,7 @@
         <text class="uni-hello-text">位置信息</text>
         <text v-if="!hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
         <view v-if="hasLocation" style="align-items: center;">
+          <text class="uni-common-mt">{{locationName}}</text>
           <text class="uni-common-mt">{{locationAddress}}</text>
           <view class="uni-common-mt" v-if="location.latitude.length>1">
             <text>E: {{location.longitude[0]}}°{{location.longitude[1]}}′</text>
@@ -14,9 +15,12 @@
         </view>
       </view>
       <view class="uni-btn-v">
-        <text class="tips">注意：Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置</text>
-        <button type="primary" @tap="chooseLocation">选择位置</button>
-        <button @tap="clear">清空</button>
+        <text class="tips">注意：\n1. Web和App需要正确配置地图服务商的Key并且保证Key的权限和余额足够，才能正常选择位置\n2. 若没有关联uniCloud空间，则只能全屏地图选点，不能根据POI选择位置\n3. payload参数会原样透传给uni-map-co，可用于用户鉴权</text>
+        <boolean-data :defaultValue="false" title="是否指定位置为天安门" @change="changeLocationBoolean"></boolean-data>
+        <boolean-data :defaultValue="false" title="是否携带keyword参数" @change="changeKeywordBoolean"></boolean-data>
+        <boolean-data :defaultValue="false" title="是否携带payload参数" @change="changePayloadBoolean"></boolean-data>
+        <button class="btn" type="primary" @tap="chooseLocation">选择位置</button>
+        <button class="btn" @tap="clear">清空</button>
       </view>
     </view>
   </view>
@@ -35,25 +39,41 @@
           latitude: [],
           longitude: []
         } as Location,
+        locationName: '',
         locationAddress: '',
-        dialogPagesNum: -1
+        dialogPagesNum: -1,
+        hoverLocation: false,
+        hoverKeyword: false,
+        hoverPayload: false
       }
     },
     methods: {
       chooseLocation: function () {
-        uni.chooseLocation({
+        let chooseLocationOptions = {
           success: (res) => {
             console.log('chooseLocation success', res)
             this.hasLocation = true
             this.location = this.formatLocation(res.longitude, res.latitude)
+            this.locationName = res.name
             this.locationAddress = res.address
           }
-        })
+        } as ChooseLocationOptions
+        if (this.hoverLocation) {
+          chooseLocationOptions.latitude = 39.908823
+          chooseLocationOptions.longitude = 116.39747
+        }
+        if (this.hoverKeyword) {
+          chooseLocationOptions.keyword = '公园'
+        }
+        if (this.hoverPayload) {
+          chooseLocationOptions.payload = {
+            token: 'xxx'
+          }
+        }
+        uni.chooseLocation(chooseLocationOptions)
+        // 自动化测试
         setTimeout(() => {
-          const pages = getCurrentPages()
-          const page = pages[pages.length - 1]
-          const dialogPages = page.getDialogPages()
-          this.dialogPagesNum = dialogPages.length
+          this.test()
         }, 500)
       },
       formatLocation: function(longitude:number, latitude:number):Location {
@@ -72,6 +92,22 @@
       },
       clear: function () {
         this.hasLocation = false
+      },
+      changeLocationBoolean(checked : boolean) {
+        this.hoverLocation = checked
+      },
+      changeKeywordBoolean(checked : boolean) {
+        this.hoverKeyword = checked
+      },
+      changePayloadBoolean(checked : boolean) {
+        this.hoverPayload = checked
+      },
+      // 自动化测试
+      test() {
+        const pages = getCurrentPages()
+        const page = pages[pages.length - 1]
+        const dialogPages = page.getDialogPages()
+        this.dialogPagesNum = dialogPages.length
       }
     }
   }
@@ -91,5 +127,8 @@
     font-size: 12px;
     margin: 15px 0;
     opacity: .8;
+  }
+  .btn {
+    margin-top: 10px;
   }
 </style>

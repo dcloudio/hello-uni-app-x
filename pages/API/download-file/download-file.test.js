@@ -29,7 +29,10 @@ describe('ExtApi-DownloadFile', () => {
     expect(res).toBe(true)
   });
 
-  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (
+    !process.env.uniTestPlatformInfo.startsWith('web') &&
+    !process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('Check uni.env', async () => {
       await page.callMethod('jest_downloadFile_with_uni_env');
       await page.waitFor(2000);
@@ -41,7 +44,7 @@ describe('ExtApi-DownloadFile', () => {
     let version = process.env.uniTestPlatformInfo
     let split = version.split(" ")
     version = parseInt(split[split.length - 1])
-    if(!process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') || version > 15) {
+    if (!process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') || version > 15) {
       it('Check Download File In UTS Module', async () => {
         res = await page.callMethod('jest_uts_module_invoked')
         await page.waitFor(2000);

@@ -118,6 +118,14 @@
 				this.currentTime = this._audioContext!.currentTime;
 				this.buffered = this._audioContext!.buffered;
 				console.log('onTimeUpdateCb', this.currentTime)
+
+				// #ifdef MP
+				// 微信小程序安卓端过早的时机获取的buffered、duration为0，改为在此处获取
+				if(this._audioContext!.duration === 0) {
+					this.buffered = this._audioContext!.buffered;
+					this.duration = this._audioContext!.duration
+				}
+				// #endif
 				if (this.currentTime > this.buffered) {
 					console.log('缓冲不足');
 				}
@@ -146,6 +154,10 @@
 				this._audioContext!.onCanplay(() => {
 					console.log('音频进入可以播放状态事件');
 					this.isCanplay = true;
+					// #ifdef MP
+					// 微信小程序安卓端过早的时机获取的volume为undefine，改为在此处获取
+					this.volume = this._audioContext!.volume;
+					// #endif
 					// 当音频可以播放时，获取缓冲信息
 					this.buffered = this._audioContext!.buffered;
 					this.duration = this._audioContext!.duration
