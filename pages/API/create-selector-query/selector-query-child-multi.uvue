@@ -21,7 +21,8 @@
         viewCount: 0,
         selectCount: 0,
         selectAllCount: 0,
-        show: false
+        show: false,
+        testCounter: 0
       }
     },
     mounted() {
@@ -30,13 +31,24 @@
         if (ret.length == 1) {
           this.selectCount = ret.length
         }
+        this.testCounter++
+        this._dispatchEvent()
       })
       uni.createSelectorQuery().in(this).selectAll('.selector-query-view').boundingClientRect().exec((ret) => {
         this.text2 = JSON.stringify(ret, null, 2)
         if (ret.length == 1) {
           this.selectAllCount = (ret[0] as NodeInfo[]).length
         }
+        this.testCounter++
+        this._dispatchEvent()
       })
+    },
+    methods: {
+      _dispatchEvent() {
+        if (this.testCounter == 2) {
+          uni.$emit('childReady')
+        }
+      }
     }
   }
 </script>
