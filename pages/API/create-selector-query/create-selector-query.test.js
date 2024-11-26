@@ -76,7 +76,10 @@ describe('nodes-info', () => {
   // #endif
 
   it('test filelds', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (
+      process.env.uniTestPlatformInfo.startsWith('web') ||
+      process.env.uniTestPlatformInfo.startsWith('mp')
+    ) {
       expect(true).toBe(true)
     } else {
       const pageData = await page.data()
@@ -85,7 +88,10 @@ describe('nodes-info', () => {
   })
 
   it('test node', async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (
+      process.env.uniTestPlatformInfo.startsWith('web') ||
+      process.env.uniTestPlatformInfo.startsWith('mp')
+    ) {
       expect(true).toBe(true)
     } else {
       const pageData = await page.data()

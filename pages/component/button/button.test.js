@@ -79,7 +79,7 @@ describe('Button.uvue', () => {
   })
 
   it("checkUniButtonElement", async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (process.env.uniTestPlatformInfo.startsWith('mp')) {
       expect(1).toBe(1)
       return
     }

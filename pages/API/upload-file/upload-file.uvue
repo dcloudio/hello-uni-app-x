@@ -10,6 +10,7 @@
           <text v-else class="uni-hello-addfile" @click="chooseImage">+ 选择图片</text>
         </view>
       </view>
+      <button @click="jest_uploadFile_with_uni_env">jest_uploadFile_with_uni_env</button>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -105,7 +106,10 @@
         })
       },
       jest_uploadFile_with_uni_env() {
-        const filePath = `${uni.env.CACHE_PATH}/download/uni-app.png`
+        /**
+         * 微信小程序只支持USER_DATA_PATH，且子目录未创建的情况下不能直接下载到子目录内
+         */
+        const filePath = `${uni.env.USER_DATA_PATH}/uni-app.png`
         uni.downloadFile({
           url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
           filePath: filePath,
