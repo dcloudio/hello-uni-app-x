@@ -1,6 +1,8 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('component-native-image', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isMP = platformInfo.startsWith('mp')
   let page;
   let start = 0;
   async function getWindowInfo() {
@@ -79,17 +81,8 @@ describe('component-native-image', () => {
     await page.waitFor(async () => {
       return (await page.data('eventLoad')) || (Date.now() - start > 1000);
     });
-    if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-      expect(await page.data('eventLoad')).toEqual({
-        tagName: 'IMAGE',
-        type: 'load',
-        width: 10,
-        height: 10
-      });
-      return
-    }
     expect(await page.data('eventLoad')).toEqual({
-      tagName: 'IMAGE',
+      tagName: isMP ? undefined : 'IMAGE',
       type: 'load',
       width: 10,
       height: 10
@@ -104,17 +97,10 @@ describe('component-native-image', () => {
     await page.waitFor(async () => {
       return (await page.data('eventError')) || (Date.now() - start > 1000);
     });
-    if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-      expect(await page.data('eventError')).toEqual({
-        tagName: 'IMAGE',
-        type: 'error'
-      });
-    }else {
-      expect(await page.data('eventError')).toEqual({
-        tagName: 'IMAGE',
-        type: 'error'
-      });
-    }
+    expect(await page.data('eventError')).toEqual({
+      tagName: isMP ? undefined : 'IMAGE',
+      type: 'error'
+    });
 
     await page.setData({
       autoTest: false

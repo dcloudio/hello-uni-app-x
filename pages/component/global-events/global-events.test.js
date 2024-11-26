@@ -42,6 +42,7 @@ describe('event trigger', () => {
           screenY: 101
         }, ],
       })
+      await page.waitFor(100)
       const touchStartTouchTargetIdentifier = '1'
       const touchStartTouchTargetValue = '101'
       const touchStartTouchIdentifier = await page.$('#touch-start-touch-identifier')
@@ -94,6 +95,7 @@ describe('event trigger', () => {
           screenY: 102
         }, ],
       })
+      await page.waitFor(100)
 
       const touchMoveTouchTargetIdentifier = '1'
       const touchMoveTouchTargetValue = '102'
@@ -146,6 +148,7 @@ describe('event trigger', () => {
           screenY: 103
         }, ],
       })
+      await page.waitFor(100)
       const touchEndTouchTargetIdentifier = '1'
       const touchEndTouchTargetValue = '103'
       const touchEndTouchIdentifier = await page.$('#touch-end-touch-identifier')
@@ -193,6 +196,7 @@ describe('event trigger', () => {
     } else {
       const el = await page.$('#longpress-target')
       await el.tap()
+      await page.waitFor(100)
       const targetX = '0'
       const targetY = '0'
       const tapEventX = await page.$('#tap-event-x')
@@ -210,6 +214,7 @@ describe('event trigger', () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       const el = await page.$('#longpress-target')
       await el.longpress()
+      await page.waitFor(100)
       if (isMP) {
         const longPressTouchIdentifier = await page.$('#long-press-touch-identifier')
         expect(await longPressTouchIdentifier.text()).toBe('0')

@@ -1,7 +1,9 @@
 describe('component-native-input', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
-  const isIos = platformInfo.startsWith('ios')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input')
@@ -15,30 +17,32 @@ describe('component-native-input', () => {
   //   expect(image).toSaveImageSnapshot()
   // })
   // 测试焦点及键盘弹起
-  it('focus', async () => {
-    const input = await page.$('#uni-input-focus');
-    expect(await input.attribute('focus')).toBe("true")
-    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-    await page.setData({
-      focus: false,
-    })
-    expect(await input.attribute('focus')).toBe("false")
-    // await page.waitFor(1000)
-    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-    // await page.setData({
-    //   focus: true,
-    // })
-    // expect(await input.attribute('focus')).toBe(true)
-    // await page.waitFor(1000)
-    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-    // await page.setData({
-    //   focus: false,
-    // })
-    // expect(await input.attribute('focus')).toBe(false)
-    // await page.waitFor(1000)
-    // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-    // await page.waitFor(1000)
-  });
+  if(!isMP) {
+    it('focus', async () => {
+      const input = await page.$('#uni-input-focus');
+      expect(await input.attribute('focus')).toBe("true")
+      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
+      await page.setData({
+        focus: false,
+      })
+      expect(await input.attribute('focus')).toBe("false")
+      // await page.waitFor(1000)
+      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
+      // await page.setData({
+      //   focus: true,
+      // })
+      // expect(await input.attribute('focus')).toBe(true)
+      // await page.waitFor(1000)
+      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
+      // await page.setData({
+      //   focus: false,
+      // })
+      // expect(await input.attribute('focus')).toBe(false)
+      // await page.waitFor(1000)
+      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
+      // await page.waitFor(1000)
+    });
+  }
 
   // 测试修改value属性
   it("value", async () => {
@@ -118,18 +122,47 @@ describe('component-native-input', () => {
   //   expect(await placeholder2.attribute("placeholder")).toEqual("占位符背景色为绿色")
   // })
 
-  it("disable", async () => {
-    const input = await page.$('#uni-input-disable');
-    expect(await input.attribute("disabled")).toBe("true")
-  })
+  if(isMP) {
+    it("disable", async () => {
+      const input = await page.$('#uni-input-disable');
+      expect(await input.property("disabled")).toBe(true)
+    })
+    // 如下属性在自动化测试通过property、attribute + confirmType、confirm-type均无法获取
+    // it("confirm-type", async () => {
+    //   expect(await (await page.$('#uni-input-confirm-send')).attribute("confirm-type")).toEqual("send")
+    //   expect(await (await page.$('#uni-input-confirm-search')).property("confirmType")).toEqual("search")
+    //   expect(await (await page.$('#uni-input-confirm-next')).property("confirmType")).toEqual("next")
+    //   expect(await (await page.$('#uni-input-confirm-go')).property("confirmType")).toEqual("go")
+    //   expect(await (await page.$('#uni-input-confirm-done')).property("confirmType")).toEqual("done")
+    // })
+    // it("cursor-color", async () => {
+    //   await page.setData({
+    //     cursor_color: "red",
+    //   })
+    //   await page.waitFor(500)
+    //   expect(await (await page.$('#uni-input-cursor-color')).property("cursor-color")).toBe("red")
+    // })
+  } else {
+    it("disable", async () => {
+      const input = await page.$('#uni-input-disable');
+      expect(await input.attribute("disabled")).toBe("true")
+    })
+    it("confirm-type", async () => {
+      expect(await (await page.$('#uni-input-confirm-send')).attribute("confirmType")).toEqual("send")
+      expect(await (await page.$('#uni-input-confirm-search')).attribute("confirmType")).toEqual("search")
+      expect(await (await page.$('#uni-input-confirm-next')).attribute("confirmType")).toEqual("next")
+      expect(await (await page.$('#uni-input-confirm-go')).attribute("confirmType")).toEqual("go")
+      expect(await (await page.$('#uni-input-confirm-done')).attribute("confirmType")).toEqual("done")
+    })
+    it("cursor-color", async () => {
+      await page.setData({
+        cursor_color: "red",
+      })
+      await page.waitFor(500)
+      expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
+    })
+  }
 
-  it("confirm-type", async () => {
-    expect(await (await page.$('#uni-input-confirm-send')).attribute("confirmType")).toEqual("send")
-    expect(await (await page.$('#uni-input-confirm-search')).attribute("confirmType")).toEqual("search")
-    expect(await (await page.$('#uni-input-confirm-next')).attribute("confirmType")).toEqual("next")
-    expect(await (await page.$('#uni-input-confirm-go')).attribute("confirmType")).toEqual("go")
-    expect(await (await page.$('#uni-input-confirm-done')).attribute("confirmType")).toEqual("done")
-  })
 
   // it("maxlength", async () => {
   //   const input = await page.$('.uni-input-maxlength');
@@ -139,13 +172,6 @@ describe('component-native-input', () => {
   //   await page.waitFor(500)
   // })
 
-  it("cursor-color", async () => {
-    await page.setData({
-      cursor_color: "red",
-    })
-    await page.waitFor(500)
-    expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
-  })
 
   it("maxlength", async () => {
     const input = await page.$('#uni-input-maxlength');
@@ -173,11 +199,7 @@ describe('component-native-input', () => {
   })
 
   it("keyboard height changed after page back", async () => {
-    if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('web')) {
-      expect(1).toBe(1)
-      return
-    }
-    if (process.env.uniTestPlatformInfo.startsWith('ios')) {
+    if (isWeb || isMP || isIOS) {
       expect(1).toBe(1)
       return
     }
