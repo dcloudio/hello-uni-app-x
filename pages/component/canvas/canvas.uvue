@@ -96,12 +96,15 @@
             this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
           }, 'image/jpeg', 0.95)
           // #endif
-          this.testToDataURLResult = context.toDataURL().startsWith('data:image/png;base64')
+
           this.testCanvasContext = true
         }
       })
     },
     onReady() {
+      // TODO app-android 需要延迟调用
+      this.testToDataURLResult = this.canvasContext!.toDataURL().startsWith('data:image/png;base64')
+
       // 同步调用方式，仅支持 app/web
       // let canvas = uni.getElementById("canvas") as UniCanvasElement
       // this.renderingContext = canvas.getContext("2d")
