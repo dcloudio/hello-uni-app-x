@@ -9,14 +9,12 @@ describe('ExtApi-UploadFile', () => {
     return
   }
 
+  const isUploadProjectFileSupported = !process.env.uniTestPlatformInfo.startsWith('mp')
+
   let page;
   let res;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(600);
-    await page.callMethod('jest_uploadFile');
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
   });
 
   beforeEach(async () => {
@@ -25,16 +23,22 @@ describe('ExtApi-UploadFile', () => {
     })
   });
 
-  it('Check ', async () => {
-    expect(res).toBe(true);
-  });
+  if(isUploadProjectFileSupported) {
+    it('Check ', async () => {
+      await page.waitFor(600);
+      await page.callMethod('jest_uploadFile');
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true);
+    });
 
-  it('Check files upload', async () => {
-    res = await page.callMethod('jest_files_upload')
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
+    it('Check files upload', async () => {
+      res = await page.callMethod('jest_files_upload')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+  }
 
   it('Check uni.env', async () => {
     await page.callMethod('jest_uploadFile_with_uni_env');
