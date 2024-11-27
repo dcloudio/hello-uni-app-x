@@ -28,7 +28,7 @@ describe('component-native-scroll-view-props', () => {
     //检测竖向scrolltop属性赋值
     it('check_scroll_top', async () => {
         await page.setData({
-            scrollTop: 600
+          scrollTop: 600
         })
         await page.waitFor(600)
         //检测滚动top 是否触发scroll 事件
@@ -44,7 +44,7 @@ describe('component-native-scroll-view-props', () => {
     //检测竖向scroll_into_view属性赋值
     it('check_scroll_into_view_top', async () => {
         await page.setData({
-            scrollIntoView: "item3"
+          scrollIntoView: "item3"
         })
         await page.waitFor(600)
         const element = await page.$('#scrollViewY')
@@ -71,7 +71,10 @@ describe('component-native-scroll-view-props', () => {
     //检测横向scrollLeft属性赋值
     it('check_scroll_left', async () => {
       await page.setData({
-          scrollLeft: 600
+        scrollX: true
+      })
+      await page.setData({
+        scrollLeft: 600
       })
       await page.waitFor(600)
       const element = await page.$('#scrollViewX')
@@ -82,6 +85,9 @@ describe('component-native-scroll-view-props', () => {
 
     //检测横向scroll_into_view属性赋值
     it('check_scroll_into_view_left', async () => {
+      await page.setData({
+        scrollX: true
+      })
       await page.setData({
           scrollIntoView: "horizontal_item3"
       })

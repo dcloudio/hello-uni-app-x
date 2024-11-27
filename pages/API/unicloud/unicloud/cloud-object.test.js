@@ -24,6 +24,7 @@ describe('unicloud-import-object', () => {
       genericDemoReturnTodoTitle,
       genericDemoReturnTodoContent,
       failErrCode,
+      failErrSubject,
       failErrDetailTips,
       failNumberErrCode,
       successErrCode,

@@ -75,7 +75,7 @@ describe('PickerView.uvue', () => {
         indicatorStyle: "", //清空indicatorStyle
         indicatorClass: "indicator-test", //设置indicatorClass为indicator-test
       })
-      expect(await pickerViewEl.attribute('indicatorClass')).toBe("indicator-test")
+      expect(await pickerViewEl.attribute(isMP ? 'indicator-class': 'indicatorClass')).toBe("indicator-test")
       await toScreenshot('picker-view-web-indicator-class')
       await page.setData({
         indicatorClass: "", //清空indicatorClass
@@ -86,14 +86,14 @@ describe('PickerView.uvue', () => {
       await page.setData({
         maskStyle
       })
-      expect(await pickerViewEl.attribute('maskStyle')).toBe(maskStyle)
+      expect(await pickerViewEl.attribute(isMP ? 'mask-style' : 'maskStyle')).toBe(maskStyle)
       await toScreenshot('picker-view-web-mask-style')
     })
     it('mask-class', async () => {
       await page.setData({
         maskClass: "mask-test"
       })
-      expect(await pickerViewEl.attribute('maskClass')).toBe("mask-test")
+      expect(await pickerViewEl.attribute(isMP ? 'mask-class' : maskClass)).toBe("mask-test")
       await toScreenshot('picker-view-web-mask-class')
     })
     return
