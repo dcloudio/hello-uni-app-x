@@ -4,7 +4,7 @@ const PAGE_PATH = '/pages/component/view/view'
 describe('view-test', () => {
 
   // 先屏蔽 android 及 web 平台
-  if (process.env.uniTestPlatformInfo.startsWith('android') || process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (isAndroid || isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

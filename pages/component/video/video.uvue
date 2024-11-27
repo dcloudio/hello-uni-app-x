@@ -230,8 +230,12 @@
       },
       pause: function () {
         console.log("pause");
+        // #ifdef MP
+        this.videoContext?.pause();
+        // #endif
+        // #ifndef MP
         (uni.getElementById("video") as UniVideoElement).pause(); //as写法测试。注意id不对时as会崩溃
-        // this.videoContext?.pause();
+        // #endif
       },
       seek: function (pos : number) {
         console.log("seek -> " + pos);
@@ -250,8 +254,12 @@
       },
       stop: function () {
         console.log("stop");
+        // #ifdef MP
+        this.videoContext?.stop();
+        // #endif
+        // #ifndef MP
         uni.getElementById<UniVideoElement>("video")?.stop(); //泛型写法测试
-        // this.videoContext?.stop();
+        // #endif
       },
       sendDanmu: function () {
         console.log("sendDanmu -> " + this.danmu);

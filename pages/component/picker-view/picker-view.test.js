@@ -1,6 +1,11 @@
 const PAGE_PATH = '/pages/component/picker-view/picker-view'
 let page, pickerViewEl;
 describe('PickerView.uvue', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
@@ -59,11 +64,11 @@ describe('PickerView.uvue', () => {
       indicatorStyle
     })
     await page.waitFor(500)
-    expect(await pickerViewEl.attribute('indicatorStyle')).toBe(indicatorStyle)
+    expect(await pickerViewEl.attribute(isMP ? 'indicator-style' : 'indicatorStyle')).toBe(indicatorStyle)
     await toScreenshot('picker-view-indicator-style')
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (isWeb || isMP) {
     // indicator-class、mask-style、mask-class 仅web支持
     it('indicator-class', async () => {
       await page.setData({
@@ -94,7 +99,7 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true') {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP) {
     it('mask-top-bottom-style', async () => {
       // App端动态设置mask-top-style、mask-bottom-style无效
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"

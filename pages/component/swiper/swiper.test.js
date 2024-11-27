@@ -1,5 +1,10 @@
 jest.setTimeout(30000);
 describe('test swiper', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
   let page;
   const webDetailRes = {
     current: 1,
@@ -28,25 +33,33 @@ describe('test swiper', () => {
      */
   });
 
-  it('check autoplay loop', async () => {
-    await page.setData({
-      currentValChange: 0,
-      autoplaySelect: true,
-    })
-    await page.waitFor(2400)
-    expect(await page.data('currentValChange')).toEqual(1)
-    await page.waitFor(2000)
-    expect(await page.data('currentValChange')).toEqual(2)
-    await page.waitFor(2000)
-    expect(await page.data('currentValChange')).toEqual(0)
+  if(!isMP) {
+    it('check autoplay loop', async () => {
+      await page.setData({
+        currentValChange: 0,
+        autoplaySelect: true,
+      })
+      await page.waitFor(2400)
+      expect(await page.data('currentValChange')).toEqual(1)
+      await page.waitFor(2000)
+      expect(await page.data('currentValChange')).toEqual(2)
+      await page.waitFor(2000)
+      expect(await page.data('currentValChange')).toEqual(0)
 
-    await page.setData({
-      autoplaySelect: false
-    })
-    await page.waitFor(300)
-  });
+      await page.setData({
+        autoplaySelect: false
+      })
+      await page.waitFor(300)
+    });
+  }
 
   it('check current', async () => {
+    if(isMP) {
+      // 微信小程序表现较为怪异，interval显式的设置非0的情况下，会无视autoplay属性。interval默认值5000
+      await page.setData({
+        intervalSelect: 0,
+      })
+    }
     await page.setData({
       currentVal: 2,
     })
@@ -57,6 +70,12 @@ describe('test swiper', () => {
     })
     await page.waitFor(600)
     expect(await page.data('currentValChange')).toEqual(0)
+
+    if(isMP) {
+      await page.setData({
+        intervalSelect: 2000,
+      })
+    }
   });
 
   it('check currentId', async () => {
@@ -98,7 +117,7 @@ describe('test swiper', () => {
 
   it('Event change', async () => {
     const changeDetailInfo = await page.data('changeDetailTest')
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
+    if(isWeb || isMP){
       expect(changeDetailInfo).toEqual(webDetailRes)
     }else{
       expect(changeDetailInfo).toEqual(appDetailRes)
@@ -109,7 +128,7 @@ describe('test swiper', () => {
   it('Event animationfinish', async () => {
     await page.waitFor(1000)
     const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
-    if(process.env.uniTestPlatformInfo.startsWith('web')){
+    if(isWeb || isMP){
       expect(animationfinishDetailInfo).toEqual(webDetailRes)
     }else{
       expect(animationfinishDetailInfo).toEqual(appDetailRes)

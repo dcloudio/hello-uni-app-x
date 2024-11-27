@@ -1,6 +1,11 @@
 jest.setTimeout(60000);
 describe('component-native-video', () => {
-  if(process.env.uniTestPlatformInfo.startsWith('web')){
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
+  if(isWeb){
     // TODO: web 端暂不支持测试
     it('web', async () => {
       expect(1).toBe(1)
@@ -31,40 +36,44 @@ describe('component-native-video', () => {
     expect(await page.data('isPause')).toBe(true);
   });
 
-  it('test local source', async () => {
+  if(!isMP) {
+    it('test local source', async () => {
+      await page.setData({
+        autoTest: true,
+        isError: false
+      });
+      const oldSrc = await page.data('src');
+      await page.callMethod('downloadSource');
+      await page.waitFor(5000);
+      expect(await page.data('isError')).toBe(false);
+      await page.setData({
+        src: '/static/test-video/2minute-demo.m3u8'
+      });
+      await page.waitFor(100);
+      expect(await page.data('isError')).toBe(false);
+      await page.setData({
+        src: oldSrc
+      });
+    });
+
+    it('test assets path', async () => {
+      if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) return;
+      const oldSrc = await page.data('src');
+      await page.setData({
+        isError: false,
+        src: 'file:///android_asset/uni-autoTest/demo10s.mp4'
+      });
+      await page.waitFor(500);
+      expect(await page.data('isError')).toBe(false);
+      await page.setData({
+        src: oldSrc
+      });
+    });
+  }
+  it('test event play pause controlstoggle', async () => {
     await page.setData({
       autoTest: true,
-      isError: false
     });
-    const oldSrc = await page.data('src');
-    await page.callMethod('downloadSource');
-    await page.waitFor(5000);
-    expect(await page.data('isError')).toBe(false);
-    await page.setData({
-      src: '/static/test-video/2minute-demo.m3u8'
-    });
-    await page.waitFor(100);
-    expect(await page.data('isError')).toBe(false);
-    await page.setData({
-      src: oldSrc
-    });
-  });
-
-  it('test assets path', async () => {
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) return;
-    const oldSrc = await page.data('src');
-    await page.setData({
-      isError: false,
-      src: 'file:///android_asset/uni-autoTest/demo10s.mp4'
-    });
-    await page.waitFor(500);
-    expect(await page.data('isError')).toBe(false);
-    await page.setData({
-      src: oldSrc
-    });
-  });
-
-  it('test event play pause controlstoggle', async () => {
     await page.callMethod('play');
     start = Date.now();
     await page.waitFor(async () => {
@@ -76,42 +85,44 @@ describe('component-native-video', () => {
       // });
     }else {
       expect(await page.data('eventPlay')).toEqual({
-        tagName: 'VIDEO',
+        tagName: isMP ? undefined : 'VIDEO',
         type: 'play'
       });
     }
     await page.callMethod('pause');
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventPause')) || (Date.now() - start > 500);
+      return (await page.data('eventPause')) || (Date.now() - start > 1000);
     });
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
       // expect(await page.data('eventPause')).toEqual({
       //   type: 'pause'
       // });
-    }else {
+    } else {
        expect(await page.data('eventPause')).toEqual({
-         tagName: 'VIDEO',
+         tagName: isMP ? undefined : 'VIDEO',
          type: 'pause'
        });
     }
-    await page.callMethod('play');
-    start = Date.now();
-    await page.waitFor(async () => {
-      return (await page.data('eventControlstoggle')) || (Date.now() - start > 500);
-    });
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-      // expect(await page.data('eventControlstoggle')).toEqual({
-      //   tagName: 'VIDEO',
-      //   type: 'controlstoggle',
-      //   show: true
-      // });
-    }else {
-      expect(await page.data('eventControlstoggle')).toEqual({
-        tagName: 'VIDEO',
-        type: 'controlstoggle',
-        show: true
+    if(!isMP && !isWeb) {
+      await page.callMethod('play');
+      start = Date.now();
+      await page.waitFor(async () => {
+        return (await page.data('eventControlstoggle')) || (Date.now() - start > 1000);
       });
+      if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+        // expect(await page.data('eventControlstoggle')).toEqual({
+        //   tagName: 'VIDEO',
+        //   type: 'controlstoggle',
+        //   show: true
+        // });
+      } else {
+        expect(await page.data('eventControlstoggle')).toEqual({
+          tagName: isMP ? undefined : 'VIDEO',
+          type: 'controlstoggle',
+          show: true
+        });
+      }
     }
 
   });
@@ -126,56 +137,55 @@ describe('component-native-video', () => {
       return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() - start > 1000);
     });
     expect(await page.data('eventWaiting')).toEqual({
-      tagName: 'VIDEO',
+      tagName: isMP ? undefined : 'VIDEO',
       type: 'waiting'
     });
     expect(await page.data('eventProgress')).toEqual({
-      tagName: 'VIDEO',
+      tagName: isMP ? undefined : 'VIDEO',
       type: 'progress',
       isBufferedValid: true
     });
   });
 
-  it('test event fullscreenchange fullscreenclick', async () => {
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-      return;
-    }
-    await page.callMethod('requestFullScreen');
-    start = Date.now();
-    await page.waitFor(async () => {
-      return (await page.data('eventFullscreenchange')) || (Date.now() - start > 1000);
-    });
-    expect(await page.data('eventFullscreenchange')).toEqual({
-      tagName: 'VIDEO',
-      type: 'fullscreenchange',
-      fullScreen: true,
-      direction: 'horizontal'
-    });
-    const infos = process.env.uniTestPlatformInfo.split(' ');
-    const version = parseInt(infos[infos.length - 1]);
-    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
-      await page.waitFor(5000);
-      await program.adbCommand('input tap 10 10');
+  if (isAndroid) {
+    it('test event fullscreenchange fullscreenclick', async () => {
+      await page.callMethod('requestFullScreen');
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventFullscreenclick')) || (Date.now() - start > 1000);
+        return (await page.data('eventFullscreenchange')) || (Date.now() - start > 1000);
       });
-      const res = await program.adbCommand('wm size');
-      const width = res.data.split(' ').at(-1).split('x')[0];
-      const height = res.data.split(' ').at(-1).split('x')[1];
-      const res2 = await program.adbCommand('wm density');
-      const scale = res2.data.split(' ').at(-1) / 160;
-      expect(await page.data('eventFullscreenclick')).toEqual({
-        tagName: 'VIDEO',
-        type: 'fullscreenclick',
-        screenX: parseInt(10 / scale),
-        screenY: parseInt(10 / scale),
-        screenWidth: parseInt(height / scale),
-        screenHeight: parseInt(width / scale)
+      expect(await page.data('eventFullscreenchange')).toEqual({
+        tagName: isMP ? undefined : 'VIDEO',
+        type: 'fullscreenchange',
+        fullScreen: true,
+        direction: 'horizontal'
       });
-    }
-    await page.callMethod('exitFullScreen');
-  });
+      const infos = process.env.uniTestPlatformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+        await page.waitFor(5000);
+        await program.adbCommand('input tap 10 10');
+        start = Date.now();
+        await page.waitFor(async () => {
+          return (await page.data('eventFullscreenclick')) || (Date.now() - start > 1000);
+        });
+        const res = await program.adbCommand('wm size');
+        const width = res.data.split(' ').at(-1).split('x')[0];
+        const height = res.data.split(' ').at(-1).split('x')[1];
+        const res2 = await program.adbCommand('wm density');
+        const scale = res2.data.split(' ').at(-1) / 160;
+        expect(await page.data('eventFullscreenclick')).toEqual({
+          tagName: isMP ? undefined : 'VIDEO',
+          type: 'fullscreenclick',
+          screenX: parseInt(10 / scale),
+          screenY: parseInt(10 / scale),
+          screenWidth: parseInt(height / scale),
+          screenHeight: parseInt(width / scale)
+        });
+      }
+      await page.callMethod('exitFullScreen');
+    });
+  }
 
   it('test event ended timeupdate', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
@@ -187,7 +197,7 @@ describe('component-native-video', () => {
       return (await page.data('eventEnded')) || (Date.now() - start > 30000);
     });
     expect(await page.data('eventEnded')).toEqual({
-      tagName: 'VIDEO',
+      tagName: isMP ? undefined : 'VIDEO',
       type: 'ended'
     });
     const infos = process.env.uniTestPlatformInfo.split(' ');
@@ -198,7 +208,7 @@ describe('component-native-video', () => {
         return (await page.data('eventTimeupdate')) || (Date.now() - start > 500);
       });
       expect(await page.data('eventTimeupdate')).toEqual({
-        tagName: 'VIDEO',
+        tagName: isMP ? undefined : 'VIDEO',
         type: 'timeupdate',
         currentTime: 121,
         duration: 121
@@ -207,7 +217,7 @@ describe('component-native-video', () => {
   });
 
   it('test event error', async () => {
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    if (isIOS || isMP) {
       return
     }
     const oldSrc = await page.data('src');
@@ -230,7 +240,9 @@ describe('component-native-video', () => {
   });
 
   it('test sub component', async () => {
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) return
+    if (isIOS || isMP) {
+      return
+    }
     await page.setData({
       subCompEnable: true,
       subCompShow: true

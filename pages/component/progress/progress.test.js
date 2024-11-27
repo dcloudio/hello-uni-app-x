@@ -16,6 +16,11 @@ beforeEach(async () => {
 })
 
 describe('Progress.uvue', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
   it('percent', async () => {
     await page.callMethod('setProgress')
     await page.waitFor(1000);
@@ -44,14 +49,25 @@ describe('Progress.uvue', () => {
     const elements = await page.$$('.progress')
     expect(elements.length).toBe(4)
   })
-  it('show-info', async () => {
-    const el = await page.$('.p')
-    expect(await el.attribute('show-info')).toEqual(true + '')
-    await page.setData({
-      showInfo: false
+  if(isMP) {
+    it('show-info', async () => {
+      const el = await page.$('.p')
+      expect(await el.property('showInfo')).toEqual(true)
+      await page.setData({
+        showInfo: false
+      })
+      expect(await el.property('showInfo')).toEqual(false)
     })
-    expect(await el.attribute('show-info')).toEqual(false + '')
-  })
+  } else {
+    it('show-info', async () => {
+      const el = await page.$('.p')
+      expect(await el.attribute('show-info')).toEqual(true + '')
+      await page.setData({
+        showInfo: false
+      })
+      expect(await el.attribute('show-info')).toEqual(false + '')
+    })
+  }
   it('border-radius', async () => {
     const el = await page.$('.p')
     expect(await el.attribute('border-radius')).toEqual(0 + '')
@@ -86,9 +102,7 @@ describe('Progress.uvue', () => {
   })
   it('trigger UniProgressActiveendEvent', async () => {
 
-    if (
-      process.env.uniTestPlatformInfo.startsWith('web')
-    ) {
+    if (isWeb || isMP) {
       expect(1).toBe(1)
       return
     }

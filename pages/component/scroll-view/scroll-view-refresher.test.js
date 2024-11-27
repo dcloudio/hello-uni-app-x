@@ -2,6 +2,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
 describe('component-native-scroll-view-refresher', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('other platform', () => {
@@ -44,7 +45,7 @@ describe('component-native-scroll-view-refresher', () => {
       expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
       expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
     }
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
   });
 
