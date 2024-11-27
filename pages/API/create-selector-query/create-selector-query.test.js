@@ -5,6 +5,8 @@ const RECT_WIDTH = 150;
 const RECT_HEIGHT = 100;
 
 describe('nodes-info', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isMP = platformInfo.startsWith('mp')
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
