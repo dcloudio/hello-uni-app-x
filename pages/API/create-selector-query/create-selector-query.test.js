@@ -5,6 +5,8 @@ const RECT_WIDTH = 150;
 const RECT_HEIGHT = 100;
 
 describe('nodes-info', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isMP = platformInfo.startsWith('mp')
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -54,12 +56,15 @@ describe('nodes-info', () => {
     expect(Math.round(nodeInfo2.width)).toBe(RECT_WIDTH)
     expect(Math.round(nodeInfo2.height)).toBe(RECT_HEIGHT)
   })
-  it('get-node-info-child', async () => {
-    const child = await page.$('.node-child')
-    const childData = await child.data()
-    console.log('get-node-info-child.childData.top', childData.top);
-    expect(childData.top > 100).toBe(true)
-  })
+  if(!isMP) {
+    // 小程序端启用了虚拟host，无法获取到子组件
+    it('get-node-info-child', async () => {
+      const child = await page.$('.node-child')
+      const childData = await child.data()
+      console.log('get-node-info-child.childData.top', childData.top);
+      expect(childData.top > 100).toBe(true)
+    })
+  }
 
   it('multi-child', async () => {
     const pageData = await page.data()

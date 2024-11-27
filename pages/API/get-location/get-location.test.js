@@ -6,6 +6,14 @@ const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
 
 describe("get-location", () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isMP = platformInfo.startsWith('mp')
+  if(isMP) {
+    // 微信上会有权限弹框，暂时屏蔽测试
+    it('not support', async () => {
+      expect(1).toBe(1)
+    })
+  }
     beforeAll(async () => {
       page = await program.reLaunch(PAGE_PATH)
       await page.waitFor(600)

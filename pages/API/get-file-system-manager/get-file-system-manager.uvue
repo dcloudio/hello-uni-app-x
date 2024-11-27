@@ -28,7 +28,7 @@
 		<button class="btnstyle" type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
 
 
-		<!-- #ifdef APP-ANDROID -->
+		<!-- #ifdef APP-ANDROID || MP -->
 		<button class="btnstyle" type="primary" @tap="statFileInfoSyncTest"
 			id="btn-stat-file-sync">同步递归获取目录files的Stats对象{{statFile}}</button>
 		<button class="btnstyle" type="primary" @tap="appendFileTest"
@@ -164,11 +164,20 @@
 				/**
 				 * 待测试的全局环境变量
 				 */
+        // #ifdef MP
+				basePath: uni.env.USER_DATA_PATH + '/',
+				copyToBasePath: uni.env.USER_DATA_PATH + '/',
+				globalTempPath: uni.env.CACHE_PATH,
+				globalRootPath: uni.env.SANDBOX_PATH,
+				globalUserDataPath: uni.env.USER_DATA_PATH + '/',
+        // #endif
+        // #ifndef MP
 				basePath: uni.env.USER_DATA_PATH,
 				copyToBasePath: uni.env.USER_DATA_PATH,
 				globalTempPath: uni.env.CACHE_PATH,
 				globalRootPath: uni.env.SANDBOX_PATH,
-				globalUserDataPath: uni.env.USER_DATA_PATH
+				globalUserDataPath: uni.env.USER_DATA_PATH,
+        // #endif
 			}
 		},
 		onLoad() {

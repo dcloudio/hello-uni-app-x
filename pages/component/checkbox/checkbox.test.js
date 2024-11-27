@@ -70,18 +70,21 @@ describe('Checkbox.uvue', () => {
       expect(disabled2).toBe(false + '')
     })
   }
-  it('checked', async () => {
-    const cb = await page.$('.cb')
-    // TODO
-    const newValue1 = await cb.property('checked')
-    expect(newValue1.toString()).toBe(true + '')
-    await page.setData({
-      checked: false,
+  if(!isMP) {
+    // 自动化测试获取的property checked在app、web和微信小程序之间有差异。微信小程序获取的和显示效果一致，app、web获取的是绑定值
+    it('checked', async () => {
+      const cb = await page.$('.cb')
+      // TODO
+      const newValue1 = await cb.property('checked')
+      expect(newValue1.toString()).toBe(true + '')
+      await page.setData({
+        checked: false,
+      })
+      // TODO
+      const newValue2 = await cb.property('checked')
+      expect(newValue2.toString()).toBe(false + '')
     })
-    // TODO
-    const newValue2 = await cb.property('checked')
-    expect(newValue2.toString()).toBe(false + '')
-  })
+  }
   if(!isMP) {
     it('color', async () => {
       const cb = await page.$('.cb')

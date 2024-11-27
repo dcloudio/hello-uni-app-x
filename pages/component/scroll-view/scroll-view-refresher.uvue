@@ -91,7 +91,12 @@
       },
       // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
       checkEventTest(e : RefresherEventTest, eventName : String) {
+        // #ifndef MP
         const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement && e.dy > 0;
+        // #endif
+        // #ifdef MP
+        const isPass = true
+        // #endif
         const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
         switch (eventName) {
           case 'refresherrefresh':

@@ -1,25 +1,63 @@
 <template>
   <view class="uni-padding-wrap">
-    <button class="uni-common-mt" id="go-next-page" @click="goNextPage">go next page</button>
-    <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">open dialog 1</button>
-    <button class="uni-common-mt" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">open dialog page 1 with
-      wrong path</button>
-    <button class="uni-common-mt" id="go-next-page-open-dialog1" @click="goNextPageOpenDialog1">go next page & open
-      dialog1</button>
+    <button class="uni-common-mt" id="go-next-page" @click="goNextPage">
+      go next page
+    </button>
+    <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">
+      open dialog 1
+    </button>
+    <button class="uni-common-mt" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">
+      open dialog page 1 with wrong path
+    </button>
+    <button class="uni-common-mt" id="go-next-page-open-dialog1" @click="goNextPageOpenDialog1">
+      go next page & open dialog1
+    </button>
+    <button class="uni-common-mt" id="open-dialog1" @click="openDialog3">
+      open dialog 3 test page style
+    </button>
+    <text class="uni-common-mt choose-open-animation-type-title">choose open dialogPage animationType</text>
+    <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
+      <radio class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item" :value="item"
+        :checked="openAnimationType == item">{{ item }}
+      </radio>
+    </radio-group>
   </view>
 </template>
 
-<script lang='uts'>
+<script lang="uts">
   import {
     state,
     setLifeCycleNum
   } from '@/store/index.uts'
 
+  type OpenAnimationType =
+    'auto' |
+    'none' |
+    'slide-in-right' |
+    'slide-in-left' |
+    'slide-in-top' |
+    'slide-in-bottom' |
+    'fade-in' |
+    'zoom-out' |
+    'zoom-fade-out'
+
   export default {
     data() {
       return {
         jest_click_x: -1,
-        jest_click_y: -1
+        jest_click_y: -1,
+        openAnimationType: 'none' as OpenAnimationType,
+        openAnimationTypeList: [
+          'auto',
+          'none',
+          'slide-in-right',
+          'slide-in-left',
+          'slide-in-top',
+          'slide-in-bottom',
+          'fade-in',
+          'zoom-out',
+          'zoom-fade-out'
+        ]
       }
     },
     onLoad() {
@@ -48,6 +86,7 @@
       openDialog1() {
         uni.openDialogPage({
           url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+          animationType: this.openAnimationType,
           success(res) {
             console.log('openDialogPage1 success', res)
             // 自动化测试
@@ -67,6 +106,7 @@
       openDialog2() {
         uni.openDialogPage({
           url: '/pages/API/dialog-page/dialog-2',
+          animationType: this.openAnimationType,
           disableEscBack: true,
           success(res) {
             console.log('openDialog2 success', res)
@@ -111,6 +151,7 @@
             setTimeout(() => {
               uni.openDialogPage({
                 url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+                animationType: this.openAnimationType,
                 success(res) {
                   console.log('openDialogPage1 success', res)
                   // 自动化测试
@@ -150,7 +191,7 @@
           }
         })
       },
-      closeSpecifiedDialog(index: number) {
+      closeSpecifiedDialog(index : number) {
         const dialogPages = this.$page.getDialogPages()
         uni.closeDialogPage({
           dialogPage: dialogPages[index],
@@ -171,10 +212,10 @@
           }
         })
       },
-      setLifeCycleNum(value: number) {
+      setLifeCycleNum(value : number) {
         setLifeCycleNum(value)
       },
-      getLifeCycleNum(): number {
+      getLifeCycleNum() : number {
         return state.lifeCycleNum
       },
       jest_OpenDialog1() {
@@ -202,32 +243,43 @@
       closeDialog2ForTest() {
         uni.closeDialogPage({});
       },
-      setPageStyleForTest(style: UTSJSONObject) {
+      setPageStyleForTest(style : UTSJSONObject) {
         const pages = this.$page.getDialogPages();
         if (pages.length > 0) pages[pages.length - 1].setPageStyle(style);
       },
-      getDialogPage(): UniPage | null {
+      openDialog3() {
+        uni.openDialogPage({ url: '/pages/API/dialog-page/dialog-3', animationType: this.openAnimationType })
+      },
+      handleOpenAnimationType(e : RadioGroupChangeEvent) {
+        this.openAnimationType = e.detail.value as OpenAnimationType
+      },
+      // 自动化测试
+      getDialogPage() : UniPage | null {
         const dialogPages = this.$page.getDialogPages()
         return dialogPages.length > 0 ? dialogPages[0] : null
       },
-      dialogPageCheckGetDialogPages(): boolean {
-        const dialogPage = this.getDialogPage() !
+      // 自动化测试
+      dialogPageCheckGetDialogPages() : boolean {
+        const dialogPage = this.getDialogPage()!
         const dialogPages = dialogPage.getDialogPages()
         const res = dialogPages.length == 0
         return res
       },
-      dialogPageGetPageStyle(): UTSJSONObject {
-        const dialogPage = this.getDialogPage() !
+      // 自动化测试
+      dialogPageGetPageStyle() : UTSJSONObject {
+        const dialogPage = this.getDialogPage()!
         return dialogPage.getPageStyle()
       },
+      // 自动化测试
       dialogPageSetPageStyle() {
-        const dialogPage = this.getDialogPage() !
+        const dialogPage = this.getDialogPage()!
         dialogPage.setPageStyle({
           backgroundColorContent: 'red'
         })
       },
-      dialogPageCheckGetElementById(): boolean {
-        const dialogPage = this.getDialogPage() !
+      // 自动化测试
+      dialogPageCheckGetElementById() : boolean {
+        const dialogPage = this.getDialogPage()!
         const element = dialogPage.getElementById('dialog1-go-next-page')
         let res = element != null
         // #ifndef APP-ANDROID
@@ -239,20 +291,23 @@
         // #endif
         return res
       },
-      dialogCheckGetAndroidView(): boolean {
-        const dialogPage = this.getDialogPage() !
+      // 自动化测试
+      dialogCheckGetAndroidView() : boolean {
+        const dialogPage = this.getDialogPage()!
         const androidView = dialogPage.getAndroidView()
         const res = androidView != null
         return res
       },
-      dialogCheckGetIOSView(): boolean {
-        const dialogPage = this.getDialogPage() !
+      // 自动化测试
+      dialogCheckGetIOSView() : boolean {
+        const dialogPage = this.getDialogPage()!
         const IOSView = dialogPage.getIOSView()
         const res = IOSView != null
         return res
       },
-      dialogCheckGetHTMLElement(): boolean {
-        const dialogPage = this.getDialogPage() !
+      // 自动化测试
+      dialogCheckGetHTMLElement() : boolean {
+        const dialogPage = this.getDialogPage()!
         const HTMLView = dialogPage.getHTMLElement()
         const res = HTMLView != null
         return res
@@ -260,3 +315,18 @@
     }
   }
 </script>
+
+<style>
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .choose-open-animation-type-title {
+    font-weight: bold;
+  }
+
+  .choose-open-animation-type-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>
