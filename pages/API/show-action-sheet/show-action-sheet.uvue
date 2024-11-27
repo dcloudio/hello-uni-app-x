@@ -1,4 +1,7 @@
 <template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
   <view>
     <page-head :title="title"></page-head>
     <view class="uni-list">
@@ -25,10 +28,14 @@
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
-        <button class="uni-btn-v" type="default" @tap="actionSheetTap" id="btn-action-sheet-show">弹出action sheet</button>
+        <button class="uni-btn-v" type="default" @tap="actionSheetTap" id="btn-action-sheet-show">弹出action
+          sheet</button>
       </view>
     </view>
   </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="uts">
   type ItemType = {
@@ -42,7 +49,7 @@
         itemColorCustom: false,
         itemContentLarge: false,
         itemNumLargeSelect: false,
-        showErrorToast:true,
+        showErrorToast: true,
         items: [{
           value: '标题',
           name: '有标题'
@@ -59,10 +66,10 @@
         current: 0,
       }
     },
-    onLoad(){
+    onLoad() {
       uni.showActionSheet({
         title: "onLoad 调用示例,请手动取消",
-        itemList:['item1', 'item2'],
+        itemList: ['item1', 'item2'],
       })
     },
     methods: {
@@ -117,7 +124,7 @@
               })
             },
             fail: (e) => {
-              if(this.showErrorToast){
+              if (this.showErrorToast) {
                 uni.showToast({
                   title: e.errMsg,
                   icon: "none"
@@ -139,7 +146,7 @@
             },
             fail: (e) => {
               console.log(e);
-              if(this.showErrorToast){
+              if (this.showErrorToast) {
                 uni.showToast({
                   title: e.errMsg,
                   icon: "none"

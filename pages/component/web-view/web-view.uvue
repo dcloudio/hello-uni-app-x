@@ -8,11 +8,12 @@
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-btn-v">
-        <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" maxlength="-1"/>
+        <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" maxlength="-1" />
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" :disabled="!canGoBack" @click="back">后退</button>
-        <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!canGoForward" @click="forward">前进</button>
+        <button class="margin-left-5 uni-flex-item" type="primary" :disabled="!canGoForward"
+          @click="forward">前进</button>
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
@@ -33,6 +34,13 @@
         </view>
       </view>
       <!-- #endif -->
+      <!-- #ifdef APP-IOS -->
+      <view class="uni-row uni-btn-v" v-if="isProd() === false">
+        <view class="uni-row uni-flex-item align-items-center">
+          <text>前进、后退功能在Windows端需要打自定义基座，MAC端需要配置Xcode环境后进行真机运行或者打自定义基座</text>
+        </view>
+      </view>
+      <!-- #endif -->
     </view>
     <!-- #endif -->
   </scroll-view>
@@ -40,7 +48,7 @@
 
 <script>
   // #ifdef APP
-  import { canWebViewGoBack, canWebViewGoForward, hasNativeView} from '@/uni_modules/uts-get-native-view';
+  import { canWebViewGoBack, canWebViewGoForward, hasNativeView } from '@/uni_modules/uts-get-native-view';
   // #endif
   export default {
     data() {
@@ -63,21 +71,36 @@
         eventLoading: null as UTSJSONObject | null,
         eventLoad: null as UTSJSONObject | null,
         eventError: null as UTSJSONObject | null,
-        eventTouchstart: null as UTSJSONObject | null,
-        eventTap: null as UTSJSONObject | null,
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        isTouchEnable: false
       }
     },
     onReady() {
       // #ifdef APP
       // TODO web 实现createWebviewContext
-      this.webviewContext = uni.createWebviewContext('web-view',this)
+      this.webviewContext = uni.createWebviewContext('web-view', this)
       this.webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
       // console.log('url: ',this.webviewElement?.getAttribute("src"));
       // this.webviewElement?.setAttribute("src","https://ext.dcloud.net.cn/")
       // #endif
     },
     methods: {
+      getPackageName() : string {
+        let packageName : string = ""
+
+        // #ifdef APP-IOS
+        const res = uni.getAppBaseInfo();
+        packageName = res.bundleId
+        // #endif
+
+        return packageName
+      },
+      isProd() : boolean {
+        if (this.getPackageName() == 'io.dcloud.hellouniappx') {
+          return true
+        }
+        return false
+      },
       back() {
         this.webviewContext?.back();
       },
@@ -159,25 +182,19 @@
       // 自动化测试
       touchstart(event : UniTouchEvent) {
         if (this.autoTest) {
-          this.eventTouchstart = {
-            clientX: Math.ceil(event.touches[0].clientX),
-            clientY: Math.ceil(event.touches[0].clientY)
-          };
+          this.isTouchEnable = event.touches[0].clientX > 0 && event.touches[0].clientY > 0;
         }
       },
       tap(event : UniPointerEvent) {
         if (this.autoTest) {
-          this.eventTap = {
-            clientX: Math.ceil(event.clientX),
-            clientY: Math.ceil(event.clientY)
-          };
+          this.isTouchEnable = event.clientX > 0 && event.clientY > 0;
         }
       },
       getWindowInfo() : GetWindowInfoResult {
         return uni.getWindowInfo();
       },
       //自动化测试专用
-      checkNativeWebView(): boolean {
+      checkNativeWebView() : boolean {
         // #ifdef APP
         return hasNativeView('web-view')
         // #endif

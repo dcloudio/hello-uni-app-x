@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view style="flex: 1; background-color: #f8f8f8" enable-back-to-top="true">
+  <scroll-view style="flex: 1;" enable-back-to-top="true">
   <!-- #endif -->
     <view class="uni-container">
       <view v-if="!hasLeftWin" class="uni-header-logo">
@@ -12,9 +12,9 @@
           :text="'https://uniapp.dcloud.io/uni-app-x/component/'" :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
-        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem!.id" :title="menuItem.name"
+        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="item">
-          <template v-for="childMenuItem in menuItem.items" :key="childMenuItem!.id">
+          <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
             <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
               <text class="uni-navigate-text" :class="{
@@ -26,7 +26,7 @@
               <uni-collapse-item :title="childMenuItem.name" class="item"
                 style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
                 <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
-                  v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem!.path"
+                  v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
                       'left-win-active':
@@ -39,10 +39,6 @@
           </template>
         </uni-collapse-item>
       </uni-collapse>
-
-      <!-- #ifdef UNI-APP-X && APP -->
-      <uni-upgrade-center-app ref="upgradePopup" @show="upgradePopupShow" @close="upgradePopupClose" />
-      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -60,7 +56,7 @@
   export default {
     data() {
       return {
-        menu: menu as (MenuItem | null)[],
+        menu: menu as MenuItem[],
         arrowRightIcon: '/static/icons/arrow-right.png' as string.ImageURIString,
         pageHiden: false
       }
@@ -75,24 +71,12 @@
     },
     methods: {
       goPage(url : string) {
-        if(this.hasLeftWin) {
+        if (this.hasLeftWin) {
           uni.reLaunch({ url })
         } else {
           uni.navigateTo({ url })
         }
-      },
-      // #ifdef UNI-APP-X && APP
-      upgradePopupShow() {
-        console.log('upgradePopup show');
-        if (!this.pageHiden) {
-          uni.hideTabBar()?.catch(_ => { })
-        }
       }
-      , upgradePopupClose() {
-        console.log('upgradePopup close');
-        uni.showTabBar()?.catch(_ => { })
-      }
-      // #endif
     },
     // #ifdef WEB
     watch: {
@@ -113,7 +97,19 @@
     // #endif
     onReady() {
       // #ifdef UNI-APP-X && APP
-      checkUpdate(this.$refs['upgradePopup'] as UniUpgradeCenterAppComponentPublicInstance)
+      uni.getPrivacySetting({
+        success(res) {
+          if (res.needAuthorization) {
+            uni.onPrivacyAuthorizationChange((res) => {
+              if (!res.needAuthorization) {
+                checkUpdate()
+              }
+            })
+          } else {
+            checkUpdate()
+          }
+        }
+      })
       // #endif
     },
     onShow() {

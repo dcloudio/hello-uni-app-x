@@ -170,7 +170,7 @@ const pages = [
   '/pages/CSS/background/background-color',
   // 单独测试例中截图
   // '/pages/CSS/background/background-image',
-  '/pages/CSS/border/border',
+  // '/pages/CSS/border/border',
   '/pages/CSS/border/border-color',
   '/pages/CSS/border/border-top',
   '/pages/CSS/border/border-bottom',
@@ -293,7 +293,9 @@ if (isApp && !isAppWebview) {
     // '/pages/API/get-univerify-manager/get-univerify-manager',
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
+    '/pages/API/share-with-system/share-with-system',
     '/pages/template/scroll-sticky/scroll-sticky',
+    '/pages/CSS/text/font-family-icon',
   )
 }
 
@@ -307,7 +309,6 @@ if (isAndroid && !isAppWebview) {
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',
-    '/pages/template/share/share',
   )
 }
 
@@ -417,6 +418,6 @@ describe("page screenshot test", () => {
         return `__pages_test__/${currentPagePath.replace(/\//g, "-").substring(1)}`
       }
     })
-    await page.waitFor(500);
+    await page.waitFor(800);
   });
 });

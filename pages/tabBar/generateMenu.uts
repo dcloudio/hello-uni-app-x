@@ -25,15 +25,15 @@ export type MenuItem = {
   path : string,
   style : UTSJSONObject,
   group ?: string | null,
-  items : (MenuItem | null)[]
+  items : MenuItem[]
 }
 
-export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
-  let res : (MenuItem | null)[] = []
+export function generateMenu(tabBarType : string) : MenuItem[] {
+  let res : MenuItem[] = []
   const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page : Page) : boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
   const groupTree = JSON.parse<(Group | null)[]>(JSON.stringify(groups))
   tabBarPages.forEach(page => {
-    let menuItemArr : (MenuItem | null)[] = res
+    let menuItemArr : MenuItem[] = res
     let currentMenu : MenuItem | null = null
     const groupIndexList = page.group!.split(',').map((index : string) : number => parseInt(index))
     let currentGroups : (Group | null)[] | null = groupTree
@@ -56,9 +56,9 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
       const { index, id, name } = group
 
       const validIndex = index
-      fillMenuArrayWithNull(menuItemArr, validIndex)
+      fillMenuArrayWithEmptyMenuItem(menuItemArr, validIndex)
 
-      if (menuItemArr[validIndex] == null) {
+      if (menuItemArr[validIndex].name == 'empty') {
         menuItemArr[validIndex] = {
           id: id.split('.').slice(-1)[0],
           name,
@@ -66,14 +66,14 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
           path: '',
           style: {},
           group: '',
-          items: [] as (MenuItem | null)[],
+          items: [] as MenuItem[],
         } as MenuItem
       }
 
 
       currentMenu = menuItemArr[validIndex]
       if (groupIndex < groupLength - 1) {
-        menuItemArr = menuItemArr[validIndex]!.items as (MenuItem | null)[]
+        menuItemArr = menuItemArr[validIndex].items
       }
     })
 
@@ -84,12 +84,12 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
       path: page.path,
       style: page.style,
       group: page.group,
-      items: [] as (MenuItem | null)[],
+      items: [] as MenuItem[],
     }
     if (hasPageGroup) {
       const pageIndex = lastGroup.index
-      fillMenuArrayWithNull(currentMenu!.items, pageIndex)
-      if (currentMenu!.items[pageIndex] == null) {
+      fillMenuArrayWithEmptyMenuItem(currentMenu!.items, pageIndex)
+      if (currentMenu!.items[pageIndex].name == 'empty') {
         currentMenu!.items[pageIndex] = pageMenuItem
       } else {
         currentMenu!.items.push(pageMenuItem)
@@ -99,7 +99,7 @@ export function generateMenu(tabBarType : string) : (MenuItem | null)[] {
     }
   })
 
-  return removeNullItem(res)
+  return removeEmptyItem(res)
 }
 
 function hasPageGroup(value ?: string | null) : boolean {
@@ -111,35 +111,34 @@ function hasPageGroup(value ?: string | null) : boolean {
   // #endif
 }
 
-function isNumber(value : number | null) : boolean {
-  // #ifdef APP-ANDROID
-  return value !== null
-  // #endif
-  // #ifndef APP-ANDROID
-  return typeof value === 'number'
-  // #endif
-}
-
 function camelToDash(camelStr : string) : string {
   return camelStr.replace(/([A-Z])/g, '-$1').toLowerCase()
 }
 
-function fillMenuArrayWithNull(arr : (MenuItem | null)[], index : number) : void {
+function fillMenuArrayWithEmptyMenuItem(arr : MenuItem[], index : number) : void {
   const len = arr.length
   for (let i = 0; i <= index - (len - 1); i++) {
-    arr.push(null)
+    arr.push({
+      id: '',
+      name: 'empty',
+      index: i,
+      path: '',
+      style: {},
+      group: '',
+      items: [] as MenuItem[],
+    } as MenuItem)
   }
 }
 
-function removeNullItem(arr : (MenuItem | null)[]) : (MenuItem | null)[] {
-  const res = arr.filter((item : MenuItem | null) : boolean => item !== null)
+function removeEmptyItem(arr : MenuItem[]) : MenuItem[] {
+  const res = arr.filter((item : MenuItem) : boolean => item.name !== 'empty')
   res.forEach(menuItem => {
-    addSetTabBarPage(menuItem!)
+    addSetTabBarPage(menuItem)
     // #ifdef APP-ANDROID
-    menuItem.items = removeNullItem(menuItem.items)
+    menuItem.items = removeEmptyItem(menuItem.items)
     // #endif
     // #ifndef APP-ANDROID
-    menuItem!.items = removeNullItem(menuItem!.items)
+    menuItem!.items = removeEmptyItem(menuItem!.items)
     // #endif
   })
   return res

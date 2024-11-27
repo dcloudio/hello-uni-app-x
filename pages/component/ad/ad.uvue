@@ -1,0 +1,38 @@
+<template>
+  <view>
+    <page-head title="信息流广告"></page-head>
+    <ad adpid="1111111111" style="width: 100%;" @load="loadFun" @error="errorFun"></ad>
+    <view v-if="tips" class="uni-center">信息流广告加载失败，请退出当前页面重试。</view>
+    <button @click="pushList">列表-信息流</button>
+  </view>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        tips: false
+      }
+    },
+    methods: {
+      pushList(){
+        uni.navigateTo({
+        	url: '/pages/component/ad/list-view-ad',
+        })
+      },
+      loadFun() {
+        uni.showToast({
+          position: "bottom",
+          title: "信息流广告加载成功"
+        })
+      },
+      errorFun() {
+        this.tips = true;
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>

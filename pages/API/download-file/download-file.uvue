@@ -12,6 +12,10 @@
           <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
           <button type="primary" @tap="downloadImage">下载</button>
         </view>
+        <view style="margin: 10px;">
+          <text class="uni-hello-text">下载接口的Content-Disposition中的filename非法值例子</text>
+          <button type="primary" @tap="downloadErrorFilename">下载</button>
+        </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -19,7 +23,6 @@
   <!-- #endif -->
 </template>
 <script>
-
   // #ifdef APP
   import {
     testInovkeDownloadFile,
@@ -68,6 +71,17 @@
           console.log("progress : ", update.progress);
         })
       },
+      downloadErrorFilename(){
+        uni.downloadFile({
+          url:"https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/file/test9.txt",
+          success: (res) => {
+            console.log('downloadFile success, res is', res.tempFilePath)
+          },
+          fail: (err) => {
+            console.log('downloadFile fail, err is:', err)
+          }
+        })
+      },
       //自动化测试例专用
       jest_downloadFile() {
         uni.downloadFile({
@@ -94,7 +108,7 @@
         });
       },
 
-      jest_set_cookie(){
+      jest_set_cookie() {
         uni.request({
           url: "https://request.dcloud.net.cn/api/http/header/setCookie",
           method: "GET",
@@ -111,7 +125,7 @@
         });
       },
 
-      jest_delete_cookie(){
+      jest_delete_cookie() {
         uni.request({
           url: "https://request.dcloud.net.cn/api/http/header/deleteCookie",
           method: "GET",
@@ -127,7 +141,7 @@
           },
         });
       },
-      jest_cookie_download(needCookie: boolean){
+      jest_cookie_download(needCookie : boolean) {
         uni.downloadFile({
           url: "https://request.dcloud.net.cn/api/http/header/download",
           success: () => {
@@ -138,22 +152,22 @@
           }
         });
       },
-      jest_uts_module_invoked(){
+      jest_uts_module_invoked() {
         // #ifdef APP
         testInovkeDownloadFile({
-          success:(res: any)=>{
+          success: (res : any) => {
             this.jest_result = true
           },
-          fail:(err: any)=>{
+          fail: (err : any) => {
             this.jest_result = false
           }
         } as CommonOptions)
         // #endif
       },
-      jest_special_characters_download(){
+      jest_special_characters_download() {
         uni.downloadFile({
           url: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
-          success: (res: DownloadFileSuccess) => {
+          success: (res : DownloadFileSuccess) => {
             this.jest_result = true;
           },
           fail: () => {

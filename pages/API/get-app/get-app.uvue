@@ -39,6 +39,10 @@
           increase lifeCycleNum
         </button>
         <text class="uni-common-mt">lifeCycleNum: {{ lifeCycleNum }}</text>
+        <button class="uni-common-mt" @click="getAndroidApplication">
+          getAndroidApplication
+        </button>
+        <text class="uni-common-mt">androidApplication is null: {{ androidApplication == null }}</text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -97,6 +101,7 @@
         } as MyGlobalData,
         newGlobalDataFuncRes: '',
         lifeCycleNum: 0,
+        androidApplication: null as any | null
       }
     },
     onReady() {
@@ -161,12 +166,17 @@
       },
       _increasetLifeCycleNum: function () {
         const app = getApp()
-        app.increasetLifeCycleNum()
+        app.vm!.increasetLifeCycleNum()
         this.lifeCycleNum = state.lifeCycleNum
       },
       // 自动化测试
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
+      },
+      getAndroidApplication() : boolean {
+        const app = getApp()
+        this.androidApplication = app.getAndroidApplication()
+        return this.androidApplication !== null
       }
     },
   }

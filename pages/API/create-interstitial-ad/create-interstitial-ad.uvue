@@ -1,0 +1,62 @@
+<template>
+  <page-head title="插屏广告"></page-head>
+  <button :type="btnType" style="margin: 10px;" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        btnText: "",
+        btnType: "primary",
+        btnDisable: false,
+        interstitialAd: null as InterstitialAd | null,
+        isAdLoadSuccess: false
+      }
+    },
+    onReady() {
+      this.loadAd()
+    },
+    methods: {
+      loadAd() {
+        if (this.btnDisable)
+          return
+        this.btnDisable = true
+        this.btnText = "正在加载广告"
+        this.btnType = "primary"
+        if (this.interstitialAd == null) {
+          this.interstitialAd = uni.createInterstitialAd({
+            adpid: "1111111113" //此处为测试广告位，实际开发中请在uni-ad后台申请自己的广告位后替换
+          })
+          this.interstitialAd!.onError((_) => {
+            this.btnType = "warn"
+            this.btnText = "广告加载失败，点击重试"
+            this.btnDisable = false
+          })
+          this.interstitialAd!.onLoad((_) => {
+            this.btnType = "primary"
+            this.btnText = "广告加载成功，点击观看"
+            this.btnDisable = false
+            this.isAdLoadSuccess = true
+          })
+          this.interstitialAd!.onClose((_) => {
+            this.isAdLoadSuccess = false
+            this.loadAd()
+          })
+        }
+        this.interstitialAd!.load()
+      },
+      showAd() {
+        if (this.isAdLoadSuccess) {
+          this.interstitialAd!.show()
+        } else {
+          this.loadAd()
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>

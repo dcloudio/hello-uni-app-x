@@ -29,9 +29,30 @@
               数量限制
             </view>
             <view class="uni-list-cell-right">
-              <input class="click-t" :value="countIndex+1" type="number" :maxlength="1" @confirm="chooseImageCount" confirm-type="done" />
+              <input class="click-t" :value="countIndex+1" type="number" :maxlength="1" @confirm="chooseImageCount"
+                confirm-type="done" />
             </view>
           </view>
+          <!-- #ifdef APP -->
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              屏幕方向
+            </view>
+            <view class="uni-list-cell-right" @click="chooseOrientationType">
+              <text class="click-t">{{orientationType[orientationTypeIndex]}}</text>
+            </view>
+          </view>
+          <!-- #endif -->
+          <!-- #ifdef APP-ANDROID -->
+          <view class="uni-list-cell cell-pd">
+            <view class="uni-list-cell-left uni-label">
+              相册模式
+            </view>
+            <view class="uni-list-cell-right" @click="albumModeChange">
+              <text class="click-t">{{albumModeType[albumModeTypeIndex]}}</text>
+            </view>
+          </view>
+          <!-- #endif -->
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
               图像裁剪
@@ -40,13 +61,14 @@
               <switch :checked="isCrop" @change="switchCrop"></switch>
             </view>
           </view>
-          <view ref="cropOptionNode" class="crop-option" :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
+          <view ref="cropOptionNode" class="crop-option"
+            :style="{'height':isCrop?'200px':'0px','margin-bottom':isCrop?'11px':'0px'}">
             <view class="uni-list-cell cell-pd">
               <view class="uni-list-cell-left item_width">
                 图片质量(%)
               </view>
               <view class="uni-list-cell-right">
-                <input :value="cropPercent" @confirm="cropPercentConfim" type="number" maxlength="-1"/>
+                <input :value="cropPercent" @confirm="cropPercentConfim" type="number" maxlength="-1" />
               </view>
             </view>
             <view class="uni-list-cell cell-pd">
@@ -54,7 +76,7 @@
                 裁剪宽度(px)
               </view>
               <view class="uni-list-cell-right">
-                <input :value="cropWidth" @confirm="cropWidthConfim" type="number" maxlength="-1"/>
+                <input :value="cropWidth" @confirm="cropWidthConfim" type="number" maxlength="-1" />
               </view>
             </view>
             <view class="uni-list-cell cell-pd">
@@ -62,7 +84,7 @@
                 裁剪高度(px)
               </view>
               <view class="uni-list-cell-right">
-                <input :value="cropHeight" @confirm="cropHeightConfim" type="number" maxlength="-1"/>
+                <input :value="cropHeight" @confirm="cropHeightConfim" type="number" maxlength="-1" />
               </view>
             </view>
             <view class="uni-list-cell cell-pd">
@@ -110,6 +132,15 @@
     ['original'],
     ['compressed', 'original']
   ]
+  var orientationTypeArray = [
+    'portrait',
+    'landscape',
+    'auto'
+  ]
+  var albumModeTypeArray = [
+    "custom",
+    "system"
+  ]
   export default {
     data() {
       return {
@@ -119,6 +150,10 @@
         sourceType: ['拍照', '相册', '拍照或相册'],
         sizeTypeIndex: 2,
         sizeType: ['压缩', '原图', '压缩或原图'],
+        orientationTypeIndex: 0,
+        orientationType: ['竖屏', '横屏', '自动'],
+        albumModeTypeIndex:0,
+        albumModeType:["自定义相册","系统相册"],
         countIndex: 8,
         count: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         isCrop: false,
@@ -135,6 +170,8 @@
       this.sizeTypeIndex = 2
       this.sizeType = ['压缩', '原图', '压缩或原图']
       this.countIndex = 8
+      this.orientationTypeIndex = 0
+      this.orientationType = ['竖屏', '横屏', '自动']
     },
     methods: {
       cropHeightConfim(e : InputConfirmEvent) {
@@ -170,6 +207,14 @@
           })
         }
       },
+      albumModeChange(){
+        uni.showActionSheet({
+          itemList: this.albumModeType,
+          success: (e) => {
+            this.albumModeTypeIndex = e.tapIndex!
+          }
+        })
+      },
       cropResizeChange(e : UniSwitchChangeEvent) {
         this.cropResize = e.detail.value
       },
@@ -192,6 +237,14 @@
           itemList: ['压缩', '原图', '压缩或原图'],
           success: (e) => {
             this.sizeTypeIndex = e.tapIndex!
+          }
+        })
+      },
+      chooseOrientationType(){
+        uni.showActionSheet({
+          itemList: ['竖屏', '横屏', '自动'],
+          success: (e) => {
+            this.orientationTypeIndex = e.tapIndex!
           }
         })
       },
@@ -220,6 +273,12 @@
           sizeType: sizeTypeArray[this.sizeTypeIndex],
           crop: this.isCrop ? { "quality": this.cropPercent, "width": this.cropWidth, "height": this.cropHeight, "resize": this.cropResize } as ChooseImageCropOptions : null,
           count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
+          // #ifdef APP
+          pageOrientation: orientationTypeArray[this.orientationTypeIndex],
+          // #endif
+          // #ifdef APP-ANDROID
+          albumMode: albumModeTypeArray[this.albumModeTypeIndex],
+          // #endif
           success: (res) => {
             this.imageList = this.imageList.concat(res.tempFilePaths);
           },

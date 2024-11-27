@@ -10,6 +10,11 @@ describe('unicloud-call-function', () => {
     })
   })
 
+  it('UniCloudError', async () => {
+    const result = await page.callMethod('jest_UniCloudError')
+    expect(result).toBe(false)
+  })
+
   it('callFunction', async () => {
     await page.callMethod('callFunction')
     const {

@@ -50,6 +50,20 @@ describe('component-native-video', () => {
     });
   });
 
+  it('test assets path', async () => {
+    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) return;
+    const oldSrc = await page.data('src');
+    await page.setData({
+      isError: false,
+      src: 'file:///android_asset/uni-autoTest/demo10s.mp4'
+    });
+    await page.waitFor(500);
+    expect(await page.data('isError')).toBe(false);
+    await page.setData({
+      src: oldSrc
+    });
+  });
+
   it('test event play pause controlstoggle', async () => {
     await page.callMethod('play');
     start = Date.now();

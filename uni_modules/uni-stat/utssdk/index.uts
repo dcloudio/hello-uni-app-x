@@ -1,4 +1,5 @@
-import { Report, ReportOptions, ReportSuccess, ReportFail } from './interface.uts'
+import { Report, ReportOptions, ReportSuccess, ReportErrorCode } from './interface.uts'
+import { ReportFailImpl } from "./unierror.uts"
 import { Stat } from './common/core/stat.uts'
 const stat = Stat.getInstance()
 
@@ -6,8 +7,7 @@ const stat = Stat.getInstance()
 export const report : Report = function (options : ReportOptions) {
 	const name = options.name
 	const option = options.options
-
-	stat.appEvent(name, option, (type : boolean, msg : string) => {
+	stat.appEvent(name, option, (type : boolean, code : ReportErrorCode) => {
 		if (type) {
 			const res : ReportSuccess = {
 				errMsg: 'report:ok',
@@ -15,9 +15,7 @@ export const report : Report = function (options : ReportOptions) {
 			options.success?.(res)
 			options.complete?.(res)
 		} else {
-			const err : ReportFail = {
-				errMsg: 'report fail:' + msg,
-			}
+			let err = new ReportFailImpl(code);
 			options.fail?.(err)
 			options.complete?.(err)
 		}
@@ -25,5 +23,5 @@ export const report : Report = function (options : ReportOptions) {
 }
 
 export { Stat } from './common/core/stat.uts'
-// // --- 导出统计类型 ---
-export { UniStatOptions, UniStatCollectItemsOptions } from './interface.uts'
+// --- 导出统计类型 ---
+export { UniStatOptions, UniStatCollectItemsOptions, ReportFail } from './interface.uts'

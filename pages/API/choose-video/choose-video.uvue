@@ -13,7 +13,13 @@
         <button type="primary" @click="chooseVideo">选取视频</button>
       </view>
       <enum-data title="视频来源" :items="sourceTypeItemTypes" @change="onSourceTypeChange"></enum-data>
+      <!-- #ifdef APP -->
+      <enum-data title="屏幕方向" :items="orientationTypeItemTypes" @change="onOrientationTypeChange"></enum-data>
+      <!-- #endif -->
       <enum-data title="摄像头" :items="cameraItemTypes" @change="onCameraChange"></enum-data>
+      <!-- #ifdef APP-ANDROID -->
+      <enum-data title="相册模式" :items="albumModeTypes" @change="onAlbumModeChange"></enum-data>
+      <!-- #endif -->
     </view>
     <input-data title="最长拍摄时间，单位秒" defaultValue="60" type="number" @confirm="onMaxDurationConfirm"></input-data>
     <!-- #ifdef APP -->
@@ -27,7 +33,7 @@
 </template>
 
 <script>
-  import { ItemType } from '@/components/enum-data/enum-data';
+  import { ItemType } from '@/components/enum-data/enum-data-types';
   type Camera = "back" | "front"
   type Source = "album" | "camera"
   export default {
@@ -35,15 +41,21 @@
       return {
         title: "chooseVideo",
         src: "",
+        orientationTypeItemTypes: [{ "value": 0, "name": "竖屏" }, { "value": 1, "name": "横屏" }, { "value": 2, "name": "自动" }] as ItemType[],
         sourceTypeItemTypes: [{ "value": 0, "name": "从相册中选择视频" }, { "value": 1, "name": "拍摄视频" }, { "value": 2, "name": "从相册中选择视频或拍摄视频" }] as ItemType[],
         sourceTypeItems: [["album"], ["camera"], ["album", "camera"]] as Source[][],
         cameraItemTypes: [{ "value": 0, "name": "后置摄像头" }, { "value": 1, "name": "前置摄像头" }] as ItemType[],
+        albumModeTypes: [{ "value": 0, "name": "自定义视频选择器" }, { "value": 1, "name": "系统视频选择器" }] as ItemType[],
+        albumModeTypeItems: ["custom", "system"],
         cameraItems: ["back", "front"] as Camera[],
         sourceType: ["album", "camera"] as Source[],
+        orientationType: "portrait",
+        orientationTypeItems: ["portrait", "landscape", "auto"],
         compressed: true,
         maxDuration: 60,
         camera: "back" as Camera,
-        videoInfo: ""
+        videoInfo: "",
+        albumMode: "custom"
       }
     },
     methods: {
@@ -52,8 +64,12 @@
           sourceType: this.sourceType,
           // #ifdef APP
           compressed: this.compressed,
+          pageOrientation: this.orientationType,
           // #endif
           maxDuration: this.maxDuration,
+          // #ifdef APP-ANDROID
+          albumMode: this.albumMode,
+          // #endif
           camera: this.camera,
           success: (res) => {
             console.log("chooseVideo success", JSON.stringify(res));
@@ -69,6 +85,9 @@
           }
         });
       },
+      onOrientationTypeChange(value : number) {
+        this.orientationType = this.orientationTypeItems[value];
+      },
       onSourceTypeChange(value : number) {
         this.sourceType = this.sourceTypeItems[value];
       },
@@ -80,6 +99,9 @@
       },
       onCameraChange(value : number) {
         this.camera = this.cameraItems[value];
+      },
+      onAlbumModeChange(value : number) {
+        this.albumMode = this.albumModeTypeItems[value]
       }
     }
   }

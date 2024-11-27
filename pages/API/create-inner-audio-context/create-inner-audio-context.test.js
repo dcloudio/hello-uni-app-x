@@ -1,10 +1,11 @@
 describe('inner-audio', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (!(process.env.uniTestPlatformInfo.startsWith('web')||process.env.uniTestPlatformInfo.startsWith('android'))) {
     it('app', () => {
       expect(1).toBe(1)
     })
     return
   }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/create-inner-audio-context/create-inner-audio-context')
     await page.waitFor('view');
@@ -31,10 +32,18 @@ describe('inner-audio', () => {
   });
 
   it('seek-onSeeking-onSeeked', async () => {
-    await page.callMethod('onchange',20)
+    if (process.env.uniTestPlatformInfo.indexOf('android') > -1 ) {
+    	expect(1).toBe(1)
+    	return false
+    }
+
+    await page.callMethod('onchangeValue',20)
     const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 1500:500
     await page.waitFor(waitTime)
     console.log("seek-onSeeking-onSeeked：",await page.data())
+    let isDone = await page.waitFor(async () => {
+    	return await page.data('onSeekingTest')
+    })
     expect(await page.data('onSeekingTest')).toBeTruthy();
     // expect(await page.data('onWaitingTest')).toBeTruthy();
     // expect(await page.data('onSeekedTest')).toBeTruthy();
@@ -60,11 +69,23 @@ describe('inner-audio', () => {
   });
 
   it('onEnded', async () => {
-    await page.callMethod('onchange',173)
+    await page.callMethod('onchangeValue',173)
     await page.waitFor(500);
     await page.callMethod('play')
     await page.waitFor(3000);
     // expect(await page.data('isPlayEnd')).toBeTruthy();
   });
-
+  it('onEnded-android', async () => {
+    if (!process.env.uniTestPlatformInfo.startsWith('android')) {
+      expect(1).toBe(1)
+      return
+    }
+    await page.setData({
+    	isPlayEnd: false
+    })
+    await page.callMethod('setSrc','file:///android_asset/uni-autoTest/alert2s.mp3')
+    await page.callMethod('play')
+    await page.waitFor(3000);
+    expect(await page.data('isPlayEnd')).toBeTruthy();
+  });
 });

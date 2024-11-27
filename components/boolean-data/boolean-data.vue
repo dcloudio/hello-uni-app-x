@@ -6,6 +6,10 @@
         type: String,
         default: ''
       },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
       defaultValue: {
         type: Boolean,
         default: false
@@ -32,7 +36,7 @@
 <template>
   <view class="button-data-main uni-flex">
     <view class="uni-title" style="width:80%">{{ title }}</view>
-    <switch :checked="_checked" @change="_change" />
+    <switch :checked="_checked" :disabled="disabled" @change="_change" />
   </view>
 </template>
 

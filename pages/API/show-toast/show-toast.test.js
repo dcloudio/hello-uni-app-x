@@ -53,6 +53,13 @@ describe('API-toast', () => {
     }
   })
 
+  it("icon=none-mask=true-toast-test", async () => {
+    await page.setData({maskSelect: true})
+    await page.callMethod('toast3Tap')
+    await page.waitFor(300);
+    await toScreenshot('icon=none-mask=true-toast-image')
+  })
+
   it("image-toast-test", async () => {
     await page.setData({imageSelect: true})
     await page.waitFor(300);

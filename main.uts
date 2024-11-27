@@ -1,11 +1,27 @@
 // 仅测试 console.log 时机问题
 import './test-main-console.uts'
+// #ifdef APP-ANDROID || APP-IOS || WEB
+import { uniStat } from '@/uni_modules/uni-stat/plugin.uts'
+// #endif
 import App from './App.uvue'
 
 import { createSSRApp } from 'vue'
 
+// 统计配置
+const uniStatCollectItems = {
+	uniStatPageLog: true
+}
+
+const uniStatOptions = {
+	debug: false,
+	collectItems: uniStatCollectItems,
+}
+
 export function createApp() {
   const app = createSSRApp(App)
+  // #ifdef APP-ANDROID || APP-IOS || WEB
+  app.use(uniStat, uniStatOptions)
+  // #endif
   // app.mixin({
   //   onReady() {
   //     setTimeout(() => {
