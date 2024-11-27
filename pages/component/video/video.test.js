@@ -105,6 +105,10 @@ describe('component-native-video', () => {
        });
     }
     if(!isMP && !isWeb) {
+      /**
+       * app端video组件controlstoggle事件会在controls显示和隐藏触发（播放、暂停等操作都会触发）。
+       * 微信小程序和web播放暂停或者一些其他的操作也会影响controls的显隐，但是不会触发controlstoggle， 只有controls属性变化的时候才会触发
+       */
       await page.callMethod('play');
       start = Date.now();
       await page.waitFor(async () => {

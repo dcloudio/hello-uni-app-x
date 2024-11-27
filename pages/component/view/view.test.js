@@ -2,6 +2,11 @@ const PAGE_PATH = '/pages/component/view/view'
 
 // 此用例仅用于模拟点击关闭iOS弹窗逻辑，无实际意义
 describe('view-test', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
 
   // 先屏蔽 android 及 web 平台
   if (isAndroid || isWeb || isMP) {
