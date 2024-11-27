@@ -107,6 +107,11 @@ describe('component-native-image', () => {
     });
   });
 
+  if(isMP) {
+    // TODO 整理小程序、web支持的类型，页面上进行条件编译展示
+    return
+  }
+
   it('path-screenshot', async () => {
     const page = await program.navigateTo('/pages/component/image/image-path');
     await page.waitFor(3000);
