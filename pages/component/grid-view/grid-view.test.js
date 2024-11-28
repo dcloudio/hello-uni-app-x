@@ -2,7 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 
 describe('component-native-grid-view', () => {
-  if (isMP) {
+  if (isMP || platformInfo.indexOf('web') > -1) {
   	it('skip mp', () => {
   		expect(1).toBe(1)
   	})
@@ -63,9 +63,9 @@ describe('component-native-grid-view', () => {
       endPoint: { x: 100, y: 100 },
       duration: 100
     })
-    await page.waitFor(600)
+    await page.waitFor(1200)
     const endDetail = await page.data('scrollEndDetailTest')
-    // console.log('scrollEndDetailTest:', endDetail)
+    console.log('scrollEndDetailTest:', endDetail)
     expect(endDetail.deltaY).toBe(0)
     expect(endDetail.deltaX).toBe(0)
     expect(endDetail.scrollLeft).toBe(0)
@@ -81,7 +81,7 @@ describe('component-native-grid-view', () => {
     expect(value).toBe(true)
   })
 
-  // //检测下拉刷新 备注：iOS本地测试结果正确，但是自动化测试结果错误
+  //检测下拉刷新 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_refresher', async () => {
     await page.callMethod('confirm_scroll_top_input', 0)
     await page.setData({

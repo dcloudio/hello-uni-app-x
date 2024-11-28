@@ -2,7 +2,7 @@
 	<view>
 		<page-head :title="title"></page-head>
 		<view class="uni-padding-wrap">
-			<view class="uni-hello-text">注意：离开当前页面后背景音乐将保持播放，但退出uni-app将停止</view>
+			<view class="uni-hello-text">注意：离开当前页面后背景音乐将保持播放</view>
 			<view class="page-body-buttons">
 				<block v-if="playing">
 					<view class="page-body-button" @tap="stop">
@@ -38,8 +38,7 @@
 		onLoad: function () {
 			let bgAudioMannager = uni.getBackgroundAudioManager();
 			bgAudioMannager.title = '致爱丽丝';
-			bgAudioMannager.epname = '致爱丽丝'
-			bgAudioMannager.singer = '暂无';
+			bgAudioMannager.singer = '路德维希·范·贝多芬';
 			bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
 
 			bgAudioMannager.onPlay(() => {
@@ -52,14 +51,12 @@
 			})
 			bgAudioMannager.onEnded(() => {
 				this.playing = false;
-				// this.playTime = this.playTime = 0;
-				// thi.formatedPlayTime = this.formatedPlayTime
 			})
 			bgAudioMannager.onNext(() => {
 				console.log("下一曲");
 				this.bgAudioMannager?.stop()
 				bgAudioMannager.title = '致爱丽丝' + this.count++;
-				bgAudioMannager.singer = '暂无2' + this.count++;
+				bgAudioMannager.singer = '路德维希·范·贝多芬';
 				bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
 				this.bgAudioMannager!.src = this.dataUrl;
 				this.bgAudioMannager?.play()
@@ -68,17 +65,10 @@
 				console.log("上一曲");
 				this.bgAudioMannager?.stop()
 				bgAudioMannager.title = '致爱丽丝' + this.count--;
-				bgAudioMannager.singer = '暂无' + this.count--;
+				bgAudioMannager.singer = '路德维希·范·贝多芬';
 				this.bgAudioMannager!.src = this.dataUrl;
 				this.bgAudioMannager?.play()
 			})
-			// bgAudioMannager.onTimeUpdate((e) => {
-			// 	if (Math.floor(bgAudioMannager.currentTime) > Math.floor(this.playTime)) {
-			// 		this.$backgroundAudioData.formatedPlayTime = this.formatedPlayTime = util.formatTime(Math.floor(bgAudioMannager.currentTime));
-			// 	}
-			// 	this.$backgroundAudioData.playTime = this.playTime = bgAudioMannager.currentTime;
-			// })
-
 			this.bgAudioMannager = bgAudioMannager;
 		},
 		methods: {
@@ -142,5 +132,6 @@
 	.page-body-button {
 		flex-direction: row;
 		justify-content: center;
+    margin-bottom: 10px;
 	}
 </style>
