@@ -1,11 +1,6 @@
 let page;
 describe('web-map', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
-    it('app', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
@@ -15,6 +10,26 @@ describe('web-map', () => {
     await page.waitFor(waitTime)
     await page.callMethod('updateAutoTest',true)
   });
+
+  it('handleMoveToLocation', async () => {
+    await page.callMethod('handleMoveToLocation')
+    await page.waitFor(500);
+    const moveToLocationRes = await page.data('jestResult')
+    expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
+  });
+
+  it('Check EventDetail JsonStringify', async () => {
+    const res = await page.data('jestResult')
+    console.log(res.eventDetailJsonStringify);
+    expect(res.eventDetailJsonStringify).not.toBe("{}");
+  })
+
+  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
+    it('app', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   it('Check MapMethods', async () => {
     const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
@@ -58,12 +73,7 @@ describe('web-map', () => {
     expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
   });
 
-  it('handleMoveToLocation', async () => {
-    await page.callMethod('handleMoveToLocation')
-    await page.waitFor(500);
-    const moveToLocationRes = await page.data('jestResult')
-    expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
-  });
+
 
   it('handleGetScale', async () => {
     await page.callMethod('handleGetScale')
@@ -73,5 +83,4 @@ describe('web-map', () => {
     expect(scaleRes.scale).toBeLessThanOrEqual(18);
     console.log("jestResult",await page.data())
   });
-
 });
