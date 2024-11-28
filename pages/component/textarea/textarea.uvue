@@ -24,6 +24,7 @@
         selectionEnd: -1,
         hold_keyboard: false,
         adjust_position: false,
+        disabled: false,
         jest_result: false
       }
     },
@@ -70,6 +71,9 @@
       changeAdjustPosition(event : UniSwitchChangeEvent) {
         const checked = event.detail.value;
         this.adjust_position = checked;
+      },
+      change_disabled_boolean(checked : boolean) {
+        this.disabled = checked
       }
     }
   }
@@ -85,7 +89,7 @@
         :show-confirm-bar="show_confirm_bar_boolean" :adjust-position="adjust_position_boolean"
         :cursor-color="cursor_color" :cursor="cursor" :placeholder="placeholder_value"
         :inputmode="inputmode_enum[inputmode_enum_current].name"
-        :confirm-type="confirm_type_list[confirm_type_current].name" @click="textarea_click"
+        :confirm-type="confirm_type_list[confirm_type_current].name" :disabled="disabled" @click="textarea_click"
         @touchstart="textarea_touchstart" @touchmove="textarea_touchmove" @touchcancel="textarea_touchcancel"
         @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
         @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
@@ -100,6 +104,8 @@
       <boolean-data :defaultValue="focus_boolean" title="获取焦点" @change="change_focus_boolean"></boolean-data>
       <boolean-data :defaultValue="true" title="首次自动获取焦点" @change="change_auto_focus_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="设置禁用输入框"
+        @change="change_disabled_boolean"></boolean-data>
       <enum-data :items="confirm_type_list" title="confirm-type，设置键盘右下角按钮。（Android仅支持return）"
         @change="radio_change_confirm_type"></enum-data>
       <boolean-data :defaultValue="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
