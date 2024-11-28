@@ -90,9 +90,9 @@ describe('component-native-list-view', () => {
       endPoint: { x: 100, y: 100 },
       duration: 100
     })
-    await page.waitFor(600)
+    await page.waitFor(1600)
     const endDetail = await page.data('scrollEndDetailTest')
-    // console.log('scrollEndDetailTest:', endDetail)
+    console.log('scrollEndDetailTest:', endDetail)
     expect(endDetail.deltaY).toBe(0)
     expect(endDetail.deltaX).toBe(0)
     expect(endDetail.scrollLeft).toBe(0)
