@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 
-describe('component-native-grid-view', () => {
+describe('component-native-waterflow', () => {
   if (isMP || platformInfo.indexOf('web') > -1) {
   	it('skip mp', () => {
   		expect(1).toBe(1)
@@ -11,8 +11,8 @@ describe('component-native-grid-view', () => {
 
   let page
   beforeAll(async () => {
-    //打开grid-view测试页
-    page = await program.reLaunch('/pages/component/grid-view/grid-view')
+    //打开waterflow测试页
+    page = await program.reLaunch('/pages/component/waterflow/waterflow')
     await page.waitFor(600)
   })
 
@@ -20,7 +20,7 @@ describe('component-native-grid-view', () => {
   it('check_scroll_top', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
     await page.waitFor(600)
-    const listElement = await page.$('#gridview')
+    const listElement = await page.$('#waterflow')
     const scrollTop = await listElement.attribute("scrollTop")
     console.log("check_scroll_top---"+scrollTop)
     expect(scrollTop-600).toBeGreaterThanOrEqual(0)
@@ -98,16 +98,16 @@ describe('component-native-grid-view', () => {
   it('check_scroll_into_view_top', async () => {
     await page.callMethod('setScrollIntoView', 'item---3')
     await page.waitFor(600)
-    const gridElement = await page.$('#gridview')
-    const scrollTop = await gridElement.attribute("scrollTop")
+    const waterflowElement = await page.$('#waterflow')
+    const scrollTop = await waterflowElement.attribute("scrollTop")
     console.log("check_scroll_into_view_top--"+scrollTop)
     await page.callMethod('setScrollIntoView', 'item---0')
     expect(scrollTop-280).toBeGreaterThanOrEqual(0)
   })
 
-  //检测grid-view属性变化 截图校验
-  it('check_grid_view_props', async () => {
-    await page.callMethod('testModifyGridViewProps')
+  //检测waterflow属性变化 截图校验
+  it('check_waterflow_view_props', async () => {
+    await page.callMethod('testModifyWaterflowProps')
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});
     expect(image).toSaveImageSnapshot();

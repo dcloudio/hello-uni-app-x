@@ -5,7 +5,7 @@
     currentTarget : UniElement | null;
     direction ?: string
   }
-  type gridItemData = {
+  type flowItemData = {
     height : number,
     text : string
   }
@@ -23,7 +23,7 @@
         scroll_top_input: 0,
         scroll_left_input: 0,
         refresher_background_input: "#FFF",
-        scrollData: [] as Array<gridItemData>,
+        scrollData: [] as Array<flowItemData>,
         size_enum: [{ "value": 0, "name": "item---0" }, { "value": 3, "name": "item---3" }] as ItemType[],
         scrollIntoView: "",
         refresherrefresh: false,
@@ -40,7 +40,7 @@
         cross_axis_count: 2,
         main_axis_gap: 2,
         cross_axis_gap: 2,
-        gridViewPadding: [10, 5, 10, 5] as Array<number>,
+        waterflowPadding: [10, 5, 10, 5] as Array<number>,
         loadMore: true,
         isLoadMore: true
       }
@@ -68,17 +68,17 @@
         { height: 90, text: "item---17" },
         { height: 130, text: "item---18" },
         { height: 140, text: "item---19" },
-      ] as Array<gridItemData>
+      ] as Array<flowItemData>
     },
     methods: {
-      grid_view_click() { console.log("组件被点击时触发") },
-      grid_view_touchstart() { console.log("手指触摸动作开始") },
-      grid_view_touchmove() { console.log("手指触摸后移动") },
-      grid_view_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") },
-      grid_view_touchend() { console.log("手指触摸动作结束") },
-      grid_view_tap() { console.log("手指触摸后马上离开") },
-      grid_view_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
-      grid_view_refresherpulling(e : RefresherEvent) {
+      waterflow_click() { console.log("组件被点击时触发") },
+      waterflow_touchstart() { console.log("手指触摸动作开始") },
+      waterflow_touchmove() { console.log("手指触摸后移动") },
+      waterflow_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") },
+      waterflow_touchend() { console.log("手指触摸动作结束") },
+      waterflow_tap() { console.log("手指触摸后马上离开") },
+      waterflow_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
+      waterflow_refresherpulling(e : RefresherEvent) {
         console.log("下拉刷新控件被下拉")
         if (this.reset) {
           if (e.detail.dy > 45) {
@@ -88,7 +88,7 @@
           }
         }
       },
-      grid_view_refresherrefresh() {
+      waterflow_refresherrefresh() {
         console.log("下拉刷新被触发 ")
         this.refresherrefresh = true
         this.refresher_triggered_boolean = true
@@ -98,14 +98,14 @@
           this.refresher_triggered_boolean = false
         }, 1500)
       },
-      grid_view_refresherrestore() {
+      waterflow_refresherrestore() {
         this.refresherrefresh = false
         this.state = 3
         this.reset = true
         console.log("下拉刷新被复位")
       },
-      grid_view_refresherabort() { console.log("下拉刷新被中止") },
-      grid_view_scrolltoupper(e : UniScrollToUpperEvent) {
+      waterflow_refresherabort() { console.log("下拉刷新被中止") },
+      waterflow_scrolltoupper(e : UniScrollToUpperEvent) {
         console.log("滚动到顶部/左边，会触发 scrolltoupper 事件  direction=" + e.detail.direction)
         this.checkEventTest({
           type: e.type,
@@ -114,7 +114,7 @@
           direction: e.detail.direction,
         } as ScrollEventTest, 'scrolltoupper')
       },
-      grid_view_scrolltolower(e : UniScrollToLowerEvent) {
+      waterflow_scrolltolower(e : UniScrollToLowerEvent) {
         console.log("滚动到底部/右边，会触发 scrolltolower 事件  direction=" + e.detail.direction)
         this.checkEventTest({
           type: e.type,
@@ -123,7 +123,7 @@
           direction: e.detail.direction,
         } as ScrollEventTest, 'scrolltolower')
       },
-      grid_view_scroll(e : UniScrollEvent) {
+      waterflow_scroll(e : UniScrollEvent) {
         console.log("滚动时触发，event.detail = ", e.detail)
         this.scrollDetailTest = e.detail
         this.checkEventTest({
@@ -132,7 +132,7 @@
           currentTarget: e.currentTarget
         } as ScrollEventTest, 'scroll')
       },
-      grid_view_scrollend(e : UniScrollEvent) {
+      waterflow_scrollend(e : UniScrollEvent) {
         console.log("滚动结束时触发", e.detail)
         this.scrollEndDetailTest = e.detail
         this.checkEventTest({
@@ -141,13 +141,13 @@
           currentTarget: e.currentTarget
         } as ScrollEventTest, 'scrollend')
       },
-      grid_item_click() { console.log("grid-item组件被点击时触发") },
-      grid_item_touchstart() { console.log("手指触摸grid-item组件动作开始") },
-      grid_item_touchmove() { console.log("手指触摸grid-item组件后移动") },
-      grid_item_touchcancel() { console.log("手指触摸grid-item组件动作被打断，如来电提醒，弹窗") },
-      grid_item_touchend() { console.log("手指触摸grid-item组件动作结束") },
-      grid_item_tap() { console.log("手指触摸grid-item组件后马上离开") },
-      grid_item_longpress() { console.log("grid-item组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
+      flow_item_click() { console.log("flow-item组件被点击时触发") },
+      flow_item_touchstart() { console.log("手指触摸flow-item组件动作开始") },
+      flow_item_touchmove() { console.log("手指触摸flow-item组件后移动") },
+      flow_item_touchcancel() { console.log("手指触摸flow-item组件动作被打断，如来电提醒，弹窗") },
+      flow_item_touchend() { console.log("手指触摸flow-item组件动作结束") },
+      flow_item_tap() { console.log("手指触摸flow-item组件后马上离开") },
+      flow_item_longpress() { console.log("flow-item组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
       change_refresher_triggered_boolean(checked : boolean) { this.refresher_triggered_boolean = checked },
       change_refresher_enabled_boolean(checked : boolean) { this.refresher_enabled_boolean = checked },
       change_scroll_with_animation_boolean(checked : boolean) { this.scroll_with_animation_boolean = checked },
@@ -181,7 +181,7 @@
       },
       //自动化测试例专用
       check_scroll_height() : Boolean {
-        var listElement = this.$refs["gridview"] as UniElement
+        var listElement = this.$refs["waterflow"] as UniElement
         console.log("check_scroll_height--" + listElement.scrollHeight)
         if (listElement.scrollHeight > 1400) {
           return true
@@ -212,11 +212,11 @@
         this.main_axis_gap = e.detail.value
       },
       //仅自动化测试调用
-      testModifyGridViewProps() {
+      testModifyWaterflowProps() {
         this.cross_axis_count = 4
         this.main_axis_gap = 6
         this.cross_axis_gap = 6
-        this.gridViewPadding = [5, 10, 5, 10] as Array<number>
+        this.waterflowPadding = [5, 10, 5, 10] as Array<number>
       }
     }
   }
@@ -224,34 +224,34 @@
 
 <template>
   <view class="main">
-    <grid-view :cross-axis-count="cross_axis_count" :main-axis-gap="main_axis_gap" :cross-axis-gap="cross_axis_gap"
+    <waterflow :cross-axis-count="cross_axis_count" :main-axis-gap="main_axis_gap" :cross-axis-gap="cross_axis_gap"
       :bounces="bounces_boolean" :upper-threshold="upper_threshold_input" :lower-threshold="lower_threshold_input"
       :scroll-top="scroll_top_input" :scroll-left="scroll_left_input" :show-scrollbar="show_scrollbar_boolean"
       :scroll-into-view="scrollIntoView" :scroll-with-animation="scroll_with_animation_boolean"
       :refresher-enabled="refresher_enabled_boolean" :refresher-background="refresher_background_input"
       :refresher-triggered="refresher_triggered_boolean" :refresher-default-style="refresher_default_style_input"
-      @click="grid_view_click" @touchstart="grid_view_touchstart" @touchmove="grid_view_touchmove"
-      @touchcancel="grid_view_touchcancel" @touchend="grid_view_touchend" @tap="grid_view_tap"
-      @longpress="grid_view_longpress" @refresherpulling="grid_view_refresherpulling"
-      @refresherrefresh="grid_view_refresherrefresh" @refresherrestore="grid_view_refresherrestore"
-      @refresherabort="grid_view_refresherabort" @scrolltoupper="grid_view_scrolltoupper" ref="gridview"
-      @scrolltolower="grid_view_scrolltolower" @scroll="grid_view_scroll" @scrollend="grid_view_scrollend"
-      style="width:100%; " id="gridview" :padding="gridViewPadding">
+      @click="waterflow_click" @touchstart="waterflow_touchstart" @touchmove="waterflow_touchmove"
+      @touchcancel="waterflow_touchcancel" @touchend="waterflow_touchend" @tap="waterflow_tap"
+      @longpress="waterflow_longpress" @refresherpulling="waterflow_refresherpulling"
+      @refresherrefresh="waterflow_refresherrefresh" @refresherrestore="waterflow_refresherrestore"
+      @refresherabort="waterflow_refresherabort" @scrolltoupper="waterflow_scrolltoupper" ref="waterflow"
+      @scrolltolower="waterflow_scrolltolower" @scroll="waterflow_scroll" @scrollend="waterflow_scrollend"
+      style="width:100%; " id="waterflow" :padding="waterflowPadding">
 
-      <grid-item v-for="(item, index) in scrollData" :key="index" :id="item.text" @click="grid_item_click"
-        :style="{'height' : item.height}" @touchstart="grid_item_touchstart" @touchmove="grid_item_touchmove"
-        @touchcancel="grid_item_touchcancel" @touchend="grid_item_touchend" @tap="grid_item_tap"
-        @longpress="grid_item_longpress" class="grid-item" type=1>
+      <flow-item v-for="(item, index) in scrollData" :key="index" :id="item.text" @click="flow_item_click"
+        :style="{'height' : item.height}" @touchstart="flow_item_touchstart" @touchmove="flow_item_touchmove"
+        @touchcancel="flow_item_touchcancel" @touchend="flow_item_touchend" @tap="flow_item_tap"
+        @longpress="flow_item_longpress" class="flow-item" type=1>
         <text>{{item.text}}</text>
-      </grid-item>
+      </flow-item>
 
-      <grid-item slot="refresher" id="refresher" type=2 class="refresh-box">
+      <flow-item slot="refresher" id="refresher" type=2 class="refresh-box">
         <text class="tip-text">{{text[state]}}</text>
-      </grid-item>
-      <grid-item v-show="isLoadMore" slot="load-more" id="loadmore" type=6 class="load-more-box">
+      </flow-item>
+      <flow-item v-show="isLoadMore" slot="load-more" id="loadmore" type=6 class="load-more-box">
         <text>加载更多</text>
-      </grid-item>
-    </grid-view>
+      </flow-item>
+    </waterflow>
   </view>
 
   <scroll-view style="flex:1" direction="vertical">
@@ -302,7 +302,7 @@
     justify-content: center;
   }
 
-  .grid-item {
+  .flow-item {
     width: 100%;
     height: 200px;
     border: 1px solid #666;
