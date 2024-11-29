@@ -1,12 +1,12 @@
 <template>
-  <grid-view :id="id" class="grid" :rebound="false" :scroll-y="true" :custom-nested-scroll="true"
+  <waterflow :id="id" class="grid" :rebound="false" :scroll-y="true" :custom-nested-scroll="true"
   	main-axis-gap="8px"	cross-axis-gap="8px" cross-axis-count=2
     @scrolltolower="loadData(null)" associative-container="nested-scroll-view">
-    <grid-item class="grid-item" v-for="(item, _) in datagrid" :key="item.plugin_id" type=1>
-      <view class="grid-item-icon">
-        <image class="grid-item-icon-image" :src="item.plugin_img_link" mode="aspectFit"></image>
+    <flow-item class="flow-item" v-for="(item, _) in datagrid" :key="item.plugin_id" type=1>
+      <view class="flow-item-icon">
+        <image class="flow-item-icon-image" :src="item.plugin_img_link" mode="aspectFit"></image>
       </view>
-      <view class="grid-item-fill">
+      <view class="flow-item-fill">
         <view class="flex-row">
           <text class="title">{{item.plugin_name}}</text>
         </view>
@@ -25,18 +25,18 @@
           <text class="update-date-value">{{item.update_date}}</text>
         </view>
       </view>
-    </grid-item type="20">
-    <grid-item slot="load-more" class="loading" type=6>
+    </flow-item type="20">
+    <flow-item slot="load-more" class="loading" type=6>
       <uni-loading :loading="loading" color="#999" :text="loadingText"></uni-loading>
-    </grid-item>
-  </grid-view>
+    </flow-item>
+  </waterflow>
 </template>
 
 <script>
   const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
   const PAGE_SIZE = 10; // 最大值 10
 
-  type gridItem = {
+  type flowItem = {
     plugin_id : number,
     plugin_img_link : string,
     plugin_name : string,
@@ -49,7 +49,7 @@
 
   type ResponseDataType = {
     code : number,
-    data : gridItem[]
+    data : flowItem[]
   }
 
   export default {
@@ -70,7 +70,7 @@
     data() {
       return {
         loading: false,
-        datagrid: [] as gridItem[],
+        datagrid: [] as flowItem[],
         isEnded: false,
         loadingError: '',
         currentPage: 1
@@ -170,21 +170,21 @@
     background-color: #f7f7f7;
   }
 
-  .grid-item {
+  .flow-item {
     flex-direction: column;
     border-radius: 5px;
     background-color: #ffffff;
   }
 
-  .grid-item-icon {
+  .flow-item-icon {
     position: relative;
   }
 
-  .grid-item-icon-image {
+  .flow-item-icon-image {
     width: 100%;
   }
 
-  .grid-item-fill {
+  .flow-item-fill {
     flex: 1;
     padding: 5px;
   }
