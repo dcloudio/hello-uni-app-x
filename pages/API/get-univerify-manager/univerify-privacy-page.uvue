@@ -1,0 +1,73 @@
+<template>
+	<view class="background">
+    <view class="top_container" @click="onBack()">
+
+    </view>
+		<view class="container">
+			<web-view class="web" :src="url">
+
+			</web-view>
+		</view>
+
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				url: '',
+				backIcon:'\uE601'
+			}
+		},
+		onLoad(options : OnLoadOptions) {
+			this.url = options["url"] as string;
+		},
+		methods: {
+			onBack(){
+				uni.closeDialogPage({
+				  dialogPage: this.$page,
+				  animationType:'slide-out-bottom',
+				  success(res) {
+				    console.log('closeThisDialog success', res)
+
+				  },
+				  fail(err) {
+				    console.log('closeThisDialog fail', err)
+				  }
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	.background {
+		background-color: rgba(0, 0, 0, 0.3);
+		width: 100%;
+		height: 100%;
+	}
+  .top_container{
+    width: 100%;
+    height: 20%;
+  }
+	.container{
+    color: white;
+    bottom: 0;
+    width: 100%;
+    position: absolute;
+    height: 80%;
+	}
+	.backArrow{
+		margin-left: 4px;
+		font-family: uni-icon;
+		font-size: 30px;
+		width: 50px;
+		height: 50px;
+	}
+	.web{
+		height: 100%;
+		width: 100%;
+	}
+
+</style>
