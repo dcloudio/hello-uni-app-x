@@ -39,7 +39,16 @@
     },
     methods: {
       closePage() {
-        uni.navigateBack()
+        uni.closeDialogPage({
+          dialogPage: this.$page,
+          animationType:'slide-out-bottom',
+          success(res) {
+            console.log('closeThisDialog success', res)
+          },
+          fail(err) {
+            console.log('closeThisDialog fail', err)
+          }
+        })
       },
       openLink() {
         let url = '/pages/API/get-univerify-manager/univerify-privacy-page?url=' + this.privacyUrl;
@@ -56,11 +65,11 @@
 
       },
       loginIn() {
-        const numberTextElement = uni.getElementById('number-text');
-        const sloganTextElement = uni.getElementById('slogan-text');
-        const loginButtonElement = uni.getElementById('login-button');
-        const privacyCheckBoxElement = uni.getElementById('privacy-checkbox');
-        const privacyTextElement = uni.getElementById('privacy-text');
+        const numberTextElement = this.$page.getElementById('number-text');
+        const sloganTextElement = this.$page.getElementById('slogan-text');
+        const loginButtonElement = this.$page.getElementById('login-button');
+        const privacyCheckBoxElement = this.$page.getElementById('privacy-checkbox');
+        const privacyTextElement = this.$page.getElementById('privacy-text');
 
         this.univerifyManager?.customLogin({
           numberTextElement: numberTextElement!,
@@ -187,7 +196,7 @@
   }
 
   .privacy {
-    margin-top: 5px;
+    margin-top: 10px;
     margin-left: 5px;
     flex-direction: row;
     flex-wrap: wrap;
@@ -203,7 +212,8 @@
 
   .privacy-text {
     margin-top: 4px;
-    color: #2785ff;
+    font-weight: bold;
+    color: black;
     font-size: 14px;
   }
 

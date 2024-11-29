@@ -1,14 +1,12 @@
 <template>
 	<view class="background">
-    <view class="top_container" @click="onBack()">
 
-    </view>
 		<view class="container">
-			<web-view class="web" :src="url">
-
-			</web-view>
+      <view class="close_container">
+        <text class="close_icon" @click="onBack()">{{closeIcon}}</text>
+      </view>
+			<web-view class="web_container" :src="url"></web-view>
 		</view>
-
 	</view>
 </template>
 
@@ -17,7 +15,7 @@
 		data() {
 			return {
 				url: '',
-				backIcon:'\uE601'
+        closeIcon: '\uE650'
 			}
 		},
 		onLoad(options : OnLoadOptions) {
@@ -30,7 +28,6 @@
 				  animationType:'slide-out-bottom',
 				  success(res) {
 				    console.log('closeThisDialog success', res)
-
 				  },
 				  fail(err) {
 				    console.log('closeThisDialog fail', err)
@@ -43,30 +40,30 @@
 
 <style>
 	.background {
-		background-color: rgba(0, 0, 0, 0.3);
+    background-color: #f1f1f1;
 		width: 100%;
 		height: 100%;
 	}
-  .top_container{
-    width: 100%;
-    height: 20%;
-  }
 	.container{
+    padding-top: var(--status-bar-height);
     color: white;
-    bottom: 0;
     width: 100%;
     position: absolute;
-    height: 80%;
+    height: 100%;
 	}
-	.backArrow{
-		margin-left: 4px;
-		font-family: uni-icon;
-		font-size: 30px;
-		width: 50px;
-		height: 50px;
-	}
-	.web{
-		height: 100%;
+  .close_container{
+    height: 45px;
+    width: 100%;
+  }
+  .close_icon {
+    left: 90%;
+    top: 15px;
+    font-family: uni-icon;
+    font-size: 24px;
+  }
+	.web_container{
+    padding-top: 10px;
+		flex: 1;
 		width: 100%;
 	}
 

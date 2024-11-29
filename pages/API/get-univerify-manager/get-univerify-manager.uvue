@@ -3,13 +3,13 @@
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-btn-v uni-common-mt">
-        <button type="primary" @click="verify(false)">一键登录（半屏）</button>
+        <button type="default" @click="verify(false)">一键登录（半屏）</button>
       </view>
       <view class="uni-btn-v uni-common-mt">
-        <button type="primary" @click="verify(true)">一键登录（全屏）</button>
+        <button type="default" @click="verify(true)">一键登录（全屏）</button>
       </view>
       <view class="uni-btn-v uni-common-mt">
-        <button type="primary" @click="customLoginIn()">一键登录（自定义页面）</button>
+        <button type="default" @click="customLoginIn()">一键登录（自定义页面）</button>
       </view>
     </view>
   </view>
@@ -25,10 +25,6 @@
         slogan: '',
         privacyName: '',
         privacyUrl: ''
-        // phone: '176****6657',
-        // slogan: '认证服务由中国联通提供',
-        // privacyName: '中国联通认证服务条款',
-        // privacyUrl: 'https://opencloud.wostore.cn/authz/resource/html/disclaimer.html?fromsdk=true'
       }
     },
     onLoad() {
@@ -49,9 +45,15 @@
       },
       pushCustomPage() {
         const url = '/pages/API/get-univerify-manager/univerify-custom-page?phone=' + this.phone + '&slogan=' + this.slogan + '&name=' + this.privacyName + '&link=' + this.privacyUrl;
-        uni.navigateTo({
+        uni.openDialogPage({
           url: url,
-          animationType: "slide-in-bottom",
+          animationType: 'slide-in-bottom',
+          success(res) {
+            console.log("成功打开自定义登录页面");
+          },
+          fail(err) {
+            console.log(err);
+          }
         })
       },
       verify(fullScreen : boolean) {
