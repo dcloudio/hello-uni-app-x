@@ -66,7 +66,7 @@
     onReady() {
       this.tabScrollView = this.$refs['tabScroll'] as UniElement;
       this.indicatorNode = this.$refs['indicator'] as UniElement;
-      (this.$refs["swiper"] as UniElement).getBoundingClientRectAsync().then((res : DOMRect) : Promise<void> => {
+      (this.$refs["swiper"] as UniElement).getBoundingClientRectAsync()!.then((res : DOMRect) : Promise<void> => {
         this.swiperWidth = res.width
         return this.cacheTabItemsSize()
       }).then(() => {
@@ -128,7 +128,7 @@
         const tabs = this.$refs["swipertab"] as UniElement[]
         for (let i = 0; i < tabs.length; i++) {
           const element = tabs[i];
-          const rect = await element.getBoundingClientRectAsync()
+          const rect = await element.getBoundingClientRectAsync()!
           this.swiperTabsRect.push({
             x: rect.left,
             w: rect.width
