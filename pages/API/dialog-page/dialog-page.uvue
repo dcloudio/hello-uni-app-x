@@ -15,6 +15,9 @@
     <button class="uni-common-mt" id="open-dialog1" @click="openDialog3">
       open dialog 3 test page style
     </button>
+    <button class="uni-common-mt" id="open-dialog4" @click="openDialogWithTriggerParentHide">
+      openDialog with triggerParentHide
+    </button>
     <text class="uni-common-mt choose-open-animation-type-title">choose open dialogPage animationType</text>
     <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
       <radio class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item" :value="item"
@@ -212,6 +215,33 @@
           }
         })
       },
+      // 自动化测试
+      openDialog4() {
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-4',
+        })
+      },
+      openDialogWithTriggerParentHide() {
+        uni.openDialogPage({
+          url: `/pages/API/dialog-page/dialog-4?tag=${Date.now()}`,
+          triggerParentHide: true,
+          success(res) {
+            console.log('openDialogWithTriggerParentHide success', res)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          },
+          fail(err) {
+            console.log('openDialogWithTriggerParentHide fail', err)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum - 4)
+          },
+          complete(res) {
+            console.log('openDialogWithTriggerParentHide complete', res)
+            // 自动化测试
+            setLifeCycleNum(state.lifeCycleNum + 1)
+          }
+        })
+      },
       setLifeCycleNum(value : number) {
         setLifeCycleNum(value)
       },
@@ -329,4 +359,4 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
-</style>
+</style>style>
