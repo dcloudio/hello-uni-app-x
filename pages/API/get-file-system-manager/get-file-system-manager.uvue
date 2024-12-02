@@ -1,11 +1,14 @@
 <template>
 	<!-- #ifdef APP -->
 	<text>显示简易操作日志(可滚动查看),详细日志需真机运行查看</text><button size="mini" @click="log=''">清空日志</button>
-  <scroll-view style="max-height: 300px;">
-	  <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
-  </scroll-view >
+	<scroll-view style="max-height: 300px;">
+		<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+	</scroll-view>
 	<scroll-view style="flex: 1;">
 	<!-- #endif -->
+		<!-- #ifdef MP -->
+		<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="statFileInfoTest"
 			id="btn-stat-file">递归获取目录files的Stats对象{{statFile}}</button>
 		<button class="btnstyle" type="primary" @tap="mkdirTest" id="btn-mkdir">创建文件夹{{mkdirFile}}</button>
@@ -21,8 +24,10 @@
 		<button class="btnstyle" type="primary" @tap="getFileInfoTest"
 			id="btn-get-file-info">获取文件信息{{getFileInfoFile}}</button>
 		<button class="btnstyle" type="primary" @tap="unlinkTest" id="btn-unlink-file">删除文件{{unlinkFile}}</button>
+		<!-- #ifdef APP -->
 		<button class="btnstyle" type="primary" @tap="copyStaticToFilesTest"
 			id="btn-copyStatic-file">从static目录复制文件到a目录</button>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="unlinkAllFileTest"
 			id="btn-clear-file">删除文件夹{{rmDirFile}}下的所有文件</button>
 		<button class="btnstyle" type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
@@ -52,21 +57,28 @@
 			id="btn-rename-file-sync">同步重命名文件{{renameFromFile}}到{{renameToFile}}</button>
 		<button class="btnstyle" type="primary" @tap="copyFileSyncTest"
 			id="btn-copy-file-sync">同步复制文件{{copyFromFile}}到{{copyToFile}}</button>
+		<!-- #ifdef APP -->
 		<button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地</button>
 		<button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="removeSavedFileTest"
 			id="btn-remove-saved-file">删除已保存的本地文件</button>
+		<!-- #ifdef APP -->
 		<button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="getSavedFileListTest"
 			id="btn-getsaved-filelist">获取该已保存的本地缓存文件列表</button>
 		<button class="btnstyle" type="primary" @tap="truncateFileTest"
 			id="btn-truncate-file">对文件{{writeFile}}内容进行截断操作</button>
+		<!-- #ifdef APP -->
 		<button class="btnstyle" type="primary" @tap="truncateFileSyncTest"
 			id="btn-truncate-file-sync">同步对文件{{writeFile}}内容进行截断操作</button>
+
 		<button class="btnstyle" type="primary" @tap="readCompressedFileTest"
 			id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
 		<button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest"
 			id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{readFile}}，返回描述符</button>
 		<button class="btnstyle" type="primary" @tap="openFileSyncTest('r',true)"
 			id="btn-open-file-sync">同步打开文件{{readFile}}，返回描述符</button>
@@ -83,12 +95,16 @@
 			id="btn-ftruncate-file">通过文件描述符对文件{{writeFile}}内容进行截断</button>
 		<button class="btnstyle" type="primary" @tap="ftruncateFileSyncTest"
 			id="btn-ftruncate-file-sync">同步通过文件描述符对文件{{writeFile}}内容进行截断</button>
+		<!-- #ifdef APP -->
 		<button class="btnstyle" type="primary" @tap="readZipEntry" id="btn-readzip-entry">读取压缩包内的文件</button>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="testWriteReadFileBuffer" id="btn-writereadfile-buffer">写入/读取
 			ArrayBuffer</button>
+		<!-- #ifdef APP -->
 		<button class="btnstyle" type="primary" @tap="testWriteReadFileSyncBuffer"
 			id="btn-writereadfilesync-buffer">同步写入/读取
 			ArrayBuffer</button>
+		<!-- #endif -->
 		<button class="btnstyle" type="primary" @tap="testWriteReadBuffer" id="btn-writeread-buffer">通过文件描述符写入/读取
 			ArrayBuffer</button>
 		<button class="btnstyle" type="primary" @tap="testWriteReadSyncBuffer"
@@ -164,20 +180,20 @@
 				/**
 				 * 待测试的全局环境变量
 				 */
-        // #ifdef MP
+				// #ifdef MP
 				basePath: uni.env.USER_DATA_PATH + '/',
 				copyToBasePath: uni.env.USER_DATA_PATH + '/',
 				globalTempPath: uni.env.CACHE_PATH,
 				globalRootPath: uni.env.SANDBOX_PATH,
 				globalUserDataPath: uni.env.USER_DATA_PATH + '/',
-        // #endif
-        // #ifndef MP
+				// #endif
+				// #ifndef MP
 				basePath: uni.env.USER_DATA_PATH,
 				copyToBasePath: uni.env.USER_DATA_PATH,
 				globalTempPath: uni.env.CACHE_PATH,
 				globalRootPath: uni.env.SANDBOX_PATH,
 				globalUserDataPath: uni.env.USER_DATA_PATH,
-        // #endif
+				// #endif
 			}
 		},
 		onLoad() {
@@ -187,8 +203,8 @@
 			statFileInfoTest: function (_ : any) {
 				const fileManager = uni.getFileSystemManager()
 				fileManager.stat({
-					// path: `${this.basePath}${this.statFile}`, //USER_DATA_PATH
-					path: `${this.globalTempPath}${this.statFile}`, //CACHE_PATH
+					path: `${this.basePath}${this.statFile}`, //USER_DATA_PATH
+					// path: `${this.globalTempPath}${this.statFile}`, //CACHE_PATH
 					recursive: this.recursiveVal,
 					success: (res : StatSuccessResult) => {
 						if (this.logAble) {
@@ -788,7 +804,7 @@
 			saveFileTest: function (_ : any) {
 				const fileManager = uni.getFileSystemManager()
 				fileManager.saveFile({
-					tempFilePath: `${this.globalTempPath}${this.temFile}`,
+					tempFilePath: `${this.basePath}${this.temFile}`,
 					// filePath:`${this.basePath}local/`,
 					success: (res : SaveFileSuccessResult) => {
 						if (this.logAble) {
@@ -816,7 +832,7 @@
 				const fileManager = uni.getFileSystemManager()
 				try {
 					fileManager.saveFileSync(
-						`${this.globalTempPath}${this.temFile}`, `${this.basePath}/`)
+						`${this.basePath}${this.temFile}`, `${this.basePath}/`)
 					// filePath:`${this.basePath}local/`,)
 					this.done = true
 
@@ -1651,7 +1667,7 @@
 							console.log(res)
 						},
 						complete: (_) => {
-						  this.done =true
+							this.done = true
 						}
 					} as AppendFileOptions)
 
