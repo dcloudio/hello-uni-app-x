@@ -92,8 +92,15 @@
       this.doPlay(0);
       //App端适配不同状态栏高度
       let backElement = this.$refs['back'] as UniElement;
+      // #endif
+
+      // #ifdef MP-WEIXIN
+      backElement.style.setProperty('top', uni.getWindowInfo().statusBarHeight+'px');
+      // #endif
+      // #ifndef MP-WEIXIN || WEB
       backElement.style.setProperty('top', uni.getSystemInfoSync().statusBarHeight+'px');
       // #endif
+
     },
     onShow() {
       currentPageIsShow = true
