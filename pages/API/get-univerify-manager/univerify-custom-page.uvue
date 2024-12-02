@@ -83,11 +83,25 @@
           },
           fail: (error : LoginFail) => {
             console.error("login fail => " + error);
-            uni.showModal({
-              title: '登录失败',
-              content: JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg,
-              showCancel: false
-            });
+            if (error.errCode == 40001){
+              uni.showToast({
+              	title:"请同意服务条款",
+                icon:'none',
+              	duration:2000
+              })
+            }else{
+               const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
+               uni.showToast({
+               	title:errorMsg,
+                 icon:'none',
+               	duration:2000
+               })
+               // uni.showModal({
+               //   title: '登录失败',
+               //   content: errorMsg,
+               //   showCancel: false
+               // });
+            }
           }
         })
       },
