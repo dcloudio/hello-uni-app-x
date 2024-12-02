@@ -17,7 +17,7 @@
   export default {
     data() {
       return {
-        title: 'slider 滑块 x 100',
+        title: 'sliderx100通信性能测试(小程序卡为正常)',
         sliderValue: 50,
         safeAreaInsetsBottom: 0
       }
@@ -33,10 +33,16 @@
         this.updateSliderValue(e.detail.value)
       },
       updateSliderValue(value : number) {
+        // #ifndef MP
         // TODO 跳过vue框架，直接修改原生组件
         (this.$refs["slider"] as UniSliderElement[]).forEach((item) => {
           item.value = value
         });
+        // #endif
+
+        // #ifdef MP
+        this.sliderValue = value
+        // #endif
       }
     },
   }
@@ -55,6 +61,8 @@
   .slider {
     width: 25%;
     margin-top: 1px;
+    margin-left:0;
+    margin-right: 0;
     margin-bottom: 1px;
   }
 </style>

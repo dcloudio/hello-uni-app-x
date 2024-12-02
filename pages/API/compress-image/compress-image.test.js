@@ -1,6 +1,10 @@
 // uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 describe('API-compressImage', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (
+    process.env.uniTestPlatformInfo.startsWith('web') ||
+    process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') ||
+    process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('pass', async () => {
       expect(1).toBe(1);
     });

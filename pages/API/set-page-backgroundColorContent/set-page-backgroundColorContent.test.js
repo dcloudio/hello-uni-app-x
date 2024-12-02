@@ -1,4 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('set-page-backgroundColorContent', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/set-page-backgroundColorContent/set-page-backgroundColorContent')

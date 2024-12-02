@@ -7,7 +7,7 @@
         <text class="text-desc">图片指示器样式</text>
         <radio-group class="cell-ct" style="background-color: white" @change="onIndicatorChanged">
           <view class="indicator-it" v-for="(item, index) in indicator" :key="item.value">
-            <radio :checked="index == 0" :value="item.value">{{
+            <radio :disabled="isWeb" :checked="index == 0" :value="item.value">{{
               item.name
             }}</radio>
           </view>
@@ -15,7 +15,7 @@
       </view>
       <view>
         <checkbox-group @change="onCheckboxChange" style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
-          <checkbox :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
+          <checkbox :disabled="isWeb" :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
         </checkbox-group>
       </view>
       <view style="background-color: white">
@@ -29,6 +29,11 @@
             <view></view>
           </image>
         </view>
+      </view>
+      <view style="margin:8px;">
+        <text style="color: black;font-size: 18px;margin-bottom: 4px;">注意事项:</text>
+        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">1、indicator属性仅App平台支持。</text>
+        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">2、Web平台不支持loop属性。</text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -57,6 +62,12 @@
           name: "不显示"
         }] as ItemType[],
         currentIndicator: "default" as Indicator,
+        // #ifdef WEB
+        isWeb: true,
+        // #endif
+        // #ifndef WEB
+        isWeb: false,
+        // #endif
         isLoop: true
       }
     },

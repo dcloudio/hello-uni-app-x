@@ -1,4 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('component-native-list-view', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page
   beforeAll(async () => {
     //打开list-view测试页
@@ -80,9 +90,9 @@ describe('component-native-list-view', () => {
       endPoint: { x: 100, y: 100 },
       duration: 100
     })
-    await page.waitFor(600)
+    await page.waitFor(1600)
     const endDetail = await page.data('scrollEndDetailTest')
-    // console.log('scrollEndDetailTest:', endDetail)
+    console.log('scrollEndDetailTest:', endDetail)
     expect(endDetail.deltaY).toBe(0)
     expect(endDetail.deltaX).toBe(0)
     expect(endDetail.scrollLeft).toBe(0)
@@ -154,12 +164,12 @@ describe('component-native-list-view', () => {
         await page.callMethod('change_scroll_y_boolean', false)
         await page.waitFor(600)
     }
-    await page.callMethod('item_change_size_enum', 3)
+    await page.callMethod('setScrollIntoView', "item---3")
     await page.waitFor(600)
     const listElement = await page.$('#listview')
     const scrollLeft = await listElement.attribute("scrollLeft")
     console.log("check_scroll_into_view_left--"+scrollLeft)
-    await page.callMethod('item_change_size_enum', 0)
+    await page.callMethod('setScrollIntoView', "item---0")
     expect(scrollLeft-1080).toBeGreaterThanOrEqual(0)
   })
 })

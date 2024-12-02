@@ -1,10 +1,19 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('dialog page', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-		it('skip app-webview', () => {
-			expect(1).toBe(1)
-		})
-		return
-	}
+  	it('skip app-webview', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
 
   let page;
   beforeAll(async () => {

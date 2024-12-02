@@ -46,6 +46,10 @@
       <text class="text">点击修改TransformTranslate</text>
       <view class="base-style transition-transform" id="transformTranslate" @click="changeTransformTranslate"></view>
     </view>
+    <view class="container" @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+      <text class="text">在组件内滑动测试是否闪动</text>
+      <view class="base-style transition-transform" id="styleTransformTranslateScale"></view>
+    </view>
     <view class="container">
       <text class="text">点击修改Transform和宽</text>
       <view class="base-style transition-transform-width" id="styleTransformWithWidth"
@@ -100,7 +104,11 @@
         isTransitionStyleTransformWithOrigin: false,
         styleTransformWithOrigin: null as UniElement | null,
         styleTransformTranslate: null as UniElement | null,
-        isTransformTranslate: false
+        isTransformTranslate: false,
+        styleTransformTranslateScale: null as UniElement | null,
+        startX: 0,
+        moveX: 0,
+        oldX: 0,
       }
     },
     onReady() {
@@ -118,6 +126,7 @@
       this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
       this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
       this.styleTransformTranslate = uni.getElementById("transformTranslate")
+      this.styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
     },
     methods: {
       changeWidthOrHeight() {
@@ -232,6 +241,21 @@
           : '100px'
         )
         this.isTransitionstylePosition = !this.isTransitionstylePosition
+      },
+      handleTouchStart(e : UniTouchEvent) {
+        this.startX = e.changedTouches[0].clientX
+      },
+      handleTouchMove(e : UniTouchEvent) {
+        console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY);
+        e.preventDefault()
+        e.stopPropagation()
+        const difX = e.changedTouches[0].clientX
+        this.moveX = difX - this.startX + this.oldX
+        this.styleTransformTranslateScale?.style?.setProperty('transition-duration', '0ms')
+        this.styleTransformTranslateScale?.style?.setProperty('transform', `translate(${this.moveX}px,0px) scale(0.5)`)
+      },
+      handleTouchEnd(_ : UniTouchEvent) {
+        this.oldX = this.moveX
       },
     },
   }

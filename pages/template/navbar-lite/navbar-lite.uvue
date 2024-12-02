@@ -16,10 +16,12 @@
       <radio-group @change="ChangeView" style="flex-direction: row;">
         <radio value="0" :checked="true"><text>scroll-view</text></radio>
         <radio value="1"><text>list-view</text></radio>
+        <!-- #ifndef MP -->
         <radio value="2"><text>web-view</text></radio>
+        <!-- #endif -->
       </radio-group>
     </view>
-    <scroll-view v-if="indexView==0" class="scroll-view" :refresher-enabled="false">
+    <scroll-view v-if="indexView==0" class="scroll-view" :scroll-y="true" :refresher-enabled="false">
       <view class="content-item" v-for="item in 10">
         <view class="cell-item">
           <text class="text">内容：{{item}}</text>
@@ -117,14 +119,21 @@
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
       },
+      async calcInputRemainHeight() {
+        let windowHeight = uni.getWindowInfo().windowHeight
+        const rect = await uni.getElementById('input')!.getBoundingClientRectAsync()!
+        this.inputRemainHeight = windowHeight - rect.bottom
+      }
     },
     onReady() {
-      let windowHeight = uni.getWindowInfo().windowHeight;
-      this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
+      this.calcInputRemainHeight()
+      // let windowHeight = uni.getWindowInfo().windowHeight;
+      // this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
     },
     onResize() {
-      let windowHeight = uni.getWindowInfo().windowHeight;
-      this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
+      this.calcInputRemainHeight()
+      // let windowHeight = uni.getWindowInfo().windowHeight;
+      // this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
     }
   }
 </script>

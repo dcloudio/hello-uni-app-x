@@ -1,5 +1,5 @@
 <template>
-  <view id="page" class="page">
+  <view ref="page" class="page">
     <text
       style="margin: 10px">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
     <button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
@@ -56,7 +56,7 @@
             //this.scrollNode?.setAttribute('scroll-y', 'false');
             this.scrollNode?.setAttribute('direction', 'none');
             // #endif
-            // #ifdef WEB
+            // #ifdef WEB || MP
             this.scrollDirection = 'none';
             // #endif
             this.halfNode?.style?.setProperty('transform', 'translateY(' + offset.toFixed(2) + 'px)');
@@ -71,7 +71,7 @@
             //this.scrollNode?.setAttribute('scroll-y', 'true');
             this.scrollNode?.setAttribute('direction', 'vertical');
             // #endif
-            // #ifdef WEB
+            // #ifdef WEB || MP
             this.scrollDirection = 'vertical';
             // #endif
             this.halfNode?.style?.setProperty('transform', 'translateY(' + offset.toFixed(2) + 'px)');
@@ -110,7 +110,7 @@
         //this.scrollNode?.setAttribute('scroll-y', 'true');
         this.scrollNode?.setAttribute('direction', 'vertical');
         // #endif
-        // #ifdef WEB
+        // #ifdef WEB || MP
         this.scrollDirection = 'vertical';
         // #endif
         this.halfScreenY = 0;
@@ -150,7 +150,7 @@
         //this.scrollNode?.setAttribute('scroll-y', 'true');
         this.scrollNode?.setAttribute('direction', 'vertical');
         // #endif
-        // #ifdef WEB
+        // #ifdef WEB || MP
         this.scrollDirection = 'vertical';
         // #endif
         this.halfScreenY = 0;
@@ -165,23 +165,30 @@
     onReady() {
       this.halfNode = this.$refs['halfScreen'] as UniElement;//uni.getElementById('halfScreen');
       this.scrollNode = this.$refs['halfScroll'] as UniElement;//uni.getElementById('halfScroll');
-
-      this.halfHeight = this.halfNode!.getBoundingClientRect().height;
-      this.totalHeight = uni.getElementById('page')?.getBoundingClientRect()?.height ?? 0;//uni.getWindowInfo().windowHeight
-      this.halfNode?.style?.setProperty('top', this.totalHeight.toFixed(2)+'px');
+      this.halfNode!.getBoundingClientRectAsync()!.then((rect: DOMRect) => {
+          this.halfHeight = rect.height
+      });
+      (this.$refs['page'] as UniElement).getBoundingClientRectAsync()!.then((rect: DOMRect) => {
+          this.totalHeight = rect.height
+          this.halfNode?.style?.setProperty('top', this.totalHeight.toFixed(2)+'px');
+      });
     },
     onResize() {
-      this.halfHeight = this.halfNode?.getBoundingClientRect()?.height ?? 0;
+      this.halfNode?.getBoundingClientRectAsync()!.then((rect: DOMRect) => {
+          this.halfHeight = rect.height
+      });
       this.totalHeight = uni.getWindowInfo().windowHeight;
       this.halfNode?.style?.setProperty('top', this.totalHeight.toFixed(2)+'px');
       this.halfNode?.style?.setProperty('visibility', 'hidden');
     },
     onBackPress(): boolean {
+      // #ifndef MP
       if('visible' == this.halfNode?.style?.getPropertyValue('visibility')){
         this.switchHalfScreen(false);
         return true;
       }
       return false;
+      // #endif
     }
   }
 </script>

@@ -1,4 +1,9 @@
 jest.setTimeout(30000);
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 describe('component-native-scroll-view', () => {
   let page;
   beforeAll(async () => {
@@ -67,7 +72,7 @@ describe('component-native-scroll-view', () => {
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
-  if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
+  if(!isWeb && !isMP){
     it('Event scrollend-滚动结束时触发仅App端支持',async()=>{
       const endDetail = await page.data('scrollEndDetailTest')
       console.log('scrollEndDetailTest:', endDetail)
@@ -80,11 +85,13 @@ describe('component-native-scroll-view', () => {
     })
   }
 
-  it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
-    await page.callMethod('setVerticalScrollBy', 120)
-    await page.waitFor(600)
-    const scrollDetail = await page.data('scrollDetailTest')
-    console.log('setVerticalScrollBy scrollDetail:', scrollDetail)
-    expect(scrollDetail.scrollTop).toBeGreaterThan(119)
-  })
+  if(!isMP) {
+    it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
+      await page.callMethod('setVerticalScrollBy', 120)
+      await page.waitFor(600)
+      const scrollDetail = await page.data('scrollDetailTest')
+      console.log('setVerticalScrollBy scrollDetail:', scrollDetail)
+      expect(scrollDetail.scrollTop).toBeGreaterThan(119)
+    })
+  }
 });

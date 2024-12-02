@@ -12,7 +12,9 @@ describe("getElementByIdForMultipleRootNode", () => {
     expect(res).toBe(null);
   });
   it("changeStyle", async () => {
-    await page.callMethod("changePageHeadBackgroundColor");
+    if (!process.env.uniTestPlatformInfo.startsWith('mp')) {
+      await page.callMethod("changePageHeadBackgroundColor");
+    }
     await page.callMethod("changeTextColor");
     await page.callMethod("changeViewStyle");
     await page.waitFor(500);

@@ -1,6 +1,11 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('component-native-scroll-view-props', () => {
+    const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+    const isAndroid = platformInfo.startsWith('android')
+    const isIOS = platformInfo.startsWith('ios')
+    const isMP = platformInfo.startsWith('mp')
+    const isWeb = platformInfo.startsWith('web')
 
     let page;
     beforeAll(async () => {
@@ -8,20 +13,22 @@ describe('component-native-scroll-view-props', () => {
         await page.waitFor(300);
     });
 
-    //检测竖向可滚动区域
-    it('check_scroll_height', async () => {
-      await page.setData({
-          scrollX: false
+    if(!isMP) {
+      //检测竖向可滚动区域
+      it('check_scroll_height', async () => {
+        await page.setData({
+            scrollX: false
+        })
+        await page.waitFor(300);
+        const value = await page.callMethod('checkScrollHeight')
+        expect(value).toBe(true)
       })
-      await page.waitFor(300);
-      const value = await page.callMethod('checkScrollHeight')
-      expect(value).toBe(true)
-    })
+    }
 
     //检测竖向scrolltop属性赋值
     it('check_scroll_top', async () => {
         await page.setData({
-            scrollTop: 600
+          scrollTop: 600
         })
         await page.waitFor(600)
         //检测滚动top 是否触发scroll 事件
@@ -37,7 +44,7 @@ describe('component-native-scroll-view-props', () => {
     //检测竖向scroll_into_view属性赋值
     it('check_scroll_into_view_top', async () => {
         await page.setData({
-            scrollIntoView: "item3"
+          scrollIntoView: "item3"
         })
         await page.waitFor(600)
         const element = await page.$('#scrollViewY')
@@ -49,20 +56,25 @@ describe('component-native-scroll-view-props', () => {
         expect(scrollTop-570).toBeGreaterThanOrEqual(0)
     })
 
-    //检测横向可滚动区域
-    it('check_scroll_width', async () => {
-      await page.setData({
-          scrollX: true
+    if(!isMP) {
+      //检测横向可滚动区域
+      it('check_scroll_width', async () => {
+        await page.setData({
+            scrollX: true
+        })
+        await page.waitFor(300);
+        const value = await page.callMethod('checkScrollWidth')
+        expect(value).toBe(true)
       })
-      await page.waitFor(300);
-      const value = await page.callMethod('checkScrollWidth')
-      expect(value).toBe(true)
-    })
+    }
 
     //检测横向scrollLeft属性赋值
     it('check_scroll_left', async () => {
       await page.setData({
-          scrollLeft: 600
+        scrollX: true
+      })
+      await page.setData({
+        scrollLeft: 600
       })
       await page.waitFor(600)
       const element = await page.$('#scrollViewX')
@@ -73,6 +85,9 @@ describe('component-native-scroll-view-props', () => {
 
     //检测横向scroll_into_view属性赋值
     it('check_scroll_into_view_left', async () => {
+      await page.setData({
+        scrollX: true
+      })
       await page.setData({
           scrollIntoView: "horizontal_item3"
       })

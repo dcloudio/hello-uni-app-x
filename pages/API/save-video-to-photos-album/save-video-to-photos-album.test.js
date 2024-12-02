@@ -1,6 +1,10 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIos = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
+const isMp = platformInfo.startsWith('mp')
+
 describe('API-saveVideoToPhotosAlbum', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (isIos || isWeb || isMp) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
