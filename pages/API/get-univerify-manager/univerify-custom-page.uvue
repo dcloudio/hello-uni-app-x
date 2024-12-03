@@ -9,7 +9,7 @@
       </view>
       <button id="login-button" class="login-button" @click="loginIn">本机号码一键登录</button>
       <view class="privacy">
-        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="true"></checkbox>
+        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="false"></checkbox>
         <text class="privacy-normal-text">登录即同意</text>
         <text id="privacy-text" class="privacy-text" @click="openLink">{{privacyName}}</text>
       </view>
@@ -51,10 +51,10 @@
         })
       },
       openLink() {
-        let url = '/pages/API/get-univerify-manager/full-webview-page?url=' + this.privacyUrl;
+        let url = '/pages/API/get-univerify-manager/full-webview-page?url=' + this.privacyUrl + '&title=' + this.privacyName + '&animationType=slide-out-bottom';
         uni.openDialogPage({
           url: url,
-          animationType: 'slide-in-right',
+          animationType: 'slide-in-bottom',
           success(res) {
             console.log("打开隐私协议");
           },
@@ -82,10 +82,15 @@
             this.takePhoneNumber(res.accessToken, res.openId);
           },
           fail: (error : LoginFail) => {
-            console.error("login fail => " + error);
             if (error.errCode == 40001){
               uni.showToast({
               	title:"请同意服务条款",
+                icon:'none',
+              	duration:2000
+              })
+            }else if(error.errCode == 40002){
+              uni.showToast({
+              	title:"授权页不符合规范",
                 icon:'none',
               	duration:2000
               })
@@ -96,11 +101,7 @@
                  icon:'none',
                	duration:2000
                })
-               // uni.showModal({
-               //   title: '登录失败',
-               //   content: errorMsg,
-               //   showCancel: false
-               // });
+
             }
           }
         })
