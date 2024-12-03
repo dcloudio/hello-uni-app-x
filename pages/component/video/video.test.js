@@ -85,7 +85,7 @@ describe('component-native-video', () => {
       // });
     } else {
       expect(await page.data('eventPlay')).toEqual({
-        tagName: isMP ? undefined : 'VIDEO',
+        tagName: 'VIDEO',
         type: 'play'
       });
     }
@@ -100,7 +100,7 @@ describe('component-native-video', () => {
       // });
     } else {
       expect(await page.data('eventPause')).toEqual({
-        tagName: isMP ? undefined : 'VIDEO',
+        tagName: 'VIDEO',
         type: 'pause'
       });
     }
@@ -122,7 +122,7 @@ describe('component-native-video', () => {
         // });
       } else {
         expect(await page.data('eventControlstoggle')).toEqual({
-          tagName: isMP ? undefined : 'VIDEO',
+          tagName: 'VIDEO',
           type: 'controlstoggle',
           show: true
         });
@@ -141,11 +141,11 @@ describe('component-native-video', () => {
           start > 1000);
       });
       expect(await page.data('eventWaiting')).toEqual({
-        tagName: isMP ? undefined : 'VIDEO',
+        tagName: 'VIDEO',
         type: 'waiting'
       });
       expect(await page.data('eventProgress')).toEqual({
-        tagName: isMP ? undefined : 'VIDEO',
+        tagName: 'VIDEO',
         type: 'progress',
         isBufferedValid: true
       });
@@ -158,7 +158,7 @@ describe('component-native-video', () => {
         return (await page.data('eventFullscreenchange')) || (Date.now() - start > 1000);
       });
       expect(await page.data('eventFullscreenchange')).toEqual({
-        tagName: isMP ? undefined : 'VIDEO',
+        tagName: 'VIDEO',
         type: 'fullscreenchange',
         fullScreen: true,
         direction: 'horizontal'
@@ -179,7 +179,7 @@ describe('component-native-video', () => {
         const res2 = await program.adbCommand('wm density');
         const scale = res2.data.split(' ').at(-1) / 160;
         expect(await page.data('eventFullscreenclick')).toEqual({
-          tagName: isMP ? undefined : 'VIDEO',
+          tagName: 'VIDEO',
           type: 'fullscreenclick',
           screenX: parseInt(10 / scale),
           screenY: parseInt(10 / scale),
@@ -197,7 +197,7 @@ describe('component-native-video', () => {
         return (await page.data('eventEnded')) || (Date.now() - start > 30000);
       });
       expect(await page.data('eventEnded')).toEqual({
-        tagName: isMP ? undefined : 'VIDEO',
+        tagName: 'VIDEO',
         type: 'ended'
       });
       const infos = process.env.uniTestPlatformInfo.split(' ');
@@ -208,7 +208,7 @@ describe('component-native-video', () => {
           return (await page.data('eventTimeupdate')) || (Date.now() - start > 500);
         });
         expect(await page.data('eventTimeupdate')).toEqual({
-          tagName: isMP ? undefined : 'VIDEO',
+          tagName: 'VIDEO',
           type: 'timeupdate',
           currentTime: 121,
           duration: 121
