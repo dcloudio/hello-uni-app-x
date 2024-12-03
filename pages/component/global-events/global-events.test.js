@@ -270,6 +270,8 @@ describe('event trigger', () => {
       }
 
       if (isAndroid || isIos) {
+        const longPressTouchTargetIdentifier = '1'
+        const longPressTouchTargetValue = '0'
         if (isIos) {
           // 规避系统授权弹框
           await program.tap({
