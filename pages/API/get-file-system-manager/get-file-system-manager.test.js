@@ -101,10 +101,10 @@ describe('ExtApi-FileManagerTest', () => {
 
       let lastFailError = await getData('lastFailError')
       expect(lastFailError.errCode).toEqual(1300002)
-      expect(lastFailError.errMsg).toEqual('no such file or directory')
+      expect(lastFailError.errMsg).toEqual('No such file or directory')
       let lastCompleteError = await getData('lastCompleteError')
       expect(lastCompleteError.errCode).toEqual(1300002)
-      expect(lastCompleteError.errMsg).toEqual('no such file or directory')
+      expect(lastCompleteError.errMsg).toEqual('No such file or directory')
     }
 
 
