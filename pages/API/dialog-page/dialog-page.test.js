@@ -3,6 +3,7 @@ jest.setTimeout(50000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -15,10 +16,10 @@ describe('dialog page', () => {
     return
   }
   if (isMP) {
-  	it('skip mp', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
+    it('skip mp', () => {
+      expect(1).toBe(1)
+    })
+    return
   }
 
   let page;
@@ -403,6 +404,44 @@ describe('dialog page', () => {
     expect(await page.callMethod('getLifeCycleNum')).toBe(-2)
   })
 
+
+  if (isAndroid || isIos) {
+    it('after closeDialogPage reset statusBar color', async () => {
+      const adbScreenShotArea = {
+        x: 900,
+        y: 50,
+        width: 100,
+        height: 70
+      };
+
+      if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
+        adbScreenShotArea.x = 535
+        adbScreenShotArea.width = 90
+        adbScreenShotArea.height = 50
+      } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
+        adbScreenShotArea.x = 1160
+        adbScreenShotArea.width = 70
+        adbScreenShotArea.height = 80
+      }
+
+      await page.callMethod('openDialog4')
+      await page.waitFor(1000)
+      const imageForDialog4 = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForDialog4).toSaveImageSnapshot();
+
+      await page.callMethod('closeDialog')
+      await page.waitFor(1000)
+
+      const imageForParent = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForParent).toSaveImageSnapshot();
+    })
+  }
   it('input-hold-keyboard in dialog', async () => {
     await page.callMethod('jest_OpenDialog1')
     await page.waitFor(2000);
