@@ -2,7 +2,12 @@
 	<view>
 		<page-head :title="title"></page-head>
 		<view class="uni-padding-wrap">
-			<view class="uni-hello-text">注意：离开当前页面后背景音乐将保持播放，后台控制中心点击上一曲、下一曲切换到第102和104首音乐时会出现播放失败示例</view>
+			<text>
+				注意：1.离开当前页面后背景音乐将保持播放；\n
+				2. 后台控制中心点击上一曲、下一曲切换到第102和104首音乐时会出现播放失败示例\n
+				3. 硬退出app、调用stop api、播放结束都会清理后台控制中心和锁屏信息显示
+			</text>
+
 			<view class="page-body-buttons">
 				<template v-if="playing">
 					<view class="page-body-button" @tap="stop">
@@ -32,8 +37,7 @@
 				playing: false,
 				playTime: 0,
 				formatedPlayTime: '00:00:00',
-				count: 100,
-				isCanplay: false,
+				count: 100
 			}
 		},
 		onLoad: function () {
@@ -44,7 +48,6 @@
 			bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
 			bgAudioMannager.onCanplay(() => {
 				console.log("音频进入可以播放状态事件");
-				this.isCanplay = true
 			})
 			bgAudioMannager.onPlay(() => {
 				console.log("开始播放");
@@ -67,7 +70,7 @@
 			bgAudioMannager.onNext(() => {
 				this.count++
 				console.log("下一曲", this.count);
-				this.bgAudioMannager?.stop()
+				// this.bgAudioMannager?.stop()
 				bgAudioMannager.title = '致爱丽丝' + this.count;
 				bgAudioMannager.singer = '歌手：暂无' + this.count;
 				if (this.count == 102 || this.count == 104) {
@@ -82,7 +85,7 @@
 			bgAudioMannager.onPrev(() => {
 				this.count--
 				console.log("上一曲", this.count);
-				this.bgAudioMannager?.stop()
+				// this.bgAudioMannager?.stop()
 				bgAudioMannager.title = '致爱丽丝' + this.count;
 				bgAudioMannager.singer = '歌手：暂无' + this.count;
 				if (this.count == 102 || this.count == 104) {
@@ -111,15 +114,12 @@
 			})
 			this.bgAudioMannager = bgAudioMannager;
 			this.playing = !bgAudioMannager.paused
-      this.isCanplay = this.bgAudioMannager.duration > 0
 		},
 		methods: {
 			play: function () {
 				console.log('play')
 				this.bgAudioMannager!.src = this.dataUrl;
-				if (this.isCanplay) {
-					this.bgAudioMannager!.play()
-				}
+				this.bgAudioMannager!.play()
 			},
 			pause: function () {
 				this.bgAudioMannager?.pause();
