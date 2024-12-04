@@ -26,6 +26,11 @@
   </view>
 </template>
 <script lang="uts">
+  import {
+    state,
+    setLifeCycleNum
+  } from '@/store/index.uts'
+
   type Location = {
     latitude: string[]
     longitude: string[]
@@ -47,8 +52,15 @@
         hoverPayload: false
       }
     },
+    onShow() {
+      console.log("Page Show");
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum + 1)
+    },
     onHide() {
       console.log("Page Hide");
+      // 自动化测试
+      setLifeCycleNum(state.lifeCycleNum - 1)
     },
     methods: {
       chooseLocation: function () {
@@ -113,7 +125,15 @@
         const dialogPages = page.getDialogPages()
         this.dialogPagesNum = dialogPages.length
         // #endif
-      }
+      },
+      // 自动化测试
+      setLifeCycleNum(value : number) {
+        setLifeCycleNum(value)
+      },
+      // 自动化测试
+      getLifeCycleNum() : number {
+        return state.lifeCycleNum
+      },
     }
   }
 </script>
