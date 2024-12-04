@@ -21,6 +21,9 @@
         <boolean-data :defaultValue="false" title="是否携带payload参数" @change="changePayloadBoolean"></boolean-data>
         <button class="btn" type="primary" @tap="chooseLocation">选择位置</button>
         <button class="btn" @tap="clear">清空</button>
+        <!-- #ifdef APP-IOS -->
+        <button class="btn" type="primary" @tap="chooseLocationByPlugin">通过 uts 插件调用 chooseLocation</button>
+        <!-- #endif -->
       </view>
     </view>
   </view>
@@ -117,6 +120,11 @@
       changePayloadBoolean(checked : boolean) {
         this.hoverPayload = checked
       },
+      // #ifdef APP-IOS
+      chooseLocationByPlugin(){
+        uni.chooseLocationPlugin()
+      },
+      // #endif
       // 自动化测试
       test() {
         const pages = getCurrentPages()
