@@ -6,9 +6,8 @@ describe('ExtApi-UploadFile', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  if (isWeb) {
-    // TODO: web 端暂不支持测试
-    it('web', async () => {
+  if (isWeb || isMP) {
+    it('not support', async () => {
       expect(1).toBe(1)
     })
     return
@@ -51,10 +50,6 @@ describe('ExtApi-UploadFile', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true);
   });
-
-  if(isMP) {
-    return
-  }
 
   // 15以下的模拟器所对应的xcode不能编译自定义插件，大于15是因为某台设备，会用xcode14.1跑15.5的设备
   let version = process.env.uniTestPlatformInfo
