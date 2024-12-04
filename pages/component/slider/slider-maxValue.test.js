@@ -45,4 +45,20 @@ describe('touch-events-test', () => {
     const ret = await page.data('sliderValue')
     expect(ret).toBe(10)
   })
+
+  it('test-slider-click', async () => {
+
+    let iconRect = await page.data('sliderRect')
+    let x = iconRect.x + 100
+    let y = iconRect.y + iconRect.height / 2.0
+
+    // 点击事件
+    await program.tap(
+      {x: x, y: y}
+    )
+
+    await page.waitFor(600);
+    const ret = await page.data('sliderValue')
+    expect(ret).toBeLessThan(10)
+  })
 })
