@@ -95,7 +95,7 @@ describe('dialog page', () => {
 
   it('navigateTo nextPage & open Dialog', async () => {
     await page.callMethod('goNextPageOpenDialog1')
-    await page.waitFor(2000)
+    await page.waitFor(2500)
     if (isWeb) {
       await page.waitFor(3000)
     }
@@ -424,22 +424,45 @@ describe('dialog page', () => {
         adbScreenShotArea.height = 80
       }
 
+      const imageForParentInit = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForParentInit).toSaveImageSnapshot();
+
       await page.callMethod('openDialog4')
       await page.waitFor(1000)
-      const imageForDialog4 = await program.screenshot({
+      const imageForDialog4_1 = await program.screenshot({
         deviceShot: true,
         area: adbScreenShotArea,
       });
-      expect(imageForDialog4).toSaveImageSnapshot();
+      expect(imageForDialog4_1).toSaveImageSnapshot();
 
-      await page.callMethod('closeDialog')
+      await page.callMethod('openDialog3')
+      await page.waitFor(1000)
+      const imageForDialog3 = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForDialog3).toSaveImageSnapshot();
+
+      await page.callMethod('closeSpecifiedDialog', 1)
       await page.waitFor(1000)
 
-      const imageForParent = await program.screenshot({
+      const imageForDialog4_2 = await program.screenshot({
         deviceShot: true,
         area: adbScreenShotArea,
       });
-      expect(imageForParent).toSaveImageSnapshot();
+      expect(imageForDialog4_2).toSaveImageSnapshot();
+
+      await page.callMethod('closeSpecifiedDialog', 0)
+      await page.waitFor(1000)
+
+      const imageForParentEnd = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForParentEnd).toSaveImageSnapshot();
     })
   }
   it('input-hold-keyboard in dialog', async () => {
