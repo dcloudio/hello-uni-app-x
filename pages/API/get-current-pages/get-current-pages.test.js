@@ -70,12 +70,21 @@ describe('getCurrentPages', () => {
 
     // setPageStyle
     await page.callMethod('setPageStyle', {
+      androidThreeButtonNavigationTranslucent: true
+    });
+    await page.waitFor(2000);
+    const image4 = await program.screenshot({ deviceShot: true });
+    expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
+    }});
+
+    await page.callMethod('setPageStyle', {
       hideBottomNavigationIndicator: true,
       hideStatusBar: true
     })
-    await page.waitFor(500)
-    const image4 = await program.screenshot({fullPage: true});
-    expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
+    await page.waitFor(2000);
+    const image5 = await program.screenshot({ deviceShot: true });
+    expect(image5).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
 
