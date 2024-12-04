@@ -1,8 +1,9 @@
-jest.setTimeout(20000)
+jest.setTimeout(50000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -15,10 +16,10 @@ describe('dialog page', () => {
     return
   }
   if (isMP) {
-  	it('skip mp', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
+    it('skip mp', () => {
+      expect(1).toBe(1)
+    })
+    return
   }
 
   let page;
@@ -94,7 +95,7 @@ describe('dialog page', () => {
 
   it('navigateTo nextPage & open Dialog', async () => {
     await page.callMethod('goNextPageOpenDialog1')
-    await page.waitFor(2000)
+    await page.waitFor(2500)
     if (isWeb) {
       await page.waitFor(3000)
     }
@@ -202,6 +203,7 @@ describe('dialog page', () => {
   })
 
   it('openDialogPage to home page', async () => {
+    // 本测试例中是在 FIRST_PAGE_PATH 中打开
     await page.callMethod('openDialogPage1ToHomePage')
     await page.waitFor(1000)
     if (isWeb) {
@@ -215,7 +217,6 @@ describe('dialog page', () => {
   it('dialog2 navigateBack', async () => {
     await program.navigateBack()
     page = await program.currentPage()
-    // dialogPage onBackPress 返回 true, 应可以拦截 navigateBack
     expect(page.path).toBe(FIRST_PAGE_PATH.substring(1))
     const image = await program.screenshot({
       deviceShot: true,
@@ -226,7 +227,7 @@ describe('dialog page', () => {
     });
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    // onBackPress 生命周期应该被触发
+    // dialogPage2 onBackPress +1 dialogPage1 show +1 dialogPage unload -5*2 firstPage show +10
     expect(lifecycleNum).toBe(2)
     await page.callMethod('setLifeCycleNum', 0)
   })
@@ -299,9 +300,171 @@ describe('dialog page', () => {
     expect(image5).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(2)
+    await page.callMethod('setLifeCycleNum', 0)
+  })
+
+  it('check triggerParentHide', async () => {
+    // no triggerParentHide should not trigger parent hide
+    await page.callMethod('openDialog4')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // dialog4 show +1
+    expect(await page.callMethod('getLifeCycleNum')).toBe(1)
+    await page.callMethod('closeDialog')
+    await page.waitFor(200)
+    // dialog4 unload -5 closeDialog callback +2
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-2)
+
+
+    // triggerParentHide should trigger parent hide
+    await page.callMethod('openDialogWithTriggerParentHide')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // openDialog callback +2 dialog4 show +1 parent hide -10
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-9)
+    await page.callMethod('closeDialog')
+    await page.waitFor(200)
+    // dialog4 unload -5 parent show +10 closeDialog callback +2
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-2)
+
+
+    // triggerParentHide should trigger parent hide
+    await page.callMethod('openDialogWithTriggerParentHide')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // openDialog callback +2 dialog4 show +1 parent hide -10
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-9)
+
+    // second triggerParentHide should not trigger parent hide
+    await page.callMethod('openDialogWithTriggerParentHide')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // openDialog callback +2 dialog4 show +1
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-6)
+
+    await page.callMethod('closeSpecifiedDialog', 1)
+    await page.waitFor(200)
+    // close not last triggerParentHide should not trigger parent show
+    // close callback +2 dialog4 unload -5 dialog4 show +1
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-8)
+
+    await page.callMethod('closeSpecifiedDialog', 0)
+    await page.waitFor(200)
+    // close last triggerParentHide should trigger parent show
+    // close callback +2 dialog4 unload -5 parent show +10
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-1)
+
+
+    // no triggerParentHide should not trigger parent hide
+    await page.callMethod('openDialog4')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // dialog4 show +1
+    expect(await page.callMethod('getLifeCycleNum')).toBe(0)
+    // triggerParentHide should trigger parent hide
+    await page.callMethod('openDialogWithTriggerParentHide')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // openDialog callback +2 dialog4 show +1 parent hide -10
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-7)
+
+    // second triggerParentHide should not trigger parent hide
+    await page.callMethod('openDialogWithTriggerParentHide')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    // openDialog callback +2 dialog4 show +1
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-4)
+    // close middle triggerParentHide dialogPage
+    await page.callMethod('closeSpecifiedDialog', 1)
+    await page.waitFor(200)
+    // close callback +2 dialog4 unload -5
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-7)
+    // close last triggerParentHide dialogPage shoud trigger parent show
+    await page.callMethod('closeSpecifiedDialog', 1)
+    await page.waitFor(200)
+    // close callback +2 dialog4 unload -5 dialog4 show +1 parent show +10
+    expect(await page.callMethod('getLifeCycleNum')).toBe(1)
+    await page.callMethod('closeDialog')
+    await page.waitFor(200)
+    // close callback +2 dialog4 unload -5
+    expect(await page.callMethod('getLifeCycleNum')).toBe(-2)
   })
 
 
+  if (isAndroid || isIos) {
+    it('after closeDialogPage reset statusBar color', async () => {
+      const adbScreenShotArea = {
+        x: 900,
+        y: 50,
+        width: 100,
+        height: 70
+      };
+
+      if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
+        adbScreenShotArea.x = 535
+        adbScreenShotArea.width = 90
+        adbScreenShotArea.height = 50
+      } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
+        adbScreenShotArea.x = 1160
+        adbScreenShotArea.width = 70
+        adbScreenShotArea.height = 80
+      }
+
+      const imageForParentInit = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForParentInit).toSaveImageSnapshot();
+
+      await page.callMethod('openDialog4')
+      await page.waitFor(1000)
+      const imageForDialog4_1 = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForDialog4_1).toSaveImageSnapshot();
+
+      await page.callMethod('openDialog3')
+      await page.waitFor(1000)
+      const imageForDialog3 = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForDialog3).toSaveImageSnapshot();
+
+      await page.callMethod('closeSpecifiedDialog', 1)
+      await page.waitFor(1000)
+
+      const imageForDialog4_2 = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForDialog4_2).toSaveImageSnapshot();
+
+      await page.callMethod('closeSpecifiedDialog', 0)
+      await page.waitFor(1000)
+
+      const imageForParentEnd = await program.screenshot({
+        deviceShot: true,
+        area: adbScreenShotArea,
+      });
+      expect(imageForParentEnd).toSaveImageSnapshot();
+    })
+  }
   it('input-hold-keyboard in dialog', async () => {
     await page.callMethod('jest_OpenDialog1')
     await page.waitFor(2000);

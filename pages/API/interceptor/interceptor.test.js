@@ -1,5 +1,8 @@
 const PAGE_PATH = '/pages/API/interceptor/interceptor'
 
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('interceptor', () => {
   let page
   beforeEach(async () => {
@@ -7,7 +10,7 @@ describe('interceptor', () => {
     await page.waitFor('view')
   })
 
-  if (!process.env.uniTestPlatformInfo.startsWith('mp')) {
+  if (!isMP) {
     // 小程序不支持拦截navigator组件
     it('no Interceptor', async () => {
       const newPage = await program.navigateTo('./page1')

@@ -266,63 +266,63 @@ describe('event trigger', () => {
         expect(await longPressChangedTouchScreenX.text()).toBe(longPressTouchTargetValue)
         const longPressChangedTouchScreenY = await page.$('#long-press-changed-touch-screen-y')
         expect(await longPressChangedTouchScreenY.text()).toBe(longPressTouchTargetValue)
-      }
 
-      if (isAndroid || isIos) {
-        if (isIos) {
-          // 规避系统授权弹框
+        if (isAndroid || isIos) {
+          if (isIos) {
+            // 规避系统授权弹框
+            await program.tap({
+              x: 100,
+              y: 500,
+            })
+          }
           await program.tap({
-            x: 100,
-            y: 500,
+            x: 200,
+            y: 400,
+            duration: 1000
           })
+          const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
+          expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
+          expect(longPressTouchIdentifierText).toBeTruthy()
+          const longPressTouchPageXText = await longPressTouchPageX.text()
+          expect(longPressTouchPageXText).not.toBe(longPressTouchTargetValue)
+          expect(longPressTouchPageXText).toBeTruthy()
+          const longPressTouchPageYText = await longPressTouchPageY.text()
+          expect(longPressTouchPageYText).not.toBe(longPressTouchTargetValue)
+          expect(longPressTouchPageYText).toBeTruthy()
+          const longPressTouchClientXText = await longPressTouchClientX.text()
+          expect(longPressTouchClientXText).not.toBe(longPressTouchTargetValue)
+          expect(longPressTouchClientXText).toBeTruthy()
+          const longPressTouchClientYText = await longPressTouchClientY.text()
+          expect(longPressTouchClientYText).not.toBe(longPressTouchTargetValue)
+          expect(longPressTouchClientYText).toBeTruthy()
+          const longPressTouchScreenXText = await longPressTouchScreenX.text()
+          expect(longPressTouchScreenXText).not.toBe(longPressTouchTargetValue)
+          expect(longPressTouchScreenXText).toBeTruthy()
+          const longPressTouchScreenYText = await longPressTouchScreenY.text()
+          expect(longPressTouchScreenYText).not.toBe(longPressTouchTargetValue)
+          expect(longPressTouchScreenYText).toBeTruthy()
+          const longPressChangedTouchIdentifierText = await longPressChangedTouchIdentifier.text()
+          expect(longPressChangedTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
+          expect(longPressChangedTouchIdentifierText).toBeTruthy()
+          const longPressChangedTouchPageXText = await longPressChangedTouchPageX.text()
+          expect(longPressChangedTouchPageXText).not.toBe(longPressTouchTargetValue)
+          expect(longPressChangedTouchPageXText).toBeTruthy()
+          const longPressChangedTouchPageYText = await longPressChangedTouchPageY.text()
+          expect(longPressChangedTouchPageYText).not.toBe(longPressTouchTargetValue)
+          expect(longPressChangedTouchPageYText).toBeTruthy()
+          const longPressChangedTouchClientXText = await longPressChangedTouchClientX.text()
+          expect(longPressChangedTouchClientXText).not.toBe(longPressTouchTargetValue)
+          expect(longPressChangedTouchClientXText).toBeTruthy()
+          const longPressChangedTouchClientYText = await longPressChangedTouchClientY.text()
+          expect(longPressChangedTouchClientYText).not.toBe(longPressTouchTargetValue)
+          expect(longPressChangedTouchClientYText).toBeTruthy()
+          const longPressChangedTouchScreenXText = await longPressChangedTouchScreenX.text()
+          expect(longPressChangedTouchScreenXText).not.toBe(longPressTouchTargetValue)
+          expect(longPressChangedTouchScreenXText).toBeTruthy()
+          const longPressChangedTouchScreenYText = await longPressChangedTouchScreenY.text()
+          expect(longPressChangedTouchScreenYText).not.toBe(longPressTouchTargetValue)
+          expect(longPressChangedTouchScreenYText).toBeTruthy()
         }
-        await program.tap({
-          x: 200,
-          y: 400,
-          duration: 1000
-        })
-        const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
-        expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
-        expect(longPressTouchIdentifierText).toBeTruthy()
-        const longPressTouchPageXText = await longPressTouchPageX.text()
-        expect(longPressTouchPageXText).not.toBe(longPressTouchTargetValue)
-        expect(longPressTouchPageXText).toBeTruthy()
-        const longPressTouchPageYText = await longPressTouchPageY.text()
-        expect(longPressTouchPageYText).not.toBe(longPressTouchTargetValue)
-        expect(longPressTouchPageYText).toBeTruthy()
-        const longPressTouchClientXText = await longPressTouchClientX.text()
-        expect(longPressTouchClientXText).not.toBe(longPressTouchTargetValue)
-        expect(longPressTouchClientXText).toBeTruthy()
-        const longPressTouchClientYText = await longPressTouchClientY.text()
-        expect(longPressTouchClientYText).not.toBe(longPressTouchTargetValue)
-        expect(longPressTouchClientYText).toBeTruthy()
-        const longPressTouchScreenXText = await longPressTouchScreenX.text()
-        expect(longPressTouchScreenXText).not.toBe(longPressTouchTargetValue)
-        expect(longPressTouchScreenXText).toBeTruthy()
-        const longPressTouchScreenYText = await longPressTouchScreenY.text()
-        expect(longPressTouchScreenYText).not.toBe(longPressTouchTargetValue)
-        expect(longPressTouchScreenYText).toBeTruthy()
-        const longPressChangedTouchIdentifierText = await longPressChangedTouchIdentifier.text()
-        expect(longPressChangedTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
-        expect(longPressChangedTouchIdentifierText).toBeTruthy()
-        const longPressChangedTouchPageXText = await longPressChangedTouchPageX.text()
-        expect(longPressChangedTouchPageXText).not.toBe(longPressTouchTargetValue)
-        expect(longPressChangedTouchPageXText).toBeTruthy()
-        const longPressChangedTouchPageYText = await longPressChangedTouchPageY.text()
-        expect(longPressChangedTouchPageYText).not.toBe(longPressTouchTargetValue)
-        expect(longPressChangedTouchPageYText).toBeTruthy()
-        const longPressChangedTouchClientXText = await longPressChangedTouchClientX.text()
-        expect(longPressChangedTouchClientXText).not.toBe(longPressTouchTargetValue)
-        expect(longPressChangedTouchClientXText).toBeTruthy()
-        const longPressChangedTouchClientYText = await longPressChangedTouchClientY.text()
-        expect(longPressChangedTouchClientYText).not.toBe(longPressTouchTargetValue)
-        expect(longPressChangedTouchClientYText).toBeTruthy()
-        const longPressChangedTouchScreenXText = await longPressChangedTouchScreenX.text()
-        expect(longPressChangedTouchScreenXText).not.toBe(longPressTouchTargetValue)
-        expect(longPressChangedTouchScreenXText).toBeTruthy()
-        const longPressChangedTouchScreenYText = await longPressChangedTouchScreenY.text()
-        expect(longPressChangedTouchScreenYText).not.toBe(longPressTouchTargetValue)
-        expect(longPressChangedTouchScreenYText).toBeTruthy()
       }
     }
   })
@@ -361,4 +361,3 @@ describe('event trigger', () => {
     }
   })
 })
-

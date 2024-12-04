@@ -3,7 +3,7 @@ const CURRENT_PAGE_PATH =
 
 describe("setNavigationBarColor", () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-    it('dummyTest', () => {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
@@ -12,7 +12,7 @@ describe("setNavigationBarColor", () => {
   let originLifeCycleNum;
   beforeAll(async () => {
     page = await program.navigateTo(CURRENT_PAGE_PATH);
-    await page.waitFor(1000);
+    await page.waitFor('view');
     originLifeCycleNum = await page.callMethod("getLifeCycleNum");
   });
 

@@ -82,7 +82,7 @@ describe('component-native-image', () => {
       return (await page.data('eventLoad')) || (Date.now() - start > 1000);
     });
     expect(await page.data('eventLoad')).toEqual({
-      tagName: isMP ? undefined : 'IMAGE',
+      tagName: isMP ? '' : 'IMAGE',
       type: 'load',
       width: 10,
       height: 10
@@ -98,7 +98,7 @@ describe('component-native-image', () => {
       return (await page.data('eventError')) || (Date.now() - start > 1000);
     });
     expect(await page.data('eventError')).toEqual({
-      tagName: isMP ? undefined : 'IMAGE',
+      tagName: isMP ? '' : 'IMAGE',
       type: 'error'
     });
 

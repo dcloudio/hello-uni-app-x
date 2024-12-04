@@ -15,16 +15,29 @@ describe('dialog page', () => {
   	return
   }
 
-  let page;
+	let page;
+	let originLifeCycleNum;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/choose-location/choose-location')
-    await page.waitFor('view');
+		await page.waitFor('view');
+
+		originLifeCycleNum = await page.callMethod('getLifeCycleNum')
+
+		await page.callMethod('chooseLocation')
+		await page.waitFor(1000)
   });
 
   it('dialogPage should empty', async () => {
-		await page.callMethod('chooseLocation')
-		await page.waitFor(1000)
 		const dialogPagesNum = await page.data('dialogPagesNum')
 		expect(dialogPagesNum).toBe(0)
-  })
+	})
+
+	it('should trigger parent hide', async () => {
+		const lifecycleNum = await page.callMethod('getLifeCycleNum')
+		expect(lifecycleNum).toBe(originLifeCycleNum - 1)
+	})
+
+	afterAll(async () => {
+		await page.callMethod('setLifeCycleNum', originLifeCycleNum)
+  });
 })

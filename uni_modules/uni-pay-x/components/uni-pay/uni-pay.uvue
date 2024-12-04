@@ -233,7 +233,7 @@
 				})
 			}
 			// #endif
-			
+
 			// #ifdef MP-WEIXIN
 			// 如果是微信小程序，则设置只支持微信支付
 			this.originalRroviders = ["wxpay"];
@@ -832,7 +832,12 @@
 			modeCom() : string {
 				let mode = this.mode as string;
 				if (mode != "") return mode;
-				let systemInfo = uni.getSystemInfoSync();
+        // #ifdef MP-WEIXIN
+        let systemInfo = uni.getDeviceInfo();
+        // #endif
+        // #ifndef MP-WEIXIN
+        let systemInfo = uni.getSystemInfoSync();
+        // #endif
 				return systemInfo.deviceType == "pc" ? "pc" : "mobile";
 			},
 			totalFeeCom() : number {

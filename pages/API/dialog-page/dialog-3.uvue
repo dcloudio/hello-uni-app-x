@@ -34,8 +34,8 @@
           :checked="closeAnimationType == item">{{ item }}
         </radio>
       </radio-group>
-      <button class="mt-10" id="dialog1-close-dialog" @click="closeDialog">
-        closeDialog
+      <button class="mt-10" @click="closeThisDialog">
+        closeThisDialog
       </button>
     </scroll-view>
   </view>
@@ -107,8 +107,9 @@
       handleChooseAnimationType(e : RadioGroupChangeEvent){
         this.closeAnimationType = e.detail.value as CloseAnimationType
       },
-      closeDialog() {
+      closeThisDialog() {
         uni.closeDialogPage({
+          dialogPage: this.$page,
           animationType: this.closeAnimationType,
           success(res) {
             console.log('closeDialog success', res)
