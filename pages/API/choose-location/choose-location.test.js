@@ -1,5 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isIos = platformInfo.startsWith('ios')
 
 describe('dialog page', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
@@ -36,6 +37,16 @@ describe('dialog page', () => {
 		const lifecycleNum = await page.callMethod('getLifeCycleNum')
 		expect(lifecycleNum).toBe(originLifeCycleNum - 1)
 	})
+	if (isIos) {
+		it('call chooseLocation in uts plugin', async () => {
+			page = await program.reLaunch('/pages/API/choose-location/choose-location')
+			await page.waitFor('view');
+			await page.callMethod('chooseLocationByPlugin')
+			await page.waitFor(1000)
+			const lifecycleNum = await page.callMethod('getLifeCycleNum')
+			expect(lifecycleNum).toBe(originLifeCycleNum - 1)
+		})
+	}
 
 	afterAll(async () => {
 		await page.callMethod('setLifeCycleNum', originLifeCycleNum)
