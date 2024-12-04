@@ -2,7 +2,16 @@ describe('API-loading', () => {
 
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isMP = platformInfo.startsWith('mp')
   const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
+
+  if(isMP) {
+    // 微信小程序截图无法截到弹框
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   if (
     platformInfo.indexOf('15.5') != -1 ||
