@@ -307,8 +307,7 @@ if (isApp && !isAppWebview) {
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
     '/pages/API/share-with-system/share-with-system',
-    '/pages/template/scroll-sticky/scroll-sticky',
-    '/pages/CSS/text/font-family-icon',
+    '/pages/template/scroll-sticky/scroll-sticky'
   )
 }
 
