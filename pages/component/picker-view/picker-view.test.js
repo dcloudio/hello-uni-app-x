@@ -93,7 +93,7 @@ describe('PickerView.uvue', () => {
       await page.setData({
         maskClass: "mask-test"
       })
-      expect(await pickerViewEl.attribute(isMP ? 'mask-class' : maskClass)).toBe("mask-test")
+      expect(await pickerViewEl.attribute(isMP ? 'mask-class' : 'maskClass')).toBe("mask-test")
       await toScreenshot('picker-view-web-mask-class')
     })
     return
