@@ -12,18 +12,23 @@ describe('element-get-bounding-client-rect-async', () => {
     await page.waitFor(500)
   })
   it('getBoundingClientRectSync', async () => {
-    await invokeGetBoundingClientRect('getBoundingClientRectAsync', 'rectInfo');
+    await invokeGetBoundingClientRect(page, 'getBoundingClientRectAsync', 'rectInfo');
   })
 })
 
-async function invokeGetBoundingClientRect(methodName, dataName) {
+async function invokeGetBoundingClientRect(page, methodName, dataName) {
   await page.callMethod(methodName);
   await page.waitFor(50)
 
   const data = await page.data()
-  const width = uni.getWindowInfo().windowWidth
+  const systemInfo = await program.systemInfo();
+  const width = systemInfo.screenWidth
 
   const rectInfo = data[dataName]
+
+  console.log('width', width);
+  console.log('rectInfo', rectInfo);
+
   expect(Math.round(rectInfo.x)).toBe(RECT_X)
   expect(Math.round(rectInfo.y) > 90).toBe(true)
   expect(Math.round(rectInfo.width)).toBe(width - 15 * 2)
