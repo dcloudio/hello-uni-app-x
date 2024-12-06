@@ -30,7 +30,7 @@ describe('touch-events-test', () => {
   it('test-custom-refresher', async () => {
 
     let x = 100
-    let y = 250
+    let y = 180
 
     await page.setData({
       triggered: false,
@@ -47,7 +47,7 @@ describe('touch-events-test', () => {
       },
       endPoint: {
         x: x,
-        y: y - 100
+        y: y + 100
       },
       duration: 300
     })
