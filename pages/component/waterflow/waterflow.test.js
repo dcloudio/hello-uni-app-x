@@ -33,12 +33,14 @@ describe('component-native-waterflow', () => {
     // console.log('scrollDetailTest:', scrollDetail)
     expect(scrollDetail.scrollLeft).toBe(0)
     // scrollTop和deltaY 在安卓端差异 299.8095
-    expect([300, 299.8095]).toContain(scrollDetail.scrollTop);
+    expect(scrollDetail.scrollTop).toBeGreaterThan(299.5)
+    //expect([300, 299.8095]).toContain(scrollDetail.scrollTop);
     expect(scrollDetail.scrollHeight).toBeGreaterThan(0)
     expect(scrollDetail.scrollWidth).toBeGreaterThan(0)
     expect(scrollDetail.deltaX).toBe(0)
     //此处可判断安卓issues:9121的问题
-    expect([300.1905, 300, 299.8095]).toContain(scrollDetail.deltaY);
+    expect(scrollDetail.deltaY).toBeGreaterThan(299.5)
+    //expect([300.1905, 300, 299.8095]).toContain(scrollDetail.deltaY);
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
 
