@@ -1,9 +1,9 @@
 import Intent from 'android.content.Intent'
 import Uri from 'android.net.Uri'
-import { OpenSchema } from '../interface.uts'
+import { OpenSchema, CanOpenURL } from '../interface.uts'
 
-export const openSchema: OpenSchema = function (url: string) {
-  if (typeof url === 'string' && url.length > 0) {
+export const openSchema : OpenSchema = function (url : string) {
+  if (canOpenURL(url)) {
     const context = UTSAndroid.getUniActivity()!
     const uri = Uri.parse(url)
     const intent = new Intent(Intent.ACTION_VIEW, uri)
@@ -11,6 +11,17 @@ export const openSchema: OpenSchema = function (url: string) {
     intent.setData(uri)
     context.startActivity(intent)
   } else {
-    console.error('url param ERROR：', JSON.stringify(url))
+    console.error('url param Error：', JSON.stringify(url))
+  }
+}
+
+export const canOpenURL : CanOpenURL = function (url : string) {
+  if (typeof url === 'string' && url.length > 0) {
+    const context = UTSAndroid.getUniActivity()!
+    const uri = Uri.parse(url)
+    const intent = new Intent(Intent.ACTION_VIEW, uri)
+    return intent.resolveActivity(context.packageManager) != null
+  } else {
+    return false
   }
 }
