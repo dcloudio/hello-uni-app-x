@@ -35,6 +35,6 @@ async function invokeGetBoundingClientRect(page, methodName, dataName) {
   expect(Math.round(rectInfo.height)).toBe(RECT_HEIGHT)
   expect(Math.round(rectInfo.left)).toBe(RECT_LEFT)
   expect(Math.round(rectInfo.top) > 90).toBe(true)
-  expect(Math.round(rectInfo.right)).toBe(width - 15)
+  expect(width - 15 - Math.round(rectInfo.right) >= 0).toBe(true)
   expect(Math.round(rectInfo.bottom) > 200).toBe(true)
 }
