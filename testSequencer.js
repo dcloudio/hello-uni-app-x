@@ -12,6 +12,7 @@ const sortTestFilePaths = [
   "pages/CSS/overflow/overflow-visible-event.test.js",
   "pages/API/create-selector-query/create-selector-query-onScroll.test.js",
   "pages/component/scroll-view/scroll-view-custom-refresher-props.test.js",
+  "pages/component/waterflow/waterflow.test.js",
   "pages/component/rich-text/rich-text-complex.test.js"
 ]
 class CustomSequencer extends Sequencer {
