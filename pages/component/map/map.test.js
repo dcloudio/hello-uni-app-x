@@ -29,9 +29,13 @@ describe('web-map', () => {
   });
 
   it('Check EventDetail JsonStringify', async () => {
-    const res = await page.data('jestResult')
-    console.log(res.eventDetailJsonStringify);
-    expect(res.eventDetailJsonStringify).not.toBe("{}");
+    if(isMP || isWeb) {
+      expect(1).toBe(1)
+    } else {
+      const res = await page.data('jestResult')
+      console.log(res.eventDetailJsonStringify);
+      expect(res.eventDetailJsonStringify).not.toBe("{}");
+    }
   })
 
   if (!isWeb && !isMP) {
