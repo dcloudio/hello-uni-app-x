@@ -10,7 +10,7 @@
         </view>
         <view v-else style="margin: 10px;">
           <text class="uni-hello-text">点击按钮下载服务端示例图片（下载网络文件到本地临时目录）</text>
-          <button type="primary" @tap="downloadImage">下载</button>
+          <button type="primary" @tap="downloadImagenal">下载</button>
         </view>
         <view style="margin: 10px;">
           <text class="uni-hello-text">下载接口的Content-Disposition中的filename非法值例子</text>
@@ -37,7 +37,8 @@
         imageSrc: '',
         task: null as DownloadTask | null,
         //自动化测试例专用
-        jest_result: false
+        jest_result: false,
+        jest_callback_triggred: false
       }
     },
     onLoad() {
@@ -88,9 +89,11 @@
           url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
           success: () => {
             this.jest_result = true
+            this.jest_callback_triggred = true
           },
           fail: () => {
             this.jest_result = false
+            this.jest_callback_triggred = true
           }
         });
       },
@@ -101,9 +104,11 @@
           filePath: `${uni.env.CACHE_PATH}/a/b/`,
           success: () => {
             this.jest_result = true
+            this.jest_callback_triggred = true
           },
           fail: () => {
             this.jest_result = false
+            this.jest_callback_triggred = true
           }
         });
       },
@@ -118,9 +123,11 @@
           firstIpv4: false,
           success: () => {
             this.jest_cookie_download(true)
+            this.jest_callback_triggred = true
           },
           fail: () => {
             this.jest_result = false;
+            this.jest_callback_triggred = true
           },
         });
       },
@@ -135,9 +142,11 @@
           firstIpv4: false,
           success: () => {
             this.jest_cookie_download(false)
+            this.jest_callback_triggred = true
           },
           fail: () => {
             this.jest_result = false;
+            this.jest_callback_triggred = true
           },
         });
       },
@@ -157,9 +166,11 @@
         testInovkeDownloadFile({
           success: (res : any) => {
             this.jest_result = true
+            this.jest_callback_triggred = true
           },
           fail: (err : any) => {
             this.jest_result = false
+            this.jest_callback_triggred = true
           }
         } as CommonOptions)
         // #endif
@@ -169,9 +180,11 @@
           url: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
           success: (res : DownloadFileSuccess) => {
             this.jest_result = true;
+            this.jest_callback_triggred = true
           },
           fail: () => {
             this.jest_result = false;
+            this.jest_callback_triggred = true
           }
         });
       }
