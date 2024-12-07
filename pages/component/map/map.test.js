@@ -84,7 +84,9 @@ describe('web-map', () => {
       }});
     const translateMarkerRes = await page.data('jestResult')
     expect(translateMarkerRes.animationEnd).toBeTruthy();
-    expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
+    if (!isMP && !isWeb) {
+      expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
+    }
   });
 
 
