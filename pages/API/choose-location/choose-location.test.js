@@ -38,14 +38,20 @@ describe('dialog page', () => {
 		expect(lifecycleNum).toBe(originLifeCycleNum - 1)
 	})
 	if (isIos) {
-		it('call chooseLocation in uts plugin', async () => {
-			page = await program.reLaunch('/pages/API/choose-location/choose-location')
-			await page.waitFor('view');
-			await page.callMethod('chooseLocationByPlugin')
-			await page.waitFor(1000)
-			const lifecycleNum = await page.callMethod('getLifeCycleNum')
-			expect(lifecycleNum).toBe(originLifeCycleNum - 1)
-		})
+		// 15以下的模拟器所对应的xcode不能编译自定义插件，大于15是因为某台设备，会用xcode14.1跑15.5的设备
+    let version = process.env.uniTestPlatformInfo
+    let split = version.split(" ")
+		version = parseInt(split[split.length - 1])
+		if (version > 15) {
+			it('call chooseLocation in uts plugin', async () => {
+				page = await program.reLaunch('/pages/API/choose-location/choose-location')
+				await page.waitFor('view');
+				await page.callMethod('chooseLocationByPlugin')
+				await page.waitFor(1000)
+				const lifecycleNum = await page.callMethod('getLifeCycleNum')
+				expect(lifecycleNum).toBe(originLifeCycleNum - 1)
+			})
+		}
 	}
 
 	afterAll(async () => {
