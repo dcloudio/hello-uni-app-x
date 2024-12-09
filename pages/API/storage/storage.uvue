@@ -114,7 +114,8 @@
         storageInfo: '',
         staticComplexRet: false,
         jest_saveUTSJSONObjectSyncResult: 0,
-        jest_saveUTSJSONObjectAsyncResult: 0
+        jest_saveUTSJSONObjectAsyncResult: 0,
+        jest_saveUTSJSONObjectArraySyncResult: 0
       }
     },
     methods: {
@@ -391,6 +392,14 @@
             console.log('this.jest_saveUTSJSONObjectAsyncResult: ' + this.jest_saveUTSJSONObjectAsyncResult)
           }
         })
+      },
+      jest_saveUTSJSONObjectArray() {
+        const key = 'test_key_saveUTSJSONObjectArray'
+        uni.setStorageSync(key, [{
+          a: 1
+        }] as UTSJSONObject[])
+        const dataSync = uni.getStorageSync(key) as UTSJSONObject[]
+        this.jest_saveUTSJSONObjectArraySyncResult = dataSync[0].get('a') as number
       }
     },
   }

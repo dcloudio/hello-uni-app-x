@@ -311,4 +311,13 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(jest_saveUTSJSONObjectAsyncResult).toBe(1)
   })
 
+  it('saveUTSJSONObjectArray', async () => {
+    await page.callMethod('jest_saveUTSJSONObjectArray')
+    await page.waitFor(600)
+    const {
+      jest_saveUTSJSONObjectArraySyncResult
+    } = await page.data()
+    expect(jest_saveUTSJSONObjectArraySyncResult).toBe(1)
+  })
+
 });
