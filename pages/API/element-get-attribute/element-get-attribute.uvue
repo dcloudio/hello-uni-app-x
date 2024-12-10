@@ -2,28 +2,38 @@
   <view>
     <view id="box" ref="box" style="padding: 20rpx;">
       <text class="uni-title-text">元素的id：{{ attrId }}</text>
+      <!-- #ifndef APP -->
       <text class="uni-title-text">元素的style：{{ attrStyle }}</text>
+      <!-- #endif -->
+      <text class="uni-title-text">元素的背景色样式值：{{ propertyValue }}</text>
       <text class="uni-subtitle-text">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
+      <text class="uni-subtitle-text">App端：getAttribute 不支持获取 class、style 属性</text>
     </view>
     <button @click="getAttributeId">getAttribute获取元素的id</button>
     <button @click="setStyle">setProperty设置背景色</button>
+    <!-- #ifndef APP -->
     <button @click="getAttributeStyle">getAttribute获取元素的style</button>
+    <!-- #endif -->
+    <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
     <scroll-view ref="scrollView" class="scroll-view_H" direction="horizontal">
       <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
       <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
       <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
     </scroll-view>
+    <!-- #ifndef WEB -->
     <button @click="scrollTo">scrollTo设置left滚动200px</button>
+    <!-- #endif -->
   </view>
 </template>
-<script>
+<script lang="uts">
   export default {
     data() {
       return {
         boxTarget: null as null | UniElement,
         scrollViewTarget: null as null | UniElement,
-        attrId: '',
-        attrStyle:''
+        attrId: "",
+        attrStyle:"",
+        propertyValue:""
       }
     },
     onReady() {
@@ -32,18 +42,26 @@
     },
     methods: {
       scrollTo() {
+        // #ifdef MP-WEIXIN
         this.scrollViewTarget!.scrollTo({
           left: 200
         })
+        // #endif
+        // #ifndef MP-WEIXIN
+        this.scrollViewTarget!.scrollTo(200,0)
+        // #endif
       },
       getAttributeId() {
-        this.attrId = this.boxTarget.getAttribute('id')
+        this.attrId = this.boxTarget!.getAttribute('id') ?? ""
       },
       setStyle() {
-        this.boxTarget.style.setProperty("background-color", "#FFF000")
+        this.boxTarget!.style.setProperty("background-color", "#FFF000")
+      },
+      getPropertyValue() {
+        this.propertyValue = this.boxTarget!.style.getPropertyValue("background-color") as string
       },
       getAttributeStyle() {
-        this.attrStyle = this.boxTarget.getAttribute('style')
+        this.attrStyle = this.boxTarget!.getAttribute('style')?? ""
       }
     }
   }
