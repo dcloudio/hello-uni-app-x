@@ -414,8 +414,12 @@ describe('dialog page', () => {
         width: 100,
         height: 70
       };
-
-      if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
+      if (isIos && platformInfo.indexOf('13.7') != -1) {
+        adbScreenShotArea.x = 690
+        adbScreenShotArea.y = 25
+        adbScreenShotArea.width = 50
+        adbScreenShotArea.height = 50
+      } else if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
         adbScreenShotArea.x = 535
         adbScreenShotArea.width = 90
         adbScreenShotArea.height = 50
