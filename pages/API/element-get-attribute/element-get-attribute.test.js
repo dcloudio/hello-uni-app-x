@@ -14,6 +14,7 @@ describe('test element-get-attribute', () => {
     await page.callMethod('setStyle')
     if(platform != 'app-plus'){
       await page.callMethod('getAttributeStyle')
+      console.log('attrStyle:',await page.data('attrStyle'))
       attrStyle = platform == 'mp-weixin'?'background-color:#FFF000;':'padding: 0.625rem; background-color: rgb(255, 240, 0);'
       expect(await page.data('attrStyle')).toEqual(attrStyle);
     }
