@@ -151,6 +151,7 @@ describe('dialog page', () => {
 
   it('closeDialogPage', async () => {
     await page.callMethod('closeDialog')
+    await page.waitFor(1000)
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // 应触发 success & complete 回调
     // 应触发 dialogPage 的 unload，下层的 dialogPage 会先 show 再 unload
