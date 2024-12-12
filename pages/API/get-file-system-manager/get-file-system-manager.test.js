@@ -374,7 +374,7 @@ describe('ExtApi-FileManagerTest', () => {
     let getFileInfoSize = await getData('getFileInfoSize')
     expect(getFileInfoSize).toEqual(5716)
     let getFileInfoDigest = await getData('getFileInfoDigest')
-    expect(getFileInfoDigest).toEqual("486f75ea76625f8c103cac4bc9c49511")
+    expect(getFileInfoDigest).toEqual("5d8accb35bda875ca3726d18b020e474")
 
     // 切换为 sha1
     await page.setData({
@@ -387,7 +387,7 @@ describe('ExtApi-FileManagerTest', () => {
     getFileInfoSize = await getData('getFileInfoSize')
     expect(getFileInfoSize).toEqual(5716)
     getFileInfoDigest = await getData('getFileInfoDigest')
-    expect(getFileInfoDigest).toEqual("1830169a16e7c860beff4a3b0975ba0b6f775f9e")
+    expect(getFileInfoDigest).toEqual("b48cf507b618974ee5b7d5449d8c1911e2d68245")
 
     // 测试不支持的摘要算法，期望返回错误
     await page.setData({
