@@ -1,7 +1,7 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('component-native-web-view', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('web') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (!process.env.uniTestPlatformInfo.startsWith('web') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW && !process.env.uniTestPlatformInfo.startsWith('mp')) {
     let page;
     let start = 0;
     beforeAll(async () => {

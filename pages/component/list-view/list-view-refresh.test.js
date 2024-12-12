@@ -1,5 +1,8 @@
 describe('component-native-list-view-refresh', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (
+    process.env.uniTestPlatformInfo.startsWith('web') ||
+    process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
@@ -35,6 +38,8 @@ describe('component-native-list-view-refresh', () => {
   })
 
   it('check_refresherabort', async () => {
+    //部分安卓设备需要延迟一段时间swipe才生效 此处暂时延迟1秒
+    await page.waitFor(1000);
     // 仅App端支持手势下拉刷新
     await program.swipe({
       startPoint: {x: 100,y: 400},

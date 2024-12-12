@@ -1,7 +1,7 @@
 <template>
   <view class="page" id="page-canvas">
     <canvas id="canvas" class="canvas-element"></canvas>
-    <scroll-view class="scroll-view">
+    <scroll-view class="scroll-view" scroll-y="true">
       <view class="grid-view">
         <view class="grid-item" v-for="(name, index) in names" :key="index">
           <button class="canvas-drawing-button" @click="handleCanvasButton(name)">{{name}}</button>
@@ -14,7 +14,7 @@
 <script>
   function hidpi(canvas : UniCanvasElement) {
     const context = canvas.getContext("2d")!;
-    const dpr = uni.getDeviceInfo().devicePixelRatio ?? 1;
+    const dpr = uni.getWindowInfo().pixelRatio;
     canvas.width = canvas.offsetWidth * dpr;
     canvas.height = canvas.offsetHeight * dpr;
     context.scale(dpr, dpr);
@@ -54,8 +54,6 @@
           this.canvasHeight = this.canvas!.height;
         }
       })
-
-      console.log(this.names);
 
       // 同步调用方式，仅支持 app/web
       // let canvas = uni.getElementById("canvas") as UniCanvasElement
@@ -373,8 +371,8 @@
       pattern() {
         const context = this.renderingContext!
 
-        const image = new Image(100, 100)
-        image.src = '../../../static/api.png';
+        const image = this.canvasContext!.createImage()
+        image.src = '/static/api.png';
         image.onload = () => {
           context.save()
           this.clearCanvasRect()
@@ -558,7 +556,7 @@
         context.fillText("Circle!", 265, 100)
         // context.reset()
 
-        hidpi(uni.getElementById("canvas") as UniCanvasElement)
+        hidpi(this.canvas!)
       },
       translate() {
         const context = this.renderingContext!
@@ -604,15 +602,15 @@
       },
       drawImageLocal() {
         const context = this.renderingContext!
-        const image = new Image(100, 100)
-        image.src = '../../../static/uni.png'
+        const image = this.canvasContext!.createImage();
+        image.src = '/static/uni.png'
         image.onload = () => {
           context.drawImage(image, 0, 0, 100, 100)
         }
       },
       drawImage() {
         const context = this.renderingContext!
-        const image = new Image(100, 100);
+        const image = this.canvasContext!.createImage();
         image.src = 'https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png'
         image.onload = () => {
           context.drawImage(image, 0, 0, 100, 100)
@@ -710,7 +708,7 @@
         context.lineWidth = 10;
         ['butt', 'round', 'square'].forEach((item : string, index : number) => {
           context.beginPath()
-          context.lineCap = item
+          context.lineCap = item as 'butt' | 'round' | 'square'
           context.moveTo(20, 20 + 20 * index)
           context.lineTo(100, 20 + 20 * index)
           context.stroke()
@@ -722,7 +720,7 @@
         context.lineWidth = 10;
         ['bevel', 'round', 'miter'].forEach((item : string, index : number) => {
           context.beginPath()
-          context.lineJoin = item
+          context.lineJoin = item as 'bevel' | 'round' | 'miter'
           context.moveTo(20 + 80 * index, 20)
           context.lineTo(100 + 80 * index, 50)
           context.lineTo(20 + 80 * index, 100)
@@ -788,7 +786,7 @@
       path2DMethods() {
         const context = this.renderingContext!
         context.beginPath()
-        const path2D = new Path2D();
+        const path2D = this.canvasContext!.createPath2D();
         const amplitude = 64;
         const wavelength = 64;
         for (let i = 0; i < 5; i++) {
@@ -805,7 +803,7 @@
         }
         context.stroke(path2D);
 
-        const path2DRect = new Path2D();
+        const path2DRect = this.canvasContext!.createPath2D();
         path2DRect.rect(10, 10, 100, 20);
         context.fill(path2DRect);
       },
@@ -853,8 +851,6 @@
 <style>
   .page {
     flex: 1;
-    height: 100%;
-    overflow: hidden;
   }
 
   .scroll-view {

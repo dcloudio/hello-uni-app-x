@@ -3,6 +3,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 let pageIndex = 0
@@ -24,14 +25,14 @@ const pages = [
   '/pages/component/scroll-view/scroll-view-refresher-props',
   '/pages/component/scroll-view/scroll-view-custom-refresher-props',
   '/pages/component/swiper/swiper',
-  '/pages/component/list-view/list-view',
+  // '/pages/component/list-view/list-view',
   // 单独测试例截图
   // '/pages/component/list-view/list-view-refresh',
   // 单独测试例截图
   // '/pages/component/list-view/list-view-multiplex',
-  '/pages/component/list-view/list-view-multiplex-input',
-  '/pages/component/list-view/list-view-multiplex-video',
-  '/pages/component/list-view/list-view-children-in-slot',
+  // '/pages/component/list-view/list-view-multiplex-input',
+  // '/pages/component/list-view/list-view-multiplex-video',
+  // '/pages/component/list-view/list-view-children-in-slot',
   // 单独测试例截图
   // '/pages/component/sticky-section/sticky-section',
   // 单独测试例截图
@@ -262,11 +263,11 @@ const pages = [
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // 动态内容
   // '/pages/template/calendar/calendar',
-  '/pages/template/schema/schema',
-  '/uni_modules/uni-pay-x/pages/success/success',
+  // '/pages/template/schema/schema',
+  // '/uni_modules/uni-pay-x/pages/success/success',
   // 依赖 onload 参数获取 web-view src
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
-  '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
+  // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
   '/pages/template/slider-100/slider-100',
@@ -275,6 +276,18 @@ const pages = [
 if (isAndroid && isWeb) {
   pages.push(
     '/pages/API/get-battery-info/get-battery-info',
+  )
+}
+
+if(!isMP) {
+  pages.push(
+    '/pages/component/list-view/list-view',
+    '/pages/component/list-view/list-view-multiplex-input',
+    '/pages/component/list-view/list-view-multiplex-video',
+    '/pages/component/list-view/list-view-children-in-slot',
+    '/pages/template/schema/schema',
+    '/uni_modules/uni-pay-x/pages/success/success',
+    '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
 }
 
@@ -294,8 +307,7 @@ if (isApp && !isAppWebview) {
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
     '/pages/API/share-with-system/share-with-system',
-    '/pages/template/scroll-sticky/scroll-sticky',
-    '/pages/CSS/text/font-family-icon',
+    '/pages/template/scroll-sticky/scroll-sticky'
   )
 }
 

@@ -1,15 +1,27 @@
 import Intent from 'android.content.Intent'
 import Uri from 'android.net.Uri'
-import { OpenSchema } from '../interface.uts'
+import { OpenSchema, CanOpenURL } from '../interface.uts'
 
-export const openSchema: OpenSchema = function (url: string) {
+export const openSchema : OpenSchema = function (url : string) {
+  if (canOpenURL(url)) {
+    const context = UTSAndroid.getUniActivity()!
+    const uri = Uri.parse(url)
+    const intent = new Intent(Intent.ACTION_VIEW, uri)
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    intent.setData(uri)
+    context.startActivity(intent)
+  } else {
+    console.error('url param Error：', JSON.stringify(url))
+  }
+}
+
+export const canOpenURL : CanOpenURL = function (url : string) {
   if (typeof url === 'string' && url.length > 0) {
     const context = UTSAndroid.getUniActivity()!
     const uri = Uri.parse(url)
     const intent = new Intent(Intent.ACTION_VIEW, uri)
-    intent.setData(uri)
-    context.startActivity(intent)
+    return intent.resolveActivity(context.packageManager) != null
   } else {
-    console.error('url param ERROR：', JSON.stringify(url))
+    return false
   }
 }

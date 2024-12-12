@@ -14,6 +14,7 @@ module.exports = {
     console.log(random);
     if (random > 0.5) {
       return {
+        errSubject: 'randomFail',
         errCode: 'RANDOM_FAIL',
         errMsg: '[预期内的报错]执行失败请重试'
       }
@@ -27,6 +28,7 @@ module.exports = {
   },
   async fail() {
     return {
+      errSubject: 'fail',
       errCode: 'TEST_ERROR_CODE',
       errMsg: '[预期内的报错]执行失败',
       tips: 'DO_NOT_TRY_AGAIN'

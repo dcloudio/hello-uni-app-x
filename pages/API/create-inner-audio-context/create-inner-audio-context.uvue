@@ -14,7 +14,7 @@
 			<text class="uni-text-box uni-common-mt">当前音频播放位置（保留小数点后 6 位）：{{currentTime}} s</text>
 			<text class="uni-text-box">音频的长度（单位:s）：{{duration}} s</text>
 			<text class="uni-text-box">当前是否停止状态：{{isPaused}}</text>
-			<text class="uni-text-box">音频缓冲的时间点：{{buffered}}</text>
+			<text class="uni-text-box">音频缓冲的时间点：{{buffered}} s</text>
 			<text class="uni-text-box">当前音量：{{volume}}</text>
 			<!-- 设置音量无效 -->
 			<button plain :disabled="volume == 1" @click="increaseVolume">增加音量</button>
@@ -116,7 +116,16 @@
 			this.onTimeUpdateCb = (res : any) => {
 				if (this._isChanging) { return; }
 				this.currentTime = this._audioContext!.currentTime;
+				this.buffered = this._audioContext!.buffered;
 				console.log('onTimeUpdateCb', this.currentTime)
+
+				// #ifdef MP
+				// 微信小程序安卓端过早的时机获取的buffered、duration为0，改为在此处获取
+				if(this._audioContext!.duration === 0) {
+					this.buffered = this._audioContext!.buffered;
+					this.duration = this._audioContext!.duration
+				}
+				// #endif
 				if (this.currentTime > this.buffered) {
 					console.log('缓冲不足');
 				}
@@ -145,6 +154,10 @@
 				this._audioContext!.onCanplay(() => {
 					console.log('音频进入可以播放状态事件');
 					this.isCanplay = true;
+					// #ifdef MP
+					// 微信小程序安卓端过早的时机获取的volume为undefine，改为在此处获取
+					this.volume = this._audioContext!.volume;
+					// #endif
 					// 当音频可以播放时，获取缓冲信息
 					this.buffered = this._audioContext!.buffered;
 					this.duration = this._audioContext!.duration
@@ -250,21 +263,21 @@
 				});
 			},
 			pause() {
-				this._audioContext!.pause();
 				this._audioContext!.onPause(() => {
 					console.log('音频暂停事件');
 					this.isPaused = true;
 				});
+				this._audioContext!.pause();
 				this.isPlaying = false;
 			},
 			stop() {
 				console.log('stop');
-				this._audioContext!.stop();
 				this._audioContext!.onStop(() => {
 					// 第一次点停止时，不触发
 					this.isPaused = true;
 					console.log('音频停止事件');
 				});
+				this._audioContext!.stop();
 				this.isPlaying = false;
 				console.log('stop', this.isPaused);
 			},

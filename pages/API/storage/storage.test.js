@@ -2,7 +2,7 @@ jest.setTimeout(50000);
 
 const PAGE_PATH = '/pages/API/storage/storage'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isIos = platformInfo.startsWith('ios')
+const isIOS = platformInfo.startsWith('ios')
 
 describe('ExtApi-StorageInfoTest', () => {
   if(
@@ -144,7 +144,7 @@ describe('ExtApi-StorageInfoTest', () => {
     let btnComplexStaticTest = await page.$('.btn-complexStaticTest')
     await btnComplexStaticTest.tap()
     await page.waitFor(600)
-    if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
+    if(!isIOS) {
       expect(await getData('staticComplexRet')).toEqual(true)
     }
     await page.setData({
@@ -302,12 +302,22 @@ describe('ExtApi-StorageInfoTest', () => {
 
   it('saveUTSJSONObject', async () => {
     await page.callMethod('jest_saveUTSJSONObject')
+    await page.waitFor(600)
     const {
       jest_saveUTSJSONObjectSyncResult,
       jest_saveUTSJSONObjectAsyncResult
     } = await page.data()
     expect(jest_saveUTSJSONObjectSyncResult).toBe(1)
     expect(jest_saveUTSJSONObjectAsyncResult).toBe(1)
+  })
+
+  it('saveUTSJSONObjectArray', async () => {
+    await page.callMethod('jest_saveUTSJSONObjectArray')
+    await page.waitFor(600)
+    const {
+      jest_saveUTSJSONObjectArraySyncResult
+    } = await page.data()
+    expect(jest_saveUTSJSONObjectArraySyncResult).toBe(1)
   })
 
 });

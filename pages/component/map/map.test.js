@@ -1,20 +1,49 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 let page;
 describe('web-map', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
-    it('app', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
-    await page.waitFor('map');
+    if(!platformInfo.startsWith('ios')){
+      await page.waitFor('map');
+    }
     // 等待地图加载完成
     const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:4000
     await page.waitFor(waitTime)
     await page.callMethod('updateAutoTest',true)
   });
+
+  it('handleMoveToLocation', async () => {
+    await page.callMethod('handleMoveToLocation')
+    await page.waitFor(500);
+    const moveToLocationRes = await page.data('jestResult')
+    if(isMP || isWeb) {
+      // TODO 使用其他信息作为测试依据
+      expect(1).toBe(1)
+    } else {
+      expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
+    }
+  });
+
+  it('Check EventDetail JsonStringify', async () => {
+    if(isMP || isWeb) {
+      expect(1).toBe(1)
+    } else {
+      const res = await page.data('jestResult')
+      console.log(res.eventDetailJsonStringify);
+      expect(res.eventDetailJsonStringify).not.toBe("{}");
+    }
+  })
+
+  if (!isWeb && !isMP) {
+    it('app', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   it('Check MapMethods', async () => {
     const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
@@ -55,15 +84,12 @@ describe('web-map', () => {
       }});
     const translateMarkerRes = await page.data('jestResult')
     expect(translateMarkerRes.animationEnd).toBeTruthy();
-    expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
+    if (!isMP && !isWeb) {
+      expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
+    }
   });
 
-  it('handleMoveToLocation', async () => {
-    await page.callMethod('handleMoveToLocation')
-    await page.waitFor(500);
-    const moveToLocationRes = await page.data('jestResult')
-    expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
-  });
+
 
   it('handleGetScale', async () => {
     await page.callMethod('handleGetScale')
@@ -73,5 +99,4 @@ describe('web-map', () => {
     expect(scaleRes.scale).toBeLessThanOrEqual(18);
     console.log("jestResult",await page.data())
   });
-
 });

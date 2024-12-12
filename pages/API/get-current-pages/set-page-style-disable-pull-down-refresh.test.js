@@ -1,7 +1,10 @@
 const PAGE_PATH = '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh'
 
 describe('getCurrentPages', () => {
-  if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (
+    process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') ||
+    process.env.uniTestPlatformInfo.startsWith('mp')
+  ) {
     it('not-support', async () => {
       expect(1).toBe(1)
     })
@@ -10,11 +13,13 @@ describe('getCurrentPages', () => {
   let page
   it('page-style', async () => {
     page = await program.navigateTo(PAGE_PATH)
-
-    await page.callMethod('getPageStyle')
+    //onLoad会对currentPageStyle赋值
     await page.waitFor(200)
-    const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    const currentPageStyle = (await page.data()).currentPageStyle
+    const isEnablePullDownRefresh1 = currentPageStyle.enablePullDownRefresh
     expect(isEnablePullDownRefresh1).toBe(false)
+    //校验pageStyle数据是否完整
+    expect(currentPageStyle.navigationStyle != undefined && currentPageStyle.onReachBottomDistance != undefined).toBe(true)
 
     await page.callMethod('setPageStyle', true)
     await page.waitFor(200)

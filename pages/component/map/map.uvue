@@ -26,7 +26,7 @@
 
       <button class="button" @click="addControls">控件</button>
       <button class="button" @click="addMarkers">添加标记点</button>
-      <!-- #ifdef WEB -->
+      <!-- #ifdef WEB || MP -->
       <button class="button" @click="addMarkersLabel">为标记点旁边增加标签</button>
       <!-- #endif -->
       <button class="button" @click="removeMarker">移除ID为4的标记点和标签</button>
@@ -59,7 +59,8 @@
     southwest : LocationObject,
     northeast : LocationObject,
     moveToLocationMsg : string,
-    scale : number
+    scale : number,
+    eventDetailJsonStringify: string,
   }
 
   const testMarkers :Marker[]= [{
@@ -345,6 +346,7 @@
     },
     moveToLocationMsg: "",
     scale: 0,
+    eventDetailJsonStringify: "{}"
   } as TypeJestResult);
 
 
@@ -434,7 +436,7 @@
     // #ifdef APP
     mapContext.value?.removeMarkers({markerIds:[4]})
     // #endif
-    // #ifdef WEB
+    // #ifdef WEB || MP
     const index = markers.value.findIndex((marker: Marker):boolean=>{
        return marker.id == 4
     });
@@ -450,7 +452,7 @@
     // #endif
   };
 
-  // #ifdef WEB
+  // #ifdef WEB || MP
   const addMarkersLabel = () => {
     markers.value.forEach((marker, index) => {
       marker.label = {
@@ -546,7 +548,7 @@
         rotate: 10,
         duration: 2000,
         moveWithRotate: true,
-        // #ifdef WEB
+        // #ifdef WEB || MP
         animationEnd: () => {
           console.log('动画结束');
           jestResult.animationEnd = true;
@@ -633,10 +635,17 @@
   }
 
   const maptap = (e : UniMapTapEvent) => {
+    // #ifdef WEB || MP
+    uni.showModal({
+      content: 'web端map组件tap事件不支持返回经纬度'
+    });
+    // #endif
+    // #ifndef WEB || MP
     // console.log('点击地图时触发',e)
     uni.showModal({
       content: JSON.stringify(e.detail)
     });
+    // #endif
   };
 
   const onmarkertap = (e : UniMapMarkerTapEvent) => {
@@ -666,6 +675,7 @@
 
   const onregionchange = (e : UniMapRegionChangeEvent) => {
     console.log('视野发生变化时触发', e.detail)
+    jestResult.eventDetailJsonStringify = JSON.stringify(e.detail)
   };
 
   const onpoitap = (e : UniMapPoiTapEvent) => {
@@ -681,7 +691,7 @@
     updateAutoTest,
     addControls,
     addMarkers,
-    // #ifdef WEB
+    // #ifdef WEB || MP
     addMarkersLabel,
     // #endif
     removeMarker,

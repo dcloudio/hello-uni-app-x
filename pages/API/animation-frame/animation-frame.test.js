@@ -1,6 +1,12 @@
 const PAGE_PATH = '/pages/API/animation-frame/animation-frame'
 
 describe('API-cancelAnimationFrame', () => {
+ if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+    it('other platform', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

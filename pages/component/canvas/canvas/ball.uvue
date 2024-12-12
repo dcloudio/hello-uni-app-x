@@ -71,6 +71,7 @@
 
   class BallAnimation {
     private ctx : CanvasRenderingContext2D
+    private canvasContext : CanvasContext
     private ballList : Array<Ball> = []
     private _speed = 3
     private _layer = 3
@@ -81,8 +82,9 @@
     private frameCount = 0
     private lastTime = 0
 
-    constructor(ctx : CanvasRenderingContext2D) {
-      this.ctx = ctx
+    constructor(canvasContext : CanvasContext) {
+      this.canvasContext = canvasContext
+      this.ctx = canvasContext.getContext('2d') as CanvasRenderingContext2D
       this.initBall()
       this.ctx.fillStyle = '#007AFF'
     }
@@ -151,7 +153,7 @@
       if (!this.runningFlag) {
         return
       }
-      this._animateTaskId = requestAnimationFrame((timestamp : number) => {
+      this._animateTaskId = this.canvasContext.requestAnimationFrame((timestamp : number) => {
         this.animate()
         this.updateFPS(timestamp)
       })
@@ -168,32 +170,35 @@
     }
 
     start() {
-      cancelAnimationFrame(this._animateTaskId)
+      this.canvasContext.cancelAnimationFrame(this._animateTaskId)
       this.runningFlag = true
       this.animate()
     }
 
     stop() {
       this.runningFlag = false
-      cancelAnimationFrame(this._animateTaskId)
+      this.canvasContext.cancelAnimationFrame(this._animateTaskId)
     }
   }
 
   let animation : BallAnimation | null = null
   onReady(() => {
-    let canvas = uni.getElementById("canvas") as UniCanvasElement
-    let canvasContext = canvas.getContext("2d");
-    if (canvasContext != null) {
-      const dpr = uni.getDeviceInfo().devicePixelRatio ?? 1;
-      canvas.width = canvas.offsetWidth * dpr
-      canvas.height = canvas.offsetHeight * dpr
-      canvasContext.scale(dpr, dpr)
+    uni.createCanvasContextAsync({
+      id: 'canvas',
+      // component: this,
+      success: (context : CanvasContext) => {
+        const renderingContext = context.getContext('2d')!;
+        const canvas = renderingContext.canvas;
 
-      animation = new BallAnimation(canvasContext)
-      animation?.start()
-    } else {
-      console.log("canvas.getContext error!!")
-    }
+        const dpr = uni.getWindowInfo().pixelRatio;
+        canvas.width = canvas.offsetWidth * dpr
+        canvas.height = canvas.offsetHeight * dpr
+        renderingContext.scale(dpr, dpr)
+
+        animation = new BallAnimation(context)
+        animation?.start()
+      }
+    })
   })
 
   let lessClick = (type : string) => {

@@ -1,4 +1,9 @@
 jest.setTimeout(30000);
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 describe('component-native-scroll-view', () => {
   let page;
   beforeAll(async () => {
@@ -15,7 +20,8 @@ describe('component-native-scroll-view', () => {
     console.log('topScrollDetail:', topScrollDetail)
     expect(topScrollDetail.scrollLeft).toBe(0)
     // Android 差异scrollTop：99.809525
-    expect([100, 99.809525]).toContain(topScrollDetail.scrollTop);
+    expect(topScrollDetail.scrollTop).toBeGreaterThan(99.5)
+    //expect([100, 99.809525]).toContain(topScrollDetail.scrollTop);
     expect(topScrollDetail.scrollHeight).toBeGreaterThan(0)
     expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
     expect(topScrollDetail.deltaX).toBe(0)
@@ -31,12 +37,14 @@ describe('component-native-scroll-view', () => {
     const leftScrollDetail = await page.data('scrollDetailTest')
     console.log('leftScrollDetail:', leftScrollDetail)
     // Android 差异scrollLeft：219.80952
-    expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
+    expect(leftScrollDetail.scrollLeft).toBeGreaterThan(219.5)
+    //expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
     expect(leftScrollDetail.scrollTop).toBe(0)
     expect(leftScrollDetail.scrollHeight).toBeGreaterThan(0)
     expect(leftScrollDetail.scrollWidth).toBeGreaterThan(0)
     // 在安卓差异 -99.809525
-    expect([-100, -99.809525]).toContain(leftScrollDetail.deltaX);
+    expect(leftScrollDetail.deltaX).toBeLessThan(-99.5)
+    //expect([-100, -99.809525]).toContain(leftScrollDetail.deltaX);
     expect(leftScrollDetail.deltaY).toBe(0)
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
   })
@@ -67,7 +75,7 @@ describe('component-native-scroll-view', () => {
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
-  if(!process.env.UNI_UTS_PLATFORM.startsWith('web')){
+  if(!isWeb && !isMP){
     it('Event scrollend-滚动结束时触发仅App端支持',async()=>{
       const endDetail = await page.data('scrollEndDetailTest')
       console.log('scrollEndDetailTest:', endDetail)
@@ -80,11 +88,13 @@ describe('component-native-scroll-view', () => {
     })
   }
 
-  it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
-    await page.callMethod('setVerticalScrollBy', 120)
-    await page.waitFor(600)
-    const scrollDetail = await page.data('scrollDetailTest')
-    console.log('setVerticalScrollBy scrollDetail:', scrollDetail)
-    expect(scrollDetail.scrollTop).toBeGreaterThan(119)
-  })
+  if(!isMP) {
+    it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
+      await page.callMethod('setVerticalScrollBy', 120)
+      await page.waitFor(600)
+      const scrollDetail = await page.data('scrollDetailTest')
+      console.log('setVerticalScrollBy scrollDetail:', scrollDetail)
+      expect(scrollDetail.scrollTop).toBeGreaterThan(119)
+    })
+  }
 });

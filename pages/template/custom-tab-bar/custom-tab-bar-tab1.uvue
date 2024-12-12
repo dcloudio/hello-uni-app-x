@@ -1,5 +1,5 @@
 <template>
-  <scroll-view ref="listView" class="list" :rebound="false" :scroll-with-animation="true" :scroll-y="true" @scrolltolower="loadData()"
+  <scroll-view ref="listView" class="list" :rebound="false" :scroll-with-animation="true" :scroll-y="true" :scroll-top="newScrollTop" @scrolltolower="loadData()"
     @scroll="onScroll">
     <view class="list-item" v-for="(item, index) in dataList" :key="index">
       <!-- <text class="title">{{item.title}}</text> -->
@@ -19,7 +19,9 @@
   export default {
     data() {
       return {
-        dataList: [] as ListItem[]
+        dataList: [] as ListItem[],
+        oldScrollTop: 0,
+        newScrollTop: 0
       }
     },
     created() {
@@ -38,10 +40,15 @@
       },
       onScroll(e : ScrollEvent) {
         uni.$emit('tabchange', e.detail.scrollTop)
+        this.oldScrollTop = e.detail.scrollTop
       },
       scrollTop(top : number) {
-        (this.$refs["listView"] as UniElement).scrollTop = top
+        // (this.$refs["listView"] as UniElement).scrollTop = top
         // console.log("tab1 to top");
+        this.newScrollTop = this.oldScrollTop
+        this.$nextTick(() => {
+          this.newScrollTop = top
+        })
       }
     }
   }

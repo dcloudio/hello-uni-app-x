@@ -1,7 +1,43 @@
 <template>
-  <scroll-view class="uni-recycle-view-main" v-bind="$attrs" ref="scroll" @scroll="onScroll">
-    <view :style="{ height: placeholderHeight + 'px' }">
-      <view :style="{ top: containerTop + 'px' }">
+  <scroll-view class="uni-recycle-view-main"
+    ref="scroll"
+    :type="type"
+    :direction="direction"
+    :associative-container="associativeContainer"
+    :enable-back-to-top="enableBackToTop"
+    :bounces="bounces"
+    :upper-threshold="upperThreshold"
+    :lower-threshold="lowerThreshold"
+    :scroll-top="scrollTop"
+    :scroll-left="scrollLeft"
+    :scroll-into-view="scrollIntoView"
+    :scroll-with-animation="scrollWithAnimation"
+    :refresher-enabled="refresherEnabled"
+    :refresher-threshold="refresherThreshold"
+    :refresher-max-drag-distance="refresherMaxDragDistance"
+    :refresher-default-style="refresherDefaultStyle"
+    :refresher-background="refresherBackground"
+    :refresher-triggered="refresherTriggered"
+    :show-scrollbar="showScrollbar"
+    :custom-nested-scroll="customNestedScroll"
+    :nested-scroll-child="nestedScrollChild"
+    @scroll="onScroll"
+    @scrollend="onScrollEnd"
+    @scrolltolower="onScrollToLower"
+    @scrolltoupper="onScrollToUpper"
+    @refresherabort="onRefresherAbort"
+    @refresherpulling="onRefresherPulling"
+    @refresherrefresh="onRefresherRefresh"
+    @refresherrestore="onRefresherRestore"
+  >
+    <view
+      :style="{ height: placeholderHeight + 'px' }"
+      class="uni-recycle-view-placeholder"
+    >
+      <view
+        :style="{ top: containerTop + 'px' }"
+        class="uni-recycle-view-container"
+      >
         <slot :items="items"></slot>
       </view>
     </view>
@@ -24,11 +60,104 @@
   export default {
     name: "uni-recycle-view",
     props: {
+      type: {
+        type: String,
+        default: ''
+      },
+      direction: {
+        type: String,
+        default: 'vertical'
+      },
+      associativeContainer: {
+        type: String,
+        default: ''
+      },
+      enableBackToTop: {
+        type: Boolean,
+        default: false
+      },
+      bounces: {
+        type: Boolean,
+        default: true
+      },
+      upperThreshold: {
+        type: Number,
+        default: 50
+      },
+      lowerThreshold: {
+        type: Number,
+        default: 50
+      },
+      scrollTop: {
+        type: Number,
+        default: 0
+      },
+      scrollLeft: {
+        type: Number,
+        default: 0
+      },
+      scrollIntoView: {
+        type: String,
+        default: ''
+      },
+      scrollWithAnimation: {
+        type: Boolean,
+        default: false
+      },
+      refresherEnabled: {
+        type: Boolean,
+        default: false
+      },
+      refresherThreshold: {
+        type: Number,
+        default: 45
+      },
+      refresherMaxDragDistance: {
+        type: Number
+      },
+      refresherDefaultStyle: {
+        type: String,
+        default: 'black'
+      },
+      refresherBackground: {
+        type: String,
+        default: 'transparent'
+      },
+      refresherTriggered: {
+        type: Boolean,
+        default: false
+      },
+      showScrollbar: {
+        type: Boolean,
+        default: true
+      },
+      customNestedScroll: {
+        type: Boolean,
+        default: false
+      },
+      nestedScrollChild: {
+        type: String,
+        default: ''
+      },
       list: {
         type: Array as PropType<any[]>,
         default: [] as any[]
+      },
+      itemHeight: {
+        type: Number,
+        default: 0
       }
     },
+    emits: [
+      'scroll',
+      'scrollend',
+      'scrolltolower',
+      'scrolltoupper',
+      'refresherabort',
+      'refresherpulling',
+      'refresherrefresh',
+      'refresherrestore',
+    ],
     watch: {
       list: {
         handler(list : any[]) {
@@ -61,16 +190,26 @@
     },
     provide() {
       return {
+        itemHeight: this.itemHeight,
         setCachedSize: (item : any, size : number) => {
+          if(this.itemHeight != 0) {
+            return
+          }
           if (!this.hasDefaultSize) {
             this.defaultItemSize = size
             this.hasDefaultSize = true
           }
           this.cachedSize.set(item, size)
+        },
+        getCachedSize:  (item : any) => {
+          return this.cachedSize.get(item)
         }
       }
     },
     created() {
+      if(this.itemHeight != 0) {
+        this.defaultItemSize = this.itemHeight
+      }
       this.placeholderHeight = this.list.length * this.defaultItemSize
     },
     mounted() {
@@ -83,7 +222,29 @@
       })
     },
     methods: {
+      onScrollEnd(e: UniScrollEvent) {
+        this.$emit('scrollend', e)
+      },
+      onScrollToLower(e: UniScrollToLowerEvent) {
+        this.$emit('scrolltolower', e)
+      },
+      onScrollToUpper(e: UniScrollToUpperEvent) {
+        this.$emit('scrolltoupper', e)
+      },
+      onRefresherAbort(e: UniRefresherEvent) {
+        this.$emit('refresherabort', e)
+      },
+      onRefresherPulling(e: UniRefresherEvent) {
+        this.$emit('refresherpulling', e)
+      },
+      onRefresherRefresh(e: UniRefresherEvent) {
+        this.$emit('refresherrefresh', e)
+      },
+      onRefresherRestore(e: UniRefresherEvent) {
+        this.$emit('refresherrestore', e)
+      },
       onScroll(e : UniScrollEvent) {
+        this.$emit('scroll', e)
         if (!this.initialized) {
           return
         }
@@ -99,13 +260,12 @@
       queue(scrollTop : number) {
         /*
          * rearrange内为大量同步逻辑，在上次rearrange未执行完毕的情况下将后续多个rearrange合并成一次执行，即仅执行最后一次
-         * 由于滚动机制差异，此优化仅在web端才有意义。
          * 如何测试：push后console.log(this.rearrangeQueue.length) 输出结果大于1时触发优化
          */
         this.rearrangeQueue.push(scrollTop)
         setTimeout(() => {
           this.flush()
-        }, 1)
+        }, 50)
       },
       flush() {
         const queueLength = this.rearrangeQueue.length
@@ -163,5 +323,12 @@
 </script>
 
 <style>
-
+.uni-recycle-view-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+.uni-recycle-view-container {
+  position: absolute;
+  width: 100%;
+}
 </style>

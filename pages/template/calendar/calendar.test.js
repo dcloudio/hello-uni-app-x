@@ -1,8 +1,14 @@
 const PAGE_PATH = '/pages/template/calendar/calendar'
 
 describe('calendar', () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-    it('dummyTest', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIos = platformInfo.startsWith('ios')
+  const isApp = isAndroid || isIos
+  const isWeb = platformInfo.startsWith('web')
+  const isMP = platformInfo.startsWith('mp')
+  if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return

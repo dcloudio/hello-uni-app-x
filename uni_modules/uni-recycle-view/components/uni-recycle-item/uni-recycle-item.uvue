@@ -1,5 +1,5 @@
 <template>
-  <view class="item-container">
+  <view class="uni-recycle-view-item" :style="this.itemHeight != 0 ? {height: this.itemHeight + 'px'} : {}">
     <slot></slot>
   </view>
 </template>
@@ -19,18 +19,32 @@
       }
     },
     inject: {
+      itemHeight: {
+        type: Number as PropType<number>
+      },
       setCachedSize: {
         type: Function as PropType<(item : any, size : number) => void>
       },
+      getCachedSize: {
+        type: Function as PropType<(item : any) => number | null>
+      },
     },
     mounted() {
-      uni.createSelectorQuery().in(this).select('.item-container').boundingClientRect().exec((ret) => {
-        this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
-      })
+      if (this.itemHeight == 0) {
+        const cachedSize = this.getCachedSize(this.item)
+        if(cachedSize == null) {
+          uni.createSelectorQuery().in(this).select('.uni-recycle-view-item').boundingClientRect().exec((ret) => {
+            this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
+          })
+        }
+      }
     }
   }
 </script>
 
 <style>
-
+  .uni-recycle-view-item {
+    box-sizing: border-box;
+    overflow: hidden;
+  }
 </style>
