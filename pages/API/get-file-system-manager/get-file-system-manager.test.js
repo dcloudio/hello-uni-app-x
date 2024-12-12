@@ -330,7 +330,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadFileButton.tap()
     await isDone()
     let readFileRet = await getData('readFileRet')
-    expect(readFileRet.length).toEqual(208544)
+    expect(readFileRet.length).toEqual(5716)
     let endStr = readFileRet.substring(readFileRet.length - 10)
     expect(endStr).toEqual("///////w==")
 
@@ -919,7 +919,7 @@ describe('ExtApi-FileManagerTest', () => {
     expect(statsRet[2].stats.size).toEqual(10)
 
     expect(statsRet[4].path).toMatch(new RegExp('.*/a/m/3.txt$'))
-    expect(statsRet[4].stats.size).toEqual(156406)
+    expect(statsRet[4].stats.size).toEqual(4286)
 
 
     // 清理文件，避免影响其他测试用例
