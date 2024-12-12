@@ -332,7 +332,7 @@ describe('ExtApi-FileManagerTest', () => {
     let readFileRet = await getData('readFileRet')
     expect(readFileRet.length).toEqual(5716)
     let endStr = readFileRet.substring(readFileRet.length - 10)
-    expect(endStr).toEqual("///////w==")
+    expect(endStr).toEqual("AA///AA/8=")
 
     await page.setData({
       basePath: globalTempPath,
