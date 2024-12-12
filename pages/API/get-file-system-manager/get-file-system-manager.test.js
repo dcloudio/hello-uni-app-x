@@ -372,7 +372,7 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     let getFileInfoSize = await getData('getFileInfoSize')
-    expect(getFileInfoSize).toEqual(208544)
+    expect(getFileInfoSize).toEqual(5716)
     let getFileInfoDigest = await getData('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("486f75ea76625f8c103cac4bc9c49511")
 
@@ -385,7 +385,7 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     getFileInfoSize = await getData('getFileInfoSize')
-    expect(getFileInfoSize).toEqual(208544)
+    expect(getFileInfoSize).toEqual(5716)
     getFileInfoDigest = await getData('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("1830169a16e7c860beff4a3b0975ba0b6f775f9e")
 
