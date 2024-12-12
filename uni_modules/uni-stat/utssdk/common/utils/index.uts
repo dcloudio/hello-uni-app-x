@@ -1,7 +1,7 @@
 // AppShowReportParams, AppHideReportParams, PageReportParams,
 import { StatDefault } from '../../interface.uts'
 
-import { AppShowParamsKeys, AppHideParamsKeys, PageShowParamsKeys, PushParamsKeys, EventParamsKeys,ErrorParamsKeys } from '../core/stat-type.uts'
+import { AppShowParamsKeys, AppHideParamsKeys, PageShowParamsKeys, PushParamsKeys, EventParamsKeys, ErrorParamsKeys } from '../core/stat-type.uts'
 
 /**
  * 序列化url参数
@@ -81,16 +81,16 @@ export function Log(data : StatDefault, type : Boolean = false) {
 	}
 
 	if (type) {
-		console.log(`=== 统计队列数据上报 ===`)
-		console.log(logData)
-		console.log(`=== 上报结束 ===`)
+		console.log(`=== 统计队列数据上报 :`, logData)
+		// console.log(logData)
+		// console.log(`=== 上报结束 ===`)
 		return
 	}
 
 	if (msg_type != '') {
-		console.log(`=== 统计数据采集：${msg_type} ===`)
-		console.log(logData)
-		console.log(`=== 采集结束 ===`)
+		console.log(`=== 统计数据采集：${msg_type} :`,logData)
+		// console.log(logData)
+		// console.log(`=== 采集结束 ===`)
 	}
 }
 
@@ -155,7 +155,7 @@ function getEventData(lt : string, elm : StatDefault) : any {
 	let data : any = {}
 	switch (lt) {
 		case '1'://应用启动
-			data = FilterParam(AppShowParamsKeys, elm) 
+			data = FilterParam(AppShowParamsKeys, elm)
 			break
 		case '3': // 应用进入后台
 			data = FilterParam(AppHideParamsKeys, elm)
@@ -173,6 +173,6 @@ function getEventData(lt : string, elm : StatDefault) : any {
 			data = FilterParam(PushParamsKeys, elm)
 			break
 	}
-	
+
 	return data
 }

@@ -7,40 +7,6 @@ import { Serialize, IsNumber } from './index.uts'
 
 const APPID = sys.appId
 const RUNTIME_VERSION = sys.appVersion
-// const UUID_KEY = '__DC_STAT_UUID'
-// const UUID_VALUE = '__DC_UUID_VALUE'
-
-/**
- * 生成uuid，一般用不到
- */
-// function getUuid() : string {
-// 	let uuid : string
-// 	if (get_platform_name() === 'n') {
-// 		try {
-// 			uuid = sys.deviceId
-// 		} catch (e) {
-// 			uuid = ''
-// 		}
-// 		return uuid
-// 	}
-
-// 	try {
-// 		uuid = uni.getStorageSync(UUID_KEY) as string
-// 	} catch (e) {
-// 		uuid = UUID_VALUE
-// 	}
-
-// 	if (uuid != '') {
-// 		uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
-// 		try {
-// 			uni.setStorageSync(UUID_KEY, uuid)
-// 		} catch (e) {
-// 			uni.setStorageSync(UUID_KEY, UUID_VALUE)
-// 		}
-// 	}
-// 	return uuid
-// }
-
 
 /**
  * 获取uuid
@@ -163,35 +129,17 @@ export const get_channel = () : string => {
 /**
  * 获取小程序场景值
  */
-export const get_scene = (_ : OnLaunchOptionsWithCst) : number => {
-	// TODO 场景值获取有问题 ，暂时硬编码，需要修改
-	// options : OnLaunchOptionsWithCst
+export const get_scene = (options : OnLaunchOptionsWithCst) : number => {
 	// const platformName = get_platform_name()
-	// let scene = ''
-	// if (options) {
-	// 	return options
+	let scene = 1001
+	if (options.scene != null) {
+		return options.scene ?? 1001
+	}
+	// if (platformName == 'wx') {
+	// 	// @ts-ignore
+	// 	scene = uni.getLaunchOptionsSync()?.scene ?? 1001
 	// }
-	// if (platformName === 'wx') {
-	// 	scene = uni.getLaunchOptionsSync().scene
-	// }
-	// return scene
-	// return options.scene as number
-	return 1001
-}
-
-/**
- * 获取页面类型
- * @param {VueComponent} appInstance 页面实例
- */
-// @ts-ignore
-export const get_page_types = (appInstance : ComponentPublicInstance) : string => {
-	// TODO 暂时无法获取是否应用还是页面，写的硬编码，只支持页面调用
-	// #ifdef WEB || APP-IOS
-	return appInstance?.$mpType ?? 'page'
-	// #endif
-	// #ifndef WEB
-	return 'page'
-	// #endif
+	return scene
 }
 
 /**
@@ -200,15 +148,14 @@ export const get_page_types = (appInstance : ComponentPublicInstance) : string =
  */
 // @ts-ignore
 export const is_page = (appInstance : ComponentPublicInstance) : Boolean => {
-	// #ifdef WEB ||APP-IOS
+	// #ifdef WEB || APP-IOS || MP-WEIXIN
 	const type = appInstance?.$mpType ?? 'page'
 	return type == 'page' ? true : false
 	// #endif
-	// #ifndef WEB
+	// #ifndef WEB || APP-IOS || MP-WEIXIN
 	// 其他平台没有 $mpType ，只有页面触发
 	return true
 	// #endif
-
 }
 
 
@@ -218,10 +165,16 @@ export const is_page = (appInstance : ComponentPublicInstance) : Boolean => {
  */
 export const get_page_name = (routepath : string) : string => {
 	let page = get_page_vm()
-
 	if (page == null) return ''
+	let route : string
+	// #ifdef MP-WEIXIN
+	route = (page.$scope && page.$scope.route) ?? ""
+	// #endif
+	// #ifndef MP-WEIXIN
+	route = page.route
+	// #endif
 
-	if (page.route != routepath) {
+	if (route != routepath) {
 		const pages = getCurrentPages()
 		// 如果传入路由与当前页面不同，则从页面栈找一个，如果找不到返回空
 		let page_now = pages.find((p) : boolean => p.route == routepath)
@@ -231,11 +184,19 @@ export const get_page_name = (routepath : string) : string => {
 		// @ts-ignore
 		page = page_now.vm!
 	}
-
+	let titleText : string
+	// #ifdef MP-WEIXIN
+	// @ts-ignore
+	const title_json = process.env.UNI_STAT_TITLE_JSON
+	titleText = title_json[route] ?? ''
+	// #endif
+	// #ifndef MP-WEIXIN
 	// @ts-ignore
 	const pageStyle = (page.$page as UniPage).getPageStyle()
-	const titleText = pageStyle['navigationBarTitleText'] ?? ''
+	titleText = (pageStyle['navigationBarTitleText'] as string)
+	// #endif
 	return titleText as string
+
 }
 
 /**
@@ -267,23 +228,39 @@ export function get_route(page : Page | null = null) : RouteParams {
 		}
 		return data
 	}
-
+	let url_params : string
+	let options : any
+	// #ifdef MP-WEIXIN
+	options = _self.$scope.options
+	// #endif
+	// #ifndef MP-WEIXIN
+	options = _self.options
+	// #endif
 	// TODO 条件编译处理参数问题，安卓上 options返回的是map，需要处理成 utsobject
 	// #ifdef APP-ANDROID
-	const opts = new UTSJSONObject(_self.options)
+	const opts = new UTSJSONObject(options)
 	// TODO 上报页面参数需要处理
-	let url_params = Serialize(opts)
+	url_params = Serialize(opts)
 	// #endif
 	// #ifndef APP-ANDROID
 	// @ts-ignore
-	let url_params = Serialize(_self.options)
+	url_params = Serialize(options)
 	// #endif
 	let params = ''
 	// 如果参数只有 ？则说明没有参数
 	if (url_params != '?') {
 		params = url_params
 	}
-	let route = _self.route
+
+	// 兼容不同小程序下的不同取值
+	let route : string
+
+	// #ifdef MP-WEIXIN
+	route = (_self.$scope && _self.$scope.route) ?? ""
+	// #endif
+	// #ifndef MP-WEIXIN
+	route = _self.route
+	// #endif
 
 	const data : RouteParams = {
 		path: route,
@@ -394,15 +371,13 @@ export const get_report_Interval = (defaultTime : number) : number => {
 	return time as number
 }
 
-
-
 /**
  * 获取uniCloud服务空间配置
  * @returns {Object}
  */
 export const uni_cloud_config = () : UniCloudInitOptions | null => {
+	// TODO 当前版本暂时不使用
 	// return process.env.UNI_STAT_UNI_CLOUD || {}
-	// const custemUnicloudConfig: = {}
 	return null
 }
 
