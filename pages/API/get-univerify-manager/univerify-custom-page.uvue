@@ -70,41 +70,49 @@
         const loginButtonElement = this.$page.getElementById('login-button');
         const privacyCheckBoxElement = this.$page.getElementById('privacy-checkbox');
         const privacyTextElement = this.$page.getElementById('privacy-text');
+        if(numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null){
+          this.univerifyManager?.customLogin({
+            numberTextElement: numberTextElement!,
+            sloganTextElement: sloganTextElement!,
+            loginButtonElement: loginButtonElement!,
+            privacyCheckBoxElement: privacyCheckBoxElement!,
+            privacyTextElement: privacyTextElement!,
+            success: (res) => {
+              console.log(res);
+              this.takePhoneNumber(res.accessToken, res.openId);
+            },
+            fail: (error) => {
+              if (error.errCode == 40001){
+                uni.showToast({
+                	title:"请同意服务条款",
+                  position: "bottom",
+                	duration:2000
+                })
+              }else if(error.errCode == 40002){
+                uni.showToast({
+                	title:"授权页不符合规范",
+                  position: "bottom",
+                	duration:2000
+                })
+              }else{
+                 const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
+                 uni.showToast({
+                 	title:errorMsg,
+                  position: "bottom",
+                 	duration:2000
+                 })
 
-        this.univerifyManager?.customLogin({
-          numberTextElement: numberTextElement!,
-          sloganTextElement: sloganTextElement!,
-          loginButtonElement: loginButtonElement!,
-          privacyCheckBoxElement: privacyCheckBoxElement!,
-          privacyTextElement: privacyTextElement!,
-          success: (res) => {
-            console.log(res);
-            this.takePhoneNumber(res.accessToken, res.openId);
-          },
-          fail: (error) => {
-            if (error.errCode == 40001){
-              uni.showToast({
-              	title:"请同意服务条款",
-                position: "bottom",
-              	duration:2000
-              })
-            }else if(error.errCode == 40002){
-              uni.showToast({
-              	title:"授权页不符合规范",
-                position: "bottom",
-              	duration:2000
-              })
-            }else{
-               const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
-               uni.showToast({
-               	title:errorMsg,
-                position: "bottom",
-               	duration:2000
-               })
-
+              }
             }
-          }
-        })
+          })
+        }else{
+          uni.showToast({
+          	title:"元素不能为空",
+            position: "bottom",
+          	duration:2000
+          })
+        }
+
       },
       takePhoneNumber(token : string, openId : string) {
         //云函数取号
