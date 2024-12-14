@@ -45,10 +45,16 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
+    //隐藏加载更多元素
+    await page.callMethod('change_load_more_boolean', false)
+    await page.waitFor(600)
     // 滚动到底部,是否触发scrolltolower事件
     await page.callMethod('confirm_scroll_top_input', 2500)
     await page.waitFor(600)
     expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
+    //截图 检测末尾处元素UI展示
+    const image = await program.screenshot({fullPage: false});
+    expect(image).toSaveImageSnapshot();
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
