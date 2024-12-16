@@ -35,7 +35,7 @@ describe('Radio.uvue', () => {
   })
   it('length', async () => {
     const radioGroupElements = await page.$$('.radio-group')
-    expect(radioGroupElements.length).toBe(3)
+    expect(radioGroupElements.length).toBe(4)
     const radioElements = await page.$$('.radio')
     expect(radioElements.length).toBe(12)
   })
