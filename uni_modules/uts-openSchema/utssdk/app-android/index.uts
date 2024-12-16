@@ -15,12 +15,12 @@ export const openSchema : OpenSchema = function (url : string) {
   }
 }
 
-export const canOpenURL : CanOpenURL = function (url : string) {
+export const canOpenURL : CanOpenURL = function (url : string) : boolean {
   if (typeof url === 'string' && url.length > 0) {
     const context = UTSAndroid.getUniActivity()!
     const uri = Uri.parse(url)
     const intent = new Intent(Intent.ACTION_VIEW, uri)
-    return intent.resolveActivity(context.packageManager) != null
+    return intent.resolveActivity(context.packageManager) != null ? true : false
   } else {
     return false
   }
