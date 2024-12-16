@@ -37,11 +37,11 @@ describe('API-getVideoInfo', () => {
         orientation: 'up',
         type: 'video/mp4',
         duration: 10,
-        size: 211,
+        size: 183,
         width: 1280,
         height: 720,
-        fps: 30,
-        bitrate: 172
+        fps: 31,
+        bitrate: 149
       });
     }
   });
