@@ -1,0 +1,50 @@
+<template>
+	<view>
+		<view class="text-area">
+			<button style="margin-top: 10px;" type="primary" @tap="arrayBufferToBase64"> arrayBufferToBase64 </button>
+			<button style="margin-top: 10px;" type="primary" @tap="base64ToArrayBuffer"> base64ToArrayBuffer </button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+			}
+		},
+		onLoad() {
+
+		},
+		methods: {
+			arrayBufferToBase64() {
+				const arraybuffer = new ArrayBuffer(3)
+				const uint8 = new Uint8Array(arraybuffer)
+				uint8.set([11, 22, 33])
+				const base64 = uni.arrayBufferToBase64(arraybuffer)
+				console.log(base64)
+			},
+			base64ToArrayBuffer() {
+				const base64 = 'CxYh'
+				const arrayBuffer = uni.base64ToArrayBuffer(base64)
+				const uint8 = new Uint8Array(arrayBuffer)
+				console.log(uint8.toString())
+			}
+
+		}
+	}
+</script>
+
+<style>
+	.logo {
+		height: 100px;
+		width: 100px;
+		margin: 100px auto 25px auto;
+	}
+
+	.title {
+		font-size: 18px;
+		color: #8f8f94;
+		text-align: center;
+	}
+</style>
