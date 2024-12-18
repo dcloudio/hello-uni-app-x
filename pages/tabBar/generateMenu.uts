@@ -1,4 +1,4 @@
-import { pages, groups } from '@/pages.json'
+import { pages, groups, subPackages } from '@/pages.json'
 
 type Group = {
   id : string,
@@ -27,6 +27,16 @@ export type MenuItem = {
   group ?: string | null,
   items : MenuItem[]
 }
+
+subPackages.forEach(subPackage => {
+  (subPackage.pages as UTSJSONObject[]).forEach(page => {
+    pages.push({
+      path: `${subPackage.root}/${page.path}`,
+      style: page.style as UTSJSONObject,
+      group: page.group
+    })
+  })
+})
 
 export function generateMenu(tabBarType : string) : MenuItem[] {
   let res : MenuItem[] = []
