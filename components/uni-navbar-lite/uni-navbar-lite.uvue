@@ -44,7 +44,11 @@
       statusBar: {
         type: Boolean,
         default: false,
-      }
+      },
+      stat: {
+        type: Boolean,
+        default: false,
+      },
     },
     data() {
       return {
@@ -66,6 +70,14 @@
           console.log(err);
         },
       });
+
+      if (this.stat && this.title != '') {
+      	uni.report({
+          name:'title',
+          options: this.title
+        })
+      }
+
     },
     mounted() {
       uni.setNavigationBarColor({
