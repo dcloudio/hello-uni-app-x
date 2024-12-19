@@ -1,0 +1,63 @@
+<template>
+	<view>
+		<swiper ref="header" indicator-dots="true" circular="true" @change="swiperChange" @touchstart="swiperTouchStart">
+			<swiper-item v-for="i in 3" :item-id="i" @touchstart="swiperItemTouchStart">
+				<view class="header-tiem" @touchstart="viewTouchStart">
+					<text @touchstart="textTouchStart">{{ i }}</text>
+				</view>
+			</swiper-item>
+		</swiper>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				swiperChangeEvent: false,
+				viewTouchEvent: false,
+				swiperItemTouchEvent: false,
+				swiperTouchEvent: false
+			}
+		},
+		methods: {
+			swiperChange(e: UniSwiperChangeEvent) {
+				console.log("swiperChange", e.detail.current)
+				this.swiperChangeEvent = true
+			},
+			viewTouchStart(e: UniTouchEvent) {
+				console.log("viewTouchStart")
+				this.viewTouchEvent = true
+				e.preventDefault()
+			},
+			swiperItemTouchStart(e: UniTouchEvent) {
+				console.log("swiperItemTouchStart")
+				this.swiperItemTouchEvent = true
+        e.stopPropagation()
+			},
+			swiperTouchStart(e: UniTouchEvent) {
+				console.log("swiperTouchStart")
+				this.swiperTouchEvent = true
+			},
+      isPassTest1() {
+        console.log("swiperChangeEvent:", this.swiperChangeEvent)
+        return this.swiperChangeEvent == false
+      },
+      isPassTest2() {
+        console.log("viewTouchEvent:", this.viewTouchEvent)
+        console.log("swiperItemTouchEvent:", this.swiperItemTouchEvent)
+        console.log("swiperTouchEvent:", this.swiperTouchEvent)
+        return this.viewTouchEvent == true && this.swiperItemTouchEvent == true  && this.swiperTouchEvent == false
+      }
+		}
+	}
+</script>
+
+<style>
+	.header-tiem {
+		height: 300px;
+		background-color: #89ff8d;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
