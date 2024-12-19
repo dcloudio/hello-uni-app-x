@@ -30,7 +30,7 @@
               方式
             </view>
             <view class="uni-list-cell-right" @click="chooseMediaType">
-              <text class="click-t">{{mediaTypes[mediaTypeIndex].title}}</text>
+              <text class="click-t">{{(mediaTypes[mediaTypeIndex] as ChooseSource).title}}</text>
             </view>
           </view>
 
@@ -39,7 +39,7 @@
               数量限制
             </view>
             <view class="uni-list-cell-right">
-              <input class="click-t" ref="refCountInput" :value="countIndex" type="number" :maxlength="1" @blur="chooseMediaCount"
+              <input class="click-t" ref="refCountInput" :value="countIndex" type="number" :maxlength="1" @confirm="chooseMediaCount"
                 confirm-type="done" />
             </view>
           </view>
@@ -202,12 +202,12 @@
         albumModeTypeIndex: 0,
         countIndex: 9,
         maxDuration: 10,
-        sourceTypes: sourceTypeList,
-        mediaTypes: mediaTypeList,
-        sizeTypes: sizeTypeList,
-        cameraTypes: cameraTypeList,
-        orientationTypes: orientationTypeList,
-        albumModeTypes: albumModeList,
+        sourceTypes: sourceTypeList as ChooseSource[],
+        mediaTypes: mediaTypeList as ChooseSource[],
+        sizeTypes: sizeTypeList as ChooseSource[],
+        cameraTypes: cameraTypeList as ChooseSource[],
+        orientationTypes: orientationTypeList as ChooseSource[],
+        albumModeTypes: albumModeList as ChooseSource[],
       }
     },
     methods: {
@@ -235,7 +235,7 @@
           }
         })
       },
-      chooseMediaCount(event: UniInputBlurEvent) {
+      chooseMediaCount(event: UniInputConfirmEvent) {
         let count = parseInt(event.detail.value)
         if (count < 1 || count > 9 || Number.isNaN(count)) {
           uni.showToast({
@@ -243,16 +243,9 @@
             title: "图片数量应该不小于1不大于9"
           })
           this.countIndex = 9;
-          if(this.$refs['refCountInput'].value != this.countIndex){
-            this.$refs['refCountInput'].value = this.countIndex;
-          }
           return
         }
         this.countIndex = count
-        if(this.$refs['refCountInput'].value != this.countIndex){
-          this.$refs['refCountInput'].value = this.countIndex;
-        }
-
       },
       chooseOrientationType() {
         uni.showActionSheet({
@@ -296,20 +289,20 @@
           sourceType: sourceTypeList[this.sourceTypeIndex].value,
           sizeType: sizeTypeList[this.sizeTypeIndex].value,
           mediaType: mediaTypeList[this.mediaTypeIndex].value,
-          camera: cameraTypeList[this.cameraTypeIndex].value,
+          camera: cameraTypeList[this.cameraTypeIndex].value[0],
           maxDuration: this.maxDuration,
           // #ifdef APP
-          pageOrientation: orientationTypeList[this.orientationTypeIndex].value,
+          pageOrientation: orientationTypeList[this.orientationTypeIndex].value[0],
           // #endif
           // #ifdef APP-ANDROID
-          albumMode: albumModeList[this.albumModeTypeIndex].value,
+          albumMode: albumModeList[this.albumModeTypeIndex].value[0],
           // #endif
           success: (res) => {
             const tempFiles : ChooseMediaTempFile[] = res.tempFiles as ChooseMediaTempFile[];
             for (let i = 0; i < tempFiles.length; i++) {
               const tempFile : ChooseMediaTempFile = tempFiles[i]
               const imagePath = tempFile.fileType == "image" ? tempFile.tempFilePath : tempFile.thumbTempFilePath;
-              const file : FileSource = { imagePath: imagePath, filePath: tempFile.tempFilePath, fileType: tempFile.fileType };
+              const file : FileSource = { imagePath: imagePath!, filePath: tempFile.tempFilePath, fileType: tempFile.fileType };
               this.mediaList.push(file);
             }
           },
