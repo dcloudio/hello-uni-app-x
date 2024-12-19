@@ -34,6 +34,14 @@
     },
     methods: {
       customLoginIn() {
+        if('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX'===uni.getAppBaseInfo().appId){
+          uni.showModal({
+            title: '提示',
+            content: '一键登录为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+            showCancel: false
+          })
+          return
+        }
         const isPreLoginValid = this.univerifyManager?.isPreLoginValid() ?? false;
         if (isPreLoginValid) {
           this.pushCustomPage();
@@ -57,6 +65,14 @@
         })
       },
       verify(fullScreen : boolean) {
+        if('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX'===uni.getAppBaseInfo().appId){
+          uni.showModal({
+            title: '提示',
+            content: '一键登录为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+            showCancel: false
+          })
+          return
+        }
         // 校验预登录是否有效
         const isPreLoginValid = this.univerifyManager?.isPreLoginValid() ?? false;
         if (isPreLoginValid) {
