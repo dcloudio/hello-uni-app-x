@@ -36,4 +36,14 @@ describe('report', () => {
     const msg = await page.data('msg')
     expect(msg).toBe('onAppError --> report:ok')
   })
+  it('Report - customTitle', async () => {
+    await page.callMethod('handleTitle')
+    const msg = await page.data('msg')
+    expect(msg).toBe('自定义title --> report:ok')
+  })
+  it('Report - customEvent', async () => {
+    await page.callMethod('handleEvent')
+    const msg = await page.data('msg')
+    expect(msg).toBe('自定义事件 --> report:ok')
+  })
 })
