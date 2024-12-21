@@ -22,16 +22,17 @@
   export default {
     data() {
       return {
-        univerifyManager: null as UniverifyManager | null,
+        uniVerifyManager: null as UniVerifyManager | null,
         phone: '',
         slogan: '',
         privacyName: '',
         privacyUrl: '',
-        closeIcon: '\uE650'
+        closeIcon: '\uE650',
+        isLoading: false //是否正在登录中
       }
     },
     onLoad(options : OnLoadOptions) {
-      this.univerifyManager = uni.getUniverifyManager();
+      this.uniVerifyManager = uni.getUniVerifyManager();
       this.phone = options['phone'] as string;
       this.slogan = options['slogan'] as string;
       this.privacyName = options['name'] as string;
@@ -41,7 +42,7 @@
       closePage() {
         uni.closeDialogPage({
           dialogPage: this.$page,
-          animationType:'slide-out-bottom',
+          animationType: 'slide-out-bottom',
           success(res) {
             console.log('closeThisDialog success', res)
           },
@@ -65,13 +66,23 @@
 
       },
       loginIn() {
+        if (this.isLoading) {
+          uni.showToast({
+            title: "正在登录中，请稍后",
+            position: "bottom",
+            duration: 2000
+          })
+          return;
+        }else{
+          this.isLoading = true;
+        }
         const numberTextElement = this.$page.getElementById('number-text');
         const sloganTextElement = this.$page.getElementById('slogan-text');
         const loginButtonElement = this.$page.getElementById('login-button');
         const privacyCheckBoxElement = this.$page.getElementById('privacy-checkbox');
         const privacyTextElement = this.$page.getElementById('privacy-text');
-        if(numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null){
-          this.univerifyManager?.customLogin({
+        if (numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null) {
+          this.uniVerifyManager?.customLogin({
             numberTextElement: numberTextElement,
             sloganTextElement: sloganTextElement,
             loginButtonElement: loginButtonElement,
@@ -82,35 +93,38 @@
               this.takePhoneNumber(res.accessToken, res.openId);
             },
             fail: (error) => {
-              if (error.errCode == 40001){
+              if (error.errCode == 40001) {
                 uni.showToast({
-                	title:"请同意服务条款",
+                  title: "请同意服务条款",
                   position: "bottom",
-                	duration:2000
+                  duration: 2000
                 })
-              }else if(error.errCode == 40002){
+              } else if (error.errCode == 40002) {
                 uni.showToast({
-                	title:"授权页不符合规范",
+                  title: "授权页不符合规范",
                   position: "bottom",
-                	duration:2000
+                  duration: 2000
                 })
-              }else{
-                 const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
-                 uni.showToast({
-                 	title:errorMsg,
+              } else {
+                const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
+                uni.showToast({
+                  title: errorMsg,
                   position: "bottom",
-                 	duration:2000
-                 })
-
+                  duration: 2000
+                })
               }
+            },
+            complete: () =>{
+              this.isLoading = false;
             }
           })
-        }else{
+        } else {
           uni.showToast({
-          	title:"元素不能为空",
+            title: "未获取到页面元素",
             position: "bottom",
-          	duration:2000
+            duration: 2000
           })
+          this.isLoading = false;
         }
 
       },
