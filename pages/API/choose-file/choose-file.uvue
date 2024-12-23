@@ -1,29 +1,63 @@
 <template>
-	<view>
-		<page-head :title="title"></page-head>
-		<button class="btnstyle" type="primary" @tap="chooseVideo">选择文件(video)</button>
-		<button class="btnstyle" type="primary" @tap="chooseImage">选择文件(image)</button>
-		<button class="btnstyle" type="primary" @tap="chooseAudio">选择文件(audio)</button>
-		<button class="btnstyle" type="primary" @tap='chooseAll'>选择文件(all)</button>
-	</view>
+	<!-- #ifdef APP -->
+	<scroll-view style="flex: 1;">
+	<!-- #endif -->
+		<view>
+			<page-head :title="title"></page-head>
+
+			<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+
+			<button class="btnstyle" type="primary" @tap="chooseVideo">选择文件(video) 单选</button>
+			<button class="btnstyle" type="primary" @tap="chooseVideoMul">选择文件(video) 多选</button>
+			<button class="btnstyle" type="primary" @tap="chooseImage">选择文件(image) 单选</button>
+			<button class="btnstyle" type="primary" @tap="chooseImageMul">选择文件(image) 多选</button>
+			<button class="btnstyle" type="primary" @tap="chooseAudio">选择文件(audio) 单选</button>
+			<button class="btnstyle" type="primary" @tap="chooseAudioMul">选择文件(audio) 多选</button>
+			<button class="btnstyle" type="primary" @tap='chooseAll'>选择文件(all) 单选</button>
+			<button class="btnstyle" type="primary" @tap='chooseAllMul'>选择文件(all) 多选</button>
+
+			<view style="height: 4px;"></view>
+		</view>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
 </template>
 
 <script>
 	export default {
 		data() {
 			return {
+				log: '',
 				title: 'choose-file'
 			}
 		},
 		methods: {
+			getPath(chooseFils : ChooseFilePath[]) : string {
+				var urls = new Array<string>()
+				chooseFils.forEach(value => {
+					urls.add(value.path)
+				})
+				return urls.joinToString(',')
+			},
 			chooseVideo() {
+				uni.chooseFile({
+					type: 'video',
+					count: 1,
+					success(res) {
+						console.log(res)
+						this.log += this.getPath(res.filePaths) + '\n\n'
+					},
+					complete(res) {
+						console.log(res)
+					}
+				})
+			},
+			chooseVideoMul() {
 				uni.chooseFile({
 					type: 'video',
 					success(res) {
 						console.log(res)
-						uni.showToast({
-							title: 'success'
-						})
+						this.log += this.getPath(res.filePaths) + '\n\n'
 					},
 					complete(res) {
 						console.log(res)
@@ -33,12 +67,23 @@
 			chooseImage() {
 				uni.chooseFile({
 					type: 'image',
+					count: 1,
+					success(res) {
+						console.log(res)
+						this.log += this.getPath(res.filePaths) + '\n\n'
+					},
+					complete(res) {
+						console.log(res)
+					}
+				})
+			},
+			chooseImageMul() {
+				uni.chooseFile({
+					type: 'image',
 					count: 90,
 					success(res) {
 						console.log(res)
-						uni.showToast({
-							title: 'success'
-						})
+						this.log += this.getPath(res.filePaths) + '\n\n'
 					},
 					complete(res) {
 						console.log(res)
@@ -48,12 +93,22 @@
 			chooseAudio() {
 				uni.chooseFile({
 					type: 'audio',
-					count: 10,
+					count: 1,
 					success(res) {
 						console.log(res)
-						uni.showToast({
-							title: 'success'
-						})
+						this.log += this.getPath(res.filePaths) + '\n\n'
+					},
+					complete(res) {
+						console.log(res)
+					}
+				})
+			},
+			chooseAudioMul() {
+				uni.chooseFile({
+					type: 'audio',
+					success(res) {
+						console.log(res)
+						this.log += this.getPath(res.filePaths) + '\n\n'
 					},
 					complete(res) {
 						console.log(res)
@@ -66,9 +121,19 @@
 					count: 1,
 					success(res) {
 						console.log(res)
-						uni.showToast({
-							title: 'success'
-						})
+						this.log += this.getPath(res.filePaths) + '\n\n'
+					},
+					complete(res) {
+						console.log(res)
+					}
+				})
+			},
+			chooseAllMul() {
+				uni.chooseFile({
+					type: 'all',
+					success(res) {
+						console.log(res)
+						this.log += this.getPath(res.filePaths) + '\n\n'
 					},
 					complete(res) {
 						console.log(res)
