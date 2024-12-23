@@ -4,7 +4,7 @@ import Build from 'android.os.Build';
 import View from 'android.view.View';
 import Color from 'android.graphics.Color';
 import WindowManager from 'android.view.WindowManager';
-import { globalNotificationProgressFinishCallBack, globalNotificationProgressCallBack } from './callbacks.uts';
+import { getGlobalNotificationProgressCallBack, getGlobalNotificationProgressFinishCallBack, setGlobalNotificationProgressCallBack, setGlobalNotificationProgressFinishCallBack} from './callbacks.uts';
 import { ACTION_DOWNLOAD_FINISH, ACTION_DOWNLOAD_PROGRESS } from "./constant.uts"
 
 
@@ -20,16 +20,16 @@ export class TransparentActivity extends Activity {
 		const action = this.getIntent().getAction()
 		if (action == ACTION_DOWNLOAD_FINISH) {
 			setTimeout(() => {
-				globalNotificationProgressFinishCallBack()
-				globalNotificationProgressFinishCallBack = () => { }
+        getGlobalNotificationProgressFinishCallBack()?.()
+        setGlobalNotificationProgressFinishCallBack(() => { })
 			}, 100)
 			this.overridePendingTransition(0, 0)
 		}
 
 		if (action == ACTION_DOWNLOAD_PROGRESS) {
 			setTimeout(() => {
-				globalNotificationProgressCallBack?.()
-				globalNotificationProgressCallBack = () => { }
+				getGlobalNotificationProgressCallBack()?.()
+        setGlobalNotificationProgressCallBack(() => { })
 			}, 100)
 			this.overridePendingTransition(0, 0)
 		}
