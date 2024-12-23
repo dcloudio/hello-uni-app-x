@@ -116,7 +116,7 @@ export default {
 			downLoadBtnTextiOS: '立即跳转更新',
 			downLoadBtnText: '立即下载更新',
 			downLoadingText: '安装包下载中，请稍后',
-			
+
 			// #ifdef APP-PLUS
 			shown: true,
 			// #endif
@@ -138,7 +138,7 @@ export default {
 			uni.navigateBack();
 			return;
 		}
-		
+
 		this.setLocalPackageInfo(localPackageInfo)
 	},
 	onBackPress() {
@@ -202,7 +202,7 @@ export default {
 					return;
 				}
 			}
-			
+
 			Object.assign(this, localPackageInfo);
 			this.checkLocalStoragePackage();
 		},
@@ -256,7 +256,7 @@ export default {
 				// 包已经下载完毕，稍后安装，将包保存在本地
 				await this.saveFile(this.tempFilePath, this.version);
 			}
-			
+
 			// #ifdef APP-PLUS
 			uni.navigateBack();
 			// #endif
@@ -579,12 +579,12 @@ page {
 }
 
 .content-body-version {
-	padding-left: 10px;
+	padding-left: 20rpx;
 	color: #fff;
-	font-size: 10px;
-	margin-left: 5px;
-	padding: 2px 4px;
-	border-radius: 10px;
+	font-size: 20rpx;
+	margin-left: 10rpx;
+	padding: 4rpx 8rpx;
+	border-radius: 20rpx;
 	background: #50aefd;
 }
 
