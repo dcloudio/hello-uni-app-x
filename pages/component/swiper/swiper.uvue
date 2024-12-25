@@ -7,6 +7,7 @@
       <view class="uni-margin-wrap">
         <swiper id="swiper-view" class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect"
           :rebound="reboundSelect" :interval="intervalSelect" :circular="circularSelect"
+          :duration="durationSelect"
           :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive"
           :disable-touch="disableTouchSelect" :current="currentVal" :current-item-id="currentItemIdVal"
           @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish" @touchstart="swipertouchStart">
@@ -41,6 +42,10 @@
         <view class="uni-title uni-list-cell-padding">间隔时间(毫秒)</view>
         <view class="uni-list-cell-padding">
           <slider @change="sliderChange" :value="1000" :min="500" :max="5000" :show-value="true" />
+        </view>
+        <view class="uni-title uni-list-cell-padding">动画时长(毫秒)</view>
+        <view class="uni-list-cell-padding">
+          <slider @change="durationSliderChange" :value="100" :min="50" :max="2000" :show-value="true" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">定制指示器颜色</view>
@@ -107,6 +112,7 @@
         currentSelect: false,
         currentItemIdSelect: false,
         intervalSelect: 2000,
+        durationSelect: 2000,
         indicatorColor: "",
         indicatorColorActive: "",
         currentVal: 0,
@@ -254,6 +260,9 @@
       },
       sliderChange(e : UniSliderChangeEvent) {
         this.intervalSelect = e.detail.value
+      },
+      durationSliderChange(e : UniSliderChangeEvent) {
+        this.durationSelect = e.detail.value
       },
       indicatorColorChange(e : UniSwitchChangeEvent) {
         this.indicatorColorSelect = e.detail.value
