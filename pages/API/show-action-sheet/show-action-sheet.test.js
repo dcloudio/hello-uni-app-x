@@ -125,7 +125,22 @@ describe('API-loading', () => {
       backgroundColorCustom: true,
     })
     await showActionSheet(page);
-
+    await page.waitFor(1000)
+    await screenshot();
+  })
+  it("showActionSheet 并在回调中再次 showActionSheet", async () => {
+    await page.callMethod('showActionSheetAndShowAgainInCallback')
+    await page.waitFor(1000);
+    await screenshot();
+    if (isApp) {
+      await program.tap({
+        x: 200,
+        y: 700,
+      })
+    } else if (isWeb) {
+      await page.callMethod('closeWebActionSheet')
+    }
+    await page.waitFor(1000);
     await screenshot();
   })
   it("hideActionSheet", async () => {
