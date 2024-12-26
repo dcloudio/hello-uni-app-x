@@ -189,4 +189,13 @@ describe('ExtApi-Request', () => {
       expect(res).toBe(true)
     })
   }
+  
+  if(process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')){
+    it('send arraybuffer', async () => {
+      res = await page.callMethod('sendArrayBuffer',false)
+      await page.waitFor(5000);
+      res = await page.data('res');
+      expect(res).toEqual('请求结果 : 1,2,3')
+    })
+  }
 });
