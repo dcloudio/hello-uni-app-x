@@ -31,7 +31,7 @@ describe('touch-events-test', () => {
   })
 
 
-  it('touch-event-preventDefault', async () => {
+  it('touch-event-case1', async () => {
 
     let x = 25
     let y = 150
@@ -44,13 +44,45 @@ describe('touch-events-test', () => {
     })
 
     await page.waitFor(1500);
-    const ret = await page.callMethod('isPassTest1')
+    const swiperChangeEvent = await page.data('swiperChangeEvent')
+    console.log("swiperChangeEvent:", swiperChangeEvent)
+    expect(swiperChangeEvent).toBe(true)
+  })
+
+  it('touch-event-case2', async () => {
+
+    const viewTouchEvent = await page.data('viewTouchEvent')
+    const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
+    const swiperTouchEvent = await page.data('swiperTouchEvent')
+    let ret = viewTouchEvent && swiperItemTouchEvent && swiperTouchEvent
     expect(ret).toBe(true)
   })
 
-  it('touch-event-stopPropagation', async () => {
+  it('touch-event-case3', async () => {
+    await page.waitFor(1500);
+    await page.callMethod('resetEvent')
+    let x = 25
+    let y = 150
 
-    const ret = await page.callMethod('isPassTest2')
+    // 滑动事件
+    await program.swipe({
+      startPoint: {x: x, y: y},
+      endPoint: {x: x+200,y: y},
+      duration: 300
+    })
+
+    await page.waitFor(1500);
+    const swiperChangeEvent = await page.data('swiperChangeEvent')
+    console.log("swiperChangeEvent:", swiperChangeEvent)
+    expect(swiperChangeEvent).toBe(false)
+  })
+
+  it('touch-event-case4', async () => {
+
+    const viewTouchEvent = await page.data('viewTouchEvent')
+    const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
+    const swiperTouchEvent = await page.data('swiperTouchEvent')
+    let ret = viewTouchEvent && !swiperItemTouchEvent && !swiperTouchEvent
     expect(ret).toBe(true)
   })
 
