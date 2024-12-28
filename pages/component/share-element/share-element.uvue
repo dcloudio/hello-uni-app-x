@@ -1,8 +1,8 @@
 <template>
   <page-head title="share-element"></page-head>
   <view class="main">
-    <share-element class="share-element" share-key="left"
-      :shuttle-on-pop="shuttleOnPop"  :transition-on-gesture="transitionOnGesture" @tap="openPage()">
+    <share-element class="share-element" share-key="left" :shuttle-on-pop="shuttleOnPop"
+      :transition-on-gesture="transitionOnGesture" @tap="openPage()">
       <image style="width: 100px;height: 100px;"
         src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg" mode="widthFix">
       </image>
@@ -13,20 +13,38 @@
   </button>
   <scroll-view style="flex: 1">
     <view class="content">
-      <boolean-data :defaultValue="false" title="transition-on-gesture= true(仅iOS生效)" @change="changeTransitionOnGesture"></boolean-data>
+      <boolean-data :defaultValue="false" title="transition-on-gesture= true(仅iOS生效)"
+        @change="changeTransitionOnGesture"></boolean-data>
+      <text class="uni-common-mt choose-open-animation-type-title">animationType(页面动画降级):</text>
+      <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
+        <radio class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item" :value="item"
+          :checked="openAnimationType == item">{{ item }}
+        </radio>
+      </radio-group>
       <enum-data :items="shuttle_on_pop" title="shuttleOnPop" @change="changeShuttleOnPop"></enum-data>
       <enum-data :items="shuttle_on_push" title="shuttleOnPush" @change="changeShuttleOnPush"></enum-data>
     </view>
   </scroll-view>
   <view style="height: 80px;"></view>
-  <share-element class="bottomWrap" share-key="bottom" @tap="openPage()"
-    transitionOnGesture=true>
+  <share-element class="bottomWrap" share-key="bottom" @tap="openPage()" transitionOnGesture=true>
     <view class="bottom">
       <text style="color: white;">share-element(底部固定)</text>
     </view>
   </share-element>
 </template>
 <script>
+  type ShareElementOpenAnimationType =
+    'auto' |
+    'none' |
+    'slide-in-right' |
+    'slide-in-left' |
+    'slide-in-top' |
+    'slide-in-bottom' |
+    'fade-in' |
+    'pop-in' |
+    'zoom-out' |
+    'zoom-fade-out'
+
   import { ItemType } from '@/components/enum-data/enum-data-types'
   export default {
     data() {
@@ -35,16 +53,28 @@
         shuttleOnPush: "to",
         transitionOnGesture: false,
         transition_on_gesture: [{ "value": 1, "name": "true" }, { "value": 2, "name": "false" }] as ItemType[],
-        shuttle_on_pop: [{ "value": 1, "name":
-         "from" }, { "value": 2, "name": "to" }] as ItemType[],
-        shuttle_on_push: [{ "value": 1, "name": "from" }, { "value": 2, "name": "to" }] as ItemType[]
+        shuttle_on_pop: [{"value": 1, "name":"from"}, { "value": 2, "name": "to" }] as ItemType[],
+        shuttle_on_push: [{ "value": 1, "name": "from" }, { "value": 2, "name": "to" }] as ItemType[],
+        openAnimationType: 'slide-in-right' as ShareElementOpenAnimationType,
+        openAnimationTypeList: [
+          'auto',
+          'none',
+          'slide-in-right',
+          'slide-in-left',
+          'slide-in-top',
+          'slide-in-bottom',
+          'fade-in',
+          'pop-in',
+          'zoom-out',
+          'zoom-fade-out'
+        ]
       }
     },
     methods: {
       openPage() {
         uni.navigateTo({
-          animationType:"slide-in-right",
-          url: "/pages/component/share-element/share-element-to?shuttleOnPush="+this.shuttleOnPush+"&transitionOnGesture="+this.transitionOnGesture
+          animationType: this.openAnimationType,
+          url: "/pages/component/share-element/share-element-to?shuttleOnPush=" + this.shuttleOnPush + "&transitionOnGesture=" + this.transitionOnGesture
         })
       },
       changeShuttleOnPop(checked : number) {
@@ -57,12 +87,28 @@
       changeTransitionOnGesture(checked : boolean) {
         console.log(`changeTransitionOnGesture:${checked}`)
         this.transitionOnGesture = checked
+      },
+      handleOpenAnimationType(e : RadioGroupChangeEvent) {
+        this.openAnimationType = e.detail.value as ShareElementOpenAnimationType
       }
     }
   }
 </script>
 
 <style>
+  .ml-10 {
+    margin-left: 10px;
+  }
+
+  .choose-open-animation-type-title {
+    font-weight: bold;
+  }
+
+  .choose-open-animation-type-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
   .bottomWrap {
     width: 100%;
     bottom: 0px;
