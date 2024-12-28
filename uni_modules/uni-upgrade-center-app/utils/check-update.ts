@@ -20,9 +20,11 @@ export default function () : Promise<UniUpgradeCenterResult> {
 			const url = uniUpgradeCenterResult.url // 安装包下载地址
         // 此处逻辑仅为示例，可自行编写
         if (code > 0) {
-          // 腾讯云和阿里云下载链接不同，需要处理一下，阿里云会原样返回
-          const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
-          if (typeof tcbRes.fileList[0].tempFileURL !== 'undefined') uniUpgradeCenterResult.url = tcbRes.fileList[0].tempFileURL;
+          // 腾讯云获取下载链接
+          if (/^cloud:\/\//.test(url)) {
+              const tcbRes = await uniCloud.getTempFileURL({ fileList: [url] });
+              if (typeof tcbRes.fileList[0].tempFileURL !== 'undefined') uniUpgradeCenterResult.url = tcbRes.fileList[0].tempFileURL;
+          }
 
           /**
            * 提示升级一
@@ -52,7 +54,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
            * 提示升级二
            * 官方适配的升级弹窗，可自行替换资源适配UI风格
            */
-          // #ifndef UNI-APP-X 
+          // #ifndef UNI-APP-X
           // #ifdef APP-PLUS
           uni.setStorageSync(PACKAGE_INFO_KEY, uniUpgradeCenterResult)
           uni.navigateTo({
