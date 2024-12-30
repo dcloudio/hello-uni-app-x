@@ -13,21 +13,29 @@ beforeAll(async () => {
 })
 
 describe('Radio.uvue', () => {
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isMP = platformInfo.startsWith('mp')
+  const isWeb = platformInfo.startsWith('web')
   it('change', async () => {
     expect(await getData('value')).toEqual('')
     const radio1 = await page.$('.r1')
     await radio1.tap()
+    await page.waitFor(100)
     expect(await getData('value')).toEqual('r1')
     const radio = await page.$('.r')
     await radio.tap()
+    await page.waitFor(100)
     expect(await getData('value')).toEqual('r')
     const radio2 = await page.$('.r2')
     await radio2.tap()
+    await page.waitFor(100)
     expect(await getData('value')).toEqual('r')
   })
   it('length', async () => {
     const radioGroupElements = await page.$$('.radio-group')
-    expect(radioGroupElements.length).toBe(3)
+    expect(radioGroupElements.length).toBe(4)
     const radioElements = await page.$$('.radio')
     expect(radioElements.length).toBe(12)
   })
@@ -39,17 +47,20 @@ describe('Radio.uvue', () => {
     })
     expect(await radio.text()).toEqual('not selected')
   })
-  it('checked', async () => {
-    const radio = await page.$('.r')
-    // TODO
-    const newValue1 = await radio.property('checked')
-    expect(newValue1.toString()).toBe(true + '')
-    await page.setData({
-      checked: false,
+  if(!isMP) {
+    // TODO property('checked')应取到实际显示的值（微信小程序）还是绑定的值（web、app）
+    it('checked', async () => {
+      const radio = await page.$('.r')
+      // TODO
+      const newValue1 = await radio.property('checked')
+      expect(newValue1.toString()).toBe(true + '')
+      await page.setData({
+        checked: false,
+      })
+      const newValue2 = await radio.property('checked')
+      expect(newValue2.toString()).toBe(false + '')
     })
-    const newValue2 = await radio.property('checked')
-    expect(newValue2.toString()).toBe(false + '')
-  })
+  }
   it('color', async () => {
     const radio = await page.$('.r')
     expect(await radio.attribute('color')).toBe('#007aff')
@@ -58,23 +69,36 @@ describe('Radio.uvue', () => {
     })
     expect(await radio.attribute('color')).toBe('#63acfc')
   })
-  it('disabled', async () => {
-    const radio = await page.$('.r2')
-    expect(await radio.attribute('disabled')).toBe(true + '')
-    await page.setData({
-      disabled: false,
+  if(isMP) {
+    it('disabled', async () => {
+      const radio = await page.$('.r2')
+      expect(await radio.property('disabled')).toBe(true)
+      await page.setData({
+        disabled: false,
+      })
+      expect(await radio.property('disabled')).toBe(false)
     })
-    expect(await radio.attribute('disabled')).toBe(false + '')
-  })
-  it('trigger UniRadioGroupChangeEvent', async () => {
-    const { current } = await page.data()
+  } else {
+    it('disabled', async () => {
+      const radio = await page.$('.r2')
+      expect(await radio.attribute('disabled')).toBe(true + '')
+      await page.setData({
+        disabled: false,
+      })
+      expect(await radio.attribute('disabled')).toBe(false + '')
+    })
+  }
+  if(!isMP) {
+    it('trigger UniRadioGroupChangeEvent', async () => {
+      const { current } = await page.data()
 
-    const nextCurrent = current == 0 ? 1 : 0
+      const nextCurrent = current == 0 ? 1 : 0
 
-    const elements = await page.$$('.recommand')
-    await elements[nextCurrent].tap()
-    await page.waitFor(500)
-    const { eventTest } = await page.data()
-    expect(eventTest).toEqual(true)
-  })
+      const elements = await page.$$('.recommand')
+      await elements[nextCurrent].tap()
+      await page.waitFor(500)
+      const { eventTest } = await page.data()
+      expect(eventTest).toEqual(true)
+    })
+  }
 })

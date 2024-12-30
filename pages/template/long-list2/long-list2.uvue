@@ -101,12 +101,15 @@
     },
     onReady() {
       this.pageScrollView = this.$refs['pageScrollView'] as UniElement;
-      this.headerHeight = (this.$refs['header'] as UniElement).offsetHeight
-      this.swiperWidth = (this.$refs['swiper'] as UniElement).getBoundingClientRect().width
-      this.tabScrollView = this.$refs['tabScroll'] as UniElement
-      this.indicatorNode = this.$refs['indicator'] as UniElement
-      this.cacheTabItemsSize()
-      this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
+      this.headerHeight = (this.$refs['header'] as UniElement).offsetHeight;
+      this.tabScrollView = this.$refs['tabScroll'] as UniElement;
+      this.indicatorNode = this.$refs['indicator'] as UniElement;
+      (this.$refs["swiper"] as UniElement).getBoundingClientRectAsync()!.then((res : DOMRect) : Promise<void> => {
+        this.swiperWidth = res.width
+        return this.cacheTabItemsSize()
+      }).then(() => {
+        this.updateTabIndicator(this.swiperIndex, this.swiperIndex, 1)
+      });
     },
     onPullDownRefresh() {
       (this.$refs["longPage"]! as ComponentPublicInstance[])[this.swiperIndex].$callMethod('refreshData', () => {
@@ -176,15 +179,17 @@
         this.setSwiperIndex(e.detail.current, true)
         this.animationFinishIndex = e.detail.current
       },
-      cacheTabItemsSize() {
-        this.swiperTabsRect.length = 0
+      async cacheTabItemsSize() {
+        this.swiperTabsRect.length = 0;
         const tabs = this.$refs["swipertab"] as UniElement[]
-        tabs.forEach((node) => {
+        for (let i = 0; i < tabs.length; i++) {
+          const element = tabs[i];
+          const rect = await element.getBoundingClientRectAsync()!
           this.swiperTabsRect.push({
-            x: node.offsetLeft,
-            w: node.offsetWidth
+            x: rect.left,
+            w: rect.width
           } as SwiperTabsItem)
-        })
+        }
       },
       setSwiperIndex(index : number, updateIndicator : boolean) {
         if (this.swiperIndex === index) {
@@ -213,7 +218,7 @@
         this.indicatorNode?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
         this.initSwiperItemData(current_index)
         // #endif
-        // #ifdef WEB
+        // #ifdef WEB || MP
         // TODO chrome windows系统 transform scaleX渲染bug
         const x = indicator_line_x
         this.indicatorNode?.style?.setProperty('width', `${indicator_line_w}px`)
@@ -222,9 +227,15 @@
 
         // 滚动到水平中心位置
         const scroll_x = x - this.swiperWidth / 2
-        if(this.tabScrollView !== null){
-          this.tabScrollView!.scrollLeft = scroll_x
-        }
+        // app 平台后续支持 scrollTo()
+        // #ifndef MP-WEIXIN
+        this.tabScrollView!.scrollLeft = scroll_x
+        // #endif
+        // #ifdef MP-WEIXIN
+        this.tabScrollView!.scrollTo({
+          left: scroll_x
+        })
+        // #endif
       },
       initSwiperItemData(index : number) {
         if (!this.swiperList[index].preload) {

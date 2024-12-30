@@ -13,7 +13,6 @@
         </navigator>
       </view>
       <view class="uni-title">
-        <text class="uni-subtitle-text">selectable</text>
         <button type="default" @click="changeText">修改文本内容</button>
       </view>
       <view class="text-box" id="rich-text-parent" @click="richTextParentClick">
@@ -23,6 +22,9 @@
           <text>rich-text-parent</text>
           <text id='rich-text-str'>{{richTextStr}}</text>
         </view>
+      </view>
+      <view class="uni-title">
+        <text class="uni-subtitle-text">selectable</text>
       </view>
       <view class="text-box2">
         <rich-text style="height: 80px;" :selectable="true"
@@ -66,9 +68,10 @@
       },
       updateRichTextHeight() {
         if (this.richTextElement != null) {
-          const elRect = this.richTextElement!.getBoundingClientRect()
-          this.richTextHeight = elRect.height
-          console.log('richTextHeight:', this.richTextHeight)
+          this.richTextElement!.getBoundingClientRectAsync()!.then((elRect: DOMRect) => {
+            this.richTextHeight = elRect.height
+            console.log('richTextHeight:', this.richTextHeight)
+          })
         }
       },
       // 自动化测试

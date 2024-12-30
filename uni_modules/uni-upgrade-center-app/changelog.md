@@ -1,3 +1,9 @@
+## 0.9.3（2024-12-23）
+- 修复 升级中心在大屏上的显示效果
+## 0.9.2（2024-11-06）
+- 更新 部分 ts 类型
+## 0.9.1（2024-11-01）
+- 更新 支持 HarmonyOS Next 设备整包更新、wgt 更新。需要 `HBuilderX 4.32+` [详情](https://doc.dcloud.net.cn/uniCloud/upgrade-center.html#uni-upgrade-center-app-harmonyos)
 ## 0.9.0（2024-10-30）
 - **重要更新** 在 uni-app x 项目中弃用之前弹窗方案使用[dialogPage](https://doc.dcloud.net.cn/uni-app-x/api/dialog-page.html)实现，需要 `HBuilderX 4.31+`
 ## 0.8.5（2024-10-26）

@@ -2,6 +2,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
 describe('component-native-scroll-view-refresher', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('other platform', () => {
@@ -44,13 +45,13 @@ describe('component-native-scroll-view-refresher', () => {
       expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
       expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
     }
-    await page.waitFor(1000);
+    await page.waitFor(2000);
     expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
   });
 
   // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件
   // 安卓端仅测'android 11.0.0'、'android 10.0.0_x86_64'、'android 10.0.0_x86'
-  if(!platformInfo.startsWith('web')){
+  if(!platformInfo.startsWith('web') && !platformInfo.startsWith('mp')){
     it('check_refresherabort', async () => {
       if(isIos){
         await program.swipe({
@@ -61,7 +62,7 @@ describe('component-native-scroll-view-refresher', () => {
       }else if(isAndroid){
         await program.swipe({
           startPoint: {x: 100,y: 400},
-          endPoint: {x: 100,y: 500},
+          endPoint: {x: 100,y: 450},
           duration: 1000
         })
       }

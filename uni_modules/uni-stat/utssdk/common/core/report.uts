@@ -160,6 +160,11 @@ export class Report {
       path: (options as OnLaunchOptions).path,
       cst: ReprotCstType.AppNormal
     }
+    // #ifdef MP-WEIXIN
+    // TODO 安卓没有 scene ，需要补一个
+    // @ts-ignore
+    request_option.scene = (options as OnLaunchOptions).scene
+    // #endif
 
     // 上报数据
     this.sendAppRequest(request_option, true)
@@ -339,6 +344,8 @@ export class Report {
     // TODO ，此处处理的值有问题，
     // 如果页面有参数 需要上传如：/xxx/xxx?{xx:xx,xxx:xxx} 格式的值
     let query = is_opt ? '?' + JSON.stringify(options.query) : ''
+    // 获取首次访问时间
+    const first_time = get_first_visit_time()
     // 获取应用最后访问时间
     const last_time = get_last_visit_time()
     // 非老用户
@@ -350,14 +357,12 @@ export class Report {
       if (!have_device) {
         this.statData.odid = odid
       }
-
     }
-
     this.statData.lt = ReportType.AppStart
     this.statData.url = options.path + query
     this.statData.t = get_time()
     this.statData.sc = get_scene(options)
-    this.statData.fvts = get_first_visit_time()
+    this.statData.fvts = first_time
     this.statData.lvts = last_time
     this.statData.tvc = get_total_visit_count()
     this.statData.cst = options.cst ?? ReprotCstType.AppNormal
@@ -564,10 +569,10 @@ export class Report {
 
     if (statConfig.debug!) {
       // 待上传消息对列
-      console.log(`=== 统计待上传队列数据 ===`)
+      // console.log(`=== 统计待上传队列数据 ===`)
       const statJSON = Map2Json(uniStatData)
-      console.log(statJSON)
-      console.log(`=== 采集结束 ===`)
+      console.log('=== 统计待上传队列数据 :', statJSON)
+      // console.log(`=== 采集结束 ===`)
     }
 
 
@@ -616,15 +621,15 @@ export class Report {
         .report(options)
         .then(() => {
           if (statConfig.debug!) {
-            console.log(`=== 统计队列数据上报 ===`)
-            console.log(options)
-            console.log(`=== 上报结束 ===`)
+            console.log(`=== 统计队列数据上报 :`, options)
+            // console.log(options)
+            // console.log(`=== 上报结束 ===`)
           }
         })
         .catch((err : any | null) => {
-          console.log('=== 统计上报错误 ===')
-          console.error(err)
-          console.log(`=== 上报结束 ===`)
+          console.log('=== 统计上报错误 :', JSON.stringify(err))
+          // console.error(err)
+          // console.log(`=== 上报结束 ===`)
         })
     }
 

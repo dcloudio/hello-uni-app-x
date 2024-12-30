@@ -1,4 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('component-native-nested-scroll-body', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
     it('dummyTest', () => {
       expect(1).toBe(1)

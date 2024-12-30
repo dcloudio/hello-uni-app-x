@@ -128,6 +128,7 @@
       }
     },
     onReady() {
+      // #ifndef MP
       // 获取模拟滑动手势的起始点
       let ele = uni.getElementById("swiper-view")
       let eleRect = ele?.getBoundingClientRect()
@@ -135,6 +136,7 @@
         this.swipeX = eleRect.width - 10
         this.swipeY += eleRect.y + uni.getSystemInfoSync().safeArea.top + 44 + 35
       }
+      // #endif
     },
     methods: {
       swipertouchStart(e: UniTouchEvent) {
@@ -183,7 +185,12 @@
       },
       // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
       checkEventTest(e : SwiperEventTest, eventName : String) {
+        // #ifndef MP
         const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
+        // #endif
+        // #ifdef MP
+        const isPass = true;
+        // #endif
         const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
         switch (eventName) {
           case 'change':

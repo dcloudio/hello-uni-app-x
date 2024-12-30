@@ -91,11 +91,13 @@
         nodeResultContainNode: false
       }
     },
+    onLoad() {
+      uni.$on('childReady', this.onChildReady)
+    },
+    onUnload() {
+      uni.$off('childReady', this.onChildReady)
+    },
     onReady() {
-      const instance2 = (this.$refs['multi-child'] as ComponentPublicInstance)
-      this.selectCount = instance2.$data['selectCount'] as number
-      this.selectAllCount = instance2.$data['selectAllCount'] as number
-
       this.testFields()
       this.testNode()
     },
@@ -110,6 +112,12 @@
       } */
     },
     methods: {
+      // 仅用于自动化测试
+      onChildReady() {
+        const instance2 = (this.$refs['multi-child'] as ComponentPublicInstance);
+        this.selectCount = instance2.$data['selectCount'] as number;
+        this.selectAllCount = instance2.$data['selectAllCount'] as number;
+      },
       // 仅用于自动化测试
       getRootNodeInfo(selector : string) {
         uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {

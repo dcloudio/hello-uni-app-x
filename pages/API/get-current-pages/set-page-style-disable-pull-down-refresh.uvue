@@ -35,6 +35,12 @@
         return JSON.stringify(this.currentPageStyle)
       }
     },
+    onLoad() {
+      const pages = getCurrentPages();
+      const currentPage = pages[pages.length - 1];
+      this.currentPageStyle = currentPage.getPageStyle();
+      this.enablePullDownRefreshStatus = this.currentPageStyle["enablePullDownRefresh"] as boolean
+    },
     onPullDownRefresh() {
       setTimeout(() => {
         uni.stopPullDownRefresh()

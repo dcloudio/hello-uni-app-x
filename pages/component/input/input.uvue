@@ -65,6 +65,10 @@
           <input class="uni-input" :placeholder-style="inputPlaceHolderStyle"
             value="不设置placeholder只设置placeholder-style" />
         </view>
+        <view class="input-wrapper">
+          <input id="uni-input-placeholder2" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;text-align: right;" class="uni-input" :placeholder-style="placeholderStyle"
+            placeholder="占位符以及内容右对齐" />
+        </view>
       </view>
 
       <view>
@@ -140,7 +144,7 @@
           <text class="uni-title-text">设置输入框聚焦时光标的位置（点这里）</text>
         </view>
         <view class="input-wrapper">
-          <input ref="input" class="uni-input" value="0123456789" :cursor="cursor" @blur="onCursorBlurChange" />
+          <input ref="input" class="uni-input" value="0123456789" :focus="cursorInputFocus" :cursor="cursor" @blur="onCursorBlurChange" />
         </view>
       </view>
 
@@ -150,7 +154,7 @@
         </view>
         <view class="input-wrapper">
           <input ref="input2" class="uni-input" value="0123456789" :selection-start="selectionStart"
-            :selection-end="selectionEnd" @blur="onSelectionBlurChange" />
+            :selection-end="selectionEnd" :focus="selectionInputFocus" @blur="onSelectionBlurChange" />
         </view>
       </view>
 
@@ -160,7 +164,7 @@
           <switch style="margin-left: 10px" @change="changeCursorColor" :checked="cursor_color == 'red'"></switch>
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-cursor-color" class="uni-input" :cursor-color="cursor_color" value="光标颜色" />
+          <input id="uni-input-cursor-color" class="uni-input" :cursor-color="cursor_color" :focus="cursorColorInputFocus" @blur="cursorColorInputBlur" value="光标颜色" />
         </view>
       </view>
 
@@ -255,7 +259,6 @@
             " @click="changePassword"></image>
         </view>
       </view>
-
       <view>
         <view class="uni-title">
           <text class="uni-title-text">同时存在 v-model 和 value</text>
@@ -299,9 +302,12 @@
         inputClearValue: '',
         showPassword: true,
         cursor: -1,
+        cursorInputFocus: false,
         cursor_color: "#3393E2",
+        cursorColorInputFocus: false,
         selectionStart: -1,
         selectionEnd: -1,
+        selectionInputFocus: false,
         inputEventDetail: '',
         focusAndBlurEventDetail: '',
         confirmEventDetail: '',
@@ -310,6 +316,7 @@
         inputPassword: true,
         inputTypeTel: "tel",
         inputPlaceHolderStyle: "color:red",
+        placeholderStyle: "font-family: AlimamaDaoLiTiOTF;font-weight: bold;text-align: right",
         inputPlaceHolderClass: "uni-input-placeholder-class" as string.ClassString,
         inputMaxLengthValue: "",
         onMaxLengthInputValue: "",
@@ -332,19 +339,23 @@
         this.onMaxLengthInputValue = event.detail.value
       },
       setCursor: function (cursor : number) {
-        (this.$refs['input'] as UniInputElement).focus();
+        // (this.$refs['input'] as UniInputElement).focus();
+        this.cursorInputFocus = true
         this.cursor = cursor;
       },
       onCursorBlurChange() {
         this.cursor = 0
+        this.cursorInputFocus = false
       },
       setSelection: function (selectionStart : number, selectionEnd : number) {
-        (this.$refs['input2'] as UniInputElement).focus();
+        // (this.$refs['input2'] as UniInputElement).focus();
+        this.selectionInputFocus = true
         this.selectionStart = selectionStart;
         this.selectionEnd = selectionEnd;
       },
       onSelectionBlurChange() {
         this.selectionEnd = 0;
+        this.selectionInputFocus = false
       },
       clearInput: function (event : UniInputEvent) {
         this.inputClearValue = event.detail.value
@@ -392,8 +403,12 @@
         } else {
           this.cursor_color = "#3393E2"
         }
-        const input = uni.getElementById<UniInputElement>("uni-input-cursor-color")
-        input?.focus()
+        // const input = uni.getElementById<UniInputElement>("uni-input-cursor-color")
+        // input?.focus()
+        this.cursorColorInputFocus = true
+      },
+      cursorColorInputBlur(event : UniInputBlurEvent) {
+        this.cursorColorInputFocus = false
       },
       changeHoldKeyboard(event : UniSwitchChangeEvent) {
         const checked = event.detail.value;
@@ -432,5 +447,10 @@
 
   .uni-input-placeholder-class {
     font-size: 10px;
+  }
+
+  @font-face {
+    font-family: AlimamaDaoLiTiOTF;
+    src: url('/static/font/AlimamaDaoLiTi.otf');
   }
 </style>

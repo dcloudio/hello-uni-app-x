@@ -5,13 +5,6 @@
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
       <view class="uni-title">
-        <text class="uni-subtitle-text">获取本地相对路径视频信息</text>
-      </view>
-      <video class="video" :src="relativeVideoPath" :controls="true"></video>
-      <text class="margin-top-10">{{relativeVideoInfo}}</text>
-    </view>
-    <view class="uni-padding-wrap">
-      <view class="uni-title">
         <text class="uni-subtitle-text">获取本地绝对路径视频信息</text>
       </view>
       <video class="video" :src="absoluteVideoPath" :controls="true"></video>
@@ -20,6 +13,15 @@
         <button type="primary" @click="chooseVideo">拍摄视频或从相册中选择视频</button>
       </view>
     </view>
+    <!-- #ifndef MP -->
+    <view class="uni-padding-wrap">
+      <view class="uni-title">
+        <text class="uni-subtitle-text">获取本地相对路径视频信息</text>
+      </view>
+      <video class="video" :src="relativeVideoPath" :controls="true"></video>
+      <text class="margin-top-10">{{relativeVideoInfo}}</text>
+    </view>
+    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -39,6 +41,7 @@
       }
     },
     onReady() {
+      // #ifndef MP
       uni.getVideoInfo({
         src: this.relativeVideoPath,
         success: (res) => {
@@ -53,6 +56,7 @@
           });
         }
       });
+      // #endif
     },
     methods: {
       chooseVideo() {

@@ -2,6 +2,7 @@ const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
 
 describe('getCurrentPages', () => {
   let page
@@ -26,6 +27,10 @@ describe('getCurrentPages', () => {
     const data = await page.data()
     expect(data.checked).toBe(true)
   })
+
+  if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+    return
+  }
   it('page-style', async () => {
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
@@ -65,12 +70,21 @@ describe('getCurrentPages', () => {
 
     // setPageStyle
     await page.callMethod('setPageStyle', {
+      androidThreeButtonNavigationTranslucent: true
+    });
+    await page.waitFor(2000);
+    const image4 = await program.screenshot({ deviceShot: true });
+    expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
+    }});
+
+    await page.callMethod('setPageStyle', {
       hideBottomNavigationIndicator: true,
       hideStatusBar: true
     })
-    await page.waitFor(500)
-    const image4 = await program.screenshot({fullPage: true});
-    expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
+    await page.waitFor(2000);
+    const image5 = await program.screenshot({ deviceShot: true });
+    expect(image5).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
 
@@ -95,5 +109,13 @@ describe('getCurrentPages', () => {
   it('getAndroidView', async () => {
     const res = await page.callMethod('checkGetAndroidView')
     expect(res).toBe(isAndroid)
+  })
+  it('getIOSView', async () => {
+    const res = await page.callMethod('checkGetIOSView')
+    expect(res).toBe(false)
+  })
+  it('getHTMLElement', async () => {
+    const res = await page.callMethod('checkGetHTMLElement')
+    expect(res).toBe(isWeb)
   })
 })

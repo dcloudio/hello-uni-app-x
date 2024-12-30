@@ -24,6 +24,7 @@ describe('unicloud-import-object', () => {
       genericDemoReturnTodoTitle,
       genericDemoReturnTodoContent,
       failErrCode,
+      failErrSubject,
       failErrDetailTips,
       failNumberErrCode,
       successErrCode,
@@ -34,6 +35,7 @@ describe('unicloud-import-object', () => {
     expect(genericDemoReturnTodoTitle).toBe(todoTitle)
     expect(genericDemoReturnTodoContent).toBe(todoContent)
     expect(failErrCode).toBe('TEST_ERROR_CODE')
+    expect(failErrSubject).toBe('fail')
     expect(failErrDetailTips).toBe('DO_NOT_TRY_AGAIN')
     expect(failNumberErrCode).toBe(-1)
     expect(successErrCode).toBe(0)

@@ -23,7 +23,9 @@
         selectionStart: -1,
         selectionEnd: -1,
         hold_keyboard: false,
-        adjust_position: false
+        adjust_position: false,
+        disabled: false,
+        jest_result: false
       }
     },
 
@@ -36,7 +38,10 @@
       textarea_tap() { console.log("手指触摸后马上离开") },
       textarea_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
       textarea_confirm() { console.log("点击完成时， 触发 confirm 事件，event.detail = {value: value}") },
-      textarea_input() { console.log("当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上") },
+      textarea_input() {
+        console.log("当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上")
+        this.jest_result = true
+      },
       textarea_linechange() { console.log("输入框行数变化时调用，event.detail = {height: 0, height: 0, lineCount: 0}") },
       textarea_blur() { console.log("输入框失去焦点时触发，event.detail = {value, cursor}") },
       textarea_keyboardheightchange() { console.log("键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}") },
@@ -66,6 +71,9 @@
       changeAdjustPosition(event : UniSwitchChangeEvent) {
         const checked = event.detail.value;
         this.adjust_position = checked;
+      },
+      change_disabled_boolean(checked : boolean) {
+        this.disabled = checked
       }
     }
   }
@@ -81,7 +89,7 @@
         :show-confirm-bar="show_confirm_bar_boolean" :adjust-position="adjust_position_boolean"
         :cursor-color="cursor_color" :cursor="cursor" :placeholder="placeholder_value"
         :inputmode="inputmode_enum[inputmode_enum_current].name"
-        :confirm-type="confirm_type_list[confirm_type_current].name" @click="textarea_click"
+        :confirm-type="confirm_type_list[confirm_type_current].name" :disabled="disabled" @click="textarea_click"
         @touchstart="textarea_touchstart" @touchmove="textarea_touchmove" @touchcancel="textarea_touchcancel"
         @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
         @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
@@ -96,6 +104,8 @@
       <boolean-data :defaultValue="focus_boolean" title="获取焦点" @change="change_focus_boolean"></boolean-data>
       <boolean-data :defaultValue="true" title="首次自动获取焦点" @change="change_auto_focus_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
+      <boolean-data :defaultValue="false" title="设置禁用输入框"
+        @change="change_disabled_boolean"></boolean-data>
       <enum-data :items="confirm_type_list" title="confirm-type，设置键盘右下角按钮。（Android仅支持return）"
         @change="radio_change_confirm_type"></enum-data>
       <boolean-data :defaultValue="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
@@ -138,12 +148,11 @@
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :hold-keyboard="hold_keyboard" />
       </view>
-
       <view class="title-wrap">
         <view>同时存在 v-model 和 value</view>
       </view>
       <view class="textarea-wrap">
-        <textarea id="both-model-value" class="textarea-instance" v-model='defaultModel' value='456'></textarea>
+          <textarea id="both-model-value" class="textarea-instance" v-model='defaultModel' value='456'></textarea>
       </view>
 
       <view class="title-wrap">
@@ -166,12 +175,6 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     flex-direction: row;
     justify-content: center;
-  }
-
-  .main .list-item {
-    width: 100%;
-    height: 100px;
-    border: 1px solid #666;
   }
 
   .textarea-wrap {

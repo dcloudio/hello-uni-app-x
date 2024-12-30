@@ -180,4 +180,13 @@ describe('ExtApi-Request', () => {
       expect(res).toBe(true)
     })
   }
+
+  if(process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')){
+    it('Check Respone string generics when status is 404', async () => {
+      res = await page.callMethod('jest_respone_with_404_and_string_generics')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    })
+  }
 });

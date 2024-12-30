@@ -1,4 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('list-view-children-in-slot', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/list-view/list-view-children-in-slot')

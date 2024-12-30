@@ -19,6 +19,9 @@
     floating : boolean = false,
     touchstartAfter : boolean = false;
   export default {
+    options: {
+      virtualHost: true
+    },
     data() {
       return {
         $elementMap: new Map<string, UniElement>(),
@@ -31,7 +34,7 @@
     props: {
       img: {
         type: String,
-        default: "/static/template/drop-card/1.jpg"
+        default: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg"
       },
       cardIndex: {
         type: Number,
@@ -50,12 +53,8 @@
       }
     },
     mounted() {
-      uni.getSystemInfo({
-        success: (e) => {
-          screenWidth = e.screenWidth;
-          screenHeight = e.screenHeight;
-        }
-      })
+      screenWidth = uni.getWindowInfo().screenWidth
+      screenHeight = uni.getWindowInfo().screenHeight;
 
       // TODO 需要延迟设置才能生效
       setTimeout(() => {
@@ -69,6 +68,9 @@
         this.initCardStyle()
       })
 
+    },
+    unmounted() {
+      uni.$off('uni-drop-card-float')
     },
     methods: {
       initCardStyle() {

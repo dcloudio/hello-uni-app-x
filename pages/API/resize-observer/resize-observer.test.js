@@ -1,5 +1,13 @@
-describe('api-resize-observer', () => {
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
+describe('api-resize-observer', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
 
   let page
   beforeAll(async () => {

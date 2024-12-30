@@ -122,7 +122,7 @@
 <script>
 	// 引入支付云对象
 	const uniPayCo = uniCloud.importObject("uni-pay-co");
-	import { checkPlatform, objectAssign } from "../../js_sdk/js_sdk"
+	import { checkPlatform, objectAssign, getWeixinCode, getAlipayCode } from "../../js_sdk/js_sdk"
 	export default {
 		name: "uni-pay",
 		emits: ["success", "cancel", "fail", "create", "mounted", "qrcode"],
@@ -210,6 +210,30 @@
 			}
 		},
 		mounted() {
+			// #ifdef MP-WEIXIN || MP-ALIPAY
+			if (this.openid == "") {
+				new Promise(async (resolve, reject) => {
+					let code = await this.getCode();
+					let res = await this.getOpenid({
+						// #ifdef MP-WEIXIN
+						provider: "wxpay",
+						// #endif
+						// #ifdef MP-ALIPAY
+						provider: "alipay",
+						// #endif
+						code
+					});
+					resolve(res);
+				}).then((res) => {
+					if (res['openid'] != null) {
+						this.openid = res['openid'];
+					}
+				}).catch((err) => {
+					reject(err);
+				})
+			}
+			// #endif
+
 			// #ifdef MP-WEIXIN
 			// 如果是微信小程序，则设置只支持微信支付
 			this.originalRroviders = ["wxpay"];
@@ -312,6 +336,11 @@
 					createOrderData['openid'] = options['openid'];
 				}
 				// #endif
+				// #ifdef MP
+				if (this.openid != "") {
+					createOrderData['openid'] = this.openid;
+				}
+				// #endif
 				try {
 					let res = await uniPayCo.createOrder(createOrderData);
 					if (res['errCode'] == 0) {
@@ -379,6 +408,9 @@
 				uni.requestPayment({
 					provider: res['provider'] as string,
 					orderInfo: orderStr,
+					// #ifdef MP-WEIXIN
+					..._order,
+					// #endif
 					success: (res) => {
 						console.log("requestPaymentSuccess", JSON.stringify(res))
 						this._getOrder();
@@ -387,7 +419,7 @@
 						console.log("requestPaymentFail", JSON.stringify(err))
 						let errCode = err.errCode;
 						let errMsg = err.errMsg;
-						if (errCode == 700713) {
+						if (errCode == 701110) {
 							// 用户取消支付
 							this.$emit("cancel", err);
 						} else if (errMsg.indexOf("fail cancel") > -1) {
@@ -424,7 +456,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 发起退款（此接口需要admin角色才可以访问）
@@ -436,7 +468,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 查询退款（查询退款情况）
@@ -448,7 +480,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 关闭订单
@@ -460,7 +492,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 获取支持的支付供应商
@@ -472,7 +504,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 获取支付配置内的appid（主要用于获取获取微信公众号的appid，用以获取code）
@@ -484,7 +516,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 根据code获取openid
@@ -496,7 +528,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 验证iosIap苹果内购支付凭据
@@ -508,7 +540,7 @@
 					return {
 						errCode: -1,
 						errMsg: (err as Error).message
-					}
+					} as UTSJSONObject
 				}
 			},
 			// 支付成功后的逻辑
@@ -780,7 +812,18 @@
 					uni.hideLoading()
 				}
 				// #endif
-			}
+			},
+			// #ifdef MP-WEIXIN || MP-ALIPAY
+			// 获取code
+			async getCode() : Promise<string>{
+				// #ifdef MP-WEIXIN
+				return getWeixinCode();
+				// #endif
+				// #ifdef MP-ALIPAY
+				return getAlipayCode();
+				// #endif
+			},
+			// #endif
 		},
 		watch: {
 
@@ -789,7 +832,7 @@
 			modeCom() : string {
 				let mode = this.mode as string;
 				if (mode != "") return mode;
-				let systemInfo = uni.getSystemInfoSync();
+        let systemInfo = uni.getDeviceInfo();
 				return systemInfo.deviceType == "pc" ? "pc" : "mobile";
 			},
 			totalFeeCom() : number {

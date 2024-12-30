@@ -19,14 +19,14 @@ describe('API-getImageInfo', () => {
       expect(await page.data('imageInfoForTest')).toEqual({
         width: 192,
         height: 192,
-        path: '/static/test-image/logo.png'
+        path: 'test-image/logo.png'
       });
       return;
     }
     expect(await page.data('imageInfoForTest')).toEqual({
       width: 192,
       height: 192,
-      path: '/static/test-image/logo.png',
+      path: 'test-image/logo.png',
       orientation: 'up',
       type: 'png'
     });

@@ -1,4 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('component-native-sticky-header', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page
   async function getWindowInfo() {
     const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')

@@ -1,6 +1,11 @@
 <template>
   <view class="uni-navbar">
+    <!-- #ifdef APP || WEB -->
     <view v-if="statusBar" class="status-bar"></view>
+    <!-- #endif -->
+    <!-- #ifdef MP -->
+    <view v-if="statusBar" class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
+    <!-- #endif -->
     <view class="uni-navbar-inner">
       <view class="left-content" @click="back">
         <text :style="{ color: textColor }" class="uni-icons">{{
@@ -67,6 +72,10 @@
         frontColor: "#000000",
         backgroundColor: "#ffffff",
       });
+      // #ifdef MP-WEIXIN
+      // TODO 部分小程序平台不支持getWindowInfo
+      this.statusBarHeight = uni.getWindowInfo().statusBarHeight
+      // #endif
     },
     methods: {
       back() {

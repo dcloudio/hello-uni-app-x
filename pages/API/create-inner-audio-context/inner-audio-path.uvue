@@ -1,7 +1,6 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
+  <page-head :title="title"></page-head>
+  <view class="uni-padding-wrap uni-common-mt">
     <view class="uni-title">
       <text class="uni-title-text">音频路径示例</text>
     </view>
@@ -10,9 +9,7 @@
       <image class="icon-play" :src="(isPlaying && playIndex==index)?'/static/pause.png':'/static/play.png'"
         @click="play(item.src,index)"></image>
     </view>
-  <!-- #ifdef APP -->
-  </scroll-view>
-  <!-- #endif -->
+  </view>
 </template>
 
 <script>
@@ -23,14 +20,11 @@
   export default {
     data() {
       return {
+        title: 'audio-path',
         playIndex: 0,
         isPlaying: false,
-        // #ifdef APP
         nativePath: uni.env.CACHE_PATH + 'uni-audio/test/test.mp3' as string,
-        // #endif
-        // #ifdef APP-ANDROID
         sdcardPath: 'sdcard/uni-audio/test.mp3',
-        // #endif
         _audioContext: null as InnerAudioContext | null,
         supportPaths: [
           {
@@ -41,12 +35,10 @@
             description: '本地路径：../static/',
             src: '../../../static/test-audio/ForElise.mp3'
           },
-          // #ifdef APP
           {
             description: '本地路径：env方式',
             src: 'env'
           },
-          // #endif
           {
             description: '网络路径',
             src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.mp3'
@@ -76,24 +68,36 @@
         console.log('err', err);
       });
 
-      // #ifdef APP
       const fileManager = uni.getFileSystemManager()
-      try {
-        fileManager.rmdirSync(uni.env.CACHE_PATH + 'uni-audio/test', true)
-      } catch (e) {
-      }
-
-      try {
-        fileManager.mkdirSync(uni.env.CACHE_PATH + 'uni-audio/test', true)
-      } catch (e) {
-      }
-      try {
-        fileManager.copyFileSync(
-          '/static/test-audio/ForElise.mp3',
-          this.nativePath)
-      } catch (e) {
-      }
-      // #endif
+      fileManager.mkdir({
+        dirPath: uni.env.CACHE_PATH + 'uni-audio/test',
+        recursive: true,
+        success: (res) => {
+          fileManager.copyFile({
+            srcPath: '/static/test-audio/ForElise.mp3',
+            destPath: this.nativePath,
+            success: () => {
+              console.log("copy成功： ", res)
+            }
+          })
+        },
+        fail: (err) => {
+          console.log("创建路径失败： ", err.errMsg)
+          if (err.errMsg.includes("file already exists")) {
+            console.log("已经包含该路径")
+            fileManager.copyFile({
+              srcPath: '/static/test-audio/ForElise.mp3',
+              destPath: this.nativePath,
+              success: (res) => {
+                console.log("copy成功： ", res)
+              },
+              fail: (err) => {
+                console.log("copy失败： ", err)
+              }
+            })
+          }
+        }
+      })
     },
 
     onUnload() {
@@ -113,11 +117,9 @@
           this.pause();
           return;
         }
-        // #ifdef APP
         if (audioUrl == 'env') {
           audioUrl = this.nativePath
         }
-        // #endif
 
         this.playIndex = index
         this._audioContext!.src = audioUrl;
