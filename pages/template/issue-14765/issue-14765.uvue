@@ -1,0 +1,58 @@
+<template>
+  <view>
+    <Comp1 :id="id1"></Comp1>
+    <Comp2 :id="id2"></Comp2>
+  </view>
+</template>
+
+<script>
+  import Comp1 from './Comp1.uvue'
+  import Comp2 from './Comp2.uvue'
+  export default {
+    components: {
+      Comp1,
+      Comp2
+    },
+    data() {
+      return {
+        id1: 'page-id-1',
+        id2: 'page-id-2',
+        testNode1: false,
+        testNode2: false
+      }
+    },
+    onReady() {
+      uni.createSelectorQuery().in(this).select('#comp1-id').boundingClientRect().exec((ret) => {
+        console.log(ret)
+        this.testNode1 = ret.length > 0
+        // #ifdef WEB || MP
+        this.testNode1 = this.testNode1 && ret[0] != null
+        // #endif
+        if(this.testNode1) {
+          console.log('Comp1测试符合预期')
+        } else {
+          console.error('Comp1测试不符合预期')
+        }
+      })
+      uni.createSelectorQuery().in(this).select('#page-id-2').boundingClientRect().exec((ret) => {
+        console.log(ret)
+        this.testNode2 = ret.length > 0
+        // #ifdef WEB || MP
+        this.testNode2 = this.testNode2 && ret[0] != null
+        // #endif
+        if(this.testNode2) {
+          console.log('Comp2测试符合预期')
+        } else {
+          console.error('Comp2测试不符合预期')
+        }
+      })
+    },
+    methods: {
+
+    }
+  }
+</script>
+
+<style>
+
+</style>
