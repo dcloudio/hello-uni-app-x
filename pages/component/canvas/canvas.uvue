@@ -40,6 +40,11 @@
         <text>测试 createPath2D 结果：</text>
         <text id="testCreatePath2D">{{testCreatePath2D}}</text>
       </view>
+
+      <view class="text-group">
+        <text >测试 createCanvasContextAsync 结果：</text>
+        <view @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</view>
+      </view>
     </scroll-view>
   </view>
 </template>
@@ -70,10 +75,16 @@
         testCanvasContext: false,
         testToBlobResult: false,
         testToDataURLResult: false,
-        testCreateCanvasContextAsyncSuccess: false,
         testCreateImage: false,
         testCreatePath2D: false,
-        testFrameCount: 0
+        testFrameCount: 0,
+        testCanvasCtx1: false,
+        testCanvasCtx2: false,
+      }
+    },
+    computed: {
+      testCanvasCtx() {
+        return this.testCanvasCtx1 && this.testCanvasCtx2
       }
     },
     onLoad() {
@@ -116,6 +127,7 @@
       // this.canvas = canvas;
       // this.canvasWidth = canvas.width;
       // this.canvasHeight = canvas.height;
+
     },
     onUnload() {
       if (this.taskId > 0) {
@@ -183,6 +195,28 @@
           this.frameCount = 0
           this.lastTime = timestamp
         }
+      },
+      testCreateContextAsync() {
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          in: this,
+          success: (res) => {
+            if (res.errMsg === 'createCanvasContextAsync:ok') {
+              this.testCanvasCtx1 = true
+            }
+          }
+        })
+
+        // no `in` param
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          success: (res) => {
+            if (res.errMsg === 'createCanvasContextAsync:ok') {
+              this.testCanvasCtx2 = true
+            }
+          }
+        })
+
       }
     }
   }
