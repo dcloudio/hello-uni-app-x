@@ -27,7 +27,10 @@
     },
     onLoad(event : OnLoadOptions) {
       this.post_id = event["post_id"] ?? "";
-      this.cover = atob(event["cover"] ?? "");
+      this.cover = event["cover"] ?? ""
+      // #ifdef APP-ANDROID
+      this.cover = atob(this.cover);
+      // #endif
       this.title = event["title"] ?? "";
       this.share_key = event["shareKey"] ?? ""
       this.getDetail();
