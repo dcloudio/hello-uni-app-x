@@ -43,10 +43,15 @@
         scrollIntoView: "",
         scrolling: false,
         sectionArray: [] as sectionData[],
-        appendId: 0
+        appendId: 0,
+        isReady: false//自动化测试使用
       }
     },
     onLoad() {
+
+    },
+    onReady() {
+      //延迟onReady再加载数据 校验issues:14705 bug
       this.data.forEach(key => {
         const list = [] as sectionListItem[]
         for (let i = 1; i < 11; i++) {
@@ -57,6 +62,7 @@
         this.sectionArray.push(data)
       }
       )
+      this.isReady = true
     },
     methods: {
       toTop() {
