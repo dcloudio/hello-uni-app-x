@@ -42,7 +42,7 @@
       </view>
 
       <view class="text-group">
-        <text >测试 createCanvasContextAsync 结果：</text>
+        <text>测试 createCanvasContextAsync 结果：</text>
         <view @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</view>
       </view>
     </scroll-view>
@@ -199,21 +199,17 @@
       testCreateContextAsync() {
         uni.createCanvasContextAsync({
           id: 'canvas',
-          in: this,
-          success: (res) => {
-            if (res.errMsg === 'createCanvasContextAsync:ok') {
-              this.testCanvasCtx1 = true
-            }
+          component: this,
+          success: () => {
+            this.testCanvasCtx1 = true
           }
         })
 
-        // no `in` param
+        // no `component` param
         uni.createCanvasContextAsync({
           id: 'canvas',
-          success: (res) => {
-            if (res.errMsg === 'createCanvasContextAsync:ok') {
-              this.testCanvasCtx2 = true
-            }
+          success: () => {
+            this.testCanvasCtx2 = true
           }
         })
 
