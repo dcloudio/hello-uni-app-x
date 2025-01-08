@@ -18,13 +18,16 @@ describe('test uni-push', () => {
     expect(jestResult.clientId.length).toBe(32);
   });
 
-  // 发送通知消息 | sendPushMessage：成功提示
-  it('sendPushMessage', async () => {
-    await page.callMethod('handleSendPushMessage')
-    await page.waitFor(300);
-    console.log('-发送通知消息：成功提示-', await page.data('jestResult'))
-    expect(await page.data('jestResult.sendPushMessageRes')).toBe(0);
-  });
+  if(isWeb || isMP){
+    // app端需要自定义基座
+    // 发送通知消息 | sendPushMessage：成功提示
+    it('sendPushMessage', async () => {
+      await page.callMethod('handleSendPushMessage')
+      await page.waitFor(1000);
+      console.log('-发送通知消息：成功提示-', await page.data('jestResult'))
+      expect(await page.data('jestResult.sendPushMessageRes')).toBe(0);
+    });
+  }
 
   // 注册回调 | onPushMessage：成功
   it('onPushMessage', async () => {
@@ -64,11 +67,14 @@ describe('test uni-push', () => {
     expect(await page.data('isRegister.state')).toBe(false);
   });
 
-  // 发送通知消息 | sendPushMessage：成功提示
-  it('sendPushMessage', async () => {
-    await page.callMethod('handleSendPushMessage')
-    await page.waitFor(300);
-    console.log('-发送通知消息：成功提示-',await page.data('jestResult.sendPushMessageRes'))
-    expect(await page.data('jestResult.sendPushMessageRes')).toBe(0);
-  });
+  if(isWeb || isMP){
+    // 发送通知消息 | sendPushMessage：成功提示
+    it('sendPushMessage', async () => {
+      await page.callMethod('handleSendPushMessage')
+      await page.waitFor(300);
+      console.log('-发送通知消息：成功提示-',await page.data('jestResult.sendPushMessageRes'))
+      expect(await page.data('jestResult.sendPushMessageRes')).toBe(0);
+    });
+  }
+
 });
