@@ -8,9 +8,14 @@
     <!-- #endif -->
     <view class="uni-navbar-inner">
       <view class="left-content" @click="back">
+        <!-- #ifdef MP-WEIXIN -->
+        <text :style="{ color: textColor }" class="uni-icons back-icon"></text>
+        <!-- #endif -->
+        <!-- #ifndef MP-WEIXIN -->
         <text :style="{ color: textColor }" class="uni-icons">{{
           unicode
         }}</text>
+        <!-- #endif -->
       </view>
       <view class="uni-navbar-content" :class="{ 'is-left': isLeft }">
         <text :style="{ color: textColor }">
@@ -25,7 +30,9 @@
 </template>
 
 <script>
+  // #ifndef MP-WEIXIN
   import iconpath from "./uniicons.ttf";
+  // #endif
   export default {
     name: "uni-navbar",
     props: {
@@ -61,6 +68,7 @@
       },
     },
     created() {
+      // #ifndef MP-WEIXIN
       uni.loadFontFace({
         global: false,
         family: "UniIconsFontFamily",
@@ -70,6 +78,7 @@
           console.log(err);
         },
       });
+      // #endif
 
       if (this.stat && this.title != '') {
       	uni.report({
@@ -98,6 +107,15 @@
 </script>
 
 <style>
+  /* #ifdef MP-WEIXIN */
+  @font-face {
+  	font-family: UniIconsFontFamily;
+  	src: url('./uniicons.ttf');
+  }
+  .back-icon:before {
+    content: "\e600";
+  }
+  /* #endif */
   .uni-icons {
     font-family: "UniIconsFontFamily" !important;
     font-size: 26px;
