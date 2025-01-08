@@ -18,15 +18,6 @@
 
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
-              质量
-            </view>
-            <view class="uni-list-cell-right" @click="chooseSizeType">
-              <text class="click-t">{{sizeTypes[sizeTypeIndex].title}}</text>
-            </view>
-          </view>
-
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
               方式
             </view>
             <view class="uni-list-cell-right" @click="chooseMediaType">
@@ -44,24 +35,13 @@
             </view>
           </view>
 
-          <!-- #ifdef APP -->
+          <!-- #ifdef APP-ANDROID -->
           <view class="uni-list-cell cell-pd">
             <view class="uni-list-cell-left uni-label">
               屏幕方向
             </view>
             <view class="uni-list-cell-right" @click="chooseOrientationType">
               <text class="click-t">{{orientationTypes[orientationTypeIndex].title}}</text>
-            </view>
-          </view>
-          <!-- #endif -->
-
-          <!-- #ifdef APP-ANDROID -->
-          <view class="uni-list-cell cell-pd">
-            <view class="uni-list-cell-left uni-label">
-              相册模式
-            </view>
-            <view class="uni-list-cell-right" @click="albumModeChange">
-              <text class="click-t">{{albumModeTypes[albumModeTypeIndex].title}}</text>
             </view>
           </view>
           <!-- #endif -->
@@ -75,7 +55,9 @@
             </view>
           </view>
         </view>
+        <!-- #ifdef APP-IOS -->
         <input-data title="最长拍摄时间，单位秒" defaultValue="10" type="number" @confirm="onMaxDurationConfirm"></input-data>
+        <!-- #endif -->
         <view class="uni-list list-pd" style="padding: 15px;">
           <view class="uni-flex" style="margin-bottom: 10px;">
             <view class="uni-list-cell-left">点击预览</view>
@@ -140,21 +122,6 @@
     }
   ];
 
-  const sizeTypeList : ChooseSource[] = [
-    {
-      value: ['compressed'],
-      title: '压缩',
-    },
-    {
-      value: ['original'],
-      title: '原图',
-    },
-    {
-      value: ['compressed', 'original'],
-      title: '压缩或原图',
-    }
-  ];
-
   const orientationTypeList : ChooseSource[] = [
     {
       value: ['portrait'],
@@ -179,16 +146,6 @@
       title: '后置摄像头',
     }
   ];
-  const albumModeList : ChooseSource[] = [
-    {
-      value: ['custom'],
-      title: '自定义相册',
-    },
-    {
-      value: ['system'],
-      title: '系统相册',
-    }
-  ];
   export default {
     data() {
       return {
@@ -196,7 +153,6 @@
         mediaList: [] as Array<FileSource>,
         sourceTypeIndex: 2,
         mediaTypeIndex: 2,
-        sizeTypeIndex: 2,
         cameraTypeIndex: 1,
         orientationTypeIndex: 0,
         albumModeTypeIndex: 0,
@@ -204,10 +160,8 @@
         maxDuration: 10,
         sourceTypes: sourceTypeList as ChooseSource[],
         mediaTypes: mediaTypeList as ChooseSource[],
-        sizeTypes: sizeTypeList as ChooseSource[],
         cameraTypes: cameraTypeList as ChooseSource[],
-        orientationTypes: orientationTypeList as ChooseSource[],
-        albumModeTypes: albumModeList as ChooseSource[],
+        orientationTypes: orientationTypeList as ChooseSource[]
       }
     },
     methods: {
@@ -216,14 +170,6 @@
           itemList: ['拍摄', '相册', '拍摄或相册'],
           success: (e) => {
             this.sourceTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseSizeType() {
-        uni.showActionSheet({
-          itemList: ['压缩', '原图', '压缩或原图'],
-          success: (e) => {
-            this.sizeTypeIndex = e.tapIndex
           }
         })
       },
@@ -266,14 +212,6 @@
       onMaxDurationConfirm(value : number) {
         this.maxDuration = value;
       },
-      albumModeChange(){
-        uni.showActionSheet({
-          itemList: ['自定义相册','系统相册'],
-          success: (e) => {
-            this.albumModeTypeIndex = e.tapIndex
-          }
-        })
-      },
       chooseMedia() {
         if (this.mediaList.length >= this.countIndex) {
           const message = "已经有" + this.countIndex + "个了，请删除部分后重新选择";
@@ -287,15 +225,13 @@
         uni.chooseMedia({
           count: this.mediaList.length + this.countIndex > 9 ? 9 - this.mediaList.length : this.countIndex,
           sourceType: sourceTypeList[this.sourceTypeIndex].value,
-          sizeType: sizeTypeList[this.sizeTypeIndex].value,
           mediaType: mediaTypeList[this.mediaTypeIndex].value,
           camera: cameraTypeList[this.cameraTypeIndex].value[0],
+          // #ifdef APP-IOS
           maxDuration: this.maxDuration,
-          // #ifdef APP
-          pageOrientation: orientationTypeList[this.orientationTypeIndex].value[0],
           // #endif
           // #ifdef APP-ANDROID
-          albumMode: albumModeList[this.albumModeTypeIndex].value[0],
+          pageOrientation: orientationTypeList[this.orientationTypeIndex].value[0],
           // #endif
           success: (res) => {
             const tempFiles : ChooseMediaTempFile[] = res.tempFiles as ChooseMediaTempFile[];
