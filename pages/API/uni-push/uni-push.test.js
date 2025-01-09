@@ -1,15 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-
 describe('test uni-push', () => {
-  if (isMP) {
-  	it('skip test', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
-  }
-
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/uni-push/uni-push')
@@ -23,6 +15,7 @@ describe('test uni-push', () => {
     await page.callMethod('handleGetClientId')
     await page.waitFor(300);
     const jestResult = await page.data('jestResult')
+    console.log('- 获取cid-', jestResult)
     expect(jestResult.clientId.length).toBe(32);
   });
 
