@@ -1,15 +1,17 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+
 describe('test uni-push', () => {
+  if (isMP) {
+  	it('skip test', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page;
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isWeb = platformInfo.startsWith('web')
-  const isMP = platformInfo.startsWith('mp')
   beforeAll(async () => {
-    if (isWeb || isMP || platformInfo.startsWith('android') || platformInfo.startsWith('ios')) {
-      it('skip', () => {
-        expect(1).toBe(1)
-      })
-      return
-    }
     page = await program.reLaunch('/pages/API/uni-push/uni-push')
     await page.waitFor('view');
     await page.callMethod('updateAutoTest', true)
