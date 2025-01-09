@@ -13,6 +13,8 @@
         断开websocket服务
       </button>
       <text class="websocket-tips">发送消息后会收到一条服务器返回的消息（与发送的消息内容一致）</text>
+      <text class="websocket-tips">web端和小程序端uni-push功能会占用一个socket链接，此时使用全局的socket api会引发混乱。应使用socketTask操作websocket链接。</text>
+      <text class="websocket-tips">小程序端日志回显功能也会占用一个socket链接，如果不希望使用此功能可以在HBuilderX控制台关闭日志回显。</text>
       <button class="uni-btn-v" type="primary" @click="goSocketTask">
         跳转 socketTask 示例
       </button>
@@ -74,7 +76,7 @@
           title: '连接中...',
         })
         uni.connectSocket({
-          url: 'ws://websocket.dcloud.net.cn',
+          url: 'wss://websocket.dcloud.net.cn',
           header: null,
           protocols: null,
           success: (res : any) => {
@@ -172,7 +174,7 @@
   }
 
   .websocket-tips {
-    padding: 40px 0px;
+    padding: 10px 0px;
     text-align: center;
     font-size: 14px;
     line-height: 24px;
