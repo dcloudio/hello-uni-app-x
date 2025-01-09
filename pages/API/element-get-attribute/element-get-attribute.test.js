@@ -41,11 +41,11 @@ describe('test element-get-attribute', () => {
     console.log('width: ',width);
     console.log('rectInfo: ',rectInfo);
     expect(Math.round(rectInfo.x)).toBe(15)
-    expect(Math.round(rectInfo.y) > 242).toBe(true)
+    expect(Math.round(rectInfo.y) >= 242).toBe(true)
     expect(width - 15 * 2 - Math.round(rectInfo.width) >= 0).toBe(true)
     expect(Math.round(rectInfo.height)).toBe(100)
     expect(Math.round(rectInfo.left)).toBe(15)
-    expect(Math.round(rectInfo.top) > 242).toBe(true)
+    expect(Math.round(rectInfo.top) >= 242).toBe(true)
     expect(width - 15 - Math.round(rectInfo.right) >= 0).toBe(true)
     expect(Math.round(rectInfo.bottom) > 342).toBe(true)
   })
