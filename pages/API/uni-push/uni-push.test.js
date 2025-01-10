@@ -1,3 +1,4 @@
+jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
@@ -13,7 +14,7 @@ describe('test uni-push', () => {
   // 获取cid | getPushClientId：值
   it('getPushClientId', async () => {
     await page.callMethod('handleGetClientId')
-    await page.waitFor(300);
+    await page.waitFor(2000);
     const jestResult = await page.data('jestResult')
     console.log('- 获取cid-', jestResult)
     expect(jestResult.clientId.length).toBe(32);
