@@ -34,6 +34,45 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(0)
   });
 
+  it('page innerWidth innerHeight safeAreaInsets', async () => {
+    const pageInnerWidth = await page.$('#page-inner-width')
+    expect(parseInt(await pageInnerWidth.text())).toBeGreaterThanOrEqual(0)
+    const pageInnerHeight = await page.$('#page-inner-height')
+    expect(parseInt(await pageInnerHeight.text())).toBeGreaterThanOrEqual(0)
+    pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
+    expect(await pageSafeAreaInsetsTop.text()).toBe('0')
+    pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
+    if(isWeb){
+      expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
+    }
+    if(isIos || isAndroid){
+      expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
+    }
+    pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
+    expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
+    pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
+    expect(await pageSafeAreaInsetsRight.text()).toBe('0')
+  })
+  it('dialogPage innerWidth innerHeight safeAreaInsets', async () => {
+    await page.callMethod('openDialogCheckMoreAttribute')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    const image = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: 200,
+      }
+    });
+    expect(image).toSaveImageSnapshot();
+    await page.callMethod('closeDialog');
+    lifecycleNum = await page.callMethod('getLifeCycleNum');
+    expect(lifecycleNum).toBe(2);
+    await page.callMethod('setLifeCycleNum', 0);
+  })
+
   it('open dialog1', async () => {
     await page.callMethod('openDialog1');
     // 无法通过获取 dom 元素来判断是否打开了 dialogPage

@@ -15,6 +15,10 @@
       </view>
       <view class="uni-list">
         <view class="uni-list-cell uni-list-cell-pd">
+          <view class="uni-list-cell-db">是否显示过长文字</view>
+          <switch :checked="showLongContent" @change="showLongContentChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-pd">
           <view class="uni-list-cell-db">是否显示取消按钮</view>
           <switch :checked="showCancelSelect" @change="showCancelChange" />
         </view>
@@ -59,6 +63,7 @@
       return {
         title: 'modal',
         showCancelSelect: false,
+        showLongContent: false,
         cancelTextSelect: false,
         confirmTextSelect: false,
         editableSelect: false,
@@ -90,6 +95,9 @@
       //自动化测试例专用
       jest_getWindowInfo() : GetWindowInfoResult {
         return uni.getWindowInfo();
+      },
+      showLongContentChange: function (e : UniSwitchChangeEvent) {
+        this.showLongContent = e.detail.value
       },
       showCancelChange: function (e : UniSwitchChangeEvent) {
         this.showCancelSelect = e.detail.value
@@ -132,7 +140,12 @@
         }
 
         let placeholderTextVal = ''
-        let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
+		let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
+
+		if (this.showLongContent) {
+		  placeholderTextVal = "定制提示信息"
+		  contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字原则上可以无限多！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！"
+		}
         if (this.placeholderTextSelect) {
           placeholderTextVal = "定制提示信息"
           contentVal = ""

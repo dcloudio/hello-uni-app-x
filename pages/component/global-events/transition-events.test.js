@@ -13,6 +13,7 @@ describe('transition event', () => {
         expect(await page.data("onTransitionEndTriggr")).toBe(true)
         await page.callMethod('switchBtn')
         await page.waitFor(200)
+        expect(await page.data("onTransitionEndTriggr")).toBe(false)
         await page.callMethod('switchBtn')
         await page.waitFor(3000)
         expect(await page.data("onTransitionEndTriggr")).toBe(true)

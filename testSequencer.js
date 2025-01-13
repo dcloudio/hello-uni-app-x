@@ -7,6 +7,7 @@ const sortTestFilePaths = [
   "pages/component/scroll-view/scroll-view-refresher.test.js",
   "pages/component/global-events/touch-events.test.js",
   "pages/component/global-events/touch-events-bubbles.test.js",
+  "pages/component/global-events/touch-events-case.test.js",
   "pages/component/swiper/swiper2.test.js",
   "pages/component/slider/slider-maxValue.test.js",
   "pages/CSS/overflow/overflow-visible-event.test.js",

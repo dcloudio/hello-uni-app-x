@@ -94,15 +94,7 @@
         return JSON.stringify(this.currentPageStyle)
       }
     },
-    onLoad(options : OnLoadOptions) {
-      // #ifdef APP-IOS || WEB
-      if (options instanceof UTSJSONObject) {
-        this.checked = true
-      }
-      // #endif
-      // #ifndef APP-IOS || WEB
-      this.checked = true
-      // #endif
+    onLoad() {
       this.getPageStyle();
     },
     onPullDownRefresh() {
@@ -118,7 +110,7 @@
         this.pages.length = 0
         const pages = getCurrentPages()
         this.pages.push(new Page(pages[0].route))
-        if (this.checked && (this.pages[0].route.includes('/tabBar/') || this.pages[0].route == '/')) {
+        if (this.pages[0].route.includes('/tabBar/') || this.pages[0].route == '/') {
           this.checked = true
         }
         for (let i = 1; i < pages.length; i++) {

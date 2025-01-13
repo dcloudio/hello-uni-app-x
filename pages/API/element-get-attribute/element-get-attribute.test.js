@@ -20,13 +20,15 @@ describe('test element-get-attribute', () => {
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       console.log('attrStyle:',await page.data('attrStyle'))
-      const attrStyle = isMP?'background-color:#FFF000;':'padding: 0.625rem; background-color: rgb(255, 240, 0);'
+      const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
       expect(await page.data('attrStyle')).toEqual(attrStyle);
     }
   });
   it('check getPropertyValue', async () => {
     await page.callMethod('getPropertyValue')
+    await page.waitFor(1000)
     const propertyValue = isWeb?'rgb(255, 240, 0)':'#FFF000'
+    console.log('propertyValue: ',propertyValue,await page.data('propertyValue'));
     expect(await page.data('propertyValue')).toEqual(propertyValue);
   });
 
