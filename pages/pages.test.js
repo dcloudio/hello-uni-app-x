@@ -33,6 +33,7 @@ const pages = [
   // '/pages/component/list-view/list-view-multiplex-input',
   // '/pages/component/list-view/list-view-multiplex-video',
   // '/pages/component/list-view/list-view-children-in-slot',
+  '/pages/component/waterflow/waterflow-fit-height',
   // 单独测试例截图
   // '/pages/component/sticky-section/sticky-section',
   // 单独测试例截图
