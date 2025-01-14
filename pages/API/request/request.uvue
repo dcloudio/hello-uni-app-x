@@ -208,62 +208,120 @@
           this.data = {
             "hello": "world"
           };
-        } else {
-          var arrayBuffer = new ArrayBuffer(3)
-          var int8 = new Int8Array(arrayBuffer)
-          int8.set([1, 2, 3])
-          this.data = arrayBuffer
-          this.header = {
-            "Content-Type": "application/octet-stream"
-          };
-        }
+          uni.showLoading({
+            title: "请求中..."
+          })
+          this.task = uni.request<ArrayBuffer>({
+            url: this.host + this.url,
+            method: this.method,
+            data: this.data,
+            header: this.header,
+            timeout: 60000,
+            sslVerify: false,
+            withCredentials: false,
 
-        uni.showLoading({
-          title: "请求中..."
-        })
-        this.task = uni.request<ArrayBuffer>({
-          url: this.host + this.url,
-          method: this.method,
-          data: this.data,
-          header: this.header,
-          timeout: 60000,
-          sslVerify: false,
-          withCredentials: false,
+            firstIpv4: false,
+            success: (res) => {
+              if (res.data != null) {
+                let uint8 = new Uint8Array(res.data as ArrayBuffer)
+                console.log('request success', uint8.toString())
+                this.res = '请求结果 : ' + uint8.toString()
 
-          firstIpv4: false,
-          success: (res) => {
-            if (res.data != null) {
-              let uint8 = new Uint8Array(res.data as ArrayBuffer)
-              console.log('request success', uint8.toString())
-              this.res = '请求结果 : ' + uint8.toString()
+                console.log('request success header is :', JSON.stringify(res.header))
+                uni.showToast({
+                  title: '请求成功',
+                  icon: 'success',
+                  mask: true,
+                  duration: duration
+                });
+              } else {
+                uni.showModal({
+                  content: 'error',
+                  showCancel: false
+                });
+              }
 
-              console.log('request success header is :', JSON.stringify(res.header))
-              uni.showToast({
-                title: '请求成功',
-                icon: 'success',
-                mask: true,
-                duration: duration
-              });
-            } else {
+            },
+            fail: (err) => {
+              console.log('request fail', err);
               uni.showModal({
-                content: 'error',
+                content: err.errMsg,
                 showCancel: false
               });
-            }
+            },
+            complete: () => {
+              uni.hideLoading()
+              this.task = null
+            },
+          });
 
-          },
-          fail: (err) => {
-            console.log('request fail', err);
-            uni.showModal({
-              content: err.errMsg,
-              showCancel: false
-            });
-          },
-          complete: () => {
-            uni.hideLoading()
-            this.task = null
-          },
-        });
+
+        } else {
+          uni.chooseImage({
+            count: 1,
+            albumMode: "system",
+            sizeType: ["original"],
+            sourceType: ["album"],
+            success: (e) => {
+              console.log(e.tempFilePaths[0]);
+              try {
+                let res = uni.getFileSystemManager().readFileSync(e.tempFilePaths[0], null);
+                console.log('success:', (res as ArrayBuffer).byteLength);
+                this.data = res as ArrayBuffer
+                this.header = {
+                  "Content-Type": "application/octet-stream"
+                };
+
+                uni.showLoading({
+                  title: "请求中..."
+                })
+                this.task = uni.request<ArrayBuffer>({
+                  url: this.host + this.url,
+                  method: this.method,
+                  data: this.data,
+                  header: this.header,
+                  timeout: 60000,
+                  sslVerify: false,
+                  withCredentials: false,
+                  firstIpv4: false,
+                  success: (res) => {
+                    if (res.data != null) {
+                      uni.showToast({
+                        title: '请求成功',
+                        icon: 'success',
+                        mask: true,
+                        duration: duration
+                      });
+                      let uint8 = new Uint8Array(res.data as ArrayBuffer)
+                      this.res = '请求结果 : ' + uint8.toString()
+                      console.log('request success header is :', JSON.stringify(res.header))
+                    } else {
+                      uni.showModal({
+                        content: 'error',
+                        showCancel: false
+                      });
+                    }
+
+                  },
+                  fail: (err) => {
+                    console.log('request fail', err);
+                    uni.showModal({
+                      content: err.errMsg,
+                      showCancel: false
+                    });
+                  },
+                  complete: () => {
+                    uni.hideLoading()
+                    this.task = null
+                  },
+                });
+
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          });
+        }
       },
       // #endif
       sendRequest() {
