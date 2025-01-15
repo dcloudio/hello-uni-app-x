@@ -1,5 +1,9 @@
 <template>
   <page-head title="new-page-1" />
+  <share-element style="width: 200px; height: 100px;background-color: antiquewhite; justify-content: center; align-items: center;" share-key="test-share-element-key">
+    <view class="uni-title">是否启用共享元素动画</view>
+    <switch :checked="checked" :disabled="true"></switch>
+  </share-element>
   <view class="uni-padding-wrap">
     <text>onLoad 接收到参数</text>
     <text>data: {{ data }}</text>
@@ -16,11 +20,16 @@
     data() {
       return {
         data: '',
+        checked: false
       }
     },
     onLoad(options : OnLoadOptions) {
       if (options['data'] != null) {
         this.data = options['data']!
+      }
+      if (options['checked'] != null) {
+        this.checked = options['checked'] as string == "true" ? true : false
+        console.log("onLoad--", options['checked']+"  this.checked:"+this.checked)
       }
     },
     methods: {
