@@ -4,6 +4,11 @@
   <!-- #endif -->
     <view>
       <page-head title="navigate"></page-head>
+
+      <share-element style="width: 200px; height: 100px;background-color: antiquewhite; justify-content: center; align-items: center;" :share-key="shareElementKey">
+        <view class="uni-title">是否启用共享元素动画</view>
+        <switch @change="onChange"></switch>
+      </share-element>
       <view class="uni-padding-wrap uni-common-mt uni-common-mb">
         <view class="direction-row">
           <text class="label">onLoad触发时间戳:</text>
@@ -123,7 +128,7 @@
       },
       navigateTo() {
         uni.navigateTo({
-          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello&checked='+this.getChecked(),
           success(result) {
             console.log('navigateTo success', result.errMsg)
             // 自动化测试
@@ -143,7 +148,7 @@
       },
       navigateToAnimationType(animationType : AnimationType) {
         uni.navigateTo({
-          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello&checked='+this.getChecked(),
           animationType: animationType,
           success(result) {
             console.log('navigateTo success', result.errMsg)
@@ -188,7 +193,7 @@
       },
       navigateToDebounce() {
         uni.navigateTo({
-          url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+          url: '/pages/API/navigator/new-page/new-page-1?data=debounce&checked='+this.getChecked(),
           success(result) {
             console.log('navigateTo success', result.errMsg)
             // 自动化测试
@@ -206,7 +211,7 @@
           },
         })
         uni.navigateTo({
-          url: '/pages/API/navigator/new-page/new-page-1?data=debounce',
+          url: '/pages/API/navigator/new-page/new-page-1?data=debounce&checked='+this.getChecked(),
           success(result) {
             console.log('navigateTo success', result.errMsg)
             // 自动化测试
@@ -227,7 +232,7 @@
       // 自动化测试
       navigateToRelativePath1() {
         uni.navigateTo({
-          url: 'new-page/new-page-1?data=new-page/new-page-1',
+          url: 'new-page/new-page-1?data=new-page/new-page-1?checked='+this.getChecked(),
           success() {
             setLifeCycleNum(state.lifeCycleNum + 1)
           },
@@ -242,7 +247,7 @@
       // 自动化测试
       navigateToRelativePath2() {
         uni.navigateTo({
-          url: './new-page/new-page-1?data=./new-page/new-page-1',
+          url: './new-page/new-page-1?data=./new-page/new-page-1?checked='+this.getChecked(),
           success() {
             setLifeCycleNum(state.lifeCycleNum + 1)
           },
@@ -257,7 +262,7 @@
       // 自动化测试
       navigateToRelativePath3() {
         uni.navigateTo({
-          url: '../navigator/new-page/new-page-1?data=../navigator/new-page/new-page-1',
+          url: '../navigator/new-page/new-page-1?data=../navigator/new-page/new-page-1?checked='+this.getChecked(),
           success() {
             setLifeCycleNum(state.lifeCycleNum + 1)
           },
@@ -290,7 +295,7 @@
       },
       navigateBackWithDelta1() {
         uni.navigateTo({
-          url: '/pages/API/navigator/new-page/new-page-1',
+          url: '/pages/API/navigator/new-page/new-page-1?checked='+this.getChecked(),
           success() {
             uni.navigateBack({
               delta: 1,
@@ -315,7 +320,7 @@
       },
       navigateBackWithDelta100() {
         uni.navigateTo({
-          url: '/pages/API/navigator/new-page/new-page-1',
+          url: '/pages/API/navigator/new-page/new-page-1?checked='+this.getChecked(),
           success() {
             uni.navigateBack({
               delta: 100,
@@ -340,7 +345,7 @@
       },
       redirectTo() {
         uni.redirectTo({
-          url: '/pages/API/navigator/new-page/new-page-1?data=Hello',
+          url: '/pages/API/navigator/new-page/new-page-1?data=Hello&checked='+this.getChecked(),
           success(result) {
             console.log('redirectTo success', result.errMsg)
             // 自动化测试
@@ -386,6 +391,16 @@
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
       },
+      onChange(event: UniSwitchChangeEvent) {
+        if(event.detail.value) {
+          this.shareElementKey = "test-share-element-key"
+        } else {
+          this.shareElementKey = ""
+        }
+      },
+      getChecked(): boolean {
+        return this.shareElementKey == "test-share-element-key"
+      }
     },
   }
 </script>
