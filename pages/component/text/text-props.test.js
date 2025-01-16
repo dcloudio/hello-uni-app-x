@@ -57,10 +57,16 @@ describe('text-props', () => {
       }
       const rect = await page.callMethod("getBoundingClientRectForTest")
       const info = await page.callMethod("getWindowInfoForTest")
+
+      let x = Math.ceil(rect.left + rect.width / 2)
+      let y = Math.ceil(info.statusBarHeight + 44 + rect.top + rect.height / 2)
+
       await program.tap({
-        x: rect.left + rect.width / 2,
-        y: info.statusBarHeight + 44 + rect.top + rect.height / 2
+        x: x,
+        y: y
       })
+
+      await page.waitFor(300)
       expect(await page.data('isNestedText1TapTriggered')).toBe(true)
       expect(await page.data('isNestedText2TapTriggered')).toBe(true)
       await page.setData({
