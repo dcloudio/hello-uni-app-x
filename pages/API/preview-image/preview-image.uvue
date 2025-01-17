@@ -20,7 +20,7 @@
       </view>
       <view>
         <checkbox-group @change="onLongPressCheckboxChange" style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
-          <checkbox :disabled="isWeb" :checked="isLongPress" style="margin-right: 15px">支持长按事件</checkbox>
+          <checkbox :disabled="isWeb | isIOS" :checked="isLongPress" style="margin-right: 15px">支持长按事件</checkbox>
         </checkbox-group>
       </view>
       <view style="background-color: white">
@@ -39,6 +39,7 @@
         <text style="color: black;font-size: 18px;margin-bottom: 4px;">注意事项:</text>
         <text style="font-size: 17px;margin-left: 4px;color: darkgray;">1、indicator属性仅App平台支持。</text>
         <text style="font-size: 17px;margin-left: 4px;color: darkgray;">2、Web平台不支持loop属性。</text>
+        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">3、长按事件仅android支持。</text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -73,6 +74,12 @@
         // #ifndef WEB
         isWeb: false,
         // #endif
+        // #ifdef APP-IOS
+        isIOS: true,
+        // #endif
+        // #ifndef APP-IOS
+        isIOS: false,
+        // #endif
         isLongPress: true,
         isLoop: true,
       }
@@ -84,7 +91,7 @@
           current: index,
           indicator: this.currentIndicator,
           loop: this.isLoop,
-          // #ifdef APP
+          // #ifdef APP-ANDROID
           longPressActions: (this.isLongPress ? ({
             itemList: ["按钮1", "按钮2", "按钮3"],
             itemColor: "#ccc",
