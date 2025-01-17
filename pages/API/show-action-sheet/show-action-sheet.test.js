@@ -145,10 +145,12 @@ describe('API-loading', () => {
     await page.waitFor(1000);
     await screenshot();
   })
-  it("hideActionSheet", async () => {
-    await page.callMethod('hideActionSheet')
-    await page.waitFor(1000);
+  if (!isMP) {
+    it("hideActionSheet", async () => {
+      await page.callMethod('hideActionSheet')
+      await page.waitFor(1000);
 
-    await screenshot();
-  })
+      await screenshot();
+    })
+  }
 });

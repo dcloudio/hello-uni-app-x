@@ -65,7 +65,7 @@ describe('Canvas.uvue', () => {
   })
   it('child multi root node', async () => {
     await page.waitFor(50)
-    const pageData = await page.data()
-    expect(await pageData.testCounter).toBe(2)
+    const testCounter = await page.data('testCounter')
+    expect(testCounter).toBe(2)
   })
 })
