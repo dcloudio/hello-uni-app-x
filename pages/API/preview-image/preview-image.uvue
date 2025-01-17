@@ -18,6 +18,11 @@
           <checkbox :disabled="isWeb" :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
         </checkbox-group>
       </view>
+      <view>
+        <checkbox-group @change="onLongPressCheckboxChange" style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
+          <checkbox :disabled="isWeb" :checked="isLongPress" style="margin-right: 15px">支持长按事件</checkbox>
+        </checkbox-group>
+      </view>
       <view style="background-color: white">
         <text class="text-desc">点击图片开始预览</text>
         <view class="cell-ct" style="margin: 8px;">
@@ -68,7 +73,8 @@
         // #ifndef WEB
         isWeb: false,
         // #endif
-        isLoop: true
+        isLongPress: true,
+        isLoop: true,
       }
     },
     methods: {
@@ -77,7 +83,25 @@
           urls: this.imageList,
           current: index,
           indicator: this.currentIndicator,
-          loop: this.isLoop
+          loop: this.isLoop,
+          // #ifdef APP
+          longPressActions: (this.isLongPress ? ({
+            itemList: ["按钮1", "按钮2", "按钮3"],
+            itemColor: "#ccc",
+            success: (e : LongPressActionsSuccessResult) => {
+              uni.showToast({
+                title: "用户选中了第" + (e.index + 1) + "张图片，并选中了第" + (e.tapIndex + 1) + "个选项",
+                position: "bottom"
+              })
+            },
+            fail: (e : LongPressActionsFailResult) => {
+              uni.showToast({
+                title: "用户关闭了action sheet",
+                position: "bottom"
+              })
+            }
+          } as LongPressActionsOptions) : null)
+          // #endif
         })
       },
       chooseImage() {
@@ -95,6 +119,9 @@
       },
       onCheckboxChange(_ : UniCheckboxGroupChangeEvent) {
         this.isLoop = !this.isLoop
+      },
+      onLongPressCheckboxChange() {
+        this.isLongPress = !this.isLongPress
       }
     }
   }
