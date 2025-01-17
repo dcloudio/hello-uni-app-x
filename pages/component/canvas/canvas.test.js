@@ -63,4 +63,9 @@ describe('Canvas.uvue', () => {
     const element = await page.$('#testCreatePath2D')
     expect(await element.text()).toBe('true')
   })
+  it('child multi root node', async () => {
+    await page.waitFor(500)
+    const pageData = await page.data()
+    expect(await pageData.testCounter).toBe(2)
+  })
 })
