@@ -520,8 +520,8 @@ describe('dialog page', () => {
       console.log("input tap" + " " + point_x + " " + point_y);
     } else {
       await program.tap({
-        x: point_x,
-        y: point_y
+        x: Math.round(point_x),
+        y: Math.round(point_y)
       })
     }
 
