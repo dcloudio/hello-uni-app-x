@@ -3,6 +3,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 
 describe('API-loading', () => {
@@ -116,18 +117,19 @@ describe('API-loading', () => {
 
     await screenshot();
   })
-
-  it("custom titleColor cancelText cancelColor backgroundColor", async () => {
-    await page.setData({
-      titleColorCustom: true,
-      cancelTextCustom: true,
-      cancelColorCustom: true,
-      backgroundColorCustom: true,
+  if (!isMP) {
+    it("custom titleColor cancelText cancelColor backgroundColor", async () => {
+      await page.setData({
+        titleColorCustom: true,
+        cancelTextCustom: true,
+        cancelColorCustom: true,
+        backgroundColorCustom: true,
+      })
+      await showActionSheet(page);
+      await page.waitFor(1000)
+      await screenshot();
     })
-    await showActionSheet(page);
-    await page.waitFor(1000)
-    await screenshot();
-  })
+  }
   it("showActionSheet 并在回调中再次 showActionSheet", async () => {
     await page.callMethod('showActionSheetAndShowAgainInCallback')
     await page.waitFor(1000);

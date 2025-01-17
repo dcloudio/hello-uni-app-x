@@ -25,6 +25,7 @@
         <view class="uni-list-cell-db">超长文本和空文本 item</view>
         <switch :checked="itemContentLarge" @change="itemContentLargeChange" />
       </view>
+      <!-- #ifndef MP -->
       <view class="uni-list-cell uni-list-cell-pd">
         <view class="uni-list-cell-db">超过6个 item</view>
         <switch :checked="itemNumLargeSelect" @change="itemNumLargeChange" />
@@ -41,6 +42,7 @@
         <view class="uni-list-cell-db">自定义 backgroundColor</view>
         <switch :checked="backgroundColorCustom" @change="backgroundColorChange" />
       </view>
+      <!-- #endif -->
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
@@ -91,6 +93,9 @@
       uni.showActionSheet({
         title: "onLoad 调用示例,请手动取消",
         itemList: ['item1', 'item2'],
+        complete: (res) => {
+          console.log('onLoad showActionSheet complete', res)
+        }
       })
     },
     methods: {
@@ -184,6 +189,9 @@
               uni.showActionSheet({
                 title: '第二个',
                 itemList: ['a','b','c'],
+                complete: (res) => {
+                  console.log('showActionSheetAndShowAgainInCallback complete', res)
+                }
               })
           }
         })
