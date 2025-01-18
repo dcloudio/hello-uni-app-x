@@ -34,11 +34,16 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(0)
   });
 
-  it('page innerWidth innerHeight safeAreaInsets', async () => {
-    const pageInnerWidth = await page.$('#page-inner-width')
-    expect(parseInt(await pageInnerWidth.text())).toBeGreaterThanOrEqual(0)
-    const pageInnerHeight = await page.$('#page-inner-height')
-    expect(parseInt(await pageInnerHeight.text())).toBeGreaterThanOrEqual(0)
+  it('page pageBody safeAreaInsets', async () => {
+    const pageBodyWidth = await page.$('#page-body-width')
+    expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
+    const pageBodyHeight = await page.$('#page-body-height')
+    expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
+    const pageBodyLeft = await page.$('#page-body-left')
+    expect(await pageBodyLeft.text()).toBe('0')
+    const pageBodyRight = await page.$('#page-body-right')
+    expect(await pageBodyRight.text()).toBe(await pageBodyWidth.text())
+
     pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
     expect(await pageSafeAreaInsetsTop.text()).toBe('0')
     pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
