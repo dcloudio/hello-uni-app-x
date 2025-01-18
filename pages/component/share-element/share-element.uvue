@@ -2,9 +2,9 @@
   <page-head title="share-element"></page-head>
   <view class="main">
     <share-element class="share-element" share-key="left" :shuttle-on-pop="shuttleOnPopType"
-      :transition-on-gesture="transitionOnGesture" :easing-function="easingFunctionType" @tap="openPage()">
-      <image style="width: 100px;height: 100px;"
-        src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg" mode="widthFix">
+      :transition-on-gesture="transitionOnGesture" :shuttle-on-push="shuttleOnPushType"  :easing-function="easingFunctionType" @tap="openPage()">
+      <image style="width: 100px;height: 150px;"
+        src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg">
       </image>
     </share-element>
   </view>
@@ -13,7 +13,7 @@
   </button>
   <scroll-view style="flex: 1">
     <view class="content">
-      <boolean-data :defaultValue="false" title="transition-on-gesture= true(仅iOS生效)"
+      <boolean-data :defaultValue="transitionOnGesture" title="transition-on-gesture= true(仅iOS生效)"
         @change="changeTransitionOnGesture"></boolean-data>
 
       <text class="uni-common-mt choose-property-title">easing-function:</text>
@@ -23,17 +23,17 @@
         </radio>
       </radio-group>
 
-      <text class="uni-common-mt choose-property-title">shuttle-on-pop:</text>
-      <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPopType">
-        <radio class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item" :value="item"
-          :checked="shuttleOnPopType == item">{{ item }}
-        </radio>
-      </radio-group>
-
       <text class="uni-common-mt choose-property-title">shuttle-on-push:</text>
       <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPushType">
         <radio class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item" :value="item"
           :checked="shuttleOnPushType == item">{{ item }}
+        </radio>
+      </radio-group>
+
+      <text class="uni-common-mt choose-property-title">shuttle-on-pop:</text>
+      <radio-group class="choose-property-type-radio-group" @change="handleShuttleOnPopType">
+        <radio class="ml-10 uni-common-mt" v-for="item in shuttleOnTypeList" :key="item" :value="item"
+          :checked="shuttleOnPopType == item">{{ item }}
         </radio>
       </radio-group>
 
@@ -80,7 +80,7 @@
   export default {
     data() {
       return {
-        transitionOnGesture: false,
+        transitionOnGesture: true,
         shuttleOnPopType: 'to' as ShuttleOnType,
         shuttleOnPushType: 'to' as ShuttleOnType,
         shuttleOnTypeList: [
