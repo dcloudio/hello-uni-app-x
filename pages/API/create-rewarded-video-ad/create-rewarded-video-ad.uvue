@@ -8,7 +8,7 @@
   export default {
     data() {
       return {
-        errorDetails : [],
+        errorDetails : [] as string[],
         btnText: "",
         btnType: "primary",
         btnDisable: false,
@@ -38,11 +38,13 @@
             this.btnType = "warn"
             this.btnDisable = false
             this.btnText = res.errMsg;
+            // #ifdef APP-IOS
             const errors = res.cause.errors;
             errors.forEach(function(element) {
               const msg = element.platform + ":" + element.message;
               this.errorDetails.push(msg);
             }, this);
+            // #endif
           })
           this.rewardAd!.onLoad((_) => {
             this.errorDetails.length = 0;
