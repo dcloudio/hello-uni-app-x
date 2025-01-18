@@ -17,8 +17,11 @@
       }
     },
     onLoad(options : OnLoadOptions) {
-      this.url = options["url"] as string;
-      this.coverPath = options["cover"] as string;
+      uni.$once("__ONRECEIVEURL",(value:UTSJSONObject)=>{
+        this.url = value["url"] as string;
+        this.coverPath = value["cover"] as string;
+      })
+      uni.$emit("__ONFULLVIDEOLOAD",null)
     },
     methods: {
       back() {
