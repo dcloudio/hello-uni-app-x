@@ -30,8 +30,7 @@
               数量限制
             </view>
             <view class="uni-list-cell-right">
-              <input class="click-t" ref="refCountInput" :value="countIndex" type="number" :maxlength="1" @confirm="chooseMediaCount"
-                confirm-type="done" />
+              <input class="click-t" ref="refCountInput" :value="countIndex" type="number" :maxlength="1" @confirm="chooseMediaCount" confirm-type="done" />
             </view>
           </view>
 
@@ -67,8 +66,7 @@
           </view>
           <view class="uni-flex" style="flex-wrap: wrap;">
             <view v-for="(file,index) in mediaList" :key="index" class="uni-uploader__input-box" style="border: 0;">
-              <image style="width: 104px; height: 104px;" :src="file.imagePath" :data-src="file.imagePath"
-                @tap="previewMedia(index)">
+              <image style="width: 104px; height: 104px;" :src="file.imagePath" :data-src="file.imagePath" @tap="previewMedia(index)">
               </image>
               <image src="/static/plus.png" class="image-remove" @click="removeMedia(index)"></image>
             </view>
@@ -181,7 +179,7 @@
           }
         })
       },
-      chooseMediaCount(event: UniInputConfirmEvent) {
+      chooseMediaCount(event : UniInputConfirmEvent) {
         let count = parseInt(event.detail.value)
         if (count < 1 || count > 9 || Number.isNaN(count)) {
           uni.showToast({
@@ -249,15 +247,21 @@
       },
       previewMedia: function (index : number) {
         const file : FileSource = this.mediaList[index];
-        if(file.fileType == "image"){
+        if (file.fileType == "image") {
           uni.previewImage({
             current: 0,
             urls: [file.filePath]
           })
-        }else{
-          const url = "/pages/API/choose-media/fullscreen-video?url=" + file.filePath + "&cover=" + file.imagePath;
+        } else {
+          uni.$once("__ONFULLVIDEOLOAD", () => {
+            uni.$emit("__ONRECEIVEURL", {
+              "url": file.filePath,
+              "cover": file.imagePath
+            })
+          })
+          const url = "/pages/API/choose-media/fullscreen-video";
           uni.navigateTo({
-            url:url,
+            url: url,
           })
         }
 
