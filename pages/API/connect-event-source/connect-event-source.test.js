@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/connect-event-source/connect-event-source.js'
+const PAGE_PATH = '/pages/API/connect-event-source/connect-event-source'
 
 
 describe('sse', () => {
