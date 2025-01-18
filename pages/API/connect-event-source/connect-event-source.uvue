@@ -20,13 +20,16 @@
 				log: '',
 				title: 'sse',
 				url: 'https://request.dcloud.net.cn/api/sse/connect',
-				eventSource: null as UniEventSource | null
+				eventSource: null as UniEventSource | null,
+				open:false,
+				receiveMessage:false
 			}
 		},
-		onLoad() {
-
-
-		},
+		unmounted() {
+			if(this.eventSource!=null){
+				this.eventSource.close()
+			}
+		}
 		methods: {
 			connect() {
                 console.log('connect')
@@ -36,9 +39,11 @@
 				} )
 				this.eventSource?.onMessage((ev) => {
 					this.log +='type:' + ev.type + '\ndata:' + ev.data + '\n\n'
+					this.receiveMessage = true
 				})
 				this.eventSource?.onOpen((ev) => {
 					this.log += 'open:' + ev.type+ '\n\n'
+					this.open = true
 				})
 				this.eventSource?.onError((ev) => {
 					this.log += 'error:' + ev.errMsg+ '\n\n'
