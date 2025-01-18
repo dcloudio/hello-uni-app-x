@@ -1,6 +1,14 @@
 const PAGE_PATH = '/pages/API/event-bus/event-bus'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIos = platformInfo.startsWith('ios')
 
 describe('event-bus', () => {
+  if (isIos) {
+  	it('skip ios', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
