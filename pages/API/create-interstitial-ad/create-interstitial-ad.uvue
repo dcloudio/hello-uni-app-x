@@ -1,12 +1,14 @@
 <template>
   <page-head title="插屏广告"></page-head>
   <button :type="btnType" style="margin: 10px;" :disabled="btnDisable" @click="showAd()">{{btnText}}</button>
+  <view v-for="(item,index) in errorDetails">{{item}}</view>
 </template>
 
 <script>
   export default {
     data() {
       return {
+        errorDetails : [],
         btnText: "",
         btnType: "primary",
         btnDisable: false,
@@ -28,12 +30,19 @@
           this.interstitialAd = uni.createInterstitialAd({
             adpid: "1111111113" //此处为测试广告位，实际开发中请在uni-ad后台申请自己的广告位后替换
           })
-          this.interstitialAd!.onError((_) => {
+          this.interstitialAd!.onError((res) => {
+            this.errorDetails.length = 0;
             this.btnType = "warn"
-            this.btnText = "广告加载失败，点击重试"
             this.btnDisable = false
+            this.btnText = res.errMsg;
+            const errors = res.cause.errors;
+            errors.forEach(function(element) {
+              const msg = element.platform + ":" + element.message;
+              this.errorDetails.push(msg);
+            }, this);
           })
           this.interstitialAd!.onLoad((_) => {
+            this.errorDetails.length = 0;
             this.btnType = "primary"
             this.btnText = "广告加载成功，点击观看"
             this.btnDisable = false
