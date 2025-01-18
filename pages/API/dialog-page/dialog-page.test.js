@@ -58,7 +58,7 @@ describe('dialog page', () => {
     pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
     expect(await pageSafeAreaInsetsRight.text()).toBe('0')
   })
-  it('dialogPage innerWidth innerHeight safeAreaInsets', async () => {
+  it('dialogPage pageBody safeAreaInsets', async () => {
     await page.callMethod('openDialogCheckMoreAttribute')
     await page.waitFor(1000)
     if (isWeb) {
