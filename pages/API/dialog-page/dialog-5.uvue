@@ -2,8 +2,15 @@
   <view class="dialog-container">
     <view class="dialog-content">
       <text>title: {{ title }}</text>
-      <view class="uni-common-mt flex-row">innerWidth: <text id="page-inner-width">{{innerWidth}}</text></view>
-      <view class="uni-common-mt flex-row">innerHeight: <text id="page-inner-height">{{innerHeight}}</text></view>
+      <view class="uni-common-mt flex-row" v-if="pageBody != null">pageBody: {
+        top: <text id="page-body-top">{{pageBody!.top}}</text>,
+        right: <text id="page-body-right">{{pageBody!.right}}</text>,
+        bottom: <text id="page-body-bottom">{{pageBody!.bottom}}</text>,
+        left: <text id="page-body-left">{{pageBody!.left}}</text>,
+        width: <text id="page-body-width">{{pageBody!.width}}</text>,
+        height: <text id="page-body-height">{{pageBody!.height}}</text>
+        }
+      </view>
       <view class="uni-common-mt flex-row" v-if="safeAreaInsets != null">safeAreaInsets: {
         top: <text id="page-safe-area-insets-top">{{safeAreaInsets!.top}}</text>,
         right: <text id="page-safe-area-insets-right">{{safeAreaInsets!.right}}</text>,
@@ -22,8 +29,7 @@
     data() {
       return {
         title: 'dialog 5',
-        innerWidth: 0,
-        innerHeight: 0,
+        pageBody : null as UniPageBody | null,
         safeAreaInsets: null as UniSafeAreaInsets | null,
       }
     },
@@ -32,8 +38,7 @@
     },
     onReady(){
       const currentPage = this.$page
-      this.innerWidth = currentPage.innerWidth
-      this.innerHeight = currentPage.innerHeight
+      this.pageBody = currentPage.pageBody;
       this.safeAreaInsets = currentPage.safeAreaInsets
     },
     onUnload() {
