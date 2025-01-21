@@ -33,7 +33,6 @@ const pages = [
   // '/pages/component/list-view/list-view-multiplex-input',
   // '/pages/component/list-view/list-view-multiplex-video',
   // '/pages/component/list-view/list-view-children-in-slot',
-  '/pages/component/waterflow/waterflow-fit-height',
   // 单独测试例截图
   // '/pages/component/sticky-section/sticky-section',
   // 单独测试例截图
@@ -308,7 +307,8 @@ if (isApp && !isAppWebview) {
     '/pages/API/request-payment/request-payment',
     '/pages/API/theme-change/theme-change',
     '/pages/API/share-with-system/share-with-system',
-    '/pages/template/scroll-sticky/scroll-sticky'
+    '/pages/template/scroll-sticky/scroll-sticky',
+    '/pages/component/waterflow/waterflow-fit-height',
   )
 }
 
