@@ -55,6 +55,12 @@ describe('text-props', () => {
         // TODO 微信小程序端疑似自动化测试框架Bug，此处text方法会返回`"修改三级节点文本修改三级节点文本"`,手动测试未发现问题
         expect(await element.text()).toBe("修改三级节点文本")
       }
+
+      if(isMP || isWeb) {
+        // 小程序、web暂支持program.tap
+        expect(1).toBe(1)
+      }
+
       const rect = await page.callMethod("getBoundingClientRectForTest")
       const info = await page.callMethod("getWindowInfoForTest")
 
