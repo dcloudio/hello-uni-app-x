@@ -1,20 +1,53 @@
 <template>
   <scroll-view style="flex: 1;">
     <view style="padding-bottom: 50px;">
+      <!-- #ifndef APP-HARMONY -->
       <text class="tips">说明：如果本地无 uts 插件编译环境请提交打包自定义基座查看效果</text>
       <button type="primary" @tap="testCallMethod">调用组件方法</button>
       <!-- native-button 通过 native-view 绑定原生button 实现的UTS插件-标准模式组件 -->
-      <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
-        @load="onload"></native-button>
+      <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText"
+        @buttonTap="ontap" @load="onload"></native-button>
       <native-button-container></native-button-container>
       <!-- native-time-picker 通过 native-view 绑定原生time-picker 实现的UTS插件-标准模式组件 -->
       <native-time-picker class="native-time-picker" :hour=2 :minute=3 @changed="onChanged"></native-time-picker>
+      <!-- #endif -->
+      <!-- #ifdef APP-HARMONY -->
+      <view style="padding:5px 12px">
+        <view>使用native-view封装鸿蒙原生组件</view>
+        <view>CalendarPicker:日历选择器组件,提供下拉日历弹窗</view>
+      </view>
+      <view>
+        <view class="calendar-picker-item">
+          <view class="calendar-picker-desc">默认样式：</view>
+          <CalendarPicker class="calendar-picker" />
+        </view>
+        <view class="calendar-picker-item">
+          <view class="calendar-picker-desc">设置默认日期：</view>
+          <CalendarPicker class="calendar-picker" :selected="new Date('2025-01-01')" />
+        </view>
+        <view class="calendar-picker-item">
+          <view class="calendar-picker-desc">设置默认文字样式：</view>
+          <CalendarPicker class="calendar-picker" color="#007aff" :font-size="14" :font-weight="900"
+            font-style="italic" />
+        </view>
+        <view class="calendar-picker-item">
+          <view class="calendar-picker-desc">设置选择器位置：</view>
+          <CalendarPicker class="calendar-picker" align-type="start" offset-y="50px" />
+        </view>
+        <view class="calendar-picker-item">
+          <view class="calendar-picker-desc">监听日期变化事件：</view>
+          <CalendarPicker class="calendar-picker" @change="onCalendarPickerDateChange" />
+        </view>
+      </view>
+      <!-- #endif -->
     </view>
   </scroll-view>
 </template>
 
 <script>
+  // #ifndef APP-HARMONY
   import { createNativeButtonContext } from "@/uni_modules/native-button";
+  // #endif
   export default {
     data() {
       return {
@@ -32,8 +65,8 @@
         uni.showToast({
           title: "按钮被点击了"
         })
-        this.clickCount ++
-        this.buttonText = "native-button"+this.clickCount
+        this.clickCount++
+        this.buttonText = "native-button" + this.clickCount
       },
       onload() {
         //标记已初始化 用于自动化测试
@@ -43,15 +76,23 @@
         console.log("onchanged-----", e.detail)
       },
       testCallMethod: function () {
-      	let context = createNativeButtonContext("helloView")
-      	context?.updateText("test code")
+        // #ifndef APP-HARMONY
+        let context = createNativeButtonContext("helloView")
+        context?.updateText("test code")
+        // #endif
+      },
+      onCalendarPickerDateChange(value : Date) {
+        console.log('onCalendarPickerDateChange', value)
+        uni.showModal({
+          content: '当前选择日期：' + value.toLocaleDateString(),
+          showCancel: false
+        })
       }
     }
   }
 </script>
 
 <style>
-
   .tips {
     font-size: 14px;
     color: #BEBEBE;
@@ -69,5 +110,21 @@
     margin: 10px auto 25px auto;
     border-style: solid;
     border-radius: 5px;
+  }
+
+  .calendar-picker-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+  }
+
+  .calendar-picker-desc {
+    width: 150px;
+  }
+
+  .calendar-picker {
+    width: 150px;
+    height: 30px;
   }
 </style>
