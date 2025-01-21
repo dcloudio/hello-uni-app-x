@@ -7,8 +7,8 @@
       <native-button id="helloView" class="native-button" style="width: 200px; height: 100px;" :text="buttonText" @buttonTap="ontap"
         @load="onload"></native-button>
       <native-button-container></native-button-container>
-      <!-- native-time-picker 通过 native-view 绑定原生time-picker 实现的UTS插件-标准模式组件 -->
-      <native-time-picker class="native-time-picker" :hour=2 :minute=3 @changed="onChanged"></native-time-picker>
+
+      <button type="primary" @click="gotoTimePicker">调用native-time-picker</button>
     </view>
   </scroll-view>
 </template>
@@ -39,12 +39,15 @@
         //标记已初始化 用于自动化测试
         this.isLoad = true
       },
-      onChanged(e : UniNativeViewEvent) {
-        console.log("onchanged-----", e.detail)
-      },
       testCallMethod: function () {
       	let context = createNativeButtonContext("helloView")
       	context?.updateText("test code")
+      },
+      gotoTimePicker() {
+        uni.openDialogPage({
+          url: "/pages/component/native-view/native-view-time-picker-dialog",
+          animationType: "fade-in"
+        })
       }
     }
   }
@@ -65,9 +68,4 @@
     margin: 25px auto 25px auto;
   }
 
-  .native-time-picker {
-    margin: 10px auto 25px auto;
-    border-style: solid;
-    border-radius: 5px;
-  }
 </style>
