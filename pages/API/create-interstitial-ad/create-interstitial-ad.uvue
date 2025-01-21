@@ -8,7 +8,7 @@
   export default {
     data() {
       return {
-        errorDetails : [] as string[],
+        errorDetails: [] as string[],
         btnText: "",
         btnType: "primary",
         btnDisable: false,
@@ -35,13 +35,13 @@
             this.btnType = "warn"
             this.btnDisable = false
             this.btnText = res.errMsg;
-            // #ifdef APP-IOS
-            const errors = res.cause.errors;
-            errors.forEach(function(element) {
-              const msg = element.platform + ":" + element.message;
-              this.errorDetails.push(msg);
-            }, this);
-            // #endif
+            const errors = (res.cause as UniAggregateError | null)?.errors;
+            if(errors != null && errors.length > 0) {
+              for(var a = 0;a<errors.length;a++) {
+                var msg = JSON.stringify(errors[a]);
+                this.errorDetails.push(msg);
+              }
+            }
           })
           this.interstitialAd!.onLoad((_) => {
             this.errorDetails.length = 0;
@@ -55,11 +55,11 @@
             this.loadAd()
           })
         }
-        this.interstitialAd!.load().catch(()=>{})
+        this.interstitialAd!.load().catch(() => { })
       },
       showAd() {
         if (this.isAdLoadSuccess) {
-          this.interstitialAd!.show().catch(()=>{})
+          this.interstitialAd!.show().catch(() => { })
         } else {
           this.loadAd()
         }

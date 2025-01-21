@@ -38,13 +38,13 @@
             this.btnType = "warn"
             this.btnDisable = false
             this.btnText = res.errMsg;
-            // #ifdef APP-IOS
-            const errors = res.cause.errors;
-            errors.forEach(function(element) {
-              const msg = element.platform + ":" + element.message;
-              this.errorDetails.push(msg);
-            }, this);
-            // #endif
+            const errors = (res.cause as UniAggregateError|null)?.errors;
+            if(errors != null && errors.length > 0) {
+              for(var a = 0;a<errors.length;a++) {
+                var msg = JSON.stringify(errors[a]);
+                this.errorDetails.push(msg);
+              }
+            }
           })
           this.rewardAd!.onLoad((_) => {
             this.errorDetails.length = 0;
