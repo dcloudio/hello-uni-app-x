@@ -39,10 +39,16 @@ describe('dialog page', () => {
     expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
     const pageBodyHeight = await page.$('#page-body-height')
     expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
+
     const pageBodyLeft = await page.$('#page-body-left')
-    expect(await pageBodyLeft.text()).toBe('0')
     const pageBodyRight = await page.$('#page-body-right')
-    expect(await pageBodyRight.text()).toBe(await pageBodyWidth.text())
+    const expectRightValue = parseInt(await pageBodyLeft.text()) + parseInt(await pageBodyWidth.text())
+    expect(parseInt(await pageBodyRight.text())).toBe(expectRightValue)
+
+    const pageBodyTop = await page.$('#page-body-top')
+    const pageBodyBottom = await page.$('#page-body-bottom')
+    const expectBottomValue = parseInt(await pageBodyTop.text()) + parseInt(await pageBodyHeight.text())
+    expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
 
     pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
     expect(await pageSafeAreaInsetsTop.text()).toBe('0')
