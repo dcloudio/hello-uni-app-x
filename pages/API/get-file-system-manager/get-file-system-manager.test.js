@@ -1339,7 +1339,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnWrite.tap()
     await isDone()
     bytesWritten = await getData("bytesWritten")
-    expect(bytesWritten).toEqual(2)
+    expect(bytesWritten).toEqual(6)
     console.log('writeTest', '3')
     //fstatTest
     let btnFstat = await page.$('#btn-fstat-file')
@@ -1398,7 +1398,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnWrite.tap()
     await isDone()
     bytesWritten = await getData("bytesWritten")
-    expect(bytesWritten).toEqual(9)
+    expect(bytesWritten).toEqual(27)
     console.log('ftruncateFileTest', '3')
     //ftruncateFileTest
     let btnFTruncateFile = await page.$('#btn-ftruncate-file')
