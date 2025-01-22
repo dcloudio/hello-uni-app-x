@@ -9,7 +9,7 @@ import PendingIntent from 'android.app.PendingIntent';
 import { CreateNotificationProgressOptions, FinishNotificationProgressOptions } from '../interface.uts';
 import { ACTION_DOWNLOAD_FINISH, ACTION_DOWNLOAD_PROGRESS } from "./constant.uts"
 
-import { globalNotificationProgressFinishCallBack, globalNotificationProgressCallBack } from './callbacks.uts';
+import { setGlobalNotificationProgressCallBack, setGlobalNotificationProgressFinishCallBack } from './callbacks.uts';
 
 export { TransparentActivity } from './TransparentActivity.uts';
 
@@ -67,7 +67,7 @@ export function cancelNotificationProgress() : void {
 
 
 function realCreateNotificationProgress(title : string, content : string, progress : number, cb : (() => void) | null) : void {
-	globalNotificationProgressCallBack = cb
+  setGlobalNotificationProgressCallBack(cb)
 	const context = UTSAndroid.getAppContext() as Context
 	const notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	createDownloadChannel(notificationManager)
@@ -81,7 +81,7 @@ function realCreateNotificationProgress(title : string, content : string, progre
 
 
 export function finishNotificationProgress(options : FinishNotificationProgressOptions) {
-	globalNotificationProgressFinishCallBack = options.onClick
+  setGlobalNotificationProgressFinishCallBack(options.onClick)
 	const context = UTSAndroid.getAppContext() as Context
 	const notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 	createDownloadChannel(notificationManager)

@@ -1,5 +1,23 @@
 <template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
   <view class="uni-padding-wrap">
+    <view class="uni-common-mt flex-row" v-if="pageBody != null">pageBody: {
+      top: <text id="page-body-top">{{pageBody!.top}}</text>,
+      right: <text id="page-body-right">{{pageBody!.right}}</text>,
+      bottom: <text id="page-body-bottom">{{pageBody!.bottom}}</text>,
+      left: <text id="page-body-left">{{pageBody!.left}}</text>,
+      width: <text id="page-body-width">{{pageBody!.width}}</text>,
+      height: <text id="page-body-height">{{pageBody!.height}}</text>
+      }
+    </view>
+    <view class="uni-common-mt flex-row" v-if="safeAreaInsets != null">safeAreaInsets: {
+      top: <text id="page-safe-area-insets-top">{{safeAreaInsets!.top}}</text>,
+      right: <text id="page-safe-area-insets-right">{{safeAreaInsets!.right}}</text>,
+      bottom: <text id="page-safe-area-insets-bottom">{{safeAreaInsets!.bottom}}</text>,
+      left: <text id="page-safe-area-insets-left">{{safeAreaInsets!.left}}</text>}
+    </view>
     <button class="uni-common-mt" id="go-next-page" @click="goNextPage">
       go next page
     </button>
@@ -18,6 +36,9 @@
     <button class="uni-common-mt" id="open-dialog4" @click="openDialogWithTriggerParentHide">
       openDialog with triggerParentHide
     </button>
+    <button class="uni-common-mt" id="open-dialog5" @click="openDialogCheckMoreAttribute">
+      openDialog check more attribute
+    </button>
     <text class="uni-common-mt choose-open-animation-type-title">choose open dialogPage animationType</text>
     <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
       <radio class="ml-10 uni-common-mt" v-for="item in openAnimationTypeList" :key="item" :value="item"
@@ -25,6 +46,9 @@
       </radio>
     </radio-group>
   </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script lang="uts">
@@ -47,6 +71,8 @@
   export default {
     data() {
       return {
+        pageBody : null as UniPageBody | null,
+        safeAreaInsets: null as UniSafeAreaInsets | null,
         jest_click_x: -1,
         jest_click_y: -1,
         openAnimationType: 'none' as OpenAnimationType,
@@ -72,6 +98,9 @@
     },
     onReady() {
       console.log('dialogPage parent onReady')
+      const currentPage = this.$page
+      this.pageBody = currentPage.pageBody;
+      this.safeAreaInsets = currentPage.safeAreaInsets
     },
     onHide() {
       console.log('dialogPage parent onHide')
@@ -242,6 +271,11 @@
           }
         })
       },
+      openDialogCheckMoreAttribute(){
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-5',
+        })
+      },
       setLifeCycleNum(value : number) {
         setLifeCycleNum(value)
       },
@@ -356,6 +390,10 @@
   }
 
   .choose-open-animation-type-radio-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .flex-row{
     flex-direction: row;
     flex-wrap: wrap;
   }

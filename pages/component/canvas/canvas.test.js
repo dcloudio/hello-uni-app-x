@@ -27,6 +27,13 @@ describe('Canvas.uvue', () => {
     const element = await page.$('#testCanvasContext')
     expect(await element.text()).toBe('true')
   })
+  it('测试异步创建 canvas 上下文有无 in 参数', async()=>{
+    await page.waitFor(500)
+    const element = await page.$('#createCanvasContextAsync')
+    await element.tap()
+    await page.waitFor(50)
+    expect(await element.text()).toBe('true')
+  })
   // it("测试同步创建canvas上下文", async () => {
   //   await page.callMethod('useAsync');
   //   const element = await page.$('#testCanvasContext')
@@ -55,5 +62,10 @@ describe('Canvas.uvue', () => {
     await page.waitFor(50)
     const element = await page.$('#testCreatePath2D')
     expect(await element.text()).toBe('true')
+  })
+  it('child multi root node', async () => {
+    await page.waitFor(50)
+    const testCounter = await page.data('testCounter')
+    expect(testCounter).toBe(2)
   })
 })

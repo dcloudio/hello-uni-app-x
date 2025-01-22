@@ -14,22 +14,41 @@
     </view>
     <view class="uni-list">
       <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">自定义itemColor</view>
+        <view class="uni-list-cell-db">自定义 titleColor</view>
+        <switch :checked="titleColorCustom" @change="titleColorChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">自定义 itemColor</view>
         <switch :checked="itemColorCustom" @change="itemColorChange" />
       </view>
       <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">超长文本和空文本item</view>
+        <view class="uni-list-cell-db">超长文本和空文本 item</view>
         <switch :checked="itemContentLarge" @change="itemContentLargeChange" />
       </view>
+      <!-- #ifndef MP -->
       <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">超过6个item</view>
+        <view class="uni-list-cell-db">超过6个 item</view>
         <switch :checked="itemNumLargeSelect" @change="itemNumLargeChange" />
       </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">自定义 cancelText</view>
+        <switch :checked="cancelTextCustom" @change="cancelTextChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">自定义 cancelColor</view>
+        <switch :checked="cancelColorCustom" @change="cancelColorChange" />
+      </view>
+      <view class="uni-list-cell uni-list-cell-pd">
+        <view class="uni-list-cell-db">自定义 backgroundColor</view>
+        <switch :checked="backgroundColorCustom" @change="backgroundColorChange" />
+      </view>
+      <!-- #endif -->
     </view>
     <view class="uni-padding-wrap">
       <view class="uni-btn-v">
-        <button class="uni-btn-v" type="default" @tap="actionSheetTap" id="btn-action-sheet-show">弹出action
+        <button class="uni-btn-v" type="default" @tap="showActionSheet" id="btn-action-sheet-show">弹出action
           sheet</button>
+          <button class="uni-btn-v uni-btn" type="default" @tap="showActionSheetAndShowAgainInCallback" id="btn-action-sheet-show">showActionSheet 并在回调中再次 showActionSheet</button>
       </view>
     </view>
   </view>
@@ -46,9 +65,13 @@
     data() {
       return {
         title: 'action-sheet',
+        titleColorCustom: false,
         itemColorCustom: false,
         itemContentLarge: false,
         itemNumLargeSelect: false,
+        cancelTextCustom: false,
+        cancelColorCustom: false,
+        backgroundColorCustom: false,
         showErrorToast: true,
         items: [{
           value: '标题',
@@ -70,6 +93,9 @@
       uni.showActionSheet({
         title: "onLoad 调用示例,请手动取消",
         itemList: ['item1', 'item2'],
+        complete: (res) => {
+          console.log('onLoad showActionSheet complete', res)
+        }
       })
     },
     methods: {
@@ -85,6 +111,9 @@
           }
         }
       },
+      titleColorChange(e : UniSwitchChangeEvent) {
+        this.titleColorCustom = e.detail.value
+      },
       itemContentLargeChange: function (e : UniSwitchChangeEvent) {
         this.itemContentLarge = e.detail.value
       },
@@ -94,68 +123,89 @@
       itemNumLargeChange: function (e : UniSwitchChangeEvent) {
         this.itemNumLargeSelect = e.detail.value
       },
-      actionSheetTap() {
-
-        let itemInfo = ['item1', 'item2', 'item3', 'item4']
-
-        if (this.itemContentLarge) {
-          itemInfo = ['两个黄鹂鸣翠柳，一行白鹭上青天。窗含西岭千秋雪，门泊东吴万里船', '水光潋滟晴方好,山色空蒙雨亦奇。 欲把西湖比西子,淡妆浓抹总相宜', '']
-        }
-
-        if (this.itemNumLargeSelect) {
-          // 大量选项测试,不能超过6个元素 https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
-          itemInfo = []
-          for (var i = 1; i <= 10; i++) {
-            itemInfo.push('两个黄鹂鸣翠柳，一行白鹭上青天');
+      cancelTextChange: function (e : UniSwitchChangeEvent) {
+        this.cancelTextCustom = e.detail.value
+      },
+      cancelColorChange: function (e : UniSwitchChangeEvent) {
+        this.cancelColorCustom = e.detail.value
+      },
+      backgroundColorChange: function (e : UniSwitchChangeEvent) {
+        this.backgroundColorCustom = e.detail.value
+      },
+      showActionSheet() {
+        const options: ShowActionSheetOptions = {
+          title: this.items[this.current].value,
+          itemList: ['item1', 'item2', 'item3', 'item4'],
+          success: (res) => {
+            console.log(res.tapIndex);
+            uni.showToast({
+              title: "点击了第" + res.tapIndex + "个选项",
+              icon: "none"
+            })
+          },
+          fail: (error) => {
+            if (this.showErrorToast) {
+              uni.showToast({
+                title: error.errMsg,
+                icon: "none"
+              })
+            }
+            console.log(error);
           }
         }
-
-        const that = this
-        if (this.itemColorCustom) {
-          uni.showActionSheet({
-            title: this.items[this.current].value,
-            itemList: itemInfo,
-            itemColor: "#ff00ff",
-            success: (e) => {
-              console.log(e.tapIndex);
-              uni.showToast({
-                title: "点击了第" + e.tapIndex + "个选项",
-                icon: "none"
-              })
-            },
-            fail: (e) => {
-              if (this.showErrorToast) {
-                uni.showToast({
-                  title: e.errMsg,
-                  icon: "none"
-                })
-              }
-              console.log(e);
-            }
-          })
-        } else {
-          uni.showActionSheet({
-            title: this.items[this.current].value,
-            itemList: itemInfo,
-            success: (e) => {
-              console.log(e.tapIndex);
-              uni.showToast({
-                title: "点击了第" + e.tapIndex + "个选项",
-                icon: "none"
-              })
-            },
-            fail: (e) => {
-              console.log(e);
-              if (this.showErrorToast) {
-                uni.showToast({
-                  title: e.errMsg,
-                  icon: "none"
-                })
-              }
-            }
-          })
+        if (this.itemContentLarge) {
+          options.itemList = ['两个黄鹂鸣翠柳，一行白鹭上青天。窗含西岭千秋雪，门泊东吴万里船', '水光潋滟晴方好,山色空蒙雨亦奇。 欲把西湖比西子,淡妆浓抹总相宜', '']
         }
+        if (this.itemNumLargeSelect) {
+          // 大量选项测试,不能超过6个元素 https://uniapp.dcloud.net.cn/api/ui/prompt.html#showactionsheet
+          const arr: string[] = []
+          for(let i = 0; i < 10; i++){
+            arr.push(`两个黄鹂鸣翠柳，一行白鹭上青天 ${i+1}`)
+          }
+          options.itemList = arr
+        }
+        if(this.titleColorCustom){
+          options.titleColor = '#007AFF'
+        }
+        if(this.itemColorCustom){
+          options.itemColor = '#ff00ff'
+        }
+        if(this.cancelTextCustom){
+          options.cancelText = 'custom cancel'
+        }
+        if(this.cancelColorCustom){
+          options.cancelColor = '#007AFF'
+        }
+        if(this.backgroundColorCustom){
+          options.backgroundColor = '#ccc'
+        }
+        uni.showActionSheet(options)
       },
+      showActionSheetAndShowAgainInCallback(){
+        uni.showActionSheet({
+          title: '第一个',
+          itemList: ['1','2','3'],
+          complete(){
+              uni.showActionSheet({
+                title: '第二个',
+                itemList: ['a','b','c'],
+                complete: (res) => {
+                  console.log('showActionSheetAndShowAgainInCallback complete', res)
+                }
+              })
+          }
+        })
+      },
+      // 自动化测试
+      // #ifdef WEB
+      closeWebActionSheet(){
+        document.querySelector('.uni-action-sheet_dialog__cell').click()
+      },
+      // #endif
+      // 自动化测试
+      hideActionSheet(){
+        uni.hideActionSheet()
+      }
     }
   }
 </script>

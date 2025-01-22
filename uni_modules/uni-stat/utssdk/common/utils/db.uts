@@ -1,11 +1,10 @@
-const APPID = uni.getSystemInfoSync().appId 
+const APPID = uni.getSystemInfoSync().appId
 export function dbSet<T>(name : string, value : T) {
 	let data = uni.getStorageSync('$$STAT__DBDATA:' + APPID)
 	let newData = {} as UTSJSONObject
 	if (data != null && typeof data == 'object') {
 		newData = data as UTSJSONObject
 	}
-	
 	newData[name] = value
 	uni.setStorageSync('$$STAT__DBDATA:' + APPID, newData)
 }
@@ -20,7 +19,7 @@ export function dbGet<T>(name : string) : T | null {
 
 export function dbRemove(name : string) {
 	let data = uni.getStorageSync('$$STAT__DBDATA:' + APPID)
-	if(data == '') {
+	if (data == '') {
 		data = {}
 	}
 	if (data != null) {

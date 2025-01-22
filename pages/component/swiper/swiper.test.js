@@ -110,6 +110,7 @@ describe('test swiper', () => {
 
   it('Event transitiont', async () => {
     const transitionDetailInfo = await page.data('transitionDetailTest')
+    console.log('transitionDetailInfo',transitionDetailInfo)
     expect(transitionDetailInfo.dy).toBe(0)
     expect(transitionDetailInfo.dx).not.toBe(0)
     expect(await page.data('isTransitionTest')).toBe('transition:Success')
@@ -117,6 +118,7 @@ describe('test swiper', () => {
 
   it('Event change', async () => {
     const changeDetailInfo = await page.data('changeDetailTest')
+    console.log('changeDetailInfo',changeDetailInfo)
     if(isWeb || isMP){
       expect(changeDetailInfo).toEqual(webDetailRes)
     }else{
@@ -126,8 +128,11 @@ describe('test swiper', () => {
   });
 
   it('Event animationfinish', async () => {
-    await page.waitFor(1000)
+    // 等待最后一个动画结束animationfinish
+    await page.waitFor(2000)
     const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
+    console.log('animationfinishDetailInfo',animationfinishDetailInfo)
+    console.log('isAnimationfinishTest',await page.data('isAnimationfinishTest'))
     if(isWeb || isMP){
       expect(animationfinishDetailInfo).toEqual(webDetailRes)
     }else{

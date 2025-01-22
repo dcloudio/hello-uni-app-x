@@ -47,18 +47,48 @@
 </template>
 
 <script setup>
-  const channelInfo = ref("")
-
-  const onPushMessageCallback = (res : OnPushMessageCallbackResult) => {
-    uni.showModal({
-      title: "onPushMessage回调信息",
-      content: `type：${res.type} \n data：${JSON.stringify(res.data)}`
-    })
+  // 自动化测试
+  type TypeJestResult = {
+    clientId : string,
+    sendPushMessageRes : number,
+    onPushMessageType:string,
+    onPushMessageCallbackInfo:string
+  }
+  type TypeIsRegister = {
+    state:boolean
+  }
+  const jestResult = reactive({
+    clientId:"",
+    sendPushMessageRes:-1,
+    onPushMessageType:"",
+    onPushMessageCallbackInfo:""
+  } as TypeJestResult)
+  // 自动化测试
+  const autoTest = ref(false);
+  const updateAutoTest = (value : boolean) => {
+    autoTest.value = value
   }
 
-  let isRegister = false
+  const channelInfo = ref("")
+  const onPushMessageCallback = (res : OnPushMessageCallbackResult) => {
+    // 自动化测试
+    jestResult.onPushMessageType = res.type
+    jestResult.onPushMessageCallbackInfo = JSON.stringify(res.data)
+    if (!autoTest.value) {
+      uni.showModal({
+        title: "onPushMessage回调信息",
+        content: `type：${res.type} \n data：${JSON.stringify(res.data)}`
+      })
+    }
+  }
+
+  // 为兼容Android测试例中能获取到，此处用reactive定义
+  const isRegister = reactive({
+    state:false
+  } as TypeIsRegister);
+
   const handleOnPushMessage = () => {
-    if (isRegister) {
+    if (isRegister.state) {
       uni.showToast({
         icon: "error",
         title: "无需重复注册"
@@ -66,14 +96,14 @@
       return
     }
     uni.onPushMessage(onPushMessageCallback)
-    isRegister = true
+    isRegister.state = true
     uni.showToast({
       title: "成功注册"
     })
   }
 
   const handleOffPushMessage = () => {
-    if (!isRegister) {
+    if (!isRegister.state) {
       uni.showToast({
         icon: "error",
         title: "未注册, 无需注销"
@@ -81,7 +111,7 @@
       return
     }
     uni.offPushMessage(onPushMessageCallback)
-    isRegister = false
+    isRegister.state = false
     uni.showToast({
       title: "成功注销"
     })
@@ -202,11 +232,15 @@
     })
     const cid = await getPushClientId()
     if (cid != '') {
-      uni.showModal({
-        title: "获取cid",
-        content: "获取cid成功" + cid,
-        showCancel: false
-      })
+      // 自动化测试
+      jestResult.clientId = cid
+      if (!autoTest.value) {
+        uni.showModal({
+          title: "获取cid",
+          content: "获取cid成功" + cid,
+          showCancel: false
+        })
+      }
     }
     uni.hideLoading()
   }
@@ -217,17 +251,23 @@
     }
     const uniPushCo = uniCloud.importObject("uni-push-co")
     try {
-      await uniPushCo.sendPushMessage(pushClientId)
-      uni.showToast({
-        title: "发送通知消息成功"
-      })
-    } catch (e) {
-      console.error(e);
-      // console.error(e["errorCode"] as Number );
-      uni.showToast({
-        title: "发送通知消息失败",
-        icon: "error"
-      })
+      const res = await uniPushCo.sendPushMessage(pushClientId)
+      // 自动化测试
+      jestResult.sendPushMessageRes = res.errCode as number
+      if (!autoTest.value) {
+        uni.showToast({
+          title: "发送通知消息成功"
+        })
+      }
+    } catch (err:any) {
+      const error = err as UniCloudError
+      console.error(error)
+      if (!autoTest.value) {
+        uni.showToast({
+          title: "发送通知消息失败",
+          icon: "error"
+        })
+      }
     }
   }
   const handleSetBadge = () => {
@@ -273,8 +313,19 @@
         title: "清空应用角标数"
       })
     }
-
   }
+
+  // 自动化测试
+  defineExpose({
+    jestResult,
+    autoTest,
+    updateAutoTest,
+    isRegister,
+    handleSendPushMessage,
+    handleGetClientId,
+    handleOnPushMessage,
+    handleOffPushMessage
+  })
 </script>
 
 <style>

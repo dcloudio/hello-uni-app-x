@@ -34,6 +34,56 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(0)
   });
 
+  it('page pageBody safeAreaInsets', async () => {
+    const pageBodyWidth = await page.$('#page-body-width')
+    expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
+    const pageBodyHeight = await page.$('#page-body-height')
+    expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
+
+    const pageBodyLeft = await page.$('#page-body-left')
+    const pageBodyRight = await page.$('#page-body-right')
+    const expectRightValue = parseInt(await pageBodyLeft.text()) + parseInt(await pageBodyWidth.text())
+    expect(parseInt(await pageBodyRight.text())).toBe(expectRightValue)
+
+    const pageBodyTop = await page.$('#page-body-top')
+    const pageBodyBottom = await page.$('#page-body-bottom')
+    const expectBottomValue = parseInt(await pageBodyTop.text()) + parseInt(await pageBodyHeight.text())
+    expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
+
+    pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
+    expect(await pageSafeAreaInsetsTop.text()).toBe('0')
+    pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
+    if(isWeb){
+      expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
+    }
+    if(isIos || isAndroid){
+      expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
+    }
+    pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
+    expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
+    pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
+    expect(await pageSafeAreaInsetsRight.text()).toBe('0')
+  })
+  it('dialogPage pageBody safeAreaInsets', async () => {
+    await page.callMethod('openDialogCheckMoreAttribute')
+    await page.waitFor(1000)
+    if (isWeb) {
+      await page.waitFor(2000)
+    }
+    const image = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: 200,
+      }
+    });
+    expect(image).toSaveImageSnapshot();
+    await page.callMethod('closeDialog');
+    lifecycleNum = await page.callMethod('getLifeCycleNum');
+    expect(lifecycleNum).toBe(2);
+    await page.callMethod('setLifeCycleNum', 0);
+  })
+
   it('open dialog1', async () => {
     await page.callMethod('openDialog1');
     // 无法通过获取 dom 元素来判断是否打开了 dialogPage
@@ -481,8 +531,8 @@ describe('dialog page', () => {
       console.log("input tap" + " " + point_x + " " + point_y);
     } else {
       await program.tap({
-        x: point_x,
-        y: point_y
+        x: Math.round(point_x),
+        y: Math.round(point_y)
       })
     }
 
@@ -506,6 +556,23 @@ describe('dialog page', () => {
       await page.callMethod('setPageStyleForTest', {
         hideStatusBar: true,
         hideBottomNavigationIndicator: true
+      });
+      await page.waitFor(2000);
+      const image = await program.screenshot({
+        deviceShot: true
+      });
+      expect(image).toSaveImageSnapshot();
+      await page.waitFor(2000);
+      await page.callMethod('closeDialog2ForTest');
+    }
+  });
+
+  it('dialogPage androidThreeButtonNavigationTranslucent', async () => {
+    if (isAndroid) {
+      await page.callMethod('openDialog2ForTest');
+      await page.waitFor(1000);
+      await page.callMethod('setPageStyleForTest', {
+        androidThreeButtonNavigationTranslucent: false
       });
       await page.waitFor(2000);
       const image = await program.screenshot({
