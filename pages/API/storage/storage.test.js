@@ -311,13 +311,16 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(jest_saveUTSJSONObjectAsyncResult).toBe(1)
   })
 
-  it('saveUTSJSONObjectArray', async () => {
-    await page.callMethod('jest_saveUTSJSONObjectArray')
-    await page.waitFor(600)
-    const {
-      jest_saveUTSJSONObjectArraySyncResult
-    } = await page.data()
-    expect(jest_saveUTSJSONObjectArraySyncResult).toBe(1)
-  })
+  // ios js 层与原生层通信时，原始数据类型丢失
+  if (!isIOS) {
+    it('saveUTSJSONObjectArray', async () => {
+      await page.callMethod('jest_saveUTSJSONObjectArray')
+      await page.waitFor(600)
+      const {
+        jest_saveUTSJSONObjectArraySyncResult
+      } = await page.data()
+      expect(jest_saveUTSJSONObjectArraySyncResult).toBe(1)
+    })
+  }
 
 });

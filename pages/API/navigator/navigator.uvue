@@ -4,6 +4,14 @@
   <!-- #endif -->
     <view>
       <page-head title="navigate"></page-head>
+      <view style="flex-direction: row;">
+        <switch @change="onChange"></switch>
+        <view class="uni-title">是否启用共享元素动画</view>
+      </view>
+      <share-element :share-key="shareElementKey">
+        <image style="width: 250px; height: 176px;" src="/static/shuijiao.jpg" mode="scaleToFill"></image>
+      </share-element>
+      <text style="font-size: 13px;" >注意：开启共享元素动画后仅支持slide-in-right和fade-in动画效果</text>
       <view class="uni-padding-wrap uni-common-mt uni-common-mb">
         <view class="direction-row">
           <text class="label">onLoad触发时间戳:</text>
@@ -63,6 +71,7 @@
         onShowTime: 0,
         onReadyTime: 0,
         onHideTime: 0,
+        shareElementKey: "",
         animationTypeList: [
           'slide-in-right',
           'slide-in-left',
@@ -386,6 +395,13 @@
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
       },
+      onChange(event: UniSwitchChangeEvent) {
+        if(event.detail.value) {
+          this.shareElementKey = "test-share-element-key"
+        } else {
+          this.shareElementKey = ""
+        }
+      }
     },
   }
 </script>

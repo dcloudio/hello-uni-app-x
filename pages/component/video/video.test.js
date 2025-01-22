@@ -244,6 +244,23 @@ describe('component-native-video', () => {
       await page.waitFor(100);
       expect(await page.callMethod('hasSubComponent')).toBe(true);
     });
+
+    it('test enable-danmu', async () => {
+      await page.callMethod('play');
+      await page.waitFor(5000);
+      await page.setData({
+        enableDanmu: false
+      });
+      const info = await page.callMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: info.statusBarHeight + 44
+        }
+      });
+      expect(image).toSaveImageSnapshot();
+    });
   }
 
   it('test format', async () => {

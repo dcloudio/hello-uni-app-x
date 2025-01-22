@@ -11,10 +11,10 @@ describe('API-rpx2px', () => {
   }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(600);
+    await page.waitFor('view');
   });
   it('rpx2px', async () => {
-    const btnConvert = await page.$('.convert')
+    const btnConvert = await page.$('#convert')
     await btnConvert.tap()
     await page.waitFor(100)
 

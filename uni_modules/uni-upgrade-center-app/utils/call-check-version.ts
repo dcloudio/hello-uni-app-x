@@ -26,7 +26,7 @@ export type UniUpgradeCenterResult = {
 
 	type : string // "native_app" | "wgt"
 	store_list : StoreListItem[] | null
-	min_uni_version : string | null	// 升级 wgt 的最低 uni-app 版本
+	min_uni_version : string | null  // 升级 wgt 的最低 uni-app 版本
 }
 
 export default function () : Promise<UniUpgradeCenterResult> {
@@ -80,20 +80,20 @@ export default function () : Promise<UniUpgradeCenterResult> {
 					const code = res.result['code']
 					const codeIsNumber = ['Int', 'Long', 'number'].includes(typeof code)
 					if (codeIsNumber) {
-						if ((code as number) == 0) {
-							reject({
-								code: res.result['code'],
-								message: res.result['message']
-							})
-						} else if ((code as number) < 0) {
-							reject({
-								code: res.result['code'],
-								message: res.result['message']
-							})
-						} else {
-							const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
-							resolve(result)
-						}
+					  if ((code as number) == 0) {
+					    reject({
+					      code: res.result['code'],
+					      message: res.result['message']
+					    })
+					  } else if ((code as number) < 0) {
+					    reject({
+					      code: res.result['code'],
+					      message: res.result['message']
+					    })
+					  } else {
+              const result = JSON.parse<UniUpgradeCenterResult>(JSON.stringify(res.result)) as UniUpgradeCenterResult
+              resolve(result)
+            }
 					}
 				}).catch<void>((err : any | null) => {
 					const error = err as UniCloudError

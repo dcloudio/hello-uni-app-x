@@ -1,0 +1,246 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+
+      <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+
+      <button class="btnstyle" type="primary" @tap="chooseVideo">选择文件(video) 单选</button>
+      <button class="btnstyle" type="primary" @tap="chooseVideoMul">选择文件(video) 多选</button>
+      <button class="btnstyle" type="primary" @tap="playVideo">选择文件(video)并播放</button>
+      <video class="video" :src="src" :controls="true"></video>
+      <button class="btnstyle" type="primary" @tap="chooseImage">选择文件(image) 单选</button>
+      <button class="btnstyle" type="primary" @tap="chooseImageMul">选择文件(image) 多选</button>
+      <button class="btnstyle" type="primary" @tap="viewImg">选择文件(image) 并预览</button>
+      <button class="btnstyle" type="primary" @tap="chooseAudio">选择文件(audio) 单选</button>
+      <button class="btnstyle" type="primary" @tap="chooseAudioMul">选择文件(audio) 多选</button>
+      <button class="btnstyle" type="primary" @tap="playAudio">选择文件(audio) 并播放</button>
+      <button class="btnstyle" type="primary" @tap='chooseAll'>选择文件(all) 单选</button>
+      <button class="btnstyle" type="primary" @tap='chooseAllMul'>选择文件(all) 多选</button>
+
+      <view style="height: 4px;"></view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        log: '',
+        title: 'choose-file',
+        src: '',
+        _audioContext: null as InnerAudioContext | null,
+      }
+    },
+    unmounted() {
+      if (this._audioContext != null) {
+        this._audioContext!.destroy()
+      }
+    },
+    methods: {
+      getPath(chooseFils : ChooseFileTempFile[]) : string {
+        var urls = new Array<string>()
+        chooseFils.forEach(value => {
+          urls.add(value.path)
+        })
+        return urls.joinToString(',')
+      },
+      chooseVideo() {
+        uni.chooseFile({
+          type: 'video',
+          count: 1,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      chooseVideoMul() {
+        uni.chooseFile({
+          type: 'video',
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      playVideo() {
+        uni.chooseFile({
+          type: 'video',
+          count: 1,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.src = res.tempFiles[0].path
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      chooseImage() {
+        uni.chooseFile({
+          type: 'image',
+          count: 1,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      chooseImageMul() {
+        uni.chooseFile({
+          type: 'image',
+          count: 90,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      viewImg() {
+        uni.chooseFile({
+          type: 'image',
+          count: 1,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              uni.previewImage({
+                current: 0,
+                urls: new Array(res.tempFiles[0].path)
+              })
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      chooseAudio() {
+        uni.chooseFile({
+          type: 'audio',
+          count: 1,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      chooseAudioMul() {
+        uni.chooseFile({
+          type: 'audio',
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      playAudio() {
+        uni.chooseFile({
+          type: 'audio',
+          count: 1,
+          success: (res) => {
+            console.log(res);
+            if (res.tempFiles.length > 0) {
+              if (this._audioContext == null) {
+                this._audioContext = uni.createInnerAudioContext()
+                this._audioContext!.autoplay = true
+              } else if (!this._audioContext!.paused) {
+                this._audioContext!.stop()
+              }
+              this._audioContext!.src = res.tempFiles[0].path
+            }
+          },
+          complete: (res) => {
+            console.log(res);
+          }
+        });
+
+      },
+      chooseAll() {
+        uni.chooseFile({
+          type: 'all',
+          count: 1,
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      chooseAllMul() {
+        uni.chooseFile({
+          type: 'all',
+          success: (res) => {
+            console.log(res)
+            if (res.tempFiles.length > 0) {
+              this.log += this.getPath(res.tempFiles) + '\n\n'
+            }
+          },
+          complete: (res) => {
+            console.log(res)
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<style>
+  .btnstyle {
+    margin: 4px;
+  }
+
+  .video {
+    align-self: center;
+    width: 300px;
+    height: 225px;
+  }
+
+  .uni-uploader__input-box {
+    margin: 5px;
+    width: 104px;
+    height: 104px;
+    border: 1px solid #D9D9D9;
+  }
+</style>
