@@ -309,6 +309,7 @@ if (isApp && !isAppWebview) {
     '/pages/API/share-with-system/share-with-system',
     '/pages/template/scroll-sticky/scroll-sticky',
     '/pages/component/waterflow/waterflow-fit-height',
+    '/pages/template/test-uts-button/test-uts-button'
   )
 }
 
