@@ -231,7 +231,9 @@ export default {
 				success: (res) => {
 					if (res.confirm) {
 						downloadTask && downloadTask.abort();
-						cancelNotificationProgress();
+            if (this.needNotificationProgress) {
+              cancelNotificationProgress();
+            }
 						uni.navigateBack();
 					}
 				}
@@ -298,7 +300,6 @@ export default {
 		},
 		downloadPackage() {
 			this.downloading = true;
-			console.log('this.needNotificationProgress: ',this.needNotificationProgress);
 			//下载包
 			downloadTask = uni.downloadFile({
 				url: this.url,
@@ -338,8 +339,13 @@ export default {
 						}
 					} else {
 						console.log('下载错误：' + JSON.stringify(res))
+            this.downloadFail()
 					}
-				}
+				},
+        fail: (err) => {
+          console.log('下载错误：' + JSON.stringify(err))
+          this.downloadFail()
+        }
 			});
 
 			downloadTask.onProgressUpdate((res) => {
@@ -362,6 +368,27 @@ export default {
 				uni.navigateBack();
 			}
 		},
+    downloadFail() {
+      const errMsg = '下载失败，请点击重试'
+
+      this.downloadSuccess = false;
+      this.downloading = false;
+
+      this.downLoadPercent = 0;
+      this.downloadedSize = 0;
+      this.packageFileSize = 0;
+
+      this.downLoadBtnText = errMsg
+
+      downloadTask = null;
+
+      if (this.needNotificationProgress) {
+        finishNotificationProgress({
+          title: '升级包下载失败',
+          content: '请重新检查更新'
+        });
+      }
+    },
 		downLoadComplete() {
 			this.downloadSuccess = true;
 			this.downloading = false;
