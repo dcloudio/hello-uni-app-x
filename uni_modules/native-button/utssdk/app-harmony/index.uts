@@ -1,0 +1,28 @@
+import { BuilderNode } from "@kit.ArkUI"
+import { buildButton } from "./builder.ets"
+
+interface NativeButtonOptions {
+  text : string
+  onClick : () => void
+}
+
+export class NativeButton {
+  private $element : UniNativeViewElement;
+  private builder : BuilderNode<[NativeButtonOptions]> | null = null
+  private params : NativeButtonOptions = {
+    text: '',
+    onClick: () => {
+      this.$element.dispatchEvent(new UniNativeViewEvent("customClick", {}))
+    }
+  }
+
+  constructor(element : UniNativeViewElement) {
+    this.builder = element.bindHarmonyWrappedBuilder(wrapBuilder<[NativeButtonOptions]>(buildButton), this.params)
+    this.$element = element
+  }
+
+  updateText(text : string) {
+    this.params.text = text
+    this.builder?.update(this.params)
+  }
+}
