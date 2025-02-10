@@ -7,13 +7,6 @@ const isMP = platformInfo.startsWith('mp')
 
 
 describe('API-loading', () => {
-  // ios 会导致应用崩溃，暂时跳过
-  // if (isIos) {
-  //   it('skip ios', () => {
-  // 		expect(1).toBe(1)
-  // 	})
-  // 	return
-  // }
   let page;
   let screenShotOptions = {};
   async function showActionSheet(page) {
@@ -31,6 +24,8 @@ describe('API-loading', () => {
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
     if (isApp) {
+      await page.callMethod('setThemeAuto')
+
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
