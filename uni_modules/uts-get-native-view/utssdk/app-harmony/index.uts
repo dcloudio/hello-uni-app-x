@@ -1,17 +1,17 @@
-import { CanWebViewGoBack, CanWebViewGoForward, HasNativeView, CheckWebViewNativeView, CheckInputNativeView, CheckTextareaNativeView, CheckViewNativeView } from "../interface";
+import { CanWebViewGoBack, CanWebViewGoForward, HasNativeView } from "../interface";
 import { webview } from '@kit.ArkWeb';
 
 export const canWebViewGoBack : CanWebViewGoBack = function (elementId : string) : boolean {
-  const view: webview.WebviewController = uni.getElementById(elementId)?.controller;
+  const view = uni.getElementById(elementId)?.getHarmonyController() as webview.WebviewController | null;
   return view == null ? false : view.accessBackward();
 }
 
 export const canWebViewGoForward : CanWebViewGoForward = function (elementId : string) : boolean {
-  const view = uni.getElementById(elementId)?.controller as  webview.WebviewController;
+  const view = uni.getElementById(elementId)?.getHarmonyController() as webview.WebviewController | null;
   return view == null ? false : view.accessForward();
 }
 
 export const hasNativeView : HasNativeView = function (elementId : string) : boolean {
-  const view = uni.getElementById(elementId)?.controller as  webview.WebviewController;
+  const view = uni.getElementById(elementId)?.getHarmonyController() as webview.WebviewController | null;
   return view != null;
 }
