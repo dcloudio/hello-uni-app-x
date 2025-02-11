@@ -87,6 +87,9 @@
         }
         ] as ItemType[],
         current: 0,
+      // #ifdef APP
+        originTheme: null as string | null,
+      // #endif
       }
     },
     onLoad() {
@@ -97,6 +100,9 @@
           console.log('onLoad showActionSheet complete', res)
         }
       })
+      // #ifdef APP
+      this.originTheme = uni.getSystemInfoSync().appTheme
+      // #endif
     },
     methods: {
       //自动化测试例专用
@@ -105,6 +111,13 @@
         uni.setAppTheme({
           theme: 'auto'
         })
+      },
+      resetTheme() {
+        if(this.originTheme != null){
+          uni.setAppTheme({
+            theme: this.originTheme
+          })
+        }
       },
       // #endif
       //自动化测试例专用

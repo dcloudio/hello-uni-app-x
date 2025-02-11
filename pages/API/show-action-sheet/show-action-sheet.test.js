@@ -155,4 +155,9 @@ describe('API-loading', () => {
       await screenshot();
     })
   }
+  afterAll(async () => {
+    if(isApp){
+      await page.callMethod('resetTheme')
+    }
+  });
 });
