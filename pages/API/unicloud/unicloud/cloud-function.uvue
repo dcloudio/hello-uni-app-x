@@ -97,11 +97,12 @@
         }).catch((err : any | null) => {
           uni.hideLoading()
           if(err instanceof UniCloudError) {
+            const error = err as UniCloudError
             this.callFunctionError = {
-              errCode: err.errCode,
-              errMsg: err.errMsg
+              errCode: error.errCode,
+              errMsg: error.errMsg
             }
-            this.notify(err.errMsg, '错误')
+            this.notify(error.errMsg, '错误')
           } else {
             console.error(err)
           }
