@@ -7,5 +7,5 @@ export function buildTencentMap(params: ESObject) {
       mapOptions: params.mapOptions,
       onReady: params.onReady
     })
-  }.attributeModifier(params.modifier)
+  }.attributeModifier(params.attributeUpdater)
 }

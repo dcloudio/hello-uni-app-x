@@ -6,5 +6,5 @@ export function buildButton(params: ESObject) {
     .onClick(() => {
         params.onClick()
     })
-    .attributeModifier(params.modifier)
+    .attributeModifier(params.attributeUpdater)
 }

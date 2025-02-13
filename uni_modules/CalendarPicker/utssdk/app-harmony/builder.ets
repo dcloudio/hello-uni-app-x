@@ -9,5 +9,5 @@ export function buildCalendarPicker(params: ESObject) {
     .onChange((value) => {
       params.onChange(value)
     })
-    .attributeModifier(params.modifier)
+    .attributeModifier(params.attributeUpdater)
 }
