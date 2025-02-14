@@ -132,4 +132,16 @@ describe('component-native-textarea', () => {
     expect(await textarea2.value()).toEqual("123")
   })
 
+  if (isIOS) {
+    it('test-iOS-width', async () => {
+      await page.setData({
+        isAutoTest: true
+      })
+      await page.waitFor(500)
+      const rect = await page.callMethod("getBoundingClientRectForTest")
+      console.log('rect:', rect)
+      expect(rect.width).toBe(100)
+    })
+  }
+
 });

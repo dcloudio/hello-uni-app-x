@@ -25,7 +25,8 @@
         hold_keyboard: false,
         adjust_position: false,
         disabled: false,
-        jest_result: false
+        jest_result: false,
+        isAutoTest: false
       }
     },
 
@@ -74,7 +75,10 @@
       },
       change_disabled_boolean(checked : boolean) {
         this.disabled = checked
-      }
+      },
+      getBoundingClientRectForTest() : DOMRect | null {
+        return uni.getElementById('test-width')?.getBoundingClientRect();
+      },
     }
   }
 </script>
@@ -162,6 +166,9 @@
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :adjust-position="adjust_position" />
       </view>
+      <view v-if="isAutoTest" class="textarea-wrap">
+        <textarea id="test-width" class="test-width" value="123456" placeholder="" />
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -175,6 +182,12 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     flex-direction: row;
     justify-content: center;
+  }
+
+  .test-width {
+    width: 100px;
+    height: 100px;
+    background-color: aqua;
   }
 
   .textarea-wrap {
