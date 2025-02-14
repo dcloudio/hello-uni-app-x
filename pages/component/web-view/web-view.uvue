@@ -1,8 +1,8 @@
 <template>
-  <scroll-view class="uni-flex-item">
+  <view class="uni-flex-item">
     <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
       :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess"
-      :verticalScrollBarAccess="verticalScrollBarAccess" @message="message" @error="error" @loading="loading"
+      :verticalScrollBarAccess="verticalScrollBarAccess" :bounces="bounces" @message="message" @error="error" @loading="loading"
       @load="load" @download="download" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
@@ -33,6 +33,12 @@
           <switch :checked="true" @change="changeVerticalScrollBarAccess"></switch>
         </view>
       </view>
+      <view class="uni-row uni-btn-v">
+        <view class="uni-row uni-flex-item align-items-center">
+          <text>开启bounces</text>
+          <switch :checked="true" @change="changeBounces"></switch>
+        </view>
+      </view>
       <!-- #endif -->
       <!-- #ifdef APP-IOS -->
       <view class="uni-row uni-btn-v" v-if="isProd() === false">
@@ -43,7 +49,7 @@
       <!-- #endif -->
     </view>
     <!-- #endif -->
-  </scroll-view>
+  </view>
 </template>
 
 <script>
@@ -64,6 +70,7 @@
         loadError: false,
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
+        bounces: true,
         canGoBack: false,
         canGoForward: false,
         // 自动化测试
@@ -178,6 +185,9 @@
       },
       changeVerticalScrollBarAccess(event : UniSwitchChangeEvent) {
         this.verticalScrollBarAccess = event.detail.value;
+      },
+      changeBounces(event : UniSwitchChangeEvent) {
+        this.bounces = event.detail.value;
       },
       // 自动化测试
       touchstart(event : UniTouchEvent) {
