@@ -51,7 +51,11 @@ describe('dialog page', () => {
     expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
 
     pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
-    expect(await pageSafeAreaInsetsTop.text()).toBe('0')
+    if(isWeb){
+      expect(await pageSafeAreaInsetsTop.text()).toBe('44')
+    } else {
+      expect(await pageSafeAreaInsetsTop.text()).toBe('0')
+    }
     pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
     if(isWeb){
       expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
