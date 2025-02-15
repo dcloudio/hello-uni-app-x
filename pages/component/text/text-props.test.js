@@ -57,8 +57,9 @@ describe('text-props', () => {
       }
 
       if(isMP || isWeb) {
-        // 小程序、web暂支持program.tap
+        // 小程序、web暂不支持program.tap
         expect(1).toBe(1)
+        return
       }
 
       const rect = await page.callMethod("getBoundingClientRectForTest")
