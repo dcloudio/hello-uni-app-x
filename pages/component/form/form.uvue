@@ -45,6 +45,21 @@
           <textarea name="comment" :value="comment" placeholder="请输入备注" style="background: #FFF;" />
           <!-- <textarea class="uni-input" name="comment" :value="comment" placeholder="这个class的写法，导致iOS和Android产生了高度差异"/> -->
         </view>
+        <view class="uni-form-item">
+          <view class="title">时间</view>
+          <picker-view class="picker-view" name="time" :value="time">
+            <picker-view-column>
+              <view class="picker-view-item" v-for="(item,index) in hours" :key="index">
+                <text class="picker-view-text">{{item}}时</text>
+              </view>
+            </picker-view-column>
+            <picker-view-column>
+              <view class="picker-view-item" v-for="(item,index) in minutes" :key="index">
+                <text class="picker-view-text">{{item}}分</text>
+              </view>
+            </picker-view-column>
+          </picker-view>
+        </view>
         <view class="uni-btn-v flex-row">
           <button class="btn btn-submit" form-type="submit" type="primary">Submit</button>
           <button class="btn btn-reset" type="default" form-type="reset">Reset</button>
@@ -61,12 +76,24 @@
 <script>
   export default {
     data() {
+      let hours = new Array<String>
+      let minutes = new Array<String>
+      for (let i = 1; i <= 24; i++) {
+        hours.push(i.toString())
+      }
+      for (let i = 1; i <= 60; i++) {
+        minutes.push(i.toString())
+      }
+      const date = new Date()
       return {
         nickname: '',
         gender: '0',
         age: 18,
         loves: ['0'],
         switch: true,
+        time: [date.getHours() - 1, date.getMinutes() - 1],
+        hours,
+        minutes,
         comment: '',
         formData: {} as UTSJSONObject,
         // 仅测试
@@ -120,6 +147,21 @@
   .group-item {
     flex-direction: row;
     margin-right: 20px;
+  }
+
+  .picker-view {
+    width: 200px;
+    height: 320px;
+    margin-top: 10px;
+  }
+
+  .picker-view-item {
+    height: 50px;
+  }
+
+  .picker-view-text {
+    line-height: 50px;
+    text-align: center;
   }
 
   .btn {
