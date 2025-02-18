@@ -1,0 +1,135 @@
+<template>
+	<view style="flex: 1;">
+		<camera style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition"
+			:flash="flash" :frame-size="frameSize" @stop="handleStop" @error="handleError" @initdone="handleInitDone">
+		</camera>
+
+		<scroll-view style="flex: 1;">
+			<view>
+				<button type="default" @click="switchDevicePosition">切换前后摄像头</button>
+				<button type="default" @click="switchFlash">闪光灯</button>
+				<button type="default" @click="setZoom">设置zoom</button>
+				<button type="default" @click="handleTakePhoto">拍摄照片</button>
+				<button type="default" @click="setOnFrameListener">设置帧数据监听</button>
+				<button type="default" @click="startFrameListener">开始捕捉帧数据</button>
+				<button type="default" @click="stopFrameListener">停止捕捉帧数据</button>
+				<button type="default" @click="startRecord">开始录制</button>
+				<button type="default" @click="stopRecord">停止录制</button>
+			</view>
+		</scroll-view>
+	</view>
+</template>
+
+<script>
+
+	export default {
+		data() {
+			return {
+				devicePosition: "back",
+				flash: "off",
+				frameSize: "medium",
+				listener: null as CameraContextCameraFrameListener | null
+			}
+		},
+		onLoad() {
+
+		},
+
+		methods: {
+			switchDevicePosition() {
+				this.devicePosition = this.devicePosition == "back" ? "front" : "back"
+			},
+
+			switchFlash() {
+				this.flash = this.flash == "torch" ? "off" : "torch"
+			},
+
+			handleStop(e : UniCameraStopEvent) {
+				console.log("stop", e.detail);
+			},
+			handleError(e : UniCameraErrorEvent) {
+				console.log("error", e.detail);
+			},
+			handleInitDone(e : UniCameraInitDoneEvent) {
+				console.log("initdone", e.detail);
+			},
+			setZoom() {
+				const context = uni.createCameraContext();
+				context?.setZoom({
+					zoom: 3,
+					success: (e : any) => {
+						console.log(e);
+					}
+				} as CameraContextSetZoomOptions)
+			},
+			handleTakePhoto() {
+				const context = uni.createCameraContext();
+				context?.takePhoto({
+					quality: "normal",
+					selfieMirror: false,
+					success: (res : CameraContextTakePhotoResult) => {
+						console.log("res.tempImagePath", res.tempImagePath);
+					},
+					fail: (e : any) => {
+						console.log("take photo", e);
+					}
+				} as CameraContextTakePhotoOptions)
+			},
+			setOnFrameListener() {
+				const context = uni.createCameraContext();
+				this.listener = context?.onCameraFrame((frame : CameraContextOnCameraFrame) => {
+					console.log("OnFrame :", frame);
+				})
+			},
+			startFrameListener() {
+				this.listener?.start({
+					success: (res : any) => {
+						console.log("startFrameListener success", res);
+					}
+				} as CameraContextCameraFrameListenerStartOptions)
+
+			},
+			stopFrameListener() {
+				this.listener?.stop({
+					success: (res : any) => {
+						console.log("stopFrameListener success", res);
+					}
+				} as CameraContextCameraFrameListenerStopOptions)
+			},
+			startRecord() {
+				const context = uni.createCameraContext();
+				context?.startRecord({
+					timeout: 5,
+					selfieMirror: false,
+					timeoutCallback: (res : any) => {
+						console.log("timeoutCallback", res);
+					},
+					success: (res : any) => {
+						console.log("start record success", res);
+
+					},
+					fail: (res : any) => {
+						console.log("start record fail", res);
+					}
+				} as CameraContextStartRecordOptions)
+			},
+			stopRecord() {
+				const context = uni.createCameraContext();
+				context?.stopRecord({
+					compressed: true,
+					success: (res : CameraContextStopRecordResult) => {
+						console.log("stop record success", res);
+					},
+					fail: (res : any) => {
+						console.log("stop record fail", res);
+					}
+				} as CameraContextStopRecordOptions)
+
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
