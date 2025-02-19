@@ -15,6 +15,21 @@ describe('component-native-sticky-section', () => {
     await page.waitFor('sticky-section')
   })
 
+  it('check_delete_and_refresher', async () => {
+    await page.callMethod('deleteSection')
+    await page.waitFor(400)
+    await page.setData({
+      refresherTriggered: true
+    })
+    await page.waitFor(500)
+    await page.setData({
+      refresherTriggered: false
+    })
+    await page.waitFor(2000)
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
+  })
+
   //检测吸顶上推效果
   it('check_sticky_section', async () => {
     await page.waitFor(async () => {
