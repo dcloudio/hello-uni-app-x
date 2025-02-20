@@ -44,6 +44,17 @@ describe('component-native-image', () => {
     expect(await page.data('loadError')).toBe(false)
   })
 
+  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    it('check_qurey_url', async () => {
+      await page.setData({
+        loadError: false,
+        imageSrc: '/static/logo.png?t=11234'
+      })
+      await page.waitFor(300);
+      expect(await page.data('loadError')).toBe(false)
+    })
+  };
+
   it('check_image_load_error', async () => {
     await page.setData({
       loadError: false,
