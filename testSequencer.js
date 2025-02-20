@@ -8,6 +8,7 @@ const startTestFilePaths = [
   "pages/component/global-events/touch-events.test.js",
   "pages/component/global-events/touch-events-bubbles.test.js",
   "pages/component/global-events/touch-events-case.test.js",
+  "pages/component/global-events/touch-events-preventDefault.test.js",
   "pages/component/swiper/swiper2.test.js",
   "pages/component/slider/slider-maxValue.test.js",
   "pages/CSS/overflow/overflow-visible-event.test.js",
@@ -34,7 +35,7 @@ class CustomSequencer extends Sequencer {
       })
       .filter(Boolean)
 
-    const middleTests = tests.filter((test) => 
+    const middleTests = tests.filter((test) =>
       !startTests.includes(test) && !endTests.includes(test)
     );
 
