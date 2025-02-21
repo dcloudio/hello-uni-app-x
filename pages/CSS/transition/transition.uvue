@@ -50,10 +50,6 @@
       <text class="text">点击修改TransformTranslate</text>
       <view class="base-style transition-transform" id="transformTranslate" @click="changeTransformTranslate"></view>
     </view>
-    <view class="container" @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
-      <text class="text">在组件内滑动测试是否闪动</text>
-      <view class="base-style transition-transform" id="styleTransformTranslateScale"></view>
-    </view>
     <view class="container">
       <text class="text">点击修改Transform和宽</text>
       <view class="base-style transition-transform-width" id="styleTransformWithWidth"
@@ -70,6 +66,17 @@
     <view class="container">
       <text class="text">点击修改Position</text>
       <view class="base-style transition-position" id="stylePosition" @click="changestylePosition"></view>
+    </view>
+    <view class="container">
+      <text class="text">点击修改Scale
+      </text>
+      <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
+    </view>
+    <view class="container">
+      <text class="text">在组件内滑动测试是否闪动</text>
+      <view style="width: 100%;height: 200px;"  @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+      <view class="base-style transition-transform" id="styleTransformTranslateScale" style="pointer-events: none;"></view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -254,6 +261,15 @@
           : '100px'
         )
         this.isTransitionstylePosition = !this.isTransitionstylePosition
+      },
+      changestyleScale() {
+        let el = uni.getElementById("styleChangScale")
+        el?.style.setProperty("transition-duration", "0ms")
+        el?.style.setProperty("transform", "translate(10px,10px) scale(1)")
+        setTimeout(()=>{
+        	el?.style.setProperty("transition-duration", "200ms")
+        	el?.style.setProperty("transform", "translate(10px,10px) scale(0.5)")
+        }, 200)
       },
       handleTouchStart(e : UniTouchEvent) {
         this.startX = e.changedTouches[0].clientX
