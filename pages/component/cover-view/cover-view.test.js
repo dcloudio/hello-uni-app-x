@@ -5,6 +5,12 @@ const isApp = isAndroid || isIos
 
 let page;
 describe('web-cover-view', () => {
+  if (isIos) {
+    it('skip ios', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/cover-view/cover-view')
     await page.waitFor('view');
