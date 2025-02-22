@@ -9,9 +9,13 @@ describe('web-cover-view', () => {
     page = await program.reLaunch('/pages/component/cover-view/cover-view')
     await page.waitFor('view');
     await page.waitFor('cover-view');
+    if(isApp){
     // app 端 cover-image 会被转换为 image
-    await page.waitFor(isApp ? 'image' : 'cover-image');
-    await page.waitFor('map');
+      await page.waitFor('image');
+    }else{
+      await page.waitFor('cover-image');
+      await page.waitFor('map');
+    }
     // 等待地图加载完成
     const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:3000
     await page.waitFor(waitTime)
