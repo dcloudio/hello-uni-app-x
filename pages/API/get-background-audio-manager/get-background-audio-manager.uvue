@@ -30,11 +30,11 @@
 	</view>
 </template>
 <script>
+  let bgAudioMannager: BackgroundAudioManager | null = null
 	export default {
 		data() {
 			return {
 				title: 'backgroundAudio',
-				bgAudioMannager: null as BackgroundAudioManager | null,
 				dataUrl: 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3',
 				playing: false,
 				playTime: 0,
@@ -53,7 +53,7 @@
 			},
 		},
 		onLoad: function () {
-			let bgAudioMannager = uni.getBackgroundAudioManager();
+			bgAudioMannager = uni.getBackgroundAudioManager();
 			bgAudioMannager.title = '致爱丽丝' + this.count;
 			bgAudioMannager.epname = '专辑名：致爱丽丝' + this.count
 			bgAudioMannager.singer = '歌手：暂无' + this.count;
@@ -63,8 +63,8 @@
       this.duration = bgAudioMannager.duration
 			bgAudioMannager.onCanplay(() => {
 				console.log("音频进入可以播放状态事件");
-				this.buffered = bgAudioMannager.buffered;
-				this.duration = bgAudioMannager.duration
+				this.buffered = bgAudioMannager?.buffered;
+				this.duration = bgAudioMannager?.duration
 			})
 			bgAudioMannager.onPlay(() => {
 				console.log("开始播放");
@@ -86,26 +86,28 @@
 				(this.$refs["slider"] as UniSliderElement).value = 0
 			})
 			bgAudioMannager.onNext(() => {
+        if (!bgAudioMannager) return
 				this.count++
 				console.log("下一曲", this.count);
-				this.bgAudioMannager?.stop()
+				bgAudioMannager.stop()
 				bgAudioMannager.title = '致爱丽丝' + this.count;
 				bgAudioMannager.singer = '歌手：暂无' + this.count;
 				this.dataUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
 				bgAudioMannager.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
-				this.bgAudioMannager!.src = this.dataUrl;
-				this.bgAudioMannager?.play()
+				bgAudioMannager!.src = this.dataUrl;
+				bgAudioMannager?.play()
 			})
 			bgAudioMannager.onPrev(() => {
+        if (!bgAudioMannager) return
 				this.count--
 				console.log("上一曲", this.count);
-				this.bgAudioMannager?.stop()
+				bgAudioMannager?.stop()
 				bgAudioMannager.title = '致爱丽丝' + this.count;
 				bgAudioMannager.singer = '歌手：暂无' + this.count;
 				this.dataUrl = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
 				bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
-				this.bgAudioMannager!.src = this.dataUrl;
-				this.bgAudioMannager?.play()
+				bgAudioMannager!.src = this.dataUrl;
+				bgAudioMannager?.play()
 			})
 			bgAudioMannager.onSeeking(() => {
 				console.log('音频进行 seek 操作事件');
@@ -117,17 +119,18 @@
 				console.log('音频加载中事件');
 			})
 			bgAudioMannager.onTimeUpdate(() => {
+        if (!bgAudioMannager) return
 				console.log('onTimeUpdate', bgAudioMannager.currentTime)
 				if (this._isChanging) { return; }
-				this.currentTime = this.bgAudioMannager!.currentTime;
-				this.buffered = this.bgAudioMannager!.buffered;
+				this.currentTime = bgAudioMannager!.currentTime;
+				this.buffered = bgAudioMannager!.buffered;
 				console.log('onTimeUpdateCb', this.currentTime)
 
 				// #ifdef MP
 				// 微信小程序安卓端过早的时机获取的buffered、duration为0，改为在此处获取
-				if (this.bgAudioMannager!.duration === 0) {
-					this.buffered = this.bgAudioMannager!.buffered;
-					this.duration = this.bgAudioMannager!.duration
+				if (bgAudioMannager!.duration === 0) {
+					this.buffered = bgAudioMannager!.buffered;
+					this.duration = bgAudioMannager!.duration
 				}
 				// #endif
 				if (this.currentTime > this.buffered) {
@@ -137,21 +140,21 @@
 			bgAudioMannager.onError((err) => {
 				console.log('播放出错err', err);
 			})
-			this.bgAudioMannager = bgAudioMannager;
+			bgAudioMannager = bgAudioMannager;
 			this.playing = !bgAudioMannager.paused
-			console.log('currentTime=', this.bgAudioMannager!.currentTime, this.bgAudioMannager!.currentTime == 0)
+			console.log('currentTime=', bgAudioMannager!.currentTime, bgAudioMannager!.currentTime == 0)
 		},
 		methods: {
 			play: function () {
 				console.log('play')
 				this.isPlayEnd = false;
-				this.bgAudioMannager!.play()
+				bgAudioMannager!.play()
 			},
 			pause: function () {
-				this.bgAudioMannager?.pause();
+				bgAudioMannager?.pause();
 			},
 			stop: function () {
-				this.bgAudioMannager?.stop();
+				bgAudioMannager?.stop();
 				this.playing = false
 			},
 			onchanging() {
@@ -160,7 +163,7 @@
 			onchange(e : UniSliderChangeEvent) {
 				let pos = e.detail.value;
 				console.log('pos', pos);
-				this.bgAudioMannager!.seek(pos);
+				bgAudioMannager!.seek(pos);
 				this._isChanging = false;
 			},
 		}
