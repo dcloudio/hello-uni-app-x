@@ -33,7 +33,7 @@ describe('touch-events-test', () => {
 
   it('touch-event-case1', async () => {
 
-    let x = 25
+    let x = 40
     let y = 150
 
     // 滑动事件
