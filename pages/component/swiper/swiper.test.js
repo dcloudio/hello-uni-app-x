@@ -109,6 +109,7 @@ describe('test swiper', () => {
   });
 
   it('Event transitiont', async () => {
+    await page.waitFor(100)
     const transitionDetailInfo = await page.data('transitionDetailTest')
     console.log('transitionDetailInfo',transitionDetailInfo)
     expect(transitionDetailInfo.dy).toBe(0)
