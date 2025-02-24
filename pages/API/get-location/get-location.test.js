@@ -7,8 +7,8 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("get-location", () => {
-    if(isMP) {
-      // 微信上会有权限弹框，暂时屏蔽测试
+    if (isMP || isWeb) {
+      // 微信、web上会有权限弹框，暂时屏蔽测试
       it('not support', async () => {
         expect(1).toBe(1)
       })
