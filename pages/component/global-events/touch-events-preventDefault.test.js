@@ -34,7 +34,7 @@ describe('touch-events-test', () => {
   it('touch-event-list-preventdefault', async () => {
 
     let x = 25
-    let y = 250
+    let y = 350
 
     // 横向滑动事件
     await program.swipe({
