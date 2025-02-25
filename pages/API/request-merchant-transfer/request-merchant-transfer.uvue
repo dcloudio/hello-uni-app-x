@@ -1,182 +1,188 @@
 <template>
-	<view class="content">
-		<button class="button" @click="pay">支付0.2元</button>
-		<button class="button" @click="transfer" :disabled="disabled">接受0.1元转账</button>
-		<view class="tips" v-if="disabled" style="color: #ff5a5f;">请先支付 0.2 元，才能体验接收转账 0.1 元</view>
-		<view class="tips" v-else style="color: #42b983;">已支付 0.2 元，请点击“接受0.1元转账”按钮</view>
-	</view>
+  <view class="content">
+    <button class="button" @click="pay">支付0.2元</button>
+    <button class="button" @click="transfer" :disabled="disabled">接受0.1元转账</button>
+    <view class="tips" v-if="disabled" style="color: #ff5a5f;">请先支付 0.2 元，才能体验接收转账 0.1 元</view>
+    <view class="tips" v-else style="color: #42b983;">已支付 0.2 元，请点击“接受0.1元转账”按钮</view>
+  </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				outTradeNo: "",
-				disabled: true,
-			}
-		},
-		onLoad() {
-			// this.outTradeNo = "test17400543350068114";
-			// this.disabled = false;
-		},
-		methods: {
-			pay() {
-				let baseInfo = uni.getAppBaseInfo();
-				let bundleId = baseInfo.bundleId;
-				let random = Math.floor(Math.random() * 9000) + 1000;
-				this.outTradeNo = `test${Date.now()}${random}`;
-				this.disabled = true;
-				uni.showLoading({
-					title: "请求中..."
-				});
-				const getProviderRes = uni.getProviderSync({
-					service: "payment"
-				});
-				if (getProviderRes.providerIds.indexOf("wxpay") === -1) {
-					uni.showToast({
-						title: "未添加微信支付依赖",
-						icon: 'error'
-					});
-					uni.hideLoading();
-					return;
-				}
-				uni.request({
-					url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOrderInfo",
-					method: "GET",
-					data: {
-						outTradeNo: this.outTradeNo,
-						bundleId
-					},
-					success: (res) => {
-						uni.hideLoading();
-						let data = res.data as UTSJSONObject;
-						let errCode = data['errCode'] as number;
-						if (errCode !== 0) {
-							uni.showModal({
-								title: "提示",
-								content: data['errMsg'] as string,
-								showCancel: false
-							});
-							return;
-						}
-						let orderInfo = data["orderInfo"] as string;
-						console.log('orderInfo: ', orderInfo)
-						uni.requestPayment({
-							provider: "wxpay",
-							orderInfo: orderInfo,
-							success: (res) => {
-								console.log('res: ', res)
-								uni.showToast({
-									title: "支付成功",
-									icon: 'success'
-								});
-								this.disabled = false;
-							},
-							fail: (err) => {
-								console.error("err", err);
-								uni.hideLoading();
-								uni.showToast({
-									title: "支付失败",
-									icon: 'error'
-								});
-							}
-						});
-					},
-					fail: (err) => {
-						uni.hideLoading();
-						console.error("request-err", err);
-					}
-				});
-			},
-			transfer() {
-				uni.showLoading({
-					title: "请求中..."
-				});
-				try {
-					let baseInfo = uni.getAppBaseInfo();
-					let bundleId = baseInfo.bundleId;
-					uni.request({
-						url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/transfer",
-						method: "GET",
-						data: {
-							outTradeNo: this.outTradeNo,
-							bundleId
-						},
-						success: (res) => {
-							let data = res.data as UTSJSONObject;
-							if (data['errCode'] != null) {
-								let errCode = data['errCode'] as number;
-								if (errCode !== 0) {
-									uni.hideLoading();
-									if (data['errMsg'] != null) {
-										uni.showModal({
-											title: "提示",
-											content: data['errMsg'] as string,
-											showCancel: false
-										});
-									}
-									return;
-								}
-							}
-							let options = data['options'] as UTSJSONObject;
-							uni.requestMerchantTransfer({
-								mchId: options['mchId'] as string,
-								appId: options['appId'] as string,
-								package: options['package'] as string,
-								success: (res) => {
-									uni.showToast({
-										title: "转账成功",
-										icon: 'success'
-									});
-									this.disabled = true;
-								},
-								fail: (err) => {
-									uni.showToast({
-										title: "转账失败",
-										icon: 'error'
-									});
-									console.error("转账失败", err);
-								},
-								complete: (res) => {
-									uni.hideLoading();
-								}
-							});
-						},
-						fail: (err) => {
-							console.error("request-err", err);
-							uni.hideLoading();
-						}
-					});
-				} catch (err) {
-					console.error('err: ', err)
-					uni.showToast({
-						title: "运行异常",
-						icon: 'error'
-					});
-					uni.hideLoading();
-				}
-			}
-		}
-	}
+  export default {
+    data() {
+      return {
+        outTradeNo: "",
+        disabled: true,
+      }
+    },
+    onLoad() {
+      // this.outTradeNo = "test17400543350068114";
+      // this.disabled = false;
+    },
+    methods: {
+      pay() {
+        let baseInfo = uni.getAppBaseInfo();
+        let bundleId : string | null;
+        // #ifdef APP-ANDROID
+        bundleId = baseInfo.packageName;
+        // #endif
+        // #ifdef APP-IOS
+        bundleId = baseInfo.bundleId;
+        // #endif
+        let random = Math.floor(Math.random() * 9000) + 1000;
+        this.outTradeNo = `test${Date.now()}${random}`;
+        this.disabled = true;
+        uni.showLoading({
+          title: "请求中..."
+        });
+        const getProviderRes = uni.getProviderSync({
+          service: "payment"
+        });
+        if (getProviderRes.providerIds.indexOf("wxpay") === -1) {
+          uni.showToast({
+            title: "未添加微信支付依赖",
+            icon: 'error'
+          });
+          uni.hideLoading();
+          return;
+        }
+        uni.request({
+          url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOrderInfo",
+          method: "GET",
+          data: {
+            outTradeNo: this.outTradeNo,
+            bundleId
+          },
+          success: (res) => {
+            uni.hideLoading();
+            let data = res.data as UTSJSONObject;
+            let errCode = data['errCode'] as number;
+            if (errCode !== 0) {
+              uni.showModal({
+                title: "提示",
+                content: data['errMsg'] as string,
+                showCancel: false
+              });
+              return;
+            }
+            let orderInfo = data["orderInfo"] as string;
+            console.log('orderInfo: ', orderInfo)
+            uni.requestPayment({
+              provider: "wxpay",
+              orderInfo: orderInfo,
+              success: (res) => {
+                console.log('res: ', res)
+                uni.showToast({
+                  title: "支付成功",
+                  icon: 'success'
+                });
+                this.disabled = false;
+              },
+              fail: (err) => {
+                console.error("err", err);
+                uni.hideLoading();
+                uni.showToast({
+                  title: "支付失败",
+                  icon: 'error'
+                });
+              }
+            });
+          },
+          fail: (err) => {
+            uni.hideLoading();
+            console.error("request-err", err);
+          }
+        });
+      },
+      transfer() {
+        uni.showLoading({
+          title: "请求中..."
+        });
+        try {
+          let baseInfo = uni.getAppBaseInfo();
+          let bundleId = baseInfo.bundleId;
+          uni.request({
+            url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/transfer",
+            method: "GET",
+            data: {
+              outTradeNo: this.outTradeNo,
+              bundleId
+            },
+            success: (res) => {
+              let data = res.data as UTSJSONObject;
+              if (data['errCode'] != null) {
+                let errCode = data['errCode'] as number;
+                if (errCode !== 0) {
+                  uni.hideLoading();
+                  if (data['errMsg'] != null) {
+                    uni.showModal({
+                      title: "提示",
+                      content: data['errMsg'] as string,
+                      showCancel: false
+                    });
+                  }
+                  return;
+                }
+              }
+              let options = data['options'] as UTSJSONObject;
+              uni.requestMerchantTransfer({
+                mchId: options['mchId'] as string,
+                appId: options['appId'] as string,
+                package: options['package'] as string,
+                success: (res) => {
+                  uni.showToast({
+                    title: "转账成功",
+                    icon: 'success'
+                  });
+                  this.disabled = true;
+                },
+                fail: (err) => {
+                  uni.showToast({
+                    title: "转账失败",
+                    icon: 'error'
+                  });
+                  console.error("转账失败", err);
+                },
+                complete: (res) => {
+                  uni.hideLoading();
+                }
+              });
+            },
+            fail: (err) => {
+              console.error("request-err", err);
+              uni.hideLoading();
+            }
+          });
+        } catch (err) {
+          console.error('err: ', err)
+          uni.showToast({
+            title: "运行异常",
+            icon: 'error'
+          });
+          uni.hideLoading();
+        }
+      }
+    }
+  }
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: 20px;
-	}
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
 
-	.button {
-		width: 100%;
-		margin-bottom: 20px;
-		border-radius: 5px;
-	}
+  .button {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 5px;
+  }
 
-	.tips {
-		color: #999;
-		font-size: 14px;
-	}
+  .tips {
+    color: #999;
+    font-size: 14px;
+  }
 </style>
