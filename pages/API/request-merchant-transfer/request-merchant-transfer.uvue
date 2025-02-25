@@ -16,7 +16,7 @@
       }
     },
     onLoad() {
-      // this.outTradeNo = "test17400543350068114";
+      // this.outTradeNo = "test17404775193789726";
       // this.disabled = false;
     },
     methods: {
@@ -31,6 +31,7 @@
         // #endif
         let random = Math.floor(Math.random() * 9000) + 1000;
         this.outTradeNo = `test${Date.now()}${random}`;
+        console.log('outTradeNo: ', this.outTradeNo)
         this.disabled = true;
         uni.showLoading({
           title: "请求中..."
@@ -100,7 +101,13 @@
         });
         try {
           let baseInfo = uni.getAppBaseInfo();
-          let bundleId = baseInfo.bundleId;
+          let bundleId : string | null;
+          // #ifdef APP-ANDROID
+          bundleId = baseInfo.packageName;
+          // #endif
+          // #ifdef APP-IOS
+          bundleId = baseInfo.bundleId;
+          // #endif
           uni.request({
             url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/transfer",
             method: "GET",
@@ -110,43 +117,41 @@
             },
             success: (res) => {
               let data = res.data as UTSJSONObject;
-              if (data['errCode'] != null) {
-                let errCode = data['errCode'] as number;
-                if (errCode !== 0) {
-                  uni.hideLoading();
-                  if (data['errMsg'] != null) {
-                    uni.showModal({
-                      title: "提示",
-                      content: data['errMsg'] as string,
-                      showCancel: false
+              if (data['errCode'] != null && typeof data['errCode'] == "number" && data['errCode'] == 0) {
+                let options = data['options'] as UTSJSONObject;
+                uni.requestMerchantTransfer({
+                  mchId: options['mchId'] as string,
+                  appId: options['appId'] as string,
+                  package: options['package'] as string,
+                  success: (res) => {
+                    uni.hideLoading();
+                    console.log('res: ', res)
+                    uni.showToast({
+                      title: "转账成功",
+                      icon: 'success'
                     });
+                    this.disabled = true;
+                  },
+                  fail: (err) => {
+                    uni.hideLoading();
+                    uni.showToast({
+                      title: "转账失败",
+                      icon: 'error'
+                    });
+                    console.error("转账失败", err);
                   }
-                  return;
+                });
+              } else {
+                uni.hideLoading();
+                if (data['errMsg'] != null) {
+                  uni.showModal({
+                    title: "提示",
+                    content: data['errMsg'] as string,
+                    showCancel: false
+                  });
                 }
+                return;
               }
-              let options = data['options'] as UTSJSONObject;
-              uni.requestMerchantTransfer({
-                mchId: options['mchId'] as string,
-                appId: options['appId'] as string,
-                package: options['package'] as string,
-                success: (res) => {
-                  uni.showToast({
-                    title: "转账成功",
-                    icon: 'success'
-                  });
-                  this.disabled = true;
-                },
-                fail: (err) => {
-                  uni.showToast({
-                    title: "转账失败",
-                    icon: 'error'
-                  });
-                  console.error("转账失败", err);
-                },
-                complete: (res) => {
-                  uni.hideLoading();
-                }
-              });
             },
             fail: (err) => {
               console.error("request-err", err);
