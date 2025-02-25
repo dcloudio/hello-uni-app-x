@@ -59,6 +59,32 @@
           <input type="text" :disabled="true" placeholder="未获取" :value="notificationAuthorized" />
         </view>
       </view>
+      <!-- #ifdef APP-HARMONY -->
+      <view class="uni-list-cell">
+        <view class="uni-pd">
+          <view class="uni-label" style="width:180px;">是否授权读取日历</view>
+        </view>
+        <view class="uni-list-cell-db">
+          <input type="text" :disabled="true" placeholder="未获取" :value="readPhoneCalendarAuthorized" />
+        </view>
+      </view>
+      <view class="uni-list-cell">
+        <view class="uni-pd">
+          <view class="uni-label" style="width:180px;">是否授权写入日历</view>
+        </view>
+        <view class="uni-list-cell-db">
+          <input type="text" :disabled="true" placeholder="未获取" :value="writePhoneCalendarAuthorized" />
+        </view>
+      </view>
+      <view class="uni-list-cell">
+        <view class="uni-pd">
+          <view class="uni-label" style="width:180px;">是否授权读取剪切板</view>
+        </view>
+        <view class="uni-list-cell-db">
+          <input type="text" :disabled="true" placeholder="未获取" :value="pasteboardAuthorized" />
+        </view>
+      </view>
+      <!-- #endif -->
       <!-- #ifdef APP-IOS -->
       <view class="uni-list-cell">
         <view class="uni-pd">
@@ -108,7 +134,10 @@
         notificationAuthorized: "",
         notificationAlertAuthorized: "",
         notificationBadgeAuthorized: "",
-        notificationSoundAuthorized: ""
+        notificationSoundAuthorized: "",
+        pasteboardAuthorized: "",
+        writePhoneCalendarAuthorized: "",
+        readPhoneCalendarAuthorized: "",
       }
     },
     onUnload: function () {
@@ -123,6 +152,11 @@
         this.locationAccuracy = res.locationAccuracy ?? "unsupported";
         this.microphoneAuthorized = res.microphoneAuthorized;
         this.notificationAuthorized = res.notificationAuthorized;
+        // #ifdef APP-HARMONY
+        this.pasteboardAuthorized = res.pasteboardAuthorized;
+        this.writePhoneCalendarAuthorized = res.writePhoneCalendarAuthorized;
+        this.readPhoneCalendarAuthorized = res.readPhoneCalendarAuthorized;
+        // #endif
         // #ifdef APP-IOS
         this.notificationAlertAuthorized = res.notificationAlertAuthorized;
         this.notificationBadgeAuthorized = res.notificationBadgeAuthorized;
