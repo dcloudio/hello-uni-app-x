@@ -32,20 +32,19 @@ describe('PickerView.uvue', () => {
   it('value', async () => {
     await page.callMethod('setValue')
     await page.waitFor(1000)
-
-
     const newValue1 = await pickerViewEl.property('value')
     // TODO
     expect(newValue1.toString()).toEqual('0,1,30')
-    if (process.env.UNI_PLATFORM === 'app-android') {
-      expect(await page.data('result')).toEqual([0, 0, 0])
+    // 仅在App端，setValue可触发change事件
+    if (isAndroid || isIOS) {
+      expect(await page.data('result')).toEqual([ 0, 1, 30 ])
     }
     await page.callMethod('setValue1')
     await page.waitFor(1000)
     const newValue2 = await pickerViewEl.property('value')
     // TODO
     expect(newValue2.toString()).toEqual('10,10,10')
-    if (process.env.UNI_PLATFORM === 'app-android') {
+    if (isAndroid || isIOS) {
       expect(await page.data('result')).toEqual([10, 10, 10])
     }
   })
@@ -58,7 +57,6 @@ describe('PickerView.uvue', () => {
   })
 
   it('indicator-style', async () => {
-    // App端动态设置indicatorStyle无效
     const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
     await page.setData({
       indicatorStyle
@@ -69,7 +67,7 @@ describe('PickerView.uvue', () => {
   })
 
   if (isWeb || isMP) {
-    // indicator-class、mask-style、mask-class 仅web支持
+    // indicator-class、mask-style、mask-class 仅web和MP支持
     it('indicator-class', async () => {
       await page.setData({
         indicatorStyle: "", //清空indicatorStyle
@@ -101,7 +99,7 @@ describe('PickerView.uvue', () => {
 
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP) {
     it('mask-top-bottom-style', async () => {
-      // App端动态设置mask-top-style、mask-bottom-style无效
+      // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
       const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
       await page.setData({
