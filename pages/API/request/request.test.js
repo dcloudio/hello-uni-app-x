@@ -31,6 +31,10 @@ describe('ExtApi-Request', () => {
   let page;
   let res;
 
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isIOS = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
@@ -190,7 +194,7 @@ describe('ExtApi-Request', () => {
     })
   }
 
-  if(process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')){
+  if (isAndroid || isIOS) {
     it('send arraybuffer', async () => {
       res = await page.callMethod('sendArrayBuffer',true)
       await page.waitFor(5000);
