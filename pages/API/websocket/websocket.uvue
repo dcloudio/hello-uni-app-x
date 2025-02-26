@@ -111,8 +111,14 @@
           console.log('onError', err)
         })
         uni.onSocketMessage((res) => {
-          this.msg = res.data as string
-          console.log('onMessage', res)
+		   if(res.data instanceof ArrayBuffer){
+		   	var int8 = new Int8Array(res.data)
+		   	this.msg = int8.toString()
+		   	console.log('onMessage', res)
+		   }else{
+		   	this.msg = res.data as string
+		   	console.log('onMessage', res)
+		   }
         })
         uni.onSocketClose((res) => {
           this.connected = false
