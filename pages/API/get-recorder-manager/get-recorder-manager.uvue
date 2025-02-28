@@ -14,7 +14,7 @@
 					<view class="page-body-button"></view>
 				</view>
 			</template>
-			<template v-if="recording === true">
+			<template v-if="recording">
 				<view class="page-body-time">
 					<text class="time-big">{{formatedRecordTime}}</text>
 				</view>
@@ -26,7 +26,7 @@
 					<view class="page-body-button"></view>
 				</view>
 			</template>
-			<template v-if="hasRecord === true && playing === false">
+			<template v-if="hasRecord && !playing">
 				<view class="page-body-time">
 					<text class="time-big">{{formatedPlayTime}}</text>
 					<text class="time-small">{{formatedRecordTime}}</text>
@@ -40,7 +40,7 @@
 					</view>
 				</view>
 			</template>
-			<template v-if="hasRecord === true && playing === true">
+			<template v-if="hasRecord&& playing">
 				<view class="page-body-time">
 					<text class="time-big">{{formatedPlayTime}}</text>
 					<text class="time-small">{{formatedRecordTime}}</text>
@@ -158,7 +158,9 @@
 				console.log('play voice');
 				this.playing = true;
 				this.playTimeInterval = setInterval(() => {
-					this.playTime += 1;
+          if(this.playTime<this.recordTime){
+            this.playTime += 1;
+          }
 					this.formatedPlayTime = this.formatTime(this.playTime);
 				}, 1000)
 				this.music?.play();
@@ -226,6 +228,7 @@
 	.page-body-button {
 		width: 250rpx;
 		align-self: center;
+    margin: 10px;
 		align-items: center;
 	}
 
