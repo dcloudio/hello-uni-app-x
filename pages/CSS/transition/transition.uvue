@@ -73,9 +73,15 @@
       <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
     </view>
     <view class="container">
+      <text class="text">仅指定transition-duration背影有动画为正常</text>
+      <view style="width: 100%;height: 50px;" :style="changestyleTransitionDuration" @click="doChangeTransitionDuration">
+      </view>
+    </view>
+
+    <view class="container">
       <text class="text">在组件内滑动测试是否闪动</text>
       <view style="width: 100%;height: 200px;"  @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
-      <view class="base-style transition-transform" id="styleTransformTranslateScale" style="pointer-events: none;"></view>
+      <view class="base-style transition-transform"  id="styleTransformTranslateScale" style="pointer-events: none;"></view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -122,6 +128,7 @@
         startX: 0,
         moveX: 0,
         oldX: 0,
+        changestyleTransitionDuration:'background-color:brown;'
       }
     },
     onReady() {
@@ -285,6 +292,11 @@
       },
       handleTouchEnd(_ : UniTouchEvent) {
         this.oldX = this.moveX
+      },
+      doChangeTransitionDuration(){
+        console.log("doChangeTransitionDuration")
+        this.changestyleTransitionDuration
+        = this.changestyleTransitionDuration ==='background-color:brown;'?'transition-duration: 2000ms;background-color: blue;':'background-color:brown;'
       },
     },
   }
