@@ -6,7 +6,7 @@
     </view>
     <view>
       <view class="label">支付金额（单位分，100=1元）：</view>
-      <view><input class="input" v-model.number="total_fee" /></view>
+      <view><input class="input" v-model="total_fee" /></view>
     </view>
     <!-- #ifdef APP || H5 -->
     <button class="button" @click="open()">打开收银台（弹窗模式）</button>
@@ -108,7 +108,7 @@
   export default {
     data() {
       return {
-        total_fee: 1, // 支付金额，单位分 100 = 1元
+        total_fee: "1", // 支付金额，单位分 100 = 1元
         order_no: "", // 业务系统订单号（即你自己业务系统的订单表的订单号）
         out_trade_no: "", // 插件支付单号
         description: "测试订单", // 支付描述
@@ -167,7 +167,7 @@
         // 打开支付收银台
         const payInstance = this.$refs["payRef"] as UniPayComponentPublicInstance;
         payInstance.open({
-          total_fee: this.total_fee, // 支付金额，单位分 100 = 1元
+          total_fee: parseInt(this.total_fee), // 支付金额，单位分 100 = 1元
           order_no: this.order_no, // 业务系统订单号（即你自己业务系统的订单表的订单号）
           out_trade_no: this.out_trade_no, // 插件支付单号
           description: this.description, // 支付描述
@@ -187,7 +187,7 @@
         const payInstance = this.$refs["payRef"] as UniPayComponentPublicInstance;
         payInstance.createOrder({
           provider: provider, // 支付供应商
-          total_fee: this.total_fee, // 支付金额，单位分 100 = 1元
+          total_fee: parseInt(this.total_fee), // 支付金额，单位分 100 = 1元
           order_no: this.order_no, // 业务系统订单号（即你自己业务系统的订单表的订单号）
           out_trade_no: this.out_trade_no, // 插件支付单号
           description: this.description, // 支付描述
@@ -207,7 +207,7 @@
         const payInstance = this.$refs["payRef"] as UniPayComponentPublicInstance;
         payInstance.createOrder({
           provider: provider, // 支付供应商
-          total_fee: this.total_fee, // 支付金额，单位分 100 = 1元
+          total_fee: parseInt(this.total_fee), // 支付金额，单位分 100 = 1元
           order_no: this.order_no, // 业务系统订单号（即你自己业务系统的订单表的订单号）
           out_trade_no: this.out_trade_no, // 插件支付单号
           description: this.description, // 支付描述
@@ -225,7 +225,7 @@
         this.order_no = `test` + Date.now();
         this.out_trade_no = `${this.order_no}-1`;
         let options = {
-          total_fee: this.total_fee, // 支付金额，单位分 100 = 1元
+          total_fee: parseInt(this.total_fee), // 支付金额，单位分 100 = 1元
           order_no: this.order_no, // 业务系统订单号（即你自己业务系统的订单表的订单号）
           out_trade_no: this.out_trade_no, // 插件支付单号
           description: this.description, // 支付描述
