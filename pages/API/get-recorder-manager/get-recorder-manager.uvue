@@ -1,73 +1,50 @@
 <template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
 	<view>
 		<page-head :title="title"></page-head>
-		<view class="uni-padding-wrap">
-			<template v-if="!recording && !playing && !hasRecord">
-				<view class="page-body-time">
-					<text class="time-big">{{formatedRecordTime}}</text>
-				</view>
-				<view class="page-body-buttons">
-					<view class="page-body-button"></view>
-					<view class="page-body-button" @click="startRecord">
-						<image class="image" src="../../../static/record.png"></image>
-					</view>
-					<view class="page-body-button"></view>
-				</view>
-			</template>
-			<template v-if="recording">
-				<view class="page-body-time">
-					<text class="time-big">{{formatedRecordTime}}</text>
-				</view>
-				<view class="page-body-buttons">
-					<view class="page-body-button"></view>
-					<view class="page-body-button" @click="stopRecord">
-						<view class="button-stop-record"></view>
-					</view>
-					<view class="page-body-button"></view>
-				</view>
-			</template>
-			<template v-if="hasRecord && !playing">
-				<view class="page-body-time">
-					<text class="time-big">{{formatedPlayTime}}</text>
-					<text class="time-small">{{formatedRecordTime}}</text>
-				</view>
-				<view class="page-body-buttons">
-					<view class="page-body-button" @click="playVoice">
-						<image class="image" src="../../../static/play.png"></image>
-					</view>
-					<view class="page-body-button" @click="clear">
-						<image class="image" src="../../../static/trash.png"></image>
-					</view>
-				</view>
-			</template>
-			<template v-if="hasRecord&& playing">
-				<view class="page-body-time">
-					<text class="time-big">{{formatedPlayTime}}</text>
-					<text class="time-small">{{formatedRecordTime}}</text>
-				</view>
-				<view class="page-body-buttons">
-					<view class="page-body-button" @click="stopVoice">
-						<image class="image" src="../../../static/stop.png"></image>
-					</view>
-					<view class="page-body-button" @click="clear">
-						<image class="image" src="../../../static/trash.png"></image>
-					</view>
-				</view>
-			</template>
-		</view>
+    <view class="page-body-time">
+    	<text class="time-big">{{formatedRecordTime}}</text>
+      <!-- <text class="time-big">{{recordTimeInterval}}</text> -->
+    </view>
+
+    <button class="btnstyle" type="primary" @click="registerOnStart" >注册onStart</button>
+    <button class="btnstyle" type="primary" @click="registeronStop" >注册onStop</button>
+     <button class="btnstyle" type="primary" id="btn-error" @click="registeronError" >注册onError</button>
+
+    <button class="btnstyle" type="primary" @click="startRecord('aac')" >开始录制(aac)</button>
+    <button class="btnstyle" type="primary" @click="stopRecord" >停止录制(aac)</button>
+
+
+    <button class="btnstyle" type="primary" id="btn-startRecord" @click="startRecord('mp3')" >开始录制(mp3)</button>
+    <button class="btnstyle" type="primary" id="btn-stopRecord" @click="stopRecord" >停止录制(mp3)</button>
+
+
+    <button class="btnstyle" type="primary" @click="startRecord('PCM')" >开始录制(PCM)</button>
+    <button class="btnstyle" type="primary" @click="stopRecord" >停止录制(PCM)</button>
+
+
+    <button class="btnstyle" type="primary" @click="startRecord('wav')" >开始录制(wav)</button>
+    <button class="btnstyle" type="primary" @click="stopRecord" >停止录制(wav)</button>
+
+    <button class="btnstyle" type="primary" id="btn-startPlay"  @click="playVoice" >开始播放</button>
+    <button class="btnstyle" type="primary" id="btn-stopPlay"  @click="stopVoice" >停止播放</button>
+
 	</view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script>
-	// #ifdef APP-PLUS
-	import permision from "@/common/permission.js"
 
-	// #endif
 	export default {
 		data() {
 			return {
 				title: 'start/stopRecord、play/stopVoice',
 				recording: false, //录音中
 				playing: false, //播放中
+        registerError: false,
 				hasRecord: false, //是否有了一个
 				playTimeInterval: 0,
 				recordTimeInterval: 0,
@@ -100,6 +77,7 @@
 				console.log('recorder start');
 
 				this.recording = true;
+        this.recordTime = 0
 				this.recordTimeInterval = setInterval(() => {
 					this.recordTime += 1;
 					this.formatedRecordTime = this.formatTime(this.recordTime);
@@ -114,10 +92,47 @@
 			});
 			this.recorderManager!.onError((res) => {
 				console.log('recorder onError', JSON.stringify(res));
+        this.registerError = true
 			});
 		},
 
 		methods: {
+      registerOnStart(){
+        uni.showToast({
+          title:'already registerOnStart'
+        })
+         this.recordTime = 0
+        this.recorderManager!.onStart(() => {
+        	console.log('recorder start');
+
+        	this.recording = true;
+        	this.recordTimeInterval = setInterval(() => {
+        		this.recordTime += 1;
+        		this.formatedRecordTime = this.formatTime(this.recordTime);
+        	}, 1000)
+        });
+      },
+      registeronStop(){
+        uni.showToast({
+          title:'already registeronStop'
+        })
+        this.recorderManager!.onStop((res) => {
+        	console.log('on stop',res.tempFilePath);
+        	this.music!.src = res.tempFilePath
+
+        	this.hasRecord = true;
+        	this.recording = false;
+        });
+      },
+      registeronError(){
+        uni.showToast({
+          title:'already registeronError'
+        })
+        this.registerError = true
+        this.recorderManager!.onError((res) => {
+        	console.log('recorder onError', JSON.stringify(res));
+        });
+      },
 			pause() {
 
 				console.log('recorder pause start');
@@ -143,11 +158,14 @@
 				}).join(":");
 
 			},
-			startRecord() { //开始录音
+			startRecord(format:string) { //开始录音
+        if(this.recording){
+          return
+        }
 				console.log('startRecord')
 				// TODO ios 在没有请求过权限之前无法得知是否有相关权限，这种状态下需要直接调用录音，但没有状态或回调判断用户拒绝
 				this.recorderManager?.start({
-					format: 'mp3'
+					format: format
 				});
 			},
 			stopRecord() { //停止录音
@@ -156,19 +174,22 @@
 			},
 			playVoice() {
 				console.log('play voice');
+        if(this.playing){
+          return
+        }
 				this.playing = true;
 				this.playTimeInterval = setInterval(() => {
           if(this.playTime<this.recordTime){
             this.playTime += 1;
           }
-					this.formatedPlayTime = this.formatTime(this.playTime);
+					this.formatedRecordTime = this.formatTime(this.playTime);
 				}, 1000)
 				this.music?.play();
 			},
 			stopVoice() {
 				clearInterval(this.playTimeInterval)
 				this.playing = false;
-				this.formatedPlayTime = this.formatTime(0);
+				this.formatedRecordTime = this.formatTime(0);
 				this.playTime = 0;
 				this.music?.stop();
 			},
@@ -240,4 +261,7 @@
 		border-radius: 130rpx;
 		margin: 0 auto;
 	}
+  .btnstyle {
+    margin: 4px;
+  }
 </style>
