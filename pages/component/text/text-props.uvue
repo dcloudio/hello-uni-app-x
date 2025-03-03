@@ -74,16 +74,16 @@
         <text class="uni-subtitle-text">嵌套1</text>
       </view>
       <view class="text-box">
-        <text>一级节点黑色
-          <text style="color: red;background-color: yellow;">二级节点红色且背景色黄色
-            <text>App三级节点不继承二级的颜色</text>
+        <text @tap="nestedText1Tap">一级节点黑色
+          <text style="color: red;background-color: yellow;" @tap="nestedText2Tap">二级节点红色且背景色黄色
+            <text style="text-decoration-line:underline;color:blue;" @tap="nestedText3Tap">App三级节点不继承二级的颜色</text>
           </text>
           <text style="font-size: 50px">二级节点大字体</text>
         </text>
       </view>
 
       <view class="uni-title">
-        <text class="uni-subtitle-text">嵌套2</text>
+        <text class="uni-subtitle-text">空嵌套测试</text>
       </view>
       <view class="text-box">
         <text>
@@ -117,6 +117,11 @@
           </text>
         </text>
         <text id="height-text" style="height: 50px;">{{heightText}}</text>
+        <text style="position: fixed;" id="nested-text2" @tap="nestedText1TapForTest">1
+          <text @tap="nestedText2TapForTest">2
+            <text>3</text>
+          </text>
+        </text>
       </view>
     </view>
   </scroll-view>
@@ -134,10 +139,35 @@
         autoTest: false,
         nestedText: '三级节点文本',
         emptyText: '空文本',
-        heightText: '设置高度文本'
+        heightText: '设置高度文本',
+        isNestedText1TapTriggered: false,
+        isNestedText2TapTriggered: false
       }
     },
     methods: {
+      nestedText1Tap() {
+        uni.showModal({
+          title: '点击了',
+          content: '一级节点黑色',
+          showCancel: false
+        });
+      },
+      nestedText2Tap(e : UniPointerEvent) {
+        e.stopPropagation();
+        uni.showModal({
+          title: '点击了',
+          content: '二级节点红色且背景色黄色',
+          showCancel: false
+        });
+      },
+      nestedText3Tap(e : UniPointerEvent) {
+        e.stopPropagation();
+        uni.showModal({
+          title: '点击了',
+          content: 'App三级节点不继承二级的颜色',
+          showCancel: false
+        });
+      },
       // 自动化测试
       setNestedText() {
         this.nestedText = "修改三级节点文本";
@@ -147,6 +177,18 @@
       },
       setHeightText() {
         this.heightText = "修改设置高度文本";
+      },
+      getBoundingClientRectForTest() : DOMRect | null {
+        return uni.getElementById('nested-text2')?.getBoundingClientRect();
+      },
+      getWindowInfoForTest() : GetWindowInfoResult {
+        return uni.getWindowInfo();
+      },
+      nestedText1TapForTest() {
+        this.isNestedText1TapTriggered = true;
+      },
+      nestedText2TapForTest() {
+        this.isNestedText2TapTriggered = true;
       }
     }
   }

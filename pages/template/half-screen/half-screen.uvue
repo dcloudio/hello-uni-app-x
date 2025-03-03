@@ -1,12 +1,13 @@
 <template>
   <view ref="page" class="page">
     <text
-      style="margin: 10px">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
+      class="tip">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
+    <text class="tip">在小程序上本示例会卡顿，小程序上建议使用movable-view实现。</text>
     <button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
     <view ref="halfScreen" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove"
       @touchend="onHalfTouchEnd">
       <view class="halfTitle">半屏弹窗标题</view>
-      <scroll-view ref="halfScroll" class="halfScroll" rebound="true" :direction="scrollDirection">
+      <scroll-view ref="halfScroll" class="halfScroll" bounces="true" :direction="scrollDirection">
         <view v-for="(item,index) in list" :key="index" class="item">
           half screen content-{{item}}
         </view>
@@ -199,10 +200,17 @@
     background-color: darkgrey;
   }
 
+  .tip {
+    margin: 10px
+  }
+
   .bottomButton {
     position: absolute;
     width: 100%;
     bottom: 0px;
+    /* #ifdef APP */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* #endif */
   }
 
   .halfScreen {

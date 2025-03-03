@@ -9,15 +9,15 @@ export const openLocation : OpenLocation = function (options : OpenLocationOptio
   const successEventName = `${baseEventName}_success`
   const failEventName = `${baseEventName}_fail`
 
-  uni.$on(readyEventName, (..._ : any) => {
+  uni.$on(readyEventName, () => {
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)!))
   })
-  uni.$on(successEventName, (..._ : any) => {
+  uni.$on(successEventName, () => {
     const res = new OpenLocationSuccessImpl()
     options.success?.(res)
     options.complete?.(res)
   })
-  uni.$on(failEventName, (..._ : any) => {
+  uni.$on(failEventName, () => {
     const res = new OpenLocationFailImpl(4)
     options.fail?.(res)
     options.complete?.(res)

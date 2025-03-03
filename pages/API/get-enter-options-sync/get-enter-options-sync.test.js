@@ -4,7 +4,7 @@ describe('getEnterOptionsSync', () => {
   it('app onShow 和 getEnterOptionsSync 结果一致', async () => {
     const page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
-    const pageData = await page.data()
-    expect(pageData.testResult).toBe(true)
+    const testResult = await page.data('testResult')
+    expect(testResult).toBe(true)
   })
 })

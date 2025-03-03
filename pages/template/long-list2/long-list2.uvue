@@ -1,5 +1,5 @@
 <template>
-  <scroll-view ref="pageScrollView" class="page" :rebound="false"
+  <scroll-view ref="pageScrollView" class="page" :bounces="false"
     @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
     :nested-scroll-child="nestedScrollChildId"
     >
@@ -184,10 +184,18 @@
         const tabs = this.$refs["swipertab"] as UniElement[]
         for (let i = 0; i < tabs.length; i++) {
           const element = tabs[i];
+          // #ifdef MP
           const rect = await element.getBoundingClientRectAsync()!
+          const x = rect.left
+          const w = rect.width
+          // #endif
+          // #ifndef MP
+          const x = element.offsetLeft
+          const w = element.offsetWidth
+          // #endif
           this.swiperTabsRect.push({
-            x: rect.left,
-            w: rect.width
+            x,
+            w
           } as SwiperTabsItem)
         }
       },

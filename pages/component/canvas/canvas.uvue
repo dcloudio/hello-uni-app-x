@@ -40,11 +40,19 @@
         <text>测试 createPath2D 结果：</text>
         <text id="testCreatePath2D">{{testCreatePath2D}}</text>
       </view>
+
+      <view class="text-group">
+        <text>测试 createCanvasContextAsync 结果：</text>
+        <view @click="testCreateContextAsync" id="createCanvasContextAsync">{{testCanvasCtx}}</view>
+      </view>
+      <canvas-child ref="canvas-child"></canvas-child>
     </scroll-view>
   </view>
 </template>
 
 <script>
+  import CanvasChild from './canvas-child.uvue'
+
   function hidpi(canvas : UniCanvasElement) {
     const context = canvas.getContext("2d")!;
     const dpr = uni.getWindowInfo().pixelRatio;
@@ -54,6 +62,9 @@
   }
 
   export default {
+    components: {
+      CanvasChild
+    },
     data() {
       return {
         title: 'Context2D',
@@ -70,10 +81,17 @@
         testCanvasContext: false,
         testToBlobResult: false,
         testToDataURLResult: false,
-        testCreateCanvasContextAsyncSuccess: false,
         testCreateImage: false,
         testCreatePath2D: false,
-        testFrameCount: 0
+        testFrameCount: 0,
+        testCanvasCtx1: false,
+        testCanvasCtx2: false,
+        testCounter: 0
+      }
+    },
+    computed: {
+      testCanvasCtx() {
+        return this.testCanvasCtx1 && this.testCanvasCtx2
       }
     },
     onLoad() {
@@ -102,6 +120,8 @@
           this.testCanvasContext = true
         }
       })
+
+      uni.$on('canvasChildReady', this.onChildReady)
     },
     onReady() {
       // TODO app-android 需要延迟调用
@@ -118,6 +138,7 @@
       // this.canvasHeight = canvas.height;
     },
     onUnload() {
+      uni.$off('canvasChildReady', this.onChildReady)
       if (this.taskId > 0) {
         this.stopAnimationFrame()
       }
@@ -183,6 +204,27 @@
           this.frameCount = 0
           this.lastTime = timestamp
         }
+      },
+      testCreateContextAsync() {
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          component: this,
+          success: () => {
+            this.testCanvasCtx1 = true
+          }
+        })
+
+        // no `component` param
+        uni.createCanvasContextAsync({
+          id: 'canvas',
+          success: () => {
+            this.testCanvasCtx2 = true
+          }
+        })
+      },
+      onChildReady() {
+        const childInstance = (this.$refs['canvas-child'] as ComponentPublicInstance);
+        this.testCounter = childInstance.$data['testCounter'] as number;
       }
     }
   }

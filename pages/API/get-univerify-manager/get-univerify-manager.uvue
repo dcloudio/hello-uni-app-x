@@ -20,7 +20,7 @@
     data() {
       return {
         title: '一键登录',
-        univerifyManager: null as UniverifyManager | null,
+        uniVerifyManager: null as UniVerifyManager | null,
         phone: '',
         slogan: '',
         privacyName: '',
@@ -28,13 +28,21 @@
       }
     },
     onLoad() {
-      this.univerifyManager = uni.getUniverifyManager();
+      this.uniVerifyManager = uni.getUniVerifyManager();
       // 预登录
       this.preLogin(() => { });
     },
     methods: {
       customLoginIn() {
-        const isPreLoginValid = this.univerifyManager?.isPreLoginValid() ?? false;
+        if('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX'===uni.getAppBaseInfo().appId){
+          uni.showModal({
+            title: '提示',
+            content: '一键登录为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+            showCancel: false
+          })
+          return
+        }
+        const isPreLoginValid = this.uniVerifyManager?.isPreLoginValid() ?? false;
         if (isPreLoginValid) {
           this.pushCustomPage();
         } else {
@@ -57,8 +65,16 @@
         })
       },
       verify(fullScreen : boolean) {
+        if('production' === process.env.NODE_ENV && '__UNI__HelloUniAppX'===uni.getAppBaseInfo().appId){
+          uni.showModal({
+            title: '提示',
+            content: '一键登录为收费功能，当前环境暂不支持。请在HBuilderX中新建Hello uni-app x项目真机运行体验！',
+            showCancel: false
+          })
+          return
+        }
         // 校验预登录是否有效
-        const isPreLoginValid = this.univerifyManager?.isPreLoginValid() ?? false;
+        const isPreLoginValid = this.uniVerifyManager?.isPreLoginValid() ?? false;
         if (isPreLoginValid) {
           // 预登录有效，执行登录
           this.login(fullScreen);
@@ -70,7 +86,7 @@
         }
       },
       preLogin(callback: (() => void)) {
-        this.univerifyManager?.preLogin({
+        this.uniVerifyManager?.preLogin({
           success: (res) => {
             this.phone = res.number;
             this.slogan = res.slogan;
@@ -90,7 +106,7 @@
         });
       },
       login(fullScreen : boolean) {
-        this.univerifyManager?.login({
+        this.uniVerifyManager?.login({
           univerifyStyle:{
             fullScreen: fullScreen,
             backgroundColor: "#FFFFFF",
@@ -121,7 +137,7 @@
           }
         }).then(res => {
           // 关闭登录页
-          this.univerifyManager?.close();
+          this.uniVerifyManager?.close();
           setTimeout(() => {
             uni.showModal({
               title: '取号成功',
@@ -132,7 +148,7 @@
         }).catch(err => {
           console.error(JSON.stringify(err));
           // 关闭登录页
-          this.univerifyManager?.close();
+          this.uniVerifyManager?.close();
           setTimeout(() => {
             uni.showModal({
               title: '取号失败',

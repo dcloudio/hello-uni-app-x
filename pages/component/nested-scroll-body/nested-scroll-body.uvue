@@ -1,7 +1,7 @@
 <template>
   <scroll-view style="flex:1" type="nested" direction="vertical" refresher-enabled="true" refresher-default-style="none"
     bounces="false" :refresher-triggered="refresherTriggered" @refresherpulling="onRefresherpulling"
-    @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore">
+    @refresherrefresh="onRefresherrefresh" @refresherrestore="onRefreshrestore" @scrollend="scrollEnd">
     <nested-scroll-header>
       <swiper ref="header" indicator-dots="true" circular="true">
         <swiper-item v-for="i in 3" :item-id="i">
@@ -41,7 +41,8 @@
         scrollTop: 0,
         refresherTriggered: false,
         pullingDistance: 0,
-        resetting: false
+        resetting: false,
+        testScrollTop: 0
       }
     },
     computed: {
@@ -84,6 +85,10 @@
       //自动化测试使用
       testBodyScrollBy(y : number) {
         this.scrollTop = y
+      },
+      scrollEnd(e : UniScrollEvent) {
+        this.testScrollTop = e.detail.scrollTop
+        console.log('testScrollTop:', this.testScrollTop)
       }
     }
   }

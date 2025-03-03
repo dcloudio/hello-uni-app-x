@@ -2,10 +2,12 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <view class="banner">
-      <image class="banner-img" :src="cover"></image>
-      <text class="banner-title">{{title}}</text>
-    </view>
+    <share-element :share-key="share_key">
+      <view >
+          <image class="banner-img" :src="cover"></image>
+        <text class="banner-title">{{title}}</text>
+      </view>
+    </share-element>
     <rich-text :nodes="htmlNodes" style="padding: 3px"></rich-text>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -20,12 +22,17 @@
         title: '',
         cover: "",
         post_id: "",
+        share_key: ""
       }
     },
     onLoad(event : OnLoadOptions) {
       this.post_id = event["post_id"] ?? "";
-      this.cover = event["cover"] ?? "";
+      this.cover = event["cover"] ?? ""
+      // #ifdef APP-ANDROID
+      this.cover = atob(this.cover);
+      // #endif
       this.title = event["title"] ?? "";
+      this.share_key = event["shareKey"] ?? ""
       this.getDetail();
     },
     methods: {

@@ -41,7 +41,12 @@
           </template>
         </uni-collapse-item>
       </uni-collapse>
+      <!-- #ifdef MP || WEB -->
+      <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup" @touchmove.prevent="stopPropagation">
+      <!-- #endif -->
+      <!-- #ifndef MP || WEB -->
       <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup">
+      <!-- #endif -->
         <view style="width: 90%; background-color: white" @click.stop="stopClickPop">
           <api-set-tabbar></api-set-tabbar>
         </view>
@@ -95,6 +100,9 @@
       },
       stopClickPop: function (e : PointerEvent) {
         e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
+      },
+      stopPropagation() {
+
       }
     },
     // #ifdef WEB

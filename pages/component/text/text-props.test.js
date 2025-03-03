@@ -55,6 +55,27 @@ describe('text-props', () => {
         // TODO 微信小程序端疑似自动化测试框架Bug，此处text方法会返回`"修改三级节点文本修改三级节点文本"`,手动测试未发现问题
         expect(await element.text()).toBe("修改三级节点文本")
       }
+
+      if(isMP || isWeb) {
+        // 小程序、web暂不支持program.tap
+        expect(1).toBe(1)
+        return
+      }
+
+      const rect = await page.callMethod("getBoundingClientRectForTest")
+      const info = await page.callMethod("getWindowInfoForTest")
+
+      let x = Math.ceil(rect.left + rect.width / 2)
+      let y = Math.ceil(info.statusBarHeight + 44 + rect.top + rect.height / 2)
+
+      await program.tap({
+        x: x,
+        y: y
+      })
+
+      await page.waitFor(300)
+      expect(await page.data('isNestedText1TapTriggered')).toBe(true)
+      expect(await page.data('isNestedText2TapTriggered')).toBe(true)
       await page.setData({
         autoTest: false
       })

@@ -114,6 +114,21 @@
 			ArrayBuffer</button>
 		<button class="btnstyle" type="primary" @tap="testAppendFileBufferSync" id="btn-appendfilesync-buffer">同步在文件末尾追加
 			ArrayBuffer</button>
+      <!-- #ifdef APP -->
+      <button class="btnstyle" type="primary" @tap="testReadFileEncoding('base64')">readFile(content:// base64)</button>
+      <button class="btnstyle" type="primary" @tap="testReadFileEncoding('utf-8')">readFile(content:// utf-8)</button>
+      <button class="btnstyle" type="primary" @tap="testReadFileEncoding('ascii')">readFile(content:// ascii)</button>
+      <button class="btnstyle" type="primary" @tap="testReadFileArrayBuffer()">readFile(content:// arraybuffer)</button>
+
+      <button class="btnstyle" type="primary" @tap="testReadFileSyncEncoding('base64')">readFileSync(content:// base64)</button>
+      <button class="btnstyle" type="primary" @tap="testReadFileSyncEncoding('utf-8')">readFileSync(content:// utf-8)</button>
+      <button class="btnstyle" type="primary" @tap="testReadFileSyncEncoding('ascii')">readFileSync(content:// ascii)</button>
+      <button class="btnstyle" type="primary" @tap="testReadFileSyncArrayBuffer()">readFileSync(content:// arraybuffer)</button>
+
+      <button class="btnstyle" type="primary" @tap="copyFileByContent()">copyFile(content://)</button>
+      <button class="btnstyle" type="primary" @tap="copyFileSyncByContent()">copyFileSync(content://)</button>
+      <!-- #endif -->
+
 
 		<view style="height: 4px;"></view>
 		<!-- #endif -->
@@ -1678,9 +1693,117 @@
 					}
 					console.error(e)
 				}
-			}
-
+			},
+      // #ifdef APP-ANDROID
+       testReadFileEncoding(encoding : string) {
+       	console.log('testEncoding', encoding)
+       	uni.chooseImage({
+       		count: 1,
+       		albumMode: "system",
+       		sizeType: ["original"],
+       		sourceType: ["album"],
+       		success(e) {
+       			console.log(e.tempFilePaths[0])
+       			uni.getFileSystemManager().readFile({
+       				filePath: e.tempFilePaths[0],
+       				encoding: encoding,
+       				success: (res) => {
+       					console.log('success:', (res.data as string).length)
+       				}
+       			})
+       		}
+       	})
+       },
+       testReadFileArrayBuffer() {
+       	uni.chooseImage({
+       		count: 1,
+       		albumMode: "system",
+       		sizeType: ["original"],
+       		sourceType: ["album"],
+       		success(e) {
+       			console.log(e.tempFilePaths[0])
+       			uni.getFileSystemManager().readFile({
+       				filePath: e.tempFilePaths[0],
+       				success: (res) => {
+       					console.log('success:', (res.data as ArrayBuffer).byteLength)
+       				}
+       			})
+       		}
+       	})
+       },
+       testReadFileSyncEncoding(encoding : string) {
+       	console.log('testEncoding', encoding)
+       	uni.chooseImage({
+       		count: 1,
+       		albumMode: "system",
+       		sizeType: ["original"],
+       		sourceType: ["album"],
+       		success(e) {
+       			console.log(e.tempFilePaths[0])
+       			try {
+       				let res = uni.getFileSystemManager().readFileSync(e.tempFilePaths[0], encoding)
+       				console.log('success:', (res as string).length)
+       			} catch (e) {
+       				console.log(e)
+       			}
+       		}
+       	})
+       },
+       testReadFileSyncArrayBuffer() {
+       	uni.chooseImage({
+       		count: 1,
+       		albumMode: "system",
+       		sizeType: ["original"],
+       		sourceType: ["album"],
+       		success(e) {
+       			console.log(e.tempFilePaths[0])
+       			try {
+       				let res = uni.getFileSystemManager().readFileSync(e.tempFilePaths[0], null)
+       				console.log('success:', (res as ArrayBuffer).byteLength)
+       			} catch (e) {
+       				console.log(e)
+       			}
+       		}
+       	})
+       },
+       copyFileByContent() {
+       	uni.chooseImage({
+       		count: 1,
+       		albumMode: "system",
+       		sizeType: ["original"],
+       		sourceType: ["album"],
+       		success(e) {
+       			console.log(e.tempFilePaths[0])
+       			uni.getFileSystemManager().copyFile({
+       				srcPath: e.tempFilePaths[0],
+       				destPath: uni.env.CACHE_PATH+'copyFileByContent.jpg',
+       				complete: (res) => {
+       					console.log('success:', res)
+       				}
+       			})
+       		}
+       	})
+       },
+       copyFileSyncByContent() {
+       	uni.chooseImage({
+       		count: 1,
+       		albumMode: "system",
+       		sizeType: ["original"],
+       		sourceType: ["album"],
+       		success(e) {
+       			console.log(e.tempFilePaths[0])
+       			try {
+       				let res = uni.getFileSystemManager().copyFileSync(e.tempFilePaths[0], uni.env.CACHE_PATH+'copyFileSyncByContent.jpg',)
+       				console.log('success:', res)
+       			} catch (e) {
+       				console.log(e)
+       			}
+       		}
+       	})
+       },
+      // #endif
 		},
+
 
 	}
 </script>
