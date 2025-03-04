@@ -4,6 +4,7 @@ const isIos = platformInfo.startsWith('ios')
 const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 
 describe('API-loading', () => {
@@ -23,7 +24,7 @@ describe('API-loading', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
-    if (isApp) {
+    if (isApp && !isAppWebview) {
       await page.callMethod('setThemeAuto')
 
       const res = await page.callMethod('jest_getWindowInfo')
@@ -156,7 +157,7 @@ describe('API-loading', () => {
     })
   }
   afterAll(async () => {
-    if(isApp){
+    if(isApp && !isAppWebview){
       await page.callMethod('resetTheme')
     }
   });
