@@ -140,13 +140,15 @@
       viewImg() {
         uni.chooseFile({
           type: 'image',
-          count: 1,
           success: (res) => {
             console.log(res)
             if (res.tempFiles.length > 0) {
+              const tempFiles: Array<string> = res.tempFiles.map((value) => {
+              	return value.path
+              })
               uni.previewImage({
                 current: 0,
-                urls: new Array(res.tempFiles[0].path),
+                urls: tempFiles,
                 success: (res) => {
                   console.log(res)
                 },
