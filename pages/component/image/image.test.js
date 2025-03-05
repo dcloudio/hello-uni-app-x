@@ -137,4 +137,11 @@ describe('component-native-image', () => {
     const image = await program.screenshot({fullPage: true})
     expect(image).toSaveImageSnapshot()
   });
+
+  it('long-path-screenshot', async() => {
+    const page = await program.navigateTo('/pages/component/image/image-long');
+    await page.waitFor(3000);
+    const image = await program.screenshot({fullPage: true})
+    expect(image).toSaveImageSnapshot()
+  })
 });
