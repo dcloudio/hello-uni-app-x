@@ -20,6 +20,7 @@
         placeholder_value: "请输入",
         defaultModel: '123',
         textareaMaxLengthValue: "",
+        isSelectionFocus: false,
         selectionStart: -1,
         selectionEnd: -1,
         hold_keyboard: false,
@@ -57,11 +58,12 @@
       radio_change_inputmode_enum(checked : number) { this.inputmode_enum_current = checked },
       radio_change_confirm_type(checked : number) { this.confirm_type_current = checked },
       setSelection: function (selectionStart : number, selectionEnd : number) {
-        uni.getElementById("textarea-instance-2")?.focus()
+        this.isSelectionFocus = true;
         this.selectionStart = selectionStart;
         this.selectionEnd = selectionEnd;
       },
       onSelectionBlurChange() {
+      this.isSelectionFocus = false;
         this.selectionEnd = 0;
       },
       changeHoldKeyboard(event : UniSwitchChangeEvent) {
@@ -137,7 +139,7 @@
         <view @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
       </view>
       <view class="textarea-wrap">
-        <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase"
+        <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase" :focus="isSelectionFocus"
           :selection-start="selectionStart" :selection-end="selectionEnd" @blur="onSelectionBlurChange" />
       </view>
 
