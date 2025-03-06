@@ -82,5 +82,20 @@ describe('component-native-scroll-view-refresher', () => {
     await page.waitFor(300);
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
+    await page.waitFor(1500);
+  });
+
+  //验证issues 16020bug问题
+  it('check_page_orientation_snapshot', async () => {
+    if(isAndroid || isIos) {
+      await page.callMethod('setPageStyle', {pageOrientation: "landscape"})
+      await page.waitFor(800);
+      const image = await program.screenshot({fullPage: true});
+      expect(image).toSaveImageSnapshot();
+      await page.callMethod('setPageStyle', {pageOrientation: "portrait"})
+      await page.waitFor(800);
+    } else {
+      expect(1).toBe(1)
+    }
   });
 });
