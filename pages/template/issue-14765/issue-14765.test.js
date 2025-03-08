@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/examples/bind-id-prop/bind-id-prop'
+const PAGE_PATH = '/pages/template/issue-14765/issue-14765'
 
 // TODO 此测试例本应放在hello-uvue内，但是目前hello-uvue测试时是关闭virtualHost的，暂时放在这里
 

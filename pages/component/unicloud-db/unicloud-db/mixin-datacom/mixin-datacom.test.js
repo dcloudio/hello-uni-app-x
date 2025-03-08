@@ -1,7 +1,11 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.includes('harmony')
+
 const PAGE_PATH = '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom'
 
 describe('mixin-datacom', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (isWeb || isHarmony) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })

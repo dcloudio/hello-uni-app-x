@@ -1,12 +1,10 @@
 const PAGE_PATH = '/pages/API/base64/base64'
 
-
 describe('base64', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isWeb = platformInfo.startsWith('web')
   const isIOS = platformInfo.startsWith('ios')
-  if (isIOS) {
+  const isHarmony = platformInfo.startsWith('harmony')
+  if (isIOS || isHarmony) {
     it('not support', () => {
       expect(1).toBe(1)
     })

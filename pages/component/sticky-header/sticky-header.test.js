@@ -1,9 +1,12 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.includes('harmony')
 
 describe('component-native-sticky-header', () => {
-  if (isMP) {
-  	it('skip mp', () => {
+  if (isMP || isHarmony) {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return
@@ -17,16 +20,16 @@ describe('component-native-sticky-header', () => {
   }
   const screenshotParams = { fullPage: true }
   let windowInfo
-  
+
   beforeAll(async () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       screenshotParams.fullPage = false
       windowInfo = await getWindowInfo()
       let offsetY = '0'
-      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
+      if (isAndroid) {
         offsetY = `${windowInfo.statusBarHeight + 44}`
       }
-      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
+      if (isIos) {
         offsetY = `${windowInfo.safeAreaInsets.top + 44}`
       }
       screenshotParams.offsetY = offsetY

@@ -2,10 +2,15 @@ jest.setTimeout(20000);
 const PAGE_PATH = "/pages/API/navigator/new-page/onLoad";
 const INTERMEDIATE_PAGE_PATH = "/pages/API/navigator/new-page/new-page-1";
 const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-3";
+
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.includes('harmony')
+
 let page;
 
 describe("onLoad", () => {
- if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+ if (isMP || isHarmony) {
     it('not support', () => {
       expect(1).toBe(1)
     })

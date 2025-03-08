@@ -1,5 +1,4 @@
-const PAGE_PATH =
-  "/pages/API/request-payment/request-payment";
+const PAGE_PATH = "/pages/API/request-payment/request-payment";
 
 describe("payment", () => {
   if (

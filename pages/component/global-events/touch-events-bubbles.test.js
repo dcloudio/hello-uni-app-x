@@ -3,7 +3,6 @@ const PAGE_PATH = '/pages/component/global-events/touch-events-bubbles'
 describe('touch-events-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
 

@@ -1,7 +1,6 @@
 const PAGE_PATH = '/pages/component/global-events/touch-events'
 
 describe('touch-events-test', () => {
-
   // 先屏蔽 android 及 web 平台
   if (
     process.env.uniTestPlatformInfo.startsWith('android') ||

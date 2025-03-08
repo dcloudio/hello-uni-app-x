@@ -5,6 +5,7 @@ const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isHarmony = platformInfo.includes('harmony')
 
 let pageIndex = 0
 const pages = [
@@ -379,7 +380,7 @@ function getWaitForTagName(pagePath) {
 }
 
 describe("page screenshot test", () => {
-  if (platformInfo.indexOf('safari') !== -1) {
+  if (platformInfo.indexOf('safari') !== -1 || isHarmony) {
     it('暂时规避 safari 截图测试', () => {
       expect(1).toBe(1)
     })

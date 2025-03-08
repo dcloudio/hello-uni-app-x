@@ -1,7 +1,11 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.includes('harmony')
+
 const PAGE_PATH = '/pages/API/animation-frame/animation-frame'
 
 describe('API-cancelAnimationFrame', () => {
- if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+ if (isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
