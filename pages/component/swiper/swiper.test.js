@@ -1,17 +1,17 @@
 jest.setTimeout(30000);
 describe('test swiper', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
+
   let page;
-  const webDetailRes = {
+  const detailResWithCurrentItemId = {
     current: 1,
     currentItemId: 'B',//web端多了currentItemId
     source: 'autoplay' ,
   }
-  const appDetailRes = {
+  const detailRes = {
     current: 1,
     source: 'autoplay' ,
   }
@@ -39,11 +39,11 @@ describe('test swiper', () => {
         currentValChange: 0,
         autoplaySelect: true,
       })
-      await page.waitFor(2400)
+      await page.waitFor(2600)
       expect(await page.data('currentValChange')).toEqual(1)
-      await page.waitFor(2000)
+      await page.waitFor(2600)
       expect(await page.data('currentValChange')).toEqual(2)
-      await page.waitFor(2000)
+      await page.waitFor(2600)
       expect(await page.data('currentValChange')).toEqual(0)
 
       await page.setData({
@@ -108,7 +108,7 @@ describe('test swiper', () => {
     })
   });
 
-  it('Event transitiont', async () => {
+  it('Event transition', async () => {
     const transitionDetailInfo = await page.data('transitionDetailTest')
     expect(transitionDetailInfo.dy).toBe(0)
     expect(transitionDetailInfo.dx).not.toBe(0)
@@ -117,10 +117,10 @@ describe('test swiper', () => {
 
   it('Event change', async () => {
     const changeDetailInfo = await page.data('changeDetailTest')
-    if(isWeb || isMP){
-      expect(changeDetailInfo).toEqual(webDetailRes)
+    if(isWeb || isMP || isHarmony){
+      expect(changeDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
-      expect(changeDetailInfo).toEqual(appDetailRes)
+      expect(changeDetailInfo).toEqual(detailRes)
     }
     expect(await page.data('isChangeTest')).toBe('change:Success')
   });
@@ -128,10 +128,10 @@ describe('test swiper', () => {
   it('Event animationfinish', async () => {
     await page.waitFor(1000)
     const animationfinishDetailInfo = await page.data('animationfinishDetailTest')
-    if(isWeb || isMP){
-      expect(animationfinishDetailInfo).toEqual(webDetailRes)
+    if(isWeb || isMP || isHarmony){
+      expect(animationfinishDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
-      expect(animationfinishDetailInfo).toEqual(appDetailRes)
+      expect(animationfinishDetailInfo).toEqual(detailRes)
     }
     expect(await page.data('isAnimationfinishTest')).toBe('animationfinish:Success')
   });

@@ -3,9 +3,12 @@ describe('API-loading', () => {
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
-  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isIos = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+  const isApp = isIos || isAndroid
 
-  if(isMP) {
+  if(isMP || isHarmony) {
     // 微信小程序截图无法截到弹框
     it('not support', () => {
       expect(1).toBe(1)

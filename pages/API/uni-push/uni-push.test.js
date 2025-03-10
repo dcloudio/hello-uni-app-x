@@ -3,14 +3,6 @@ describe('test uni-push', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
-  const isHarmony = platformInfo.includes('harmony')
-
-  if (isHarmony) {
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/uni-push/uni-push')

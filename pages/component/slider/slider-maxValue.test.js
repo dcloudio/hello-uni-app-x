@@ -1,13 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+
 const PAGE_PATH = '/pages/component/slider/slider-maxValue'
 
 describe('touch-events-test', () => {
 
-  // 先屏蔽 android 及 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('android') ||
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if (isAndroid || isWeb || isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
