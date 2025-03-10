@@ -1,13 +1,13 @@
 const PAGE_PATH = '/pages/component/scroll-view/scroll-view-custom-refresher-props'
 
-describe('touch-events-test', () => {
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
 
-  // 先屏蔽 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
-    it('other platform', () => {
+describe('touch-events-test', () => {
+  if (isWeb || isMP || isHarmony) {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
