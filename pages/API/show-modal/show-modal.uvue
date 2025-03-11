@@ -31,6 +31,10 @@
           <switch :checked="confirmTextSelect" @change="confirmTextChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-pd">
+          <view class="uni-list-cell-db">测试非法的颜色</view>
+          <switch :checked="illegalColorSelect" @change="illegalColorChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-pd">
           <view class="uni-list-cell-db">是否显示输入框</view>
           <switch :checked="editableSelect" @change="editableChange" />
         </view>
@@ -64,6 +68,7 @@
         title: 'modal',
         showCancelSelect: false,
         showLongContent: false,
+        illegalColorSelect:false,
         cancelTextSelect: false,
         confirmTextSelect: false,
         editableSelect: false,
@@ -98,6 +103,9 @@
       },
       showLongContentChange: function (e : UniSwitchChangeEvent) {
         this.showLongContent = e.detail.value
+      },
+      illegalColorChange: function (e : UniSwitchChangeEvent) {
+        this.illegalColorSelect = e.detail.value
       },
       showCancelChange: function (e : UniSwitchChangeEvent) {
         this.showCancelSelect = e.detail.value
@@ -136,7 +144,7 @@
         let confirmColorVal = ''
         if (this.confirmTextSelect) {
           confirmTextVal = "修改后的确定文本"
-          confirmColorVal = "#00ffff"
+          confirmColorVal = "#0ff"
         }
 
         let placeholderTextVal = ''
@@ -150,6 +158,11 @@
           placeholderTextVal = "定制提示信息"
           contentVal = ""
         }
+        if (this.illegalColorSelect) {
+          cancelColorVal = "#WW00ff"
+          confirmColorVal = "#0ffff"
+        }
+
         uni.showModal({
           title: this.items[this.current].value,
           editable: this.editableSelect,
