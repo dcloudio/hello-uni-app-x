@@ -1,17 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
-const isApp = isAndroid || isIOS
 const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIOS || isHarmony
 
 describe('API-toast', () => {
-  if(isHarmony) {
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/show-toast/show-toast')

@@ -5,12 +5,11 @@ const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-3";
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 let page;
 
 describe("onLoad", () => {
- if (isMP || isHarmony) {
+ if (isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })

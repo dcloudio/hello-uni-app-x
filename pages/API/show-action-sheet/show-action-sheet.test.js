@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
 
@@ -22,7 +23,7 @@ describe('API-loading', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
-    if (isApp) {
+    if (isApp || isHarmony) {
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
       const windowWidth = res.windowWidth * res.pixelRatio;
