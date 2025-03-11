@@ -17,7 +17,7 @@ describe('component-native-sticky-header', () => {
   }
   const screenshotParams = { fullPage: true }
   let windowInfo
-  
+
   beforeAll(async () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
       screenshotParams.fullPage = false
@@ -38,6 +38,17 @@ describe('component-native-sticky-header', () => {
   //检测吸顶效果
   it('check_sticky_header', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
+    const image = await program.screenshot(screenshotParams);
+    expect(image).toSaveImageSnapshot();
+  })
+
+
+  //测试验证issues 16216 问题
+  it('check_sticky_header_position', async () => {
+    await page.callMethod('confirm_scroll_top_input', 300)
+    await page.waitFor(600);
+    await page.callMethod('clearListData')
+    await page.waitFor(600);
     const image = await program.screenshot(screenshotParams);
     expect(image).toSaveImageSnapshot();
   })
