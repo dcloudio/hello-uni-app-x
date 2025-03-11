@@ -83,7 +83,7 @@ const pages = [
   // 动态内容
   // '/pages/component/unicloud-db/unicloud-db/contacts/detail',
   // 动态内容
-  // '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
+  '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom',
   // 单独测试例截图
   // '/pages/component/global-properties/global-properties',
   '/pages/component/global-events/global-events',
