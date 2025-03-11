@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = '/pages/component/unicloud-db/unicloud-db/mixin-datacom/mixin-datacom'
 
 describe('mixin-datacom', () => {
-  if (isWeb || isHarmony) {
+  if (isWeb) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
