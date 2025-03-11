@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
-const isApp = isAndroid || isIos
+const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
@@ -380,13 +380,6 @@ function getWaitForTagName(pagePath) {
 }
 
 describe("page screenshot test", () => {
-  if (platformInfo.indexOf('safari') !== -1 || isHarmony) {
-    it('暂时规避 safari 截图测试', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   beforeAll(async () => {
     console.log("page screenshot test start");
   });
@@ -419,7 +412,7 @@ describe("page screenshot test", () => {
       if (isAndroid) {
         offsetY = `${windowInfo.statusBarHeight + 44}`
       }
-      if (isIos) {
+      if (isIos || isHarmony) {
         offsetY = `${windowInfo.safeAreaInsets.top + 44}`
       }
       screenshotParams.offsetY = offsetY
