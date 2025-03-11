@@ -2,7 +2,7 @@ import { CommonOptions } from '../interface.uts'
 
 
 export function testInovkeRequest(options : CommonOptions) : void {
-  uni.request<any>({
+  uni.request({
     url: "https://request.dcloud.net.cn/api/http/method/post",
     method: "POST",
     header: {
@@ -11,19 +11,22 @@ export function testInovkeRequest(options : CommonOptions) : void {
     timeout: 6000,
     sslVerify: false,
     withCredentials: false,
+    dataType: 'json',
+    responseType: 'text',
     data: {
       "platform": {
         "abc": "xyq"
       },
     },
     firstIpv4: false,
-    success: (res : RequestSuccess<any>) => {
+    success: (res) => {
       options.success?.(res)
     },
-    fail(e : RequestFail) {
+    fail(e) {
       options.fail?.(e)
     },
-  } as RequestOptions<any>)
+    complete: () => {},
+  })
 }
 
 export function testInovkeUploadFile(options : CommonOptions) : void {
@@ -35,16 +38,16 @@ export function testInovkeUploadFile(options : CommonOptions) : void {
       {
         name: "file1",
         uri: imageSrc
-      } as UploadFileOptionFiles,
+      },
       {
         name: "file2",
         uri: imageSrc
-      } as UploadFileOptionFiles
+      }
     ],
-    success: (res : UploadFileSuccess) => {
+    success: (res) => {
       options.success?.(res)
     },
-    fail: (err : UploadFileFail) => {
+    fail: (err) => {
       options.fail?.(err)
     },
   } as UploadFileOptions)
@@ -54,10 +57,10 @@ export function testInovkeDownloadFile(options : CommonOptions) : void {
   uni.downloadFile({
     url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
     filePath: `${uni.env.CACHE_PATH}/halo/world/`,
-    success(res : DownloadFileSuccess) {
+    success(res) {
       options.success?.(res)
     },
-    fail(e : DownloadFileFail) {
+    fail(e) {
       options.fail?.(e)
     }
   } as DownloadFileOptions);
