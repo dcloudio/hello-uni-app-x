@@ -1,5 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 const PAGE_PATH = '/pages/API/unicloud/unicloud/cloud-object'
 

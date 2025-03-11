@@ -5,7 +5,7 @@ const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-3";
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 let page;
 

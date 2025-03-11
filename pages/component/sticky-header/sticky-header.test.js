@@ -2,7 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-sticky-header', () => {
   if (isMP || isHarmony) {

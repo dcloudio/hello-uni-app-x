@@ -5,7 +5,7 @@ const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 

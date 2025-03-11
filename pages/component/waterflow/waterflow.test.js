@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.includes('isHarmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-waterflow', () => {
   if (isMP || isWeb || isHarmony) {

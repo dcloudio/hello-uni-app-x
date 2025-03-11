@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 const PAGE_PATH = "/pages/API/provider/provider";
 

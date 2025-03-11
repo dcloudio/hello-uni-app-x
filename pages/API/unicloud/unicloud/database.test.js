@@ -1,7 +1,7 @@
 const PAGE_PATH = '/pages/API/unicloud/unicloud/database'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isSafari = platformInfo.indexOf('safari') > -1
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('unicloud-database', () => {
   if (isSafari || isHarmony) {

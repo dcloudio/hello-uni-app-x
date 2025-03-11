@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
-const isHarmony = platformInfo.includes('harmony')
+const isHarmony = platformInfo.startsWith('harmony')
 
 const PAGE_PATH = '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh'
 
