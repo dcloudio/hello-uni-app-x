@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = '/pages/API/animation-frame/animation-frame'
 
 describe('API-cancelAnimationFrame', () => {
- if (isMP || isHarmony) {
+ if (isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
