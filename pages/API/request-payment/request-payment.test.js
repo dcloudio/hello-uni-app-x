@@ -1,23 +1,23 @@
-const PAGE_PATH =
-  "/pages/API/request-payment/request-payment";
+const PAGE_PATH = "/pages/API/request-payment/request-payment";
+
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isIOS = platformInfo.startsWith('ios')
 
 describe("payment", () => {
   if (
-    process.env.uniTestPlatformInfo.indexOf('web') > -1 ||
-    process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
+    isWeb ||
+    isMP ||
+    isIOS ||
+    process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true'
   ) {
     it('not support', () => {
       expect(1).toBe(1)
     })
     return
   }
-  if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
-    it('ios', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600)
