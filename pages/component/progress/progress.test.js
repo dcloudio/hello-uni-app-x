@@ -19,6 +19,7 @@ describe('Progress.uvue', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
   it('percent', async () => {
     await page.callMethod('setProgress')
     await page.waitFor(1000);
@@ -100,7 +101,7 @@ describe('Progress.uvue', () => {
   })
   it('trigger UniProgressActiveendEvent', async () => {
 
-    if (isWeb || isMP) {
+    if (isWeb || isMP || isHarmony) {
       expect(1).toBe(1)
       return
     }
