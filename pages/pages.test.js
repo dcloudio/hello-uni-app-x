@@ -41,7 +41,7 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/text/text-props',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/rich-text/rich-text-tags',
+  // '/pages/component/rich-text/rich-text-tags',
   '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
   '/pages/component/form/form',
