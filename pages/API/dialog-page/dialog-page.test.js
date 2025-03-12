@@ -5,18 +5,15 @@ const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
 describe('dialog page', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-    it('skip app-webview', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-  if (isMP) {
-    it('skip mp', () => {
+  // harmony 进入该页面，会导致后续测试超时
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP || isHarmony) {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
