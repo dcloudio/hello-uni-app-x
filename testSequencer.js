@@ -19,8 +19,8 @@ const startTestFilePaths = [
   "pages/component/rich-text/rich-text-complex.test.js"
 ]
 const endTestFilePaths = [
+  "pages/API/navigator/new-page/onLoad.test.js",
   "pages/API/show-modal/show-modal.test.js",
-  "pages/API/navigator/new-page/onLoad.test.js"
 ]
 
 class CustomSequencer extends Sequencer {
