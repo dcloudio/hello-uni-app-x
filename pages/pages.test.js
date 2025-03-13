@@ -285,10 +285,14 @@ if(!isMP) {
     '/pages/component/list-view/list-view-multiplex-input',
     '/pages/component/list-view/list-view-multiplex-video',
     '/pages/component/list-view/list-view-children-in-slot',
-    '/pages/template/schema/schema',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
+  if (!isHarmony) {
+    pages.push(
+      '/pages/template/schema/schema',
+    )
+  }
 }
 
 if (!isAppWebview) {

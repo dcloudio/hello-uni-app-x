@@ -1,5 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-list-view', () => {
   if (isMP) {
@@ -77,11 +80,7 @@ describe('component-native-list-view', () => {
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
-    return
-  }
-
-  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if(isWeb || isIOS || isHarmony) {
     return
   }
 

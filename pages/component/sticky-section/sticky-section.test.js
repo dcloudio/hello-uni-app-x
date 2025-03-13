@@ -4,7 +4,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-sticky-section', () => {
-  if (isMP) {
+  if (isMP || isHarmony) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})

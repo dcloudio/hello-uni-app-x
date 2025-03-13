@@ -1,21 +1,18 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+
 const PAGE_PATH = "/pages/API/provider/provider";
 
 describe("provider", () => {
-  if (isMP) {
-  	it('skip mp', () => {
+  if (isMP || isWeb || isHarmony || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return
   }
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
-    it('web', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600)

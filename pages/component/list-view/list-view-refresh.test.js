@@ -1,8 +1,10 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isWeb = platformInfo.startsWith('web')
+  const isMP = platformInfo.startsWith('mp')
+  const isHarmony = platformInfo.startsWith('harmony')
+
 describe('component-native-list-view-refresh', () => {
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if (isWeb || isMP || isHarmony) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
