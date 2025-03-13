@@ -1,9 +1,11 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-sticky-section', () => {
   if (isMP) {
-  	it('skip mp', () => {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return
@@ -12,7 +14,8 @@ describe('component-native-sticky-section', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/sticky-section/sticky-section')
-    await page.waitFor('sticky-section')
+    // harmony querySelector('sticky-section') 取不到
+    await page.waitFor(isHarmony ? 1000 : 'sticky-section')
   })
 
   it('check_delete_and_refresher', async () => {
@@ -41,7 +44,7 @@ describe('component-native-sticky-section', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
     return
   }
 

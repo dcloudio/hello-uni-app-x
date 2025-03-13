@@ -5,9 +5,10 @@ describe('swiper-touch-test', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
-  // 屏蔽 web * android 平台, 需要针对调整坐标
-  // 屏蔽 小程序，不支持 program.swipe
-  if (isWeb || isAndroid || isMP) {
+  const isHarmony = platformInfo.startsWith('harmony')
+  // 屏蔽 web & android 平台, 需要针对调整坐标
+  // 屏蔽 小程序 & harmony，不支持 program.swipe
+  if (isWeb || isAndroid || isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

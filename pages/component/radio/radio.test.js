@@ -14,10 +14,7 @@ beforeAll(async () => {
 
 describe('Radio.uvue', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
   it('change', async () => {
     expect(await getData('value')).toEqual('')
     const radio1 = await page.$('.r1')

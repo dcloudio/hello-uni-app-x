@@ -5,7 +5,6 @@ describe('component-native-textarea', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
 
   let page;
   let textarea;
@@ -143,5 +142,4 @@ describe('component-native-textarea', () => {
       expect(rect.width).toBe(100)
     })
   }
-
 });

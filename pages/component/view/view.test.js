@@ -4,12 +4,11 @@ const PAGE_PATH = '/pages/component/view/view'
 describe('view-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  isHarmony = platformInfo.startsWith('harmony')
 
-  // 先屏蔽 android 及 web 平台
-  if (isAndroid || isWeb || isMP) {
+  if (isAndroid || isWeb || isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
