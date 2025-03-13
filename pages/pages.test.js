@@ -1,7 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
-const isApp = isAndroid || isIos
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
@@ -290,26 +291,33 @@ if(!isMP) {
   )
 }
 
-if (isApp && !isAppWebview) {
-  pages.push(
-    '/pages/API/element-draw/element-draw',
-    '/pages/API/get-file-system-manager/get-file-system-manager',
-    '/pages/API/env/env',
-    '/pages/API/get-system-setting/get-system-setting',
-    '/pages/API/element-takesnapshot/element-takesnapshot',
-    '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
-    '/pages/API/save-image-to-photos-album/save-image-to-photos-album',
-    '/pages/API/save-video-to-photos-album/save-video-to-photos-album',
-    '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
-    // 进入页面崩溃，暂时规避
-    // '/pages/API/get-univerify-manager/get-univerify-manager',
-    '/pages/API/request-payment/request-payment',
-    '/pages/API/theme-change/theme-change',
-    '/pages/API/share-with-system/share-with-system',
-    '/pages/template/scroll-sticky/scroll-sticky',
-    '/pages/component/waterflow/waterflow-fit-height',
-    '/pages/template/test-uts-button/test-uts-button'
-  )
+if (!isAppWebview) {
+  if (isApp) {
+    pages.push(
+      '/pages/API/get-file-system-manager/get-file-system-manager',
+      '/pages/API/get-system-setting/get-system-setting',
+      '/pages/API/element-takesnapshot/element-takesnapshot',
+      '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
+      '/pages/API/save-image-to-photos-album/save-image-to-photos-album',
+      '/pages/API/save-video-to-photos-album/save-video-to-photos-album',
+      // 进入页面崩溃，暂时规避
+      // '/pages/API/get-univerify-manager/get-univerify-manager',
+      '/pages/API/request-payment/request-payment',
+      '/pages/API/theme-change/theme-change',
+      '/pages/template/scroll-sticky/scroll-sticky',
+    )
+  }
+  if(isIos || isAndroid){
+    pages.push(
+      '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
+      '/pages/API/env/env',
+      '/pages/API/element-draw/element-draw',
+      '/pages/component/waterflow/waterflow-fit-height',
+      '/pages/API/share-with-system/share-with-system',
+      '/pages/template/test-uts-button/test-uts-button'
+    )
+  }
+
 }
 
 if (isAndroid && !isAppWebview) {
@@ -419,7 +427,7 @@ describe("page screenshot test", () => {
       if (isAndroid) {
         offsetY = `${windowInfo.statusBarHeight + 44}`
       }
-      if (isIos) {
+      if (isIos || isHarmony) {
         offsetY = `${windowInfo.safeAreaInsets.top + 44}`
       }
       screenshotParams.offsetY = offsetY
