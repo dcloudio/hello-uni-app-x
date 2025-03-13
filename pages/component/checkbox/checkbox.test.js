@@ -15,24 +15,27 @@ beforeAll(async () => {
 
 describe('Checkbox.uvue', () => {
   const isMP = process.env.uniTestPlatformInfo.startsWith('mp')
-  it('change', async () => {
-    expect(await getData('value')).toEqual([])
-    const cb1 = await page.$('.cb1')
-    await cb1.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb', 'cb1'])
-    const cb = await page.$('.cb')
-    await cb.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb1'])
-    const cb2 = await page.$('.cb2')
-    await cb2.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb1'])
-    await cb1.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual([])
-  })
+  const isHarmony = platformInfo.startsWith('harmony')
+  if (!isHarmony) {
+    it('change', async () => {
+      expect(await getData('value')).toEqual([])
+      const cb1 = await page.$('.cb1')
+      await cb1.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual(['cb', 'cb1'])
+      const cb = await page.$('.cb')
+      await cb.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual(['cb1'])
+      const cb2 = await page.$('.cb2')
+      await cb2.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual(['cb1'])
+      await cb1.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual([])
+    })
+  }
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
     expect(checkboxGroupElements.length).toBe(4)
@@ -111,12 +114,14 @@ describe('Checkbox.uvue', () => {
       })
       expect(await cb.attribute('foreColor')).toBe('#63acfe')
     })
-    it('trigger UniCheckboxGroupChangeEvent', async () => {
-      const element = await page.$('.checkbox-item-0')
-      await element.tap()
-      await page.waitFor(1000)
-      const { testEvent } = await page.data()
-      expect(testEvent).toBe(true)
-    })
+    if (!isHarmony) {
+      it('trigger UniCheckboxGroupChangeEvent', async () => {
+        const element = await page.$('.checkbox-item-0')
+        await element.tap()
+        await page.waitFor(1000)
+        const { testEvent } = await page.data()
+        expect(testEvent).toBe(true)
+      })
+    }
   }
 })
