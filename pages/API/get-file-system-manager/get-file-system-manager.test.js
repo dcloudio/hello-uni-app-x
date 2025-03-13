@@ -320,7 +320,7 @@ describe('ExtApi-FileManagerTest', () => {
      * 'static/test-image/logo.ico' 注意，依赖这个资源文件，不能删除
      */
     await page.setData({
-      basePath: "",
+      basePath: "/",
       readFile: 'static/test-image/logo.ico',
       readFileEncoding: 'base64'
     })
