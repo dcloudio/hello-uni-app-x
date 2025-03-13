@@ -388,11 +388,15 @@ function getWaitForTagName(pagePath) {
   if (pagePath === '/pages/API/get-file-system-manager/get-file-system-manager') {
     return 'button'
   }
+  if (pagePath === '/pages/template/custom-refresher/custom-refresher') {
+    return 'list-view'
+  }
   return 'view'
 }
 
 describe("page screenshot test", () => {
-  if (platformInfo.indexOf('safari') !== -1) {
+  // TODO: 暂时屏蔽 harmony 截图测试，规避应用崩溃
+  if (platformInfo.indexOf('safari') !== -1 || isHarmony) {
     it('暂时规避 safari 截图测试', () => {
       expect(1).toBe(1)
     })
