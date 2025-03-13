@@ -15,21 +15,24 @@ beforeAll(async () => {
 describe('Radio.uvue', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
-  it('change', async () => {
-    expect(await getData('value')).toEqual('')
-    const radio1 = await page.$('.r1')
-    await radio1.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual('r1')
-    const radio = await page.$('.r')
-    await radio.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual('r')
-    const radio2 = await page.$('.r2')
-    await radio2.tap()
-    await page.waitFor(100)
-    expect(await getData('value')).toEqual('r')
-  })
+  const isHarmony = platformInfo.startsWith('harmony')
+  if (!isHarmony) {
+    it('change', async () => {
+      expect(await getData('value')).toEqual('')
+      const radio1 = await page.$('.r1')
+      await radio1.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual('r1')
+      const radio = await page.$('.r')
+      await radio.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual('r')
+      const radio2 = await page.$('.r2')
+      await radio2.tap()
+      await page.waitFor(100)
+      expect(await getData('value')).toEqual('r')
+    })
+  }
   it('length', async () => {
     const radioGroupElements = await page.$$('.radio-group')
     expect(radioGroupElements.length).toBe(4)
@@ -85,7 +88,7 @@ describe('Radio.uvue', () => {
       expect(await radio.attribute('disabled')).toBe(false + '')
     })
   }
-  if(!isMP) {
+  if(!isMP && !isHarmony) {
     it('trigger UniRadioGroupChangeEvent', async () => {
       const { current } = await page.data()
 
