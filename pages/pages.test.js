@@ -396,7 +396,7 @@ function getWaitForTagName(pagePath) {
 
 describe("page screenshot test", () => {
   // TODO: 暂时屏蔽 harmony 截图测试，规避应用崩溃
-  if (platformInfo.indexOf('safari') !== -1 || isHarmony) {
+  if (platformInfo.indexOf('safari') !== -1) {
     it('暂时规避 safari 截图测试', () => {
       expect(1).toBe(1)
     })
