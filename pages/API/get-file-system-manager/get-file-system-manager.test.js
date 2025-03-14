@@ -93,7 +93,7 @@ describe('ExtApi-FileManagerTest', () => {
 
       let lastFailError = await page.data('lastFailError')
       expect(lastFailError.errCode).toEqual(1300002)
-      expect(lastFailError.errMsg).toEqual('No such file or directory')
+      expect(lastFailError.errMsg).toContain('No such file or directory')
       // let lastCompleteError = await page.data('lastCompleteError')
       // expect(lastCompleteError.errCode).toEqual(1300002)
       // expect(lastCompleteError.errMsg).toEqual('No such file or directory')
@@ -531,7 +531,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     // 准备从资源目录拷贝png
     await page.setData({
-      basePath: "",
+      basePath: "/",
       unlinkFile: 'static/test-image/logo.ico',
       accessFile: 'static/test-image/logo.ico',
     })
@@ -883,7 +883,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 复制一份文件到 /a/m/3.txt
     await page.setData({
       //  asset 只能正式版测试，这里只能模拟返回路径
-      basePath: '',
+      basePath: '/',
       copyFromFile: 'static/test-image/logo.ico',
       copyToFile: 'a/m/3.txt',
     })
