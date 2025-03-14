@@ -1,8 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('ios')
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 
 describe('API-saveVideoToPhotosAlbum', () => {
-  if (!isAndroid) {
+  if (isIOS || isWeb || isMP) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
