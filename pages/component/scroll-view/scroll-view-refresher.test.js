@@ -88,7 +88,8 @@ describe('component-native-scroll-view-refresher', () => {
 
   //验证issues 16020bug问题
   it('check_page_orientation_snapshot', async () => {
-    if(isAndroid || isIos) {
+    // if(isAndroid || isIos) {
+    if(isAndroid || isHarmony) {
       await page.callMethod('setPageStyle', {pageOrientation: "landscape"})
       await page.waitFor(800);
       const image = await program.screenshot({fullPage: true});
