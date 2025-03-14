@@ -34,6 +34,7 @@ describe('ExtApi-Request', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isIOS = platformInfo.startsWith('ios')
   const isAndroid = platformInfo.startsWith('android')
+  const isHarmony = platformInfo.startsWith('harmony')
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -71,9 +72,12 @@ describe('ExtApi-Request', () => {
   it('Check DELETE', async () => {
     await request(page, 'DELETE');
   });
-  it('Check PATCH', async () => {
-    await request(page, 'PATCH');
-  });
+  // 鸿蒙平台暂不支持PATCH方法
+  if(!isHarmony) {
+    it('Check PATCH', async () => {
+      await request(page, 'PATCH');
+    });
+  }
   if (process.env.uniTestPlatformInfo.indexOf('web') === -1) {
     it('Check OPTIONS', async () => {
       await request(page, 'OPTIONS');
