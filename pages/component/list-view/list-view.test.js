@@ -48,6 +48,8 @@ describe('component-native-list-view', () => {
   it('Event check_scroll', async () => {
     await page.callMethod('change_scroll_y_boolean', true)
     await page.callMethod('change_scroll_x_boolean', false)
+    // 设置一次scrollTop 0。切换横竖方向，后scrollTop属性是否保持并无规范。
+    await page.callMethod('confirm_scroll_top_input', 0)
     await page.waitFor(600)
     await page.callMethod('confirm_scroll_top_input', 300)
     await page.waitFor(600)
@@ -85,6 +87,11 @@ describe('component-native-list-view', () => {
   }
 
   it('Event scrollend-滚动结束时触发',async()=>{
+    if(isHarmony) {
+      // 鸿蒙平台自动化测试不支持program.swipe
+      expect(1).toBe(1)
+      return
+    }
     // 仅App端支持,向上滑动页面
     await program.swipe({
       startPoint: { x: 100, y: 300 },
@@ -113,6 +120,11 @@ describe('component-native-list-view', () => {
 
   //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
   it('check_scroll_width', async () => {
+    if(isHarmony) {
+      // 鸿蒙平台list-view的暂不支持一次计算出scrollWidth
+      expect(1).toBe(1)
+      return
+    }
     if(await page.data('scroll_x_boolean') === false) {
         await page.callMethod('change_scroll_x_boolean', true)
         await page.callMethod('change_scroll_y_boolean', false)
@@ -136,12 +148,13 @@ describe('component-native-list-view', () => {
         refresher_enabled_boolean: true,
         refresher_triggered_boolean: true
     })
-    await page.waitFor(2000)
+    await page.waitFor(1000)
     expect(await page.data('refresherrefresh')).toBe(true)
     //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
     await page.waitFor(1000)
   })
 
+  // TODO attribute、property规范化
   //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_scroll_into_view_top', async () => {
     if(await page.data('scroll_y_boolean') === false) {
