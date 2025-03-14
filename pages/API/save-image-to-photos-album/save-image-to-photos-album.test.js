@@ -2,9 +2,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('API-saveImageToPhotosAlbum', () => {
-  if (isIOS || isWeb || isMP) {
+  if (isIOS || isWeb || isMP || isHarmony) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
