@@ -1356,7 +1356,6 @@ describe('ExtApi-FileManagerTest', () => {
     btnFstat = await page.$('#btn-fstat-file-sync')
     await btnFstat.tap()
     await isDone()
-    fstat = await page.data("fstat")
     fstatSize = await page.data("fstatSize")
     expect(fstatSize > 0).toBe(true)
     console.log('writeTest', '5')
@@ -1366,7 +1365,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnFTruncateFile.tap()
     await isDone()
     let ftruncateRet = await page.data("ftruncateRet")
-    expect(fstat).not.toEqual('ftruncate:ok')
+    expect(ftruncateRet).toEqual('ftruncate:ok')
     await page.setData({
       ftruncate: '',
     })
@@ -1377,7 +1376,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnFTruncateFile.tap()
     await isDone()
     ftruncateRet = await page.data("ftruncateRet")
-    expect(fstat).not.toEqual('ftruncate:ok')
+    expect(ftruncateRet).toEqual('ftruncate:ok')
     console.log('writeTest', '7')
   });
 
