@@ -1,5 +1,10 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const args = platformInfo.split(' ')
+const version = parseFloat(args[args.length - 1])
+
 describe('recorder', () => {
-  if (!(process.env.uniTestPlatformInfo.startsWith('android'))) {
+  if (!isAndroid || (isAndroid && version < 9)) {
     it('app', () => {
       expect(1).toBe(1)
     })
