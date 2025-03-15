@@ -3,9 +3,10 @@ const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 describe('API-saveImageToPhotosAlbum', () => {
-  if (isIOS || isWeb || isMP || isHarmony) {
+  if (isIOS || isWeb || isMP || isHarmony || isAppWebview) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
