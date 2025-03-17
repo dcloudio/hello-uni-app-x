@@ -4,7 +4,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-sticky-section', () => {
-  if (isMP || isHarmony) {
+  if (isMP) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
@@ -15,7 +15,7 @@ describe('component-native-sticky-section', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/sticky-section/sticky-section')
     // harmony querySelector('sticky-section') 取不到
-    await page.waitFor(isHarmony ? 1000 : 'sticky-section')
+    await page.waitFor('sticky-section')
   })
 
   it('check_delete_and_refresher', async () => {
@@ -44,7 +44,7 @@ describe('component-native-sticky-section', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' || isHarmony) {
     return
   }
 
