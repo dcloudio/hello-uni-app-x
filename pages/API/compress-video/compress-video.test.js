@@ -20,21 +20,23 @@ describe('API-compressVideo', () => {
   it('test compressVideo', async () => {
     await page.callMethod('testCompressVideo');
     await page.waitFor(5000);
+    const width = await page.data('videoSrcForTestWidth')
+    const height = await page.data('videoSrcForTestHeight')
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
       if (version == 5 || version == 7 || version == 9 || version == 10) return; // android5.1、android7、android9、android10存在兼容问题，待修复
       expect(await page.data('videoInfoForTest')).toEqual({
-        width: 640,
-        height: 360,
+        width,
+        height,
         // isSizeReduce: true
         isSizeReduce: false // android平台对测试视频进行压缩后存在视频变大的问题，待修复
       });
       return;
     }
     expect(await page.data('videoInfoForTest')).toEqual({
-      width: 640,
-      height: 360,
+      width,
+      height,
       isSizeReduce: true
     });
   });
