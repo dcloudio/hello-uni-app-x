@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = '/pages/API/base64/base64'
 
 describe('base64', () => {
-  if (isIOS || isHarmony) {
+  if (isHarmony) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -23,7 +23,9 @@ describe('base64', () => {
     const data = await page.data()
     expect(data.arrayBufferToBase64Res).toEqual('CxYh')
   })
-
+  if (isIOS) {
+    return
+  }
   it('base64ToArrayBuffer', async () => {
     await page.callMethod('base64ToArrayBuffer')
     await page.waitFor(200)
