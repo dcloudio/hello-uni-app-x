@@ -64,6 +64,13 @@ describe('dialog page', () => {
     expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
     pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
     expect(await pageSafeAreaInsetsRight.text()).toBe('0')
+
+    const pageWidth = await page.$('#page-width')
+    expect(parseInt(await pageWidth.text())).toBeGreaterThanOrEqual(0)
+    const pageHeight = await page.$('#page-height')
+    expect(parseInt(await pageHeight.text())).toBeGreaterThanOrEqual(0)
+    const pageStatusBarHeight = await page.$('#page-statusBarHeight')
+    expect(parseInt(await pageStatusBarHeight.text())).toBeGreaterThanOrEqual(0)
   })
   it('dialogPage pageBody safeAreaInsets', async () => {
     await page.callMethod('openDialogCheckMoreAttribute')
