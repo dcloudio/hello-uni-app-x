@@ -308,12 +308,12 @@ if (!isAppWebview) {
       // 进入页面崩溃，暂时规避
       // '/pages/API/get-univerify-manager/get-univerify-manager',
       '/pages/API/request-payment/request-payment',
-      '/pages/API/theme-change/theme-change',
       '/pages/template/scroll-sticky/scroll-sticky',
     )
   }
   if(isIos || isAndroid){
     pages.push(
+      '/pages/API/theme-change/theme-change',
       '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
       '/pages/API/env/env',
       '/pages/API/element-draw/element-draw',
