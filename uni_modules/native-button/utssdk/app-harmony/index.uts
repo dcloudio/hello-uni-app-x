@@ -21,6 +21,7 @@ export class NativeButton {
     constructor(element : UniNativeViewElement) {
         this.builder = element.bindHarmonyWrappedBuilder(wrapBuilder<[NativeButtonOptions]>(buildButton), this.params)
         this.$element = element
+        this.$element.bindHarmonyController(this)
     }
 
     updateText(text : string) {
@@ -31,19 +32,12 @@ export class NativeButton {
 
 
 class NativeButtonContext implements INativeButtonContext {
-    private element : UniNativeViewElement
-    private builder : BuilderNode<[NativeButtonOptions]>
+    private controller : NativeButton
     constructor(element : UniNativeViewElement) {
-        this.element = element
-        this.builder = element.getHarmonyBuilderNode() as BuilderNode<[NativeButtonOptions]>
+        this.controller = element.getHarmonyController<NativeButton>()!
     }
     updateText(text : string) {
-        this.builder?.update({
-            text,
-            onClick: () => {
-                this.element.dispatchEvent(new UniNativeViewEvent("customClick", {}))
-            }
-        })
+        this.controller?.updateText(text)
     }
 }
 /**
