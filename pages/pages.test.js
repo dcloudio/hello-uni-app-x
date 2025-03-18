@@ -228,6 +228,7 @@ const pages = [
   '/pages/CSS/text/text-align',
   '/pages/CSS/text/text-overflow',
   '/pages/CSS/text/text-decoration-line',
+  '/pages/CSS/text/text-shadow',
   // 单独测试例截图
   // '/pages/CSS/transition/transition',
   '/pages/CSS/pointer-events/pointer-events',
