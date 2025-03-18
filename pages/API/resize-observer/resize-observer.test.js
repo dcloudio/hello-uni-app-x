@@ -3,7 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('api-resize-observer', () => {
-  if (isMP || isHarmony) {
+  if (isMP) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
