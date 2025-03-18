@@ -169,8 +169,8 @@
             uni.getImageInfo({
               src: res.tempFilePath,
               success: (_res) => {
-                let beforeCompressSize : number, afterComoressSize : number;
                 // #ifdef APP-ANDROID
+                let beforeCompressSize : number, afterComoressSize : number;
                 beforeCompressSize = new FileInputStream(UTSAndroid.convert2AbsFullPath(this.imageSrcForTest)).available();
                 afterComoressSize = new FileInputStream(res.tempFilePath.substring("file://".length)).available();
                 this.imageInfoForTest = {
@@ -182,14 +182,20 @@
                 // #ifdef APP-HARMONY
                 const fsm = uni.getFileSystemManager()
                 fsm.getFileInfo({
-                  filePath: res.tempFilePath,
+                  filePath: this.imageSrcForTest,
                   digestAlgorithm: null,
-                  success: (res) => {
-                    this.imageInfoForTest = {
-                      "width": _res.width,
-                      "height": _res.height,
-                      "isSizeReduce": res.size < beforeCompressSize
-                    };
+                  success: (imageInfo) => {
+                    fsm.getFileInfo({
+                      filePath: res.tempFilePath,
+                      digestAlgorithm: null,
+                      success: (res) => {
+                        this.imageInfoForTest = {
+                          "width": _res.width,
+                          "height": _res.height,
+                          "isSizeReduce": res.size < imageInfo.size
+                        };
+                      }
+                    })
                   }
                 })
                 // #endif
