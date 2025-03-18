@@ -96,15 +96,18 @@
     },
     // #ifndef MP
     onLoad() {
+      this.getPageStyle();
+    },
+    // #endif
+    onReady() {
       // #ifdef APP-ANDROID
       this.setPageStyle({
         'androidThreeButtonNavigationBackgroundColor': 'transparent',
         'androidThreeButtonNavigationStyle': 'black'
       });
-      // #endif
       this.getPageStyle();
+      // #endif
     },
-    // #endif
     onPullDownRefresh() {
       setTimeout(() => {
         uni.stopPullDownRefresh()
@@ -148,6 +151,7 @@
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
         this.currentPageStyle = currentPage.getPageStyle()
+        console.log(this.currentPageStyle)
         return this.currentPageStyle;
       },
       setPageStyle(style : UTSJSONObject) {
