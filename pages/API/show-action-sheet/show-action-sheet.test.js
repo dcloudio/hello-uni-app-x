@@ -8,7 +8,7 @@ const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 
-describe('API-loading', () => {
+describe('showActionSheet', () => {
   let page;
   let screenShotOptions = {};
   async function showActionSheet(page) {
@@ -26,7 +26,9 @@ describe('API-loading', () => {
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
     if (isApp && !isAppWebview) {
-      await page.callMethod('setThemeAuto')
+      if(isAndroid || isIos){
+        await page.callMethod('setThemeAuto')
+      }
 
       const res = await page.callMethod('jest_getWindowInfo')
       const windowHeight = res.windowHeight * res.pixelRatio;
@@ -138,7 +140,7 @@ describe('API-loading', () => {
     await page.callMethod('showActionSheetAndShowAgainInCallback')
     await page.waitFor(1000);
     await screenshot();
-    if (isApp) {
+    if (isAndroid || isIos) {
       await program.tap({
         x: 200,
         y: 700,
@@ -158,7 +160,7 @@ describe('API-loading', () => {
     })
   }
   afterAll(async () => {
-    if(isApp && !isAppWebview){
+    if((isAndroid || isIos) && !isAppWebview){
       await page.callMethod('resetTheme')
     }
   });
