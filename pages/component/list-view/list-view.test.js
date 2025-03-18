@@ -49,7 +49,7 @@ describe('component-native-list-view', () => {
     await page.callMethod('change_scroll_y_boolean', true)
     await page.callMethod('change_scroll_x_boolean', false)
     // 设置一次scrollTop 0。切换横竖方向，后scrollTop属性是否保持并无规范。
-    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.callMethod('confirm_scroll_top_input', 600)
     await page.waitFor(600)
     await page.callMethod('confirm_scroll_top_input', 300)
     await page.waitFor(600)
