@@ -35,6 +35,10 @@
           <switch :checked="illegalColorSelect" @change="illegalColorChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-pd">
+          <view class="uni-list-cell-db">测试超长的按钮文本</view>
+          <switch :checked="illegalButtonTextSelect" @change="illegalButtonTextChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-pd">
           <view class="uni-list-cell-db">是否显示输入框</view>
           <switch :checked="editableSelect" @change="editableChange" />
         </view>
@@ -69,6 +73,7 @@
         showCancelSelect: false,
         showLongContent: false,
         illegalColorSelect:false,
+        illegalButtonTextSelect:false,
         cancelTextSelect: false,
         confirmTextSelect: false,
         editableSelect: false,
@@ -106,6 +111,9 @@
       },
       illegalColorChange: function (e : UniSwitchChangeEvent) {
         this.illegalColorSelect = e.detail.value
+      },
+      illegalButtonTextChange: function (e : UniSwitchChangeEvent) {
+        this.illegalButtonTextSelect = e.detail.value
       },
       showCancelChange: function (e : UniSwitchChangeEvent) {
         this.showCancelSelect = e.detail.value
@@ -148,12 +156,12 @@
         }
 
         let placeholderTextVal = ''
-		let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
+        let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
 
-		if (this.showLongContent) {
-		  placeholderTextVal = "定制提示信息"
-		  contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字原则上可以无限多！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！"
-		}
+        if (this.showLongContent) {
+          placeholderTextVal = "定制提示信息"
+          contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字原则上可以无限多！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！"
+        }
         if (this.placeholderTextSelect) {
           placeholderTextVal = "定制提示信息"
           contentVal = ""
@@ -161,6 +169,10 @@
         if (this.illegalColorSelect) {
           cancelColorVal = "#WW00ff"
           confirmColorVal = "#0ffff"
+        }
+        if (this.illegalButtonTextSelect) {
+          confirmTextVal = "超长版文字-修改后的确定文本-超长版本文字"
+          cancelTextVal = "超长版文字-修改后的取消文本-超长版本文字"
         }
 
         uni.showModal({
