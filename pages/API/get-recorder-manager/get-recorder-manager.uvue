@@ -1,42 +1,37 @@
 <template>
-  <!-- #ifdef APP -->
-  <scroll-view style="flex: 1;">
-  <!-- #endif -->
-    <view>
-      <page-head :title="title"></page-head>
-      <view class="page-body-time">
-        <text class="time-big">{{formatedRecordTime}}</text>
-        <!-- <text class="time-big">{{recordTimeInterval}}</text> -->
-      </view>
+  <page-head :title="title"></page-head>
+  <view class="page-body-time">
+    <text class="time-big">{{formatedRecordTime}}</text>
+    <!-- <text class="time-big">{{recordTimeInterval}}</text> -->
+  </view>
 
-      <button class="btnstyle" type="primary" @click="registerOnStart">注册onStart</button>
-      <button class="btnstyle" type="primary" @click="registeronStop">注册onStop</button>
-      <button class="btnstyle" type="primary" id="btn-error" @click="registeronError">注册onError</button>
-      <button class="btnstyle" type="primary" @click="registeronPause">注册onPause</button>
-      <button class="btnstyle" type="primary" @click="registeronResume">注册onResume</button>
-      <button class="btnstyle" type="primary" @click="registeronInterruptionBegin">注册onInterruptionBegin</button>
-      <button class="btnstyle" type="primary" @click="registeronInterruptionEnd">注册onInterruptionEnd</button>
-      <text> 请选择录音格式：</text>
+  <scroll-view style="flex: 1;">
+    <view>
+      <button class="btnstyle" size="default" @click="registerOnStart">注册onStart</button>
+      <button class="btnstyle" size="default" @click="registeronStop">注册onStop</button>
+      <button class="btnstyle" size="default" id="btn-error" @click="registeronError">注册onError</button>
+      <button class="btnstyle" size="default" @click="registeronPause">注册onPause</button>
+      <button class="btnstyle" size="default" @click="registeronResume">注册onResume</button>
+      <button class="btnstyle" size="default" @click="registeronInterruptionBegin">注册onInterruptionBegin</button>
+      <button class="btnstyle" size="default" @click="registeronInterruptionEnd">注册onInterruptionEnd</button>
       <view class="uni-list">
-        <radio-group @change="radioChange">
-          <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.value"
-            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
-            :checked="index === current">
+        <text style="margin-bottom: 10px"> 请选择录音格式：</text>
+        <radio-group class="uni-flex uni-row" @change="radioChange" style="flex-wrap: wrap">
+          <radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in items" :key="item.value"
+            :value="item.value" :checked="index === current">
             {{ item.name }}
           </radio>
         </radio-group>
       </view>
-      <button class="btnstyle" type="primary" id="btn-startRecord" @click="startRecord()">开始录制</button>
-      <button class="btnstyle" type="primary" @click="pauseRecord">暂停录制</button>
-      <button class="btnstyle" type="primary" @click="resumeRecord">继续录制</button>
-      <button class="btnstyle" type="primary" id="btn-stopRecord" @click="stopRecord">停止录制</button>
-      <button class="btnstyle" type="primary" id="btn-startPlay" @click="playVoice">开始播放</button>
-      <button class="btnstyle" type="primary" id="btn-stopPlay" @click="stopVoice">停止播放</button>
-
+      <button class="btnstyle" size="default" :disabled="disableStartBtn" id="btn-startRecord"
+        @click="startRecord()">开始录制</button>
+      <button class="btnstyle" size="default" :disabled="disablePauseBtn" @click="pauseRecord">暂停录制</button>
+      <button class="btnstyle" size="default" :disabled="disableResumeBtn" @click="resumeRecord">继续录制</button>
+      <button class="btnstyle" size="default" id="btn-stopRecord" @click="stopRecord">停止录制</button>
+      <button class="btnstyle" size="default" id="btn-startPlay" @click="playVoice">开始播放</button>
+      <button class="btnstyle" size="default" id="btn-stopPlay" @click="stopVoice">停止播放</button>
     </view>
-  <!-- #ifdef APP -->
   </scroll-view>
-  <!-- #endif -->
 </template>
 <script>
   export type ItemType = { value : string, name : string }
@@ -44,6 +39,9 @@
   export default {
     data() {
       return {
+        disableStartBtn: false,
+        disableResumeBtn: false,
+        disablePauseBtn: false,
         title: 'start/stopRecord、play/stopVoice',
         recording: false, //录音中
         playing: false, //播放中
@@ -64,18 +62,20 @@
             value: 'aac',
             name: 'aac'
           },
+          // #ifndef APP-HARMONY
           {
             value: 'mp3',
             name: 'mp3'
           },
           {
-            value: 'PCM',
-            name: 'PCM'
+            value: 'pcm',
+            name: 'pcm'
           },
           {
             value: 'wav',
             name: 'wav'
           }
+          // #endif
         ] as ItemType[]
       }
     },
@@ -94,10 +94,11 @@
       });
       this.recorderManager = uni.getRecorderManager();
 
-
       this.recorderManager!.onStart(() => {
-        console.log('recorder start');
-
+        console.log('recorder onStart');
+        this.disableStartBtn = true
+        this.disablePauseBtn = false
+        this.disableResumeBtn = false
         this.recording = true;
         this.recordTime = 0
         this.recordTimeInterval = setInterval(() => {
@@ -107,6 +108,9 @@
       });
       this.recorderManager!.onStop((res) => {
         console.log('on stop', res.tempFilePath);
+        this.disablePauseBtn = false
+        this.disableResumeBtn = false
+        this.disableStartBtn = false
         this.music!.src = res.tempFilePath
         clearInterval(this.recordTimeInterval)
         this.hasRecord = true;
@@ -114,7 +118,13 @@
       });
       this.recorderManager!.onError((res) => {
         console.log('recorder onError', JSON.stringify(res));
+        this.disablePauseBtn = false
+        this.disableResumeBtn = false
+        this.disableStartBtn = false
         this.registerError = true
+        uni.showToast({
+          title: res as string
+        })
       });
     },
 
@@ -133,7 +143,7 @@
         })
 
         this.recorderManager!.onStart(() => {
-          console.log('recorder start');
+          console.log('recorder on start');
           this.recordTime = 0
           this.recording = true;
           this.recordTimeInterval = setInterval(() => {
@@ -179,6 +189,14 @@
           console.log('recorder onResume');
         })
       },
+      registeronOnFrameRecorded() {
+        uni.showToast({
+          title: 'already registeronOnFrameRecorded'
+        })
+        this.recorderManager?.onFrameRecorded((res) => {
+          console.log('recorder onFrameRecorded----', res);
+        })
+      },
       registeronInterruptionBegin() {
         uni.showToast({
           title: 'already registeronInterruptionBegin'
@@ -198,6 +216,11 @@
       pauseRecord() {
         console.log('recorder pause');
         this.recorderManager?.pause()
+        if (this.recording) {
+          this.disableStartBtn = false
+          this.disablePauseBtn = true
+          this.disableResumeBtn = false
+        }
         clearInterval(this.recordTimeInterval)
       },
       resumeRecord() {
@@ -207,6 +230,9 @@
           console.log('recorder onResume');
         })
         if (this.recording) {
+          this.disableStartBtn = false
+          this.disablePauseBtn = false
+          this.disableResumeBtn = true
           this.recordTimeInterval = setInterval(() => {
             this.recordTime += 1;
             this.formatedRecordTime = this.formatTime(this.recordTime);
@@ -231,18 +257,35 @@
       },
       startRecord() { //开始录音
         if (this.recording) {
+          uni.showToast({
+            title: this.disablePauseBtn ? "当前是录音暂停状态" : "当前正在录音"
+          })
           return
         }
+
         console.log('startRecord', this.items[this.current].value)
         // TODO ios 在没有请求过权限之前无法得知是否有相关权限，这种状态下需要直接调用录音，但没有状态或回调判断用户拒绝
         this.recorderManager?.start({
-          format: this.items[this.current].value
+          format: this.items[this.current].value,
+          sampleRate: 8000,
+          numberOfChannels: 2,
+          encodeBitRate: 48000,
+          frameSize: 2
         });
       },
       stopRecord() { //停止录音
         this.recorderManager?.stop();
+        this.disableStartBtn = false
+        this.disablePauseBtn = false
+        this.disableResumeBtn = false
       },
       playVoice() {
+        if (this.recording) {
+          uni.showToast({
+            title: "当前录音还未结束"
+          })
+          return
+        }
         console.log('play voice');
         if (this.playing) {
           return
@@ -257,6 +300,12 @@
         this.music?.play();
       },
       stopVoice() {
+        if (this.recording) {
+          uni.showToast({
+            title: "当前录音还未结束"
+          })
+          return
+        }
         clearInterval(this.playTimeInterval)
         this.playing = false;
         this.formatedRecordTime = this.formatTime(0);
@@ -284,17 +333,6 @@
 </script>
 
 <style>
-  .image {
-    width: 150rpx;
-    height: 150rpx;
-  }
-
-  .page-body-wrapper {
-    justify-content: space-between;
-    flex-grow: 1;
-    margin-bottom: 300rpx;
-  }
-
   .page-body-time {
     display: flex;
     flex-direction: column;
@@ -306,33 +344,18 @@
     margin: 20rpx;
   }
 
-  .time-small {
-    font-size: 30rpx;
-  }
-
-  .page-body-buttons {
-    margin-top: 60rpx;
-    display: flex;
-    justify-content: space-around;
-  }
-
-  .page-body-button {
-    width: 250rpx;
-    align-self: center;
-    margin: 10px;
-    align-items: center;
-  }
-
-  .button-stop-record {
-    width: 110rpx;
-    height: 110rpx;
-    border: 20rpx solid #fff;
-    background-color: #f55c23;
-    border-radius: 130rpx;
-    margin: 0 auto;
-  }
-
   .btnstyle {
-    margin: 4px;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 10px;
+  }
+
+  .uni-list {
+    border-bottom: 0px;
+    background-color: transparent;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 </style>
