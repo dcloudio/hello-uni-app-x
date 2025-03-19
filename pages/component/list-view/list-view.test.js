@@ -27,6 +27,8 @@ describe('component-native-list-view', () => {
     const scrollTop = await listElement.attribute("scrollTop")
     console.log("check_scroll_top---"+scrollTop)
     expect(scrollTop-600).toBeGreaterThanOrEqual(0)
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
 
@@ -43,16 +45,19 @@ describe('component-native-list-view', () => {
     const scrollLeft = await listElement.attribute("scrollLeft")
     console.log("check_scroll_left---"+scrollLeft)
     expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
+    await page.callMethod('confirm_scroll_left_input', 0)
+    await page.waitFor(600)
   })
 
   it('Event check_scroll', async () => {
     await page.callMethod('change_scroll_y_boolean', true)
     await page.callMethod('change_scroll_x_boolean', false)
-    // 设置一次scrollTop 0。切换横竖方向，后scrollTop属性是否保持并无规范。
+    await page.waitFor(600)
+    // 设置一次scrollTop 0。切换横竖方向后scrollTop属性是否保持并无规范。
     await page.callMethod('confirm_scroll_top_input', 600)
-    await page.waitFor(600)
+    await page.waitFor(500)
     await page.callMethod('confirm_scroll_top_input', 300)
-    await page.waitFor(600)
+    await page.waitFor(500)
     const scrollDetail = await page.data('scrollDetailTest')
     // console.log('scrollDetailTest:', scrollDetail)
     expect(scrollDetail.scrollLeft).toBe(0)
@@ -66,6 +71,8 @@ describe('component-native-list-view', () => {
     expect(scrollDetail.deltaY).toBeGreaterThan(299.5)
     //expect([300.1905, 300, 299.8095]).toContain(scrollDetail.deltaY);
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
@@ -73,13 +80,17 @@ describe('component-native-list-view', () => {
     await page.callMethod('confirm_scroll_top_input', 2500)
     await page.waitFor(600)
     expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
     // 滚动到顶部50,是否触发scrolltoupper事件
-    await page.callMethod('confirm_scroll_top_input', 50)
+    await page.callMethod('confirm_scroll_top_input', 40)
     await page.waitFor(1000)
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
   if(isWeb || isIOS) {
