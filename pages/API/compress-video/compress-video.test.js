@@ -20,9 +20,11 @@ describe('API-compressVideo', () => {
   it('test compressVideo', async () => {
     await page.callMethod('testCompressVideo');
     await page.waitFor(5000);
-    const width = await page.data('videoSrcForTestWidth')
-    const height = await page.data('videoSrcForTestHeight')
+    var width = await page.data('videoSrcForTestWidth')
+    var height = await page.data('videoSrcForTestHeight')
     if (process.env.uniTestPlatformInfo.startsWith('android')) {
+      width = 640
+      height = 360
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
       if (version == 5 || version == 7 || version == 9 || version == 10) return; // android5.1、android7、android9、android10存在兼容问题，待修复
