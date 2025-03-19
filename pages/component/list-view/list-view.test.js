@@ -148,10 +148,10 @@ describe('component-native-list-view', () => {
         refresher_enabled_boolean: true,
         refresher_triggered_boolean: true
     })
-    await page.waitFor(2000)
+    await page.waitFor(1000)
     expect(await page.data('refresherrefresh')).toBe(true)
     //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
-    await page.waitFor(1000)
+    await page.waitFor(2000)
   })
 
   // TODO attribute、property规范化

@@ -99,10 +99,10 @@ describe('component-native-waterflow', () => {
           refresher_enabled_boolean: true,
           refresher_triggered_boolean: true
       })
-      await page.waitFor(2000)
+      await page.waitFor(1000)
       expect(await page.data('refresherrefresh')).toBe(true)
       //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
-      await page.waitFor(1000)
+      await page.waitFor(2000)
     })
 
     //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
