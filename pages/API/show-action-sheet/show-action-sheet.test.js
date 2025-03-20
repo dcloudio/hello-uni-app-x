@@ -9,7 +9,7 @@ const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 
 describe('showActionSheet', () => {
-  let statusBarHeight = 0;
+  let topSafeArea = 0;
   let page;
   let screenShotOptions = {};
   async function showActionSheet(page) {
@@ -24,7 +24,10 @@ describe('showActionSheet', () => {
   }
 
   beforeAll(async () => {
-    statusBarHeight = (await program.callUniMethod('getWindowInfo')).statusBarHeight;
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
     if (isApp && !isAppWebview) {
@@ -36,7 +39,7 @@ describe('showActionSheet', () => {
         deviceShot: true,
         area: {
           x: 0,
-          y: statusBarHeight + 44
+          y: topSafeArea + 44
         },
       }
     } else if (isWeb){

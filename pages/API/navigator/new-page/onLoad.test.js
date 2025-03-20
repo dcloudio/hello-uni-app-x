@@ -31,9 +31,10 @@ describe("onLoad", () => {
     return
   }
 
-  let statusBarHeight = 0;
+  let topSafeArea = 0;
   beforeAll(async () => {
-    statusBarHeight = (await program.callUniMethod('getWindowInfo')).statusBarHeight;
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
   })
 
   it("adjustData", async () => {
@@ -97,7 +98,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: statusBarHeight + 44,
+        y: topSafeArea + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
@@ -114,7 +115,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: statusBarHeight + 44,
+        y: topSafeArea + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
@@ -131,7 +132,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: statusBarHeight + 44,
+        y: topSafeArea + 44,
       },
     });
     expect(image).toSaveImageSnapshot({

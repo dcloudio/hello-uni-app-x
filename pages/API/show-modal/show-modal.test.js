@@ -1,5 +1,5 @@
 describe('API-loading', () => {
-
+  let topSafeArea = 0
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
@@ -30,6 +30,9 @@ describe('API-loading', () => {
   }
 
   beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+
     page = await program.reLaunch('/pages/API/show-modal/show-modal')
     await page.waitFor('view');
 
@@ -39,17 +42,12 @@ describe('API-loading', () => {
   it("onload-modal-test", async () => {
     if (isApp) {
       await page.waitFor(500);
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -78,17 +76,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -119,17 +111,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -160,17 +146,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -200,17 +180,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -238,16 +212,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -276,16 +245,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -314,16 +278,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -353,16 +312,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -390,17 +344,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -428,17 +376,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -466,17 +408,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -504,17 +440,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -542,17 +472,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -580,17 +504,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -618,16 +536,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -655,17 +568,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -693,16 +600,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
