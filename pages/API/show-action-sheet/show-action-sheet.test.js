@@ -9,6 +9,7 @@ const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 
 describe('showActionSheet', () => {
+  let statusBarHeight = 0;
   let page;
   let screenShotOptions = {};
   async function showActionSheet(page) {
@@ -23,6 +24,7 @@ describe('showActionSheet', () => {
   }
 
   beforeAll(async () => {
+    statusBarHeight = (await program.callUniMethod('getWindowInfo')).statusBarHeight;
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
     if (isApp && !isAppWebview) {
@@ -30,16 +32,11 @@ describe('showActionSheet', () => {
         await page.callMethod('setThemeAuto')
       }
 
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       screenShotOptions = {
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight + (isAndroid ? 30 : 70),
-          width: windowWidth
+          y: statusBarHeight + 44
         },
       }
     } else if (isWeb){
