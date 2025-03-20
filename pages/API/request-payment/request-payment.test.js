@@ -4,12 +4,15 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe("payment", () => {
+  // 下面的测试在鸿蒙平台有弹窗，暂时不支持
   if (
     isWeb ||
     isMP ||
     isIOS ||
+    isHarmony ||
     process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true'
   ) {
     it('not support', () => {
