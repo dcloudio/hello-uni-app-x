@@ -11,7 +11,6 @@ const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
 describe('dialog page', () => {
-  // harmony 进入该页面，会导致后续测试超时
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP) {
     it('not support', () => {
       expect(1).toBe(1)
@@ -19,10 +18,12 @@ describe('dialog page', () => {
     return
   }
 
+  let statusBarHeight = 0;
   let page;
   let initLifeCycleNum;
   let lifecycleNum;
   beforeAll(async () => {
+    statusBarHeight = (await program.callUniMethod('getWindowInfo')).statusBarHeight;
     page = await program.reLaunch(FIRST_PAGE_PATH)
     await page.waitFor('view');
     initLifeCycleNum = await page.callMethod('getLifeCycleNum');
@@ -84,7 +85,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -105,7 +106,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -135,7 +136,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -169,7 +170,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -187,7 +188,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -221,7 +222,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -238,7 +239,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image1).toSaveImageSnapshot();
@@ -254,7 +255,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image2).toSaveImageSnapshot();
@@ -283,7 +284,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -303,7 +304,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image1).toSaveImageSnapshot();
@@ -319,7 +320,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image2).toSaveImageSnapshot();
@@ -331,7 +332,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image3).toSaveImageSnapshot();
@@ -343,7 +344,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image4).toSaveImageSnapshot();
@@ -355,7 +356,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: statusBarHeight + 44
       }
     });
     expect(image5).toSaveImageSnapshot();
@@ -552,7 +553,7 @@ describe('dialog page', () => {
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
+          y: statusBarHeight + 44
         }
       })
       expect(image).toSaveImageSnapshot()
