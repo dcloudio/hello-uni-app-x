@@ -7,7 +7,6 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
-const isHarmony = platformInfo.startsWith('harmony')
 const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 let page;
 
@@ -31,6 +30,12 @@ describe("onLoad", () => {
     })
     return
   }
+
+  let statusBarHeight = 0;
+  beforeAll(async () => {
+    statusBarHeight = (await program.callUniMethod('getWindowInfo')).statusBarHeight;
+  })
+
   it("adjustData", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
@@ -59,25 +64,22 @@ describe("onLoad", () => {
       expect(page.path).toBe(INTERMEDIATE_PAGE_PATH.substring(1));
     }
   });
-  // TODO: harmony 崩溃，待修复后放开
-  if (!isHarmony) {
-    it("redirectTo", async () => {
-      page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-      await page.waitFor('view');
-      await page.callMethod("navigateToOnLoadWithType", "redirectTo");
-      await page.waitFor(100);
-      page = await program.currentPage();
-      expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
-    });
-    it("reLaunch", async () => {
-      page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-      await page.waitFor('view');
-      await page.callMethod("navigateToOnLoadWithType", "reLaunch");
-      await page.waitFor(100);
-      page = await program.currentPage();
-      expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
-    });
-  }
+  it("redirectTo", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor('view');
+    await page.callMethod("navigateToOnLoadWithType", "redirectTo");
+    await page.waitFor(100);
+    page = await program.currentPage();
+    expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
+  });
+  it("reLaunch", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor('view');
+    await page.callMethod("navigateToOnLoadWithType", "reLaunch");
+    await page.waitFor(100);
+    page = await program.currentPage();
+    expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
+  });
   it("switchTab", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
@@ -95,8 +97,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
-        height: 2140,
+        y: statusBarHeight + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
@@ -113,8 +114,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
-        height: 2140,
+        y: statusBarHeight + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
@@ -131,8 +131,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
-        height: 2140,
+        y: statusBarHeight + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
