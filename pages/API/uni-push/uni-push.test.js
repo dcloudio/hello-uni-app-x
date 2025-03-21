@@ -2,15 +2,7 @@ jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 describe('uni-push', () => {
-  // 在鸿蒙平台有弹窗，暂时不支持
-  if (isHarmony) {
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/uni-push/uni-push')
