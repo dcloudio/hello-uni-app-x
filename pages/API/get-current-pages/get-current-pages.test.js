@@ -136,4 +136,13 @@ describe('getCurrentPages', () => {
     const res = await page.callMethod('checkGetHTMLElement')
     expect(res).toBe(isWeb)
   })
+
+  it('getAndroidActivity', async () => {
+    if(isAndroid) {
+      const res = await page.callMethod('checkGetAndroidActivity')
+      expect(res).toBe(true)
+    } else {
+      expect(1).toBe(1)
+    }
+  })
 })

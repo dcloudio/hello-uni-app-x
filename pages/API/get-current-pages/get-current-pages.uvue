@@ -33,6 +33,11 @@
           check getHTMLElement
         </button>
         <!-- #endif -->
+        <!-- #ifdef APP-ANDROID -->
+        <button class="uni-common-mt" @click="checkGetAndroidActivity">
+          check getAndroidActivity
+        </button>
+        <!-- #endif -->
       </view>
       <!-- #ifndef MP -->
       <page-head title="currentPageStyle"></page-head>
@@ -242,6 +247,14 @@
         uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
         return res
       },
+      checkGetAndroidActivity() : boolean {
+        const page = this.getCurrentPage()
+        const activity = page.getAndroidActivity()
+        const res = activity != null
+        console.log('check getAndroidActivity', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check getAndroidActivity', icon: 'error' })
+        return res
+      }
     },
   }
 </script>
