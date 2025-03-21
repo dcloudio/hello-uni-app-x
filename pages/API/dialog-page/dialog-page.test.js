@@ -471,30 +471,38 @@ describe('dialog page', () => {
 
   if (isAndroid || isIos) {
     it('after closeDialogPage reset statusBar color', async () => {
-      const adbScreenShotArea = {
-        x: 900,
-        y: 50,
-        width: 100,
-        height: 70
+      const screenShotArea = {
+        x: 342,
+        y:18,
+        width: 40,
+        height: 20
       };
-      if (isIos && platformInfo.indexOf('13.7') != -1) {
-        adbScreenShotArea.x = 690
-        adbScreenShotArea.y = 25
-        adbScreenShotArea.width = 50
-        adbScreenShotArea.height = 50
+      if (isIos) {
+        screenShotArea.x = 310
+        screenShotArea.y = 20
+        screenShotArea.width = 40
+        screenShotArea.height = 20
       } else if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
-        adbScreenShotArea.x = 535
-        adbScreenShotArea.width = 90
-        adbScreenShotArea.height = 50
+        screenShotArea.x = 204
+        screenShotArea.width = 34
+        screenShotArea.height = 16
       } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
-        adbScreenShotArea.x = 1160
-        adbScreenShotArea.width = 70
-        adbScreenShotArea.height = 80
+        screenShotArea.x = 442
+        screenShotArea.width = 27
+        screenShotArea.height = 24
+      } else if (isHarmony) {
+        // TODO: harmony 窗口截图不是真正的设备截图，无法截取状态栏
+        // 真正设备截图可以通过以下命令获取
+        // hdc shell snapshot_display -f /data/local/tmp/test.jpeg 截图
+        // hdc file recv  /data/local/tmp/test.jpeg ./test.jpeg 转存到本地
+        screenShotArea.x = 200
+        screenShotArea.y = 0
+        screenShotArea.width = 540
+        screenShotArea.height = 100
       }
-
       const imageForParentInit = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForParentInit).toSaveImageSnapshot();
 
@@ -502,7 +510,7 @@ describe('dialog page', () => {
       await page.waitFor(1000)
       const imageForDialog4_1 = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForDialog4_1).toSaveImageSnapshot();
 
@@ -510,7 +518,7 @@ describe('dialog page', () => {
       await page.waitFor(1000)
       const imageForDialog3 = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForDialog3).toSaveImageSnapshot();
 
@@ -519,7 +527,7 @@ describe('dialog page', () => {
 
       const imageForDialog4_2 = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForDialog4_2).toSaveImageSnapshot();
 
@@ -528,41 +536,34 @@ describe('dialog page', () => {
 
       const imageForParentEnd = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForParentEnd).toSaveImageSnapshot();
     })
   }
-  if (!isHarmony) {
-    it('input-hold-keyboard in dialog', async () => {
-      await page.callMethod('jest_OpenDialog1')
-      await page.waitFor(2000);
-      await page.callMethod('jest_getTapPoint')
-      const point_x = await page.data('jest_click_x');
-      const point_y = await page.data('jest_click_y');
-      if (isAndroid) {
-        await program.adbCommand("input tap" + " " + point_x + " " + point_y)
-        console.log("input tap" + " " + point_x + " " + point_y);
-      } else {
-        await program.tap({
-          x: Math.round(point_x),
-          y: Math.round(point_y)
-        })
-      }
-
-      await page.waitFor(1000);
-      const image = await program.screenshot({
-        deviceShot: true,
-        area: {
-          x: 0,
-          y: topSafeArea + 44
-        }
-      })
-      expect(image).toSaveImageSnapshot()
-      await page.waitFor(2000);
-      await page.callMethod('jest_CloseDialog1')
+  it('input-hold-keyboard in dialog', async () => {
+    await page.callMethod('jest_OpenDialog1')
+    await page.waitFor(2000);
+    await page.callMethod('jest_getTapPoint')
+    const point_x = await page.data('jest_click_x');
+    const point_y = await page.data('jest_click_y');
+    await program.tap({
+      x: Math.round(point_x),
+      y: Math.round(point_y)
     })
-  }
+
+    await page.waitFor(1000);
+    const image = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: topSafeArea + 44
+      }
+    })
+    expect(image).toSaveImageSnapshot()
+    await page.waitFor(2000);
+    await page.callMethod('jest_CloseDialog1')
+  })
 
   it('dialogPage hideStatusBar hideBottomNavigationIndicator', async () => {
     if (isAndroid) {

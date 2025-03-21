@@ -6,7 +6,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query-onScroll'
 
 describe('create-selector-query-onScroll', () => {
-  if (isWeb || isMP || isHarmony || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('not support', () => {
       expect(1).toBe(1)
     })

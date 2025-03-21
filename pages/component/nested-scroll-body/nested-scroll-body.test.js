@@ -2,6 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIOS = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-nested-scroll-body', () => {
   if (isMP) {
@@ -33,7 +34,7 @@ describe('component-native-nested-scroll-body', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if(isIOS || isAndroid){
+  if(isIOS || isAndroid || isHarmony){
     it('check_scroll', async () => {
       let lists = []
       for (let i = 0; i < 5; i++) {

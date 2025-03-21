@@ -3,10 +3,9 @@ const PAGE_PATH = '/pages/component/scroll-view/scroll-view-custom-refresher-pro
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('touch-events-test', () => {
-  if (isWeb || isMP || isHarmony || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('not support', () => {
       expect(1).toBe(1)
     })

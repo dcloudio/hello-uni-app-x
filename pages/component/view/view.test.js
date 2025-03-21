@@ -6,9 +6,8 @@ describe('view-test', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  isHarmony = platformInfo.startsWith('harmony')
 
-  if (isAndroid || isWeb || isMP || isHarmony) {
+  if (isAndroid || isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

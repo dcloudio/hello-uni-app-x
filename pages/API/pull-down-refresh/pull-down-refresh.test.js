@@ -9,8 +9,7 @@ describe("payment", () => {
   if (
     isWeb ||
     process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' ||
-    isMP ||
-    isHarmony
+    isMP
   ) {
     it('not support', () => {
       expect(1).toBe(1)

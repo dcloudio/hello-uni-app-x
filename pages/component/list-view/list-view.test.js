@@ -98,11 +98,6 @@ describe('component-native-list-view', () => {
   }
 
   it('Event scrollend-滚动结束时触发',async()=>{
-    if(isHarmony) {
-      // 鸿蒙平台自动化测试不支持program.swipe
-      expect(1).toBe(1)
-      return
-    }
     // 仅App端支持,向上滑动页面
     await program.swipe({
       startPoint: { x: 100, y: 300 },

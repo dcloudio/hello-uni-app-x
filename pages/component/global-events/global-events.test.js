@@ -1,5 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+  
 const PAGE_PATH = '/pages/component/global-events/global-events'
 
 describe('event trigger', () => {
@@ -10,9 +14,6 @@ describe('event trigger', () => {
     return
   }
 
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIos = platformInfo.startsWith('ios')
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
@@ -268,7 +269,7 @@ describe('event trigger', () => {
         const longPressChangedTouchScreenY = await page.$('#long-press-changed-touch-screen-y')
         expect(await longPressChangedTouchScreenY.text()).toBe(longPressTouchTargetValue)
 
-        if (isAndroid || isIos) {
+        if (isAndroid || isIos || isHarmony) {
           if (isIos) {
             // 规避系统授权弹框
             await program.tap({
@@ -329,9 +330,7 @@ describe('event trigger', () => {
   })
 
   it('mock tap event', async () => {
-
-    // ios only 坐标换算准确
-    if (isIos) {
+    if (isIos || isHarmony) {
 
       page = await program.reLaunch(PAGE_PATH)
       await page.waitFor('view')

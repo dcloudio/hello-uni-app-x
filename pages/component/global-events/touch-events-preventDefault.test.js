@@ -4,9 +4,8 @@ describe('touch-events-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
 
-  if (isWeb || isMP || isHarmony) {
+  if (isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

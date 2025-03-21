@@ -3,7 +3,6 @@ const PAGE_PATH = '/pages/component/text/text-props'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('text-props', () => {
   let page
@@ -57,7 +56,7 @@ describe('text-props', () => {
         expect(await element.text()).toBe("修改三级节点文本")
       }
 
-      if(isMP || isWeb || isHarmony) {
+      if(isMP || isWeb) {
         // 不支持 program.tap
         expect(1).toBe(1)
         return

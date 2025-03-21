@@ -2,12 +2,11 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.startsWith('harmony')
 
 const PAGE_PATH = '/pages/component/global-events/touch-events'
 
 describe('touch-events-test', () => {
-  if (isAndroid || isMP || isWeb || isHarmony || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isAndroid || isMP || isWeb || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
       expect(1).toBe(1)
     })

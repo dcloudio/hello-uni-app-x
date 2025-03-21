@@ -140,7 +140,7 @@ describe('showActionSheet', () => {
     await page.callMethod('showActionSheetAndShowAgainInCallback')
     await page.waitFor(1000);
     await screenshot();
-    if (isAndroid || isIos) {
+    if (isApp) {
       await program.tap({
         x: 200,
         y: 700,

@@ -1,11 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.startsWith('harmony')
 
 
 describe('long-waterflow-nested', () => {
-  if (isWeb || isMP || isHarmony) {
+  if (isWeb || isMP) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })

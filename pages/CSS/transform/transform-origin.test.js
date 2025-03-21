@@ -1,12 +1,11 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 const PAGE_PATH = '/pages/CSS/transform/transform-origin'
 
 describe('transform-origin-test', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
 
-  if (isWeb || isMP || isHarmony || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -30,6 +29,5 @@ describe('transform-origin-test', () => {
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
-
   })
 })
