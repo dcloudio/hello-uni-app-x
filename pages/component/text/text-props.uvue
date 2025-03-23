@@ -101,6 +101,16 @@
         <text class="text-padding-border" style="width: 200px;height: 100px;">hello uni-app x</text>
       </view>
 
+      <!-- #ifdef APP -->
+      <view class="uni-title">
+        <text class="uni-subtitle-text">点击事件测试</text>
+      </view>
+      <view class="text-box" style="flex-direction: row;">
+        <text class="text-icon" style="background-color: aqua;" @tap="iconTap">{{String.fromCharCode(parseInt('E650',16))}}</text>
+        <text class="text-icon" style="background-color: yellow;" @tap="iconTap2">{{String.fromCharCode(parseInt('EA08',16))}}</text>
+      </view>
+      <!-- #endif -->
+
       <view v-if="autoTest">
         <view class="uni-row">
           <text id="empty-text"></text>
@@ -168,6 +178,20 @@
           showCancel: false
         });
       },
+      iconTap() {
+        uni.showModal({
+          title: '点击了',
+          content: '字体图标1',
+          showCancel: false
+        });
+      },
+      iconTap2() {
+        uni.showModal({
+          title: '点击了',
+          content: '字体图标2',
+          showCancel: false
+        });
+      },
       // 自动化测试
       setNestedText() {
         this.nestedText = "修改三级节点文本";
@@ -215,5 +239,10 @@
     padding: 20px;
     border: 5px solid red;
     text-align: center;
+  }
+
+  .text-icon {
+    font-family: uni-icon;
+    font-size: 100px;
   }
 </style>
