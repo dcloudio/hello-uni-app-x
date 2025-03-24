@@ -48,12 +48,20 @@
         </view>
       </view>
       <view class="uni-padding-wrap uni-common-mt">
+        <text>complete 执行结果：{{ timesShowRet }}</text>
         <view class="uni-btn-v">
-          <button class="uni-btn-v" type="default" @tap="modalTap" id="btn-modal-show">
-            modal测试
+          <button class="uni-btn-v" type="primary" @tap="modalTap" id="btn-modal-show">
+            modal单次弹出
           </button>
         </view>
-        <text>{{ exeRet }}</text>
+        <view class="uni-btn-v">
+          <button class="uni-btn-v" type="default" @tap="modalTapTimes" id="btn-modal-show">
+            modal多次弹出
+          </button>
+        </view>
+        <text>
+          success/fail 执行结果：{{ exeRet }}
+        </text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -92,7 +100,8 @@
           name: '超长标题'
         }
         ] as ItemType[],
-        current: 0
+        current: 0,
+        timesShowRet:[] as Array<string>,
       }
     },
     onLoad() {
@@ -124,6 +133,7 @@
         this.editableSelect = e.detail.value
       },
       placeholderTextChange: function (e : UniSwitchChangeEvent) {
+        this.editableSelect = e.detail.value
         this.placeholderTextSelect = e.detail.value
       },
       radioChange(e : UniRadioGroupChangeEvent) {
@@ -134,7 +144,19 @@
           }
         }
       },
+      modalTapTimes: function () {
+        // 多次弹出前清空结果集合
+        this.timesShowRet = []
+        this.modalTap()
+        this.modalTap()
+        setTimeout(function(){
+          this.modalTap()
+        },200)
+      },
       modalTap: function () {
+         // 单次弹出前清空多次结果集合
+        this.timesShowRet = []
+
         let cancelTextVal : string
         let cancelColorVal = ''
         if (this.cancelTextSelect) {
@@ -155,12 +177,10 @@
         let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
 
         if (this.showLongContent) {
-          placeholderTextVal = "定制提示信息"
           contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字原则上可以无限多！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！"
         }
         if (this.placeholderTextSelect) {
           placeholderTextVal = "定制提示信息"
-          contentVal = ""
         }
         if (this.illegalColorSelect) {
           cancelColorVal = "#WW00ff"
@@ -171,7 +191,7 @@
           cancelTextVal = "超长版文字-修改后的取消文本-超长版本文字"
         }
 
-        uni.showModal({
+        let op = {
           title: this.items[this.current].value,
           editable: this.editableSelect,
           placeholderText: placeholderTextVal,
@@ -186,9 +206,15 @@
           },
           fail: (res) => {
             this.exeRet = JSON.stringify(res)
+          },
+          complete: (res) => {
+            this.timesShowRet.push(JSON.stringify(res))
           }
-        })
+        } as ShowModalOptions
+        // console.log(op)
+        uni.showModal(op)
       }
+
     }
   }
 </script>
