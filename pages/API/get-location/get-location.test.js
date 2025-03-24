@@ -8,7 +8,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("get-location", () => {
-    if (isMP || isWeb || isHarmony) {
+    if (isMP || isWeb) {
       // 微信、web harmony 上会有权限弹框，暂时屏蔽测试
       it('not support', async () => {
         expect(1).toBe(1)
@@ -31,6 +31,9 @@ describe("get-location", () => {
           jest_isHighAccuracy: false
         })
         await page.callMethod('jestGetLocation')
+        if (isHarmony) {
+          await program.tap({x: 100, y: 525})
+        }
         await page.waitFor(async () => {
           return await page.data('jest_complete') === true;
         });
