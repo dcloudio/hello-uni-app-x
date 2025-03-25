@@ -1,12 +1,12 @@
 <template>
   <view class="uni-flex-item">
     <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
-      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess"
+      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :update-title="updateTitle"
       :verticalScrollBarAccess="verticalScrollBarAccess" :bounces="bounces" @message="message" @error="error" @loading="loading"
       @load="load" @download="download" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
-    <view class="uni-padding-wrap uni-common-mt">
+    <view v-if="showController" class="uni-padding-wrap uni-common-mt">
       <view class="uni-btn-v">
         <input class="uni-input" confirmType="go" placeholder="输入网址跳转" @confirm="confirm" maxlength="-1" />
       </view>
@@ -92,7 +92,23 @@
         eventLoad: null as UTSJSONObject | null,
         eventError: null as UTSJSONObject | null,
         pointerEvents: 'auto',
-        isTouchEnable: false
+        isTouchEnable: false,
+				updateTitle: true,
+        showController: true
+      }
+    },
+    onLoad(options) {
+      if (options) {
+        if (options.url) {
+          this.src = decodeURIComponent(options.url) as string;
+          this.showController = false
+        }
+        if (options.title) {
+          this.updateTitle = false;
+          uni.setNavigationBarTitle({
+            title: options.title
+          });
+        }
       }
     },
     onReady() {

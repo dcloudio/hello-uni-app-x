@@ -96,6 +96,14 @@
     },
     // #endif
     onReady() {
+      // #ifdef APP-HARMONY
+      if (state.agreeToPrivacy !== true) {
+        uni.openDialogPage({
+          url: '/pages/template/privacy-dialog/privacy-dialog'
+        })
+      }
+      return
+      // #endif
       // #ifdef UNI-APP-X && APP
       uni.getPrivacySetting({
         success(res) {
