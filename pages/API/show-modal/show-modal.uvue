@@ -59,6 +59,16 @@
             modal多次弹出
           </button>
         </view>
+        <view class="uni-btn-v">
+          <button class="uni-btn-v" type="default" @tap="closeAllModal" id="btn-modal-show">
+            延迟3s关闭全部弹窗
+          </button>
+        </view>
+        <view class="uni-btn-v">
+          <button class="uni-btn-v" type="default" @tap="closeLastModal" id="btn-modal-show">
+            延迟3s关闭最后一个弹窗
+          </button>
+        </view>
         <text>
           success/fail 执行结果：{{ exeRet }}
         </text>
@@ -87,6 +97,7 @@
         editableSelect: false,
         placeholderTextSelect: false,
         exeRet: "",
+        lastModal : null as UniPage | null,
         items: [{
           value: '标题',
           name: '有标题'
@@ -144,13 +155,49 @@
           }
         }
       },
+      closeLastModal: function () {
+        let that = this
+        setTimeout(function(){
+          uni.hideModal({
+            modalPage:that.lastModal,
+            success: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            fail: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            complete: (res) => {
+              that.timesShowRet.push(res)
+            }
+          })
+        },3000)
+      },
+      closeAllModal: function () {
+        let that = this
+        setTimeout(function(){
+          uni.hideModal({
+            modalPage:null,
+            success: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            fail: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            complete: (res) => {
+              that.timesShowRet.push(res)
+            }
+          })
+        },3000)
+
+      },
       modalTapTimes: function () {
         // 多次弹出前清空结果集合
         this.timesShowRet = []
         this.modalTap()
         this.modalTap()
+        let that = this
         setTimeout(function(){
-          this.modalTap()
+          that.modalTap()
         },200)
       },
       modalTap: function () {
@@ -212,7 +259,7 @@
           }
         } as ShowModalOptions
         // console.log(op)
-        uni.showModal(op)
+        this.lastModal = uni.showModal(op)
       }
 
     }
