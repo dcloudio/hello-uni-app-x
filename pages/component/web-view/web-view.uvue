@@ -98,17 +98,18 @@
       }
     },
     onLoad(options: OnLoadOptions) {
-      if (options != null) {
-        if (typeof options.url === 'string' && options.url.length > 0) {
-          this.src = decodeURIComponent(options.url) as string;
+      if (typeof options['url'] === 'string' && options['url']!.length > 0) {
+        const src = decodeURIComponent(options['url'] as string)
+        if (src != null) {
+          this.src = src
           this.showController = false
         }
-        if (typeof options.title === 'string' && options.title.length > 0) {
-          this.updateTitle = false;
-          uni.setNavigationBarTitle({
-            title: options.title
-          });
-        }
+      }
+      if (typeof options['title'] === 'string' && options['title']!.length > 0) {
+        this.updateTitle = false;
+        uni.setNavigationBarTitle({
+          title: options['title']!
+        });
       }
     },
     onReady() {
