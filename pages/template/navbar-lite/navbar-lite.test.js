@@ -6,21 +6,21 @@ describe("setCustomNavigationBarColor", () => {
   let originLifeCycleNum;
   const isAndroid = process.env.UNI_OS_NAME === "android";
   const adbScreenShotArea = {
-    x: 880,
-    y: 0,
-    width: 60,
-    height: 60
+    x: 342,
+    y:18,
+    width: 40,
+    height: 20
   };
   beforeAll(async () => {
     page = await program.navigateTo(CURRENT_PAGE_PATH);
     if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
-      adbScreenShotArea.x = 535
-      adbScreenShotArea.width = 90
-      adbScreenShotArea.height = 50
+      screenShotArea.x = 204
+      screenShotArea.width = 34
+      screenShotArea.height = 16
     } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
-      adbScreenShotArea.x = 1160
-      adbScreenShotArea.width = 70
-      adbScreenShotArea.height = 80
+      screenShotArea.x = 442
+      screenShotArea.width = 27
+      screenShotArea.height = 24
     }
     await page.waitFor(1000);
     originLifeCycleNum = await page.callMethod("getLifeCycleNum");
