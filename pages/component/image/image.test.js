@@ -1,30 +1,13 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+
 describe('component-native-image', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
+  const screenshotParams = { fullPage: true }
   let page;
   let start = 0;
-  async function getWindowInfo() {
-    const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
-    await windowInfoPage.waitFor(600);
-    return await windowInfoPage.callMethod('jest_getWindowInfo')
-  }
-  const screenshotParams = { fullPage: true }
-  let windowInfo
 
   beforeAll(async () => {
-    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
-      screenshotParams.fullPage = false
-      windowInfo = await getWindowInfo()
-      let offsetY = '0'
-      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
-        offsetY = `${windowInfo.statusBarHeight + 44}`
-      }
-      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
-        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
-      }
-      screenshotParams.offsetY = offsetY
-    }
-
     page = await program.reLaunch('/pages/component/image/image');
     await page.waitFor(600);
   });
@@ -132,14 +115,14 @@ describe('component-native-image', () => {
     if (process.env.android_cpu_type === 'x86_64') return
     const page = await program.navigateTo('/pages/component/image/image-mode');
     await page.waitFor(1000);
-    const image = await program.screenshot({fullPage: true})
+    const image = await program.screenshot(screenshotParams)
     expect(image).toSaveImageSnapshot()
   });
 
   it('long-path-screenshot', async() => {
     const page = await program.navigateTo('/pages/component/image/image-long');
     await page.waitFor(3000);
-    const image = await program.screenshot({fullPage: true})
+    const image = await program.screenshot(screenshotParams)
     expect(image).toSaveImageSnapshot()
   })
 });

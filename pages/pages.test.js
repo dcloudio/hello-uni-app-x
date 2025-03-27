@@ -361,12 +361,6 @@ if (isWeb) {
 let page;
 let windowInfo
 
-async function getWindowInfo() {
-  const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
-  await windowInfoPage.waitFor(600);
-  return await windowInfoPage.callMethod('jest_getWindowInfo')
-}
-
 function getWaitForTagName(pagePath) {
   if (pagePath === '/pages/component/list-view/list-view-multiplex-input') {
     return 'input'
@@ -406,6 +400,7 @@ describe("page screenshot test", () => {
 
   beforeAll(async () => {
     console.log("page screenshot test start");
+    windowInfo = await program.callUniMethod('getWindowInfo');
   });
   beforeEach(async () => {
     const currentPagePath = pages[pageIndex]
@@ -427,19 +422,7 @@ describe("page screenshot test", () => {
       fullPage
     }
     if (!fullPage && !isAppWebview) {
-      if (!windowInfo) {
-        windowInfo = await getWindowInfo()
-        page = await program.reLaunch(currentPagePath);
-        await page.waitFor(getWaitForTagName(currentPagePath));
-      }
-      let offsetY = '0'
-      if (isAndroid) {
-        offsetY = `${windowInfo.statusBarHeight + 44}`
-      }
-      if (isIos || isHarmony) {
-        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
-      }
-      screenshotParams.offsetY = offsetY
+      screenshotParams.offsetY = isApp ? `${windowInfo.safeAreaInsets.top + 44}` : '0'
     }
 
     const image = await program.screenshot(screenshotParams);

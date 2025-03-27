@@ -295,12 +295,12 @@ describe('component-native-video', () => {
       await page.setData({
         enableDanmu: false
       });
-      const info = await page.callMethod('getWindowInfo');
+      const windowInfo = await program.callUniMethod('getWindowInfo');
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: info.statusBarHeight + 44
+          y: windowInfo.statusBarHeight + 44
         }
       });
       expect(image).toSaveImageSnapshot();
