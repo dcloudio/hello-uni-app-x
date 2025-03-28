@@ -5,7 +5,6 @@ describe('component-native-web-view', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
 
   if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('web', async () => {
@@ -55,36 +54,34 @@ describe('component-native-web-view', () => {
     });
     expect(1).toBe(1)
   });
-  if (!isHarmony) {
-    it('test touch event', async () => {
-      const windowInfo = await program.callUniMethod('getWindowInfo');
-      await program.tap({
-        x: 1,
-        y: windowInfo.statusBarHeight + 44 + 1
-      });
-      await page.waitFor(500);
-      if (!isIOS) {
-        expect(await page.data('isTouchEnable')).toBe(true);
-      }
-
-      await page.setData({
-        pointerEvents: 'none',
-        isTouchEnable: false
-      });
-      await page.waitFor(100);
-      await program.tap({
-        x: 10,
-        y: windowInfo.statusBarHeight + 44 + 10
-      });
-      await page.waitFor(500);
-      if (!isIOS) {
-        expect(await page.data('isTouchEnable')).toBe(false);
-      }
-      await page.setData({
-        pointerEvents: 'auto'
-      });
+  it('test touch event', async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    await program.tap({
+      x: 1,
+      y: windowInfo.safeAreaInsets.top + 44 + 1
     });
-  }
+    await page.waitFor(500);
+    if (!isIOS) {
+      expect(await page.data('isTouchEnable')).toBe(true);
+    }
+
+    await page.setData({
+      pointerEvents: 'none',
+      isTouchEnable: false
+    });
+    await page.waitFor(100);
+    await program.tap({
+      x: 10,
+      y: windowInfo.safeAreaInsets.top + 44 + 10
+    });
+    await page.waitFor(500);
+    if (!isIOS) {
+      expect(await page.data('isTouchEnable')).toBe(false);
+    }
+    await page.setData({
+      pointerEvents: 'auto'
+    });
+  });
 
   it('test event loading load', async () => {
     await page.callMethod('reload');

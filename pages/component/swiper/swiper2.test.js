@@ -17,24 +17,22 @@ describe('swiper-touch-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(1500);
+    await page.waitFor('view');
   })
 
 
-  it('swiper-touch-test', async () => {
-
+  it('滑动切换 swiper', async () => {
     let x = await page.data('swipeX')
     let y = await page.data('swipeY')
 
     await program.swipe({
-      startPoint: {x: x,y: y},
-      endPoint: {x: 10,y: y},
+      startPoint: {x, y},
+      endPoint: {x: 10, y},
       duration: 200
     })
 
     await page.waitFor(1000)
     let val = await page.data('currentValChange')
-    console.log(val)
     expect(val).toEqual(1)
   })
 
