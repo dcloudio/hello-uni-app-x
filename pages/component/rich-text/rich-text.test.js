@@ -49,11 +49,11 @@ describe('rich-text-test', () => {
         isItemClickTrigger: false
       });
       await page.waitFor(1000);
-      const info = await page.callMethod('getWindowInfoForTest');
+      const windowInfo = await program.callUniMethod('getWindowInfo');
       const rect = await page.callMethod('getBoundingClientRectForTest');
       await program.tap({
         x: (rect.right - rect.left) / 2,
-        y: info.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
+        y: windowInfo.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
       });
       await page.waitFor(1000);
       expect(await page.data('isItemClickTrigger')).toBe(true);
@@ -65,7 +65,7 @@ describe('rich-text-test', () => {
       await program.navigateBack();
       await program.tap({
         x: (rect.right - rect.left) / 2,
-        y: info.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
+        y: windowInfo.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
       });
       await page.waitFor(1000);
       expect(await page.data('isItemClickTrigger')).toBe(true);

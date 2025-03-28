@@ -57,10 +57,10 @@ describe('component-native-web-view', () => {
   });
   if (!isHarmony) {
     it('test touch event', async () => {
-      const info = await page.callMethod('getWindowInfo');
+      const windowInfo = await program.callUniMethod('getWindowInfo');
       await program.tap({
         x: 1,
-        y: info.statusBarHeight + 44 + 1
+        y: windowInfo.statusBarHeight + 44 + 1
       });
       await page.waitFor(500);
       if (!isIOS) {
@@ -74,7 +74,7 @@ describe('component-native-web-view', () => {
       await page.waitFor(100);
       await program.tap({
         x: 10,
-        y: info.statusBarHeight + 44 + 10
+        y: windowInfo.statusBarHeight + 44 + 10
       });
       await page.waitFor(500);
       if (!isIOS) {

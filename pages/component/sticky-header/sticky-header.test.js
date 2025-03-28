@@ -1,7 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isAndroid = platformInfo.startsWith('android')
-const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-sticky-header', () => {
@@ -13,26 +11,12 @@ describe('component-native-sticky-header', () => {
   }
 
   let page
-  async function getWindowInfo() {
-    const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
-    await windowInfoPage.waitFor(600);
-    return await windowInfoPage.callMethod('jest_getWindowInfo')
-  }
-  const screenshotParams = { fullPage: true }
-  let windowInfo
+  const screenshotParams = { }
 
   beforeAll(async () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
-      screenshotParams.fullPage = false
-      windowInfo = await getWindowInfo()
-      let offsetY = '0'
-      if (isAndroid) {
-        offsetY = `${windowInfo.statusBarHeight + 44}`
-      }
-      if (isIos) {
-        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
-      }
-      screenshotParams.offsetY = offsetY
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      screenshotParams.offsetY = `${windowInfo.safeAreaInsets.top + 44}`
     }
     page = await program.reLaunch('/pages/component/sticky-header/sticky-header')
     await page.waitFor('sticky-header')
