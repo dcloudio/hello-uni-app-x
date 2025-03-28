@@ -2,15 +2,10 @@ const PAGE_PATH = '/pages/component/global-events/touch-events-preventDefault'
 
 describe('touch-events-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
 
-  if (
-    isWeb ||
-    isMP
-  ) {
+  if (isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

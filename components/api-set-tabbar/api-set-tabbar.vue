@@ -6,7 +6,7 @@
     <button class="button" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
     <button class="button" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
     <button class="button" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
-    // #ifdef APP-ANDROID || APP-IOS || WEB
+    // #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY
     <button class="button" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
     // #endif
     <button class="button" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>

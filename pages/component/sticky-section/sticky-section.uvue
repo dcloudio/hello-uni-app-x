@@ -1,7 +1,7 @@
 <template>
   <page-head title="sticky-section"></page-head>
   <list-view id="list-view" ref="list-view" show-scrollbar=false class="page" :scroll-into-view="scrollIntoView"
-    @scroll="onScroll" @scrollend="onScrollEnd" bounces="false">
+    @scroll="onScroll" @scrollend="onScrollEnd" bounces="false" refresher-enabled="true" :refresher-triggered="refresherTriggered" @refresherrefresh="onRefresherrefresh">
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="gotoStickyHeader('C')" size="mini">跳转到id为C的sticky-header位置上</button>
     </list-item>
@@ -44,6 +44,7 @@
         scrolling: false,
         sectionArray: [] as sectionData[],
         appendId: 0,
+        refresherTriggered: false,
         isReady: false//自动化测试使用
       }
     },
@@ -52,19 +53,25 @@
     },
     onReady() {
       //延迟onReady再加载数据 校验issues:14705 bug
-      this.data.forEach(key => {
-        const list = [] as sectionListItem[]
-        for (let i = 1; i < 11; i++) {
-          const item = { text: key + "--item--content----" + i } as sectionListItem
-          list.push(item)
-        }
-        const data = { name: key, list: list } as sectionData
-        this.sectionArray.push(data)
-      }
-      )
+      this.initSectionArray()
       this.isReady = true
     },
     methods: {
+      initSectionArray() {
+        this.sectionArray = [] as sectionData[]
+        console.log("initSectionArray start", this.sectionArray.length)
+        this.data.forEach(key => {
+          const list = [] as sectionListItem[]
+          for (let i = 1; i < 11; i++) {
+            const item = { text: key + "--item--content----" + i } as sectionListItem
+            list.push(item)
+          }
+          const data = { name: key, list: list } as sectionData
+          this.sectionArray.push(data)
+        }
+        )
+        console.log("initSectionArray end", this.sectionArray[0].name)
+      },
       toTop() {
         this.scrollIntoView = ""
         uni.getElementById("list-view")!.scrollTop = 0
@@ -107,7 +114,14 @@
       },
       deleteSection() {
         this.sectionArray.shift()
-      }
+      },
+      onRefresherrefresh(_ : UniRefresherEvent) {
+        this.refresherTriggered = true;
+        setTimeout(() => {
+          this.initSectionArray()
+          this.refresherTriggered = false;
+        }, 1000)
+      },
     }
   }
 </script>

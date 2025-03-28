@@ -1,24 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 const PAGE_PATH = '/pages/CSS/transform/transform-origin'
 
 describe('transform-origin-test', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
 
-  if (
-    isWeb ||
-    isMP
-  ) {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
       expect(1).toBe(1)
     })
     return
@@ -30,10 +18,7 @@ describe('transform-origin-test', () => {
     await page.waitFor(500);
   })
 
-
   it('transform-origin-test', async () => {
-
-    let iconRect = await page.data('iconRect')
     let x = 100
     let y = 160
 
@@ -44,6 +29,5 @@ describe('transform-origin-test', () => {
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
-
   })
 })

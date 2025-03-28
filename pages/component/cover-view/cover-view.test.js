@@ -1,12 +1,13 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos
 
 let page;
 describe('web-cover-view', () => {
-  if (isIos) {
-    it('skip ios', () => {
+  if (isHarmony) {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return

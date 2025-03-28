@@ -1,20 +1,12 @@
 const PAGE_PATH = '/pages/component/scroll-view/scroll-view-custom-refresher-props'
 
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+
 describe('touch-events-test', () => {
-
-  // 先屏蔽 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
-    it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return

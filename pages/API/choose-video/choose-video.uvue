@@ -4,7 +4,7 @@
   <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap">
-      <video class="video" :src="src" :controls="true"></video>
+      <video class="video" :src="src" :controls="true" :poster="videoCoverImage"></video>
       <view class="uni-title">
         <text class="uni-subtitle-text">视频信息</text>
       </view>
@@ -55,6 +55,7 @@
         maxDuration: 60,
         camera: "back" as Camera,
         videoInfo: "",
+        videoCoverImage: "",
         albumMode: "custom"
       }
     },
@@ -77,7 +78,17 @@
           success: (res) => {
             console.log("chooseVideo success", JSON.stringify(res));
             this.src = res.tempFilePath;
-            this.videoInfo = `视频长度: ${res.duration}s\n视频大小: ${Math.ceil(res.size / 1024)}KB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n`;
+            this.videoInfo = `视频长度: ${res.duration}s\n视频大小: ${Math.ceil(res.size)}KB\n视频宽度: ${res.width}\n视频高度: ${res.height}\n`;
+            // #ifdef APP-ANDROID || APP-IOS
+            uni.getVideoInfo({
+              src: res.tempFilePath,
+              success: (_res) => {
+                if(_res.thumbTempFilePath != null) {
+                this.videoCoverImage = _res.thumbTempFilePath!
+                }
+              }
+            });
+            // #endif
           },
           fail: (err) => {
             uni.showModal({

@@ -40,6 +40,13 @@ describe('ExtApi-DownloadFile', () => {
     expect(res).toBe(true)
   });
 
+  it('Check download call timeout', async () => {
+    res = await page.callMethod('jest_download_call_timeout')
+    await page.waitFor(5000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
+
   if (
     !process.env.uniTestPlatformInfo.startsWith('web') &&
     !process.env.uniTestPlatformInfo.startsWith('mp')

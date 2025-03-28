@@ -2,21 +2,19 @@ jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-describe('test uni-push', () => {
+describe('uni-push', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/uni-push/uni-push')
     await page.waitFor('view');
     await page.callMethod('updateAutoTest', true)
-    const autoTest = await page.data('autoTest')
-    console.log("autoTest", autoTest._value)
+    await page.data('autoTest')
   });
   // 获取cid | getPushClientId：值
   it('getPushClientId', async () => {
     await page.callMethod('handleGetClientId')
     await page.waitFor(2000);
     const jestResult = await page.data('jestResult')
-    console.log('- 获取cid-', jestResult)
     expect(jestResult.clientId.length).toBe(32);
   });
 
@@ -26,7 +24,6 @@ describe('test uni-push', () => {
     it('sendPushMessage', async () => {
       await page.callMethod('handleSendPushMessage')
       await page.waitFor(1000);
-      console.log('-发送通知消息：成功提示-', await page.data('jestResult'))
       expect(await page.data('jestResult.sendPushMessageRes')).toBe(0);
     });
   }
@@ -35,7 +32,6 @@ describe('test uni-push', () => {
   it('onPushMessage', async () => {
     await page.callMethod('handleOnPushMessage')
     await page.waitFor(1000);
-    console.log('注册回调：注册成功',await page.data('isRegister.state'))
     expect(await page.data('isRegister.state')).toBe(true);
   });
 
@@ -44,12 +40,10 @@ describe('test uni-push', () => {
     it('sendPushMessage', async () => {
       await page.callMethod('handleSendPushMessage')
       await page.waitFor(1000);
-      console.log('-发送通知消息：回调信息-', await page.data('jestResult'))
       expect(await page.data('jestResult.onPushMessageType')).toBe("receive");
       const info = await page.data('jestResult.onPushMessageCallbackInfo')
       // 使用 JSON.parse 将字符串转换回对象
       const objCopy = JSON.parse(info);
-      console.log("objCopy", objCopy);
       expect(objCopy).toEqual({
         "unipush_version": "2.0",
         "payload": {
@@ -65,7 +59,6 @@ describe('test uni-push', () => {
   it('offPushMessage', async () => {
     await page.callMethod('handleOffPushMessage')
     await page.waitFor(1000);
-    console.log('-注销回调：注销成功-',await page.data('isRegister.state'))
     expect(await page.data('isRegister.state')).toBe(false);
   });
 
@@ -74,7 +67,6 @@ describe('test uni-push', () => {
     it('sendPushMessage', async () => {
       await page.callMethod('handleSendPushMessage')
       await page.waitFor(300);
-      console.log('-发送通知消息：成功提示-',await page.data('jestResult.sendPushMessageRes'))
       expect(await page.data('jestResult.sendPushMessageRes')).toBe(0);
     });
   }

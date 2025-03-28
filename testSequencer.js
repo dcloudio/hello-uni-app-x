@@ -19,8 +19,10 @@ const startTestFilePaths = [
   "pages/component/rich-text/rich-text-complex.test.js"
 ]
 const endTestFilePaths = [
+  "pages/API/navigator/new-page/onLoad.test.js",
+  // 切换页面 modal 弹框无法关闭
   "pages/API/show-modal/show-modal.test.js",
-  "pages/API/navigator/new-page/onLoad.test.js"
+  "pages/API/storage/storage.test.js",
 ]
 
 class CustomSequencer extends Sequencer {

@@ -1,20 +1,13 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+
 const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query-onScroll'
 
 describe('create-selector-query-onScroll', () => {
-
-  // 先屏蔽 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
-    it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return

@@ -57,16 +57,16 @@ describe('text-props', () => {
       }
 
       if(isMP || isWeb) {
-        // 小程序、web暂不支持program.tap
+        // 不支持 program.tap
         expect(1).toBe(1)
         return
       }
 
       const rect = await page.callMethod("getBoundingClientRectForTest")
-      const info = await page.callMethod("getWindowInfoForTest")
+      const windowInfo = await program.callUniMethod('getWindowInfo');
 
       let x = Math.ceil(rect.left + rect.width / 2)
-      let y = Math.ceil(info.statusBarHeight + 44 + rect.top + rect.height / 2)
+      let y = Math.ceil(windowInfo.statusBarHeight + 44 + rect.top + rect.height / 2)
 
       await program.tap({
         x: x,

@@ -13,7 +13,7 @@ describe('ExtApi-GetWindowInfo', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
-    res = await page.callMethod('jest_getWindowInfo')
+    res = await program.callUniMethod('getWindowInfo');
   });
 
   it('Check GetWindowInfo', async () => {

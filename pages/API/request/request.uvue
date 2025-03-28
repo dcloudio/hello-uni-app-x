@@ -2,7 +2,7 @@
   <view style="flex: 1;">
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-common-mt" style="border-width: 2px;border-style: solid; border-radius: 4px;">
-        <textarea :value="res" class="uni-textarea" style="width: 100%;"></textarea>
+        <textarea :value="res" class="uni-textarea" style="width: 100%; height: 40px;"></textarea>
       </view>
       <view>
         <text>地址 : {{ host + url}}</text>
@@ -65,7 +65,7 @@
             @click="changeUrlFromPost(item)">{{item}}</button>
         </view>
       </view>
-      <!-- #ifdef APP-ANDROID || MP-WEIXIN || WEB -->
+      <!-- #ifdef APP || MP-WEIXIN || WEB -->
       <view style="padding: 20px;">
         <text>ArrayBuffer 测试</text>
         <view class="uni-common-pb"></view>
@@ -81,7 +81,7 @@
   </view>
 </template>
 <script>
-  // #ifdef APP
+  // #ifdef APP-ANDROID || APP-IOS
   import {
     testInovkeRequest,
     CommonOptions
@@ -196,7 +196,7 @@
             break;
         }
       },
-      // #ifdef APP-ANDROID | MP-WEIXIN | WEB
+      // #ifdef APP | MP-WEIXIN | WEB
       sendArrayBuffer(onlyResponse : boolean) {
         this.method = "POST"
         this.url = "/api/http/contentType/arrayBuffer/post"
@@ -522,7 +522,7 @@
         });
       },
       jest_uts_module_invoked() {
-        // #ifdef APP
+        // #ifdef APP-ANDROID || APP-IOS
         this.jest_result = false
         testInovkeRequest({
           success: (res : any) => {

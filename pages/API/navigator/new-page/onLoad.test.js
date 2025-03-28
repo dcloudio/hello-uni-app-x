@@ -6,6 +6,8 @@ const TARGET_PAGE_PATH = "/pages/API/navigator/new-page/new-page-3";
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
+const isAndroid = platformInfo.startsWith('android')
+const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 let page;
 
 describe("onLoad", () => {
@@ -28,6 +30,13 @@ describe("onLoad", () => {
     })
     return
   }
+
+  let topSafeArea = 0;
+  beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+  })
+
   it("adjustData", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
@@ -47,7 +56,7 @@ describe("onLoad", () => {
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (isAndroid && !isWebView) {
       page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
       await page.waitFor('view');
       await page.callMethod("navigateToOnLoadWithType", "navigateBack");
@@ -89,8 +98,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
-        height: 2140,
+        y: topSafeArea + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
@@ -107,8 +115,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
-        height: 2140,
+        y: topSafeArea + 44,
       },
     });
     expect(image).toSaveImageSnapshot({
@@ -125,8 +132,7 @@ describe("onLoad", () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
-        height: 2140,
+        y: topSafeArea + 44,
       },
     });
     expect(image).toSaveImageSnapshot({

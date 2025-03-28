@@ -14,7 +14,8 @@ beforeAll(async () => {
 })
 
 describe('Checkbox.uvue', () => {
-  const isMP = process.env.uniTestPlatformInfo.startsWith('mp')
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isMP = platformInfo.startsWith('mp')
   it('change', async () => {
     expect(await getData('value')).toEqual([])
     const cb1 = await page.$('.cb1')

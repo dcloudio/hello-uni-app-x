@@ -1,40 +1,34 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIOS || isHarmony
 
 describe('API-toast', () => {
   let page;
-  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
+  const screeShotParams = {
+    deviceShot: true,
+    fullPage: true
+  }
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/show-toast/show-toast')
     await page.waitFor("view");
+    if (isApp) {
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
+      const topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+      screeShotParams.area = {
+        x: 0,
+        y: topSafeArea + 44
+      }
+    }
   });
 
   async function toScreenshot(imgName) {
-    if (isApp) {
-      await page.waitFor(500);
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-      const image = await program.screenshot({
-        deviceShot: true,
-        area: {
-          x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
-        },
-      });
-      expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
-        return imgName
-      }})
-    }else{
-      const image = await program.screenshot({
-        deviceShot: true,
-        fullPage: true
-      });
-      expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
-        return imgName
-      }})
-    }
+    const image = await program.screenshot(screeShotParams);
+    expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return imgName
+    }})
     await page.waitFor(500);
   }
 

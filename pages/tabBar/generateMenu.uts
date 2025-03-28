@@ -57,7 +57,13 @@ export function generateMenu(tabBarType : string) : MenuItem[] {
     })
     const lastGroup = pageGroups[pageGroups.length - 1]
     let hasPageGroup = false
-    if (page.path.endsWith(camelToDash(lastGroup.name)) && pageGroups.length > 1) {
+    if (
+      (
+        page.path.endsWith(camelToDash(lastGroup.name)) ||
+        page.path.endsWith(camelToDash(lastGroup.name.replace('uni.', '')))
+      ) &&
+      pageGroups.length > 1
+    ) {
       hasPageGroup = true
       pageGroups.pop()
     }
@@ -96,7 +102,7 @@ export function generateMenu(tabBarType : string) : MenuItem[] {
       group: page.group,
       items: [] as MenuItem[],
     }
-    if (hasPageGroup) {
+    if (hasPageGroup && currentMenu != null) {
       const pageIndex = lastGroup.index
       fillMenuArrayWithEmptyMenuItem(currentMenu!.items, pageIndex)
       if (currentMenu!.items[pageIndex].name == 'empty') {

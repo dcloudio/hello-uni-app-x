@@ -1,35 +1,22 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-sticky-header', () => {
-  if (isMP) {
-  	it('skip mp', () => {
+  if (isMP || isHarmony) {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return
   }
 
   let page
-  async function getWindowInfo() {
-    const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
-    await windowInfoPage.waitFor(600);
-    return await windowInfoPage.callMethod('jest_getWindowInfo')
-  }
-  const screenshotParams = { fullPage: true }
-  let windowInfo
-  
+  const screenshotParams = { }
+
   beforeAll(async () => {
     if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
-      screenshotParams.fullPage = false
-      windowInfo = await getWindowInfo()
-      let offsetY = '0'
-      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
-        offsetY = `${windowInfo.statusBarHeight + 44}`
-      }
-      if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
-        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
-      }
-      screenshotParams.offsetY = offsetY
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      screenshotParams.offsetY = `${windowInfo.safeAreaInsets.top + 44}`
     }
     page = await program.reLaunch('/pages/component/sticky-header/sticky-header')
     await page.waitFor('sticky-header')
@@ -38,6 +25,15 @@ describe('component-native-sticky-header', () => {
   //检测吸顶效果
   it('check_sticky_header', async () => {
     await page.callMethod('confirm_scroll_top_input', 600)
+    const image = await program.screenshot(screenshotParams);
+    expect(image).toSaveImageSnapshot();
+  })
+  //测试验证issues 16216 问题
+  it('check_sticky_header_position', async () => {
+    await page.callMethod('confirm_scroll_top_input', 300)
+    await page.waitFor(600);
+    await page.callMethod('clearListData')
+    await page.waitFor(600);
     const image = await program.screenshot(screenshotParams);
     expect(image).toSaveImageSnapshot();
   })

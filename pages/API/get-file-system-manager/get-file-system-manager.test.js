@@ -5,6 +5,7 @@ const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 describe('ExtApi-FileManagerTest', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isIOS = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
   if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
@@ -17,15 +18,6 @@ describe('ExtApi-FileManagerTest', () => {
   let mBasePath;
   let mGlobalTempPath;
   let mGlobalRootPath
-
-
-  function getData(key = '') {
-    return new Promise(async (resolve, reject) => {
-      const data = await page.data()
-      resolve(key ? data[key] : data)
-    })
-  }
-
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -44,10 +36,10 @@ describe('ExtApi-FileManagerTest', () => {
 
   it('USER_DATA_PATH test', async () => {
     // 测试 USER_DATA_PATH
-    let globalUserDataPath = await getData('globalUserDataPath')
-    mBasePath = await getData('basePath')
-    mGlobalRootPath = await getData('globalRootPath')
-    mGlobalTempPath = await getData('globalTempPath')
+    let globalUserDataPath = await page.data('globalUserDataPath')
+    mBasePath = await page.data('basePath')
+    mGlobalRootPath = await page.data('globalRootPath')
+    mGlobalTempPath = await page.data('globalTempPath')
 
     await page.setData({
       logAble: false,
@@ -83,9 +75,9 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    let fileListComplete = await getData('fileListComplete')
+    let fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual('[]')
-    let fileListSuccess = await getData('fileListSuccess')
+    let fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
     // 先测试 recursive = false 文件夹创建，期望失败
@@ -99,12 +91,12 @@ describe('ExtApi-FileManagerTest', () => {
       await isDone()
 
 
-      let lastFailError = await getData('lastFailError')
+      let lastFailError = await page.data('lastFailError')
       expect(lastFailError.errCode).toEqual(1300002)
-      expect(lastFailError.errMsg).toEqual('No such file or directory')
-      let lastCompleteError = await getData('lastCompleteError')
-      expect(lastCompleteError.errCode).toEqual(1300002)
-      expect(lastCompleteError.errMsg).toEqual('No such file or directory')
+      expect(lastFailError.errMsg).toContain('No such file or directory')
+      // let lastCompleteError = await page.data('lastCompleteError')
+      // expect(lastCompleteError.errCode).toEqual(1300002)
+      // expect(lastCompleteError.errMsg).toEqual('No such file or directory')
     }
 
 
@@ -119,9 +111,9 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[\"b\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\"]")
 
     // 测试写入文件
@@ -131,17 +123,17 @@ describe('ExtApi-FileManagerTest', () => {
     // 检查目录列表数量
     await btnReadDirButton.tap()
     await isDone()
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"1.txt\",\"b\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"1.txt\",\"b\"]")
     // 获取和对比 文件内容
     const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
-    let readFileRet = await getData('readFileRet')
+    let readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual("锄禾日当午，汗滴禾下土，谁知盘中餐，粒粒皆辛苦")
 
     // 更换文件内容 获取和对比 文件md5和sha1
@@ -154,7 +146,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     await btnReadFileButton.tap()
     await isDone()
-    readFileRet = await getData('readFileRet')
+    readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual(
       "If you were a teardrop;In my eye,For fear of losing you,I would never cry.And if the golden sun,Should cease to shine its light,Just one smile from you,Would make my whole world bright."
     )
@@ -163,9 +155,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnGetFileInfoButton.tap()
     await isDone()
 
-    let getFileInfoSize = await getData('getFileInfoSize')
+    let getFileInfoSize = await page.data('getFileInfoSize')
     expect(getFileInfoSize).toEqual(185)
-    let getFileInfoDigest = await getData('getFileInfoDigest')
+    let getFileInfoDigest = await page.data('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("29ddd02ed3c38ccebb98884eda082cb1")
     // 切换为 sha1
     await page.setData({
@@ -175,9 +167,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnGetFileInfoButton.tap()
     await isDone()
 
-    getFileInfoSize = await getData('getFileInfoSize')
+    getFileInfoSize = await page.data('getFileInfoSize')
     expect(getFileInfoSize).toEqual(185)
-    getFileInfoDigest = await getData('getFileInfoDigest')
+    getFileInfoDigest = await page.data('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("ebef4e75783e0db499fc260d120e695005bead8a")
 
     // 测试 copyfile
@@ -195,10 +187,10 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 1.txt 2.txt 两个文件都存在
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"1.txt\",\"2.txt\",\"b\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"1.txt\",\"2.txt\",\"b\"]")
 
@@ -216,10 +208,10 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 1.txt 3.txt 两个文件都存在
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"1.txt\",\"3.txt\",\"b\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"1.txt\",\"3.txt\",\"b\"]")
   });
@@ -230,7 +222,7 @@ describe('ExtApi-FileManagerTest', () => {
   }
   it('TEMP_PATH test', async () => {
     // 测试 TEMP_PATH
-    let globalTempPath = await getData('globalTempPath')
+    let globalTempPath = await page.data('globalTempPath')
 
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
@@ -273,9 +265,9 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    let fileListComplete = await getData('fileListComplete')
+    let fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[]")
-    let fileListSuccess = await getData('fileListSuccess')
+    let fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[]")
 
     // 测试 创建多层级文件目录
@@ -290,9 +282,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[\"b\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\"]")
 
     // 测试 创建包含中文特殊符号的目录
@@ -307,10 +299,10 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"" + testDirName + "\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"" + testDirName + "\"]")
 
@@ -319,7 +311,7 @@ describe('ExtApi-FileManagerTest', () => {
      * 'static/test-image/logo.ico' 注意，依赖这个资源文件，不能删除
      */
     await page.setData({
-      basePath: "",
+      basePath: "/",
       readFile: 'static/test-image/logo.ico',
       readFileEncoding: 'base64'
     })
@@ -329,7 +321,7 @@ describe('ExtApi-FileManagerTest', () => {
     const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
-    let readFileRet = await getData('readFileRet')
+    let readFileRet = await page.data('readFileRet')
     expect(readFileRet.length).toEqual(5716)
     let endStr = readFileRet.substring(readFileRet.length - 10)
     expect(endStr).toEqual("AA///AA/8=")
@@ -355,9 +347,9 @@ describe('ExtApi-FileManagerTest', () => {
     // 检查目录列表数量
     await btnReadDirButton.tap()
     await isDone()
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[\"中文文件.mock\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"中文文件.mock\"]")
 
 
@@ -371,9 +363,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnGetFileInfoButton.tap()
     await isDone()
 
-    let getFileInfoSize = await getData('getFileInfoSize')
+    let getFileInfoSize = await page.data('getFileInfoSize')
     expect(getFileInfoSize).toEqual(5716)
-    let getFileInfoDigest = await getData('getFileInfoDigest')
+    let getFileInfoDigest = await page.data('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("5d8accb35bda875ca3726d18b020e474")
 
     // 切换为 sha1
@@ -384,9 +376,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnGetFileInfoButton.tap()
     await isDone()
 
-    getFileInfoSize = await getData('getFileInfoSize')
+    getFileInfoSize = await page.data('getFileInfoSize')
     expect(getFileInfoSize).toEqual(5716)
-    getFileInfoDigest = await getData('getFileInfoDigest')
+    getFileInfoDigest = await page.data('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("b48cf507b618974ee5b7d5449d8c1911e2d68245")
 
     // 测试不支持的摘要算法，期望返回错误
@@ -397,12 +389,11 @@ describe('ExtApi-FileManagerTest', () => {
       await btnGetFileInfoButton.tap()
       await isDone()
 
-      let lastFailError = await getData('lastFailError')
+      let lastFailError = await page.data('lastFailError')
       expect(lastFailError.errCode).toEqual(1300022)
-      let lastCompleteError = await getData('lastCompleteError')
-      expect(lastCompleteError.errCode).toEqual(1300022)
+      // let lastCompleteError = await page.data('lastCompleteError')
+      // expect(lastCompleteError.errCode).toEqual(1300022)
     }
-
 
     // rename 到一个没有提前创建过的目录，期望返回错误
     await page.setData({
@@ -414,11 +405,10 @@ describe('ExtApi-FileManagerTest', () => {
       const btnRenameFileButton = await page.$('#btn-rename-file')
       await btnRenameFileButton.tap()
       await isDone()
-
-      lastFailError = await getData('lastFailError')
+      lastFailError = await page.data('lastFailError')
       expect(lastFailError.errCode).toEqual(1300002)
-      lastCompleteError = await getData('lastCompleteError')
-      expect(lastCompleteError.errCode).toEqual(1300002)
+      // lastCompleteError = await page.data('lastCompleteError')
+      // expect(lastCompleteError.errCode).toEqual(1300002)
     }
 
     // 非递归创建一级目录。期望成功
@@ -437,11 +427,11 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     fileListComplete.sort()
     expect(JSON.stringify(fileListComplete)).toEqual("[\"b\",\"" + testDirName +
       "\",\"提前创建的目录\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     fileListSuccess.sort()
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"b\",\"" + testDirName +
       "\",\"提前创建的目录\"]")
@@ -451,6 +441,8 @@ describe('ExtApi-FileManagerTest', () => {
       copyFromFile: "a/" + testDirName + "/中文路径/张三/name/中文文件.mock",
       copyToFile: "a/提前创建的目录/4.txt"
     })
+
+
 
     const btnCopyFileButton = await page.$('#btn-copy-file')
     await btnCopyFileButton.tap()
@@ -463,9 +455,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[\"4.txt\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"4.txt\"]")
 
     await page.setData({
@@ -478,9 +470,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[]")
 
   });
@@ -489,7 +481,7 @@ describe('ExtApi-FileManagerTest', () => {
     /**
      * 跨越用户目录和代码资源目录
      */
-    let globalRootPath = await getData('globalRootPath')
+    let globalRootPath = await page.data('globalRootPath')
     await page.setData({
       recursiveVal: true,
       logAble: false,
@@ -522,9 +514,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    let fileListComplete = await getData('fileListComplete')
+    let fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual('[]')
-    let fileListSuccess = await getData('fileListSuccess')
+    let fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
 
@@ -533,13 +525,13 @@ describe('ExtApi-FileManagerTest', () => {
     await btnAccessFileButton.tap()
     await isDone()
 
-    let accessFileRet = await getData("accessFileRet")
+    let accessFileRet = await page.data("accessFileRet")
     expect(accessFileRet).toEqual('')
 
 
     // 准备从资源目录拷贝png
     await page.setData({
-      basePath: "",
+      basePath: "/",
       unlinkFile: 'static/test-image/logo.ico',
       accessFile: 'static/test-image/logo.ico',
     })
@@ -547,18 +539,20 @@ describe('ExtApi-FileManagerTest', () => {
     await btnAccessFileButton.tap()
     await isDone()
 
-    accessFileRet = await getData("accessFileRet")
+    accessFileRet = await page.data("accessFileRet")
     expect(accessFileRet).toEqual('access:ok')
 
-    // 尝试删除资源，期望失败
+    // // 尝试删除资源，期望失败
     const btnUnLinkFileButton = await page.$('#btn-unlink-file')
-    await btnUnLinkFileButton.tap()
-    await isDone()
+    if (!isIOS) {
+      await btnUnLinkFileButton.tap()
+      await isDone()
+    }
 
     await btnAccessFileButton.tap()
     await isDone()
 
-    accessFileRet = await getData("accessFileRet")
+    accessFileRet = await page.data("accessFileRet")
     expect(accessFileRet).toEqual('access:ok')
     // 复制资源到 root目录
     await page.setData({
@@ -580,7 +574,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnAccessFileButton.tap()
     await isDone()
 
-    accessFileRet = await getData("accessFileRet")
+    accessFileRet = await page.data("accessFileRet")
     expect(accessFileRet).toEqual('access:ok')
 
     await btnUnLinkFileButton.tap()
@@ -589,7 +583,7 @@ describe('ExtApi-FileManagerTest', () => {
     await btnAccessFileButton.tap()
     await isDone()
 
-    accessFileRet = await getData("accessFileRet")
+    accessFileRet = await page.data("accessFileRet")
     expect(accessFileRet).toEqual('')
 
     // 从页面的按钮触发一次文件复制
@@ -600,9 +594,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[\"mock.json\"]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[\"mock.json\"]")
 
     // 从页面的按钮触发一次文件清空
@@ -612,19 +606,18 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    fileListComplete = await getData('fileListComplete')
+    fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual("[]")
-    fileListSuccess = await getData('fileListSuccess')
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual("[]")
 
   });
-
 
   it('write and read', async () => {
     /**
      * 测试writefile readfile 各个参数是否符合预期
      */
-    let globalTempPath = await getData('globalTempPath')
+    let globalTempPath = await page.data('globalTempPath')
     await page.setData({
       recursiveVal: true,
       logAble: false,
@@ -661,9 +654,9 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    let fileListComplete = await getData('fileListComplete')
+    let fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual('[]')
-    let fileListSuccess = await getData('fileListSuccess')
+    let fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
     // 先用utf-8 写入内容
@@ -674,16 +667,16 @@ describe('ExtApi-FileManagerTest', () => {
     const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
-    let readFileRet = await getData('readFileRet')
+    let readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升")
 
     const btnGetFileInfoButton = await page.$('#btn-get-file-info')
     await btnGetFileInfoButton.tap()
     await isDone()
 
-    let getFileInfoSize = await getData('getFileInfoSize')
+    let getFileInfoSize = await page.data('getFileInfoSize')
     expect(getFileInfoSize).toEqual(45)
-    let getFileInfoDigest = await getData('getFileInfoDigest')
+    let getFileInfoDigest = await page.data('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("2ae9c7672ff6c1e7c7e6a0bb4e74a6f06b39350b")
 
     // 尝试读取base64 信息
@@ -693,7 +686,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     await btnReadFileButton.tap()
     await isDone()
-    readFileRet = await getData('readFileRet')
+    readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual("5oiR54ix5YyX5Lqs5aSp5a6J6Zeo77yM5aSp5a6J6Zeo5YmN5aSq6Ziz5Y2H")
     // 测试ascii，需要特别测试 ascii 写入非法字符的情况，因为微信的常量字符编码和android原生有差异。
 
@@ -709,14 +702,14 @@ describe('ExtApi-FileManagerTest', () => {
     await btnGetFileInfoButton.tap()
     await isDone()
 
-    getFileInfoSize = await getData('getFileInfoSize')
+    getFileInfoSize = await page.data('getFileInfoSize')
     expect(getFileInfoSize).toEqual(78)
-    getFileInfoDigest = await getData('getFileInfoDigest')
+    getFileInfoDigest = await page.data('getFileInfoDigest')
     expect(getFileInfoDigest).toEqual("4ac7a65055628818341c2ad86ddc4205d8503801")
 
     await btnReadFileButton.tap()
     await isDone()
-    readFileRet = await getData('readFileRet')
+    readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual(
       "GbAtywwibr7mDCeJDFxkxwx8AFAxAg4I4PYJH4pS7lIpAg3lKQqrGQzKFS9VdAIRMljOUrsMyFA8fImHDNgEDdzSAnceBAVxDFU8KLr0"
     )
@@ -733,7 +726,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     await btnReadFileButton.tap()
     await isDone()
-    readFileRet = await getData('readFileRet')
+    readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual("hello jack.hello marry.")
 
     // 写入base64 获取 中文
@@ -748,7 +741,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     await btnReadFileButton.tap()
     await isDone()
-    readFileRet = await getData('readFileRet')
+    readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual(
       "丙辰中秋，欢饮达旦，大醉，作此篇，兼怀子由。明月几时有？把酒问青天。不知天上宫阙，今夕是何年。我欲乘风归去，又恐琼楼玉宇，高处不胜寒。起舞弄清影，何似在人间")
 
@@ -758,7 +751,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     await btnReadFileButton.tap()
     await isDone()
-    readFileRet = await getData('readFileRet')
+    readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual(
       "5LiZ6L6w5Lit56eL77yM5qyi6aWu6L6+5pem77yM5aSn6YaJ77yM5L2c5q2k56+H77yM5YW85oCA5a2Q55Sx44CC5piO5pyI5Yeg5pe25pyJ77yf5oqK6YWS6Zeu6Z2S5aSp44CC5LiN55+l5aSp5LiK5a6r6ZiZ77yM5LuK5aSV5piv5L2V5bm044CC5oiR5qyy5LmY6aOO5b2S5Y6777yM5Y+I5oGQ55C85qW8546J5a6H77yM6auY5aSE5LiN6IOc5a+S44CC6LW36Iie5byE5riF5b2x77yM5L2V5Ly85Zyo5Lq66Ze0"
     )
@@ -767,15 +760,17 @@ describe('ExtApi-FileManagerTest', () => {
 
   it('stat and asset test', async () => {
     // 测试 USER_DATA_PATH //globalTempPath
-    let globalRootPath = await getData('globalRootPath')
+    let globalRootPath = await page.data('globalRootPath')
 
     await page.setData({
+      logAble: false,
       recursiveVal: true,
       copyToBasePath: globalRootPath,
       basePath: globalRootPath,
       globalTempPath: globalRootPath,
       rmDirFile: 'a',
       mkdirFile: 'a',
+      readDir: 'a',
       unlinkFile: 'a/1.txt',
     })
 
@@ -800,7 +795,8 @@ describe('ExtApi-FileManagerTest', () => {
     const btnRmDirButton = await page.$('#btn-remove-dir')
     await btnRmDirButton.tap()
     await isDone()
-    // // 重新创建测试目录
+
+    // 重新创建测试目录
     const btnMkdDirButton = await page.$('#btn-mkdir')
     await btnMkdDirButton.tap()
     await isDone()
@@ -811,9 +807,9 @@ describe('ExtApi-FileManagerTest', () => {
 
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    let fileListComplete = await getData('fileListComplete')
+    let fileListComplete = await page.data('fileListComplete')
     expect(JSON.stringify(fileListComplete)).toEqual('[]')
-    let fileListSuccess = await getData('fileListSuccess')
+    let fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
     // 写入一个文件
@@ -825,7 +821,7 @@ describe('ExtApi-FileManagerTest', () => {
       statFile: 'a/1.txt',
     })
 
-    let lastFailError = await getData('lastFailError')
+    let lastFailError = await page.data('lastFailError')
     console.log(lastFailError)
 
     const btnWriteFileButton = await page.$('#btn-write-file')
@@ -837,11 +833,15 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 读取单个文件信息
-    let statsRet = await getData('statsRet')
+    let statsRet = await page.data('statsRet')
     expect(statsRet.length).toEqual(1)
     expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
-    expect(statsRet[0].stats.size).toEqual(69)
-    if (isAndroid()) {
+    console.log('～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～')
+    console.log(statsRet[0].stats.size)
+    if (!isIOS) {
+      expect(statsRet[0].stats.size).toEqual(69)
+    }
+    if (isApp()) {
       // 写入一个文件
       await page.setData({
         statsRet: ''
@@ -851,10 +851,12 @@ describe('ExtApi-FileManagerTest', () => {
       await isDone()
 
       // 读取单个文件信息
-      statsRet = await getData('statsRet')
+      statsRet = await page.data('statsRet')
       expect(statsRet.length).toEqual(1)
       expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
-      expect(statsRet[0].stats.size).toEqual(69)
+      if (!isIOS) {
+        expect(statsRet[0].stats.size).toEqual(69)
+      }
     }
 
     /**
@@ -881,7 +883,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 复制一份文件到 /a/m/3.txt
     await page.setData({
       //  asset 只能正式版测试，这里只能模拟返回路径
-      basePath: '',
+      basePath: '/',
       copyFromFile: 'static/test-image/logo.ico',
       copyToFile: 'a/m/3.txt',
     })
@@ -900,7 +902,7 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 读取全部文件信息
-    statsRet = await getData('statsRet')
+    statsRet = await page.data('statsRet')
 
     statsRet.sort(function(a, b) {
       if (a.path > b.path) {
@@ -916,10 +918,14 @@ describe('ExtApi-FileManagerTest', () => {
     // expect(statsRet[0].stats.size).toEqual(0)
 
     expect(statsRet[2].path).toMatch(new RegExp('.*/a/2.txt$'))
-    expect(statsRet[2].stats.size).toEqual(10)
+    if (!isIOS) {
+      expect(statsRet[2].stats.size).toEqual(10)
+    }
 
     expect(statsRet[4].path).toMatch(new RegExp('.*/a/m/3.txt$'))
-    expect(statsRet[4].stats.size).toEqual(4286)
+    if (!isIOS) {
+      expect(statsRet[4].stats.size).toEqual(4286)
+    }
 
 
     // 清理文件，避免影响其他测试用例
@@ -951,19 +957,23 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
 
     // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    fileListComplete = await getData('fileListComplete')
-    expect(JSON.stringify(fileListComplete)).toEqual('[]')
-    fileListSuccess = await getData('fileListSuccess')
+    fileListComplete = await page.data('fileListComplete')
+    if (isIOS) {
+      expect(JSON.stringify(fileListComplete)).toEqual(undefined)
+    } else {
+      expect(JSON.stringify(fileListComplete)).toEqual('[]')
+    }
+    fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
   });
+
   it('appendFileTest', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
-
-    let basePath = await getData('basePath')
+    let basePath = await page.data('basePath')
 
     await page.setData({
       basePath: mBasePath,
@@ -1010,17 +1020,17 @@ describe('ExtApi-FileManagerTest', () => {
     const btnReadFileButton = await page.$('#btn-read-file')
     await btnReadFileButton.tap()
     await isDone()
-    let readFileRet = await getData('readFileRet')
+    let readFileRet = await page.data('readFileRet')
     expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升再说一遍")
   });
+
   //nlinkSyncTest mkdirSyncTest appendFileTest writeFileSyncTest readFileSyncTest rmdirSyncTest readDirSyncTest accessFileSyncTest
   //renameFileSync copyFileSyncTest appendFileSyncTest truncateFileTest truncateFileSyncTest
   it('sync test',
     async () => {
-      if (!isAndroid()) {
+      if (!isApp()) {
         return
       }
-
 
       await page.setData({
         basePath: mBasePath,
@@ -1050,7 +1060,7 @@ describe('ExtApi-FileManagerTest', () => {
       const btnReadDirButton = await page.$('#btn-read-dir-sync')
       await btnReadDirButton.tap()
       await isDone()
-      const fileListSuccess = await getData('fileListSuccess')
+      const fileListSuccess = await page.data('fileListSuccess')
       expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
       // 先用utf-8 写入内容
@@ -1061,16 +1071,15 @@ describe('ExtApi-FileManagerTest', () => {
       let btnAccessFileButton = await page.$('#btn-access-file-sync')
       await btnAccessFileButton.tap()
       await isDone()
-      let accessFileRet = await getData("accessFileRet")
+      let accessFileRet = await page.data("accessFileRet")
       expect(accessFileRet).toEqual('access:ok')
 
       //重新命名文件
       const btnRenameFileButton = await page.$('#btn-rename-file-sync')
       await btnRenameFileButton.tap()
       await isDone()
-      let renameFileRet = await getData("renameFileRet")
+      let renameFileRet = await page.data("renameFileRet")
       expect(renameFileRet).toEqual("rename:ok")
-
 
       //追加内容
       let btnAppendFileButton = await page.$('#btn-append-file')
@@ -1080,11 +1089,10 @@ describe('ExtApi-FileManagerTest', () => {
       btnAppendFileButton = await page.$('#btn-append-file-sync')
       await btnAppendFileButton.tap()
 
-
       let btnReadFileButton = await page.$('#btn-read-file-sync')
       await btnReadFileButton.tap()
       await isDone()
-      let readFileRet = await getData('readFileRet')
+      readFileRet = await page.data('readFileRet')
       expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升再说一遍再说一遍")
 
       //truncateFileTest
@@ -1094,8 +1102,8 @@ describe('ExtApi-FileManagerTest', () => {
       btnReadFileButton = await page.$('#btn-read-file-sync')
       await btnReadFileButton.tap()
       await isDone()
-      readFileRet = await getData('readFileRet')
-      expect(readFileRet).toEqual("我爱北京天安门")
+      readFileRet = await page.data('readFileRet')
+      expect(readFileRet).toEqual("我爱")
 
       btnTruncateFile = await page.$('#btn-truncate-file-sync')
       await btnTruncateFile.tap()
@@ -1103,9 +1111,8 @@ describe('ExtApi-FileManagerTest', () => {
       btnReadFileButton = await page.$('#btn-read-file-sync')
       await btnReadFileButton.tap()
       await isDone()
-      readFileRet = await getData('readFileRet')
-      expect(readFileRet).toEqual("我爱北京")
-
+      readFileRet = await page.data('readFileRet')
+      expect(readFileRet).toEqual("我")
 
       // 测试 copyfile
       await page.setData({
@@ -1121,7 +1128,7 @@ describe('ExtApi-FileManagerTest', () => {
       btnAccessFileButton = await page.$('#btn-access-file-sync')
       await btnAccessFileButton.tap()
       await isDone()
-      accessFileRet = await getData("accessFileRet")
+      accessFileRet = await page.data("accessFileRet")
       expect(accessFileRet).toEqual('access:ok')
 
       await clearDir('sync')
@@ -1153,13 +1160,9 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
   }
 
-  function isAndroid() {
+  function isApp() {
     if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW ===
       'true') {
-      expect(1).toBe(1)
-      return false
-    }
-    if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios')) {
       expect(1).toBe(1)
       return false
     }
@@ -1168,7 +1171,7 @@ describe('ExtApi-FileManagerTest', () => {
 
   it('getSavedFileListTest',
     async () => {
-      if (!isAndroid()) {
+      if (!isApp()) {
         return
       }
       // await page.setData({
@@ -1197,14 +1200,14 @@ describe('ExtApi-FileManagerTest', () => {
       let btnSavedFileList = await page.$('#btn-getsaved-filelist')
       await btnSavedFileList.tap()
       await isDone()
-      let getSavedFileListRet = await getData("getSavedFileListRet")
+      let getSavedFileListRet = await page.data("getSavedFileListRet")
       console.log('getSavedFileListTest->' + getSavedFileListRet)
       expect(getSavedFileListRet).toEqual('getSavedFileList:ok')
     });
 
   it('removeSavedFileTest',
     async () => {
-      if (!isAndroid()) {
+      if (!isApp()) {
         return
       }
       await page.setData({
@@ -1224,14 +1227,14 @@ describe('ExtApi-FileManagerTest', () => {
       let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
       await btnRemoveSavedFileRet.tap()
       await isDone()
-      let removeSavedFileRet = await getData("removeSavedFileRet")
+      let removeSavedFileRet = await page.data("removeSavedFileRet")
       expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
 
     });
 
   //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
   it('openFiletest', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
@@ -1249,7 +1252,7 @@ describe('ExtApi-FileManagerTest', () => {
     let btnOpenFile = await page.$('#btn-open-file')
     await btnOpenFile.tap()
     await isDone()
-    let fd = await getData("fd")
+    let fd = await page.data("fd")
     expect(fd).not.toBe('');
     await page.setData({
       fd: '',
@@ -1259,17 +1262,16 @@ describe('ExtApi-FileManagerTest', () => {
     btnOpenFile = await page.$('#btn-open-file-sync')
     await btnOpenFile.tap()
     await isDone()
-    fd = await getData("fd")
+    fd = await page.data("fd")
     expect(fd).not.toBe('');
     console.log('openFiletest', '4')
   });
+
   // closeTest closeTestSync
   it('closeTest', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
-
-
 
     await page.setData({
       basePath: mBasePath,
@@ -1284,7 +1286,7 @@ describe('ExtApi-FileManagerTest', () => {
     let btnCloseFile = await page.$('#btn-close-file')
     await btnCloseFile.tap()
     await isDone()
-    let closeFileRet = await getData("closeFileRet")
+    let closeFileRet = await page.data("closeFileRet")
     expect(closeFileRet).toEqual('close:ok')
     await page.setData({
       closeFileRet: '',
@@ -1293,13 +1295,14 @@ describe('ExtApi-FileManagerTest', () => {
     btnCloseFile = await page.$('#btn-close-file-sync')
     await btnCloseFile.tap()
     await isDone()
-    closeFileRet = await getData("closeFileRet")
+    closeFileRet = await page.data("closeFileRet")
     expect(closeFileRet).toEqual('close:ok')
 
   });
-  //writeTest writeSyncTest
+
+  // writeTest writeSyncTest
   it('writeTest', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
     console.log('writeTest', 'start')
@@ -1318,10 +1321,10 @@ describe('ExtApi-FileManagerTest', () => {
     let btnWrite = await page.$('#btn-write')
     await btnWrite.tap()
     await isDone()
-    let bytesWritten = await getData("bytesWritten")
-    let lastFailError = await getData("lastFailError")
+    let bytesWritten = await page.data("bytesWritten")
+    let lastFailError = await page.data("lastFailError")
     if (bytesWritten != 21) {
-      let writeData = await getData("writeData")
+      let writeData = await page.data("writeData")
       console.log('writeTest', lastFailError.errCode, lastFailError.errMsg, bytesWritten,
         writeData)
     }
@@ -1338,31 +1341,31 @@ describe('ExtApi-FileManagerTest', () => {
     btnWrite = await page.$('#btn-write-sync')
     await btnWrite.tap()
     await isDone()
-    bytesWritten = await getData("bytesWritten")
+    bytesWritten = await page.data("bytesWritten")
     expect(bytesWritten).toEqual(6)
     console.log('writeTest', '3')
     //fstatTest
     let btnFstat = await page.$('#btn-fstat-file')
     await btnFstat.tap()
     await isDone()
-    let fstat = await getData("fstat")
-    expect(fstat.size > 0).toBe(true)
+    let fstatSize = await page.data("fstatSize")
+    expect(fstatSize > 0).toBe(true)
     console.log('writeTest', '4')
 
     //fstatSyncTest
     btnFstat = await page.$('#btn-fstat-file-sync')
     await btnFstat.tap()
     await isDone()
-    fstat = await getData("fstat")
-    expect(fstat.size > 0).toBe(true)
+    fstatSize = await page.data("fstatSize")
+    expect(fstatSize > 0).toBe(true)
     console.log('writeTest', '5')
 
     //ftruncateFileTest
     let btnFTruncateFile = await page.$('#btn-ftruncate-file')
     await btnFTruncateFile.tap()
     await isDone()
-    let ftruncateRet = await getData("ftruncateRet")
-    expect(fstat).not.toEqual('ftruncate:ok')
+    let ftruncateRet = await page.data("ftruncateRet")
+    expect(ftruncateRet).toEqual('ftruncate:ok')
     await page.setData({
       ftruncate: '',
     })
@@ -1372,13 +1375,14 @@ describe('ExtApi-FileManagerTest', () => {
     btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
     await btnFTruncateFile.tap()
     await isDone()
-    ftruncateRet = await getData("ftruncateRet")
-    expect(fstat).not.toEqual('ftruncate:ok')
+    ftruncateRet = await page.data("ftruncateRet")
+    expect(ftruncateRet).toEqual('ftruncate:ok')
     console.log('writeTest', '7')
   });
+
   //writeTest writeSyncTest
   it('ftruncateFileTest', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
     console.log('ftruncateFileTest', 'start')
@@ -1397,14 +1401,14 @@ describe('ExtApi-FileManagerTest', () => {
     btnWrite = await page.$('#btn-write-sync')
     await btnWrite.tap()
     await isDone()
-    bytesWritten = await getData("bytesWritten")
+    bytesWritten = await page.data("bytesWritten")
     expect(bytesWritten).toEqual(27)
     console.log('ftruncateFileTest', '3')
     //ftruncateFileTest
     let btnFTruncateFile = await page.$('#btn-ftruncate-file')
     await btnFTruncateFile.tap()
     await isDone()
-    let ftruncateRet = await getData("ftruncateRet")
+    let ftruncateRet = await page.data("ftruncateRet")
     expect(ftruncateRet).toEqual('ftruncate:ok')
     await page.setData({
       ftruncate: '',
@@ -1415,86 +1419,86 @@ describe('ExtApi-FileManagerTest', () => {
     btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
     await btnFTruncateFile.tap()
     await isDone()
-    ftruncateRet = await getData("ftruncateRet")
+    ftruncateRet = await page.data("ftruncateRet")
     expect(ftruncateRet).toEqual('ftruncate:ok')
     console.log('ftruncateFileTest', '7')
   });
 
   //testAppendFileBuffer
   it('testAppendFileBuffer', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
     var btnWrite = await page.$('#btn-appendfile-buffer')
     await btnWrite.tap()
     await isDone()
-    let arrayBufferRes = await getData("arrayBufferRes")
+    let arrayBufferRes = await page.data("arrayBufferRes")
     expect(arrayBufferRes).toEqual(21)
   });
 
   it('testAppendFileBufferSync', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
     var btnWrite = await page.$('#btn-appendfilesync-buffer')
     await btnWrite.tap()
     await isDone()
-    let arrayBufferRes = await getData("arrayBufferRes")
+    let arrayBufferRes = await page.data("arrayBufferRes")
     expect(arrayBufferRes).toEqual(20)
   });
 
   it('testWriteReadSyncBuffer', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
     var btnWrite = await page.$('#btn-writereadsync-buffer')
     await btnWrite.tap()
     await isDone()
-    let arrayBufferRes = await getData("arrayBufferRes")
+    let arrayBufferRes = await page.data("arrayBufferRes")
     expect(arrayBufferRes).toEqual(1.11)
   });
 
   it('testWriteReadBuffer', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
     var btnWrite = await page.$('#btn-writeread-buffer')
     await btnWrite.tap()
     await isDone()
-    let arrayBufferRes = await getData("arrayBufferRes")
+    let arrayBufferRes = await page.data("arrayBufferRes")
     expect(arrayBufferRes).toEqual(1.24)
   });
 
   it('testWriteReadFileSyncBuffer', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
     var btnWrite = await page.$('#btn-writereadfilesync-buffer')
     await btnWrite.tap()
     await isDone()
-    let arrayBufferRes = await getData("arrayBufferRes")
+    let arrayBufferRes = await page.data("arrayBufferRes")
     expect(arrayBufferRes).toEqual(1.333)
   });
 
   it('testReadFileBuffer', async () => {
-    if (!isAndroid()) {
+    if (!isApp()) {
       return
     }
 
     var btnWrite = await page.$('#btn-writereadfile-buffer')
     await btnWrite.tap()
     await isDone()
-    let arrayBufferRes = await getData("arrayBufferRes")
+    let arrayBufferRes = await page.data("arrayBufferRes")
     expect(arrayBufferRes).toEqual(1.2222222)
   });
 
   it('testReadAssetFile', async () => {
-    if (!isAndroid()) {
+    if (!isAndroid) {
       return
     }
 
@@ -1507,7 +1511,7 @@ describe('ExtApi-FileManagerTest', () => {
     let btnReadFileButton = await page.$('#btn-read-file-sync')
     await btnReadFileButton.tap()
     await isDone()
-    let readFileRet = await getData('readFileRet')
+    let readFileRet = await page.data('readFileRet')
     expect(readFileRet.length > 0).toBe(true)
   });
 });

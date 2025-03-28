@@ -1,5 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-list-view', () => {
   if (isMP) {
@@ -24,6 +27,8 @@ describe('component-native-list-view', () => {
     const scrollTop = await listElement.attribute("scrollTop")
     console.log("check_scroll_top---"+scrollTop)
     expect(scrollTop-600).toBeGreaterThanOrEqual(0)
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
 
@@ -40,14 +45,19 @@ describe('component-native-list-view', () => {
     const scrollLeft = await listElement.attribute("scrollLeft")
     console.log("check_scroll_left---"+scrollLeft)
     expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
+    await page.callMethod('confirm_scroll_left_input', 0)
+    await page.waitFor(600)
   })
 
   it('Event check_scroll', async () => {
     await page.callMethod('change_scroll_y_boolean', true)
     await page.callMethod('change_scroll_x_boolean', false)
     await page.waitFor(600)
+    // 设置一次scrollTop 0。切换横竖方向后scrollTop属性是否保持并无规范。
+    await page.callMethod('confirm_scroll_top_input', 600)
+    await page.waitFor(500)
     await page.callMethod('confirm_scroll_top_input', 300)
-    await page.waitFor(600)
+    await page.waitFor(500)
     const scrollDetail = await page.data('scrollDetailTest')
     // console.log('scrollDetailTest:', scrollDetail)
     expect(scrollDetail.scrollLeft).toBe(0)
@@ -61,6 +71,8 @@ describe('component-native-list-view', () => {
     expect(scrollDetail.deltaY).toBeGreaterThan(299.5)
     //expect([300.1905, 300, 299.8095]).toContain(scrollDetail.deltaY);
     expect(await page.data('isScrollTest')).toBe('scroll:Success')
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
@@ -68,20 +80,20 @@ describe('component-native-list-view', () => {
     await page.callMethod('confirm_scroll_top_input', 2500)
     await page.waitFor(600)
     expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
     // 滚动到顶部50,是否触发scrolltoupper事件
-    await page.callMethod('confirm_scroll_top_input', 50)
+    await page.callMethod('confirm_scroll_top_input', 40)
     await page.waitFor(1000)
     expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.waitFor(600)
   })
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1) {
-    return
-  }
-
-  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if(isWeb || isIOS) {
     return
   }
 
@@ -114,6 +126,11 @@ describe('component-native-list-view', () => {
 
   //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
   it('check_scroll_width', async () => {
+    if(isHarmony) {
+      // 鸿蒙平台list-view的暂不支持一次计算出scrollWidth
+      expect(1).toBe(1)
+      return
+    }
     if(await page.data('scroll_x_boolean') === false) {
         await page.callMethod('change_scroll_x_boolean', true)
         await page.callMethod('change_scroll_y_boolean', false)
@@ -137,12 +154,13 @@ describe('component-native-list-view', () => {
         refresher_enabled_boolean: true,
         refresher_triggered_boolean: true
     })
-    await page.waitFor(2000)
+    await page.waitFor(1000)
     expect(await page.data('refresherrefresh')).toBe(true)
     //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
-    await page.waitFor(1000)
+    await page.waitFor(2000)
   })
 
+  // TODO attribute、property规范化
   //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_scroll_into_view_top', async () => {
     if(await page.data('scroll_y_boolean') === false) {

@@ -1,9 +1,12 @@
 describe('API-loading', () => {
-
+  let topSafeArea = 0
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
-  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isIos = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+  const isApp = isIos || isAndroid || isHarmony
 
   if(isMP) {
     // 微信小程序截图无法截到弹框
@@ -27,6 +30,9 @@ describe('API-loading', () => {
   }
 
   beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+
     page = await program.reLaunch('/pages/API/show-modal/show-modal')
     await page.waitFor('view');
 
@@ -36,17 +42,12 @@ describe('API-loading', () => {
   it("onload-modal-test", async () => {
     if (isApp) {
       await page.waitFor(500);
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -58,7 +59,6 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
   })
-
 
   it("modal-test-current-0", async () => {
 
@@ -76,17 +76,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -117,17 +111,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -158,17 +146,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -184,7 +166,6 @@ describe('API-loading', () => {
 
 
   it("modal-test-current-2-showCancel", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -199,17 +180,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -220,12 +195,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
 
-
   it("modal-test-current-2-showCancel-cancelText", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -240,16 +212,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -260,9 +227,7 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-cancelText-confirmText", async () => {
 
@@ -280,16 +245,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -300,9 +260,7 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-cancelText-confirmText-editable-placeholder", async () => {
 
@@ -320,16 +278,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -345,7 +298,6 @@ describe('API-loading', () => {
 
 
   it("modal-test-current-2-showCancel-confirmText-editable-placeholder", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -360,16 +312,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -380,12 +327,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-editable-placeholder", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -400,17 +344,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -421,12 +359,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-placeholder", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -441,17 +376,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -462,12 +391,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -482,17 +408,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -503,12 +423,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-cancelText-editable-placeholder", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -523,17 +440,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -544,12 +455,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-cancelText-placeholder", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -564,17 +472,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -585,12 +487,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 
   it("modal-test-current-2-showCancel-cancelText", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -605,17 +504,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -626,13 +519,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
 
-
-
   it("modal-test-current-2-showCancel-cancelText-confirmText-placeholder", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -647,16 +536,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -667,12 +551,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
 
-
   it("modal-test-current-2-showCancel-cancelText-confirmText", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -687,17 +568,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -708,12 +583,9 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
 
-
   it("modal-test-current-2-showCancel-cancelText-confirmText-editable", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -728,16 +600,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -748,7 +615,5 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
-
   })
-
 });

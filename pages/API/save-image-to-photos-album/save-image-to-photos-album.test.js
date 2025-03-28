@@ -1,9 +1,13 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
-
+const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 describe('API-saveImageToPhotosAlbum', () => {
-  if (!isAndroid) {
+  if (isIOS || isWeb || isMP || isAppWebview) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
@@ -17,10 +21,16 @@ describe('API-saveImageToPhotosAlbum', () => {
   });
 
   it('test saveImageToPhotosAlbum', async () => {
-    await program.adbCommand(
-      'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
-    await page.waitFor(500);
+    if (isAndroid) {
+      await program.adbCommand(
+        'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
+    }
     await page.callMethod('saveImage');
+    if (isHarmony) {
+      await program.tap({ x: 305, y: 555 })
+    }
+    await page.waitFor(500);
     expect(await page.data('success')).toBe(true);
+    await page.waitFor(2000);
   });
 });

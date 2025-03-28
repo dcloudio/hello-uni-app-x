@@ -1,8 +1,9 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+
 describe('component-native-scroll-view-refresher', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('other platform', () => {
@@ -51,9 +52,9 @@ describe('component-native-scroll-view-refresher', () => {
 
   // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件
   // 安卓端仅测'android 11.0.0'、'android 10.0.0_x86_64'、'android 10.0.0_x86'
-  if(!platformInfo.startsWith('web') && !platformInfo.startsWith('mp')){
+  if(isAndroid || isIos || isHarmony){
     it('check_refresherabort', async () => {
-      if(isIos){
+      if(isIos || isHarmony){
         await program.swipe({
           startPoint: {x: 100,y: 500},
           endPoint: {x: 100,y: 630},
@@ -82,5 +83,21 @@ describe('component-native-scroll-view-refresher', () => {
     await page.waitFor(300);
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
+    await page.waitFor(1500);
+  });
+
+  //验证issues 16020bug问题
+  it('check_page_orientation_snapshot', async () => {
+    // if(isAndroid || isIos) {
+    if(isAndroid || isHarmony) {
+      await page.callMethod('setPageStyle', {pageOrientation: "landscape"})
+      await page.waitFor(800);
+      const image = await program.screenshot({fullPage: true});
+      expect(image).toSaveImageSnapshot();
+      await page.callMethod('setPageStyle', {pageOrientation: "portrait"})
+      await page.waitFor(800);
+    } else {
+      expect(1).toBe(1)
+    }
   });
 });

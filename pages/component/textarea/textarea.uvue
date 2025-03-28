@@ -20,12 +20,14 @@
         placeholder_value: "请输入",
         defaultModel: '123',
         textareaMaxLengthValue: "",
+        isSelectionFocus: false,
         selectionStart: -1,
         selectionEnd: -1,
         hold_keyboard: false,
         adjust_position: false,
         disabled: false,
-        jest_result: false
+        jest_result: false,
+        isAutoTest: false
       }
     },
 
@@ -57,11 +59,12 @@
       radio_change_inputmode_enum(checked : number) { this.inputmode_enum_current = checked },
       radio_change_confirm_type(checked : number) { this.confirm_type_current = checked },
       setSelection: function (selectionStart : number, selectionEnd : number) {
-        uni.getElementById("textarea-instance-2")?.focus()
+        this.isSelectionFocus = true;
         this.selectionStart = selectionStart;
         this.selectionEnd = selectionEnd;
       },
       onSelectionBlurChange() {
+      this.isSelectionFocus = false;
         this.selectionEnd = 0;
       },
       changeHoldKeyboard(event : UniSwitchChangeEvent) {
@@ -74,6 +77,9 @@
       },
       change_disabled_boolean(checked : boolean) {
         this.disabled = checked
+      },
+      getBoundingClientRectForTest() : DOMRect | null {
+        return uni.getElementById('test-width')?.getBoundingClientRect();
       }
     }
   }
@@ -137,7 +143,7 @@
         <view @click="setSelection(2, 5)">设置输入框聚焦时光标的起始位置和结束位置（点击生效）</view>
       </view>
       <view class="textarea-wrap">
-        <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase"
+        <textarea id="textarea-instance-2" class="textarea-instance" value="Hello UniApp X Textarea TestCase" :focus="isSelectionFocus"
           :selection-start="selectionStart" :selection-end="selectionEnd" @blur="onSelectionBlurChange" />
       </view>
 
@@ -162,6 +168,21 @@
       <view class="textarea-wrap">
         <textarea class="textarea-instance" :adjust-position="adjust_position" />
       </view>
+      <view v-if="isAutoTest" class="textarea-wrap">
+        <textarea id="test-width" class="test-width" value="123456" placeholder="" />
+      </view>
+      <view class="title-wrap">
+        <view>设置line-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="line-height: 1.2em;" value="设置line-height为1.2em" ></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>设置max-height与auto-height</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="max-height: 50px;" auto-height="true" :value="default_value"></textarea>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -175,6 +196,12 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     flex-direction: row;
     justify-content: center;
+  }
+
+  .test-width {
+    width: 100px;
+    height: 100px;
+    background-color: aqua;
   }
 
   .textarea-wrap {

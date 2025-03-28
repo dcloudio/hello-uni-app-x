@@ -79,11 +79,20 @@ describe('getCurrentPages', () => {
     }});
 
     await page.callMethod('setPageStyle', {
-      androidThreeButtonNavigationTranslucent: true
+      androidThreeButtonNavigationStyle: 'black'
     });
     await page.waitFor(2000);
     const image5 = await program.screenshot({ deviceShot: true });
     expect(image5).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-androidThreeButtonNavigationStyle'
+    }});
+
+    await page.callMethod('setPageStyle', {
+      androidThreeButtonNavigationTranslucent: true
+    });
+    await page.waitFor(2000);
+    const image6 = await program.screenshot({ deviceShot: true });
+    expect(image6).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
     }});
 
@@ -92,8 +101,8 @@ describe('getCurrentPages', () => {
       hideStatusBar: true
     })
     await page.waitFor(2000);
-    const image6 = await program.screenshot({ deviceShot: true });
-    expect(image6).toSaveImageSnapshot({customSnapshotIdentifier() {
+    const image7 = await program.screenshot({ deviceShot: true });
+    expect(image7).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
 
@@ -126,5 +135,14 @@ describe('getCurrentPages', () => {
   it('getHTMLElement', async () => {
     const res = await page.callMethod('checkGetHTMLElement')
     expect(res).toBe(isWeb)
+  })
+
+  it('getAndroidActivity', async () => {
+    if(isAndroid) {
+      const res = await page.callMethod('checkGetAndroidActivity')
+      expect(res).toBe(true)
+    } else {
+      expect(1).toBe(1)
+    }
   })
 })

@@ -1,6 +1,6 @@
 <template>
   <view class="uni-flex-item">
-    <video class="video" ref="video" id="video" :header="header" :src=src :autoplay="autoplay" :loop="loop"
+    <video class="video" ref="video" id="video" :header="header" :src="src" :autoplay="autoplay" :loop="loop"
       :muted="muted" :initial-time="initialTime" :duration="duration" :controls="controls" :danmu-btn="danmuBtn"
       :enable-danmu="enableDanmu" :page-gesture="pageGesture" :direction="direction" :show-progress="showProgress"
       :show-fullscreen-btn="showFullscreenBtn" :show-play-btn="showPlayBtn" :show-center-play-btn="showCenterPlayBtn"
@@ -10,7 +10,6 @@
       :http-cache="httpCache" :play-strategy="playStrategy" :danmu-list="danmuList" @play="onPlay" @pause="onPause"
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
-      <!-- #ifdef APP -->
       <image v-if="subCompEnable && subCompShow" class="img-fast-backward"
         src="../../../static/test-video/fast-backward.png" @tap="fastBackward"></image>
       <image v-if="subCompEnable && subCompShow" class="img-fast-forward"
@@ -18,7 +17,6 @@
       <input id="input-send-danmu" class="input-send-danmu" v-if="subCompEnable && subCompShow" placeholder="请输入弹幕内容"
         placeholder-style="color: white;" confirm-type="send" @confirm="onSendDanmuConfirm"
         @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
-      <!-- #endif -->
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
       <view class="uni-btn-v">
@@ -26,12 +24,10 @@
           <button type="primary" @click="pause">视频格式示例</button>
         </navigator>
       </view>
-      <!-- #ifdef APP -->
       <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
         <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
         <switch :checked="subCompEnable" @change="onSubCompEnableChange" />
       </view>
-      <!-- #endif -->
       <view class="uni-title">
         <text class="uni-title-text">API示例</text>
       </View>
@@ -87,29 +83,30 @@
       <boolean-data title="设置是否显示视频底部控制栏的播放按钮" :defaultValue="showPlayBtn" @change="onShowPlayBtnChange"></boolean-data>
       <boolean-data title="设置是否显示静音按钮（仅限非 Web 平台）" :defaultValue="showMuteBtn"
         @change="onShowMuteBtnChange"></boolean-data>
-      <enum-data title="设置全屏时视频的方向" :items="directionItemTypes" @change="onDirectionChange"></enum-data>
       <boolean-data title="设置是否显示视频中间的播放按钮" :defaultValue="showCenterPlayBtn"
         @change="onShowCenterPlayBtnChange"></boolean-data>
       <boolean-data title="设置是否显示loading控件" :defaultValue="showLoading" @change="onShowLoadingChange"></boolean-data>
       <boolean-data title="设置是否开启控制进度的手势" :defaultValue="enableProgressGesture"
         @change="onEnableProgressGestureChange"></boolean-data>
-      <boolean-data title="设置是否开启播放手势（仅限非 Web 平台）" :defaultValue="enablePlayGesture"
+      <boolean-data title="设置是否开启播放手势,双击播放暂停（仅限非 Web 平台）" :defaultValue="enablePlayGesture"
         @change="onEnablePlayGestureChange"></boolean-data>
       <!-- #ifndef WEB -->
-      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势" :defaultValue="pageGesture"
+      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 page-gesture" :defaultValue="pageGesture"
         @change="onPageGestureChange"></boolean-data>
       <!-- #endif -->
-      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势（仅限非 Web 平台）" :defaultValue="vslideGesture"
+      <boolean-data title="非全屏模式下，设置是否开启亮度与音量调节手势 vslide-gesture（仅限非 Web 平台）" :defaultValue="vslideGesture"
         @change="onVslideGestureChange"></boolean-data>
       <boolean-data title="全屏模式下，设置是否开启亮度与音量调节手势（仅限非 Web 平台）" :defaultValue="vslideGestureInFullscreen"
         @change="onVslideGestureInFullscreenChange"></boolean-data>
-      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 App 平台，播放前设置有效）" :defaultValue="httpCache"
-        @change="onHttpCacheChange"></boolean-data>
       <enum-data title="设置视频大小与video容器大小不一致时，视频的表现形式" :items="objectFitItemTypes"
         @change="onObjectFitChange"></enum-data>
+      <!-- #ifndef APP-HARMONY -->
+      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 App 平台，播放前设置有效）" :defaultValue="httpCache"
+        @change="onHttpCacheChange"></boolean-data>
       <enum-data title="设置解码器（仅 App 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
       <enum-data title="设置播放策略（仅 App 平台，播放前设置有效）" :items="playStrategyItemTypes"
         @change="onPlayStrategyChange"></enum-data>
+      <!-- #endif -->
     </scroll-view>
   </view>
 </template>
@@ -356,10 +353,6 @@
         this.requestFullScreenOptions = {
           direction
         } as RequestFullScreenOptions;
-      },
-      onDirectionChange: function (value : number) {
-        this.direction = this.directionItems[value];
-        console.log("direction -> " + this.direction)
       },
       onShowProgressChange: function (value : boolean) {
         this.showProgress = value;

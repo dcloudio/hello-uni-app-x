@@ -1,21 +1,13 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+
 const PAGE_PATH = '/pages/component/global-events/touch-events'
 
 describe('touch-events-test', () => {
-
-  // 先屏蔽 android 及 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('android') ||
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if (isAndroid || isMP || isWeb || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
       expect(1).toBe(1)
     })
     return
@@ -27,9 +19,7 @@ describe('touch-events-test', () => {
     await page.waitFor(500);
   })
 
-
   it('touchStart-tagName-touchCount', async () => {
-
     let iconRect = await page.data('iconRect')
     let x = iconRect.x + iconRect.width / 2.0
     let y = iconRect.y + iconRect.height / 2.0

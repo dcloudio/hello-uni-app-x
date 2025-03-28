@@ -2,7 +2,7 @@
 import { Report } from "./report.uts";
 import { StatType } from "./stat-type";
 import { EventParams, UniStatOptions, ErrorCallback, ReportErrorCode } from '../../interface.uts'
-import { is_page, is_page_report, get_space, is_push_clientid, calibration } from '../utils/pageInfo.uts'
+import { is_page, is_page_report, get_space, is_push_clientid, calibration,get_crash_logs } from '../utils/pageInfo.uts'
 import { Config } from "../config";
 
 export class Stat {
@@ -83,6 +83,12 @@ export class Stat {
     // 设置上报周期时间
     this.report.eportInterval = uniStatConfig.reportInterval ?? 10
 
+		// #ifdef APP
+		// 获取崩溃日志
+		get_crash_logs((logs)=>{
+			this.registerEvent(StatType.Crash, null, logs)
+		})
+		// #endif
   }
   /**
    * 应用启动
@@ -160,21 +166,21 @@ export class Stat {
   /**
    * 获取推送ID
    */
-  pushEvent(options : any) {
-    // TODO 具体实现
-    const ClientID = is_push_clientid()
-    if (ClientID) {
-      uni.getPushClientId({
-        success: (res) => {
-          const cid = res.cid
-          //  只有获取到才会上传
-          // if (cid != null) {
-          this.report.sendPushRequest(options, cid)
-          // }
-        },
-      } as GetPushClientIdOptions)
-    }
-  }
+  // pushEvent(options : any) {
+  //   // TODO uni x 暂不支持，如需要开启，请放开注释
+  //   const ClientID = is_push_clientid()
+  //   if (ClientID) {
+  //     uni.getPushClientId({
+  //       success: (res) => {
+  //         const cid = res.cid
+  //         //  只有获取到才会上传
+  //         // if (cid != null) {
+  //         this.report.sendPushRequest(options, cid)
+  //         // }
+  //       },
+  //     } as GetPushClientIdOptions)
+  //   }
+  // }
 
   /**
    * 注册事件
@@ -190,7 +196,7 @@ export class Stat {
       case StatType.LifeCycleLaunch:
         // 使用非空断言，options在这里肯定非空
         this.report.launch(options!)
-        this.pushEvent(options)
+        // this.pushEvent(options)
         break
       case StatType.LifeCycleAppShow:
         // TODO 目前只兼容 web 和 app ，小程序等平台需要调用 api onAppHide
@@ -221,6 +227,9 @@ export class Stat {
           this.report.appError(error)
         }
         break
+			case StatType.Crash:
+			    this.report.appCrash(options as string[])
+			  break
     }
   }
 

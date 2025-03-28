@@ -8,9 +8,11 @@
       <view class="uni-btn-v uni-common-mt">
         <button type="default" @click="verify(true)">一键登录（全屏）</button>
       </view>
+      <!-- #ifndef APP-HARMONY -->
       <view class="uni-btn-v uni-common-mt">
         <button type="default" @click="customLoginIn()">一键登录（自定义页面）</button>
       </view>
+      <!-- #endif -->
     </view>
   </view>
 </template>
@@ -97,9 +99,10 @@
           },
           fail: (err) => {
             console.error("pre login fail => " + JSON.stringify(err));
+            const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
             uni.showModal({
               title: '预登录失败',
-              content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+              content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? '')?.getString("errorDesc") : err.errMsg,
               showCancel: false
             });
           }
@@ -107,9 +110,8 @@
       },
       login(fullScreen : boolean) {
         this.uniVerifyManager?.login({
-          univerifyStyle:{
+          uniVerifyStyle:{
             fullScreen: fullScreen,
-            backgroundColor: "#FFFFFF",
             loginBtnText: "一键登录",
             logoPath: "/static/logo.png"
           },

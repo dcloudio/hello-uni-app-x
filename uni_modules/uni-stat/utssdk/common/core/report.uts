@@ -1,6 +1,6 @@
 import { OnLaunchOptionsWithCst, StatDefault, PageParams, TitleConfigParams, RequestData, EventParams } from '../../interface.uts'
 import { get_residence_time, get_time, set_first_time, get_last_visit_time, get_first_visit_time, get_total_visit_count, get_page_residence_time, set_page_residence_time } from '../utils/pageTime.uts'
-import { get_default_data, get_route, get_page_name, get_odid, is_handle_device, get_scene, get_report_Interval } from '../utils/pageInfo.uts'
+import { get_net, get_default_data, get_route, get_page_name, get_odid, is_handle_device, get_scene, get_report_Interval } from '../utils/pageInfo.uts'
 import { ReportType, ReprotCstType } from './stat-type.uts'
 import { dbGet, dbSet, dbRemove } from '../utils/db.uts'
 import { Log, Map2String, Map2Json, handle_data } from '../utils/index.uts'
@@ -9,11 +9,14 @@ import { OPERATING_TIME, STAT_VERSION, Config } from '../config.uts'
 
 
 // #ifdef APP-ANDROID
+// @ts-ignore
 class CloudObjectToDo extends InternalUniCloudCloudObjectCaller {
+  // @ts-ignore
   constructor(obj : InternalUniCloudCloudObject) {
     super(obj)
   }
   report(...do_not_transform_spread : Array<any | null>) : Promise<UTSJSONObject> {
+    // @ts-ignore
     return this._obj.callMethod('report', this._getArgs(...do_not_transform_spread))
   }
 }
@@ -334,6 +337,55 @@ export class Report {
   }
 
   /**
+   * 应用崩溃时触发 ，只有 app 生效
+   * @param {string[] } crash_data 崩溃日志数组
+   */
+  appCrash(crash_data : string[]) {
+    const statdata = this.statData
+    let options : StatDefault = {
+      "lt": "41", // 统计数据类型
+      "uuid": statdata.uuid,
+      "ak": statdata.ak, // DCloud appid
+      "v": statdata.v, // 应用版本号
+      "ut": statdata.ut, // 平台
+      "p": statdata.p, // 手机系统
+      "ch": statdata.ch, // 渠道信息
+      "mpsdk": statdata.mpsdk, // 小程序 SDK Version
+      "did": statdata.uuid, // deviceId
+      "net": statdata.net, // 设备网络型号
+      "os": statdata.mpn, // 系统版本
+      "sv": statdata.sv, // 系统版本名称
+      "brand": statdata.brand, // 手机品牌
+      "md": statdata.md, // 手机型号
+      "root": statdata.root, // 是否root
+      // "batlevel": "", // 设备电池电量
+      // "battemp": "", // 电池温度
+      // "memuse": "", // 系统已使用内存
+      // "memtotal": "", // 系统总内存
+      // "diskuse": "", // 系统磁盘已使用大小
+      // "disktotal": "", // 系统磁盘总大小
+      // "abis": "", // 设备支持的CPU架构
+      // "appcount": "", // 运行的app个数
+      // "mem": "", // APP使用的内存量
+      // "wvcount": "", // 打开Webview窗口的个数
+      // "duration": "", // APP使用时长
+      // "fore": "", // 是否前台运行
+      "pn": statdata.pn, // 原生应用包名
+      "pv": statdata.pv, // 应用版本名称
+      // "url": "", // 页面url
+      "log": "" // 错误日志
+    }
+
+    get_net().then((net : string) => {
+      options.net = net
+      this.crashRequest(options, crash_data)
+    }).catch(() => {
+      this.crashRequest(options, crash_data)
+    })
+
+  }
+
+  /**
    * 发送请求,应用维度上报
    * @param {Object} options 页面信息
    * @param {Boolean} type 是否立即上报
@@ -509,6 +561,81 @@ export class Report {
   }
 
   /**
+   * 崩溃请求发送请求
+   * @param {StatDefault} data 上报数据
+   * @param {Object} type 是否上报
+   */
+  crashRequest(data : StatDefault, crash_data : string[]) {
+    // let data = JSON.parse(JSON.stringify(stata_data))
+    const statConfig = Config.getOptions()
+    let time = get_time()
+
+    // 需要把标题插入到数据中
+    const title = this._navigationBarTitle
+    data.ttn = title.page
+    data.ttpj = title.config
+    data.ttc = title.report
+
+    // 获取消息对列
+    let statData = dbGet<string>('__UNI__STAT__DATA')
+
+    if (statData == null) {
+      statData = '{}'
+    }
+
+
+    let uniStatData = JSON.parse<Map<string, StatDefault[]>>(statData)
+
+    if (uniStatData == null) {
+      uniStatData = new Map([])
+    }
+
+    // 循环崩溃日志 并加入队列
+    for (let i = 0; i < crash_data.length; i++) {
+      const log = crash_data[i]
+      data.log = log
+
+      if (statConfig.debug!) {
+        // 打印输出日志
+        Log(data)
+      }
+
+      const lt = data.lt!
+
+      const hasKey = uniStatData.has(lt)
+      if (!hasKey) {
+        uniStatData.set(lt, [])
+      }
+      // 将消息加入对列
+      uniStatData.get(lt)!.push(data)
+
+    }
+    // 将 map 转换为 str
+    const statDataStr = Map2String(uniStatData)
+    // 存储
+    dbSet('__UNI__STAT__DATA', statDataStr)
+
+    if (statConfig.debug!) {
+      // 待上传消息对列
+      // console.log(`=== 统计待上传队列数据 ===`)
+      const statJSON = Map2Json(uniStatData)
+      console.log('=== 统计待上传队列数据 :', statJSON)
+      // console.log(`=== 采集结束 ===`)
+    }
+
+    const stat_data = handle_data(uniStatData)
+    let optionsData : RequestData = {
+      usv: STAT_VERSION, //统计 SDK 版本号
+      t: time, //发送请求时的时间戮
+      requests: stat_data,
+    }
+
+    // 重置队列
+    dbRemove('__UNI__STAT__DATA')
+
+    this.sendRequest(optionsData, true)
+  }
+  /**
    * 发送请求
    * @param {StatDefault} data 上报数据
    * @param {Object} type 类型
@@ -591,7 +718,7 @@ export class Report {
     this.sendRequest(optionsData)
   }
 
-  sendRequest(options : RequestData) {
+  sendRequest(options : RequestData, delCrash : boolean = false) {
     const statConfig = Config.getOptions()
 
     if (Report.uniCloudInstance != null) {
@@ -622,14 +749,20 @@ export class Report {
         .then(() => {
           if (statConfig.debug!) {
             console.log(`=== 统计队列数据上报 :`, options)
-            // console.log(options)
-            // console.log(`=== 上报结束 ===`)
           }
+          // #ifdef APP
+          if (delCrash) {
+            try {
+              uni.__deleteAppCrashInfo(null)
+            } catch (err) {
+              console.log('=== 应用崩溃日志上传失败 :', JSON.stringify(err))
+            }
+          }
+          // #endif
+
         })
         .catch((err : any | null) => {
           console.log('=== 统计上报错误 :', JSON.stringify(err))
-          // console.error(err)
-          // console.log(`=== 上报结束 ===`)
         })
     }
 

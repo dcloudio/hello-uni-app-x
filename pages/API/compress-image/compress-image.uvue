@@ -52,7 +52,7 @@
         compressedHeight: null as number | null,
         rotate: 0,
         // 自动化测试
-        imageInfoForTest: null,
+        imageInfoForTest: null as UTSJSONObject | null,
         imageSrcForTest: '/static/test-image/logo.png'
       }
     },
@@ -89,6 +89,16 @@
                 const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
                 this.afterCompressImageInfo = this.afterCompressImageInfo.concat(`图片大小: ${size}KB`);
                 // #endif
+                // #ifdef APP-HARMONY
+                const fsm = uni.getFileSystemManager()
+                fsm.getFileInfo({
+                  filePath: res.tempFilePath,
+                  digestAlgorithm: null,
+                  success: (res) => {
+                    this.afterCompressImageInfo = this.afterCompressImageInfo.concat(`图片大小: ${res.size}KB`);
+                  }
+                })
+                // #endif
               }
             });
           },
@@ -119,6 +129,19 @@
                 const size = new FileInputStream(res.tempFilePaths[0].substring("file://".length)).available() / 1024;
                 this.beforeCompressImageInfo = this.beforeCompressImageInfo.concat(`图片大小: ${size}KB`);
                 // #endif
+                // #ifdef APP-HARMONY
+                const fsm = uni.getFileSystemManager()
+                fsm.getFileInfo({
+                  filePath: res.tempFilePaths[0],
+                  digestAlgorithm: null,
+                  success: (res) => {
+                    this.beforeCompressImageInfo = this.beforeCompressImageInfo.concat(`图片大小: ${res.size}KB`);
+                  },
+                  fail: (err) => {
+                    console.log(err);
+                  }
+                })
+                // #endif
               }
             });
           }
@@ -146,16 +169,36 @@
             uni.getImageInfo({
               src: res.tempFilePath,
               success: (_res) => {
-                let beforeCompressSize : number, afterComoressSize : number;
                 // #ifdef APP-ANDROID
+                let beforeCompressSize : number, afterComoressSize : number;
                 beforeCompressSize = new FileInputStream(UTSAndroid.convert2AbsFullPath(this.imageSrcForTest)).available();
                 afterComoressSize = new FileInputStream(res.tempFilePath.substring("file://".length)).available();
-                // #endif
                 this.imageInfoForTest = {
                   "width": _res.width,
                   "height": _res.height,
                   "isSizeReduce": afterComoressSize < beforeCompressSize
                 };
+                // #endif
+                // #ifdef APP-HARMONY
+                const fsm = uni.getFileSystemManager()
+                fsm.getFileInfo({
+                  filePath: this.imageSrcForTest,
+                  digestAlgorithm: null,
+                  success: (imageInfo) => {
+                    fsm.getFileInfo({
+                      filePath: res.tempFilePath,
+                      digestAlgorithm: null,
+                      success: (res) => {
+                        this.imageInfoForTest = {
+                          "width": _res.width,
+                          "height": _res.height,
+                          "isSizeReduce": res.size < imageInfo.size
+                        };
+                      }
+                    })
+                  }
+                })
+                // #endif
               }
             });
           },
