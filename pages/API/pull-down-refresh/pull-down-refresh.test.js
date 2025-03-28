@@ -3,7 +3,6 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe("payment", () => {
   if (

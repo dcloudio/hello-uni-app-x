@@ -11,16 +11,22 @@
 	export default {
 		data() {
 			return {
-        sliderRect: null as DOMRect | null,
+        sliderX: 0,
+        sliderY: 0,
+        sliderHeight: 0,
         sliderValue: 0
 			}
 		},
     onReady() {
-      // #ifdef APP-IOS
-      let sliderEle = uni.getElementById("slider")
-      this.sliderRect = sliderEle?.getBoundingClientRect()
+      // #ifdef APP-IOS || APP-HARMONY
+      const sliderEle = uni.getElementById("slider")
+      const sliderRect = sliderEle?.getBoundingClientRect()
+      this.sliderX = sliderRect.x
+      this.sliderY = sliderRect.y
+      this.sliderHeight = sliderRect.height
       // 加上导航栏及状态栏高度
-      this.sliderRect.y += uni.getSystemInfoSync().safeArea.top + 44
+      const systemInfo = uni.getSystemInfoSync()
+      this.sliderY += systemInfo.safeAreaInsets.top + 44
       // #endif
     },
 		methods: {

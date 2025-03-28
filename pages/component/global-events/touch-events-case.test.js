@@ -27,7 +27,6 @@ describe('touch-events-test', () => {
 
 
   it('touch-event-case1', async () => {
-
     let x = 40
     let y = 150
 
@@ -53,7 +52,8 @@ describe('touch-events-test', () => {
     expect(ret).toBe(true)
   })
 
-  it('touch-event-case3', async () => {
+  // TODO: harmony swiper preventDefault
+  it('test swiper preventDefault stopPropagation', async () => {
     await page.waitFor(1500);
     await page.callMethod('resetEvent')
     let x = 25
@@ -73,7 +73,6 @@ describe('touch-events-test', () => {
   })
 
   it('touch-event-case4', async () => {
-
     const viewTouchEvent = await page.data('viewTouchEvent')
     const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
     const swiperTouchEvent = await page.data('swiperTouchEvent')
