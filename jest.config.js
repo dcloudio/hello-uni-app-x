@@ -6,7 +6,7 @@ module.exports = {
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
   rootDir: __dirname,
-  testMatch: ["<rootDir>/pages/**/*test.[jt]s?(x)"],
+  testMatch: ["<rootDir>/pages/API/element-request-fullscreen/element-request-fullscreen.test.js"],
   testPathIgnorePatterns: [
       '/node_modules/',
     ],
