@@ -18,6 +18,7 @@
         errorCode: 0,
         errorMsg: "",
         complete: false,
+        fail: false,
         providerList: [] as PayItem[]
       }
     },
@@ -183,10 +184,12 @@
           fail: (res : RequestPaymentFail) => {
             this.errorCode = res.errCode
             this.complete = true
+            this.fail = true
           },
           success: (res : RequestPaymentSuccess) => {
             console.log(JSON.stringify(res))
             this.complete = true
+            this.fail = false
           }
         } as RequestPaymentOptions)
       }
