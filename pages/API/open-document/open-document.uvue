@@ -2,7 +2,7 @@
   <view class="uni-container">
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
-      <button v-for="(item, index) in fileList" :key="index" @click="openDocument(item)" :disabled="loading" class="uni-common-mt">
+      <button v-for="(item, index) in fileList" :key="index" @click="openDocument(item)" class="uni-common-mt">
         打开 {{item.type}} 文件
       </button>
     </view>
@@ -16,7 +16,6 @@ type FileItem = {
 }
 
 const title = 'openDocument'
-const loading = ref(false)
 const fileList = ref<Array<FileItem>>([
   {
     type: 'pdf',
@@ -45,11 +44,18 @@ const fileList = ref<Array<FileItem>>([
   {
     type: 'xlsx',
     url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xlsx'
+  },
+  {
+    type: 'zip',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/to.zip'
   }
 ])
 
 const openDocument = (item: FileItem) => {
-  loading.value = true
+  uni.showLoading({
+    title: '下载中',
+    mask: true
+  })
   uni.downloadFile({
     url: item.url,
     success: (res) => {
@@ -67,7 +73,7 @@ const openDocument = (item: FileItem) => {
       console.log('下载失败',err)
     },
     complete: () => {
-      loading.value = false
+      uni.hideLoading()
     }
   })
 }
