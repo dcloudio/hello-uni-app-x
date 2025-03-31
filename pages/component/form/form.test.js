@@ -29,6 +29,7 @@ describe('form', () => {
     await page.waitFor(200)
 
     const {
+      time,
       formData,
       testVerifySubmit
     } = await page.data()
@@ -40,6 +41,8 @@ describe('form', () => {
     expect(formData['age']).toBe(CHANGE_AGE)
     expect(formData['switch']).toBe(CHANGE_SWITCH)
     expect(formData['comment']).toBe(CHANGE_COMMENT)
+    expect(formData['time'][0]).toBe(time[0])
+    expect(formData['time'][1]).toBe(time[1])
     if(!isMP) {
       expect(testVerifySubmit).toBe(true)
     }
@@ -60,6 +63,7 @@ describe('form', () => {
     await page.waitFor(100)
 
     const {
+      time,
       formData,
       testVerifyReset
     } = await page.data()
@@ -70,7 +74,8 @@ describe('form', () => {
     expect(formData['age']).toBe(DEFAULT_AGE)
     expect(formData['switch']).toBe(DEFAULT_SWITCH)
     expect(formData['comment']).toBe(DEFAULT_COMMENT)
-
+    expect(formData['time'][0]).toBe(time[0])
+    expect(formData['time'][1]).toBe(time[1])
     expect(testVerifyReset).toBe(true)
   })
 })
