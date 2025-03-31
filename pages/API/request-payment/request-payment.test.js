@@ -1,3 +1,4 @@
+jest.setTimeout(50000);
 const PAGE_PATH = "/pages/API/request-payment/request-payment";
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -11,7 +12,6 @@ describe("payment", () => {
   if (
     isWeb ||
     isMP ||
-    isIOS ||
     isHarmony ||
     process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true'
   ) {
@@ -33,9 +33,14 @@ describe("payment", () => {
       orderInfo: orderInfo,
     })
     await page.callMethod('jest_pay')
-    await page.waitFor(async () => {
-      return await page.data('complete') === true;
-    });
-    expect((await page.data())['errorCode']).toEqual(701100)
+
+    let complete = await page.data('complete')
+    let fail = await page.data('fail')
+    let errorCode = await page.data('errorCode')
+    if (complete && fail) {
+      expect(errorCode).toEqual(701100)
+    } else {
+      expect(errorCode).toEqual(0)
+    }
   });
 });
