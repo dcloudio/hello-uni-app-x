@@ -29,9 +29,9 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
     // 退出全屏
     await page.callMethod('fullscreen')
     await page.waitFor(1000)
-    const image = await program.screenshot({
+    const image2 = await program.screenshot({
       fullPage: true
     })
-    expect(image).toSaveImageSnapshot()
+    expect(image2).toSaveImageSnapshot()
   })
 });
