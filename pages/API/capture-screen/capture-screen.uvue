@@ -3,8 +3,12 @@
     <page-head :title="title"></page-head>
     <view class="uni-common-mt">
       <text class="uni-title">截屏状态：{{ captureStatus }}</text>
-      <view class="uni-common-mt">
-        <button @click="toggleCaptureScreen" type="primary" class="uni-common-mt">设置{{ allowCapture ? '【禁止截屏】' : '【允许截屏】' }}</button>
+      <view style="flex-direction: row;">
+        <text class="uni-title">是否允许截屏</text>
+        <switch :checked="allowCapture" @change="(e: UniSwitchChangeEvent) => toggleCaptureScreen(e.detail.value)" />
+      </view>
+
+      <view class="uni-btn">
         <button @click="startCaptureListener" type="primary" class="uni-common-mt">开启截屏监听</button>
         <button @click="stopCaptureListener" class="uni-common-mt">关闭截屏监听</button>
       </view>
@@ -13,17 +17,19 @@
 </template>
 
 <script setup lang="uts">
+import { state, setAllowCapture } from '@/store/index.uts'
 const title = '截屏监听'
-const allowCapture = ref(true)
+const allowCapture = ref(state.allowCapture)
 const captureStatus = ref('未监听')
 const captureCallback = ref<((res: OnUserCaptureScreenCallbackResult) => void) | null>(null);
 
 
-const toggleCaptureScreen = () => {
+const toggleCaptureScreen = (checked: boolean) => {
   uni.setUserCaptureScreen({
-    enable: !allowCapture.value,
+    enable: checked,
     success: (res: SetUserCaptureScreenSuccess) => {
-      allowCapture.value = !allowCapture.value
+      allowCapture.value = checked
+      setAllowCapture(checked)
       console.log('设置截屏状态成功：', res)
     },
     fail: (err:IUniError) => {
