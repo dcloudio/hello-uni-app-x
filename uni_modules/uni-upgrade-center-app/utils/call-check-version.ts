@@ -13,9 +13,9 @@ export type UniUpgradeCenterResult = {
 	title : string
 	contents : string
 	url : string // 安装包下载地址
-	platform : Array<string> // Array<'Android' | 'iOS'>
+	platform : Array<string> // Array<'Android' | 'iOS' | 'Harmony'>
 	version : string // 版本号 1.0.0
-	uni_platform : string // "android" | "ios" // 版本号 1.0.0
+	uni_platform : string // "android" | "ios" | 'harmony'
 	stable_publish : boolean // 是否是稳定版
 	is_mandatory : boolean // 是否强制更新
 	is_silently : boolean | null	// 是否静默更新
