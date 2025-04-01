@@ -9,12 +9,12 @@
 </template>
 
 <script>
-  type ItemType = { value : string; name : string }
+  import { ItemType } from '@/components/enum-data/enum-data-types';
   export default {
     data() {
       return {
-        orientation_enum: [{ "value": "auto", "name": "auto" }, { "value": "landscape", "name": "landscape" }, { "value": "landscape-primary", "name": "landscape-primary" }, { "value": "landscape-secondary", "name": "landscape-secondary" }, { "value": "portrait", "name": "portrait" }] as ItemType[],
-        navigationUI_enum: [{ "value": "auto", "name": "auto" }, { "value": "hide", "name": "hide" }, { "value": "show", "name": "show" }] as ItemType[],
+        orientation_enum: [{ "value": 0, "name": "auto" }, { "value": 1, "name": "landscape" }, { "value": 2, "name": "landscape-primary" }, { "value": 3, "name": "landscape-secondary" }, { "value": 4, "name": "portrait" }] as ItemType[],
+        navigationUI_enum: [{ "value": 0, "name": "auto" }, { "value": 1, "name": "hide" }, { "value": 2, "name": "show" }] as ItemType[],
         text: "点击进入全屏",
         fullscreenElement: null as UniElement | null,
         isFullscreen: false,
@@ -62,13 +62,13 @@
 
         this.isFullscreen = !this.isFullscreen
       },
-      radio_change_orientation(checked : string) {
+      radio_change_orientation(checked : number) {
         console.log(checked)
-        this.orientation = checked
+        this.orientation = this.orientation_enum[checked]['name'] as string
       },
-      radio_change_ui(checked : string) {
+      radio_change_ui(checked : number) {
         console.log(checked)
-        this.navigationUI = checked
+        this.navigationUI = this.navigationUI_enum[checked]['name'] as string
       }
     }
   }
