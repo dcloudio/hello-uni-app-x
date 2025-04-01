@@ -18,6 +18,11 @@ describe('touch-events-test', () => {
     await page.waitFor(500);
   })
 
+  it('test-screenshot-custom-refresher', async () => {
+    await page.waitFor(300);
+    const image = await program.screenshot();
+    expect(image).toSaveImageSnapshot();
+  })
 
   it('test-custom-refresher', async () => {
 
