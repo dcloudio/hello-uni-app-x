@@ -59,7 +59,8 @@ describe('inner-audio', () => {
     expect(await page.data('onSeekingTest')).toBeTruthy();
     // expect(await page.data('onWaitingTest')).toBeTruthy();
     // expect(await page.data('onSeekedTest')).toBeTruthy();
-    expect(await program.screenshot()).toSaveImageSnapshot();
+    const image = await program.screenshot({fullPage: true})
+    expect(image).toSaveImageSnapshot();
   });
 
   it('pause-onPause', async () => {
