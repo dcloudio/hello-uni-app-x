@@ -7,8 +7,8 @@ describe('css-function', () => {
     // harmony 不支持
     it('not support', () => {
       expect(1).toBe(1)
-      return
     })
+    return
   }
   let page;
   beforeAll(async () => {
