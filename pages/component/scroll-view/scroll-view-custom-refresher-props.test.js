@@ -15,12 +15,19 @@ describe('touch-events-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500);
+    await page.waitFor('view');
   })
 
   it('test-screenshot-custom-refresher', async () => {
     await page.waitFor(300);
-    const image = await program.screenshot();
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    const image = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44
+      }
+    });
     expect(image).toSaveImageSnapshot();
   })
 
