@@ -1,9 +1,9 @@
 jest.setTimeout(60000);
 describe('component-native-video', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.toLowerCase().startsWith('android')
-  const isHarmony = platformInfo.toLowerCase().startsWith('harmony')
-  const isIOS = platformInfo.toLowerCase().startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
   if (isWeb) {

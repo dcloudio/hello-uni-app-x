@@ -6,6 +6,13 @@ const isWeb = platformInfo.startsWith('web')
 
 describe('getCurrentPages', () => {
   let page
+  const deviceScreenshotParams = {
+    deviceShot: true,
+    area: {
+      x: 0,
+      y: 0,
+    }
+  }
   it('getCurrentPages', async () => {
     // web 端等待应用首页加载完成
     if (process.env.uniTestPlatformInfo.startsWith('web')) {
@@ -32,6 +39,9 @@ describe('getCurrentPages', () => {
     return
   }
   it('page-style', async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    deviceScreenshotParams.area.y = windowInfo.safeAreaInsets.top + 44;
+
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
     const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
@@ -73,7 +83,7 @@ describe('getCurrentPages', () => {
       androidThreeButtonNavigationBackgroundColor: 'aqua'
     });
     await page.waitFor(2000);
-    const image4 = await program.screenshot({ deviceShot: true });
+    const image4 = await program.screenshot(deviceScreenshotParams);
     expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-androidThreeButtonNavigationBackgroundColor'
     }});
@@ -82,7 +92,7 @@ describe('getCurrentPages', () => {
       androidThreeButtonNavigationStyle: 'black'
     });
     await page.waitFor(2000);
-    const image5 = await program.screenshot({ deviceShot: true });
+    const image5 = await program.screenshot(deviceScreenshotParams);
     expect(image5).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-androidThreeButtonNavigationStyle'
     }});
@@ -91,7 +101,7 @@ describe('getCurrentPages', () => {
       androidThreeButtonNavigationTranslucent: true
     });
     await page.waitFor(2000);
-    const image6 = await program.screenshot({ deviceShot: true });
+    const image6 = await program.screenshot(deviceScreenshotParams);
     expect(image6).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
     }});
@@ -101,7 +111,7 @@ describe('getCurrentPages', () => {
       hideStatusBar: true
     })
     await page.waitFor(2000);
-    const image7 = await program.screenshot({ deviceShot: true });
+    const image7 = await program.screenshot(deviceScreenshotParams);
     expect(image7).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
