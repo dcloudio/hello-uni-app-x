@@ -1,9 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-swiper-list-view', () => {
-  if (isMP || isHarmony) {
+  if (isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

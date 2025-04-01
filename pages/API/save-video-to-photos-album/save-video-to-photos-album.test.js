@@ -17,7 +17,6 @@ describe('API-saveVideoToPhotosAlbum', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/save-video-to-photos-album/save-video-to-photos-album');
     await page.waitFor('view');
-    await page.waitFor(500);
   });
 
   it('test saveVideoToPhotosAlbum', async () => {
@@ -27,7 +26,8 @@ describe('API-saveVideoToPhotosAlbum', () => {
     }
     await page.callMethod('saveVideo');
     if (isHarmony) {
-      await program.tap({x: 305, y: 568})
+      await page.waitFor(1000);
+      await program.tap({x: 305, y: 567})
     }
     await page.waitFor(500);
     expect(await page.data('success')).toBe(true);
