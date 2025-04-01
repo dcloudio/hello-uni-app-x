@@ -1,22 +1,15 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 
 let page;
 describe('web-map', () => {
-  if (isHarmony) {
-    // harmony waitFor map 异常
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
-    if(!platformInfo.startsWith('ios')){
+    if(!isIos && !isHarmony){
       await page.waitFor('map');
     }
     // 等待地图加载完成
