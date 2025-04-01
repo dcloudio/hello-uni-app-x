@@ -25,6 +25,8 @@ type State = {
   leftWinActive:string
   // 是否同意隐私政策
   agreeToPrivacy: boolean | null
+  // 是否同意截屏
+  allowCapture: boolean
 }
 
 const getAgreePrivacy = () => {
@@ -54,7 +56,8 @@ export const state = reactive({
     width: 0,
     height: 0,
   },
-  agreeToPrivacy: getAgreePrivacy()
+  agreeToPrivacy: getAgreePrivacy(),
+  allowCapture: true
 } as State)
 
 export const setLifeCycleNum = (num : number) => {
@@ -92,4 +95,8 @@ export const setLeftWinActive = (leftWinActive:string) => {
 export const setAgreeToPrivacy = (agree: boolean) => {
   state.agreeToPrivacy = agree
   uni.setStorageSync(AGREE_PRIVACY, agree);
+}
+
+export const setAllowCapture = (allow: boolean) => {
+  state.allowCapture = allow
 }
