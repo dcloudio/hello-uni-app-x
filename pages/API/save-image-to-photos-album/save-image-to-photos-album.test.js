@@ -17,7 +17,7 @@ describe('API-saveImageToPhotosAlbum', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/save-image-to-photos-album/save-image-to-photos-album');
-    await page.waitFor(500);
+    await page.waitFor('view');
   });
 
   it('test saveImageToPhotosAlbum', async () => {
