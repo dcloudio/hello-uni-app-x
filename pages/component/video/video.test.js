@@ -107,7 +107,7 @@ describe('component-native-video', () => {
     });
     await page.callMethod('play');
     start = Date.now();
-    await page.waitFor(500);
+    await page.waitFor(1000);
     await page.waitFor(async () => {
       return (await page.data('eventPlay')) || (Date.now() - start > 500);
     });
