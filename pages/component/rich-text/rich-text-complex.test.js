@@ -69,6 +69,13 @@ describe('rich-text-test', () => {
           duration: 100
         })
 
+        // 关闭弹窗 iPhone plus 机型
+        await program.tap({
+          x: 220,
+          y: 526,
+          duration: 100
+        })
+
         // 关闭弹窗 iPhone mini 机型
         await program.tap({
           x: 186,
