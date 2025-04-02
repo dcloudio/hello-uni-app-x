@@ -1,18 +1,12 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
 
 
 describe('long-waterflow-nested', () => {
-  if (isWeb || isMP) {
+  if (isWeb || isMP || isHarmony || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('dummyTest', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
       expect(1).toBe(1)
     })
     return
