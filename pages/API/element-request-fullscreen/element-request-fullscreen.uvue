@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="content" direction="vertical">
-    <view id="fullscreen" class="view1" @click="fullscreen">
+    <view id="fullscreen" class="view1" @click="fullscreen" @fullscreenchange="fullscreenchange" @fullscreenerror="fullscreenerror">
       <text style="color: white;">{{ text }}</text>
     </view>
     <enum-data :items="orientation_enum" title="orientation" @change="radio_change_orientation"></enum-data>
@@ -19,7 +19,8 @@
         fullscreenElement: null as UniElement | null,
         isFullscreen: false,
         orientation: "landscape",
-        navigationUI: "hide"
+        navigationUI: "hide",
+        fullscreenchangeCount: 0
       }
     },
     onReady() {
@@ -61,6 +62,14 @@
         }
 
         this.isFullscreen = !this.isFullscreen
+      },
+      fullscreenchange(e : UniEvent) {
+        console.log(e.type)
+        this.fullscreenchangeCount++
+        console.log(this.fullscreenchangeCount)
+      },
+      fullscreenerror(e : UniEvent) {
+        console.log(e.type)
       },
       radio_change_orientation(checked : number) {
         console.log(checked)

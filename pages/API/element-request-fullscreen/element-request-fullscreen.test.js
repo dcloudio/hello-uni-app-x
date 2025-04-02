@@ -1,11 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isiOS = platformInfo.startsWith('ios')
 
 describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () => {
 
-  if (isWeb || isMP || isiOS) {
+  if (isWeb || isMP) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
@@ -23,6 +22,10 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
     // 进入全屏
     await page.callMethod('fullscreen')
     await page.waitFor(1000)
+
+    const fullscreenchange = await page.data('fullscreenchangeCount')
+    expect(fullscreenchange).toBe(1)
+
     const image = await program.screenshot({
       fullPage: true
     })
@@ -31,6 +34,10 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
     // 退出全屏
     await page.callMethod('fullscreen')
     await page.waitFor(1000)
+
+    fullscreenchange = await page.data('fullscreenchangeCount')
+    expect(fullscreenchange).toBe(2)
+
     const image2 = await program.screenshot({
       fullPage: true
     })
