@@ -237,8 +237,7 @@
         ] as ListItem[],
         arrowUpIcon: '/static/icons/arrow-up.png',
         arrowDownIcon: '/static/icons/arrow-down.png',
-        arrowRightIcon: '/static/icons/arrow-right.png',
-        isDarkMode: false
+        arrowRightIcon: '/static/icons/arrow-right.png'
       }
     },
     computed: {
@@ -247,6 +246,9 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.split('/')[3]
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     methods: {
@@ -285,22 +287,9 @@
         } else {
           uni.navigateTo({ url })
         }
-      },
-      // #ifdef WEB
-      // 检查系统主题
-      checkSystemTheme() {
-        const info = uni.getAppBaseInfo()
-        this.isDarkMode = info.hostTheme === 'dark'
-        uni.onHostThemeChange((result) => {
-          this.isDarkMode = result.hostTheme === 'dark'
-        })
       }
-      // #endif
     },
     // #ifdef WEB
-    onShow() {
-      this.checkSystemTheme()
-    },
     watch: {
       $route: {
         immediate: true,

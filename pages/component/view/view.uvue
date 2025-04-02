@@ -17,6 +17,7 @@
 </template>
 <script>
   import { ItemType } from '@/components/enum-data/enum-data-types'
+  import { state } from '@/store/index.uts'
   export default {
     data() {
       return {
@@ -25,15 +26,14 @@
         start_time: 50,
         stay_time: 400,
         start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
-        stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
-        isDarkMode: false
+        stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[]
       }
     },
-    // #ifdef WEB
-    onShow(){
-      this.checkSystemTheme()
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      }
     },
-    // #endif
     methods: {
       change_hover_class_boolean(checked : boolean) {
         this.hover_class = checked
@@ -46,17 +46,7 @@
       },
       radio_change_stay_time_enum(time : number) {
         this.stay_time = time
-      },
-      // #ifdef WEB
-      // 检查系统主题
-      checkSystemTheme() {
-        const info = uni.getAppBaseInfo()
-        this.isDarkMode = info.hostTheme === 'dark'
-        uni.onHostThemeChange((result) => {
-          this.isDarkMode = result.hostTheme === 'dark'
-        })
       }
-      // #endif
     }
   }
 </script>

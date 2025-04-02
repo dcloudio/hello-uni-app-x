@@ -1,4 +1,5 @@
 <script lang="uts">
+  import { state } from '@/store/index.uts'
   export default {
     emits: ['change'],
     props: {
@@ -15,23 +16,18 @@
         default: false
       }
     },
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      }
+    },
     data() {
       return {
-        _checked: false,
-        isDarkMode: false
+        _checked: false
       }
     },
     created() {
       this._checked = this.defaultValue
-      // #ifdef WEB
-      // 检查系统主题
-      const info = uni.getAppBaseInfo()
-      this.isDarkMode = info.hostTheme === 'dark'
-      // 监听主题变化
-      uni.onHostThemeChange((result) => {
-        this.isDarkMode = result.hostTheme === 'dark'
-      })
-      // #endif
     },
     methods: {
       // @ts-ignore

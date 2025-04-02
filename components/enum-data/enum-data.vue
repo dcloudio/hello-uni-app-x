@@ -1,6 +1,6 @@
 <script lang="uts">
   import { ItemType } from './enum-data-types'
-
+  import { state } from '@/store/index.uts'
   export default {
     emits: ['change'],
     props: {
@@ -13,22 +13,15 @@
         required: true
       }
     },
-    data() {
-      return {
-        current: 0,
-        isDarkMode: false
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
-    created() {
-      // #ifdef WEB
-      // 检查系统主题
-      const info = uni.getAppBaseInfo()
-      this.isDarkMode = info.hostTheme === 'dark'
-      // 监听主题变化
-      uni.onHostThemeChange((result) => {
-        this.isDarkMode = result.hostTheme === 'dark'
-      })
-      // #endif
+    data() {
+      return {
+        current: 0
+      }
     },
     methods: {
       // @ts-ignore

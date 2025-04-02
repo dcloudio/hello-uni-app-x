@@ -1,5 +1,5 @@
 <template>
-  <view class="top-window-header">
+  <view class="top-window-header" :class="{ 'dark-mode': isDarkMode }">
     <view class="left-header">
       <navigator class="left-header" open-type="reLaunch" url="/pages/component/view/view">
         <image src="/static/uni.png" class="logo" mode="heightFix"></image>
@@ -16,6 +16,7 @@
     tabBar : string.PageURIString;
     indexPageUrl : string.PageURIString;
   }
+  import { state } from '@/store/index.uts'
   export default {
     data() {
       return {
@@ -39,6 +40,11 @@
           tabBar: '/pages/tabBar/template',
           indexPageUrl: '/pages/template/slider-100/slider-100'
         }] as IndexPageItem[]
+      }
+    },
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     watch: {
@@ -116,4 +122,14 @@
   .tab-bar-flex {
     width: 360px;
   }
+
+  /* 适配暗黑主题 */
+  .top-window-header.dark-mode {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+  .top-window-header.dark-mode :deep(.uni-tabbar){
+    background-color: #1a1a1a!important;
+  }
+
 </style>
