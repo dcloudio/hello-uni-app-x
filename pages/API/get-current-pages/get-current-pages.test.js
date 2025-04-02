@@ -3,6 +3,7 @@ const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe('getCurrentPages', () => {
   let page
@@ -35,7 +36,7 @@ describe('getCurrentPages', () => {
     expect(data.checked).toBe(true)
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+  if (isMP) {
     return
   }
   it('page-style', async () => {
@@ -147,12 +148,10 @@ describe('getCurrentPages', () => {
     expect(res).toBe(isWeb)
   })
 
-  it('getAndroidActivity', async () => {
-    if(isAndroid) {
+  if(isAndroid) {
+    it('getAndroidActivity', async () => {
       const res = await page.callMethod('checkGetAndroidActivity')
       expect(res).toBe(true)
-    } else {
-      expect(1).toBe(1)
-    }
-  })
+    })
+  }
 })
