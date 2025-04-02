@@ -42,9 +42,9 @@ export function generateMenu(tabBarType : string) : MenuItem[] {
   let res : MenuItem[] = []
   const tabBarPages = JSON.parse<Page[]>(JSON.stringify(pages))!.filter((page : Page) : boolean => page.path.startsWith(tabBarType) && hasPageGroup(page.group))
   const groupTree = JSON.parse<(Group | null)[]>(JSON.stringify(groups))
+  let currentMenu : MenuItem | null = null
   tabBarPages.forEach(page => {
     let menuItemArr : MenuItem[] = res
-    let currentMenu : MenuItem | null = null
     const groupIndexList = page.group!.split(',').map((index : string) : number => parseInt(index))
     let currentGroups : (Group | null)[] | null = groupTree
     const pageGroups : PageGroup[] = []
