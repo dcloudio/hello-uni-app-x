@@ -259,7 +259,8 @@ const pages = [
   // 动态内容
   // '/pages/template/long-list2/long-list2',
   '/pages/template/long-list-nested/long-list-nested',
-  '/pages/template/pull-zoom-image/pull-zoom-image',
+  // harmony 整体测试时截图异常，单独测试例截图
+  // '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/navbar-lite/navbar-lite',
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // 动态内容
