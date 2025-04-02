@@ -1,26 +1,32 @@
 <template>
+  <!-- #ifdef APP -->
   <scroll-view style="flex: 1;">
-    <page-head :title="title"></page-head>
-    <view class="uni-padding-wrap uni-common-mt">
-      <view class="uni-title">
-        <text class="uni-title-text">图片路径示例</text>
-      </view>
-      <view v-for="(item,index) in data" :key="index">
-        <text class="uni-subtitle-text">{{item.description}}</text>
-        <view class="uni-center" style="background:#FFFFFF;">
-          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
-            @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+  <!-- #endif -->
+    <view>
+      <page-head :title="title"></page-head>
+      <view class="uni-padding-wrap uni-common-mt">
+        <view class="uni-title">
+          <text class="uni-title-text">图片路径示例</text>
         </view>
-      </view>
-      <test-image-path />
-      <view>
-        <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
-        <view class="uni-center" style="background:#FFFFFF;">
-          <image class="image" mode="widthFix" src="./logo.png"></image>
+        <view v-for="(item,index) in data" :key="index">
+          <text class="uni-subtitle-text">{{item.description}}</text>
+          <view class="uni-center" style="background:#FFFFFF;">
+            <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+              @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+          </view>
+        </view>
+        <test-image-path />
+        <view>
+          <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
+          <view class="uni-center" style="background:#FFFFFF;">
+            <image class="image" mode="widthFix" src="./logo.png"></image>
+          </view>
         </view>
       </view>
     </view>
+  <!-- #ifdef APP -->
   </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script>

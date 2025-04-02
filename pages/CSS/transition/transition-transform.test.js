@@ -21,8 +21,13 @@ describe('/pages/CSS/transition/transition-transform.uvue', () => {
   it("snap transition finish", async () => {
     await page.callMethod('open')
     await page.waitFor(3000)
+    const windowInfo = await program.callUniMethod('getWindowInfo');
     const image = await program.screenshot({
-      fullPage: true
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44
+      }
     })
     expect(image).toSaveImageSnapshot()
   })
