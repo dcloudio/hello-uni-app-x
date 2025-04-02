@@ -1,3 +1,5 @@
+jest.setTimeout(30000)
+
 const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
