@@ -31,6 +31,17 @@ describe('API-saveImageToPhotosAlbum', () => {
       await program.tap({ x: 305, y: 555 })
     }
     await page.waitFor(500);
+
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    const image = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44
+      }
+    });
+    expect(image).toSaveImageSnapshot();
+
     expect(await page.data('success')).toBe(true);
     await page.waitFor(2000);
   });
