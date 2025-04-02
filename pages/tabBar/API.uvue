@@ -15,7 +15,7 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="item">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" class="padleft"
+            <view v-if="childMenuItem.items.length==0" class="pl"
               :class="{'uni-navigate-item':childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768}"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
               <template v-if="childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768">
@@ -27,7 +27,7 @@
             <uni-collapse v-else style="width: 100%">
               <uni-collapse-item :title="childMenuItem.name" class="item"
                 style="margin-bottom: 0;">
-                <view class="uni-navigate-item padleft" hover-class="is--active"
+                <view class="uni-navigate-item pl" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
@@ -66,8 +66,7 @@
     data() {
       return {
         menu: menu as MenuItem[],
-        arrowRightIcon: '/static/icons/arrow-right.png',
-        isDarkMode: false
+        arrowRightIcon: '/static/icons/arrow-right.png'
       }
     },
     computed: {
@@ -79,6 +78,9 @@
       },
       windowWidth() : number {
         return uni.getWindowInfo().windowWidth
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     methods: {
@@ -104,22 +106,9 @@
       },
       stopPropagation() {
 
-      },
-      // #ifdef WEB
-      // 检查系统主题
-      checkSystemTheme() {
-        const info = uni.getAppBaseInfo()
-        this.isDarkMode = info.hostTheme === 'dark'
-        uni.onHostThemeChange((result) => {
-          this.isDarkMode = result.hostTheme === 'dark'
-        })
       }
-      // #endif
     },
     // #ifdef WEB
-    onShow() {
-      this.checkSystemTheme()
-    },
     watch: {
       $route: {
         immediate: true,
@@ -143,7 +132,7 @@
   .item {
     margin-bottom: 12px;
   }
-  .padleft{
+  .pl{
     padding-left: 18px
   }
 

@@ -15,7 +15,7 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="item">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item padleft"
+            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
               <text class="uni-navigate-text" :class="{
                   'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
@@ -25,7 +25,7 @@
             <uni-collapse v-else style="width: 100%">
               <uni-collapse-item :title="childMenuItem.name" class="item"
                 style="margin-bottom: 0;">
-                <view class="uni-navigate-item padleft" hover-class="is--active"
+                <view class="uni-navigate-item pl" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
@@ -54,8 +54,7 @@
     data() {
       return {
         menu: menu as MenuItem[],
-        arrowRightIcon: '/static/icons/arrow-right.png',
-        isDarkMode: false
+        arrowRightIcon: '/static/icons/arrow-right.png'
       }
     },
     computed: {
@@ -64,6 +63,9 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.slice(1)
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     methods: {
@@ -73,22 +75,9 @@
         } else {
           uni.navigateTo({ url })
         }
-      },
-      // #ifdef WEB
-      // 检查系统主题
-      checkSystemTheme() {
-        const info = uni.getAppBaseInfo()
-        this.isDarkMode = info.hostTheme === 'dark'
-        uni.onHostThemeChange((result) => {
-          this.isDarkMode = result.hostTheme === 'dark'
-        })
       }
-      // #endif
     },
     // #ifdef WEB
-    onShow() {
-      this.checkSystemTheme()
-    },
     watch: {
       $route: {
         immediate: true,
@@ -112,7 +101,7 @@
   .item {
     margin-bottom: 12px;
   }
-  .padleft{
+  .pl{
     padding-left: 18px
   }
   /* web端适配暗黑主题 */
@@ -120,8 +109,6 @@
   .uni-container.dark-mode {
     background-color: #1a1a1a;
     color: #ffffff;
-    height: 100%;
-    overflow: scroll;
   }
 
   .uni-container.dark-mode :deep(.uni-collapse-item .uni-collapse-item__title) {
