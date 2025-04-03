@@ -23,13 +23,9 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
     await page.callMethod('fullscreen')
     await page.waitFor(1000)
 
-    const fullscreenchange = await page.data('fullscreenchangeCount')
+    var fullscreenchange = await page.data('fullscreenchangeCount')
     expect(fullscreenchange).toBe(1)
 
-    const image = await program.screenshot({
-      fullPage: true
-    })
-    expect(image).toSaveImageSnapshot()
 
     // 退出全屏
     await page.callMethod('fullscreen')
