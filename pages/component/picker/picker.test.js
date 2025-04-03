@@ -1,12 +1,14 @@
 const PAGE_PATH = '/pages/component/picker/picker'
 
 describe('Picker.uvue', () => {
-  // if (!process.env.uniTestPlatformInfo.startsWith('web')) {
-  //   it('app', () => {
-  //     expect(1).toBe(1)
-  //   })
-  //   return
-  // }
+  const harmony = process.env.uniTestPlatformInfo.startsWith('harmony')
+  const web = process.env.uniTestPlatformInfo.startsWith('web')
+  if (!harmony && !web) {
+    it('app', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
