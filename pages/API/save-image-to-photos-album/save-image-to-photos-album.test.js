@@ -27,10 +27,10 @@ describe('API-saveImageToPhotosAlbum', () => {
     }
     await page.callMethod('saveImage');
     if (isHarmony) {
-      await page.waitFor(1000);
+      await page.waitFor(2000);
       await program.tap({ x: 305, y: 555 })
     }
-    await page.waitFor(500);
+    await page.waitFor(1000);
 
     const windowInfo = await program.callUniMethod('getWindowInfo');
     const image = await program.screenshot({

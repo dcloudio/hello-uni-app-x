@@ -26,10 +26,10 @@ describe('API-saveVideoToPhotosAlbum', () => {
     }
     await page.callMethod('saveVideo');
     if (isHarmony) {
-      await page.waitFor(1000);
+      await page.waitFor(2000);
       await program.tap({x: 305, y: 567})
     }
-    await page.waitFor(500);
+    await page.waitFor(1000);
 
     const windowInfo = await program.callUniMethod('getWindowInfo');
     const image = await program.screenshot({
