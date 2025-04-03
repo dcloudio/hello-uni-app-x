@@ -3,6 +3,7 @@ describe('pull-zoom-image', () => {
     const page = await program.reLaunch('/pages/template/pull-zoom-image/pull-zoom-image');
     await page.waitFor('view');
 
+    const windowInfo = await program.callUniMethod('getWindowInfo');
     const image = await program.screenshot({
       deviceShot: true,
       area: {
