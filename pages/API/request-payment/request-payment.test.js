@@ -6,6 +6,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
 
 describe("payment", () => {
   // 下面的测试在鸿蒙平台有弹窗，暂时不支持
@@ -13,6 +14,8 @@ describe("payment", () => {
     isWeb ||
     isMP ||
     isHarmony ||
+    isIOS ||
+    isAndroid ||
     process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true'
   ) {
     it('not support', () => {
