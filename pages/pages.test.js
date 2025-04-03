@@ -202,7 +202,8 @@ const pages = [
   '/pages/CSS/layout/max-width',
   '/pages/CSS/layout/position',
   '/pages/CSS/layout/width',
-  '/pages/CSS/layout/z-index',
+  // 单独测试例中截图
+  // '/pages/CSS/layout/z-index',
   '/pages/CSS/layout/visibility',
   '/pages/CSS/margin/margin',
   '/pages/CSS/margin/margin-top',
