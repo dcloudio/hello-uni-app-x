@@ -1,6 +1,5 @@
 let page;
 describe('web-clipboard', () => {
-  console.log("uniTestPlatformInfo", process.env.uniTestPlatformInfo)
   if (!process.env.uniTestPlatformInfo.startsWith('web')) {
     it('app', () => {
       expect(1).toBe(1)
