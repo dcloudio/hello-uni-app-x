@@ -1,4 +1,5 @@
 <script lang="uts">
+  import { state } from '@/store/index.uts'
   export default {
     emits: ['change'],
     props: {
@@ -15,23 +16,18 @@
         default: false
       }
     },
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      }
+    },
     data() {
       return {
-        _checked: false,
-        isDarkMode: false
+        _checked: false
       }
     },
     created() {
       this._checked = this.defaultValue
-      // #ifdef WEB
-      // 检查系统主题
-      const info = uni.getAppBaseInfo()
-      this.isDarkMode = info.hostTheme === 'dark'
-      // 监听主题变化
-      uni.onHostThemeChange((result) => {
-        this.isDarkMode = result.hostTheme === 'dark'
-      })
-      // #endif
     },
     methods: {
       // @ts-ignore
@@ -45,7 +41,7 @@
 
 <template>
   <view class="button-data-main uni-flex" :class="{ 'dark-mode': isDarkMode }">
-    <view class="uni-title" style="width:80%">{{ title }}</view>
+    <text class="uni-title" style="width:80%">{{ title }}</text>
     <switch :checked="_checked" :disabled="disabled" :color="isDarkMode ? '#a8a8b7' : '#007AFF'" @change="_change" />
   </view>
 </template>
@@ -57,13 +53,12 @@
   border-bottom: 1px solid rgba(0, 0, 0, .06);
   align-items: center;
 }
-/* 适配web端暗黑主题 */
-/* #ifdef WEB */
+/* 适配暗黑主题 */
 .button-data-main.dark-mode {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 .button-data-main.dark-mode .uni-title {
   color: #ffffff;
 }
-/* #endif */
+
 </style>

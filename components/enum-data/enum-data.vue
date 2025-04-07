@@ -1,6 +1,6 @@
 <script lang="uts">
   import { ItemType } from './enum-data-types'
-
+  import { state } from '@/store/index.uts'
   export default {
     emits: ['change'],
     props: {
@@ -13,22 +13,15 @@
         required: true
       }
     },
-    data() {
-      return {
-        current: 0,
-        isDarkMode: false
+    computed: {
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
-    created() {
-      // #ifdef WEB
-      // 检查系统主题
-      const info = uni.getAppBaseInfo()
-      this.isDarkMode = info.hostTheme === 'dark'
-      // 监听主题变化
-      uni.onHostThemeChange((result) => {
-        this.isDarkMode = result.hostTheme === 'dark'
-      })
-      // #endif
+    data() {
+      return {
+        current: 0
+      }
     },
     methods: {
       // @ts-ignore
@@ -59,29 +52,24 @@
       <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.name"
         :class="index < items.length - 1 ? 'uni-list-cell-line' : ''"
          :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
-        {{ item.name }}
+        <text class="radio-text">{{ item.name }}</text>
       </radio>
     </radio-group>
   </view>
 </template>
 
 <style>
-/* 适配web端暗黑主题 */
-/* #ifdef WEB */
+/* 适配暗黑主题 */
 .uni-padding-wrap.dark-mode .uni-title-text {
   color: #ffffff;
 }
-
-.uni-list.dark-mode .uni-list-cell {
+.uni-list.dark-mode .radio-text {
   color: #ffffff;
 }
-
 .uni-list.dark-mode .uni-list-cell-line {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
-
 .uni-list.dark-mode {
   background-color: #353535;
 }
-/* #endif */
 </style>

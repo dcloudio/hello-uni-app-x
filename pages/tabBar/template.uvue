@@ -237,8 +237,7 @@
         ] as ListItem[],
         arrowUpIcon: '/static/icons/arrow-up.png',
         arrowDownIcon: '/static/icons/arrow-down.png',
-        arrowRightIcon: '/static/icons/arrow-right.png',
-        isDarkMode: false
+        arrowRightIcon: '/static/icons/arrow-right.png'
       }
     },
     computed: {
@@ -247,6 +246,9 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.split('/')[3]
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     methods: {
@@ -285,22 +287,9 @@
         } else {
           uni.navigateTo({ url })
         }
-      },
-      // #ifdef WEB
-      // 检查系统主题
-      checkSystemTheme() {
-        const info = uni.getAppBaseInfo()
-        this.isDarkMode = info.hostTheme === 'dark'
-        uni.onHostThemeChange((result) => {
-          this.isDarkMode = result.hostTheme === 'dark'
-        })
       }
-      // #endif
     },
     // #ifdef WEB
-    onShow() {
-      this.checkSystemTheme()
-    },
     watch: {
       $route: {
         immediate: true,
@@ -328,37 +317,4 @@
   .uni-panel-h {
     padding: 12px 18px;
   }
-  /* web端适配暗黑主题 */
-  /* #ifdef WEB */
-  .uni-container.dark-mode {
-    background-color: #1a1a1a;
-    color: #ffffff;
-  }
-
-  .uni-container.dark-mode .uni-panel-h {
-    background-color: #2d2d2d;
-    border-bottom-color: #3d3d3d;
-  }
-
-  .uni-container.dark-mode .uni-navigate-item {
-    background-color: #2d2d2d;
-    border-bottom-color: #3d3d3d;
-  }
-
-  .uni-container.dark-mode .text-disabled {
-    color: #666666 !important;
-  }
-
-  .uni-container.dark-mode .hello-text {
-    color: #ffffff;
-  }
-
-  .uni-container.dark-mode .uni-panel-text {
-    color: #ffffff;
-  }
-
-  .uni-container.dark-mode .uni-navigate-text {
-    color: #ffffff;
-  }
-  /* #endif */
 </style>

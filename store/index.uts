@@ -26,7 +26,9 @@ type State = {
   // 是否同意隐私政策
   agreeToPrivacy: boolean | null
   // 是否同意截屏
-  allowCapture: boolean
+  allowCapture: boolean,
+  // 是否暗黑主题（适配web端）
+  isDarkMode: boolean
 }
 
 const getAgreePrivacy = () => {
@@ -57,7 +59,8 @@ export const state = reactive({
     height: 0,
   },
   agreeToPrivacy: getAgreePrivacy(),
-  allowCapture: true
+  allowCapture: true,
+  isDarkMode:false
 } as State)
 
 export const setLifeCycleNum = (num : number) => {
@@ -100,3 +103,27 @@ export const setAgreeToPrivacy = (agree: boolean) => {
 export const setAllowCapture = (allow: boolean) => {
   state.allowCapture = allow
 }
+
+// 检查系统主题
+export const checkSystemTheme = () => {
+  // #ifdef WEB || MP
+  const info = uni.getAppBaseInfo();
+  state.isDarkMode = info.hostTheme === 'dark';
+  uni.onHostThemeChange((result) => {
+    state.isDarkMode = result.hostTheme === 'dark';
+  });
+  // #endif
+  // #ifdef APP
+  uni.getSystemInfo({
+    success: (res : GetSystemInfoResult) => {
+      const appTheme = res.appTheme == "auto" ? res.osTheme! : res.appTheme!
+      state.isDarkMode = appTheme === 'dark';
+    }
+  })
+  uni.onAppThemeChange((res : AppThemeChangeResult) => {
+    state.isDarkMode = res.appTheme === 'dark';
+  })
+  // #endif
+}
+
+
