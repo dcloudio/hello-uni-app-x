@@ -52,29 +52,24 @@
       <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.name"
         :class="index < items.length - 1 ? 'uni-list-cell-line' : ''"
          :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
-        {{ item.name }}
+        <text class="radio-text">{{ item.name }}</text>
       </radio>
     </radio-group>
   </view>
 </template>
 
 <style>
-/* 适配web端暗黑主题 */
-/* #ifdef WEB */
+/* 适配暗黑主题 */
 .uni-padding-wrap.dark-mode .uni-title-text {
   color: #ffffff;
 }
-
-.uni-list.dark-mode .uni-list-cell {
+.uni-list.dark-mode .radio-text {
   color: #ffffff;
 }
-
 .uni-list.dark-mode .uni-list-cell-line {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
-
 .uni-list.dark-mode {
   background-color: #353535;
 }
-/* #endif */
 </style>
