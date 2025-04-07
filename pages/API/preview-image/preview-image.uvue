@@ -19,7 +19,8 @@
         </checkbox-group>
       </view>
       <view>
-        <checkbox-group @change="onLongPressCheckboxChange" style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
+        <checkbox-group @change="onLongPressCheckboxChange"
+          style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
           <checkbox :disabled="isWeb | isIOS" :checked="isLongPress" style="margin-right: 15px">支持长按事件</checkbox>
         </checkbox-group>
       </view>
@@ -27,7 +28,11 @@
         <text class="text-desc">点击图片开始预览</text>
         <view class="cell-ct" style="margin: 8px;">
           <view class="cell cell-choose-image" v-for="(image, index) in imageList" :key="index">
-            <image style="width: 100px; height: 100px" mode="aspectFit" :src="image" @click="previewImage(index)">
+            <text style="width: 100px; height: 100px;background-color: lightgray; color: red; text-align: center; line-height: 100px;font-size: 14px;" v-if="image.error"
+              @click="previewImage(index)">图片路径非法</text>
+            <image style="width: 100px; height: 100px;background-color: white;" mode="aspectFit" :src="image.src"
+              v-if="!image.error" @click="previewImage(index)"
+              @error="onImageLoadError(index,$event as ImageErrorEvent)">
             </image>
           </view>
           <image class="cell cell-choose-image" src="/static/plus.png" @click="chooseImage">
@@ -39,7 +44,6 @@
         <text style="color: black;font-size: 18px;margin-bottom: 4px;">注意事项:</text>
         <text style="font-size: 17px;margin-left: 4px;color: darkgray;">1、indicator属性仅App平台支持。</text>
         <text style="font-size: 17px;margin-left: 4px;color: darkgray;">2、Web平台不支持loop属性。</text>
-        <text style="font-size: 17px;margin-left: 4px;color: darkgray;">3、长按事件仅android支持。</text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -53,10 +57,19 @@
     value : Indicator,
     name : string
   }
+
+  type ImageType = {
+    src : string,
+    error : boolean
+  }
   export default {
     data() {
       return {
-        imageList: ["https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", "/static/uni.png","/static/uni2.png"],
+        imageList: [{ src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false }, { src: "/static/uni.png", error: false },
+        // #ifdef APP
+        { src: "/static/uni2.png", error: false },
+        // #endif
+        ] as ImageType[],
         indicator: [{
           value: "default",
           name: "圆点"
@@ -86,8 +99,12 @@
     },
     methods: {
       previewImage(index : number) {
+        let list = [] as Array<string>
+        this.imageList.forEach((item : ImageType) => {
+          list.push(item.src)
+        })
         uni.previewImage({
-          urls: this.imageList,
+          urls: list,
           current: index,
           indicator: this.currentIndicator,
           loop: this.isLoop,
@@ -114,8 +131,10 @@
       chooseImage() {
         uni.chooseImage({
           sourceType: ['album'],
+          count: 1,
           success: (e) => {
-            this.imageList = this.imageList.concat(e.tempFilePaths)
+            this.imageList = this.imageList.concat({ src: e.tempFilePaths[0], error: false } as ImageType)
+            // this.imageList = this.imageList.concat(e.tempFilePaths)
           },
           fail(_) {
           }
@@ -129,6 +148,9 @@
       },
       onLongPressCheckboxChange() {
         this.isLongPress = !this.isLongPress
+      },
+      onImageLoadError(index : number, error : UniImageErrorEvent) {
+        this.imageList[index].error = true
       }
     }
   }
@@ -163,5 +185,8 @@
 
   .indicator-it {
     margin: 8px;
+  }
+  .cell-pd {
+    padding: 11px 0px;
   }
 </style>
