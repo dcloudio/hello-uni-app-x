@@ -1,16 +1,11 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('dialog page', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-  	it('skip app-webview', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
-  }
-  if (isMP) {
-  	it('skip mp', () => {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP) {
+  	it('skip not support', () => {
   		expect(1).toBe(1)
   	})
   	return
@@ -25,6 +20,14 @@ describe('dialog page', () => {
 		originLifeCycleNum = await page.callMethod('getLifeCycleNum')
 
 		await page.callMethod('chooseLocation')
+
+		if (isHarmony) {
+			await program.tap({ x: 100, y: 525 })
+			await page.waitFor(1000)
+			await program.tap({x: 100, y: 525})
+			await page.waitFor(1000)
+		}
+
 		await page.waitFor(1000)
   });
 

@@ -1,4 +1,3 @@
-// 自动化测试
 module.exports = {
     "is-custom-runtime": false,
     "compile": true,
@@ -29,10 +28,10 @@ module.exports = {
             "executablePath": ""
         },
         "uni-app-x": {
-            "version": "/Applications/HBuilderX-Alpha.app/Contents/HBuilderX/plugins/uniappx-launcher/base/version.txt",
+            "version": "/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uniappx-launcher/base/version.txt",
             "android": {
                 "id": "emulator-5554",
-                "executablePath": "/Applications/HBuilderX-Alpha.app/Contents/HBuilderX/plugins/uniappx-launcher/base/android_base.apk"
+                "executablePath": "/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uniappx-launcher/base/android_base.apk"
             }
         }
     }

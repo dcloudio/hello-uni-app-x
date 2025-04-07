@@ -7,6 +7,8 @@ export type SafeArea = {
   height : number,
 }
 
+export const AGREE_PRIVACY = 'UNI-PRIVACY-AGREE'
+
 type State = {
   lifeCycleNum : number,
   // 状态栏高度
@@ -21,6 +23,21 @@ type State = {
   // 当前激活的tab页
   active: string
   leftWinActive:string
+  // 是否同意隐私政策
+  agreeToPrivacy: boolean | null
+  // 是否同意截屏
+  allowCapture: boolean
+}
+
+const getAgreePrivacy = () => {
+  const data = uni.getStorageSync(AGREE_PRIVACY)
+  if (typeof data === 'boolean') {
+    return data
+  }
+  if (data == null) {
+    return null
+  }
+    return null
 }
 
 export const state = reactive({
@@ -38,7 +55,9 @@ export const state = reactive({
     left: 0,
     width: 0,
     height: 0,
-  }
+  },
+  agreeToPrivacy: getAgreePrivacy(),
+  allowCapture: true
 } as State)
 
 export const setLifeCycleNum = (num : number) => {
@@ -73,3 +92,11 @@ export const setLeftWinActive = (leftWinActive:string) => {
   state.leftWinActive = leftWinActive
 }
 
+export const setAgreeToPrivacy = (agree: boolean) => {
+  state.agreeToPrivacy = agree
+  uni.setStorageSync(AGREE_PRIVACY, agree);
+}
+
+export const setAllowCapture = (allow: boolean) => {
+  state.allowCapture = allow
+}

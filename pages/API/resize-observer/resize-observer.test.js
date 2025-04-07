@@ -1,9 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('api-resize-observer', () => {
   if (isMP) {
-  	it('skip mp', () => {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return

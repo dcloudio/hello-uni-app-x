@@ -20,6 +20,16 @@
         <view class="item" v-for="(item,index) in days" :key="index"><text class="text">{{item}}日</text></view>
       </picker-view-column>
     </picker-view>
+    <boolean-data :defaultValue="false" title="设置选择器中间选中框的样式" @change="setIndicatorStyle"></boolean-data>
+    <!-- #ifdef WEB || MP-WEIXIN -->
+    <boolean-data :defaultValue="false" title="设置选择器中间选中框的类名" @change="setIndicatorClass"></boolean-data>
+    <boolean-data :defaultValue="false" title="设置蒙层的样式" @change="setMaskStyle"></boolean-data>
+    <boolean-data :defaultValue="false" title="设置蒙层的类名" @change="setMaskClass"></boolean-data>
+    <!-- #endif -->
+    <!-- #ifdef APP -->
+    <boolean-data :defaultValue="false" title="设置蒙层上半部分的样式" @change="setMaskTopStyle"></boolean-data>
+    <boolean-data :defaultValue="false" title="设置蒙层下半部分的样式" @change="setMaskBottomStyle"></boolean-data>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -54,7 +64,6 @@
         value: [_year - 2000, _month - 1, _day - 1] as number[],
         result: [] as number[],
         indicatorStyle: 'height: 50px;',
-        // 自动化测试
         indicatorClass: '',
         maskStyle: '',
         maskClass: '',
@@ -63,6 +72,43 @@
       }
     },
     methods: {
+      setIndicatorStyle(checked : boolean) {
+        const extraStyle = 'height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);';
+        // #ifdef APP-HARMONY
+        this.indicatorStyle = checked ? extraStyle : "height: 50px;border:none;background:transparent;";
+        // #endif
+        // #ifndef APP-HARMONY
+        this.indicatorStyle = checked ? extraStyle : "height: 50px;";
+        // #endif
+      },
+      setIndicatorClass(checked : boolean) {
+        this.indicatorClass = checked ? "indicator-test" : ""
+      },
+      setMaskStyle(checked : boolean) {
+        const extraMaskStyle = "background-image: linear-gradient(to bottom, #d8e5ff, rgba(216, 229, 255, 0));"
+        this.maskStyle = checked ? extraMaskStyle : ""
+      },
+      setMaskClass(checked : boolean) {
+        this.maskClass = checked ? "mask-test" : ""
+      },
+      setMaskTopStyle(checked : boolean) {
+        const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
+        // #ifdef APP-HARMONY
+        this.maskTopStyle = checked ? linearToTop : "background-image: linear-gradient(to bottom, transparent, transparent);"
+        // #endif
+        // #ifndef APP-HARMONY
+        this.maskTopStyle = checked ? linearToTop : ""
+        // #endif
+      },
+      setMaskBottomStyle(checked : boolean) {
+        const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
+        // #ifdef APP-HARMONY
+        this.maskBottomStyle = checked ? linearToBottom : "background-image: linear-gradient(to bottom, transparent, transparent);"
+        // #endif
+        // #ifndef APP-HARMONY
+        this.maskBottomStyle = checked ? linearToBottom : ""
+        // #endif
+      },
       // 自动化测试
       getEventCallbackNum() : number {
         return state.eventCallbackNum
@@ -101,6 +147,7 @@
     width: 100%;
     height: 320px;
     margin-top: 10px;
+    margin-bottom: 20px;
   }
 
   .item {
@@ -115,8 +162,8 @@
   /* 自动化测试 */
   .indicator-test {
     height: 50px;
-    border: #0055ff solid 1px;
-    background: rgba(0, 170, 0, 0.4);
+    border: #ff5500 solid 1px;
+    background:rgba(182, 179, 255, 0.4);
   }
 
   .mask-test {

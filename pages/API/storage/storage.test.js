@@ -4,13 +4,23 @@ const PAGE_PATH = '/pages/API/storage/storage'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 
+const StorageKeysBlackList = [
+  '$$STAT__DBDATA:__UNI__HelloUniAppX',
+  '_STAT_LAST_PAGE_ROUTE',
+]
+const filterStorageKeys = (keys) => {
+  return keys.filter(key => {
+    return !StorageKeysBlackList.includes(key)
+  })
+}
+
 describe('ExtApi-StorageInfoTest', () => {
-  if(
+  if (
     platformInfo.indexOf('15.5') != -1 ||
     platformInfo.indexOf('14.5') != -1 ||
     platformInfo.indexOf('13.7') != -1 ||
     platformInfo.indexOf('12.4') != -1
-    ){
+  ) {
     // TODO: 排查 ios 不兼容版本 测试异常原因
     it('ios 15.5 14.5 13.7 12.4 测试异常', () => {
       expect(1).toBe(1)
@@ -19,7 +29,7 @@ describe('ExtApi-StorageInfoTest', () => {
   }
 
   let page;
-  function getData(key = '') {
+  function getData (key = '') {
     return new Promise(async (resolve, reject) => {
       const data = await page.data()
       resolve(key ? data[key] : data)
@@ -36,7 +46,7 @@ describe('ExtApi-StorageInfoTest', () => {
     // 异步存储测试
     await page.setData({
       key: "autotest_key_mock",
-      data:"长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
+      data: "长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
     })
     await page.waitFor(600)
     const btnSetStorageButtonInfo = await page.$('.btn-setstorageAsync')
@@ -61,12 +71,12 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageInfoASyncButton.tap()
     await page.waitFor(600)
     storageInfoRet = await getData('apiGetData')
-    expect(storageInfoRet.keys.length).toEqual(0)
+    expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
 
     await page.setData({
       key: "autotest_key_mock",
-      data:1100.8989
+      data: 1100.8989
     })
     await page.waitFor(600)
     await btnSetStorageButtonInfo.tap()
@@ -89,12 +99,12 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageInfoASyncButton.tap()
     await page.waitFor(600)
     storageInfoRet = await getData('apiGetData')
-    expect(storageInfoRet.keys.length).toEqual(0)
+    expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
 
     await page.setData({
       key: "autotest_key_mock",
-      data:123456789
+      data: 123456789
     })
     await page.waitFor(600)
     await btnSetStorageButtonInfo.tap()
@@ -104,12 +114,12 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(await getData('apiGetData')).toEqual(123456789)
 
     let userObj = {
-      name:"zhangsan",
-      age:12
+      name: "zhangsan",
+      age: 12
     }
     await page.setData({
       key: "autotest_key_mock",
-      data:userObj
+      data: userObj
     })
     await page.waitFor(600)
     await btnSetStorageButtonInfo.tap()
@@ -120,9 +130,9 @@ describe('ExtApi-StorageInfoTest', () => {
 
     await page.setData({
       key: "autotest_key_mock",
-      data:{
-        name:"zhangsan",
-        age:122
+      data: {
+        name: "zhangsan",
+        age: 122
       }
     })
     await page.waitFor(600)
@@ -144,12 +154,12 @@ describe('ExtApi-StorageInfoTest', () => {
     let btnComplexStaticTest = await page.$('.btn-complexStaticTest')
     await btnComplexStaticTest.tap()
     await page.waitFor(600)
-    if(!isIOS) {
+    if (!isIOS) {
       expect(await getData('staticComplexRet')).toEqual(true)
     }
     await page.setData({
       key: "autotest_key_mock",
-      data:"长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
+      data: "长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
     })
     await page.waitFor(600)
     let btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
@@ -174,12 +184,12 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageInfoSyncButton.tap()
     await page.waitFor(600)
     storageInfoRet = await getData('apiGetData')
-    expect(storageInfoRet.keys.length).toEqual(0)
+    expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
 
     await page.setData({
       key: "autotest_key_mock",
-      data:12345789.235689
+      data: 12345789.235689
     })
     await page.waitFor(600)
     btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
@@ -204,11 +214,11 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageInfoSyncButton.tap()
     await page.waitFor(600)
     storageInfoRet = await getData('apiGetData')
-    expect(storageInfoRet.keys.length).toEqual(0)
+    expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
     await page.setData({
       key: "autotest_key_mock",
-      data:0
+      data: 0
     })
     await page.waitFor(600)
     btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
@@ -223,9 +233,9 @@ describe('ExtApi-StorageInfoTest', () => {
 
     await page.setData({
       key: "autotest_key_mock",
-      data:{
-        name:"tom",
-        age:10
+      data: {
+        name: "tom",
+        age: 10
       }
     })
     await page.waitFor(600)
@@ -240,10 +250,10 @@ describe('ExtApi-StorageInfoTest', () => {
 
     await page.setData({
       key: "autotest_key_mock",
-      data:JSON.stringify({
-          name: "james",
-          age: 12,
-          from:"american"
+      data: JSON.stringify({
+        name: "james",
+        age: 12,
+        from: "american"
       })
     })
     await page.waitFor(600)
@@ -265,7 +275,7 @@ describe('ExtApi-StorageInfoTest', () => {
 
     await page.setData({
       key: "autotest_key_mock",
-      data:"1234567890"
+      data: "1234567890"
     })
     await page.waitFor(600)
     btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')
@@ -282,7 +292,7 @@ describe('ExtApi-StorageInfoTest', () => {
 
     await page.setData({
       key: "autotest_key_mock",
-      data:"1234567.890"
+      data: "1234567.890"
     })
     await page.waitFor(600)
     btnSetStorageButtonInfo = await page.$('.btn-setstorageSync')

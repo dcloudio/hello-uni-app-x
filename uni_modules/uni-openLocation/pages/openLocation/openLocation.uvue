@@ -38,9 +38,9 @@
   // #ifdef APP
   import { canOpenURL } from '@/uni_modules/uts-openSchema'
   // #endif
-  
+
   import targetPath from '@/uni_modules/uni-openLocation/pages/openLocation/target.png'
- 
+
   //const targetPath = '/uni_modules/uni-openLocation/static/target.png'
 
   type AafeArea = {
@@ -203,7 +203,7 @@
           this.theme = res.theme
         });
         // #endif
-        // #ifdef APP
+        // #ifdef APP-ANDROID || APP-IOS
         uni.onAppThemeChange((res : AppThemeChangeResult) => {
           this.theme = res.appTheme
         })
@@ -250,72 +250,97 @@
         // #ifdef WEB
         const src = 'webapp.baidu.openAPIdemo';
         // #endif
+        // #ifdef APP-HARMONY
+        const src = appBaseInfo.packageName;
+        // #endif
 
         const list = ["腾讯地图", "高德地图", "百度地图"] as Array<string>;
         // #ifdef APP-IOS
         list.push("苹果地图");
         // #endif
+        // #ifdef APP-HARMONY
+        // TODO: 华为地图有问题，暂不支持
+        // list.push("华为地图");
+        // #endif
         uni.showActionSheet({
           itemList: list,
           success: (res) => {
             let index = res.tapIndex;
-            let item = list[index] as string;
-            try {
-              let url = "";
-              if (item == "腾讯地图") {
-                // #ifdef APP
-                url = `qqmap://map/routeplan?type=drive&from=我的位置&fromcoord=CurrentLocation&to=${this.openLocationOptions.name}&tocoord=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&referer=1`;
-                // #endif
-                // #ifdef WEB
-                url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude};title:${this.openLocationOptions.name};addr:${this.openLocationOptions.address}&referer=1`;
-                // #endif
-              } else if (item == "高德地图") {
-                // #ifdef APP-ANDROID
-                url = `androidamap://route/plan/?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&dev=0&t=0`;
-                // #endif
-                // #ifdef APP-IOS
-                url = `iosamap://path?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&dev=0&t=0`;
-                // #endif
-                // #ifdef WEB
-                url = `https://uri.amap.com/navigation?to=${this.openLocationOptions.longitude},${this.openLocationOptions.latitude},${this.openLocationOptions.name},${this.openLocationOptions.address}&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=1`;
-                // #endif
-              } else if (item == "百度地图") {
-                // #ifdef APP-ANDROID
-                url = `baidumap://map/direction?origin=我的位置&destination=latlng:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}|name:${this.openLocationOptions.name}&coord_type=gcj02&mode=driving&src=${src}`;
-                // #endif
-                // #ifdef APP-IOS
-                url = `baidumap://map/direction?origin=我的位置&destination=latlng:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}|name:${this.openLocationOptions.name}&coord_type=gcj02&mode=driving&src=${src}`;
-                // #endif
-                // #ifdef WEB
-                url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&title=${this.openLocationOptions.name}&content=${this.openLocationOptions.address}&output=html&src=${src}`;
-                // #endif
-              } else if (item == "苹果地图") {
-                // #ifdef APP-IOS
-                url = `maps://?ll=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&q=${this.openLocationOptions.name}`;
-                // #endif
-              }
-              if (url != "") {
-                // #ifdef APP
-                let schemaPrefix = "";
-                const schemaIndex = url.indexOf('?');
-                if (schemaIndex != -1) {
-                  schemaPrefix = url.substring(0, schemaIndex);
+            if (index >= 0) {
+              let item = list[index] as string;
+              try {
+                let url = "";
+                if (item == "腾讯地图") {
+                  // #ifdef APP
+                  url = `qqmap://map/routeplan?type=drive&from=我的位置&fromcoord=CurrentLocation&to=${this.openLocationOptions.name}&tocoord=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&referer=1`;
+                  // #endif
+                  // #ifdef WEB
+                  url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude};title:${this.openLocationOptions.name};addr:${this.openLocationOptions.address}&referer=1`;
+                  // #endif
+                } else if (item == "高德地图") {
+                  // #ifdef APP-ANDROID
+                  url = `androidamap://route/plan/?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&dev=0&t=0`;
+                  // #endif
+                  // #ifdef APP-IOS
+                  url = `iosamap://path?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&dev=0&t=0`;
+                  // #endif
+                  // #ifdef WEB
+                  url = `https://uri.amap.com/navigation?to=${this.openLocationOptions.longitude},${this.openLocationOptions.latitude},${this.openLocationOptions.name},${this.openLocationOptions.address}&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=1`;
+                  // #endif
+                  // #ifdef APP-HARMONY
+                  url = `amapuri://route/plan?dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&sname=我的位置&t=0&sourceApplication=${src}`;
+                  // #endif
+                } else if (item == "百度地图") {
+                  // #ifdef APP
+                  url = `baidumap://map/direction?origin=我的位置&destination=latlng:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}|name:${this.openLocationOptions.name}&coord_type=gcj02&mode=driving&src=${src}`;
+                  // #endif
+                  // #ifdef WEB
+                  url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&title=${this.openLocationOptions.name}&content=${this.openLocationOptions.address}&output=html&src=${src}`;
+                  // #endif
+                } else if (item == "苹果地图") {
+                  // #ifdef APP-IOS
+                  url = `maps://?ll=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&q=${this.openLocationOptions.name}`;
+                  // #endif
+                } else if (item == "华为地图") {
+                  // #ifdef APP-HARMONY
+                  url = `petalmaps://route?saddr=我的位置&daddr=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&type=drive&utm_source=${src}`;
+                  // #endif
                 }
-                if (canOpenURL(schemaPrefix)) {
-                  openSchema(url);
-                } else {
-                  uni.showToast({
-                    title: `请先安装${item}`,
-                    icon: "none"
-                  });
+                if (url != "") {
+                  // #ifdef APP-HARMONY
+                  try {
+                    openSchema(url);
+                  } catch(err){
+                    uni.showToast({
+                      title: `打开失败${err.message}`,
+                      icon: "none"
+                    });
+                  }
+                  // #endif
+
+                  // #ifdef APP-ANDROID || APP-IOS
+                  let schemaPrefix = "";
+                  const schemaIndex = url.indexOf('?');
+                  if (schemaIndex != -1) {
+                    schemaPrefix = url.substring(0, schemaIndex);
+                  }
+                  if (canOpenURL(schemaPrefix)) {
+                    openSchema(url);
+                  } else {
+                    uni.showToast({
+                      title: `请先安装${item}`,
+                      icon: "none"
+                    });
+                  }
+                  // #endif
+
+                  // #ifdef WEB
+                  window.open(url);
+                  // #endif
                 }
-                // #endif
-                // #ifdef WEB
-                window.open(url);
-                // #endif
+              } catch (err) {
+                console.error(err);
               }
-            } catch (err) {
-              console.error(err);
             }
           }
         });

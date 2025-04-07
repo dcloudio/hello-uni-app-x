@@ -22,8 +22,8 @@
 					</scroll-view>
 				</view>
 				<view class="footer flex-center">
-					<template v-if="isiOS">
-						<button class="content-button" style="border: none;color: #fff;" plain @click="jumpToAppStore">
+					<template v-if="isiOS || isHarmony">
+						<button class="content-button" style="border: none;color: #fff;" type="primary" plain @click="jumpToAppStore">
 							{{downLoadBtnTextiOS}}
 						</button>
 					</template>
@@ -68,10 +68,12 @@
 
 <script>
 	import { openSchema as utsOpenSchema } from '@/uni_modules/uts-openSchema'
+	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
+  import { platform_iOS, platform_Android, platform_Harmony } from '../../utils/utils'
+  // #ifdef APP-ANDROID
 	import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification'
 	import { type CreateNotificationProgressOptions, type FinishNotificationProgressOptions } from '@/uni_modules/uts-progressNotification/utssdk/interface.uts'
-	import { UniUpgradeCenterResult, StoreListItem } from '../../utils/call-check-version'
-  	import { platform_iOS, platform_Android } from '../../utils/utils'
+  // #endif
 	const requiredKey = ['version', 'url', 'type']
 	let downloadTask : DownloadTask | null = null;
 	let openSchemePromise : Promise<boolean> | null = null;
@@ -125,6 +127,9 @@
 			isiOS() : boolean {
 				return this.platform.includes(platform_iOS);
 			},
+			isHarmony() : boolean {
+				return this.platform.includes(platform_Harmony);
+			},
 			isAndroid() : boolean {
 				return this.platform.includes(platform_Android);
 			},
@@ -134,7 +139,9 @@
 		},
 		onUnload() {
 			if (this.needNotificationProgress) {
+        // #ifdef APP-ANDROID
 				cancelNotificationProgress()
+        // #endif
 			}
 		},
 		onLoad(onLoadOptions: OnLoadOptions) {
@@ -194,6 +201,11 @@
 					success: res => {
 						if (res.confirm) {
 							if (downloadTask !== null) downloadTask!.abort()
+              if (this.needNotificationProgress) {
+                // #ifdef APP-ANDROID
+                cancelNotificationProgress();
+                // #endif
+              }
 							this.closePopup()
 						}
 					}
@@ -262,10 +274,14 @@
 						if (res.statusCode == 200) {
 							this.tempFilePath = res.tempFilePath
 							this.downLoadComplete()
-						}
+						} else {
+              console.log('downloadFile err: ', res);
+              this.downloadFail()
+            }
 					},
 					fail: err => {
 						console.log('downloadFile err: ', err);
+            this.downloadFail()
 					}
 				});
 				if (downloadTask !== null) {
@@ -279,6 +295,7 @@
 						this.packageFileSize = parseFloat((res.totalBytesExpectedToWrite / Math.pow(1024, 2)).toFixed(2));
 
 						if (this.needNotificationProgress) {
+              // #ifdef APP-ANDROID
 							createNotificationProgress({
 								title: "升级中心正在下载安装包……",
 								content: `${this.downLoadPercent}%`,
@@ -289,10 +306,35 @@
 									}
 								}
 							} as CreateNotificationProgressOptions)
+              // #endif
 						}
 					});
 				}
 			},
+      downloadFail() {
+        const errMsg = '下载失败，请点击重试'
+
+        this.downloadSuccess = false;
+        this.downloading = false;
+
+        this.downLoadPercent = 0;
+        this.downloadedSize = 0;
+        this.packageFileSize = 0;
+
+        this.downLoadBtnText = errMsg
+
+        downloadTask = null;
+
+        if (this.needNotificationProgress) {
+          // #ifdef APP-ANDROID
+          finishNotificationProgress({
+            title: '升级包下载失败',
+            content: '请重新检查更新',
+						onClick() { }
+          } as FinishNotificationProgressOptions);
+          // #endif
+        }
+      },
 			downLoadComplete() {
 				this.downloadSuccess = true;
 				this.downloading = false;
@@ -304,6 +346,7 @@
 				downloadTask = null;
 
 				if (this.needNotificationProgress) {
+          // #ifdef APP-ANDROID
 					finishNotificationProgress({
 						title: "安装升级包",
 						content: "下载完成",
@@ -311,6 +354,7 @@
 					} as FinishNotificationProgressOptions)
 
 					this.installPackage();
+          // #endif
 					return
 				}
 

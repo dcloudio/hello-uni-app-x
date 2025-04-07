@@ -91,14 +91,14 @@
 </script>
 
 <style>
-  .uni-collapse-item {
+  /* .uni-collapse-item {
     background-color: #fff;
-  }
+  } */
 
   .uni-collapse-item .uni-collapse-item__title {
     flex-direction: row;
     align-items: center;
-    padding: 12px;
+    padding: 12px 18px;
     background-color: #fff;
   }
 

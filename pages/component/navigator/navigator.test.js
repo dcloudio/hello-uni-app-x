@@ -17,18 +17,19 @@ describe('navigator', () => {
 
     const btnNavigate = await page.$('#navigate')
     await btnNavigate.tap()
-    await page.waitFor(300)
+    await page.waitFor(500)
 
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe(PAGE_PATH_NAVIGATE.substring(1))
+    await page.waitFor(1000)
   })
   it('redirect', async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500)
+    await page.waitFor(1000)
 
     const btnRedirect = await page.$('#redirect')
     await btnRedirect.tap()
-    await page.waitFor(300)
+    await page.waitFor(500)
 
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe(PAGE_PATH_REDIRECT.substring(1))

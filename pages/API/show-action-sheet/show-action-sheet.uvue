@@ -87,6 +87,9 @@
         }
         ] as ItemType[],
         current: 0,
+      // #ifdef APP
+        originTheme: null as string | null,
+      // #endif
       }
     },
     onLoad() {
@@ -97,12 +100,27 @@
           console.log('onLoad showActionSheet complete', res)
         }
       })
+      // #ifdef APP
+      this.originTheme = uni.getSystemInfoSync().appTheme
+      // #endif
     },
     methods: {
       //自动化测试例专用
-      jest_getWindowInfo() : GetWindowInfoResult {
-        return uni.getWindowInfo();
+      // #ifdef APP
+      setThemeAuto() {
+        uni.setAppTheme({
+          theme: 'auto'
+        })
       },
+      resetTheme() {
+        const originTheme = this.originTheme
+        if(originTheme != null){
+          uni.setAppTheme({
+            theme: originTheme
+          })
+        }
+      },
+      // #endif
       radioChange(e : UniRadioGroupChangeEvent) {
         for (let i = 0; i < this.items.length; i++) {
           if (this.items[i].value === e.detail.value) {

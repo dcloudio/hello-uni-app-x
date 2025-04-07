@@ -1,5 +1,6 @@
 const Sequencer = require("@jest/test-sequencer").default
 const startTestFilePaths = [
+  "pages/API/get-current-pages/get-current-pages.test.js",
   "pages/component/view/view.test.js",
   "pages/API/pull-down-refresh/pull-down-refresh.test.js",
   "pages/component/global-events/global-events.test.js",
@@ -8,17 +9,21 @@ const startTestFilePaths = [
   "pages/component/global-events/touch-events.test.js",
   "pages/component/global-events/touch-events-bubbles.test.js",
   "pages/component/global-events/touch-events-case.test.js",
+  "pages/component/global-events/touch-events-preventDefault.test.js",
   "pages/component/swiper/swiper2.test.js",
   "pages/component/slider/slider-maxValue.test.js",
   "pages/CSS/overflow/overflow-visible-event.test.js",
   "pages/API/create-selector-query/create-selector-query-onScroll.test.js",
   "pages/component/scroll-view/scroll-view-custom-refresher-props.test.js",
   "pages/component/waterflow/waterflow.test.js",
+  "pages/component/text/text-props.test.js",
   "pages/component/rich-text/rich-text-complex.test.js"
 ]
 const endTestFilePaths = [
+  "pages/API/navigator/new-page/onLoad.test.js",
+  // 切换页面 modal 弹框无法关闭
   "pages/API/show-modal/show-modal.test.js",
-  "pages/API/navigator/new-page/onLoad.test.js"
+  "pages/API/storage/storage.test.js",
 ]
 
 class CustomSequencer extends Sequencer {
@@ -34,7 +39,7 @@ class CustomSequencer extends Sequencer {
       })
       .filter(Boolean)
 
-    const middleTests = tests.filter((test) => 
+    const middleTests = tests.filter((test) =>
       !startTests.includes(test) && !endTests.includes(test)
     );
 

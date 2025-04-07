@@ -6,6 +6,7 @@ describe('PickerView.uvue', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
@@ -32,20 +33,19 @@ describe('PickerView.uvue', () => {
   it('value', async () => {
     await page.callMethod('setValue')
     await page.waitFor(1000)
-
-
     const newValue1 = await pickerViewEl.property('value')
     // TODO
     expect(newValue1.toString()).toEqual('0,1,30')
-    if (process.env.UNI_PLATFORM === 'app-android') {
-      expect(await page.data('result')).toEqual([0, 0, 0])
+    // 仅在App端，setValue可触发change事件
+    if (isAndroid || isIOS) {
+      expect(await page.data('result')).toEqual([ 0, 1, 30 ])
     }
     await page.callMethod('setValue1')
     await page.waitFor(1000)
     const newValue2 = await pickerViewEl.property('value')
     // TODO
     expect(newValue2.toString()).toEqual('10,10,10')
-    if (process.env.UNI_PLATFORM === 'app-android') {
+    if (isAndroid || isIOS) {
       expect(await page.data('result')).toEqual([10, 10, 10])
     }
   })
@@ -57,57 +57,52 @@ describe('PickerView.uvue', () => {
     expect(els1.length).toBe(3)
   })
 
-  it('indicator-style', async () => {
-    // App端动态设置indicatorStyle无效
-    const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
-    await page.setData({
-      indicatorStyle
+  // indicatorStyle 属性在编译时被解析成了对象，在获取时和用户设置的值格式不一样 [object Object]
+  if (!isHarmony) {
+    it('indicator-style', async () => {
+      const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
+      await page.callMethod('setIndicatorStyle',true)
+      await page.waitFor(500)
+      expect(await pickerViewEl.attribute(isMP ? 'indicator-style' : 'indicatorStyle')).toBe(indicatorStyle)
+      await toScreenshot('picker-view-indicator-style')
+      //清空indicatorStyle
+      await page.callMethod('setIndicatorStyle',false)
     })
-    await page.waitFor(500)
-    expect(await pickerViewEl.attribute(isMP ? 'indicator-style' : 'indicatorStyle')).toBe(indicatorStyle)
-    await toScreenshot('picker-view-indicator-style')
-  })
+  }
 
   if (isWeb || isMP) {
-    // indicator-class、mask-style、mask-class 仅web支持
+    // indicator-class、mask-style、mask-class 仅web和MP支持
     it('indicator-class', async () => {
-      await page.setData({
-        indicatorStyle: "", //清空indicatorStyle
-        indicatorClass: "indicator-test", //设置indicatorClass为indicator-test
-      })
+      //设置indicator-class
+      await page.callMethod('setIndicatorClass',true)
       expect(await pickerViewEl.attribute(isMP ? 'indicator-class': 'indicatorClass')).toBe("indicator-test")
       await toScreenshot('picker-view-web-indicator-class')
-      await page.setData({
-        indicatorClass: "", //清空indicatorClass
-      })
+      //清空indicatorClass
+      await page.callMethod('setIndicatorClass',false)
     })
     it('mask-style', async () => {
       const maskStyle = "background-image: linear-gradient(to bottom, #d8e5ff, rgba(216, 229, 255, 0));"
-      await page.setData({
-        maskStyle
-      })
+      // 设置mask-style
+      await page.callMethod('setMaskStyle',true)
       expect(await pickerViewEl.attribute(isMP ? 'mask-style' : 'maskStyle')).toBe(maskStyle)
       await toScreenshot('picker-view-web-mask-style')
     })
     it('mask-class', async () => {
-      await page.setData({
-        maskClass: "mask-test"
-      })
+      // 设置mask-class
+      await page.callMethod('setMaskClass',true)
       expect(await pickerViewEl.attribute(isMP ? 'mask-class' : 'maskClass')).toBe("mask-test")
       await toScreenshot('picker-view-web-mask-class')
     })
     return
   }
 
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP) {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP && !isHarmony) {
     it('mask-top-bottom-style', async () => {
-      // App端动态设置mask-top-style、mask-bottom-style无效
+      // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
       const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
-      await page.setData({
-        maskTopStyle: linearToTop,
-        maskBottomStyle: linearToBottom,
-      })
+      await page.callMethod('setMaskTopStyle',true)
+      await page.callMethod('setMaskBottomStyle',true)
       await page.waitFor(500)
       expect(await pickerViewEl.attribute('mask-top-style')).toBe(linearToTop)
       expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)

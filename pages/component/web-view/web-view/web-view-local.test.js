@@ -1,7 +1,17 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isIOS = platformInfo.startsWith('ios')
 
 describe('component-native-web-view', () => {
-  if (!process.env.uniTestPlatformInfo.startsWith('web') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW && !process.env.uniTestPlatformInfo.startsWith('mp')) {
+  if(isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW){
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
     let page;
     let start = 0;
     beforeAll(async () => {
@@ -24,6 +34,11 @@ describe('component-native-web-view', () => {
     });
 
     it('test event download', async () => {
+      if(isHarmony) {
+        // 鸿蒙保存文件会出现弹窗无法关闭，影响自动化测试，暂时屏蔽此测试
+        expect(1).toBe(1)
+        return
+      }
       await page.setData({
         autoTest: true
       });
@@ -32,7 +47,7 @@ describe('component-native-web-view', () => {
       await page.waitFor(async () => {
         return (await page.data('eventDownload')) || (Date.now() - start > 1000);
       });
-      if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+      if (isIOS) {
         // expect(await page.data('eventDownload')).toEqual({
         //   tagName: 'WEB-VIEW',
         //   type: 'download',
@@ -91,10 +106,4 @@ describe('component-native-web-view', () => {
         autoTest: false
       });
     });
-  } else {
-    // TODO: web 端暂不支持
-    it('web', async () => {
-      expect(1).toBe(1)
-    })
-  }
 });

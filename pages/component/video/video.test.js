@@ -2,6 +2,7 @@ jest.setTimeout(60000);
 describe('component-native-video', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
+  const isHarmony = platformInfo.startsWith('harmony')
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
@@ -16,12 +17,12 @@ describe('component-native-video', () => {
   let start = 0;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/video/video');
-    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (isWeb) {
       await page.setData({
         muted: true
       });
     }
-    await page.waitFor(1000);
+    await page.$('.video');
   });
 
   it('test API', async () => {
@@ -37,7 +38,7 @@ describe('component-native-video', () => {
   });
 
   if (!isMP) {
-    it('test local source', async () => {
+    it('test download source', async () => {
       await page.setData({
         autoTest: true,
         isError: false
@@ -47,28 +48,58 @@ describe('component-native-video', () => {
       await page.waitFor(5000);
       expect(await page.data('isError')).toBe(false);
       await page.setData({
-        src: '/static/test-video/2minute-demo.m3u8'
-      });
-      await page.waitFor(100);
-      expect(await page.data('isError')).toBe(false);
-      await page.setData({
         src: oldSrc
       });
     });
 
-    it('test assets path', async () => {
-      if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) return;
+    it('test video local mp4', async () => {
+      await page.setData({
+        autoTest: true,
+        isError: false
+      });
       const oldSrc = await page.data('src');
       await page.setData({
-        isError: false,
-        src: 'file:///android_asset/uni-autoTest/demo10s.mp4'
+        src: '/static/test-video/10second-demo.mp4'
       });
-      await page.waitFor(500);
+      await page.waitFor(1000);
       expect(await page.data('isError')).toBe(false);
       await page.setData({
         src: oldSrc
       });
-    });
+    })
+    // 鸿蒙不播放本地 m3u8
+    if (!isHarmony) {
+      it('test video local m3u8', async () => {
+        await page.setData({
+          autoTest: true,
+          isError: false
+        });
+        const oldSrc = await page.data('src');
+        await page.setData({
+          src: '/static/test-video/2minute-demo.m3u8'
+        });
+        await page.waitFor(100);
+        expect(await page.data('isError')).toBe(false);
+        await page.setData({
+          src: oldSrc
+        });
+      })
+    }
+
+    if (isAndroid) {
+      it('android test assets path', async () => {
+        const oldSrc = await page.data('src');
+        await page.setData({
+          isError: false,
+          src: 'file:///android_asset/uni-autoTest/demo10s.mp4'
+        });
+        await page.waitFor(500);
+        expect(await page.data('isError')).toBe(false);
+        await page.setData({
+          src: oldSrc
+        });
+      });
+    }
   }
   it('test event play pause controlstoggle', async () => {
     await page.setData({
@@ -76,10 +107,11 @@ describe('component-native-video', () => {
     });
     await page.callMethod('play');
     start = Date.now();
+    await page.waitFor(500);
     await page.waitFor(async () => {
       return (await page.data('eventPlay')) || (Date.now() - start > 500);
     });
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    if (isIOS) {
       // expect(await page.data('eventPlay')).toEqual({
       //   type: 'play'
       // });
@@ -104,10 +136,10 @@ describe('component-native-video', () => {
         type: 'pause'
       });
     }
-    if (!isMP && !isWeb) {
+    if (isAndroid || isIOS) {
       /**
        * app端video组件controlstoggle事件会在controls显示和隐藏触发（播放、暂停等操作都会触发）。
-       * 微信小程序和web播放暂停或者一些其他的操作也会影响controls的显隐，但是不会触发controlstoggle， 只有controls属性变化的时候才会触发
+       * 微信小程序、web、鸿蒙播放暂停或者一些其他的操作也会影响controls的显隐，但是不会触发controlstoggle， 只有controls属性变化的时候才会触发
        */
       await page.callMethod('play');
       start = Date.now();
@@ -128,28 +160,29 @@ describe('component-native-video', () => {
         });
       }
     }
-
   });
 
 
-  if (isAndroid) {
-    it('test event waiting progress', async () => {
-      await page.callMethod('seek', 10);
-      start = Date.now();
-      await page.waitFor(async () => {
-        return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() -
-          start > 1000);
+  if (isAndroid || isHarmony) {
+    if (isAndroid) {
+      it('test event waiting progress', async () => {
+        await page.callMethod('seek', 10);
+        start = Date.now();
+        await page.waitFor(async () => {
+          return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() -
+            start > 1000);
+        });
+        expect(await page.data('eventWaiting')).toEqual({
+          tagName: 'VIDEO',
+          type: 'waiting'
+        });
+        expect(await page.data('eventProgress')).toEqual({
+          tagName: 'VIDEO',
+          type: 'progress',
+          isBufferedValid: true
+        });
       });
-      expect(await page.data('eventWaiting')).toEqual({
-        tagName: 'VIDEO',
-        type: 'waiting'
-      });
-      expect(await page.data('eventProgress')).toEqual({
-        tagName: 'VIDEO',
-        type: 'progress',
-        isBufferedValid: true
-      });
-    });
+    }
 
     it('test event fullscreenchange fullscreenclick', async () => {
       await page.callMethod('requestFullScreen');
@@ -192,17 +225,22 @@ describe('component-native-video', () => {
 
     it('test event ended timeupdate', async () => {
       await page.callMethod('seek', 120);
-      start = Date.now();
-      await page.waitFor(async () => {
-        return (await page.data('eventEnded')) || (Date.now() - start > 30000);
-      });
-      expect(await page.data('eventEnded')).toEqual({
-        tagName: 'VIDEO',
-        type: 'ended'
-      });
+      if (isAndroid) {
+        start = Date.now();
+        await page.waitFor(async () => {
+          return (await page.data('eventEnded')) || (Date.now() - start > 30000);
+        });
+        expect(await page.data('eventEnded')).toEqual({
+          tagName: 'VIDEO',
+          type: 'ended'
+        });
+      }
+      await page.waitFor(1000);
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+      if ((isAndroid && version > 5) || isHarmony) {
+        let currentTime = 121
+        if (isHarmony) currentTime = 120
         start = Date.now();
         await page.waitFor(async () => {
           return (await page.data('eventTimeupdate')) || (Date.now() - start > 500);
@@ -210,7 +248,7 @@ describe('component-native-video', () => {
         expect(await page.data('eventTimeupdate')).toEqual({
           tagName: 'VIDEO',
           type: 'timeupdate',
-          currentTime: 121,
+          currentTime,
           duration: 121
         });
       }
@@ -225,25 +263,31 @@ describe('component-native-video', () => {
       await page.waitFor(async () => {
         return (await page.data('eventError')) || (Date.now() - start > 1000);
       });
-      expect(await page.data('eventError')).toEqual({
-        tagName: 'VIDEO',
-        type: 'error',
-        errCode: 300001
-      });
+      const eventError = await page.data('eventError')
+      expect(eventError.tagName).toEqual('VIDEO')
+      expect(eventError.type).toEqual('error')
+      if (!isHarmony) {
+        expect(eventError.errCode).toEqual(300001)
+      } else {
+        // 鸿蒙 video onError 没有错误信息，恒为 200001 内部错误
+        expect(eventError.errCode).toEqual(200001)
+      }
       await page.setData({
         autoTest: false,
         src: oldSrc
       });
     });
 
-    it('test sub component', async () => {
-      await page.setData({
-        subCompEnable: true,
-        subCompShow: true
+    if (isAndroid) {
+      it('test sub component', async () => {
+        await page.setData({
+          subCompEnable: true,
+          subCompShow: true
+        });
+        await page.waitFor(100);
+        expect(await page.callMethod('hasSubComponent')).toBe(true);
       });
-      await page.waitFor(100);
-      expect(await page.callMethod('hasSubComponent')).toBe(true);
-    });
+    }
 
     it('test enable-danmu', async () => {
       await page.callMethod('play');
@@ -251,12 +295,12 @@ describe('component-native-video', () => {
       await page.setData({
         enableDanmu: false
       });
-      const info = await page.callMethod('getWindowInfo');
+      const windowInfo = await program.callUniMethod('getWindowInfo');
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: info.statusBarHeight + 44
+          y: windowInfo.statusBarHeight + 44
         }
       });
       expect(image).toSaveImageSnapshot();

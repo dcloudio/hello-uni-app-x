@@ -1,13 +1,15 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+
 let page;
 describe('web-map', () => {
-
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
-    if(!platformInfo.startsWith('ios')){
+    if(!isIos && !isHarmony){
       await page.waitFor('map');
     }
     // 等待地图加载完成
@@ -80,16 +82,14 @@ describe('web-map', () => {
     await page.callMethod('handleTranslateMarker')
     await page.waitFor(2000);
     expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
-        return 'map-handleTranslateMarker'
-      }});
+      return 'map-handleTranslateMarker'
+    }});
     const translateMarkerRes = await page.data('jestResult')
     expect(translateMarkerRes.animationEnd).toBeTruthy();
     if (!isMP && !isWeb) {
       expect(translateMarkerRes.translateMarkerMsg).toBe('translateMarker:ok');
     }
   });
-
-
 
   it('handleGetScale', async () => {
     await page.callMethod('handleGetScale')

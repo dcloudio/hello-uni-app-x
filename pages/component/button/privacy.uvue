@@ -4,25 +4,36 @@
       <view style="width: 100%;justify-content: center;align-items: center;background-color: #fff;">
         <image src="../image/logo.png" style="margin-top: 25px;width: 60px;height: 60px;"></image>
       </view>
-      <text style="text-align: center;padding-top: 20px;font-size: 20px;color: black;background-color: #fff;"> 个人信息保护指引</text>
-      <scroll-view  style="flex: 1;align-content: center;padding-top: 10px;padding-left: 25px;padding-right: 25px;background-color: #fff;"
+      <text
+        style="text-align: center;padding-top: 20px;font-size: 20px;color: black;background-color: #fff;">个人信息保护指引</text>
+      <scroll-view
+        style="flex: 1;align-content: center;padding-top: 10px;padding-left: 25px;padding-right: 25px;background-color: #fff;"
         show-scrollbar="false">
-        <rich-text style="font-size: 14px;color: red;" :nodes="htmlString" @itemclick="itemClick"></rich-text>
+        <text>
+          <text class="privacy-text">欢迎使用Hello uni-app x，我们将通过</text>
+          <text class="privacy-href" @click="hrefClick(hrefLicense)">《用户服务协议》</text>
+          <text
+            class="privacy-text">及相关个人信息处理规则帮助你了解我们如何收集、处理个人信息。根据《常见类型移动互联网应用程序必要个人信息范围规定》。同意《基本功能数据处理规则》仅代表你同意使用浏览、搜索、下载等主要功能收集、处理相关必要个人信息及数据。此外，为了向你提供更多丰富、优质的服务，我们可能在你使用本产品的过程中提供电商购物、财经支付等扩展功能，如果你拒绝提供，你可能无法使用相应的扩展服务，但不影响你使用我们的基础服务。我们通过</text>
+          <text class="privacy-href" @click="hrefClick(hrefPrivacy)">《隐私政策》</text>
+          <text class="privacy-text">帮助你全面了解我们的服务及收集、处理个人信息的详细情况。</text>
+        </text>
       </scroll-view>
-      <button class="button" style="background-color: #fff;" @click="reject" hover-class="button-hover1">不同意</button>
-      <button class="button"  style="background-color: royalblue;" hover-class="button-hover2" open-type="agreePrivacyAuthorization"
-        @click="agree">同意</button>
+      <button class="button" @click="reject">不同意</button>
+      <button class="button" type="primary" open-type="agreePrivacyAuthorization" @click="agree">同意</button>
     </view>
   </view>
 </template>
-<script>
-  import { openSchema } from '@/uni_modules/uts-openSchema'
 
+<script>
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  import { openSchema } from '@/uni_modules/uts-openSchema'
+  // #endif
   export default {
     data() {
       return {
         number: 0,
-        htmlString: '<span style="color:grey">欢迎使用Hello uni-app x，我们将通过<a href="https://hx.dcloud.net.cn/license" >《用户服务协议》</a></strong>及相关个人信息处理规则帮助你了解我们如何收集、处理个人信息。根据《常见类型移动互联网应用程序必要个人信息范围规定》。同意《基本功能数据处理规则》仅代表你同意使用浏览、搜索、下载等主要功能收集、处理相关必要个人信息及数据。此外，为了向你提供更多丰富、优质的服务，我们可能在你使用本产品的过程中提供电商购物、财经支付等扩展功能，如果你拒绝提供，你可能无法使用相应的扩展服务，但不影响你使用我们的基础服务。我们通过<a href="https://doc.dcloud.net.cn/markdown-share-docs/2e766f9cf1f8ca009c11875e447de5c8/">《隐私政策》</a></strong>帮助你全面了解我们的服务及收集、处理个人信息的详细情况。</span>'
+        hrefLicense: 'https://hx.dcloud.net.cn/license',
+        hrefPrivacy: 'https://doc.dcloud.net.cn/markdown-share-docs/2e766f9cf1f8ca009c11875e447de5c8/',
       }
     },
     unmounted() {
@@ -47,15 +58,15 @@
           dialogPage: this.$page
         })
       },
-      itemClick(e : RichTextItemClickEvent) {
-        let ref = e.detail.href
-        if (ref != null) {
-          openSchema(ref)
-        }
+      hrefClick(href : string) {
+        // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+        openSchema(href)
+        // #endif
       },
     }
   }
 </script>
+
 <style>
   .dialog-container {
     width: 100%;
@@ -74,8 +85,8 @@
   }
 
   .button {
-    border: 0px;
     border-radius: 0px;
+    border: 0px none;
     font-size: 15px;
     color: lightgrey;
     text-align: center;
@@ -83,11 +94,22 @@
   }
 
   .button-hover1 {
-   color:  black;
+    color: black;
     background-color: #fff;
   }
+
   .button-hover2 {
-   color: black;
+    color: black;
     background-color: royalblue;
+  }
+
+  .privacy-text {
+    color: grey;
+  }
+
+  .privacy-href {
+    color: cadetblue;
+    font-weight: bold;
+    text-decoration-line: underline;
   }
 </style>

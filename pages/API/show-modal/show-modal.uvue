@@ -31,6 +31,14 @@
           <switch :checked="confirmTextSelect" @change="confirmTextChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-pd">
+          <view class="uni-list-cell-db">测试非法的颜色</view>
+          <switch :checked="illegalColorSelect" @change="illegalColorChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-pd">
+          <view class="uni-list-cell-db">测试超长的按钮文本</view>
+          <switch :checked="illegalButtonTextSelect" @change="illegalButtonTextChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-pd">
           <view class="uni-list-cell-db">是否显示输入框</view>
           <switch :checked="editableSelect" @change="editableChange" />
         </view>
@@ -40,12 +48,30 @@
         </view>
       </view>
       <view class="uni-padding-wrap uni-common-mt">
+        <text>complete 执行结果：{{ timesShowRet }}</text>
         <view class="uni-btn-v">
-          <button class="uni-btn-v" type="default" @tap="modalTap" id="btn-modal-show">
-            modal测试
+          <button class="uni-btn-v" type="primary" @tap="modalTap" id="btn-modal-show">
+            modal单次弹出
           </button>
         </view>
-        <text>{{ exeRet }}</text>
+        <view class="uni-btn-v">
+          <button class="uni-btn-v" type="default" @tap="modalTapTimes" id="btn-modal-show-multitime">
+            modal多次弹出
+          </button>
+        </view>
+        <view class="uni-btn-v">
+          <button class="uni-btn-v" type="default" @tap="closeAllModal" id="btn-modal-hide-all">
+            延迟3s关闭全部弹窗
+          </button>
+        </view>
+        <view class="uni-btn-v">
+          <button class="uni-btn-v" type="default" @tap="closeLastModal" id="btn-modal-hide-last">
+            延迟3s关闭最后一个弹窗
+          </button>
+        </view>
+        <text>
+          success/fail 执行结果：{{ exeRet }}
+        </text>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -64,11 +90,14 @@
         title: 'modal',
         showCancelSelect: false,
         showLongContent: false,
+        illegalColorSelect:false,
+        illegalButtonTextSelect:false,
         cancelTextSelect: false,
         confirmTextSelect: false,
         editableSelect: false,
         placeholderTextSelect: false,
         exeRet: "",
+        lastModal : null as UniPage | null,
         items: [{
           value: '标题',
           name: '有标题'
@@ -82,7 +111,8 @@
           name: '超长标题'
         }
         ] as ItemType[],
-        current: 0
+        current: 0,
+        timesShowRet:[] as Array<any>,
       }
     },
     onLoad() {
@@ -92,12 +122,14 @@
       })
     },
     methods: {
-      //自动化测试例专用
-      jest_getWindowInfo() : GetWindowInfoResult {
-        return uni.getWindowInfo();
-      },
       showLongContentChange: function (e : UniSwitchChangeEvent) {
         this.showLongContent = e.detail.value
+      },
+      illegalColorChange: function (e : UniSwitchChangeEvent) {
+        this.illegalColorSelect = e.detail.value
+      },
+      illegalButtonTextChange: function (e : UniSwitchChangeEvent) {
+        this.illegalButtonTextSelect = e.detail.value
       },
       showCancelChange: function (e : UniSwitchChangeEvent) {
         this.showCancelSelect = e.detail.value
@@ -112,6 +144,7 @@
         this.editableSelect = e.detail.value
       },
       placeholderTextChange: function (e : UniSwitchChangeEvent) {
+        this.editableSelect = e.detail.value
         this.placeholderTextSelect = e.detail.value
       },
       radioChange(e : UniRadioGroupChangeEvent) {
@@ -122,35 +155,88 @@
           }
         }
       },
+      closeLastModal: function () {
+        let that = this
+        setTimeout(function(){
+          uni.hideModal({
+            modalPage:that.lastModal,
+            success: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            fail: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            complete: (res) => {
+              that.timesShowRet.push(res)
+            }
+          })
+        },3000)
+      },
+      closeAllModal: function () {
+        let that = this
+        setTimeout(function(){
+          uni.hideModal({
+            modalPage:null,
+            success: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            fail: (res) => {
+              that.exeRet = JSON.stringify(res)
+            },
+            complete: (res) => {
+              that.timesShowRet.push(res)
+            }
+          })
+        },3000)
+
+      },
+      modalTapTimes: function () {
+        // 多次弹出前清空结果集合
+        this.timesShowRet = []
+        this.modalTap()
+        this.modalTap()
+        let that = this
+        setTimeout(function(){
+          that.modalTap()
+        },200)
+      },
       modalTap: function () {
-        let cancelTextVal : string
+         // 单次弹出前清空多次结果集合
+        this.timesShowRet = []
+
+        let cancelTextVal : string|null = null
         let cancelColorVal = ''
         if (this.cancelTextSelect) {
           cancelTextVal = "修改后的取消文本"
           cancelColorVal = "#ff00ff"
-        } else {
-          cancelTextVal = "取消"
         }
 
-        let confirmTextVal = '确定'
+        let confirmTextVal : string|null = null
         let confirmColorVal = ''
         if (this.confirmTextSelect) {
           confirmTextVal = "修改后的确定文本"
-          confirmColorVal = "#00ffff"
+          confirmColorVal = "#0ff"
         }
 
         let placeholderTextVal = ''
-		let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
+        let contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内"
 
-		if (this.showLongContent) {
-		  placeholderTextVal = "定制提示信息"
-		  contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字原则上可以无限多！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！"
-		}
+        if (this.showLongContent) {
+          contentVal = "弹窗内容，告知当前状态、信息和解决方法，描述文字原则上可以无限多！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！"
+        }
         if (this.placeholderTextSelect) {
           placeholderTextVal = "定制提示信息"
-          contentVal = ""
         }
-        uni.showModal({
+        if (this.illegalColorSelect) {
+          cancelColorVal = "#WW00ff"
+          confirmColorVal = "#0ffff"
+        }
+        if (this.illegalButtonTextSelect) {
+          confirmTextVal = "超长版文字-修改后的确定文本-超长版本文字"
+          cancelTextVal = "超长版文字-修改后的取消文本-超长版本文字"
+        }
+
+        let op = {
           title: this.items[this.current].value,
           editable: this.editableSelect,
           placeholderText: placeholderTextVal,
@@ -165,9 +251,15 @@
           },
           fail: (res) => {
             this.exeRet = JSON.stringify(res)
+          },
+          complete: (res) => {
+            this.timesShowRet.push(res)
           }
-        })
+        } as ShowModalOptions
+        // console.log(op)
+        this.lastModal = uni.showModal(op)
       }
+
     }
   }
 </script>

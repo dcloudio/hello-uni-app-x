@@ -119,37 +119,55 @@ export default {
     preDate () {
       const fulldate = this.timeData.fullDate
       const calendar = this.$data['$calendar'] as Calendar
-      const time = calendar.getDate(fulldate, -1, 'month')
-      this.timeData = calendar.getDateInfo(time.fullDate)
+      let time = calendar.getDate(fulldate, -1, 'month')
+      const newDate = time.year + '-' + time.month + '-1';
+      time = calendar.getDate(newDate)
 
+      this.timeData = calendar.getDateInfo(time.fullDate)
       this.weeks = calendar.getWeeks(time.fullDate)
 
-      // 重新绘制日历
-      this.drawWeek(this.weeks, time.fullDate)
-
+      // 判断是否回到当前月份
+      if (this.isCurrentMonth(time.year, time.month)) {
+        this.gotoToday();
+      } else {
+        // 否则正常绘制日历
+        this.drawWeek(this.weeks, time.fullDate)
+      }
     },
     // 切换下个他
     nextDate () {
       const fulldate = this.timeData.fullDate
       const calendar = this.$data['$calendar'] as Calendar
-      const time = calendar.getDate(fulldate, 1, 'month')
-      this.timeData = calendar.getDateInfo(time.fullDate)
+      let time = calendar.getDate(fulldate, 1, 'month')
 
+      const newDate = time.year + '-' + time.month + '-1';
+      time = calendar.getDate(newDate)
+
+      this.timeData = calendar.getDateInfo(time.fullDate)
       this.weeks = calendar.getWeeks(time.fullDate)
 
-      // 重新绘制日历
-      this.drawWeek(this.weeks, time.fullDate)
+      // 判断是否回到当前月份
+      if (this.isCurrentMonth(time.year, time.month)) {
+        this.gotoToday();
+      } else {
+        // 否则正常绘制日历
+        this.drawWeek(this.weeks, time.fullDate)
+      }
     },
     // 回到今天
     gotoToday () {
       const calendar = this.$data['$calendar'] as Calendar
       const time = calendar.getDate()
       this.timeData = calendar.getDateInfo(time.fullDate)
-
       this.weeks = calendar.getWeeks(time.fullDate)
 
       // 重新绘制日历
       this.drawWeek(this.weeks, time.fullDate)
+    },
+    // 判断是否为当前月份
+    isCurrentMonth(year: number, month: number): boolean {
+      const today = new Date();
+      return year === today.getFullYear() && month === today.getMonth() + 1;
     },
 
     // 绘制日历顶部信息
@@ -177,8 +195,8 @@ export default {
         let text_top = box_height / 2 + 6
 
         ctx.fillText(text, text_left, text_top)
-        ctx.update()
       }
+      ctx.update()
     },
 
     // 绘制日历主体
@@ -225,17 +243,17 @@ export default {
             // 是否为今天
             if (day_item.is_today) {
               ctx.fillStyle = 'red'
-            } else {
-              // 是否为选中
-              if (time === day_item.fullDate) {
-                ctx.fillStyle = 'blue'
-              } else {
-                ctx.fillStyle = '#666'
-              }
+            } // 是否为选中日期
+            else if (time == day_item.fullDate) {
+              ctx.fillStyle = 'blue';
+            }
+            // 默认颜色
+            else {
+              ctx.fillStyle = '#666';
             }
 
             // 第一次渲染获取数据
-            // if (time === '') {
+            // if (time == '') {
             // 存储坐标组，用于点击事件
             const coords: CoordsType = {
               x: day_left,

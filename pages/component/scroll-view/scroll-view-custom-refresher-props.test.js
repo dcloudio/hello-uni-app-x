@@ -1,20 +1,12 @@
 const PAGE_PATH = '/pages/component/scroll-view/scroll-view-custom-refresher-props'
 
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+
 describe('touch-events-test', () => {
-
-  // 先屏蔽 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
-    it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
+  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
@@ -23,9 +15,21 @@ describe('touch-events-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500);
+    await page.waitFor('view');
   })
 
+  it('test-screenshot-custom-refresher', async () => {
+    await page.waitFor(300);
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    const image = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44
+      }
+    });
+    expect(image).toSaveImageSnapshot();
+  })
 
   it('test-custom-refresher', async () => {
 

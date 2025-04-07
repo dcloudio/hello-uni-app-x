@@ -2,17 +2,19 @@
   <!-- #ifdef APP -->
   <scroll-view class="page-scroll-view">
   <!-- #endif -->
-    <view>
+    <view class="uni-common-mb uni-common-pb">
       <page-head title="swiper,可滑动视图"></page-head>
-      <view class="uni-margin-wrap">
-        <swiper id="swiper-view" class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect" :autoplay="autoplaySelect"
-          :rebound="reboundSelect" :interval="intervalSelect" :circular="circularSelect"
-          :duration="durationSelect"
-          :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive"
+      <view>
+        <!-- 微信小程序自身Bug，autoplay为false时更新interval会导致swiper启用自动播放 -->
+        <swiper id="swiper-view" class="swiper" :vertical="verticalSelect" :indicator-dots="dotsSelect"
+          :autoplay="autoplaySelect" :bounces="reboundSelect" :interval="intervalSelect" :circular="circularSelect"
+          :duration="durationSelect" :indicator-color="indicatorColor" :indicator-active-color="indicatorColorActive"
           :disable-touch="disableTouchSelect" :current="currentVal" :current-item-id="currentItemIdVal"
-          @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish" @touchstart="swipertouchStart">
+          @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish"
+          @touchstart="swipertouchStart">
           <swiper-item item-id="A">
-            <view class="swiper-item uni-bg-red"><text class="swiper-item-Text" @touchstart="viewtouchStart">A</text></view>
+            <view class="swiper-item uni-bg-red"><text class="swiper-item-Text" @touchstart="viewtouchStart">A</text>
+            </view>
           </swiper-item>
           <swiper-item item-id="B">
             <view class="swiper-item uni-bg-green"><text class="swiper-item-Text">B</text></view>
@@ -24,36 +26,41 @@
       </view>
       <view class="uni-list">
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否显示面板指示点</view>
+          <view class="uni-list-cell-db">显示面板指示点</view>
           <switch :checked="dotsSelect" @change="dotsChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否自动切换</view>
-          <switch :checked="autoplaySelect" @change="autoplayChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否循环</view>
-          <switch :checked="circularSelect" @change="circularChange" />
-        </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">是否显示rebound效果</view>
-          <switch :checked="reboundSelect" @change="reboundSelectChange" />
-        </view>
-        <view class="uni-title uni-list-cell-padding">间隔时间(毫秒)</view>
-        <view class="uni-list-cell-padding">
-          <slider @change="sliderChange" :value="1000" :min="500" :max="5000" :show-value="true" />
-        </view>
-        <view class="uni-title uni-list-cell-padding">动画时长(毫秒)</view>
-        <view class="uni-list-cell-padding">
-          <slider @change="durationSliderChange" :value="100" :min="50" :max="2000" :show-value="true" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">定制指示器颜色</view>
           <switch :checked="indicatorColorSelect" @change="indicatorColorChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">纵向</view>
+          <view class="uni-list-cell-db">禁止 touch 操作</view>
+          <switch :checked="disableTouchSelect" @change="disableTouchChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-padding">
+          <view class="uni-list-cell-db">是否自动切换</view>
+          <switch :checked="autoplaySelect" @change="autoplayChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-padding">
+          <view class="uni-list-cell-db">是否衔接滑动</view>
+          <switch :checked="circularSelect" @change="circularChange" />
+        </view>
+        <view class="uni-title uni-list-cell-padding">间隔时间(毫秒)</view>
+        <view class="uni-padding-wrap">
+          <slider @change="sliderChange" :value="2000" :min="500" :max="5000" :show-value="true" />
+        </view>
+        <view class="uni-title uni-list-cell-padding">动画时长(毫秒)</view>
+        <view class="uni-padding-wrap">
+          <slider @change="durationSliderChange" :value="500" :min="50" :max="2000" :show-value="true" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-padding">
+          <view class="uni-list-cell-db">是否纵向滑动</view>
           <switch :checked="verticalSelect" @change="verticalChange" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-padding">
+          <view class="uni-list-cell-db">是否回弹效果</view>
+          <!-- 仅 android ios harmony 支持，web 微信小程序 bounces 为 true -->
+          <switch :checked="reboundSelect" @change="reboundSelectChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">指定current为最后一个元素</view>
@@ -64,27 +71,45 @@
           <switch :checked="currentItemIdSelect" @change="currentItemIdChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">禁止用户 touch 操作</view>
-          <switch :checked="disableTouchSelect" @change="disableTouchChange" />
+          <view class="uni-list-cell-db">打印 swiperChange 日志</view>
+          <switch :checked="swiperChangeSelect" @change="swiperChangeChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">swiperTransition 是否打印</view>
+          <view class="uni-list-cell-db">打印 swiperTransition 日志</view>
           <switch :checked="swiperTransitionSelect" @change="swiperTransitionChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">swiperAnimationfinish 是否打印</view>
+          <view class="uni-list-cell-db">打印 swiperAnimationfinish 日志</view>
           <switch :checked="swiperAnimationfinishSelect" @change="swiperAnimationfinishChange" />
         </view>
-        <view class="uni-list-cell uni-list-cell-padding">
-          <view class="uni-list-cell-db">swiperChange 是否打印</view>
-          <switch :checked="swiperChangeSelect" @change="swiperChangeChange" />
-        </view>
 
+        <view class="uni-list-cell-padding">测试 swiper 默认行为</view>
+        <swiper class="swiper" :autoplay="autoplayForDefault" :circular="circularForDefault">
+          <swiper-item item-id="A">
+            <view class="swiper-item uni-bg-red"><text class="swiper-item-Text">A</text></view>
+          </swiper-item>
+          <swiper-item item-id="B">
+            <view class="swiper-item uni-bg-green"><text class="swiper-item-Text">B</text></view>
+          </swiper-item>
+          <swiper-item item-id="C">
+            <view class="swiper-item uni-bg-blue"><text class="swiper-item-Text">C</text></view>
+          </swiper-item>
+        </swiper>
+        <view class="uni-list-cell uni-list-cell-padding">
+          <view class="uni-list-cell-db">是否自动切换</view>
+          <switch :checked="autoplayForDefault" @change="() => {autoplayForDefault = !autoplayForDefault}" />
+        </view>
+        <view class="uni-list-cell uni-list-cell-padding">
+          <view class="uni-list-cell-db">是否衔接滑动</view>
+          <switch :checked="circularForDefault" @change="() => {circularForDefault = !circularForDefault}" />
+        </view>
+        <!-- #ifndef MP -->
         <navigator url="/pages/component/swiper/swiper-list-view">
           <button type="primary">
             swiper 嵌套 list-view 测试
           </button>
         </navigator>
+        <!-- #endif -->
 
       </view>
     </view>
@@ -112,7 +137,7 @@
         currentSelect: false,
         currentItemIdSelect: false,
         intervalSelect: 2000,
-        durationSelect: 200,
+        durationSelect: 500,
         indicatorColor: "",
         indicatorColorActive: "",
         currentVal: 0,
@@ -122,6 +147,8 @@
         swiperAnimationfinishSelect: false,
         swiperChangeSelect: false,
         currentValChange: 0,
+        autoplayForDefault: false,
+        circularForDefault: false,
         // 自动化测试
         changeDetailTest: null as UniSwiperChangeEventDetail | null,
         transitionDetailTest: null as UniSwiperTransitionEventDetail | null,
@@ -138,17 +165,17 @@
       // 获取模拟滑动手势的起始点
       let ele = uni.getElementById("swiper-view")
       let eleRect = ele?.getBoundingClientRect()
-      if(eleRect != null) {
-        this.swipeX = eleRect.width - 10
+      if (eleRect != null) {
+        this.swipeX = eleRect.width - 50
         this.swipeY += eleRect.y + uni.getSystemInfoSync().safeArea.top + 44 + 35
       }
       // #endif
     },
     methods: {
-      swipertouchStart(e: UniTouchEvent) {
+      swipertouchStart(e : UniTouchEvent) {
         console.log("swiper touchstart")
       },
-      viewtouchStart(e: UniTouchEvent) {
+      viewtouchStart(e : UniTouchEvent) {
         console.log("view touchstart:")
       },
       swiperChange: function (e : UniSwiperChangeEvent) {
@@ -161,8 +188,7 @@
         this.currentValChange = e.detail.current
         console.log(this.currentValChange)
         if (this.swiperChangeSelect) {
-          console.log("swiperChange")
-          console.log(e)
+          console.log("swiperChange", e)
         }
       },
       swiperTransition: function (e : UniSwiperTransitionEvent) {
@@ -173,8 +199,7 @@
           currentTarget: e.currentTarget
         } as SwiperEventTest, 'transition')
         if (this.swiperTransitionSelect) {
-          console.log("swiperTransition")
-          console.log(e)
+          console.log("swiperTransition", e)
         }
       },
       swiperAnimationfinish: function (e : UniSwiperAnimationFinishEvent) {
@@ -185,16 +210,15 @@
           currentTarget: e.currentTarget
         } as SwiperEventTest, 'animationfinish')
         if (this.swiperAnimationfinishSelect) {
-          console.log("swiperAnimationfinish")
-          console.log(e)
+          console.log("swiperAnimationfinish", e)
         }
       },
       // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
       checkEventTest(e : SwiperEventTest, eventName : String) {
-        // #ifndef MP
+        // #ifndef MP || APP-HARMONY
         const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement;
         // #endif
-        // #ifdef MP
+        // #ifdef MP || APP-HARMONY
         const isPass = true;
         // #endif
         const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
@@ -283,6 +307,7 @@
 <style>
   .swiper {
     height: 150px;
+    border-radius: 8px;
   }
 
   .swiper-item {

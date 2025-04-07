@@ -72,10 +72,29 @@
       </text>
       <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
     </view>
-    <view class="container" @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
-      <text class="text">在组件内滑动测试是否闪动</text>
-      <view class="base-style transition-transform" id="styleTransformTranslateScale"></view>
+    <view class="container">
+      <text class="text">仅指定transition-duration背影有动画为正常</text>
+      <view style="width: 100%;height: 50px;" :style="changestyleTransitionDuration" @click="doChangeTransitionDuration">
+      </view>
     </view>
+
+    <view class="container">
+      <text class="text">在组件内滑动测试是否闪动</text>
+      <view class="base-style transition-transform" id="styleTransformTranslateScale" @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+        这是一段文字
+      </view>
+    </view>
+
+    <!-- #ifndef APP-ANDROID -->
+    <view style="margin: 7px; height: 60px;">
+      <navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
+        <button type="primary">
+          transform 多个属性示例
+        </button>
+      </navigator>
+    </view>
+    <!-- #endif -->
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -120,6 +139,7 @@
         startX: 0,
         moveX: 0,
         oldX: 0,
+        changestyleTransitionDuration:'background-color:brown;'
       }
     },
     onReady() {
@@ -201,7 +221,6 @@
           ? '1'
           : '0'
         )
-        this.styleOpacity?.style?.setProperty("transition-duration", "1000ms")
         this.isTransitionstyleOpacity = !this.isTransitionstyleOpacity
       },
       propertyChangeBackground() {
@@ -279,11 +298,16 @@
         const difX = e.changedTouches[0].clientX
         this.moveX = difX - this.startX + this.oldX
         this.styleTransformTranslateScale?.style?.setProperty('transition-duration', '0ms')
-        this.styleTransformTranslateScale?.style?.setProperty('transform', `translate(${this.moveX}px,0px) scale(0.5)`)
+        this.styleTransformTranslateScale?.style?.setProperty('transform', `translate(${this.moveX}px,0px) scale(0.5) rotate(90deg)`)
       },
       handleTouchEnd(_ : UniTouchEvent) {
         this.oldX = this.moveX
       },
+      doChangeTransitionDuration(){
+        console.log("doChangeTransitionDuration")
+        this.changestyleTransitionDuration
+        = this.changestyleTransitionDuration ==='background-color:brown;'?'transition-duration: 2000ms;background-color: blue;':'background-color:brown;'
+      }
     },
   }
 </script>
@@ -342,6 +366,7 @@
   }
 
   .transition-transform {
+    transform: translate(0%,0%) scaleX(1) rotate(0deg);
     transition-property: transform;
     transition-duration: 1s;
   }

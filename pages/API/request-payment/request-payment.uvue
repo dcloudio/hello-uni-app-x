@@ -18,6 +18,7 @@
         errorCode: 0,
         errorMsg: "",
         complete: false,
+        fail: false,
         providerList: [] as PayItem[]
       }
     },
@@ -67,7 +68,7 @@
             this.payWX(provider)
           }
           // #endif
-          // #ifdef APP-IOS
+          // #ifdef APP-IOS || APP-HARMONY
           if (e.provider != null && ((e.provider as UniPaymentWxpayProvider).isWeChatInstalled == undefined || ((e.provider as UniPaymentWxpayProvider).isWeChatInstalled != null && (e.provider as UniPaymentWxpayProvider).isWeChatInstalled == false))) {
             uni.showToast({
               title: "微信没有安装",
@@ -183,10 +184,12 @@
           fail: (res : RequestPaymentFail) => {
             this.errorCode = res.errCode
             this.complete = true
+            this.fail = true
           },
           success: (res : RequestPaymentSuccess) => {
             console.log(JSON.stringify(res))
             this.complete = true
+            this.fail = false
           }
         } as RequestPaymentOptions)
       }

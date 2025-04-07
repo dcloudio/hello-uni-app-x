@@ -1,0 +1,74 @@
+<template>
+  <view class="uni-container">
+    <page-head :title="title"></page-head>
+    <view class="uni-common-mt">
+      <button v-for="(item, index) in fileList" :key="index" @click="openDocument(item)" :disabled="loading" class="uni-common-mt">
+        打开 {{item.type}} 文件
+      </button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+type FileItem = {
+  type: string,
+  url: string
+}
+
+const title = 'openDocument'
+const loading = ref(false)
+const fileList = ref<Array<FileItem>>([
+  {
+    type: 'pdf',
+    url: 'https://web-assets.dcloud.net.cn/unidoc/zh/helloworld.pdf'
+  },
+  {
+    type: 'doc',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.doc'
+  },
+  {
+    type: 'docx',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.docx'
+  },
+  {
+    type: 'ppt',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.ppt'
+  },
+  {
+    type: 'pptx',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.pptx'
+  },
+  {
+    type: 'xls',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xls'
+  },
+  {
+    type: 'xlsx',
+    url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/file/helloworld.xlsx'
+  }
+])
+
+const openDocument = (item: FileItem) => {
+  loading.value = true
+  uni.downloadFile({
+    url: item.url,
+    success: (res) => {
+      uni.openDocument({
+        filePath: res.tempFilePath,
+        success: () => {
+          console.log('打开文档成功')
+        },
+        fail: (err) => {
+          console.log('打开文档失败',err)
+        }
+      })
+    },
+    fail: (err) => {
+      console.log('下载失败',err)
+    },
+    complete: () => {
+      loading.value = false
+    }
+  })
+}
+</script>

@@ -1,8 +1,10 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+
 describe('component-native-list-view-refresh', () => {
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if (isWeb || isMP) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
@@ -43,7 +45,7 @@ describe('component-native-list-view-refresh', () => {
     // 仅App端支持手势下拉刷新
     await program.swipe({
       startPoint: {x: 100,y: 400},
-      endPoint: {x: 100,y: 500},
+      endPoint: {x: 100,y: isHarmony ? 420 : 500},
       duration: 100
     })
     await page.waitFor(1500)

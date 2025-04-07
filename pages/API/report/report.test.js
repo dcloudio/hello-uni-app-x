@@ -1,11 +1,11 @@
 const PAGE_PATH = '/pages/API/report/report'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('android')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('report', () => {
-  if (isMP) {
-  	it('skip mp', () => {
+  if (isMP || isHarmony) {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return

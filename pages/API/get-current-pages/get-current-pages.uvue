@@ -33,6 +33,11 @@
           check getHTMLElement
         </button>
         <!-- #endif -->
+        <!-- #ifdef APP-ANDROID -->
+        <button class="uni-common-mt" @click="checkGetAndroidActivity">
+          check getAndroidActivity
+        </button>
+        <!-- #endif -->
       </view>
       <!-- #ifndef MP -->
       <page-head title="currentPageStyle"></page-head>
@@ -99,6 +104,15 @@
       this.getPageStyle();
     },
     // #endif
+    onReady() {
+      // #ifdef APP-ANDROID
+      this.setPageStyle({
+        'androidThreeButtonNavigationBackgroundColor': 'transparent',
+        'androidThreeButtonNavigationStyle': 'black'
+      });
+      this.getPageStyle();
+      // #endif
+    },
     onPullDownRefresh() {
       setTimeout(() => {
         uni.stopPullDownRefresh()
@@ -142,6 +156,7 @@
         const pages = getCurrentPages();
         const currentPage = pages[pages.length - 1];
         this.currentPageStyle = currentPage.getPageStyle()
+        console.log(this.currentPageStyle)
         return this.currentPageStyle;
       },
       setPageStyle(style : UTSJSONObject) {
@@ -232,6 +247,14 @@
         uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
         return res
       },
+      checkGetAndroidActivity() : boolean {
+        const page = this.getCurrentPage()
+        const activity = page.getAndroidActivity()
+        const res = activity != null
+        console.log('check getAndroidActivity', res)
+        uni.showToast(res ? { title: 'check success' } : { title: 'check getAndroidActivity', icon: 'error' })
+        return res
+      }
     },
   }
 </script>

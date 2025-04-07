@@ -1,14 +1,32 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP-ANDROID || APP-IOS -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <share-element :share-key="share_key">
-      <view >
+  <!-- #ifdef APP-HARMONY -->
+  <scroll-view style="flex: 1" type="nested">
+  <!-- #endif -->
+    <!-- #ifdef APP-HARMONY -->
+    <nested-scroll-header>
+    <!-- #endif -->
+      <share-element :share-key="share_key">
+        <view>
           <image class="banner-img" :src="cover"></image>
-        <text class="banner-title">{{title}}</text>
-      </view>
-    </share-element>
+          <text class="banner-title">{{title}}</text>
+        </view>
+      </share-element>
+    <!-- #ifdef APP-HARMONY -->
+    </nested-scroll-header>
+    <!-- #endif -->
+    <!-- #ifndef APP-HARMONY -->
     <rich-text :nodes="htmlNodes" style="padding: 3px"></rich-text>
+    <!-- #endif -->
+    <!-- #ifdef APP-HARMONY -->
+    <nested-scroll-body style="height: 100%;">
+      <scroll-view style="flex:1" associative-container="nested-scroll-view">
+        <rich-text :nodes="htmlNodes" style="padding: 3px;flex:1"></rich-text>
+      </scroll-view>
+    </nested-scroll-body>
+    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->

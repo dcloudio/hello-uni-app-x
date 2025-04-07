@@ -2,14 +2,15 @@ const PAGE_PATH = "/pages/API/pull-down-refresh/pull-down-refresh"
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe("payment", () => {
   if (
     isWeb ||
     process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' ||
-    platformInfo.startsWith('mp')
+    isMP
   ) {
-    it('web || app-webview || mp', () => {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return

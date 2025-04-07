@@ -34,8 +34,12 @@
 			connect() {
                 console.log('connect')
 				this.eventSource?.close()
+				let headers:UTSJSONObject = new UTSJSONObject()
+				headers.set("header1","value1")
+				headers.set("header2","value3")
 				this.eventSource = uni.connectEventSource({
-					url: this.url
+					url: this.url,
+					header:headers
 				} )
 				this.eventSource?.onMessage((ev) => {
 					this.log +='type:' + ev.type + '\ndata:' + ev.data + '\n\n'

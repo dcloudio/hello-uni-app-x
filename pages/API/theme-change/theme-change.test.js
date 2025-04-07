@@ -25,6 +25,8 @@ describe('API-theme-change', () => {
     await page.callMethod('setAppTheme', "dark")
     await page.waitFor(300)
     expect(await page.data('appTheme')).toBe("dark")
+    const image = await program.screenshot({ deviceShot: true });
+    expect(image).toSaveImageSnapshot();
     //还原主题为light
     await page.callMethod('setAppTheme', originalTheme)
     await page.waitFor(600)

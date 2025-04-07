@@ -25,6 +25,7 @@ describe('component-native-nested-scroll-header', () => {
 
 
   it('check_nested-scroll-header', async () => {
+    await page.waitFor(1000)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })

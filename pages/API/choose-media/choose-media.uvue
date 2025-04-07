@@ -30,7 +30,7 @@
               数量限制
             </view>
             <view class="uni-list-cell-right">
-              <input class="click-t" ref="refCountInput" :value="countIndex" type="number" :maxlength="1" @confirm="chooseMediaCount" confirm-type="done" />
+              <input class="click-t" ref="refCountInput" :value="count" type="number" :maxlength="1" @blur="chooseMediaCount"/>
             </view>
           </view>
 
@@ -61,7 +61,7 @@
           <view class="uni-flex" style="margin-bottom: 10px;">
             <view class="uni-list-cell-left">点击预览</view>
             <view style="margin-left: auto;">
-              <text class="click-t">{{mediaList.length}}/{{countIndex}}</text>
+              <text class="click-t">{{mediaList.length}}/{{count}}</text>
             </view>
           </view>
           <view class="uni-flex" style="flex-wrap: wrap;">
@@ -154,7 +154,7 @@
         cameraTypeIndex: 1,
         orientationTypeIndex: 0,
         albumModeTypeIndex: 0,
-        countIndex: 9,
+        count: 9,
         maxDuration: 10,
         sourceTypes: sourceTypeList as ChooseSource[],
         mediaTypes: mediaTypeList as ChooseSource[],
@@ -179,17 +179,16 @@
           }
         })
       },
-      chooseMediaCount(event : UniInputConfirmEvent) {
+      chooseMediaCount(event : UniInputBlurEvent) {
         let count = parseInt(event.detail.value)
         if (count < 1 || count > 9 || Number.isNaN(count)) {
           uni.showToast({
             position: "bottom",
             title: "图片数量应该不小于1不大于9"
           })
-          this.countIndex = 9;
           return
         }
-        this.countIndex = count
+        this.count = count
       },
       chooseOrientationType() {
         uni.showActionSheet({
@@ -211,8 +210,8 @@
         this.maxDuration = value;
       },
       chooseMedia() {
-        if (this.mediaList.length >= this.countIndex) {
-          const message = "已经有" + this.countIndex + "个了，请删除部分后重新选择";
+        if (this.mediaList.length >= this.count) {
+          const message = "已经有" + this.count + "个了，请删除部分后重新选择";
           uni.showToast({
             position: "bottom",
             title: message
@@ -221,7 +220,7 @@
         }
 
         uni.chooseMedia({
-          count: this.mediaList.length + this.countIndex > 9 ? 9 - this.mediaList.length : this.countIndex,
+          count: this.count - this.mediaList.length,
           sourceType: sourceTypeList[this.sourceTypeIndex].value,
           mediaType: mediaTypeList[this.mediaTypeIndex].value,
           camera: cameraTypeList[this.cameraTypeIndex].value[0],
@@ -242,6 +241,10 @@
           },
           fail: (err) => {
             console.log("err: ", JSON.stringify(err));
+            uni.showToast({
+              title:"choose media error.code:" + err.errCode+";message:"+err.errMsg,
+              position:"bottom"
+            })
           }
         })
       },

@@ -2,7 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
   <!-- #endif -->
-    <view class="uni-container">
+    <view class="uni-container" :class="{ 'dark-mode': isDarkMode }">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/templateIndex.png"></image>
       </view>
@@ -79,11 +79,11 @@
                 url: 'long-list2'
               },
               // #endif
-              // #ifdef APP-IOS || APP-ANDROID
               {
                 name: '顶部banner长列表（嵌套滚动）',
                 url: 'long-list-nested'
               },
+              // #ifdef APP-IOS || APP-ANDROID
               {
                 name: '顶部banner瀑布流长列表（嵌套滚动）',
                 url: 'long-waterflow-nested'
@@ -238,6 +238,7 @@
         arrowUpIcon: '/static/icons/arrow-up.png',
         arrowDownIcon: '/static/icons/arrow-down.png',
         arrowRightIcon: '/static/icons/arrow-right.png',
+        isDarkMode: false
       }
     },
     computed: {
@@ -285,8 +286,21 @@
           uni.navigateTo({ url })
         }
       },
+      // #ifdef WEB
+      // 检查系统主题
+      checkSystemTheme() {
+        const info = uni.getAppBaseInfo()
+        this.isDarkMode = info.hostTheme === 'dark'
+        uni.onHostThemeChange((result) => {
+          this.isDarkMode = result.hostTheme === 'dark'
+        })
+      }
+      // #endif
     },
     // #ifdef WEB
+    onShow() {
+      this.checkSystemTheme()
+    },
     watch: {
       $route: {
         immediate: true,
@@ -309,3 +323,42 @@
     // #endif
   }
 </script>
+
+<style>
+  .uni-panel-h {
+    padding: 12px 18px;
+  }
+  /* web端适配暗黑主题 */
+  /* #ifdef WEB */
+  .uni-container.dark-mode {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .uni-container.dark-mode .uni-panel-h {
+    background-color: #2d2d2d;
+    border-bottom-color: #3d3d3d;
+  }
+
+  .uni-container.dark-mode .uni-navigate-item {
+    background-color: #2d2d2d;
+    border-bottom-color: #3d3d3d;
+  }
+
+  .uni-container.dark-mode .text-disabled {
+    color: #666666 !important;
+  }
+
+  .uni-container.dark-mode .hello-text {
+    color: #ffffff;
+  }
+
+  .uni-container.dark-mode .uni-panel-text {
+    color: #ffffff;
+  }
+
+  .uni-container.dark-mode .uni-navigate-text {
+    color: #ffffff;
+  }
+  /* #endif */
+</style>

@@ -6,7 +6,7 @@
     <button class="button" @click="customStyle">{{ !hasCustomedStyle ? '自定义Tab样式' : '移除自定义样式'}}</button>
     <button class="button" @click="customItem">{{ !hasCustomedItem ? '自定义Tab信息' : '移除自定义信息' }}</button>
     <button class="button" @click="hideTabBar">{{ !hasHiddenTabBar ? '隐藏TabBar' : '显示TabBar' }}</button>
-    // #ifdef APP-ANDROID || APP-IOS || WEB
+    // #ifdef APP-ANDROID || APP-IOS || WEB || APP-HARMONY
     <button class="button" @click="hideTabBarItem">{{ !hasHiddenTabBarItem ? '隐藏接口Item' : '显示接口Item' }}</button>
     // #endif
     <button class="button" @click="setTabBarTitle">{{ !hasSetLongTitle ? '自定义超长标题' : '移除自定义信息' }}</button>
@@ -76,6 +76,13 @@
     },
     methods: {
       setTabBarTitle(){
+        // #ifdef APP-HARMONY
+        uni.showToast({
+          title: "暂不支持"
+        })
+        // #endif
+
+        // #ifndef APP-HARMONY
         let tabBarOptions = {
           visible: true,
           index: 1,
@@ -95,9 +102,16 @@
         }
         uni.setTabBarItem(tabBarOptions)
         this.hasSetLongTitle = !this.hasSetLongTitle
+        // #endif
       },
       hideTabBarItem(){
+        // #ifdef APP-HARMONY
+        uni.showToast({
+          title: "暂不支持"
+        })
+        // #endif
 
+        // #ifndef APP-HARMONY
         let tabBarOptions = {
           visible: true,
           index: 1,
@@ -113,6 +127,7 @@
         }
         uni.setTabBarItem(tabBarOptions)
         this.hasHiddenTabBarItem = !this.hasHiddenTabBarItem
+        // #endif
       },
       navigateBack() {
         this.$emit('unmount')
@@ -183,6 +198,13 @@
         this.hasCustomedStyle = !this.hasCustomedStyle
       },
       customItem() {
+        // #ifdef APP-HARMONY
+        uni.showToast({
+          title: "暂不支持"
+        })
+        // #endif
+
+        // #ifndef APP-HARMONY
         let tabBarOptions = {
           index: 1,
           text: '接口',
@@ -196,6 +218,7 @@
           uni.setTabBarItem(tabBarOptions)
         }
         this.hasCustomedItem = !this.hasCustomedItem
+        // #endif
       }
     }
   }

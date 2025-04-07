@@ -1,11 +1,8 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
-
 describe('component-native-textarea', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
 
   let page;
   let textarea;
@@ -132,4 +129,15 @@ describe('component-native-textarea', () => {
     expect(await textarea2.value()).toEqual("123")
   })
 
+  if (isIOS) {
+    it('test-iOS-width', async () => {
+      await page.setData({
+        isAutoTest: true
+      })
+      await page.waitFor(500)
+      const rect = await page.callMethod("getBoundingClientRectForTest")
+      console.log('rect:', rect)
+      expect(rect.width).toBe(100)
+    })
+  }
 });

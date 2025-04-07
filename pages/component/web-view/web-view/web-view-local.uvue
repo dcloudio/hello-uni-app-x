@@ -2,6 +2,10 @@
   <web-view id="web-view" ref="web-view" class="web-view" src="/hybrid/html/local.html" @message="message"
     @error="error" @loading="loading" @load="load" @download="download">
   </web-view>
+  <button @click="evalJS">evalJS</button>
+  <!-- #ifdef APP-ANDROID || APP-IOS -->
+  <view class="safe-area-inset-bottom"></view>
+  <!-- #endif -->
 </template>
 
 <script>
@@ -17,6 +21,10 @@
       }
     },
     methods: {
+      evalJS() {
+        const webview = uni.getElementById('web-view') as UniWebViewElement
+        webview.evalJS('postMessage("evalJS")')
+      },
       message(event : UniWebViewMessageEvent) {
         console.log(JSON.stringify(event.detail));
         let contentStr = JSON.stringify(event.detail);
@@ -75,5 +83,9 @@
 <style>
   .web-view {
     flex: 1;
+  }
+
+  .safe-area-inset-bottom {
+    height: var(--uni-safe-area-inset-bottom);
   }
 </style>

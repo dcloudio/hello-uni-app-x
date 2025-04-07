@@ -419,10 +419,7 @@
 						console.log("requestPaymentFail", JSON.stringify(err))
 						let errCode = err.errCode;
 						let errMsg = err.errMsg;
-						if (errCode == 701110) {
-							// 用户取消支付
-							this.$emit("cancel", err);
-						} else if (errMsg.indexOf("fail cancel") > -1) {
+						if (errCode == 700601 || errMsg.indexOf("fail cancel") > -1) {
 							// 用户取消支付
 							this.$emit("cancel", err);
 						} else {
@@ -661,7 +658,7 @@
 					custom: options.custom,
 				} as UTSJSONObject;
 				let	res = await uniPayCo.createOrder(createOrderData);
-				if (res.errCode === 0) {
+				if (res.errCode == 0) {
 					this.$emit("create", res);
 					this.res = res;
 					uni.showLoading({
@@ -692,7 +689,7 @@
 									transaction_receipt: transaction.jsonRepresentation,
 									transaction_identifier: transactionIdentifier
 								});
-								if (verifyRes.errCode === 0) {
+								if (verifyRes.errCode == 0) {
 									if (verifyRes.repeat) {
 										uni.showModal({
 											title: "提示",
@@ -733,7 +730,7 @@
 						});
 					} catch (err) {
 						let code = err.errCode || err.code;
-						if (code === 2) {
+						if (code == 2) {
 							// 用户取消支付
 							if (this.debug) console.log("用户取消支付");
 							this.$emit("cancel", err);
@@ -777,7 +774,7 @@
 									transaction_receipt: transaction.jsonRepresentation,
 									transaction_identifier: transactionIdentifier,
 								});
-								if (verifyRes.errCode === 0 || !appAccountToken) {
+								if (verifyRes.errCode == 0 || !appAccountToken) {
 									// 经过开发者server验证成功后请结束该交易
 									virtualPaymentManager.finishTransaction({
 										transaction: transaction,

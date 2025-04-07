@@ -1,7 +1,7 @@
 <template>
   <page-head title="view"></page-head>
   <view class="main" :hover-class="hover_class ? 'is-parent-hover' : 'none'">
-    <view class="test-view" :hover-class="hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="stop_propagation"
+    <view class="test-view" :class="{ 'dark-mode': isDarkMode }" :hover-class="hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="stop_propagation"
       :hover-start-time="start_time" :hover-stay-time="stay_time">
     </view>
   </view>
@@ -25,9 +25,15 @@
         start_time: 50,
         stay_time: 400,
         start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
-        stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[]
+        stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
+        isDarkMode: false
       }
     },
+    // #ifdef WEB
+    onShow(){
+      this.checkSystemTheme()
+    },
+    // #endif
     methods: {
       change_hover_class_boolean(checked : boolean) {
         this.hover_class = checked
@@ -41,7 +47,17 @@
       radio_change_stay_time_enum(time : number) {
         this.stay_time = time
       },
-    },
+      // #ifdef WEB
+      // 检查系统主题
+      checkSystemTheme() {
+        const info = uni.getAppBaseInfo()
+        this.isDarkMode = info.hostTheme === 'dark'
+        uni.onHostThemeChange((result) => {
+          this.isDarkMode = result.hostTheme === 'dark'
+        })
+      }
+      // #endif
+    }
   }
 </script>
 
@@ -51,18 +67,24 @@
     flex-direction: row;
     justify-content: center;
   }
-
   .test-view {
     height: 200px;
     width: 200px;
     background-color: white;
   }
-
   .is-hover {
     background-color: #179b16;
   }
-
   .is-parent-hover {
     background-color: #aa0000;
   }
+  /* web端适配暗黑主题 */
+  /* #ifdef WEB */
+  .test-view.dark-mode {
+    background-color: #3e3e3f;
+  }
+  .test-view.dark-mode.is-hover {
+    background-color: #179b16;
+  }
+  /* #endif */
 </style>

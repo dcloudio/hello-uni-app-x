@@ -16,6 +16,7 @@ describe('issue-13858', () => {
   })
 
   it('check mounted', async () => {
+    await page.waitFor(500)
     const {
       childMountedTriggeredCount
     } = await page.data()

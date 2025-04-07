@@ -22,6 +22,7 @@
       return {
         title: '请求云函数',
         callFunctionResult: {},
+        callFunctionResult_Detail_functionName: '',
         callFunctionError: {},
         genericDemoShowMessage: '',
         isUniTest: false
@@ -87,17 +88,24 @@
         }).then(res => {
           const result = res.result
           this.callFunctionResult = result
+          const detail = result.get('detail') as UTSJSONObject
+          this.callFunctionResult_Detail_functionName = detail.get('functionName') as string
+          console.log('this.callFunctionResult_Detail_functionName: ' + this.callFunctionResult_Detail_functionName)
           console.log(JSON.stringify(result))
           uni.hideLoading()
           this.notify(result['showMessage'] as string, '提示')
         }).catch((err : any | null) => {
-          const error = err as UniCloudError
-          this.callFunctionError = {
-            errCode: error.errCode,
-            errMsg: error.errMsg
-          }
           uni.hideLoading()
-          this.notify(error.errMsg, '错误')
+          if(err instanceof UniCloudError) {
+            const error = err as UniCloudError
+            this.callFunctionError = {
+              errCode: error.errCode,
+              errMsg: error.errMsg
+            }
+            this.notify(error.errMsg, '错误')
+          } else {
+            console.error(err)
+          }
         })
       },
       jest_UniCloudError() {

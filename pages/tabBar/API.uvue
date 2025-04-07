@@ -2,7 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
   <!-- #endif -->
-    <view class="uni-container">
+    <view class="uni-container" :class="{ 'dark-mode': isDarkMode }">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/apiIndex.png"></image>
       </view>
@@ -15,7 +15,7 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="item">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px;"
+            <view v-if="childMenuItem.items.length==0" class="padleft"
               :class="{'uni-navigate-item':childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768}"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
               <template v-if="childMenuItem.path !== 'set-tab-bar' || windowWidth <= 768">
@@ -26,8 +26,8 @@
             </view>
             <uni-collapse v-else style="width: 100%">
               <uni-collapse-item :title="childMenuItem.name" class="item"
-                style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
-                <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
+                style="margin-bottom: 0;">
+                <view class="uni-navigate-item padleft" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
@@ -67,6 +67,7 @@
       return {
         menu: menu as MenuItem[],
         arrowRightIcon: '/static/icons/arrow-right.png',
+        isDarkMode: false
       }
     },
     computed: {
@@ -103,9 +104,22 @@
       },
       stopPropagation() {
 
+      },
+      // #ifdef WEB
+      // 检查系统主题
+      checkSystemTheme() {
+        const info = uni.getAppBaseInfo()
+        this.isDarkMode = info.hostTheme === 'dark'
+        uni.onHostThemeChange((result) => {
+          this.isDarkMode = result.hostTheme === 'dark'
+        })
       }
+      // #endif
     },
     // #ifdef WEB
+    onShow() {
+      this.checkSystemTheme()
+    },
     watch: {
       $route: {
         immediate: true,
@@ -129,6 +143,9 @@
   .item {
     margin-bottom: 12px;
   }
+  .padleft{
+    padding-left: 18px
+  }
 
   .popup {
     position: fixed;
@@ -141,4 +158,34 @@
     display: none;
     background-color: rgba(16, 16, 16, 0.5);
   }
+  /* web端适配暗黑主题 */
+  /* #ifdef WEB */
+  .uni-container.dark-mode {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .uni-container.dark-mode :deep(.uni-collapse-item .uni-collapse-item__title) {
+    background-color: #2d2d2d;
+    border-bottom-color: #3d3d3d;
+    padding: 12px 18px;
+  }
+
+  .uni-container.dark-mode .uni-navigate-item {
+    background-color: #2d2d2d;
+    border-bottom-color: #3d3d3d;
+  }
+
+  .uni-container.dark-mode :deep(.uni-collapse-item .uni-collapse-item__title-text) {
+    color: #ffffff;
+  }
+
+  .uni-container.dark-mode .hello-text {
+    color: #ffffff;
+  }
+
+  .uni-container.dark-mode .uni-navigate-text {
+    color: #ffffff;
+  }
+  /* #endif */
 </style>

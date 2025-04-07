@@ -1,7 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
-const isApp = isAndroid || isIos
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
@@ -41,7 +42,6 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/text/text-props',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/rich-text/rich-text-tags',
   '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
   '/pages/component/form/form',
@@ -202,7 +202,8 @@ const pages = [
   '/pages/CSS/layout/max-width',
   '/pages/CSS/layout/position',
   '/pages/CSS/layout/width',
-  '/pages/CSS/layout/z-index',
+  // 单独测试例中截图
+  // '/pages/CSS/layout/z-index',
   '/pages/CSS/layout/visibility',
   '/pages/CSS/margin/margin',
   '/pages/CSS/margin/margin-top',
@@ -228,6 +229,7 @@ const pages = [
   '/pages/CSS/text/text-align',
   '/pages/CSS/text/text-overflow',
   '/pages/CSS/text/text-decoration-line',
+  '/pages/CSS/text/text-shadow',
   // 单独测试例截图
   // '/pages/CSS/transition/transition',
   '/pages/CSS/pointer-events/pointer-events',
@@ -258,7 +260,8 @@ const pages = [
   // 动态内容
   // '/pages/template/long-list2/long-list2',
   '/pages/template/long-list-nested/long-list-nested',
-  '/pages/template/pull-zoom-image/pull-zoom-image',
+  // harmony 整体测试时截图异常，单独测试例截图
+  // '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/navbar-lite/navbar-lite',
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // 动态内容
@@ -285,31 +288,41 @@ if(!isMP) {
     '/pages/component/list-view/list-view-multiplex-input',
     '/pages/component/list-view/list-view-multiplex-video',
     '/pages/component/list-view/list-view-children-in-slot',
-    '/pages/template/schema/schema',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
+  if (!isHarmony) {
+    pages.push(
+      '/pages/template/schema/schema',
+    )
+  }
 }
 
-if (isApp && !isAppWebview) {
-  pages.push(
-    '/pages/API/element-draw/element-draw',
-    '/pages/API/get-file-system-manager/get-file-system-manager',
-    '/pages/API/env/env',
-    '/pages/API/get-system-setting/get-system-setting',
-    '/pages/API/element-takesnapshot/element-takesnapshot',
-    '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
-    '/pages/API/save-image-to-photos-album/save-image-to-photos-album',
-    '/pages/API/save-video-to-photos-album/save-video-to-photos-album',
-    '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
-    // 进入页面崩溃，暂时规避
-    // '/pages/API/get-univerify-manager/get-univerify-manager',
-    '/pages/API/request-payment/request-payment',
-    '/pages/API/theme-change/theme-change',
-    '/pages/API/share-with-system/share-with-system',
-    '/pages/template/scroll-sticky/scroll-sticky',
-    '/pages/component/waterflow/waterflow-fit-height',
-  )
+if (!isAppWebview) {
+  if (isApp) {
+    pages.push(
+      '/pages/API/get-file-system-manager/get-file-system-manager',
+      '/pages/API/get-system-setting/get-system-setting',
+      '/pages/API/element-takesnapshot/element-takesnapshot',
+      '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
+      // 进入页面崩溃，暂时规避
+      // '/pages/API/get-univerify-manager/get-univerify-manager',
+      '/pages/API/request-payment/request-payment',
+      '/pages/template/scroll-sticky/scroll-sticky',
+    )
+  }
+  if(isIos || isAndroid){
+    pages.push(
+      '/pages/API/theme-change/theme-change',
+      '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
+      '/pages/API/env/env',
+      '/pages/API/element-draw/element-draw',
+      '/pages/component/waterflow/waterflow-fit-height',
+      '/pages/API/share-with-system/share-with-system',
+      '/pages/template/test-uts-button/test-uts-button'
+    )
+  }
+
 }
 
 if (isAndroid && !isAppWebview) {
@@ -348,12 +361,6 @@ if (isWeb) {
 let page;
 let windowInfo
 
-async function getWindowInfo() {
-  const windowInfoPage = await program.reLaunch('/pages/API/get-window-info/get-window-info')
-  await windowInfoPage.waitFor(600);
-  return await windowInfoPage.callMethod('jest_getWindowInfo')
-}
-
 function getWaitForTagName(pagePath) {
   if (pagePath === '/pages/component/list-view/list-view-multiplex-input') {
     return 'input'
@@ -376,10 +383,14 @@ function getWaitForTagName(pagePath) {
   if (pagePath === '/pages/API/get-file-system-manager/get-file-system-manager') {
     return 'button'
   }
+  if (pagePath === '/pages/template/custom-refresher/custom-refresher') {
+    return 'list-view'
+  }
   return 'view'
 }
 
 describe("page screenshot test", () => {
+  // TODO: 暂时屏蔽 harmony 截图测试，规避应用崩溃
   if (platformInfo.indexOf('safari') !== -1) {
     it('暂时规避 safari 截图测试', () => {
       expect(1).toBe(1)
@@ -389,6 +400,7 @@ describe("page screenshot test", () => {
 
   beforeAll(async () => {
     console.log("page screenshot test start");
+    windowInfo = await program.callUniMethod('getWindowInfo');
   });
   beforeEach(async () => {
     const currentPagePath = pages[pageIndex]
@@ -410,19 +422,7 @@ describe("page screenshot test", () => {
       fullPage
     }
     if (!fullPage && !isAppWebview) {
-      if (!windowInfo) {
-        windowInfo = await getWindowInfo()
-        page = await program.reLaunch(currentPagePath);
-        await page.waitFor(getWaitForTagName(currentPagePath));
-      }
-      let offsetY = '0'
-      if (isAndroid) {
-        offsetY = `${windowInfo.statusBarHeight + 44}`
-      }
-      if (isIos) {
-        offsetY = `${windowInfo.safeAreaInsets.top + 44}`
-      }
-      screenshotParams.offsetY = offsetY
+      screenshotParams.offsetY = isApp ? `${windowInfo.safeAreaInsets.top + 44}` : '0'
     }
 
     const image = await program.screenshot(screenshotParams);

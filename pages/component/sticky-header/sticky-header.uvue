@@ -1,5 +1,5 @@
 <template>
-  <list-view :scroll-y="true" class="page" rebound="false" show-scrollbar=false :scroll-top="scroll_top_input"
+  <list-view :scroll-y="true" class="page" bounces="false" show-scrollbar=false :scroll-top="scroll_top_input"
     :refresher-enabled="refresher_enabled_boolean" :refresher-triggered="refresher_triggered_boolean"
     @refresherrefresh="list_view_refresherrefresh">
     <list-item type=1>
@@ -42,11 +42,7 @@
       }
     },
     onLoad() {
-      let lists : Array<string> = []
-      for (let i = 0; i < 40; i++) {
-        lists.push("item---" + i)
-      }
-      this.list_item = lists
+      this.loadListData()
     },
     methods: {
       list_view_refresherrefresh() {
@@ -61,6 +57,17 @@
       },
       clickTH(index : number) {
         console.log("点击表头：" + index);
+      },
+      loadListData() {
+        let lists : Array<string> = []
+        for (let i = 0; i < 40; i++) {
+          lists.push("item---" + i)
+        }
+        this.list_item = lists
+      },
+      //自动化测试使用
+      clearListData() {
+        this.list_item = []
       }
     }
   }
