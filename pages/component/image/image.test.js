@@ -120,6 +120,15 @@ describe('component-native-image', () => {
   });
 
   it('long-path-screenshot', async() => {
+    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+       const infos = process.env.uniTestPlatformInfo.split(' ');
+       const version = parseInt(infos[infos.length - 1]);
+       if (version < 26) {
+         console.log("安卓版本小于26设备 测试image-long 模拟器会出现内存不足错误 影响后续测试")
+         expect(1).toBe(1)
+         return
+       }
+    }
     const page = await program.navigateTo('/pages/component/image/image-long');
     await page.waitFor(3000);
     const image = await program.screenshot(screenshotParams)
