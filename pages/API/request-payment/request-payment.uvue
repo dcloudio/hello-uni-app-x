@@ -58,6 +58,7 @@
 
 
       // #ifdef MP-WEIXIN
+      this.getOpenId()
       this.providerList.push({
         name: '微信支付',
         id: 'wxpay'
@@ -196,6 +197,35 @@
       },
 
       // #ifdef MP-WEIXIN
+      getOpenId() {
+        uni.showLoading({
+          title: "请稍等...",
+          mask: true
+        });
+        let bundleId = uni.getAccountInfoSync().miniProgram.appId;
+        uni.login({
+          provider: 'weixin',
+          success: (res) => {
+            uni.request({
+              url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOpenId",
+              method: "GET",
+              data: {
+                code: res.code,
+                bundleId
+              },
+              success: (res) => {
+                uni.hideLoading();
+                this.openid = res.data.openid;
+                console.log('openid: ', this.openid);
+              },
+              fail: (err) => {
+                uni.hideLoading();
+                console.error("request-err", err);
+              }
+            });
+          }
+        })
+      },
       payMpWexin() {
         let bundleId = uni.getAccountInfoSync().miniProgram.appId;
         let random = Math.floor(Math.random() * 9000) + 1000;
@@ -211,7 +241,7 @@
             outTradeNo: this.outTradeNo,
             bundleId,
             openid: this.openid,
-            totalFee: 1,
+            totalFee: 1
           },
           success: (res) => {
             uni.hideLoading();
