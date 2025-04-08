@@ -43,7 +43,7 @@ describe('form', () => {
     expect(formData['switch']).toBe(CHANGE_SWITCH)
     expect(formData['comment']).toBe(CHANGE_COMMENT)
     // 仅微信 和 鸿蒙支持 picker-view 表单
-    if (isMP ｜｜ isHarmony) {
+    if (isMP || isHarmony) {
       expect(formData['time'][0]).toBe(time[0])
       expect(formData['time'][1]).toBe(time[1])
     }
@@ -78,7 +78,7 @@ describe('form', () => {
     expect(formData['age']).toBe(DEFAULT_AGE)
     expect(formData['switch']).toBe(DEFAULT_SWITCH)
     expect(formData['comment']).toBe(DEFAULT_COMMENT)
-    if (isMP ｜｜ isHarmony) {
+    if (isMP || isHarmony) {
       expect(formData['time'][0]).toBe(time[0])
       expect(formData['time'][1]).toBe(time[1])
     }
