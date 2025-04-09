@@ -42,7 +42,8 @@
         cross_axis_gap: 2,
         waterflowPadding: [10, 5, 10, 5] as Array<number>,
         loadMore: true,
-        isLoadMore: true
+        isLoadMore: true,
+        waterflow: null as UniElement | null
       }
     },
     onLoad() {
@@ -69,6 +70,10 @@
         { height: 130, text: "item---18" },
         { height: 140, text: "item---19" },
       ] as Array<flowItemData>
+    },
+    onReady() {
+      // 组件ready时，获取组件实例
+      this.waterflow = this.$refs["waterflow"] as UniElement
     },
     methods: {
       waterflow_click() { console.log("组件被点击时触发") },
@@ -187,6 +192,11 @@
           return true
         }
         return false
+      },
+      getScrollTop() : number {
+        var ret = this.waterflow?.scrollTop ?? 0
+        console.log(ret)
+        return ret
       },
       change_refresher_style_boolean(checked : boolean) {
         if (checked) {

@@ -91,31 +91,38 @@ describe('component-native-waterflow', () => {
     expect(value).toBe(true)
   })
 
-  if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('android')) {
-    //检测下拉刷新 备注：iOS本地测试结果正确，但是自动化测试结果错误
-    it('check_refresher', async () => {
-      await page.callMethod('confirm_scroll_top_input', 0)
-      await page.setData({
-          refresher_enabled_boolean: true,
-          refresher_triggered_boolean: true
-      })
-      await page.waitFor(1000)
-      expect(await page.data('refresherrefresh')).toBe(true)
-      //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
-      await page.waitFor(2000)
+  //检测下拉刷新
+  it('check_refresher', async () => {
+    await page.callMethod('confirm_scroll_top_input', 0)
+    await page.setData({
+        refresher_enabled_boolean: true,
+        refresher_triggered_boolean: true
     })
+    await page.waitFor(1000)
+    expect(await page.data('refresherrefresh')).toBe(true)
+    //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
+    await page.waitFor(2000)
+  })
 
-    //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
-    it('check_scroll_into_view_top', async () => {
-      await page.callMethod('setScrollIntoView', 'item---3')
-      await page.waitFor(600)
-      const waterflowElement = await page.$('#waterflow')
-      const scrollTop = await waterflowElement.attribute("scrollTop")
-      console.log("check_scroll_into_view_top--"+scrollTop)
-      await page.callMethod('setScrollIntoView', 'item---0')
-      expect(scrollTop-280).toBeGreaterThanOrEqual(0)
-    })
-  }
+  //检测竖向scroll_into_view属性赋值
+  it('check_scroll_into_view_top', async () => {
+    await page.callMethod('setScrollIntoView', 'item---3')
+    await page.waitFor(600)
+    const scrollTop = await page.callMethod('getScrollTop')
+    console.log("check_scroll_into_view_top--"+scrollTop)
+    await page.callMethod('setScrollIntoView', 'item---0')
+    expect(scrollTop-280).toBeGreaterThanOrEqual(0)
+  })
+
+  it('check_scroll_into_view_top_2', async () => {
+    await page.callMethod('confirm_scroll_top_input', 2000)
+    await page.waitFor(600)
+    await page.callMethod('setScrollIntoView', 'item---0')
+    await page.waitFor(600)
+    const scrollTop = await page.callMethod('getScrollTop')
+    console.log("check_scroll_into_view_top2--"+scrollTop)
+    expect(scrollTop).toBeLessThanOrEqual(10)
+  })
 
   //检测waterflow属性变化 截图校验
   it('check_waterflow_view_props', async () => {
