@@ -17,6 +17,17 @@ describe('issue-16162', () => {
     await page.waitFor(600)
   })
 
+  it('issue16934', async () => {
+    await page.callMethod('setScrollTop', 2000)
+    await page.waitFor(2000)
+    await page.setData({
+      'intoview': 'item1'
+    })
+    await page.waitFor(600)
+    const scrollTop = await page.callMethod('getScrollTop')
+    expect(scrollTop).toBe(0)
+  })
+
   it('issue16162', async () => {
     await page.waitFor(1000);
     // 模拟滑动
