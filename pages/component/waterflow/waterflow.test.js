@@ -117,6 +117,9 @@ describe('component-native-waterflow', () => {
   it('check_scroll_into_view_top_2', async () => {
     await page.callMethod('confirm_scroll_top_input', 2000)
     await page.waitFor(600)
+    //需要先赋值空，不然不会引起变化
+    await page.callMethod('setScrollIntoView', '')
+    await page.waitFor(300)
     await page.callMethod('setScrollIntoView', 'item---0')
     await page.waitFor(600)
     const scrollTop = await page.callMethod('getScrollTop')
