@@ -27,19 +27,23 @@ describe('touch-events-test', () => {
 
 
   it('touch-event-case1', async () => {
+
+    // const windowInfo = await program.callUniMethod('getWindowInfo');
+    // const halfWidth = windowInfo.windowWidth / 2
     let x = 40
     let y = 150
 
     // 滑动事件
     await program.swipe({
       startPoint: {x: x, y: y},
-      endPoint: {x: x+200,y: y},
+      endPoint: {x: x + 300, y: y},
+      // endPoint: {x: x + halfWidth + 20, y: y},
       duration: 300
     })
 
     await page.waitFor(1500);
     const swiperChangeEvent = await page.data('swiperChangeEvent')
-    console.log("swiperChangeEvent:", swiperChangeEvent)
+    // console.log("swiperChangeEvent:", swiperChangeEvent)
     expect(swiperChangeEvent).toBe(true)
   })
 
