@@ -22,14 +22,12 @@ describe('API-saveImageToPhotosAlbum', () => {
 
   it('test saveImageToPhotosAlbum', async () => {
     if (isAndroid) {
-      if (process.env.uniTestPlatformInfo.startsWith('android')) {
-             const infos = process.env.uniTestPlatformInfo.split(' ');
-             const version = parseInt(infos[infos.length - 1]);
-             if (version < 24) {
-               console.log("安卓版本小于24设备 不进行saveImage测试，模拟器会出现闪退影响后续测试")
-               expect(1).toBe(1)
-               return
-             }
+      const infos = platformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (version < 24) {
+        console.log("安卓版本小于24设备 不进行saveImage测试，模拟器会出现闪退影响后续测试")
+        expect(1).toBe(1)
+        return
       }
       await program.adbCommand(
         'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
