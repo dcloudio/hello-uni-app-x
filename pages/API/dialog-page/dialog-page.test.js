@@ -469,7 +469,7 @@ describe('dialog page', () => {
   })
 
 
-  if (isAndroid || isIos) {
+  if (isAndroid || isIos || isHarmony) {
     it('after closeDialogPage reset statusBar color', async () => {
       const screenShotArea = {
         x: 342,
@@ -487,18 +487,15 @@ describe('dialog page', () => {
         screenShotArea.width = 34
         screenShotArea.height = 16
       } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
-        screenShotArea.x = 442
-        screenShotArea.width = 27
-        screenShotArea.height = 24
+        screenShotArea.x = 336
+        screenShotArea.y = 3
+        screenShotArea.width = 50
+        screenShotArea.height = 20
       } else if (isHarmony) {
-        // TODO: harmony 窗口截图不是真正的设备截图，无法截取状态栏
-        // 真正设备截图可以通过以下命令获取
-        // hdc shell snapshot_display -f /data/local/tmp/test.jpeg 截图
-        // hdc file recv  /data/local/tmp/test.jpeg ./test.jpeg 转存到本地
-        screenShotArea.x = 200
-        screenShotArea.y = 0
-        screenShotArea.width = 540
-        screenShotArea.height = 100
+        screenShotArea.x = 295
+        screenShotArea.y = 14
+        screenShotArea.width = 40
+        screenShotArea.height = 20
       }
       const imageForParentInit = await program.screenshot({
         deviceShot: true,
