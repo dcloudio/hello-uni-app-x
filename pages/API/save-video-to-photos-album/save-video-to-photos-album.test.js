@@ -21,6 +21,13 @@ describe('API-saveVideoToPhotosAlbum', () => {
 
   it('test saveVideoToPhotosAlbum', async () => {
     if (isAndroid) {
+      const infos = platformInfo.split(' ');
+      const version = parseInt(infos[infos.length - 1]);
+      if (version < 7) {
+        console.log("安卓版本小于7设备 不进行saveVideo测试，模拟器会出现闪退影响后续测试")
+        expect(1).toBe(1)
+        return
+      }
       await program.adbCommand(
         'pm grant io.dcloud.uniappx android.permission.WRITE_EXTERNAL_STORAGE');
     }
@@ -40,7 +47,7 @@ describe('API-saveVideoToPhotosAlbum', () => {
       }
     });
     expect(image).toSaveImageSnapshot();
-    
+
     expect(await page.data('success')).toBe(true);
     await page.waitFor(2000);
   });
