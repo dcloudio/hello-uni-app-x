@@ -1,70 +1,79 @@
 <template>
-	<!-- #ifdef APP -->
-	<scroll-view style="flex:1">
-	<!-- #endif -->
-		<view>
-			<page-head :title="title"></page-head>
-			<button class="button" type="primary" @click="connect">连接</button>
-			<button class="button" type="primary" @click="close">关闭</button>
-			<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
-		</view>
-	<!-- #ifdef APP -->
-	</scroll-view>
-	<!-- #endif -->
+  <button class="button" type="primary" @click="connect">连接</button>
+  <button class="button" type="primary" @click="close">关闭</button>
+
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <view>
+      <!-- <page-head :title="title"></page-head> -->
+      <text>显示简易操作日志(可滚动查看),详细日志需真机运行查看</text><button size="mini" @click="log=''">清空日志</button>
+      <text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				log: '',
-				title: 'sse',
-				url: 'https://request.dcloud.net.cn/api/sse/connect',
-				eventSource: null as UniEventSource | null,
-				open:false,
-				receiveMessage:false
-			}
-		},
-		unmounted() {
-			if(this.eventSource!=null){
-				this.eventSource?.close()
-			}
-		},
-		methods: {
-			connect() {
-                console.log('connect')
-				this.eventSource?.close()
-				let headers:UTSJSONObject = new UTSJSONObject()
-				headers.set("header1","value1")
-				headers.set("header2","value3")
-				this.eventSource = uni.connectEventSource({
-					url: this.url,
-					header:headers
-				} )
-				this.eventSource?.onMessage((ev) => {
-					this.log +='type:' + ev.type + '\ndata:' + ev.data + '\n\n'
-					this.receiveMessage = true
-				})
-				this.eventSource?.onOpen((ev) => {
-					this.log += 'open:' + ev.type+ '\n\n'
-					this.open = true
-				})
-				this.eventSource?.onError((ev) => {
-					this.log += 'error:' + ev.errMsg+ '\n\n'
-				})
-				console.log('connect end')
-			},
-			close() {
-				this.eventSource?.close()
-			}
-		}
-	}
+  export default {
+    data() {
+      return {
+        log: '',
+        title: 'sse',
+        url: 'https://request.dcloud.net.cn/api/sse/connect',
+        eventSource: null as UniEventSource | null,
+        open: false,
+        receiveMessage: false
+      }
+    },
+    unmounted() {
+      if (this.eventSource != null) {
+        this.eventSource?.close()
+      }
+    },
+    methods: {
+      connect() {
+        console.log('connect start')
+        uni.showLoading({
+          title: "",
+          mask: true
+        })
+        this.eventSource?.close()
+        let headers : UTSJSONObject = new UTSJSONObject()
+        headers.set("header1", "value1")
+        headers.set("header2", "value3")
+        this.eventSource = uni.connectEventSource({
+          url: this.url,
+          header: headers
+        })
+        this.eventSource?.onMessage((ev) => {
+          this.log += 'onMessage callback:' + '\n' + 'type: ' + ev.type + '\n' + 'data: ' + ev.data + '\n\n'
+          this.receiveMessage = true
+          console.log('connect end')
+          uni.hideLoading()
+        })
+        this.eventSource?.onOpen((ev) => {
+          this.log += 'onOpen callback: ' + ev.type + '\n\n'
+          this.open = true
+        })
+        this.eventSource?.onError((ev) => {
+          this.log += 'onError callback: ' + ev.errMsg + '\n\n'
+          uni.hideLoading()
+        })
+      },
+      close() {
+        this.eventSource?.close()
+        this.log += 'connect close' + '\n\n'
+      }
+    }
+  }
 </script>
 
 <style>
-	.button {
-		margin-left: 30px;
-		margin-right: 30px;
-		margin-bottom: 15px;
-	}
+  .button {
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 15px;
+  }
 </style>
