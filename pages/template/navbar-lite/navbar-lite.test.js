@@ -5,7 +5,7 @@ describe("setCustomNavigationBarColor", () => {
   let page;
   let originLifeCycleNum;
   const isAndroid = process.env.UNI_OS_NAME === "android";
-  const adbScreenShotArea = {
+  const screenShotArea = {
     x: 342,
     y:18,
     width: 40,
@@ -38,7 +38,7 @@ describe("setCustomNavigationBarColor", () => {
     if (isAndroid) {
       const image = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(image).toSaveImageSnapshot();
     }
@@ -52,7 +52,7 @@ describe("setCustomNavigationBarColor", () => {
     if (isAndroid) {
       const image = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(image).toSaveImageSnapshot();
     }
