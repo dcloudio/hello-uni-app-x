@@ -24,8 +24,8 @@ describe('API-saveImageToPhotosAlbum', () => {
     if (isAndroid) {
       const infos = platformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (version < 24) {
-        console.log("安卓版本小于24设备 不进行saveImage测试，模拟器会出现闪退影响后续测试")
+      if (version < 7) {
+        console.log("安卓版本小于7设备 不进行saveImage测试，模拟器会出现闪退影响后续测试")
         expect(1).toBe(1)
         return
       }
