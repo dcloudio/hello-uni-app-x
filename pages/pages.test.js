@@ -253,7 +253,6 @@ const pages = [
   '/pages/template/swiper-list2/swiper-list2',
   '/pages/template/swiper-vertical-video/swiper-vertical-video',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
-  '/pages/template/custom-refresher/custom-refresher',
   '/pages/template/half-screen/half-screen',
   // 动态内容
   // '/pages/template/long-list/long-list',
@@ -300,6 +299,7 @@ if(!isMP) {
 if (!isAppWebview) {
   if (isApp) {
     pages.push(
+      '/pages/template/custom-refresher/custom-refresher',
       '/pages/template/long-list-nested/long-list-nested',
       '/pages/API/get-file-system-manager/get-file-system-manager',
       '/pages/API/get-system-setting/get-system-setting',
