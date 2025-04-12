@@ -259,7 +259,6 @@ const pages = [
   // '/pages/template/long-list/long-list',
   // 动态内容
   // '/pages/template/long-list2/long-list2',
-  '/pages/template/long-list-nested/long-list-nested',
   // harmony 整体测试时截图异常，单独测试例截图
   // '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/navbar-lite/navbar-lite',
@@ -301,6 +300,7 @@ if(!isMP) {
 if (!isAppWebview) {
   if (isApp) {
     pages.push(
+      '/pages/template/long-list-nested/long-list-nested',
       '/pages/API/get-file-system-manager/get-file-system-manager',
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
@@ -322,7 +322,6 @@ if (!isAppWebview) {
       '/pages/template/test-uts-button/test-uts-button'
     )
   }
-
 }
 
 if (isAndroid && !isAppWebview) {
