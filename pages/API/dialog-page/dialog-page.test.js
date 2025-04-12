@@ -6,6 +6,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -469,7 +470,7 @@ describe('dialog page', () => {
   })
 
 
-  if (isAndroid || isIos || isHarmony) {
+  if (isApp) {
     it('after closeDialogPage reset statusBar color', async () => {
       const screenShotArea = {
         x: 342,
@@ -482,11 +483,11 @@ describe('dialog page', () => {
         screenShotArea.y = 20
         screenShotArea.width = 40
         screenShotArea.height = 20
-      } else if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
+      } else if (platformInfo.startsWith('android 6')) {
         screenShotArea.x = 204
         screenShotArea.width = 34
         screenShotArea.height = 16
-      } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
+      } else if (platformInfo.startsWith('android 12')) {
         screenShotArea.x = 336
         screenShotArea.y = 3
         screenShotArea.width = 50
