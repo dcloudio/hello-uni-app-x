@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,6 +27,7 @@
       }
     </style>
   </head>
+
   <body>
     <p class="desc">web-view 组件加载本地 html 示例，仅在 App 环境下生效。点击下列按钮，跳转至其它页面。</p>
     <div class="btn-list">
@@ -41,6 +43,16 @@
     <div class="btn-list">
       <button class="btn btn-red" type="button" id="postMessage">postMessage</button>
     </div>
+    <p class="desc"></p>本地视频</p>
+    <video id="videoLocal" src="../../static/test-video/10second-demo.mp4" controls style="width: 100%;"></video>
+    <p class="desc"></p>网络视频</p>
+    <video id="videoWeb" src="https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" controls style="width: 100%;"></video>
+    <video id="videoCamera" style="width: 100%;"></video>
+    <div class="btn-list">
+      <button class="btn" type="button" data-action="openCamera">打开摄像头</button>
+      <button class="btn" type="button" data-action="closeCamera">关闭摄像头</button>
+      <button class="btn" type="button" data-action="getLocation">获取定位</button>
+    </div>
     <p class="desc">文件选择</p>
     <div style="padding: 0 10px;">
       <p style="font-size: 14px;">&lt;input type="file" /&gt;</p>
@@ -48,12 +60,13 @@
       <p style="font-size: 14px;">&lt;input type="file" accept="image/*" multiple /&gt;</p>
       <input type="file" accept="image/*" multiple />
       <p style="font-size: 14px;">普通input</p>
-      <input placeholder="底部输入框"/>
-      <br/>
+      <input placeholder="底部输入框" />
+      <br />
       <p style="font-size: 14px;">普通textarea</p>
       <textarea placeholder="底部textarea"></textarea>
-      <br/>
-      <a href="https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk" download>hello uni-app x apk下载（自动化测试使用）</a>
+      <br />
+      <a href="https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk" download>hello uni-app x
+        apk下载（自动化测试使用）</a>
     </div>
     <!-- uni 的 SDK -->
     <script type="text/javascript" src="uni.webview.1.5.5.js"></script>
@@ -67,50 +80,107 @@
       }
       const isWeb = location.href && /^https?:/.test(location.href)
       // document.addEventListener('UniAppJSBridgeReady', function() {
-      document.querySelector('.btn-list').addEventListener('click', function(evt) {
-        if(isWeb) {
-          alert('web端暂不支持此功能')
-          return
-        }
-        var target = evt.target;
-        if (target.tagName === 'BUTTON') {
-          var action = target.getAttribute('data-action');
-          console.log(action);
-          switch (action) {
-            case 'switchTab':
-              uni.webView.switchTab({
-                url: '/pages/tabBar/API'
-              });
-              break;
-            case 'reLaunch':
-              uni.webView.reLaunch({
-                url: '/pages/tabBar/component'
-              });
-              break;
-            case 'navigateBack':
-              uni.webView.navigateBack({
-                delta: 1
-              });
-              break;
-            case 'getEnv':
-              uni.webView.getEnv((res) => {
-                postMessage(res)
-              });
-              break;
-            /* case 'getTheme':
-              alert(getThemePreference())
-              break; */
-            default:
-              uni.webView[action]({
-                url: '/pages/component/button/button'
-              });
-              break;
+      document.querySelectorAll('.btn-list').forEach(btnList => {
+        btnList.addEventListener('click', function(evt) {
+          console.log('按钮点击事件触发');
+          if (isWeb) {
+            alert('web端暂不支持此功能')
+            return
           }
-        }
+          console.log('evt: ',evt);
+          var target = evt.target;
+          console.log('target: ', target);
+          if (target.tagName === 'BUTTON') {
+            var action = target.getAttribute('data-action');
+            console.log(action);
+            switch (action) {
+              case 'switchTab':
+                uni.webView.switchTab({
+                  url: '/pages/tabBar/API'
+                });
+                break;
+              case 'reLaunch':
+                uni.webView.reLaunch({
+                  url: '/pages/tabBar/component'
+                });
+                break;
+              case 'navigateBack':
+                uni.webView.navigateBack({
+                  delta: 1
+                });
+                break;
+              case 'getEnv':
+                uni.webView.getEnv((res) => {
+                  postMessage(res)
+                });
+                break;
+                /* case 'getTheme':
+                  alert(getThemePreference())
+                  break; */
+              case 'getLocation':
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                      const locationData = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                      };
+                      console.log('position: ',JSON.stringify(locationData));
+                      alert(JSON.stringify(locationData));
+                    },
+                    function(error) {
+                      console.error('获取位置失败:', error.message);
+                      alert('获取位置失败: ' + error.message);
+                    },
+                    {
+                      enableHighAccuracy: true,
+                      timeout: 5000,
+                      maximumAge: 0
+                    }
+                  );
+                } else {
+                  alert('您的浏览器不支持地理定位功能');
+                }
+                break;
+              case 'openCamera':
+                var constraints = {audio: true,video: {facingMode: "user"}};
+                navigator.mediaDevices
+                  .getUserMedia(constraints)
+                  .then(function(mediaStream) {
+                    var video = document.getElementById("videoCamera");
+                    video.srcObject = mediaStream;
+                    video.onloadedmetadata = function(e) {
+                      video.play();
+                    };
+                  })
+                  .catch(function(err) {
+                    console.log(err.name + ": " + err.message);
+                  }); // 总是在最后检查错误
+
+                break;
+              case 'closeCamera':
+                var video = document.getElementById("videoCamera");
+                if (video.srcObject) {
+                  video.srcObject.getTracks().forEach(function(track) {
+                    track.stop();
+                  });
+                  video.srcObject = null; // 清除视频源
+                  video.load(); // 重新加载视频元素
+                }
+                break;
+              default:
+                uni.webView[action]({
+                  url: '/pages/component/button/button'
+                });
+                break;
+            }
+          }
+        })
       })
       // });
       document.querySelector("#postMessage").addEventListener('click', function() {
-        if(isWeb) {
+        if (isWeb) {
           alert('web端暂不支持此功能')
           return
         }
@@ -127,4 +197,5 @@
       } */
     </script>
   </body>
+
 </html>
