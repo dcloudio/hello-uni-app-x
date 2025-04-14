@@ -6,7 +6,8 @@
     <view class="uni-padding-wrap uni-common-mt container">
       <view class="target" id="touch-target" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
         @touchmove="onTouchMove" @touchend="onTouchEnd"></view>
-      <view class="target" id="longpress-target" @tap="onTap" @click="onClick" @longpress="onLongPress"></view>      <view v-if="touchStartEvent !== null">
+      <view class="target" id="longpress-target" @tap="onTap" @click="onClick" @longpress="onLongPress"></view>
+      <view v-if="touchStartEvent !== null">
         <text class="title1">touchStart Event: </text>
         <text class="title2">touches: </text>
         <template v-for="(touch, index) in touchStartEvent!.touches" :key="index">
@@ -440,8 +441,6 @@
         touchEndEvent: null as TouchEvent | null,
         tapEvent: null as PointerEvent | null,
         clickEvent: null as PointerEvent | null,
-        jest_click_x: -1,
-        jest_click_y: -1,
       }
     },
     methods: {
@@ -472,22 +471,6 @@
       onClick(e : PointerEvent) {
         this.clickEvent = e
         console.log('onClick', e)
-      },
-      jest_getRect() : number[] {
-
-        const rect = uni.getElementById('longpress-target')?.getBoundingClientRect()
-        if (rect != null) {
-          let ratio = 1
-          if (uni.getSystemInfoSync().platform == 'android') {
-            ratio = uni.getSystemInfoSync().devicePixelRatio
-          }
-          this.jest_click_x = rect.x * ratio + 20
-          this.jest_click_y = rect.bottom * ratio + 20
-        }
-        return [
-          this.jest_click_x,
-          this.jest_click_y
-        ]
       }
     },
   }
@@ -519,4 +502,4 @@
     margin-top: 5px;
     font-size: 16px;
   }
-</style>
+</style>

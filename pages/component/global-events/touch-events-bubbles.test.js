@@ -5,7 +5,6 @@ describe('touch-events-test', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
 
   if (isAndroid || isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {

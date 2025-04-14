@@ -4,8 +4,7 @@ describe('rich-text-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isIOS = platformInfo.startsWith('ios')
-  const isHarmony = platformInfo.startsWith('harmony')
+  const isAndroid = platformInfo.startsWith('android')
 
   if (isWeb || isMP) {
     it('other platform', () => {
@@ -42,7 +41,7 @@ describe('rich-text-test', () => {
     expect(beforeValue).toBe(afterValue)
   })
 
-  if (!isIOS && !isHarmony) {
+  if (isAndroid) {
     it('test selectable itemclick', async () => {
       await page.setData({
         autoTest: true,

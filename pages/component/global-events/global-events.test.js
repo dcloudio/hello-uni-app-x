@@ -15,6 +15,11 @@ describe('event trigger', () => {
   }
 
   let page
+  const tapParams = {
+    x: 100,
+    y: 380,
+    duration: 1000
+  }
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
@@ -277,11 +282,7 @@ describe('event trigger', () => {
               y: 500,
             })
           }
-          await program.tap({
-            x: 200,
-            y: 400,
-            duration: 1000
-          })
+          await program.tap(tapParams)
           const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
           expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
           expect(longPressTouchIdentifierText).toBeTruthy()
@@ -329,24 +330,13 @@ describe('event trigger', () => {
     }
   })
 
-  it('mock tap event', async () => {
-    if (isIos || isHarmony) {
-
-      page = await program.reLaunch(PAGE_PATH)
-      await page.waitFor('view')
-
-      const [
-        x,
-        y
-      ] = await page.callMethod('jest_getRect')
-
-      expect(x > 0).toBe(true)
-      expect(y > 0).toBe(true)
-
-      await program.tap({
-        x: x,
-        y: y
+  if (isIos || isHarmony) {
+    it('mock tap event', async () => {
+      await page.setData({
+        clickEvent: null
       })
+      tapParams.duration = 0
+      await program.tap(tapParams)
       await page.waitFor(200)
 
       const clickEventX = await page.$('#click-event-x')
@@ -356,8 +346,6 @@ describe('event trigger', () => {
       const clickEventY = await page.$('#click-event-y')
       const StringY = await clickEventY.text()
       expect(Number(StringY)).toBeGreaterThan(0)
-    } else {
-      expect(1).toBe(1)
-    }
-  })
+    })
+  }
 })
