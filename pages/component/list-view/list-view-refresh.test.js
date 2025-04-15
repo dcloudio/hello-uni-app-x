@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-list-view-refresh', () => {
   if (isWeb || isMP) {
-    it('dummyTest', async () => {
+    it('not support', async () => {
       expect(1).toBe(1)
     })
     return
