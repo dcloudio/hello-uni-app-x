@@ -5,6 +5,7 @@ describe('component-native-web-view', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
 
   if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('web', async () => {
@@ -75,7 +76,7 @@ describe('component-native-web-view', () => {
       y: windowInfo.safeAreaInsets.top + 44 + 10
     });
     await page.waitFor(500);
-    if (!isIOS) {
+    if (!isIOS && !isHarmony) {
       expect(await page.data('isTouchEnable')).toBe(false);
     }
     await page.setData({
