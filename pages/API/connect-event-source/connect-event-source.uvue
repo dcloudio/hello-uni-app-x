@@ -8,8 +8,7 @@
 	<scroll-view style="flex:1">
 	<!-- #endif -->
 		<view>
-
-			<text style="display: block; width: 100%; text-align: center; margin-bottom: 5px;">
+			<text style="width: 100%; text-align: center; margin-bottom: 5px;">
 			  显示简易操作日志(可滚动查看)
 			</text>
 			<button size="mini" @click="logList = []">清空日志</button>
@@ -30,7 +29,7 @@
 	export default {
 		data() {
 			return {
-				logList: [],
+				logList: [] as string[],
 				title: 'sse',
 				url: 'https://request.dcloud.net.cn/api/sse/connect',
 				eventSource: null as UniEventSource | null,
@@ -69,8 +68,8 @@
 					this.logList.push(log)
 					this.open = true
 				})
-				this.eventSource?.onError((ev) => {
-					const log = 'onError callback: ' + ev.type + '\n\n'
+				this.eventSource?.onError((err) => {
+          const log = `onError callback: ${err} \n\n`
 					this.logList.push(log)
 					uni.hideLoading()
 				})
