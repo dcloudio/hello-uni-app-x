@@ -133,5 +133,14 @@ describe('component-native-waterflow', () => {
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});
     expect(image).toSaveImageSnapshot();
+    await page.waitFor(1000)
+  })
+
+  //检测waterflow 单列 截图校验
+  it('check_waterflow_single_row', async () => {
+    await page.callMethod('testModifyWaterflowSingleRow')
+    await page.waitFor(600)
+    const image = await program.screenshot({fullPage: false});
+    expect(image).toSaveImageSnapshot();
   })
 })
