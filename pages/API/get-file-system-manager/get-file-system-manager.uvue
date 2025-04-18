@@ -23,16 +23,10 @@
     <button class="btnstyle" type="primary" @tap="getFileInfoTest"
       id="btn-get-file-info">获取文件信息{{getFileInfoFile}}</button>
     <button class="btnstyle" type="primary" @tap="unlinkTest" id="btn-unlink-file">删除文件{{unlinkFile}}</button>
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="copyStaticToFilesTest"
-      id="btn-copyStatic-file">从static目录复制文件到a目录</button>
-    <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="unlinkAllFileTest"
       id="btn-clear-file">删除文件夹{{rmDirFile}}下的所有文件</button>
     <button class="btnstyle" type="primary" @tap="rmdirTest" id="btn-remove-dir">删除文件夹{{rmDirFile}}</button>
 
-
-    <!-- #ifdef APP || MP -->
     <button class="btnstyle" type="primary" @tap="statFileInfoSyncTest"
       id="btn-stat-file-sync">同步递归获取目录files的Stats对象{{statFile}}</button>
     <button class="btnstyle" type="primary" @tap="appendFileTest" id="btn-append-file">在文件{{readFile}}结尾追加内容</button>
@@ -52,27 +46,11 @@
       id="btn-rename-file-sync">同步重命名文件{{renameFromFile}}到{{renameToFile}}</button>
     <button class="btnstyle" type="primary" @tap="copyFileSyncTest"
       id="btn-copy-file-sync">同步复制文件{{copyFromFile}}到{{copyToFile}}</button>
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地</button>
-    <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
-    <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="removeSavedFileTest" id="btn-remove-saved-file">删除已保存的本地文件</button>
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
-    <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="getSavedFileListTest"
       id="btn-getsaved-filelist">获取该已保存的本地缓存文件列表</button>
     <button class="btnstyle" type="primary" @tap="truncateFileTest"
       id="btn-truncate-file">对文件{{writeFile}}内容进行截断操作</button>
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="truncateFileSyncTest"
-      id="btn-truncate-file-sync">同步对文件{{writeFile}}内容进行截断操作</button>
-
-    <button class="btnstyle" type="primary" @tap="readCompressedFileTest"
-      id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
-    <button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest"
-      id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
-    <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="openFileTest" id="btn-open-file">打开文件{{readFile}}，返回描述符</button>
     <button class="btnstyle" type="primary" @tap="openFileSyncTest('r',true)"
       id="btn-open-file-sync">同步打开文件{{readFile}}，返回描述符</button>
@@ -88,15 +66,8 @@
       id="btn-ftruncate-file">通过文件描述符对文件{{writeFile}}内容进行截断</button>
     <button class="btnstyle" type="primary" @tap="ftruncateFileSyncTest"
       id="btn-ftruncate-file-sync">同步通过文件描述符对文件{{writeFile}}内容进行截断</button>
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="readZipEntry" id="btn-readzip-entry">读取压缩包内的文件</button>
-    <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="testWriteReadFileBuffer" id="btn-writereadfile-buffer">写入/读取
       ArrayBuffer</button>
-    <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="testWriteReadFileSyncBuffer" id="btn-writereadfilesync-buffer">同步写入/读取
-      ArrayBuffer</button>
-      <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="testWriteReadBuffer" id="btn-writeread-buffer">通过文件描述符写入/读取
       ArrayBuffer</button>
     <button class="btnstyle" type="primary" @tap="testWriteReadSyncBuffer" id="btn-writereadsync-buffer">通过文件描述符同步写入/读取
@@ -105,28 +76,39 @@
       ArrayBuffer</button>
     <button class="btnstyle" type="primary" @tap="testAppendFileBufferSync" id="btn-appendfilesync-buffer">同步在文件末尾追加
       ArrayBuffer</button>
+
     <!-- #ifdef APP -->
-    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('base64')">readFile(content:// base64)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('utf-8')">readFile(content:// utf-8)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('ascii')">readFile(content:// ascii)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileArrayBuffer()">readFile(content:// arraybuffer)</button>
-
-    <button class="btnstyle" type="primary" @tap="testReadFileSyncEncoding('base64')">readFileSync(content://
-      base64)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileSyncEncoding('utf-8')">readFileSync(content://
-      utf-8)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileSyncEncoding('ascii')">readFileSync(content://
-      ascii)</button>
-    <button class="btnstyle" type="primary" @tap="testReadFileSyncArrayBuffer()">readFileSync(content://
-      arraybuffer)</button>
-
+    <button class="btnstyle" type="primary" @tap="copyStaticToFilesTest"
+      id="btn-copyStatic-file">从static目录复制文件到a目录</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地</button>
+    <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
+    <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
+    <button class="btnstyle" type="primary" @tap="truncateFileSyncTest"
+      id="btn-truncate-file-sync">同步对文件{{writeFile}}内容进行截断操作</button>
+    <button class="btnstyle" type="primary" @tap="readCompressedFileTest"
+      id="btn-compressed-file">读取指定压缩类型的本地文件内容</button>
+    <button class="btnstyle" type="primary" @tap="readCompressedFileSyncTest"
+      id="btn-compressed-file-sync">同步读取指定压缩类型的本地文件内容</button>
+    <button class="btnstyle" type="primary" @tap="readZipEntry" id="btn-readzip-entry">读取压缩包内的文件</button>
+    <button class="btnstyle" type="primary" @tap="testWriteReadFileSyncBuffer" id="btn-writereadfilesync-buffer">同步写入/读取
+      ArrayBuffer</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('base64')">readFile(content://base64)</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('utf-8')">readFile(content://utf-8)</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileEncoding('ascii')">readFile(content://ascii)</button>
+    <button class="btnstyle" type="primary" @tap="testReadFileArrayBuffer()">readFile(content://arraybuffer)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncEncoding('base64')">readFileSync(content://base64)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncEncoding('utf-8')">readFileSync(content://utf-8)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncEncoding('ascii')">readFileSync(content://ascii)</button>
+    <button class="btnstyle" type="primary"
+      @tap="testReadFileSyncArrayBuffer()">readFileSync(content://arraybuffer)</button>
     <button class="btnstyle" type="primary" @tap="copyFileByContent()">copyFile(content://)</button>
     <button class="btnstyle" type="primary" @tap="copyFileSyncByContent()">copyFileSync(content://)</button>
     <!-- #endif -->
 
-
     <view style="height: 4px;"></view>
-    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
