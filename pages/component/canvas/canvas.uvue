@@ -114,8 +114,10 @@
             this.testToBlobResult = (blob.size > 0 && blob.type == 'image/jpeg')
           }, 'image/jpeg', 0.95);
           // #endif
-          // #ifdef WEB || MP
-          this.testToDataURLResult = this.canvasContext!.toDataURL().startsWith('data:image/png;base64')
+          // #ifdef APP || WEB || MP
+          setTimeout(() => {
+            this.testToDataURLResult = this.canvasContext!.toDataURL().startsWith('data:image/png;base64')
+          }, 50)
           // #endif
           this.testCanvasContext = true
         }
@@ -124,11 +126,6 @@
       uni.$on('canvasChildReady', this.onChildReady)
     },
     onReady() {
-      // TODO app-android 需要延迟调用
-      // #ifdef APP
-      this.testToDataURLResult = this.canvasContext!.toDataURL().startsWith('data:image/png;base64')
-      // #endif
-
       // 同步调用方式，仅支持 app/web
       // let canvas = uni.getElementById("canvas") as UniCanvasElement
       // this.renderingContext = canvas.getContext("2d")

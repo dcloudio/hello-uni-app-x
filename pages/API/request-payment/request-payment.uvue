@@ -19,10 +19,13 @@
         errorMsg: "",
         complete: false,
         fail: false,
-        providerList: [] as PayItem[]
+        providerList: [] as PayItem[],
+        outTradeNo: "",
+        openid: ""
       }
     },
     onLoad: function () {
+      // #ifdef APP
       let provider = uni.getProviderSync({
         service: "payment",
       } as GetProviderSyncOptions)
@@ -51,10 +54,21 @@
             break;
         }
       })
+      // #endif
+
+
+      // #ifdef MP-WEIXIN
+      this.getOpenId()
+      this.providerList.push({
+        name: '微信支付',
+        id: 'wxpay'
+      } as PayItem);
+      // #endif
     },
     methods: {
       requestPayment(e : PayItem) {
         const provider = e.id
+        // #ifdef APP
         if (provider == "alipay") {
           this.payAli(provider)
         } else if (provider == "wxpay") {
@@ -79,8 +93,13 @@
           }
           // #endif
         }
+        // #endif
+
+        // #ifdef MP-WEIXIN
+        this.payMpWexin()
+        // #endif
       },
-      payAli(id:string) {
+      payAli(id : string) {
         uni.showLoading({
           title: "请求中..."
         })
@@ -89,6 +108,7 @@
           method: 'GET',
           timeout: 6000,
           success: (res) => {
+
             this.orderInfo = JSON.stringify(res.data);
             console.log("====" + this.orderInfo)
             uni.hideLoading()
@@ -118,7 +138,7 @@
           },
         });
       },
-      payWX(id:string) {
+      payWX(id : string) {
         uni.showLoading({
           title: "请求中..."
         })
@@ -176,6 +196,95 @@
         });
       },
 
+      // #ifdef MP-WEIXIN
+      getOpenId() {
+        uni.showLoading({
+          title: "请稍等...",
+          mask: true
+        });
+        let bundleId = uni.getAccountInfoSync().miniProgram.appId;
+        uni.login({
+          provider: 'weixin',
+          success: (res) => {
+            uni.request({
+              url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOpenId",
+              method: "GET",
+              data: {
+                code: res.code,
+                bundleId
+              },
+              success: (res) => {
+                uni.hideLoading();
+                this.openid = res.data.openid;
+                console.log('openid: ', this.openid);
+              },
+              fail: (err) => {
+                uni.hideLoading();
+                console.error("request-err", err);
+              }
+            });
+          }
+        })
+      },
+      payMpWexin() {
+        let bundleId = uni.getAccountInfoSync().miniProgram.appId;
+        let random = Math.floor(Math.random() * 9000) + 1000;
+        this.outTradeNo = `test${Date.now()}${random}`;
+        console.log('outTradeNo: ', this.outTradeNo)
+        uni.showLoading({
+          title: "请求中..."
+        });
+        uni.request({
+          url: "https://env-00jxt67zj8kj.dev-hz.cloudbasefunction.cn/uni-pay-api/getOrderInfo",
+          method: "GET",
+          data: {
+            outTradeNo: this.outTradeNo,
+            bundleId,
+            openid: this.openid,
+            totalFee: 1
+          },
+          success: (res) => {
+            uni.hideLoading();
+            let data = res.data as UTSJSONObject;
+            let errCode = data['errCode'] as number;
+            if (errCode != 0) {
+              uni.showModal({
+                title: "提示",
+                content: data['errMsg'] as string,
+                showCancel: false
+              });
+              return;
+            }
+            let orderInfo = data["orderInfo"] as string;
+            console.log('orderInfo: ', orderInfo)
+            uni.requestPayment({
+              provider: "wxpay",
+              orderInfo: orderInfo,
+              ...JSON.parse(orderInfo),
+              success: (res) => {
+                console.log('res: ', res)
+                uni.showToast({
+                  title: "支付成功",
+                  icon: 'success'
+                });
+              },
+              fail: (err) => {
+                console.error("err", err);
+                uni.hideLoading();
+                uni.showToast({
+                  title: "支付失败",
+                  icon: 'error'
+                });
+              }
+            });
+          },
+          fail: (err) => {
+            uni.hideLoading();
+            console.error("request-err", err);
+          }
+        });
+      },
+      // #endif
       //自动化测试使用
       jest_pay() {
         uni.requestPayment({

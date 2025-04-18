@@ -41,11 +41,11 @@ describe('component-native-list-view-refresh', () => {
 
   it('check_refresherabort', async () => {
     //部分安卓设备需要延迟一段时间swipe才生效 此处暂时延迟1秒
-    await page.waitFor(1000);
+    await page.waitFor(1500);
     // 仅App端支持手势下拉刷新
     await program.swipe({
       startPoint: {x: 100,y: 400},
-      endPoint: {x: 100,y: isHarmony ? 420 : 500},
+      endPoint: {x: 100,y: 420},
       duration: 100
     })
     await page.waitFor(1500)

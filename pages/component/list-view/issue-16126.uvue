@@ -1,7 +1,7 @@
 <template>
 	<view style="flex: 1;">
-		<list-view :style="listViewStyle"  @scrolltolower="loadMore">
-			<list-item class="listItem" v-for="index in dataList" @click="changeSize" type=1>
+		<list-view ref="listview" :style="listViewStyle"  @scrolltolower="loadMore" :scroll-into-view="intoview" :scroll-top="scrolltop">
+			<list-item class="listItem" v-for="index in dataList" :key="index" :id="'item' + index" @click="changeSize" type=1>
 				<text>{{ index }}</text>
 			</list-item>
 			<list-item class="listItem">
@@ -16,9 +16,16 @@
 		data() {
 			return {
 				listViewStyle: "flex:1; width: 100%; heigth: 100%",
-				dataList : 10
+				dataList : 10,
+        intoview: "",
+        scrolltop: 0,
+        listViewElement: null as UniElement | null
 			}
 		},
+    onReady() {
+      // 组件ready时，获取组件实例
+      this.listViewElement = this.$refs["listview"] as UniElement
+    },
 		methods: {
 			changeSize() {
 				if (this.listViewStyle == "flex:1; width: 100%; heigth: 100%") {
@@ -31,7 +38,15 @@
 				setTimeout(() => {
 					this.dataList += 10
 				}, 1000)
-			}
+			},
+      setScrollTop(value: number) {
+        this.scrolltop = value
+      },
+      getScrollTop() : number {
+        var ret = this.listViewElement?.scrollTop ?? -1
+        console.log(ret)
+        return ret
+      },
 		}
 	}
 </script>
