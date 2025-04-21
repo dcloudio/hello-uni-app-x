@@ -120,8 +120,6 @@
 </template>
 
 <script>
-	// 引入支付云对象
-	const uniPayCo = uniCloud.importObject("uni-pay-co");
 	import { checkPlatform, objectAssign, getWeixinCode, getAlipayCode } from "../../js_sdk/js_sdk"
 	export default {
 		name: "uni-pay",
@@ -342,6 +340,8 @@
 				}
 				// #endif
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.createOrder(createOrderData);
 					if (res['errCode'] == 0) {
 						this.$emit("create", res);
@@ -447,6 +447,8 @@
 			// 查询订单（查询支付情况）
 			async getOrder(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.getOrder(data);
 					return res;
 				} catch (err) {
@@ -459,6 +461,8 @@
 			// 发起退款（此接口需要admin角色才可以访问）
 			async refund(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.refund(data);
 					return res;
 				} catch (err) {
@@ -471,6 +475,8 @@
 			// 查询退款（查询退款情况）
 			async getRefund(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.getRefund(data);
 					return res;
 				} catch (err) {
@@ -483,6 +489,8 @@
 			// 关闭订单
 			async closeOrder(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.closeOrder(data);
 					return res;
 				} catch (err) {
@@ -495,6 +503,8 @@
 			// 获取支持的支付供应商
 			async getPayProviderFromCloud(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.getPayProviderFromCloud(data);
 					return res;
 				} catch (err) {
@@ -507,6 +517,8 @@
 			// 获取支付配置内的appid（主要用于获取获取微信公众号的appid，用以获取code）
 			async getProviderAppId(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.getProviderAppId(data);
 					return res;
 				} catch (err) {
@@ -519,6 +531,8 @@
 			// 根据code获取openid
 			async getOpenid(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.getOpenid(data);
 					return res;
 				} catch (err) {
@@ -531,6 +545,8 @@
 			// 验证iosIap苹果内购支付凭据
 			async verifyReceiptFromAppleiap(data : UTSJSONObject) : Promise<UTSJSONObject> {
 				try {
+					// 引入支付云对象
+					const uniPayCo = uniCloud.importObject("uni-pay-co");
 					let res = await uniPayCo.verifyReceiptFromAppleiap(data);
 					return res;
 				} catch (err) {
@@ -657,6 +673,8 @@
 					apple_virtual: options.apple_virtual,
 					custom: options.custom,
 				} as UTSJSONObject;
+				// 引入支付云对象
+				const uniPayCo = uniCloud.importObject("uni-pay-co");
 				let	res = await uniPayCo.createOrder(createOrderData);
 				if (res.errCode == 0) {
 					this.$emit("create", res);
