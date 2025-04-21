@@ -123,6 +123,19 @@ describe('component-native-web-view', () => {
     });
   });
 
+  it('test event contentheightchange', async () => {
+    expect(await page.callMethod('getContentHeight')).toBeGreaterThan(0);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventContentHeightChange')) || (Date.now() - start > 500);
+    });
+    expect(await page.data('eventContentHeightChange')).toEqual({
+      tagName: 'WEB-VIEW',
+      type: 'contentheightchange',
+      isValidHeight: true
+    });
+  });
+
   it('test event error', async () => {
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
