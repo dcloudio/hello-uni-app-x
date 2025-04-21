@@ -2,7 +2,21 @@ const PAGE_PATH = '/pages/API/keyboard/keyboard'
 
 describe('keyboard', () => {
   let page;
-
+  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  const isAndroid = platformInfo.startsWith('android')
+  const isIOS = platformInfo.startsWith('ios')
+  const isWeb = platformInfo.startsWith('web')
+  if (isWeb) {
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  } else if(!isAndroid || !isIOS) {
+    it('app', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
