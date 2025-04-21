@@ -2,7 +2,7 @@
   <view class="uni-flex-item">
     <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
       :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess" :bounces="bounces" @message="message" @error="error" @loading="loading"
-      @load="load" @download="download" @touchstart="touchstart" @tap="tap">
+      @load="load" @download="download" @contentheightchange="contentheightchange" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
@@ -20,8 +20,11 @@
       </view>
       <!-- #ifndef APP-HARMONY -->
       <!-- TODO harmony 执行 alert 无反应 -->
-      <view class="uni-btn-v">
-        <button type="primary" @click="nativeToWeb">原生和Web通信</button>
+      <view class="uni-row uni-btn-v">
+        <button class="uni-flex-item" type="primary" @click="nativeToWeb">原生和Web通信</button>
+        <!-- #ifdef APP-ANDROID || APP-IOS -->
+        <button class="margin-left-5 uni-flex-item" type="primary" @click="getContentHeight">获取内容高度</button>
+        <!-- #endif -->
       </view>
       <!-- #endif -->
       <view class="uni-btn-v">
@@ -88,6 +91,7 @@
         eventLoading: null as UTSJSONObject | null,
         eventLoad: null as UTSJSONObject | null,
         eventError: null as UTSJSONObject | null,
+        eventContentHeightChange: null as UTSJSONObject | null,
         pointerEvents: 'auto',
         isTouchEnable: false
       }
@@ -134,6 +138,19 @@
       nativeToWeb() {
         webviewElement?.evalJS("alert('hello uni-app x')");
       },
+      // #ifdef APP-ANDROID || APP-IOS
+      getContentHeight() : number {
+        const height = webviewElement?.getContentHeight() ?? 0;
+        console.log('contentHeight', height);
+        if (!this.autoTest) {
+          uni.showModal({
+            content: ' 当前内容高度: ' + height,
+            showCancel: false
+          });
+        }
+        return height;
+      },
+      // #endif
       message(event : UniWebViewMessageEvent) {
         console.log(JSON.stringify(event.detail));
       },
@@ -182,6 +199,16 @@
           content: "下载链接: " + event.detail.url + "\n文件大小: " + event.detail.contentLength / 1024 + "KB",
           showCancel: false
         });
+      },
+      contentheightchange(event : UniWebViewContentHeightChangeEvent) {
+        console.log(JSON.stringify(event.detail));
+        if (this.autoTest) {
+          this.eventContentHeightChange = {
+            "tagName": event.target?.tagName,
+            "type": event.type,
+            "isValidHeight": event.detail.height > 0
+          };
+        }
       },
       confirm(event : UniInputConfirmEvent) {
         let url = event.detail.value;
