@@ -125,7 +125,7 @@ describe('component-native-web-view', () => {
   });
 
   it('test event contentheightchange', async () => {
-    if (!isAndroid && !isIOS) {
+    if (!isAndroid && !isIOS && !isHarmony) {
       expect(1).toBe(1);
       return;
     }
