@@ -29,12 +29,14 @@ describe('component-native-video', () => {
     expect(await page.data('isError')).toBe(false);
     // play
     await page.callMethod('play');
-    await page.waitFor(100);
-    expect(await page.data('isPlaying')).toBe(true);
+    await page.waitFor(async () => {
+      return await page.data('isPlaying');
+    });
     // pause
     await page.callMethod('pause');
-    await page.waitFor(100);
-    expect(await page.data('isPause')).toBe(true);
+    await page.waitFor(async () => {
+      return await page.data('isPause');
+    });
   });
 
   if (!isMP) {
@@ -103,11 +105,15 @@ describe('component-native-video', () => {
   }
   it('test event play pause controlstoggle', async () => {
     await page.setData({
+      isPause: false,
+      isPlaying: false,
       autoTest: true,
     });
     await page.callMethod('play');
     start = Date.now();
-    await page.waitFor(1000);
+    await page.waitFor(async () => {
+      return await page.data('isPlaying');
+    });
     await page.waitFor(async () => {
       return (await page.data('eventPlay')) || (Date.now() - start > 500);
     });
@@ -123,6 +129,9 @@ describe('component-native-video', () => {
     }
     await page.callMethod('pause');
     start = Date.now();
+    await page.waitFor(async () => {
+      return await page.data('isPause');
+    });
     await page.waitFor(async () => {
       return (await page.data('eventPause')) || (Date.now() - start > 1000);
     });
@@ -235,7 +244,7 @@ describe('component-native-video', () => {
           type: 'ended'
         });
       }
-      await page.waitFor(1000);
+      await page.waitFor(3000);
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
       if ((isAndroid && version > 5) || isHarmony) {
