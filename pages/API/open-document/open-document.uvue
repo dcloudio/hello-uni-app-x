@@ -72,18 +72,17 @@
   ])
 
   const openDocument = (item : FileItem) => {
-    uni.showLoading({
-      title: '下载中',
-      mask: true
-    })
+
     if (item.url.startsWith('http')) {
+      uni.showLoading({
+        title: '下载中',
+        mask: true
+      })
       uni.downloadFile({
         url: item.url,
         success: (res) => {
-
           uni.openDocument({
             filePath: res.tempFilePath,
-            // fileType: "ppt",
             success: () => {
               uni.hideLoading()
               console.log('打开文档成功')
@@ -110,13 +109,10 @@
     } else {
       uni.openDocument({
         filePath: item.url,
-        // fileType: "ppt",
         success: () => {
-          uni.hideLoading()
           console.log('打开文档成功')
         },
         fail: (err) => {
-          uni.hideLoading()
           console.log('打开文档失败', err)
           uni.showToast({
             title: '错误码：' + err.errCode.toString(),
