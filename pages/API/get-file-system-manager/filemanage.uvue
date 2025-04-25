@@ -1,21 +1,30 @@
 <template>
 	<view style="flex-direction: row;" id="rootview">
-		<!-- <radio-group>
-      <radio value="cache">缓存目录</radio>
-      <radio value="data">数据目录</radio>
-    </radio-group> -->
+		<radio-group @change="switchCacheOrData">
+      <radio value="data" checked>数据目录</radio> <!-- TODO: @hdx 鸿蒙这里无法默认选中-->
+      <radio value="cache"
+      <!-- #ifdef MP-WEIXIN -->
+      disabled
+      <!-- #endif -->
+      >缓存目录</radio>
+    </radio-group>
     <button @click="refreshFile">刷新</button>
-		<button @click="clearFile">清空</button>
+		<!-- #ifdef APP -->
+		<button @click="clearFile">清空缓存</button>
+		<!-- #endif -->
 		<button @click="snapshot">截图</button>
-		<text>文件总数：{{ count }}；\n文件总大小：{{size}} M</text>
 	</view>
+  <text>文件总数：{{ count }}；\n文件总大小：{{size}} M</text>
 	<text style="border: 1px solid #ccc;margin: 5px;">根路径：{{rootPath}}</text>
 	<list-view style="flex: 1;">
 		<list-item v-for="(item, index) in fileList" :key="index" style="padding: 5px;border-bottom: 1px solid #ccc;" :style="getIndentStyle(item.shotPath)"
 		@click="showDialog(item)">
 			<view style="flex-direction: row;">
 				<!-- <text style="font-family: uni-icon;" v-if="!item.isFile">\uE661</text> -->
-				<text style="font-family: uni-icon;" v-if="!item.isFile">{{uniIcon}}</text>
+				<!-- #ifdef APP -->
+        <!-- TODO: 微信小程序不支持uni内置字体，还得再找一个图标-->
+        <text style="font-family: uni-icon;" v-if="!item.isFile">{{uniIcon}}</text> <!-- TODO @颜伊林 必须写响应式变量，多端表现不一致-->
+				<!-- #endif -->
 				<text >{{(item.shotPath as string)}}</text>
 			</view>
 			<text style="font-size: 12px;color: #ccc;" v-if="item.isFile" >{{item.size}}k</text>
@@ -50,18 +59,20 @@
 	let rootPath = ref("")
 	let dialogShow = ref(false)
 	const uniIcon = ref("\uE661")
-	let currentFile = ref({"path":"",
-						"shotPath":"",
-						"size":0,
-						isFile:false,
-						modifyTime:''} as fileListType)
+	let currentFile = ref({"path":"","shotPath":"","size":0,isFile:false,modifyTime:''} as fileListType)
+  let cacheOrData = ref(uni.env.USER_DATA_PATH)
 
+  const switchCacheOrData = (e : UniRadioGroupChangeEvent) => {
+		cacheOrData.value = (e.detail.value=="cache") ? uni.env.CACHE_PATH : uni.env.USER_DATA_PATH
+	}
 
+// 遍历文件刷新列表
 	const refreshFile = () => {
 	  const fileManager = uni.getFileSystemManager()
 	  fileManager.stat({
-	    path: uni.env.CACHE_PATH, //沙盒cache目录
+	    // path: uni.env.CACHE_PATH, //沙盒cache目录
 	    // path: uni.env.USER_DATA_PATH, //沙盒根目录
+      path: cacheOrData.value,
 	    recursive: true,
 	    success: (res : StatSuccessResult) => {
 				// log.value += 'statFileInfoTest success:' + JSON.stringify(res) + '\n\n'
@@ -75,7 +86,12 @@
 				for (let i=0;i<res.stats.length;i++) {
 					console.log("resitem",res.stats[i].path);
           if (i==0) {
-            rootPath.value = res.stats[i].path + "/"
+            // #ifdef APP-ANDROID
+            rootPath.value = res.stats[i].path + "/" //TODO Android表现和其他平台不一致，需要末尾加/
+            // #endif
+            // #ifdef APP-HARMONY || MP-WEIXIN || APP-IOS
+            rootPath.value = res.stats[i].path
+            // #endif
 						continue
           }
 					let tempFileItem = {
@@ -91,7 +107,7 @@
 					tempFileItem.size = res.stats[i].stats.size/1024
 					tempFileItem.isFile = res.stats[i].stats.isFile()
 					const mdate = new Date(res.stats[i].stats.lastModifiedTime)
-					tempFileItem.modifyTime = mdate.getFullYear().toString() + "-" + (mdate.getMonth()+1).toString() + "-" + mdate.getDay().toString() + " "
+					tempFileItem.modifyTime = mdate.getFullYear().toString() + "-" + (mdate.getMonth()+1).toString() + "-" + mdate.getDate().toString() + " "
 					+ mdate.getHours().toString() + ":" + mdate.getMinutes().toString() + ":" + mdate.getSeconds().toString() //TODO Android的 day不对
 					tempSize = tempSize + res.stats[i].stats.size
 					tempFileList.push(tempFileItem)
@@ -104,7 +120,7 @@
 	      console.error('statFileInfo fail', res)
 	    },
 	    complete: (res : any) => {
-	      // console.log("statFileInfo complete", res)
+	      console.log("statFileInfo complete", res)
 	    }
 	  } as StatOptions)
 	}
@@ -169,6 +185,7 @@
 
 	const clearFile = () => {
     const fileManager = uni.getFileSystemManager()
+    // TODO 3个App平台表现不一致 @颜伊林
     fileManager.rmdir({
       "dirPath":uni.env.CACHE_PATH,
       "recursive":true,
@@ -176,30 +193,23 @@
         console.log("rmdir success", res)
       },
       fail: (res : IFileSystemManagerFail) => {
-        console.error('statFileInfo fail', res)
+        console.error('清空缓存目录失败', res)
+        uni.showModal({
+        	title: '清空缓存目录失败',
+        	content: res.errMsg,
+        	showCancel: false
+        })
       },
       complete: (res : any) => {
         console.log("rmdir complete", res)
       }
     })
   }
+
   const openFile = (fileItem: fileListType) => {
 		let path = fileItem.path
 		let suffix = path.split('.').pop()
 		switch(suffix) {
-			case 'txt':
-				// #ifdef APP-HARMONY
-				uni.openDocument({
-					filePath: path,
-					success: (res) => {
-						console.log("openDocument success", res)
-					},
-					fail: (res) => {
-						console.error("openDocument fail", res)
-					}
-				})
-				break
-				// #endif
 			case 'jpg':
 			case 'png':
 			case 'gif':
@@ -215,7 +225,25 @@
 					urls: [path]
 				})
 				break
-			default:
+
+      default:
+        // #ifdef APP-HARMONY || MP-WEIXIN
+        uni.openDocument({
+        	filePath: path,
+        	success: (res) => {
+        		console.log("openDocument success", res)
+        	},
+        	fail: (res) => {
+        		console.error("openDocument fail", res)
+            uni.showModal({
+            	title: '打开文件失败',
+            	content: res.errMsg,
+            	showCancel: false
+            })
+        	}
+        })
+        break
+        // #endif
 				uni.showToast({
 					title: '暂不支持打开该文件',
 					icon: 'none'
