@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
 
 describe('component-native-web-view', () => {
-  if(isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW || isIOS || isHarmony){
+  if(isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW || isIOS){
     it('not support', () => {
       expect(1).toBe(1)
     })

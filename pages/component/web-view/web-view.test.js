@@ -8,7 +8,7 @@ describe('component-native-web-view', () => {
   const isHarmony = platformInfo.startsWith('harmony')
   const isAndroid = platformInfo.startsWith('android')
 
-  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW || isHarmony) {
+  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('web', async () => {
       expect(1).toBe(1)
     })
