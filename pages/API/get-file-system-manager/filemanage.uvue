@@ -117,6 +117,11 @@
 				count.value = tempFileList.length
 	    },
 	    fail: (res : IUniError) => {
+        uni.showModal({
+        	title: '获取文件状态失败',
+        	content: res.errMsg,
+        	showCancel: false
+        })
 	      console.error('statFileInfo fail', res)
 	    },
 	    complete: (res : any) => {
@@ -177,7 +182,13 @@
       "recursive":true,
       success: (res : FileManagerSuccessResult) => {
         console.log("rmdir success", res)
-        refreshFile()
+        fileList.value = [] as fileListType[]
+        size.value = 0
+        count.value = 0
+        uni.showToast({
+          title:"清空缓存目录成功",
+          icon:"success"
+        })
       },
       fail: (res : IFileSystemManagerFail) => {
         console.error('清空缓存目录失败', res)
