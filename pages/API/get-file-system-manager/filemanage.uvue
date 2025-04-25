@@ -106,9 +106,9 @@
 					tempFileItem.path = res.stats[i].path
 					tempFileItem.size = res.stats[i].stats.size/1024
 					tempFileItem.isFile = res.stats[i].stats.isFile()
-					const mdate = new Date(res.stats[i].stats.lastModifiedTime)
+					const mdate = new Date(res.stats[i].stats.lastModifiedTime * 1000)
 					tempFileItem.modifyTime = mdate.getFullYear().toString() + "-" + (mdate.getMonth()+1).toString() + "-" + mdate.getDate().toString() + " "
-					+ mdate.getHours().toString() + ":" + mdate.getMinutes().toString() + ":" + mdate.getSeconds().toString() //TODO Android的 day不对
+					+ mdate.getHours().toString() + ":" + mdate.getMinutes().toString() + ":" + mdate.getSeconds().toString()
 					tempSize = tempSize + res.stats[i].stats.size
 					tempFileList.push(tempFileItem)
 				}
@@ -134,53 +134,39 @@
 	}
 
 	const deleteFile = (fileItem: fileListType) => {
-		const fileManager = uni.getFileSystemManager()
-    fileManager.stat({
-      path: fileItem.path,
-      recursive: false,
-      success: (res) => {
-        if (res.stats[0].stats.isDirectory()) {
-          fileManager.rmdir({
-          	dirPath: fileItem.path,
-            recursive: true,
-          	success: () => {
-          		refreshFile()
-          		closeDialog()
-          	},
-          	fail: (err : IFileSystemManagerFail) => {
-          		uni.showModal({
-          			title: '删除目录失败',
-          			content: err.errMsg,
-          			showCancel: false
-          		})
-          	}
-          })
-        } else if (res.stats[0].stats.isFile()) {
-          fileManager.unlink({
-          	filePath: fileItem.path,
-          	success: () => {
-          		refreshFile()
-          		closeDialog()
-          	},
-          	fail: (err : IFileSystemManagerFail) => {
-          		uni.showModal({
-          			title: '删除文件失败',
-          			content: err.errMsg,
-          			showCancel: false
-          		})
-          	}
-          })
-        }
-      },
-      fail: (err: IFileSystemManagerFail) => {
-        uni.showModal({
-        	title: '获取文件 Stats 对象失败',
-        	content: err.errMsg,
-        	showCancel: false
-        })
-      }
-    })
-
+    const fileManager = uni.getFileSystemManager()
+    if (fileItem.isFile) {
+      fileManager.unlink({
+      	filePath: fileItem.path,
+      	success: () => {
+      		refreshFile()
+      		closeDialog()
+      	},
+      	fail: (err : IFileSystemManagerFail) => {
+      		uni.showModal({
+      			title: '删除文件失败',
+      			content: err.errMsg,
+      			showCancel: false
+      		})
+      	}
+      })
+    } else {
+      fileManager.rmdir({
+      	dirPath: fileItem.path,
+        recursive: true,
+      	success: () => {
+      		refreshFile()
+      		closeDialog()
+      	},
+      	fail: (err : IFileSystemManagerFail) => {
+      		uni.showModal({
+      			title: '删除目录失败',
+      			content: err.errMsg,
+      			showCancel: false
+      		})
+      	}
+      })
+    }
 	}
 
 	const clearFile = () => {
@@ -191,6 +177,7 @@
       "recursive":true,
       success: (res : FileManagerSuccessResult) => {
         console.log("rmdir success", res)
+        refreshFile()
       },
       fail: (res : IFileSystemManagerFail) => {
         console.error('清空缓存目录失败', res)
