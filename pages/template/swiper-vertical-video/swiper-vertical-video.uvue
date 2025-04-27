@@ -31,6 +31,7 @@
   let page : number = 0,
     currentPageIsShow : boolean = true;
 
+  import { state, setNetless } from '@/store/index.uts'
   export default {
     components: {},
     data() {
@@ -45,8 +46,17 @@
       }
     },
     created() {
-      this.list = this.getData()
-      this.visibleList = this.list.slice(0, 3)
+      // #ifdef APP-HARMONY
+      uni.getNetworkType({
+        success: (res) => {
+          setNetless(res.networkType === 'none')
+      // #endif
+          this.list = this.getData()
+          this.visibleList = this.list.slice(0, 3)
+      // #ifdef APP-HARMONY
+        }
+      })
+      // #endif
     },
     watch: {
       current(current : number, oldCurrent : number) {
@@ -155,17 +165,30 @@
         }
       },
       getData() : ListItem[] {
-        let videoUrlList = [
-          'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uts-5-16.mp4',
-          'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-ai-5-16.mp4',
-          'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-verify-5-16.mp4'
-        ] as string[]
+        let videoUrlList = state.netless
+          ? [
+              '/static/test-video/10second-demo.mp4',
+              '/static/test-video/10second-demo.mp4',
+              '/static/test-video/10second-demo.mp4'
+            ]
+          : [
+              'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uts-5-16.mp4',
+              'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-ai-5-16.mp4',
+              'https://web-ext-storage.dcloud.net.cn/uni-app-x/video/uni-verify-5-16.mp4'
+            ] as string[]
 
-        let posterSrcList = [
-          'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-uts-01.png',
-          'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-ai-01.png',
-          'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-verify-01.jpg'
-        ] as string[]
+        let posterSrcList = state.netless
+        ? [
+            '/static/shuijiao.jpg',
+            '/static/logo.jpg',
+            '/static/shuijiao.jpg'
+          ]
+        : [
+            'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-uts-01.png',
+            'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-ai-01.png',
+            'https://web-ext-storage.dcloud.net.cn/uni-app-x/dark-uni-verify-01.jpg'
+          ] as string[]
+
 
         let list = [] as ListItem[];
         for (let i = 0; i < 6; i++) {
@@ -214,7 +237,6 @@
   .video-box,
   .video-cover {
     width: 100%;
-    flex: 1;
     height: 100%;
   }
 

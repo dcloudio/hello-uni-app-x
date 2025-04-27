@@ -1,0 +1,68 @@
+import { AsyncCallback } from '@ohos.base'
+import { AuthService } from '@tencentmap/base'
+import { MapController, MapOptions } from '@tencentmap/map'
+import { buildTencentMap } from './builder.ets'
+
+interface TencentMapOptions {
+    mapKey : string
+    mapOptions : MapOptions
+    onReady : AsyncCallback<MapController>
+}
+
+export class TencentMap {
+    private mapController : MapController | null = null
+    private params : TencentMapOptions = {
+        mapKey: '',
+        mapOptions: {} as MapOptions,
+        onReady: (err, controller) => {
+            if (!err) {
+                this.mapController = controller
+            }
+        }
+    }
+
+    setup(mapKey : string, el : UniNativeViewElement) {
+        AuthService.getInstance().setKey(mapKey)
+        el.bindHarmonyWrappedBuilder(wrapBuilder<[TencentMapOptions]>(buildTencentMap), this.params)
+    }
+
+    /**
+     * 设置地图缩放级别
+     */
+    setScaleLevel(scaleLevel : number, animate ?: boolean) {
+        this.mapController?.setScaleLevel(scaleLevel, animate)
+    }
+    /**
+     * 获取地图缩放级别
+     */
+    getScaleLevel() : number {
+        if (this.mapController != null) {
+            return this.mapController.getScaleLevel()
+        }
+        return -1
+    }
+    /**
+     * 设置是否开启卫星图
+     */
+    setSatelliteEnabled(enable : boolean) {
+        this.mapController?.setSatelliteEnabled(enable)
+    }
+    /**
+     * 设置是否显示路况
+     */
+    setTrafficEnable(enable : boolean) {
+        this.mapController?.setTrafficEnable(enable)
+    }
+    /**
+     * 设置是否显示poi
+     */
+    setAnnotationEnable(enable : boolean) {
+        this.mapController?.setAnnotationEnable(enable)
+    }
+    /**
+     * 设置是否显示建筑物
+     */
+    setBuildingEnable(enable : boolean) {
+        this.mapController?.setBuildingEnable(enable)
+    }
+}

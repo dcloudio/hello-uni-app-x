@@ -1,9 +1,8 @@
 <template>
-  <scroll-view class="uni-flex-item">
+  <view class="uni-flex-item">
     <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
-      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess"
-      :verticalScrollBarAccess="verticalScrollBarAccess" @message="message" @error="error" @loading="loading"
-      @load="load" @download="download" @touchstart="touchstart" @tap="tap">
+      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess" :bounces="bounces" @message="message" @error="error" @loading="loading"
+      @load="load" @download="download" @contentheightchange="contentheightchange" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
     <view class="uni-padding-wrap uni-common-mt">
@@ -19,10 +18,18 @@
         <button class="uni-flex-item" type="primary" @click="reload">重新加载</button>
         <button class="margin-left-5 uni-flex-item" type="primary" @click="stop">停止加载</button>
       </view>
-      <view class="uni-btn-v">
-        <button type="primary" @click="nativeToWeb">原生和Web通信</button>
+      <view class="uni-row uni-btn-v">
+        <button class="uni-flex-item" type="primary" @click="nativeToWeb">原生和Web通信</button>
+        <!-- #ifdef APP-ANDROID || APP-IOS || APP-HARMONY -->
+        <button class="margin-left-5 uni-flex-item" type="primary" @click="getContentHeight">获取内容高度</button>
+        <!-- #endif -->
       </view>
-      <!-- #ifdef APP-ANDROID -->
+      <view class="uni-btn-v">
+        <navigator url="/pages/component/web-view/web-view-scroll">
+          <button type="primary">scroll-view嵌套web-view</button>
+        </navigator>
+      </view>
+      <!-- #ifdef APP-ANDROID || APP-HARMONY || APP-IOS -->
       <view class="uni-row uni-btn-v">
         <view class="uni-row uni-flex-item align-items-center">
           <text>显示横向滚动条</text>
@@ -31,6 +38,12 @@
         <view class="uni-row uni-flex-item align-items-center">
           <text>显示竖向滚动条</text>
           <switch :checked="true" @change="changeVerticalScrollBarAccess"></switch>
+        </view>
+      </view>
+      <view class="uni-row uni-btn-v">
+        <view class="uni-row uni-flex-item align-items-center">
+          <text>开启bounces</text>
+          <switch :checked="true" @change="changeBounces"></switch>
         </view>
       </view>
       <!-- #endif -->
@@ -43,13 +56,17 @@
       <!-- #endif -->
     </view>
     <!-- #endif -->
-  </scroll-view>
+    <!-- #ifdef APP-ANDROID || APP-IOS -->
+    <view class="safe-area-inset-bottom"></view>
+    <!-- #endif -->
+  </view>
 </template>
 
 <script>
   // #ifdef APP
   import { canWebViewGoBack, canWebViewGoForward, hasNativeView } from '@/uni_modules/uts-get-native-view';
   // #endif
+  let webviewElement =  null as UniWebViewElement | null
   export default {
     data() {
       return {
@@ -60,10 +77,10 @@
           }
         },
         webviewContext: null as WebviewContext | null,
-        webviewElement: null as UniWebViewElement | null,
         loadError: false,
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
+        bounces: true,
         canGoBack: false,
         canGoForward: false,
         // 自动化测试
@@ -71,6 +88,7 @@
         eventLoading: null as UTSJSONObject | null,
         eventLoad: null as UTSJSONObject | null,
         eventError: null as UTSJSONObject | null,
+        eventContentHeightChange: null as UTSJSONObject | null,
         pointerEvents: 'auto',
         isTouchEnable: false
       }
@@ -78,11 +96,15 @@
     onReady() {
       // #ifdef APP
       // TODO web 实现createWebviewContext
-      this.webviewContext = uni.createWebviewContext('web-view', this)
-      this.webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
+      // this.webviewContext = uni.createWebviewContext('web-view', this)
+      // NOTE 绑定到 this 上会被代理导致无法调用方法
+      webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
       // console.log('url: ',this.webviewElement?.getAttribute("src"));
       // this.webviewElement?.setAttribute("src","https://ext.dcloud.net.cn/")
       // #endif
+    },
+    onUnload() {
+      webviewElement = null;
     },
     methods: {
       getPackageName() : string {
@@ -102,21 +124,33 @@
         return false
       },
       back() {
-        this.webviewContext?.back();
+        webviewElement?.back();
       },
       forward() {
-        this.webviewContext?.forward();
+        webviewElement?.forward();
       },
       reload() {
-        this.webviewContext?.reload();
-        // this.webviewElement?.reload();
+        webviewElement?.reload();
       },
       stop() {
-        this.webviewContext?.stop();
+        webviewElement?.stop();
       },
       nativeToWeb() {
-        this.webviewContext?.evalJS("alert('hello uni-app x')");
+        webviewElement?.evalJS("alert('hello uni-app x')");
       },
+      // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+      getContentHeight() : number {
+        const height = webviewElement?.getContentHeight() ?? 0;
+        console.log('contentHeight', height);
+        if (!this.autoTest) {
+          uni.showModal({
+            content: ' 当前内容高度: ' + height,
+            showCancel: false
+          });
+        }
+        return height;
+      },
+      // #endif
       message(event : UniWebViewMessageEvent) {
         console.log(JSON.stringify(event.detail));
       },
@@ -166,6 +200,14 @@
           showCancel: false
         });
       },
+      contentheightchange(event : UniWebViewContentHeightChangeEvent) {
+        console.log(JSON.stringify(event.detail));
+        this.eventContentHeightChange = {
+          "tagName": event.target?.tagName,
+          "type": event.type,
+          "isValidHeight": event.detail.height > 0
+        };
+      },
       confirm(event : UniInputConfirmEvent) {
         let url = event.detail.value;
         if (!url.startsWith('https://') && !url.startsWith('http://')) {
@@ -179,6 +221,9 @@
       changeVerticalScrollBarAccess(event : UniSwitchChangeEvent) {
         this.verticalScrollBarAccess = event.detail.value;
       },
+      changeBounces(event : UniSwitchChangeEvent) {
+        this.bounces = event.detail.value;
+      },
       // 自动化测试
       touchstart(event : UniTouchEvent) {
         if (this.autoTest) {
@@ -189,9 +234,6 @@
         if (this.autoTest) {
           this.isTouchEnable = event.clientX > 0 && event.clientY > 0;
         }
-      },
-      getWindowInfo() : GetWindowInfoResult {
-        return uni.getWindowInfo();
       },
       //自动化测试专用
       checkNativeWebView() : boolean {
@@ -213,5 +255,9 @@
 
   .align-items-center {
     align-items: center;
+  }
+
+  .safe-area-inset-bottom {
+    height: var(--uni-safe-area-inset-bottom);
   }
 </style>

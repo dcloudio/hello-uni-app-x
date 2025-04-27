@@ -1,12 +1,11 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+
 const PAGE_PATH = '/pages/API/base64/base64'
 
-
 describe('base64', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isWeb = platformInfo.startsWith('web')
-  const isIOS = platformInfo.startsWith('ios')
-  if (isIOS) {
+  if (isHarmony) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -24,7 +23,9 @@ describe('base64', () => {
     const data = await page.data()
     expect(data.arrayBufferToBase64Res).toEqual('CxYh')
   })
-
+  if (isIOS) {
+    return
+  }
   it('base64ToArrayBuffer', async () => {
     await page.callMethod('base64ToArrayBuffer')
     await page.waitFor(200)

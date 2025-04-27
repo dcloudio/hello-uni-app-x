@@ -2,7 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
   <!-- #endif -->
-    <view class="uni-container">
+    <view class="uni-container" :class="{ 'dark-mode': isDarkMode }">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/componentIndex.png"></image>
       </view>
@@ -15,17 +15,16 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="item">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
+            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
               <text class="uni-navigate-text" :class="{
                   'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
                 }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
               <image :src="arrowRightIcon" class="uni-icon-size"></image>
             </view>
-            <uni-collapse v-else style="width: 100%">
-              <uni-collapse-item :title="childMenuItem.name" class="item"
-                style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
-                <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
+            <uni-collapse v-else style="width: 100%;">
+              <uni-collapse-item :title="childMenuItem.name" class="item" style="margin-bottom: 0;">
+                <view class="uni-navigate-item pl" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
@@ -39,11 +38,6 @@
           </template>
         </uni-collapse-item>
       </uni-collapse>
-      <!-- #ifdef APP-HARMONY -->
-      <button @click="goPage('/pages/tabBar/API')">to /pages/tabBar/API</button>
-      <button @click="goPage('/pages/tabBar/CSS')">to /pages/tabBar/CSS</button>
-      <button @click="goPage('/pages/tabBar/template')">to /pages/tabBar/template</button>
-      <!-- #endif -->
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -54,7 +48,7 @@
   import { generateMenu } from './generateMenu.uts'
   import { MenuItem } from './generateMenu.uts'
   const menu = generateMenu('pages/component')
-  // #ifdef APP-ANDROID || APP-IOS
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
   import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
   // #endif
   import { state } from '@/store/index.uts'
@@ -72,8 +66,28 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.slice(1)
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      },
+      netless() : boolean {
+        return state.netless
       }
     },
+    // #ifdef APP-HARMONY
+    watch: {
+      'netless': {
+        immediate: true,
+        handler(netless) {
+          if (netless) {
+            this.menu = this.menu.filter(item => {
+              return !['unicloud'].includes(item.id)
+            })
+          }
+        }
+      }
+    },
+    // #endif
     methods: {
       goPage(url : string) {
         if (this.hasLeftWin) {
@@ -133,4 +147,13 @@
   .item {
     margin-bottom: 12px;
   }
+  .pl{
+    padding-left: 18px
+  }
+  /* web端适配暗黑主题 */
+  /* #ifdef WEB */
+  .uni-container.dark-mode {
+    min-height: calc(100vh - var(--uni-safe-area-inset-top));
+  }
+  /* #endif */
 </style>

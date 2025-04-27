@@ -1,5 +1,5 @@
 import { OnLaunchOptionsWithCst, RouteParams, StatDefault, ReportErrorCode } from '../../interface.uts'
-import { STAT_VERSION, sys, sysAppBase, Config } from '../config.uts'
+import { STAT_VERSION, sys, device, sysAppBase, Config } from '../config.uts'
 // import Config from '../config.uts'
 import { get_time } from './pageTime.uts'
 import { dbGet, dbSet } from './db.uts'
@@ -313,11 +313,33 @@ export const is_handle_device = () : boolean => {
 	return isHandleDevice === '1'
 }
 
+/**
+ * 获取网络状态
+ */
+export const get_net = () : Promise<string> => {
+	return new Promise((resolve, reject) => {
+		uni.getNetworkType({
+			success(e : GetNetworkTypeSuccess) {
+				const net = e.networkType
+				resolve(net)
+			}, fail() {
+				reject('')
+			}
+		})
+	})
+}
+
 
 /**
  * 获取上报数据默认值
  */
 export const get_default_data = () : StatDefault => {
+	let isRoot : number
+	if (device.isRoot == true) {
+		isRoot = 1
+	} else {
+		isRoot = 0
+	}
 
 	let statData : StatDefault = {
 		uuid: get_uuid(),
@@ -329,7 +351,7 @@ export const get_default_data = () : StatDefault => {
 		v: RUNTIME_VERSION,
 		ch: get_channel(),
 		cn: '',
-		pn: '',
+		pn: get_pack_name(),
 		ct: '',
 		t: get_time(),
 		tt: '',
@@ -348,7 +370,9 @@ export const get_default_data = () : StatDefault => {
 		lat: '',
 		lng: '',
 		net: '',
-		odid: ''
+		odid: '',
+		pv: sysAppBase.appVersion,
+		root: isRoot
 	}
 	return statData
 }
@@ -437,6 +461,50 @@ export const is_push_clientid = () : boolean => {
 	return false
 }
 
+/**
+ * 获取崩溃日志文件地址
+ */
+export const get_crash_logs = (fn : (value : string[]) => void) => {
+	const crash_data = uni.__getAppCrashInfo()
+	if (crash_data != null && crash_data.length > 0) {
+		const sysManager = uni.getFileSystemManager();
+		const reportLogs : Promise<string>[] = []
+		for (let i = 0; i < crash_data.length; i++) {
+			const item = crash_data[i];
+			let file_text : string;
+			// #ifdef APP-ANDROID
+			file_text = item.get('file') as string
+			// #endif
+			// #ifdef APP-IOS
+			file_text = item.file as string
+			// #endif
+
+			const logPromise = new Promise<string>((resolve, reject) => {
+				sysManager.readFile({
+					filePath: file_text,
+					encoding: 'utf-8',
+					success: (res) => {
+						const crash_text = res.data as string
+						resolve(crash_text); // 成功上报后 resolve
+					},
+					fail: (err : any) => {
+						reject(err); // 读取文件失败时 reject
+					}
+				});
+			});
+
+			reportLogs.push(logPromise);
+		}
+
+		Promise.all(reportLogs)
+			.then((res) => {
+				fn(res)
+			})
+			.catch((err) => {
+				console.log('Errorlogs:', err);
+			});
+	}
+}
 
 
 /**

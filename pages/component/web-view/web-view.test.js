@@ -2,10 +2,12 @@
 
 describe('component-native-web-view', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isAndroid = platformInfo.startsWith('android')
+
   if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
     it('web', async () => {
       expect(1).toBe(1)
@@ -48,17 +50,20 @@ describe('component-native-web-view', () => {
   if (isMP) {
     return
   }
-  it('test touch event', async () => {
+  it('set auto test', async () => {
     await page.setData({
       autoTest: true
     });
-    const info = await page.callMethod('getWindowInfo');
+    expect(1).toBe(1)
+  });
+  it('test touch event', async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
     await program.tap({
       x: 1,
-      y: info.statusBarHeight + 44 + 1
+      y: windowInfo.safeAreaInsets.top + 44 + 1
     });
     await page.waitFor(500);
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
+    if (!isIOS) {
       expect(await page.data('isTouchEnable')).toBe(true);
     }
 
@@ -69,10 +74,10 @@ describe('component-native-web-view', () => {
     await page.waitFor(100);
     await program.tap({
       x: 10,
-      y: info.statusBarHeight + 44 + 10
+      y: windowInfo.safeAreaInsets.top + 44 + 10
     });
     await page.waitFor(500);
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') == false) {
+    if (!isIOS && !isHarmony) {
       expect(await page.data('isTouchEnable')).toBe(false);
     }
     await page.setData({
@@ -86,7 +91,7 @@ describe('component-native-web-view', () => {
     await page.waitFor(async () => {
       return (await page.data('eventLoading')) || (Date.now() - start > 500);
     });
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+    if (isIOS) {
       const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
       if (
         platformInfo.indexOf('14.5') != -1 ||
@@ -116,6 +121,23 @@ describe('component-native-web-view', () => {
       tagName: 'WEB-VIEW',
       type: 'load',
       src: 'https://www.dcloud.io/'
+    });
+  });
+
+  it('test event contentheightchange', async () => {
+    if (!isAndroid && !isIOS && !isHarmony) {
+      expect(1).toBe(1);
+      return;
+    }
+    expect(await page.callMethod('getContentHeight')).toBeGreaterThan(0);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventContentHeightChange')) || (Date.now() - start > 500);
+    });
+    expect(await page.data('eventContentHeightChange')).toEqual({
+      tagName: 'WEB-VIEW',
+      type: 'contentheightchange',
+      isValidHeight: true
     });
   });
 

@@ -5,12 +5,12 @@
     <page-head :title="title"></page-head>
     <view>
       <view class="uni-padding-wrap">
-        <video class="video" :src="beforeCompressPath" :controls="true"></video>
+        <video class="video" :src="beforeCompressPath" :controls="true" :poster="beforeCoverImagePath"></video>
         <view class="uni-title">
           <text class="uni-subtitle-text">压缩前视频信息</text>
         </view>
         <text>{{beforeCompressVideoInfo}}</text>
-        <video class="video" :src="afterCompressPath" :controls="true"></video>
+        <video class="video" :src="afterCompressPath" :controls="true" :poster="afterCoverImagePath"></video>
         <view class="uni-title">
           <text class="uni-subtitle-text">压缩后视频信息</text>
         </view>
@@ -35,6 +35,11 @@
 
 <script>
   import { ItemType } from '@/components/enum-data/enum-data-types';
+  type VideoInfoForTest = {
+    width: number;
+    height: number;
+    isSizeReduce: boolean;
+  }
   export default {
     data() {
       return {
@@ -43,6 +48,8 @@
         afterCompressVideoInfo: "",
         beforeCompressPath: "",
         afterCompressPath: "",
+        beforeCoverImagePath: "",
+        afterCoverImagePath: "",
         quality: null as string | null,
         bitrate: null as number | null,
         fps: null as number | null,
@@ -50,8 +57,10 @@
         qualityItemTypes: [{ "value": 0, "name": "low(低)" }, { "value": 1, "name": "medium(中)" }, { "value": 2, "name": "high(高)" }] as ItemType[],
         qualityItems: ["low", "medium", "high"],
         // 自动化测试
-        videoInfoForTest: null,
-        videoSrcForTest: '/static/test-video/10second-demo.mp4'
+        videoInfoForTest: null as VideoInfoForTest | null,
+        videoSrcForTest: '/static/test-video/10second-demo.mp4',
+        videoSrcForTestWidth: 0,
+        videoSrcForTestHeight: 0
       }
     },
     methods: {
@@ -81,6 +90,12 @@
               src: res.tempFilePath,
               success: (_res) => {
                 this.afterCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+                // #ifdef APP-ANDROID || APP-IOS
+                this.afterCompressVideoInfo = this.afterCompressVideoInfo + `\n视频字节大小: ${_res.byteSize}B\n视频首帧图片路径: ${_res.thumbTempFilePath}`
+                if(_res.thumbTempFilePath != null) {
+                this.afterCoverImagePath = _res.thumbTempFilePath!
+                }
+                // #endif
               }
             });
           },
@@ -106,6 +121,12 @@
               src: res.tempFilePath,
               success: (_res) => {
                 this.beforeCompressVideoInfo = `视频画面方向: ${_res.orientation}\n视频格式: ${_res.type}\n视频长度: ${_res.duration}s\n视频大小: ${_res.size}KB\n视频宽度: ${_res.width}\n视频高度: ${_res.height}\n视频帧率: ${_res.fps}fps\n视频码率: ${_res.bitrate}kbps`;
+                // #ifdef APP-ANDROID || APP-IOS
+                this.beforeCompressVideoInfo = this.beforeCompressVideoInfo + `\n视频字节大小: ${_res.byteSize}B\n视频首帧图片路径: ${_res.thumbTempFilePath}`
+                if(_res.thumbTempFilePath != null) {
+                this.beforeCoverImagePath = _res.thumbTempFilePath!
+                }
+                // #endif
               }
             });
           }
@@ -127,6 +148,8 @@
               src: this.videoSrcForTest,
               success: (_res) => {
                 beforeCompressSize = Math.trunc(_res.size);
+                this.videoSrcForTestWidth = _res.width
+                this.videoSrcForTestHeight = _res.height
                 uni.getVideoInfo({
                   src: res.tempFilePath,
                   success: (__res) => {
@@ -135,7 +158,10 @@
                       "width": __res.width,
                       "height": __res.height,
                       "isSizeReduce": afterComoressSize < beforeCompressSize
-                    };
+                    } as VideoInfoForTest;
+                  },
+                  fail(err) {
+                    console.log('>>>>>> 压缩失败', err.errMsg)
                   }
                 });
               }

@@ -3,12 +3,12 @@ const PAGE_PATH = '/pages/component/rich-text/rich-text-complex'
 describe('rich-text-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
 
   // 先屏蔽 android 及 web 平台
-  if (isAndroid || isWeb || isMP) {
+  if (isAndroid || isWeb || isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -66,6 +66,13 @@ describe('rich-text-test', () => {
         await program.tap({
           x: 220,
           y: 476,
+          duration: 100
+        })
+
+        // 关闭弹窗 iPhone plus 机型
+        await program.tap({
+          x: 220,
+          y: 526,
           duration: 100
         })
 

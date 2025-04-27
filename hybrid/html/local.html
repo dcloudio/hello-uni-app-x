@@ -48,8 +48,12 @@
       <p style="font-size: 14px;">&lt;input type="file" accept="image/*" multiple /&gt;</p>
       <input type="file" accept="image/*" multiple />
       <p style="font-size: 14px;">普通input</p>
-      <input placeholder="底部输入框"/>
-      <br/>
+      <input placeholder="底部输入框" />
+      <p style="font-size: 14px;">普通input2</p>
+      <input placeholder="底部输入框2" />
+      <p style="font-size: 14px;">普通input3</p>
+      <input placeholder="底部输入框3" />
+      <br />
       <p style="font-size: 14px;">普通textarea</p>
       <textarea placeholder="底部textarea"></textarea>
       <br/>
@@ -58,6 +62,13 @@
     <!-- uni 的 SDK -->
     <script type="text/javascript" src="uni.webview.1.5.5.js"></script>
     <script type="text/javascript">
+      function postMessage(action) {
+        uni.webView.postMessage({
+          data: {
+            action
+          }
+        });
+      }
       const isWeb = location.href && /^https?:/.test(location.href)
       // document.addEventListener('UniAppJSBridgeReady', function() {
       document.querySelector('.btn-list').addEventListener('click', function(evt) {
@@ -87,9 +98,7 @@
               break;
             case 'getEnv':
               uni.webView.getEnv((res) => {
-                uni.postMessage({
-                  data: res
-                })
+                postMessage(res)
               });
               break;
             /* case 'getTheme':
@@ -109,11 +118,7 @@
           alert('web端暂不支持此功能')
           return
         }
-        uni.webView.postMessage({
-          data: {
-            action: 'message'
-          }
-        })
+        postMessage('message')
       })
 
       /* function getThemePreference() {

@@ -1,27 +1,24 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('get-native-view', () => {
-  if (isMP) {
+  if (isMP || isHarmony || isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
   	it('skip mp', () => {
   		expect(1).toBe(1)
   	})
   	return
   }
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-    it('object', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-
   if (
-    platformInfo.indexOf('14.5') != -1 ||
-    platformInfo.indexOf('13.7') != -1 ||
-    platformInfo.indexOf('12.4') != -1
+    isIOS &&
+    (
+      platformInfo.indexOf('14.5') != -1 ||
+      platformInfo.indexOf('13.7') != -1 ||
+      platformInfo.indexOf('12.4') != -1
+    )
   ) {
     // TODO: 排查 ios 不兼容版本 测试异常原因
     it('14.5 13.7 12.4 测试异常', () => {

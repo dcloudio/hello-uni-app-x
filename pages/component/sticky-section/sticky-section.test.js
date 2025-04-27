@@ -1,9 +1,11 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-sticky-section', () => {
-  if (isMP) {
-  	it('skip mp', () => {
+  if (isMP || isHarmony) {
+  	it('not support', () => {
   		expect(1).toBe(1)
   	})
   	return
@@ -12,7 +14,23 @@ describe('component-native-sticky-section', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/sticky-section/sticky-section')
+    // harmony querySelector('sticky-section') 取不到
     await page.waitFor('sticky-section')
+  })
+
+  it('check_delete_and_refresher', async () => {
+    await page.callMethod('deleteSection')
+    await page.waitFor(400)
+    await page.setData({
+      refresherTriggered: true
+    })
+    await page.waitFor(500)
+    await page.setData({
+      refresherTriggered: false
+    })
+    await page.waitFor(2000)
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
   })
 
   //检测吸顶上推效果
@@ -26,7 +44,7 @@ describe('component-native-sticky-section', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('web') || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' || isHarmony) {
     return
   }
 

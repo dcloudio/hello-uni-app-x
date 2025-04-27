@@ -35,16 +35,20 @@
         flag: false,
         serviceList: [
           { service: "payment", name: "支付", provider: [], providerObj: [] },
-          { service: "location", name: "定位", provider: [], providerObj: [] }
+          { service: "location", name: "定位", provider: [], providerObj: [] },
+          // #ifdef APP-HARMONY
+          { service: "oauth", name: "登录", provider: [], providerObj: [] }
+          // #endif
         ] as ProviderItem[],
         //自动化测试使用
         providerIds: [] as string[],
 
-        providerObjects: [] as UniProvider[],
+        providerObjects: [] as string[],
       }
     },
     methods: {
       getProvider() {
+        this.providerObjects = []
         this.serviceList.forEach((item : ProviderItem) => {
           var provider = uni.getProviderSync({
             service: item.service,
@@ -65,7 +69,7 @@
           item.provider = provider
           item.providerObj = uniProvider
           item.providerObj.forEach((obj) => {
-            this.providerObjects.push(obj)
+            this.providerObjects.push(obj.description)
           })
         }
 

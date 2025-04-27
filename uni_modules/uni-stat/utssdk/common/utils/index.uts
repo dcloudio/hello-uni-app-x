@@ -1,7 +1,7 @@
 // AppShowReportParams, AppHideReportParams, PageReportParams,
 import { StatDefault } from '../../interface.uts'
 
-import { AppShowParamsKeys, AppHideParamsKeys, PageShowParamsKeys, PushParamsKeys, EventParamsKeys, ErrorParamsKeys } from '../core/stat-type.uts'
+import { AppShowParamsKeys, AppHideParamsKeys, PageShowParamsKeys, PushParamsKeys, EventParamsKeys, ErrorParamsKeys,CrashParamsKeys } from '../core/stat-type.uts'
 
 /**
  * 序列化url参数
@@ -74,6 +74,9 @@ export function Log(data : StatDefault, type : Boolean = false) {
 			break
 		case '31':
 			msg_type = '应用错误'
+			break
+		case '41':
+			msg_type = '应用崩溃'
 			break
 		case '101':
 			msg_type = 'PUSH'
@@ -168,6 +171,9 @@ function getEventData(lt : string, elm : StatDefault) : any {
 			break
 		case '31': // 应用错误
 			data = FilterParam(ErrorParamsKeys, elm)
+			break
+		case '41': // 崩溃
+			data = FilterParam(CrashParamsKeys, elm)
 			break
 		case '101': // PUSH
 			data = FilterParam(PushParamsKeys, elm)

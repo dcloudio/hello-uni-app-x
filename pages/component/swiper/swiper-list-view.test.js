@@ -1,5 +1,8 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('component-swiper-list-view', () => {
-  if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+  if (isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

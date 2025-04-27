@@ -2,7 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
   <!-- #endif -->
-    <view class="uni-container">
+    <view class="uni-container" :class="{ 'dark-mode': isDarkMode }">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/cssIndex.png"></image>
       </view>
@@ -15,7 +15,7 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="item">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" style="padding-left: 18px" class="uni-navigate-item"
+            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
               <text class="uni-navigate-text" :class="{
                   'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
@@ -24,8 +24,8 @@
             </view>
             <uni-collapse v-else style="width: 100%">
               <uni-collapse-item :title="childMenuItem.name" class="item"
-                style="margin-bottom: 0; padding-left: 5px; padding-right: 5px">
-                <view style="padding-left: 18px" class="uni-navigate-item" hover-class="is--active"
+                style="margin-bottom: 0;">
+                <view class="uni-navigate-item pl" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
@@ -54,7 +54,7 @@
     data() {
       return {
         menu: menu as MenuItem[],
-        arrowRightIcon: '/static/icons/arrow-right.png',
+        arrowRightIcon: '/static/icons/arrow-right.png'
       }
     },
     computed: {
@@ -63,6 +63,9 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.slice(1)
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     methods: {
@@ -72,7 +75,7 @@
         } else {
           uni.navigateTo({ url })
         }
-      },
+      }
     },
     // #ifdef WEB
     watch: {
@@ -97,5 +100,8 @@
 <style>
   .item {
     margin-bottom: 12px;
+  }
+  .pl{
+    padding-left: 18px
   }
 </style>

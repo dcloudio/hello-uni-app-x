@@ -1,5 +1,5 @@
 <script lang="uts">
-  import { state, setLifeCycleNum } from '@/store/index.uts'
+  import { state, setLifeCycleNum, checkSystemTheme, setNetless } from '@/store/index.uts'
 
   // #ifdef APP-ANDROID
   let firstBackTime = 0
@@ -69,8 +69,23 @@
              }
           }
         })
+
+        // #ifdef APP-HARMONY
+        uni.getNetworkType({
+          success(res) {
+            setNetless(res.networkType === 'none')
+          }
+        })
+
+        uni.onNetworkStatusChange((res) => {
+          setNetless(res.isConnected === false)
+        })
+        // #endif
       }
       // #endif
+      // 获取系统主题
+      checkSystemTheme();
+
     },
     onShow: function (res : OnShowOptions) {
       this.globalData.onShowOption = res

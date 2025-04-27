@@ -1,21 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+
 const PAGE_PATH = '/pages/component/slider/slider-maxValue'
 
 describe('touch-events-test', () => {
 
-  // 先屏蔽 android 及 web 平台
-  if (
-    process.env.uniTestPlatformInfo.startsWith('android') ||
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
-    it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  if (process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('跳过横屏模式', () => {
+  if (isAndroid || isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
@@ -29,15 +22,14 @@ describe('touch-events-test', () => {
 
 
   it('test-slider-max-value', async () => {
-
-    let iconRect = await page.data('sliderRect')
-    let x = iconRect.x + 25
-    let y = iconRect.y + 15
-
+    const sliderX = await page.data('sliderX')
+    const sliderY = await page.data('sliderY')
+    const x = sliderX + 25
+    const y = sliderY + 15
     // 滑动事件
     await program.swipe({
-      startPoint: {x: x, y: y},
-      endPoint: {x: x+1000,y: y},
+      startPoint: {x, y},
+      endPoint: {x: x + 1000, y},
       duration: 300
     })
 
@@ -47,15 +39,14 @@ describe('touch-events-test', () => {
   })
 
   it('test-slider-click', async () => {
-
-    let iconRect = await page.data('sliderRect')
-    let x = iconRect.x + 100
-    let y = iconRect.y + iconRect.height / 2.0
+    const sliderX = await page.data('sliderX')
+    const sliderY = await page.data('sliderY')
+    const sliderHeight = await page.data('sliderHeight')
+    const x = sliderX + 100
+    const y = sliderY + sliderHeight / 2.0
 
     // 点击事件
-    await program.tap(
-      {x: x, y: y}
-    )
+    await program.tap({x, y})
 
     await page.waitFor(600);
     const ret = await page.data('sliderValue')

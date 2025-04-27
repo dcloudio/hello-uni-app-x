@@ -5,27 +5,28 @@ const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
+
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
 describe('dialog page', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-    it('skip app-webview', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-  if (isMP) {
-    it('skip mp', () => {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP) {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
   }
 
+  let topSafeArea = 0;
   let page;
   let initLifeCycleNum;
   let lifecycleNum;
   beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+
     page = await program.reLaunch(FIRST_PAGE_PATH)
     await page.waitFor('view');
     initLifeCycleNum = await page.callMethod('getLifeCycleNum');
@@ -34,40 +35,49 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(0)
   });
 
-  it('page pageBody safeAreaInsets', async () => {
-    const pageBodyWidth = await page.$('#page-body-width')
-    expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
-    const pageBodyHeight = await page.$('#page-body-height')
-    expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
+  if (!isHarmony) {
+    it('page pageBody safeAreaInsets', async () => {
+        const pageBodyWidth = await page.$('#page-body-width')
+        expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
+        const pageBodyHeight = await page.$('#page-body-height')
+        expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
 
-    const pageBodyLeft = await page.$('#page-body-left')
-    const pageBodyRight = await page.$('#page-body-right')
-    const expectRightValue = parseInt(await pageBodyLeft.text()) + parseInt(await pageBodyWidth.text())
-    expect(parseInt(await pageBodyRight.text())).toBe(expectRightValue)
+      const pageBodyLeft = await page.$('#page-body-left')
+      const pageBodyRight = await page.$('#page-body-right')
+      const expectRightValue = parseInt(await pageBodyLeft.text()) + parseInt(await pageBodyWidth.text())
+      expect(parseInt(await pageBodyRight.text())).toBe(expectRightValue)
 
-    const pageBodyTop = await page.$('#page-body-top')
-    const pageBodyBottom = await page.$('#page-body-bottom')
-    const expectBottomValue = parseInt(await pageBodyTop.text()) + parseInt(await pageBodyHeight.text())
-    expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
+      const pageBodyTop = await page.$('#page-body-top')
+      const pageBodyBottom = await page.$('#page-body-bottom')
+      const expectBottomValue = parseInt(await pageBodyTop.text()) + parseInt(await pageBodyHeight.text())
+      expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
 
-    pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
-    if(isWeb){
-      expect(await pageSafeAreaInsetsTop.text()).toBe('44')
-    } else {
-      expect(await pageSafeAreaInsetsTop.text()).toBe('0')
-    }
-    pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
-    if(isWeb){
-      expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
-    }
-    if(isIos || isAndroid){
-      expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
-    }
-    pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
-    expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
-    pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
-    expect(await pageSafeAreaInsetsRight.text()).toBe('0')
-  })
+      pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
+      if(isWeb){
+        expect(await pageSafeAreaInsetsTop.text()).toBe('44')
+      } else {
+        expect(await pageSafeAreaInsetsTop.text()).toBe('0')
+      }
+      pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
+      if(isWeb){
+        expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
+      }
+      if(isIos || isAndroid){
+        expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
+      }
+      pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
+      expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
+      pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
+      expect(await pageSafeAreaInsetsRight.text()).toBe('0')
+
+      const pageWidth = await page.$('#page-width')
+      expect(parseInt(await pageWidth.text())).toBeGreaterThanOrEqual(0)
+      const pageHeight = await page.$('#page-height')
+      expect(parseInt(await pageHeight.text())).toBeGreaterThanOrEqual(0)
+      const pageStatusBarHeight = await page.$('#page-statusBarHeight')
+      expect(parseInt(await pageStatusBarHeight.text())).toBeGreaterThanOrEqual(0)
+    })
+  }
   it('dialogPage pageBody safeAreaInsets', async () => {
     await page.callMethod('openDialogCheckMoreAttribute')
     await page.waitFor(1000)
@@ -78,7 +88,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -99,7 +109,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -129,7 +139,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -163,7 +173,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -181,7 +191,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -215,7 +225,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -232,7 +242,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image1).toSaveImageSnapshot();
@@ -248,7 +258,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image2).toSaveImageSnapshot();
@@ -277,7 +287,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image).toSaveImageSnapshot();
@@ -297,7 +307,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image1).toSaveImageSnapshot();
@@ -313,7 +323,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image2).toSaveImageSnapshot();
@@ -325,7 +335,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image3).toSaveImageSnapshot();
@@ -337,7 +347,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image4).toSaveImageSnapshot();
@@ -349,7 +359,7 @@ describe('dialog page', () => {
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     });
     expect(image5).toSaveImageSnapshot();
@@ -460,32 +470,37 @@ describe('dialog page', () => {
   })
 
 
-  if (isAndroid || isIos) {
+  if (isApp) {
     it('after closeDialogPage reset statusBar color', async () => {
-      const adbScreenShotArea = {
-        x: 900,
-        y: 50,
-        width: 100,
-        height: 70
+      const screenShotArea = {
+        x: 342,
+        y:18,
+        width: 40,
+        height: 20
       };
-      if (isIos && platformInfo.indexOf('13.7') != -1) {
-        adbScreenShotArea.x = 690
-        adbScreenShotArea.y = 25
-        adbScreenShotArea.width = 50
-        adbScreenShotArea.height = 50
-      } else if (process.env.uniTestPlatformInfo.startsWith('android 6')) {
-        adbScreenShotArea.x = 535
-        adbScreenShotArea.width = 90
-        adbScreenShotArea.height = 50
-      } else if (process.env.uniTestPlatformInfo.startsWith('android 12')) {
-        adbScreenShotArea.x = 1160
-        adbScreenShotArea.width = 70
-        adbScreenShotArea.height = 80
+      if (isIos) {
+        screenShotArea.x = 310
+        screenShotArea.y = 20
+        screenShotArea.width = 40
+        screenShotArea.height = 20
+      } else if (platformInfo.startsWith('android 6')) {
+        screenShotArea.x = 204
+        screenShotArea.width = 34
+        screenShotArea.height = 16
+      } else if (platformInfo.startsWith('android 12')) {
+        screenShotArea.x = 336
+        screenShotArea.y = 3
+        screenShotArea.width = 50
+        screenShotArea.height = 20
+      } else if (isHarmony) {
+        screenShotArea.x = 295
+        screenShotArea.y = 14
+        screenShotArea.width = 40
+        screenShotArea.height = 20
       }
-
       const imageForParentInit = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForParentInit).toSaveImageSnapshot();
 
@@ -493,7 +508,7 @@ describe('dialog page', () => {
       await page.waitFor(1000)
       const imageForDialog4_1 = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForDialog4_1).toSaveImageSnapshot();
 
@@ -501,7 +516,7 @@ describe('dialog page', () => {
       await page.waitFor(1000)
       const imageForDialog3 = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForDialog3).toSaveImageSnapshot();
 
@@ -510,7 +525,7 @@ describe('dialog page', () => {
 
       const imageForDialog4_2 = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForDialog4_2).toSaveImageSnapshot();
 
@@ -519,7 +534,7 @@ describe('dialog page', () => {
 
       const imageForParentEnd = await program.screenshot({
         deviceShot: true,
-        area: adbScreenShotArea,
+        area: screenShotArea,
       });
       expect(imageForParentEnd).toSaveImageSnapshot();
     })
@@ -530,22 +545,17 @@ describe('dialog page', () => {
     await page.callMethod('jest_getTapPoint')
     const point_x = await page.data('jest_click_x');
     const point_y = await page.data('jest_click_y');
-    if (isAndroid) {
-      await program.adbCommand("input tap" + " " + point_x + " " + point_y)
-      console.log("input tap" + " " + point_x + " " + point_y);
-    } else {
-      await program.tap({
-        x: Math.round(point_x),
-        y: Math.round(point_y)
-      })
-    }
+    await program.tap({
+      x: Math.round(point_x),
+      y: Math.round(point_y)
+    })
 
     await page.waitFor(1000);
     const image = await program.screenshot({
       deviceShot: true,
       area: {
         x: 0,
-        y: 200,
+        y: topSafeArea + 44
       }
     })
     expect(image).toSaveImageSnapshot()

@@ -1,5 +1,5 @@
 <template>
-  <view class="left-window-style">
+  <view class="left-window-style" :class="{ 'dark-mode': isDarkMode }">
     <view class="second-menu">
       <keep-alive>
         <component :is="active" :hasLeftWin="hasLeftWin" :leftWinActive="leftWinActive"></component>
@@ -42,6 +42,9 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.split('/')[3]
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
       }
     },
     mounted() {
@@ -51,6 +54,7 @@
       }, matched => {
         this.isPC = matched
       })
+      this.handlerRoute(this.$route)
     },
     unmounted() {
       isPcObserver.disconnect()
@@ -97,9 +101,12 @@
     min-height: calc(100vh - var(--top-window-height));
     background-color: #f8f8f8;
   }
-
   .second-menu {
     width: 350px;
     background-color: #F8F8F8;
+  }
+  /* 适配暗黑主题 */
+  .left-window-style.dark-mode{
+    background-color: #1a1a1a;
   }
 </style>

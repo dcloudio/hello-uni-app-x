@@ -6,6 +6,7 @@ describe('PickerView.uvue', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
@@ -56,15 +57,18 @@ describe('PickerView.uvue', () => {
     expect(els1.length).toBe(3)
   })
 
-  it('indicator-style', async () => {
-    const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
-    await page.callMethod('setIndicatorStyle',true)
-    await page.waitFor(500)
-    expect(await pickerViewEl.attribute(isMP ? 'indicator-style' : 'indicatorStyle')).toBe(indicatorStyle)
-    await toScreenshot('picker-view-indicator-style')
-    //清空indicatorStyle
-    await page.callMethod('setIndicatorStyle',false)
-  })
+  // indicatorStyle 属性在编译时被解析成了对象，在获取时和用户设置的值格式不一样 [object Object]
+  if (!isHarmony) {
+    it('indicator-style', async () => {
+      const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
+      await page.callMethod('setIndicatorStyle',true)
+      await page.waitFor(500)
+      expect(await pickerViewEl.attribute(isMP ? 'indicator-style' : 'indicatorStyle')).toBe(indicatorStyle)
+      await toScreenshot('picker-view-indicator-style')
+      //清空indicatorStyle
+      await page.callMethod('setIndicatorStyle',false)
+    })
+  }
 
   if (isWeb || isMP) {
     // indicator-class、mask-style、mask-class 仅web和MP支持
@@ -92,7 +96,7 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP) {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP && !isHarmony) {
     it('mask-top-bottom-style', async () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"

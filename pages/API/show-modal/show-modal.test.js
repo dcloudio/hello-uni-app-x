@@ -1,9 +1,12 @@
 describe('API-loading', () => {
-
+  let topSafeArea = 0
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
-  const isApp = process.env.UNI_OS_NAME === "android" || process.env.UNI_OS_NAME === "ios";
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isIos = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
+  const isApp = isIos || isAndroid || isHarmony
 
   if(isMP) {
     // 微信小程序截图无法截到弹框
@@ -27,6 +30,9 @@ describe('API-loading', () => {
   }
 
   beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+
     page = await program.reLaunch('/pages/API/show-modal/show-modal')
     await page.waitFor('view');
 
@@ -36,17 +42,12 @@ describe('API-loading', () => {
   it("onload-modal-test", async () => {
     if (isApp) {
       await page.waitFor(500);
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
 
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -59,8 +60,14 @@ describe('API-loading', () => {
     }
   })
 
-
   it("modal-test-current-0", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideAll = await page.$('#btn-modal-hide-all')
+    await btnModalButtonHideAll.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 0,
@@ -71,22 +78,17 @@ describe('API-loading', () => {
       placeholderTextSelect: false,
     })
 
+
     const btnModalButton = await page.$('#btn-modal-show')
     await btnModalButton.tap()
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -97,6 +99,8 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
+
+    await page.waitFor(2000);
 
   })
 
@@ -112,22 +116,23 @@ describe('API-loading', () => {
       placeholderTextSelect: false,
     })
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     const btnModalButton = await page.$('#btn-modal-show')
     await btnModalButton.tap()
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -139,10 +144,19 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
+
   })
 
 
   it("modal-test-current-2", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 2,
@@ -158,17 +172,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -180,10 +188,19 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
+
   })
 
 
   it("modal-test-current-2-showCancel", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 2,
@@ -199,17 +216,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -221,11 +232,10 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
 
-
   it("modal-test-current-2-showCancel-cancelText", async () => {
-
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -235,21 +245,23 @@ describe('API-loading', () => {
       placeholderTextSelect: false,
     })
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     const btnModalButton = await page.$('#btn-modal-show')
     await btnModalButton.tap()
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -261,8 +273,9 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
-  })
+    await page.waitFor(2000);
 
+  })
 
   it("modal-test-current-2-showCancel-cancelText-confirmText", async () => {
 
@@ -275,21 +288,24 @@ describe('API-loading', () => {
       placeholderTextSelect: false,
     })
 
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     const btnModalButton = await page.$('#btn-modal-show')
     await btnModalButton.tap()
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -301,10 +317,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
+
   })
 
-
   it("modal-test-current-2-showCancel-cancelText-confirmText-editable-placeholder", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 2,
@@ -320,16 +344,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -340,12 +359,21 @@ describe('API-loading', () => {
       });
       expect(image).toSaveImageSnapshot()
     }
+
+    await page.waitFor(2000);
 
   })
 
 
   it("modal-test-current-2-showCancel-confirmText-editable-placeholder", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -360,16 +388,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -381,11 +404,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
-
 
   it("modal-test-current-2-showCancel-editable-placeholder", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -400,17 +430,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -422,11 +446,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
-
 
   it("modal-test-current-2-showCancel-placeholder", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -441,17 +472,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -463,11 +488,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
-
 
   it("modal-test-current-2-showCancel", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -482,17 +514,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -504,11 +530,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
-
 
   it("modal-test-current-2-showCancel-cancelText-editable-placeholder", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -523,17 +556,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -545,11 +572,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
-
 
   it("modal-test-current-2-showCancel-cancelText-placeholder", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -564,17 +598,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -586,11 +614,19 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
-  })
+    await page.waitFor(2000);
 
+  })
 
   it("modal-test-current-2-showCancel-cancelText", async () => {
 
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -605,17 +641,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -627,11 +657,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
+
   })
 
-
-
   it("modal-test-current-2-showCancel-cancelText-confirmText-placeholder", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 2,
@@ -647,16 +684,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -668,10 +700,18 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
+
   })
 
-
   it("modal-test-current-2-showCancel-cancelText-confirmText", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 2,
@@ -687,17 +727,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
-
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -709,10 +743,17 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+     await page.waitFor(2000);
   })
 
-
   it("modal-test-current-2-showCancel-cancelText-confirmText-editable", async () => {
+
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
 
     await page.setData({
       current: 2,
@@ -728,16 +769,11 @@ describe('API-loading', () => {
     await page.waitFor(500);
 
     if (isApp) {
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       const image = await program.screenshot({
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight - 200,
-          width:windowWidth
+          y: topSafeArea + 44,
         },
       });
       expect(image).toSaveImageSnapshot();
@@ -749,6 +785,121 @@ describe('API-loading', () => {
       expect(image).toSaveImageSnapshot()
     }
 
+    await page.waitFor(2000);
   })
+
+
+  it("modal-test-current-0-multi-time-show-hideall", async () => {
+
+    await page.setData({
+      current: 0,
+    })
+    /**
+     * 延迟3s 关闭
+     */
+    const btnModalButtonHideAll = await page.$('#btn-modal-hide-all')
+    await btnModalButtonHideAll.tap()
+    await page.waitFor(500);
+    /**
+     * 等待1s 出现三个截图
+     */
+    const btnModalButtonMultiTime = await page.$('#btn-modal-show-multitime')
+    await btnModalButtonMultiTime.tap()
+    await page.waitFor(1000);
+
+    if (isApp) {
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: topSafeArea + 44,
+        },
+      });
+      expect(image).toSaveImageSnapshot();
+    }else{
+      const image = await program.screenshot({
+        deviceShot: true,
+        fullPage: true
+      });
+      expect(image).toSaveImageSnapshot()
+    }
+    /**
+     * 等待2s 全部关闭全部
+     */
+    await page.waitFor(2000);
+    if (isApp) {
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: topSafeArea + 44,
+        },
+      });
+      expect(image).toSaveImageSnapshot();
+    }else{
+      const image = await program.screenshot({
+        deviceShot: true,
+        fullPage: true
+      });
+      expect(image).toSaveImageSnapshot()
+    }
+  })
+
+  it("modal-test-current-1-multi-time-show-hidelast", async () => {
+    await page.setData({
+      current: 1,
+    })
+    /**
+     * 延迟3s 关闭最后一个
+     */
+    const btnModalButtonHideLast = await page.$('#btn-modal-hide-last')
+    await btnModalButtonHideLast.tap()
+    await page.waitFor(500);
+    /**
+     * 等待1s 出现三个截图
+     */
+    const btnModalButtonMultiTime = await page.$('#btn-modal-show-multitime')
+    await btnModalButtonMultiTime.tap()
+    await page.waitFor(1000);
+
+    if (isApp) {
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: topSafeArea + 44,
+        },
+      });
+      expect(image).toSaveImageSnapshot();
+    }else{
+      const image = await program.screenshot({
+        deviceShot: true,
+        fullPage: true
+      });
+      expect(image).toSaveImageSnapshot()
+    }
+    /**
+     * 等待2s 还剩下两个
+     */
+    await page.waitFor(2000);
+
+    if (isApp) {
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: topSafeArea + 44,
+        },
+      });
+      expect(image).toSaveImageSnapshot();
+    }else{
+      const image = await program.screenshot({
+        deviceShot: true,
+        fullPage: true
+      });
+      expect(image).toSaveImageSnapshot()
+    }
+  })
+
 
 });

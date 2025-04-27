@@ -2,15 +2,10 @@ const PAGE_PATH = '/pages/component/global-events/touch-events-case'
 
 describe('touch-events-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
 
-  if (
-    isWeb ||
-    isMP
-  ) {
+  if (isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -33,19 +28,22 @@ describe('touch-events-test', () => {
 
   it('touch-event-case1', async () => {
 
+    // const windowInfo = await program.callUniMethod('getWindowInfo');
+    // const halfWidth = windowInfo.windowWidth / 2
     let x = 40
     let y = 150
 
     // 滑动事件
     await program.swipe({
       startPoint: {x: x, y: y},
-      endPoint: {x: x+200,y: y},
+      endPoint: {x: x + 300, y: y},
+      // endPoint: {x: x + halfWidth + 20, y: y},
       duration: 300
     })
 
     await page.waitFor(1500);
     const swiperChangeEvent = await page.data('swiperChangeEvent')
-    console.log("swiperChangeEvent:", swiperChangeEvent)
+    // console.log("swiperChangeEvent:", swiperChangeEvent)
     expect(swiperChangeEvent).toBe(true)
   })
 
@@ -58,7 +56,8 @@ describe('touch-events-test', () => {
     expect(ret).toBe(true)
   })
 
-  it('touch-event-case3', async () => {
+  // TODO: harmony swiper preventDefault
+  it('test swiper preventDefault stopPropagation', async () => {
     await page.waitFor(1500);
     await page.callMethod('resetEvent')
     let x = 25
@@ -78,7 +77,6 @@ describe('touch-events-test', () => {
   })
 
   it('touch-event-case4', async () => {
-
     const viewTouchEvent = await page.data('viewTouchEvent')
     const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
     const swiperTouchEvent = await page.data('swiperTouchEvent')

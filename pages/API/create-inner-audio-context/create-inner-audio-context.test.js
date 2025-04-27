@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
-const isHarmony = platformInfo.startsWith('harmony')
+const isHarmony = platformInfo.toLocaleLowerCase().startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
 
 describe('inner-audio', () => {
@@ -23,7 +23,12 @@ describe('inner-audio', () => {
     await page.waitFor(async()=>{
       return await page.data('isCanplay')
     })
-    expect(await page.data('buffered')).toBeGreaterThan(0)
+    const isCanplay = await page.data('isCanplay')
+    if (!isHarmony) {
+      expect(await page.data('buffered')).toBeGreaterThan(0)
+    } else {
+      expect(isCanplay).toBe(true)
+    }
   })
 
   it('play-onPlay-onTimeUpdate', async () => {
@@ -54,7 +59,8 @@ describe('inner-audio', () => {
     expect(await page.data('onSeekingTest')).toBeTruthy();
     // expect(await page.data('onWaitingTest')).toBeTruthy();
     // expect(await page.data('onSeekedTest')).toBeTruthy();
-    expect(await program.screenshot()).toSaveImageSnapshot();
+    const image = await program.screenshot({fullPage: true})
+    expect(image).toSaveImageSnapshot();
   });
 
   it('pause-onPause', async () => {

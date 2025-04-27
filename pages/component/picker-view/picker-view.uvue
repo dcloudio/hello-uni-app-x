@@ -74,7 +74,12 @@
     methods: {
       setIndicatorStyle(checked : boolean) {
         const extraStyle = 'height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);';
+        // #ifdef APP-HARMONY
+        this.indicatorStyle = checked ? extraStyle : "height: 50px;border:none;background:transparent;";
+        // #endif
+        // #ifndef APP-HARMONY
         this.indicatorStyle = checked ? extraStyle : "height: 50px;";
+        // #endif
       },
       setIndicatorClass(checked : boolean) {
         this.indicatorClass = checked ? "indicator-test" : ""
@@ -88,11 +93,21 @@
       },
       setMaskTopStyle(checked : boolean) {
         const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
+        // #ifdef APP-HARMONY
+        this.maskTopStyle = checked ? linearToTop : "background-image: linear-gradient(to bottom, transparent, transparent);"
+        // #endif
+        // #ifndef APP-HARMONY
         this.maskTopStyle = checked ? linearToTop : ""
+        // #endif
       },
       setMaskBottomStyle(checked : boolean) {
         const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
+        // #ifdef APP-HARMONY
+        this.maskBottomStyle = checked ? linearToBottom : "background-image: linear-gradient(to bottom, transparent, transparent);"
+        // #endif
+        // #ifndef APP-HARMONY
         this.maskBottomStyle = checked ? linearToBottom : ""
+        // #endif
       },
       // 自动化测试
       getEventCallbackNum() : number {

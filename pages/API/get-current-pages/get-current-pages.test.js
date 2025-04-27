@@ -1,11 +1,21 @@
+jest.setTimeout(30000)
+
 const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe('getCurrentPages', () => {
   let page
+  const deviceScreenshotParams = {
+    deviceShot: true,
+    area: {
+      x: 0,
+      y: 0,
+    }
+  }
   it('getCurrentPages', async () => {
     // web 端等待应用首页加载完成
     if (process.env.uniTestPlatformInfo.startsWith('web')) {
@@ -28,13 +38,16 @@ describe('getCurrentPages', () => {
     expect(data.checked).toBe(true)
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+  if (isMP) {
     return
   }
   it('page-style', async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    deviceScreenshotParams.area.y = windowInfo.safeAreaInsets.top + 44;
+
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh1 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    const isEnablePullDownRefresh1 = await page.data('currentPageStyle.enablePullDownRefresh')
     expect(isEnablePullDownRefresh1).toBe(true)
 
     // setPageStyle
@@ -45,8 +58,7 @@ describe('getCurrentPages', () => {
 
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const data2 = await page.data()
-    const isEnablePullDownRefresh2 = data2.currentPageStyle.enablePullDownRefresh
+    const isEnablePullDownRefresh2 = await page.data('currentPageStyle.enablePullDownRefresh')
     expect(isEnablePullDownRefresh2).toBe(false)
 
     await page.callMethod('startPullDownRefresh')
@@ -73,17 +85,26 @@ describe('getCurrentPages', () => {
       androidThreeButtonNavigationBackgroundColor: 'aqua'
     });
     await page.waitFor(2000);
-    const image4 = await program.screenshot({ deviceShot: true });
+    const image4 = await program.screenshot(deviceScreenshotParams);
     expect(image4).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-androidThreeButtonNavigationBackgroundColor'
+    }});
+
+    await page.callMethod('setPageStyle', {
+      androidThreeButtonNavigationStyle: 'black'
+    });
+    await page.waitFor(2000);
+    const image5 = await program.screenshot(deviceScreenshotParams);
+    expect(image5).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'get-current-pages-test-androidThreeButtonNavigationStyle'
     }});
 
     await page.callMethod('setPageStyle', {
       androidThreeButtonNavigationTranslucent: true
     });
     await page.waitFor(2000);
-    const image5 = await program.screenshot({ deviceShot: true });
-    expect(image5).toSaveImageSnapshot({customSnapshotIdentifier() {
+    const image6 = await program.screenshot(deviceScreenshotParams);
+    expect(image6).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
     }});
 
@@ -92,11 +113,10 @@ describe('getCurrentPages', () => {
       hideStatusBar: true
     })
     await page.waitFor(2000);
-    const image6 = await program.screenshot({ deviceShot: true });
-    expect(image6).toSaveImageSnapshot({customSnapshotIdentifier() {
+    const image7 = await program.screenshot(deviceScreenshotParams);
+    expect(image7).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
-
   })
   it('$page', async () => {
     await page.setData({testing: true})
@@ -127,4 +147,11 @@ describe('getCurrentPages', () => {
     const res = await page.callMethod('checkGetHTMLElement')
     expect(res).toBe(isWeb)
   })
+
+  if(isAndroid) {
+    it('getAndroidActivity', async () => {
+      const res = await page.callMethod('checkGetAndroidActivity')
+      expect(res).toBe(true)
+    })
+  }
 })

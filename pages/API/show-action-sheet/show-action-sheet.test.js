@@ -1,13 +1,15 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
-const isApp = isAndroid || isIos
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 
 
-describe('API-loading', () => {
+describe('showActionSheet', () => {
+  let topSafeArea = 0;
   let page;
   let screenShotOptions = {};
   async function showActionSheet(page) {
@@ -22,21 +24,22 @@ describe('API-loading', () => {
   }
 
   beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
+    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+
     page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
     if (isApp && !isAppWebview) {
-      await page.callMethod('setThemeAuto')
+      if(isAndroid || isIos){
+        await page.callMethod('setThemeAuto')
+      }
 
-      const res = await page.callMethod('jest_getWindowInfo')
-      const windowHeight = res.windowHeight * res.pixelRatio;
-      const windowWidth = res.windowWidth * res.pixelRatio;
       screenShotOptions = {
         deviceShot: true,
         area: {
           x: 0,
-          y: 200,
-          height: windowHeight + (isAndroid ? 30 : 70),
-          width: windowWidth
+          y: topSafeArea + 44
         },
       }
     } else if (isWeb){
@@ -157,7 +160,7 @@ describe('API-loading', () => {
     })
   }
   afterAll(async () => {
-    if(isApp && !isAppWebview){
+    if((isAndroid || isIos) && !isAppWebview){
       await page.callMethod('resetTheme')
     }
   });

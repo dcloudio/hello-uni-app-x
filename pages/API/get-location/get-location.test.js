@@ -2,13 +2,14 @@ const PAGE_PATH = "/pages/API/get-location/get-location";
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("get-location", () => {
     if (isMP || isWeb) {
-      // 微信、web上会有权限弹框，暂时屏蔽测试
+      // 微信、web harmony 上会有权限弹框，暂时屏蔽测试
       it('not support', async () => {
         expect(1).toBe(1)
       })
@@ -30,6 +31,9 @@ describe("get-location", () => {
           jest_isHighAccuracy: false
         })
         await page.callMethod('jestGetLocation')
+        if (isHarmony) {
+          await program.tap({x: 100, y: 525})
+        }
         await page.waitFor(async () => {
           return await page.data('jest_complete') === true;
         });

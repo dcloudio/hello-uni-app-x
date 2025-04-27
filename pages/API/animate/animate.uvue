@@ -5,6 +5,7 @@
     <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1);"></view>
 
     <button @click="startAnimate">开始动画</button>
+    <!-- #ifndef APP-HARMONY -->
     <!-- #ifndef MP-WEIXIN -->
     <button @click="pauseAnimate">暂停动画</button>
     <button @click="resumeAnimate">恢复动画</button>
@@ -52,12 +53,15 @@
      <text style="margin-bottom: 4px;">修改position</text>
      <view id="positionProperty" style="width: 100px;height: 100px;background-color: brown;" @click="positionProperty"></view>
    </view>
+    <!-- #endif -->
    <!-- #ifndef MP-WEIXIN -->
+   <!-- #ifndef APP-HARMONY -->
    <view
      style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
      <text style="margin-bottom: 4px;">修改背景色和宽度</text>
      <view id="backgroundAndWidthProperty" style="width: 100px;height: 100px;background-color: brown;" @click="backgroundAndWidthProperty"></view>
    </view>
+   <!-- #endif -->
    <view
      style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
      <text style="margin-bottom: 4px;">执行的动画只有一个值1</text>
@@ -86,10 +90,17 @@
    </view>
    <view
      style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
+     <text style="margin-bottom: 4px;">修改opacity(关键帧)</text>
+     <view id="opacityProperty" style="width: 100px;height: 100px;background-color: brown;" @click="opacityProperty"></view>
+   </view>
+   <!-- #ifndef APP-HARMONY -->
+   <view
+     style="border-radius: 5px;margin: 4px;padding: 4px;border-style: solid;background-color: #eee;border-color: #eee;">
      <text style="margin-bottom: 4px;">修改border-color和margin-left(关键帧)</text>
      <view id="borderColorMarginLeftProperty" style="width: 100px;height: 100px;background-color: brown;border-width: 5px;border-style: solid;"
        @click="borderColorMarginLeftProperty"></view>
    </view>
+   <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -327,6 +338,24 @@
             marginLeft: "60px",
             borderColor: "yellow",
             offset: 1
+          }
+        ], {
+          duration: 1000,
+          fill: "forwards"
+        })
+      },
+      opacityProperty(e : UniPointerEvent){
+        e.currentTarget?.animate([
+          {
+            offset: 0.3,
+            opacity: "1"
+          },
+          {
+            offset: 0.6,
+            opacity: "0.1"
+          },
+          {
+            opacity: "1"
           }
         ], {
           duration: 1000,

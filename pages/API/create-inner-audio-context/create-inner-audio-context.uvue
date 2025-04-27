@@ -11,12 +11,11 @@
 			<view class="uni-title">
 				<text class="uni-title-text">属性示例</text>
 			</View>
-			<text class="uni-text-box uni-common-mt">当前音频播放位置（保留小数点后 6 位）：{{currentTime}} s</text>
+			<text class="uni-text-box uni-common-mt">当前音频播放位置（保留小数点后 3 位）：{{currentTime}} s</text>
 			<text class="uni-text-box">音频的长度（单位:s）：{{duration}} s</text>
 			<text class="uni-text-box">当前是否停止状态：{{isPaused}}</text>
 			<text class="uni-text-box">音频缓冲的时间点：{{buffered}} s</text>
 			<text class="uni-text-box">当前音量：{{volume}}</text>
-			<!-- 设置音量无效 -->
 			<button plain :disabled="volume == 1" @click="increaseVolume">增加音量</button>
 			<button plain :disabled="volume == 0" @click="decreaseVolume">减少音量</button>
 
@@ -26,7 +25,7 @@
 			<boolean-data :defaultValue="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
 			<boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
 			<text class="uni-subtitle-text uni-title"
-				style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web不支持)</text>
+				style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web/HarmonyOS 不支持)</text>
 			<radio-group class="uni-flex uni-row radio-group" @change="playbackRateChange"
 				style="flex-wrap: wrap;padding: 10px;">
 				<radio value="0.5" style="margin-right: 3px">0.5
@@ -169,15 +168,15 @@
 			onchange(e : UniSliderChangeEvent) {
 				let pos = e.detail.value;
 				console.log('pos', pos);
-				this._audioContext!.seek(pos);
 				this.onSeeking()
 				this.onSeeked()
+				this._audioContext!.seek(pos);
 				this._isChanging = false;
 			},
 			onchangeValue(pos : number) {
-				this._audioContext!.seek(pos);
 				this.onSeeking()
 				this.onSeeked()
+				this._audioContext!.seek(pos);
 				this._isChanging = false;
 			},
 			startTimeInput(e : UniInputEvent) {

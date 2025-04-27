@@ -4,6 +4,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
 describe('component-native-scroll-view', () => {
   let page;
   beforeAll(async () => {
@@ -77,6 +78,10 @@ describe('component-native-scroll-view', () => {
 
   if(!isWeb && !isMP){
     it('Event scrollend-滚动结束时触发仅App端支持',async()=>{
+      if(isHarmony) {
+        // 鸿蒙scrollEnd触发比较慢
+        await page.waitFor(500)
+      }
       const endDetail = await page.data('scrollEndDetailTest')
       console.log('scrollEndDetailTest:', endDetail)
       expect(endDetail.scrollLeft).toBe(0)
