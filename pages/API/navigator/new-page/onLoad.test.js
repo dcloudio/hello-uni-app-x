@@ -7,11 +7,12 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
 const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
 let page;
 
 describe("onLoad", () => {
- if (isMP) {
+ if (isMP || isHarmony) {
     it('mp not support', () => {
       expect(1).toBe(1)
     })
