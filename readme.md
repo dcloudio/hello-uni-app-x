@@ -50,3 +50,13 @@ pages/CSS/xxx/xxx 的页面应该相邻放置，\
 `pages.json/groups` 中维护了基于 `syntaxdoc/modules.json` 获取的目录信息。
 
 调整现有页面的路径或平台兼容性，或移除页面时，如果该页面涉及截图对比测试，需要同时调整 `pages/pages.test.js` 中的页面地址。
+
+### 仓库分支与 HBuilder 版本对应关系
+
+- master 对应 [HBuilder](https://www.dcloud.io/hbuilderx.html) 正式版
+- alpha 对应 [HBuilder](https://www.dcloud.io/hbuilderx.html) Alpha 版
+- dev 对应 [HBuilder](https://www.dcloud.io/hbuilderx.html) 内部 dev 版
+
+### tags 与 HBuilder 版本对应关系
+
+例: v_4.63-alpha 对应 HBuilder 4.63-alpha 版本
