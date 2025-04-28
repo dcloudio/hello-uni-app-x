@@ -12,6 +12,6 @@ describe('sse-channel', () => {
     const {
       messages
     } = await page.data()
-    expect(messages.length).toBe(3)
+    expect(messages.length).toBe(2)
   })
 });

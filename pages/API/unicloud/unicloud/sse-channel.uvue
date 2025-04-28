@@ -26,11 +26,15 @@
       async receiveMessage() {
         this.messages.splice(0, this.messages.length)
         const sseChannel = new uniCloud.SSEChannel()
-        sseChannel.on('message', (message: string) => {
-          this.messages.push(message)
+        sseChannel.on('message', (message?: any | null) => {
+          if(typeof message === 'string') {
+            this.messages.push(message)
+          }
         })
-        sseChannel.on('end', (message: string) => {
-          this.messages.push(message)
+        sseChannel.on('end', (message?: any | null) => {
+          if(typeof message === 'string') {
+            this.messages.push(message)
+          }
         })
         sseChannel.on('open', () => {
           console.log('sseChannel open')
