@@ -1,12 +1,12 @@
 const PAGE_PATH = '/pages/API/unicloud/unicloud/sse-channel'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 
-describe('unicloud-database', () => {
+describe('sse-channel', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
   })
 
-  it('sse channel', async () => {
+  it('basic', async () => {
     await page.callMethod('receiveMessage')
     await page.waitFor(2000)
     const {
