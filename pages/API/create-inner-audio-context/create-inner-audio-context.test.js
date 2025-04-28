@@ -5,7 +5,7 @@ const isHarmony = platformInfo.toLocaleLowerCase().startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
 
 describe('inner-audio', () => {
-  // TODO: safari 运行正常，测试时报错导致后续超时，暂时屏蔽
+  // safari 浏览器运行正常，playwright 环境下给 Audio 实例 src 属性赋值会崩溃
   if (isMP || isIos || isSafari) {
     it('not support', () => {
       expect(1).toBe(1)
