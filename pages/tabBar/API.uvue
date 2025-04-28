@@ -81,8 +81,25 @@
       },
       isDarkMode() : boolean {
         return state.isDarkMode
+      },
+      netless() : boolean {
+        return state.netless
       }
     },
+    // #ifdef APP-HARMONY
+    watch: {
+      'netless': {
+        immediate: true,
+        handler(netless) {
+          if (netless) {
+            this.menu = this.menu.filter(item => {
+              return !['unicloud'].includes(item.id)
+            })
+          }
+        }
+      }
+    },
+    // #endif
     methods: {
       goPage(url : string) {
         if (url == '/set-tab-bar') {

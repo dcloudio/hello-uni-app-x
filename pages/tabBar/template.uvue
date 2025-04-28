@@ -251,8 +251,25 @@
       },
       isDarkMode() : boolean {
         return state.isDarkMode
+      },
+      netless() : boolean {
+        return state.netless
       }
     },
+    // #ifdef APP-HARMONY
+    watch: {
+      'netless': {
+        immediate: true,
+        handler(netless) {
+          if (netless) {
+            this.list = this.list.filter(item => {
+              return !['list-news'].includes(item.id)
+            })
+          }
+        }
+      }
+    },
+    // #endif
     methods: {
       triggerCollapse(index : number, item : ListItem) {
         if (item.pages.length == 0) {
