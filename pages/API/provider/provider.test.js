@@ -6,7 +6,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const PAGE_PATH = "/pages/API/provider/provider";
 
 describe("provider", () => {
-  if (isMP || isWeb || isHarmony || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (isMP || isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})

@@ -1,7 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-list-view-refresh', () => {
   if (isWeb || isMP) {
