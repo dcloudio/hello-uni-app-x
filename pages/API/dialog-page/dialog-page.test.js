@@ -36,10 +36,10 @@ describe('dialog page', () => {
   });
 
   it('page pageBody safeAreaInsets', async () => {
-      const pageBodyWidth = await page.$('#page-body-width')
-      expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
-      const pageBodyHeight = await page.$('#page-body-height')
-      expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
+    const pageBodyWidth = await page.$('#page-body-width')
+    expect(parseInt(await pageBodyWidth.text())).toBeGreaterThan(0)
+    const pageBodyHeight = await page.$('#page-body-height')
+    expect(parseInt(await pageBodyHeight.text())).toBeGreaterThan(0)
 
     const pageBodyLeft = await page.$('#page-body-left')
     const pageBodyRight = await page.$('#page-body-right')
@@ -70,9 +70,9 @@ describe('dialog page', () => {
     expect(await pageSafeAreaInsetsRight.text()).toBe('0')
 
     const pageWidth = await page.$('#page-width')
-    expect(parseInt(await pageWidth.text())).toBeGreaterThanOrEqual(0)
+    expect(parseInt(await pageWidth.text())).toBeGreaterThan(0)
     const pageHeight = await page.$('#page-height')
-    expect(parseInt(await pageHeight.text())).toBeGreaterThanOrEqual(0)
+    expect(parseInt(await pageHeight.text())).toBeGreaterThan(0)
     const pageStatusBarHeight = await page.$('#page-statusBarHeight')
     expect(parseInt(await pageStatusBarHeight.text())).toBeGreaterThanOrEqual(0)
   })
