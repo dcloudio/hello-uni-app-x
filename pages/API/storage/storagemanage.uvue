@@ -83,17 +83,6 @@
 			</view>
 		</view>
 
-		<!-- 确认弹窗 -->
-		<view v-if="showConfirmDialog" class="dialog-mask" @click="closeConfirm">
-			<view class="dialog-content">
-				<text class="dialog-title">确认操作</text>
-				<text>{{ confirmMessage }}</text>
-				<view class="popup-actions">
-					<button class="btn mr-20" type="warn" @click="confirmAction">确定</button>
-					<button class="btn" type="primary" @click="closeConfirm">取消</button>
-				</view>
-			</view>
-		</view>
 	</view>
 </template>
 
@@ -115,9 +104,6 @@
 	const editValueType = ref('')
 	const showDetailDialog = ref(false)
 	const showEditDialog = ref(false)
-	const showConfirmDialog = ref(false)
-	const confirmMessage = ref('')
-	const confirmAction = ref(() => { })
 	const valueTypeOptions = ['String', 'Number', 'Boolean', 'Object', 'Array']
 	const valueTypeDefaultMap = new Map<string, string>()
 	valueTypeDefaultMap.set('String', '')
@@ -268,7 +254,7 @@
 			case 'Array':
 				try {
 					const arr = JSON.parse(editValue.value) as Array<any>
-					storeValue = arr
+					storeValue = arr // 直接存储数组
 				} catch {
 					storeValue = [] as Array<any>
 				}
@@ -310,13 +296,19 @@
 		}
 	}
 	function confirmDelete(index : number) {
-		showConfirmDialog.value = true
-		confirmMessage.value = '确定要删除该项吗？'
-		confirmAction.value = () => {
-			handleDelete(index)
-			showConfirmDialog.value = false
-			closeDetail()
-		}
+		uni.showModal({
+			title: '确认操作',
+			content: '确定要删除该项吗？',
+			showCancel: true,
+			cancelText: '取消',
+			confirmText: '确定',
+			success: (res) => {
+				if (res.confirm) {
+					showDetailDialog.value = false
+					handleDelete(index)
+				}
+			}
+		})
 	}
 	function handleClear() {
 		clearStorage()
@@ -327,15 +319,19 @@
 		editValue.value = ''
 	}
 	function confirmClear() {
-		showConfirmDialog.value = true
-		confirmMessage.value = '确定要清空所有数据吗？'
-		confirmAction.value = () => {
-			handleClear()
-			showConfirmDialog.value = false
-		}
-	}
-	function closeConfirm() {
-		showConfirmDialog.value = false
+		uni.showModal({
+			title: '确认操作',
+			content: '确定要清空所有数据吗？',
+			showCancel: true,
+			cancelText: '取消',
+			confirmText: '确定',
+			success: (res) => {
+				if (res.confirm) {
+					showDetailDialog.value = false
+					handleClear()
+				}
+			}
+		})
 	}
 	function getDetailIndex() : number {
 		return storageList.value.findIndex(item => item.key === detailItem.value.key)
