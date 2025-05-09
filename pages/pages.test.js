@@ -115,8 +115,8 @@ const pages = [
   // '/pages/API/navigator/new-page/new-page-1',
   '/pages/API/navigator/new-page/new-page-3',
   '/pages/API/navigator/new-page/onLoad',
-  // 下拉刷新，不进行截图
-  '/pages/API/pull-down-refresh/pull-down-refresh',
+  // 单独测试例截图
+  // '/pages/API/pull-down-refresh/pull-down-refresh',
   // 单独测试例截图
   // '/pages/API/get-element-by-id/get-element-by-id',
   // 单独测试例截图
