@@ -1,0 +1,528 @@
+<template>
+	<view class="container">
+		<view class="header">
+			<text class="uni-title-text">Storage管理器</text>
+			<button class="btn" type="primary" @click="openEditDialogNew">新建</button>
+			<button class="btn" type="default" @click="confirmClear" v-if="storageList.length>0">清空所有</button>
+		</view>
+		<list-view class="list-view" v-if="storageList.length>0">
+			<list-item v-for="(item, index) in storageList" :key="item.key" @click="showDetail(item)">
+				<view class="item-block">
+					<view class="item-row">
+						<text class="item-label">Key：</text>
+						<text class="item-key">{{ item.key }}</text>
+					</view>
+					<view class="item-row">
+						<text class="item-label">Data：</text>
+						<text class="item-key">{{ truncate(item.value) }}</text>
+					</view>
+					<view class="item-row">
+						<text class="item-label">Type：</text>
+						<text class="item-key">{{ item.type }}</text>
+					</view>
+					<view class="item-row item-actions-row">
+						<button class="btn" type="default" @click.stop="confirmDelete(index)">删除</button>
+						<button class="btn" type="primary" @click.stop="openEditDialogEdit(item, index)">编辑</button>
+					</view>
+				</view>
+			</list-item>
+		</list-view>
+		<view v-else class="uni-list-cell-db empty-tip">
+			<text>暂无数据</text>
+		</view>
+
+		<!-- 详情弹窗 -->
+		<view v-if="showDetailDialog" class="dialog-mask" @click="closeDetail">
+			<view class="dialog-content" @click.stop>
+				<text class="dialog-title">详情</text>
+				<view class="detail-row">
+					<text class="item-label">Key：</text>
+					<text class="item-key">{{ detailItem.key }}</text>
+				</view>
+				<view class="detail-row">
+					<text class="item-label">Data：</text>
+					<text class="item-key uni-list-cell-db-text">{{ detailItem.value }}</text>
+				</view>
+				<view class="detail-row">
+					<text class="item-label">Type：</text>
+					<text class="item-key">{{ detailItem.type }}</text>
+				</view>
+				<view class="uni-common-mt popup-actions">
+					<button class="btn mr-20" type="primary" @click="openEditDialogEdit(detailItem, getDetailIndex())">编辑</button>
+					<button class="btn mr-20" type="warn" @click="confirmDelete(getDetailIndex())">删除</button>
+					<button class="btn" @click="closeDetail">关闭</button>
+				</view>
+			</view>
+		</view>
+
+		<!-- 新建/编辑弹窗 -->
+		<view v-if="showEditDialog" class="dialog-mask" @click="closeEdit">
+			<view class="dialog-content" @click.stop>
+				<text class="dialog-title">{{ isEditing ? '编辑' : '新建' }}</text>
+				<view class="edit-row">
+					<text class="edit-label">Key</text>
+					<input v-model="editKey" placeholder="请输入key" class="edit-input" />
+				</view>
+				<view class="edit-row">
+					<text class="edit-label">Value</text>
+					<textarea v-model="editValue" placeholder="请输入value" class="edit-textarea" />
+				</view>
+				<view class="edit-row" v-if="!isEditing">
+					<text class="edit-label">类型</text>
+					<radio-group class="edit-type-group" @change="onValueTypeChange">
+						<radio v-for="vt in valueTypeOptions" :key="vt" :value="vt" :checked="editValueType===vt"
+							class="edit-type-radio">
+							<text>{{ vt }}</text>
+						</radio>
+					</radio-group>
+				</view>
+				<view class="popup-actions">
+					<button class="btn mr-20" type="default" @click="closeEdit">取消</button>
+					<button class="btn" type="primary" @click="saveEdit">保存</button>
+				</view>
+			</view>
+		</view>
+
+		<!-- 确认弹窗 -->
+		<view v-if="showConfirmDialog" class="dialog-mask" @click="closeConfirm">
+			<view class="dialog-content">
+				<text class="dialog-title">确认操作</text>
+				<text>{{ confirmMessage }}</text>
+				<view class="popup-actions">
+					<button class="btn mr-20" type="warn" @click="confirmAction">确定</button>
+					<button class="btn" type="primary" @click="closeConfirm">取消</button>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	type StorageItem = {
+		key : string
+		value : string
+		type : string
+	}
+	type StorageList = Array<StorageItem>
+	const storageList = ref([] as StorageItem[])
+	const newKey = ref('')
+	const newValue = ref('')
+	const isEditing = ref(false)
+	const editIndex = ref(-1)
+	const detailItem = ref({ key: '', value: '', type: '' } as StorageItem)
+	const editKey = ref('')
+	const editValue = ref('')
+	const editValueType = ref('')
+	const showDetailDialog = ref(false)
+	const showEditDialog = ref(false)
+	const showConfirmDialog = ref(false)
+	const confirmMessage = ref('')
+	const confirmAction = ref(() => { })
+	const valueTypeOptions = ['String', 'Number', 'Boolean', 'Object', 'Array']
+	const valueTypeDefaultMap = new Map<string, string>()
+	valueTypeDefaultMap.set('String', '')
+	valueTypeDefaultMap.set('Number', '1')
+	valueTypeDefaultMap.set('Boolean', 'true')
+	valueTypeDefaultMap.set('Object', `{"name": "张三","age": 12}`)
+	valueTypeDefaultMap.set('Array', `[1, "hello", true, { "key": "value" }]`)
+
+	function getStorageList() : StorageList {
+		const list : StorageList = []
+		const storageInfo = uni.getStorageInfoSync()
+		storageInfo.keys.forEach((key : string) => {
+			const value = uni.getStorageSync(key)
+			let strValue : string | null = null
+			let typeStr : string = typeof value
+			if (value != null) {
+				if (typeStr == 'object') {
+					const jsonStr = JSON.stringify(value)
+					strValue = jsonStr
+					if (Array.isArray(JSON.parse(jsonStr))) {
+						typeStr = 'Array'
+					} else {
+						typeStr = 'Object'
+					}
+				} else if (typeStr == 'boolean') {
+					strValue = value == true ? 'true' : 'false'
+					typeStr = 'Boolean'
+				} else if (typeStr == 'number') {
+					strValue = value.toString()
+					typeStr = 'Number'
+				} else {
+					strValue = value.toString()
+					typeStr = 'String'
+				}
+			}
+			if (strValue != null) {
+				list.push({
+					key: key,
+					value: strValue,
+					type: typeStr
+				})
+			}
+		})
+		return list
+	}
+
+	function setStorage(key : string, value : any) {
+		try {
+			uni.setStorageSync(key, value)
+		} catch (e) {
+			console.error('Storage set error:', e)
+		}
+	}
+	function removeStorage(key : string) {
+		try {
+			uni.removeStorageSync(key)
+		} catch (e) {
+			console.error('Storage remove error:', e)
+		}
+	}
+	function clearStorage() {
+		try {
+			uni.clearStorageSync()
+		} catch (e) {
+			console.error('Storage clear error:', e)
+		}
+	}
+	function getStorage(key : string) : string | null {
+		try {
+			const value = uni.getStorageSync(key)
+			return value != null ? value.toString() : null
+		} catch (e) {
+			console.error('Storage get error:', e)
+			return null
+		}
+	}
+
+	function refreshList() {
+		const list = getStorageList()
+		if (!isEditing.value && editKey.value != '') {
+			const idx = list.findIndex(item => item.key === editKey.value)
+			if (idx > 0) {
+				const spliced = list.splice(idx, 1)
+				if (spliced.length > 0) {
+					list.unshift(spliced[0])
+				}
+			}
+		}
+		storageList.value = list
+	}
+
+	function truncate(value : string) : string {
+		if (value.length > 50) {
+			return value.slice(0, 50) + '...'
+		}
+		return value
+	}
+
+	function showDetail(item : StorageItem) {
+		detailItem.value = item
+		showDetailDialog.value = true
+	}
+	function closeDetail() {
+		showDetailDialog.value = false
+	}
+	function openEditDialogNew() {
+		editKey.value = ''
+		editValueType.value = 'String'
+		editValue.value = valueTypeDefaultMap.get('String') ?? ''
+		isEditing.value = false
+		editIndex.value = -1
+		showEditDialog.value = true
+	}
+	function openEditDialogEdit(item : StorageItem, index : number) {
+		editKey.value = item.key
+		editValue.value = item.value
+		isEditing.value = true
+		editIndex.value = index
+		editValueType.value = valueTypeOptions.indexOf(item.type) >= 0 ? item.type : 'String'
+		showEditDialog.value = true
+		closeDetail()
+	}
+	function saveEdit() {
+		if (editKey.value.trim() === '' || editValue.value.trim() === '') {
+			uni.showModal({
+				title: '提示',
+				content: 'Key 和 Value 都不能为空',
+				showCancel: false,
+			})
+			return
+		}
+		let storeValue : any
+		switch (editValueType.value) {
+			case 'Number':
+				storeValue = parseFloat(editValue.value)
+				break
+			case 'Boolean':
+				storeValue = (editValue.value === 'true' || editValue.value === '1')
+				break
+			case 'Object':
+				try {
+					const obj = JSON.parse(editValue.value)
+					storeValue = obj as UTSJSONObject
+				} catch {
+					storeValue = {} as UTSJSONObject
+				}
+				break
+			case 'Array':
+				try {
+					const arr = JSON.parse(editValue.value) as Array<any>
+					storeValue = arr
+				} catch {
+					storeValue = [] as Array<any>
+				}
+				break
+			default:
+				storeValue = editValue.value
+		}
+		if (editIndex.value >= 0) {
+			const oldItem = storageList.value[editIndex.value]
+			if (oldItem.key != editKey.value) {
+				removeStorage(oldItem.key)
+			}
+			setStorage(editKey.value, storeValue)
+		} else {
+			setStorage(editKey.value, storeValue)
+		}
+		refreshList()
+		isEditing.value = false
+		editIndex.value = -1
+		editKey.value = ''
+		editValue.value = ''
+		editValueType.value = 'String'
+		showEditDialog.value = false
+	}
+	function closeEdit() {
+		showEditDialog.value = false
+	}
+	function handleDelete(index : number) {
+		if (index >= 0 && index < storageList.value.length) {
+			const item = storageList.value[index]
+			removeStorage(item.key)
+			refreshList()
+			if (isEditing.value && editIndex.value == index) {
+				isEditing.value = false
+				editIndex.value = -1
+				editKey.value = ''
+				editValue.value = ''
+			}
+		}
+	}
+	function confirmDelete(index : number) {
+		showConfirmDialog.value = true
+		confirmMessage.value = '确定要删除该项吗？'
+		confirmAction.value = () => {
+			handleDelete(index)
+			showConfirmDialog.value = false
+			closeDetail()
+		}
+	}
+	function handleClear() {
+		clearStorage()
+		refreshList()
+		isEditing.value = false
+		editIndex.value = -1
+		editKey.value = ''
+		editValue.value = ''
+	}
+	function confirmClear() {
+		showConfirmDialog.value = true
+		confirmMessage.value = '确定要清空所有数据吗？'
+		confirmAction.value = () => {
+			handleClear()
+			showConfirmDialog.value = false
+		}
+	}
+	function closeConfirm() {
+		showConfirmDialog.value = false
+	}
+	function getDetailIndex() : number {
+		return storageList.value.findIndex(item => item.key === detailItem.value.key)
+	}
+	function onValueTypeChange(e : UniRadioGroupChangeEvent) {
+		const type = e.detail.value
+		editValueType.value = type
+		if (valueTypeDefaultMap.has(type)) {
+			editValue.value = valueTypeDefaultMap.get(type) ?? ''
+		} else {
+			editValue.value = ''
+		}
+	}
+	onLoad(() => {
+		refreshList()
+	})
+</script>
+
+<style>
+	.container {
+		flex-direction: column;
+		background: #f7f8fa;
+		flex: 1;
+	}
+
+	.header {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 24rpx;
+		padding: 20rpx;
+	}
+
+	.btn {
+		height: 40px;
+		font-size: 16px;
+	}
+
+	.mr-20 {
+		margin-right: 40rpx;
+	}
+
+	.list-view {
+		flex: 1;
+		width: 100%;
+		background: #fff;
+		border-radius: 0;
+		padding: 0;
+	}
+
+	.item-block {
+		padding: 26rpx;
+		border-bottom: 1px solid #e5e5e5;
+		background: #fff;
+	}
+
+	.item-row {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 8rpx;
+	}
+
+	.item-label {
+		color: #888;
+		font-size: 14px;
+		margin-right: 8rpx;
+		min-width: 60rpx;
+	}
+
+	.item-key {
+		color: #333;
+		font-size: 15px;
+		flex: 1;
+	}
+
+	.item-actions-row {
+		justify-content: space-between;
+		margin-top: 12rpx;
+		margin-bottom: 0;
+	}
+
+	.dialog-mask {
+		position: fixed;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.18);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 999;
+	}
+
+	.dialog-content {
+		background: #fff;
+		border-radius: 20rpx;
+		padding: 40rpx 32rpx 32rpx 32rpx;
+		min-width: 540rpx;
+		max-width: 690rpx;
+		flex-direction: column;
+		align-items: stretch;
+		position: relative;
+		box-shadow: none;
+	}
+
+	.dialog-title {
+		font-size: 32rpx;
+		font-weight: bold;
+		margin-bottom: 28rpx;
+		text-align: center;
+		color: #222;
+		letter-spacing: 1rpx;
+	}
+
+	.detail-row {
+		flex-direction: row;
+		align-items: flex-start;
+		margin-bottom: 18rpx;
+	}
+
+	.popup-actions {
+		flex-direction: row;
+		justify-content: flex-end;
+		margin-top: 32rpx;
+		margin-right: 16rpx;
+	}
+
+	.error-tip {
+		color: #FF3B30;
+		font-size: 15px;
+		margin-bottom: 16rpx;
+		text-align: center;
+		font-weight: bold;
+	}
+
+	.edit-row {
+		flex-direction: row;
+		align-items: center;
+		margin-bottom: 18rpx;
+	}
+
+	.edit-label {
+		min-width: 70rpx;
+		color: #888;
+		font-size: 15px;
+		margin-right: 12rpx;
+	}
+
+	.edit-input {
+		flex: 1;
+		height: 40px;
+		border: 1px solid #ccc;
+		border-radius: 8rpx;
+		padding: 0 12rpx;
+		font-size: 15px;
+		background: #fff;
+	}
+
+	.edit-textarea {
+		flex: 1;
+		min-height: 80px;
+		border: 1px solid #ccc;
+		border-radius: 8rpx;
+		padding: 10px 12rpx;
+		font-size: 15px;
+		background: #fff;
+	}
+
+	.empty-tip {
+		align-items: center;
+		justify-content: center;
+		color: #bbb;
+		font-size: 28rpx;
+		margin: 40rpx 0;
+	}
+
+	.edit-type-group {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: wrap;
+		width: 90%;
+	}
+
+	.edit-type-radio {
+		margin-right: 24rpx;
+		margin-bottom: 12rpx;
+	}
+</style>
