@@ -170,7 +170,7 @@ describe('showActionSheet', () => {
     })
   }
   afterAll(async () => {
-    if((isAndroid || isIos) && !isAppWebview){
+    if(isApp && !isAppWebview){
       await page.callMethod('resetTheme')
     }
   });
