@@ -160,7 +160,6 @@ const pages = [
   // '/pages/API/get-battery-info/get-battery-info',
   '/pages/API/get-window-info/get-window-info',
   '/pages/API/rpx2px/rpx2px',
-  '/pages/API/request-payment/request-payment/request-payment-uni-pay',
   '/pages/API/request-payment/request-payment/order-detail',
   // 单独测试例截图
   // '/pages/API/resize-observer/resize-observer',
@@ -322,6 +321,7 @@ if (!isAppWebview) {
       '/pages/template/test-uts-button/test-uts-button'
     )
   }
+  pages.push('/pages/API/request-payment/request-payment/request-payment-uni-pay')
 }
 
 if (isAndroid && !isAppWebview) {
