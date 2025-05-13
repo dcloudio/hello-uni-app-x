@@ -271,6 +271,8 @@ const pages = [
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
   '/pages/template/slider-100/slider-100',
+  // 单独测试例截图
+  // '/pages/template/long-list-nested/long-list-nested',
 ]
 
 if (isAndroid && isWeb) {
@@ -299,7 +301,6 @@ if (!isAppWebview) {
   if (isApp) {
     pages.push(
       '/pages/template/custom-refresher/custom-refresher',
-      '/pages/template/long-list-nested/long-list-nested',
       '/pages/API/get-file-system-manager/get-file-system-manager',
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
