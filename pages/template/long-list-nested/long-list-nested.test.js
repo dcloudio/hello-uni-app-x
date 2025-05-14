@@ -16,7 +16,7 @@ describe('long-waterflow-nested', () => {
 
   let page
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/template/long-list-nested/long-list-nested.uvue')
+    page = await program.reLaunch('/pages/template/long-list-nested/long-list-nested')
     await page.waitFor('view')
     await page.waitFor(2000)
   })
