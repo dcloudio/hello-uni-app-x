@@ -284,8 +284,6 @@ if (isAndroid && isWeb) {
 if(!isMP) {
   pages.push(
     '/pages/component/list-view/list-view',
-    '/pages/component/list-view/list-view-multiplex-input',
-    '/pages/component/list-view/list-view-multiplex-video',
     '/pages/component/list-view/list-view-children-in-slot',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
