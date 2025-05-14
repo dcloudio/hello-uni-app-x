@@ -2,8 +2,8 @@
 	<view class="container">
 		<view class="header">
 			<text class="uni-title-text">Storage管理器</text>
-			<button class="btn" type="primary" @click="openEditDialogNew">新建</button>
-			<button class="btn" type="default" @click="confirmClear" v-if="storageList.length>0">清空所有</button>
+			<button class="btn btn-create" type="primary" @click="openEditDialogNew">新建</button>
+			<button class="btn btn-clear" type="default" @click="confirmClear" v-if="storageList.length>0">清空所有</button>
 		</view>
 		<list-view class="list-view" v-if="storageList.length>0">
 			<list-item v-for="(item, index) in storageList" :key="item.key" @click="showDetail(item)">
@@ -21,8 +21,8 @@
 						<text class="item-key">{{ item.type }}</text>
 					</view>
 					<view class="item-row item-actions-row">
-						<button class="btn" type="default" @click.stop="confirmDelete(index)">删除</button>
-						<button class="btn" type="primary" @click.stop="openEditDialogEdit(item, index)">编辑</button>
+						<button class="btn btn-delete" type="default" @click.stop="confirmDelete(index)">删除</button>
+						<button class="btn btn-edit" type="primary" @click.stop="openEditDialogEdit(item, index)">编辑</button>
 					</view>
 				</view>
 			</list-item>
@@ -57,7 +57,7 @@
 		</view>
 
 		<!-- 新建/编辑弹窗 -->
-		<view v-if="showEditDialog" class="dialog-mask" @click="closeEdit">
+		<view v-show="showEditDialog" class="dialog-mask" @click="closeEdit">
 			<view class="dialog-content" @click.stop>
 				<text class="dialog-title">{{ isEditing ? '编辑' : '新建' }}</text>
 				<view class="edit-row">
@@ -78,8 +78,8 @@
 					</radio-group>
 				</view>
 				<view class="popup-actions">
-					<button class="btn mr-20" type="default" @click="closeEdit">取消</button>
-					<button class="btn" type="primary" @click="saveEdit">保存</button>
+					<button class="btn mr-20 btn-cancel" type="default" @click="closeEdit">取消</button>
+					<button class="btn btn-save" type="primary" @click="saveEdit">保存</button>
 				</view>
 			</view>
 		</view>
@@ -102,7 +102,7 @@
 	const detailItem = ref({ key: '', value: '', type: '' } as StorageItem)
 	const editKey = ref('')
 	const editValue = ref('')
-	const editValueType = ref('')
+	const editValueType = ref('Number')
 	const showDetailDialog = ref(false)
 	const showEditDialog = ref(false)
 	const valueTypeOptions = ['String', 'Number', 'Boolean', 'Object', 'Array']
@@ -112,6 +112,8 @@
 	valueTypeDefaultMap.set('Boolean', 'true')
 	valueTypeDefaultMap.set('Object', `{"name": "张三","age": 12}`)
 	valueTypeDefaultMap.set('Array', `[1, "hello", true, { "key": "value" }]`)
+  // 自动化测试使用
+	const isTestMode = ref(false)
 
 	function getStorageList() : StorageList {
 		const list : StorageList = []
@@ -184,6 +186,7 @@
 
 	function refreshList() {
 		const list = getStorageList()
+		console.log('list: ',list);
 		if (!isEditing.value && editKey.value != '') {
 			const idx = list.findIndex(item => item.key === editKey.value)
 			if (idx > 0) {
@@ -228,7 +231,7 @@
 		closeDetail()
 	}
 	function saveEdit() {
-		if (editKey.value.trim() === '' || editValue.value.trim() === '') {
+		if (!isTestMode.value && (editKey.value.trim() === '' || editValue.value.trim() === '')) {
 			uni.showModal({
 				title: '提示',
 				content: 'Key 和 Value 都不能为空',
@@ -297,19 +300,25 @@
 		}
 	}
 	function confirmDelete(index : number) {
-		uni.showModal({
-			title: '确认操作',
-			content: '确定要删除该项吗？',
-			showCancel: true,
-			cancelText: '取消',
-			confirmText: '确定',
-			success: (res) => {
-				if (res.confirm) {
-					showDetailDialog.value = false
-					handleDelete(index)
+    // 自动化测试时不显示模态弹窗
+		if (!isTestMode.value) {
+			uni.showModal({
+				title: '确认操作',
+				content: '确定要删除该项吗？',
+				showCancel: true,
+				cancelText: '取消',
+				confirmText: '确定',
+				success: (res) => {
+					if (res.confirm) {
+						showDetailDialog.value = false
+						handleDelete(index)
+					}
 				}
-			}
-		})
+			})
+		} else {
+			showDetailDialog.value = false
+			handleDelete(index)
+		}
 	}
 	function handleClear() {
 		clearStorage()
@@ -320,19 +329,25 @@
 		editValue.value = ''
 	}
 	function confirmClear() {
-		uni.showModal({
-			title: '确认操作',
-			content: '确定要清空所有数据吗？',
-			showCancel: true,
-			cancelText: '取消',
-			confirmText: '确定',
-			success: (res) => {
-				if (res.confirm) {
-					showDetailDialog.value = false
-					handleClear()
+		// 自动化测试时不显示模态弹窗
+		if (!isTestMode.value) {
+			uni.showModal({
+				title: '确认操作',
+				content: '确定要清空所有数据吗？',
+				showCancel: true,
+				cancelText: '取消',
+				confirmText: '确定',
+				success: (res) => {
+					if (res.confirm) {
+						showDetailDialog.value = false
+						handleClear()
+					}
 				}
-			}
-		})
+			})
+		} else {
+			showDetailDialog.value = false
+			handleClear()
+		}
 	}
 	function getDetailIndex() : number {
 		return storageList.value.findIndex(item => item.key === detailItem.value.key)
@@ -348,6 +363,20 @@
 	}
 	onLoad(() => {
 		refreshList()
+	})
+
+	/**
+	 * 仅供自动化测试用例调用，设置测试模式
+	 */
+	function setTestMode(val: boolean) {
+		isTestMode.value = val
+	}
+
+	defineExpose({
+		editValue,
+		editValueType,
+		getStorageList,
+		setTestMode, // 仅供自动化测试用例调用
 	})
 </script>
 
