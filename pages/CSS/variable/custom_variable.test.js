@@ -10,13 +10,9 @@ describe('css-custom-variable', () => {
       return
     })
   }
-  let page;
-  beforeAll(async () => {
-    page = await program.reLaunch('/pages/CSS/variable/custom_variable');
-    await page.waitFor('view');
-  });
-
   it('screenshot', async () => {
+    const page = await program.reLaunch('/pages/CSS/variable/custom_variable');
+    await page.waitFor('view');
     const image = await program.screenshot({
       fullPage: true
     })
