@@ -25,7 +25,8 @@ const pages = [
   // '/pages/component/scroll-view/scroll-view-props',
   // 单独测试例截图
   // '/pages/component/scroll-view/scroll-view-refresher-props',
-  '/pages/component/scroll-view/scroll-view-custom-refresher-props',
+  // 单独测试例截图
+  // '/pages/component/scroll-view/scroll-view-custom-refresher-props',
   '/pages/component/swiper/swiper',
   // '/pages/component/list-view/list-view',
   // 单独测试例截图
