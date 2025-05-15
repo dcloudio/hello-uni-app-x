@@ -1,14 +1,19 @@
 jest.setTimeout(50000);
+
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isApp = isAndroid || isIOS || isHarmony && !isAppWebview
+
 const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
 describe('ExtApi-FileManagerTest', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isIOS = platformInfo.startsWith('ios')
-  const isAndroid = platformInfo.startsWith('android')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isWeb || isAppWebview) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -17,10 +22,10 @@ describe('ExtApi-FileManagerTest', () => {
   let page;
   let mBasePath;
   let mGlobalTempPath;
-  let mGlobalRootPath
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('text');
     await page.waitFor(600);
   });
 
@@ -836,12 +841,10 @@ describe('ExtApi-FileManagerTest', () => {
     let statsRet = await page.data('statsRet')
     expect(statsRet.length).toEqual(1)
     expect(statsRet[0].path).toMatch(new RegExp('/'))
-    console.log('～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～')
-    console.log(statsRet[0].stats.size)
     if (!isIOS) {
       expect(statsRet[0].stats.size).toEqual(69)
     }
-    if (isApp()) {
+    if (isApp) {
       // 写入一个文件
       await page.setData({
         statsRet: ''
@@ -973,172 +976,6 @@ describe('ExtApi-FileManagerTest', () => {
 
   });
 
-  it('appendFileTest', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    let basePath = await page.data('basePath')
-
-    await page.setData({
-      basePath: mBasePath,
-      recursiveVal: true,
-      logAble: false,
-      rmDirFile: 'appendfile',
-      mkdirFile: 'appendfile',
-      writeFileContent: "我爱北京天安门，天安门前太阳升",
-      appendFileContent: "再说一遍",
-      writeFileEncoding: "utf-8",
-      readFileEncoding: "utf-8",
-      readFile: 'appendfile/appendfile.txt',
-      unlinkFile: 'appendfile/appendfile.txt',
-      writeFile: 'appendfile/appendfile.txt',
-    })
-
-    // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
-    const btnUnLinkFileButton = await page.$('#btn-unlink-file')
-    await btnUnLinkFileButton.tap()
-    await isDone()
-
-    // 清除文件夹
-    const btnRmDirButton = await page.$('#btn-remove-dir')
-    await btnRmDirButton.tap()
-    await isDone()
-
-    // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    const btnMkdDirButton = await page.$('#btn-mkdir')
-    await btnMkdDirButton.tap()
-    await isDone()
-
-    // 先用utf-8 写入内容
-    const btnWriteFileButton = await page.$('#btn-write-file')
-
-    await btnWriteFileButton.tap()
-    await isDone()
-
-
-    //追加内容
-    const btnAppendFileButton = await page.$('#btn-append-file')
-    await btnAppendFileButton.tap()
-    await isDone()
-
-    const btnReadFileButton = await page.$('#btn-read-file')
-    await btnReadFileButton.tap()
-    await isDone()
-    let readFileRet = await page.data('readFileRet')
-    expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升再说一遍")
-  });
-
-  //nlinkSyncTest mkdirSyncTest appendFileTest writeFileSyncTest readFileSyncTest rmdirSyncTest readDirSyncTest accessFileSyncTest
-  //renameFileSync copyFileSyncTest appendFileSyncTest truncateFileTest truncateFileSyncTest
-  it('sync test',
-    async () => {
-      if (!isApp()) {
-        return
-      }
-
-      await page.setData({
-        basePath: mBasePath,
-        recursiveVal: false,
-        logAble: false,
-        rmDirFile: 'sync',
-        mkdirFile: 'sync',
-        writeFileContent: "我爱北京天安门，天安门前太阳升",
-        appendFileContent: "再说一遍",
-        writeFileEncoding: "utf-8",
-        readFileEncoding: "utf-8",
-        readDir: 'sync',
-        rmDirFile: 'sync',
-        unlinkFile: 'sync/sync.txt',
-        readFile: 'sync/sync.txt',
-        writeFile: 'sync/sync.txt',
-        accessFile: 'sync/sync.txt',
-        renameToFile: 'sync/sync.txt',
-        renameFromFile: 'sync/sync.txt',
-      })
-      await clearDir('sync')
-      // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的  目录
-      const btnMkdDirButton = await page.$('#btn-mkdir-sync')
-      await btnMkdDirButton.tap()
-      await isDone()
-
-      const btnReadDirButton = await page.$('#btn-read-dir-sync')
-      await btnReadDirButton.tap()
-      await isDone()
-      const fileListSuccess = await page.data('fileListSuccess')
-      expect(JSON.stringify(fileListSuccess)).toEqual('[]')
-
-      // 先用utf-8 写入内容
-      const btnWriteFileButton = await page.$('#btn-write-file-sync')
-      await btnWriteFileButton.tap()
-      await isDone()
-
-      let btnAccessFileButton = await page.$('#btn-access-file-sync')
-      await btnAccessFileButton.tap()
-      await isDone()
-      let accessFileRet = await page.data("accessFileRet")
-      expect(accessFileRet).toEqual('access:ok')
-
-      //重新命名文件
-      const btnRenameFileButton = await page.$('#btn-rename-file-sync')
-      await btnRenameFileButton.tap()
-      await isDone()
-      let renameFileRet = await page.data("renameFileRet")
-      expect(renameFileRet).toEqual("rename:ok")
-
-      //追加内容
-      let btnAppendFileButton = await page.$('#btn-append-file')
-      await btnAppendFileButton.tap()
-      await isDone()
-
-      btnAppendFileButton = await page.$('#btn-append-file-sync')
-      await btnAppendFileButton.tap()
-
-      let btnReadFileButton = await page.$('#btn-read-file-sync')
-      await btnReadFileButton.tap()
-      await isDone()
-      readFileRet = await page.data('readFileRet')
-      expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升再说一遍再说一遍")
-
-      //truncateFileTest
-      let btnTruncateFile = await page.$('#btn-truncate-file')
-      await btnTruncateFile.tap()
-      await isDone()
-      btnReadFileButton = await page.$('#btn-read-file-sync')
-      await btnReadFileButton.tap()
-      await isDone()
-      readFileRet = await page.data('readFileRet')
-      expect(readFileRet).toEqual("我爱")
-
-      btnTruncateFile = await page.$('#btn-truncate-file-sync')
-      await btnTruncateFile.tap()
-      await isDone()
-      btnReadFileButton = await page.$('#btn-read-file-sync')
-      await btnReadFileButton.tap()
-      await isDone()
-      readFileRet = await page.data('readFileRet')
-      expect(readFileRet).toEqual("我")
-
-      // 测试 copyfile
-      await page.setData({
-        basePath: mBasePath,
-        copyToBasePath: mBasePath,
-        copyFromFile: "sync/sync.txt",
-        copyToFile: "sync/syncto.txt",
-        accessFile: "sync/syncto.txt"
-      })
-      const btnCopyFileButton = await page.$('#btn-copy-file-sync')
-      await btnCopyFileButton.tap()
-      await isDone()
-      btnAccessFileButton = await page.$('#btn-access-file-sync')
-      await btnAccessFileButton.tap()
-      await isDone()
-      accessFileRet = await page.data("accessFileRet")
-      expect(accessFileRet).toEqual('access:ok')
-
-      await clearDir('sync')
-    });
-
   async function createFile() {
     // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的  目录
     const btnMkdDirButton = await page.$('#btn-mkdir-sync')
@@ -1165,373 +1002,450 @@ describe('ExtApi-FileManagerTest', () => {
     await isDone()
   }
 
-  function isApp() {
-    if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW ===
-      'true') {
-      expect(1).toBe(1)
-      return false
-    }
-    return true
-  }
-
-  it('getSavedFileListTest',
-    async () => {
-      if (!isApp()) {
-        return
-      }
-      // await page.setData({
-      //   logAble: false,
-      //   basePath: mBasePath
-      // })
-      // console.log('getSavedFileListTest', 'start')
-      // await clearDir('')
-      // console.log('getSavedFileListTest', 'end')
-      await page.setData({
-        logAble: false,
-        basePath: mGlobalTempPath,
-        temFile: 'save3/2.txt',
-        mkdirFile: 'save3',
-        writeFile: 'save3/2.txt',
-        accessFile: '2.txt'
-      })
-      await createFile()
+  if (isApp) {
+    it('appendFileTest', async () => {
       await page.setData({
         basePath: mBasePath,
-        writeFile: 'save/2.txt',
+        recursiveVal: true,
+        logAble: false,
+        rmDirFile: 'appendfile',
+        mkdirFile: 'appendfile',
+        writeFileContent: "我爱北京天安门，天安门前太阳升",
+        appendFileContent: "再说一遍",
+        writeFileEncoding: "utf-8",
+        readFileEncoding: "utf-8",
+        readFile: 'appendfile/appendfile.txt',
+        unlinkFile: 'appendfile/appendfile.txt',
+        writeFile: 'appendfile/appendfile.txt',
       })
-      btnSaveFile = await page.$('#btn-save-file-sync')
-      await btnSaveFile.tap()
+
+      // 先清除文件,需要清除全部可能存在的历史测试文件，避免运行失败
+      const btnUnLinkFileButton = await page.$('#btn-unlink-file')
+      await btnUnLinkFileButton.tap()
       await isDone()
-      let btnSavedFileList = await page.$('#btn-getsaved-filelist')
-      await btnSavedFileList.tap()
+
+      // 清除文件夹
+      const btnRmDirButton = await page.$('#btn-remove-dir')
+      await btnRmDirButton.tap()
       await isDone()
-      let getSavedFileListRet = await page.data("getSavedFileListRet")
-      console.log('getSavedFileListTest->' + getSavedFileListRet)
-      expect(getSavedFileListRet).toEqual('getSavedFileList:ok')
+
+      // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
+      const btnMkdDirButton = await page.$('#btn-mkdir')
+      await btnMkdDirButton.tap()
+      await isDone()
+
+      // 先用utf-8 写入内容
+      const btnWriteFileButton = await page.$('#btn-write-file')
+
+      await btnWriteFileButton.tap()
+      await isDone()
+
+
+      //追加内容
+      const btnAppendFileButton = await page.$('#btn-append-file')
+      await btnAppendFileButton.tap()
+      await isDone()
+
+      const btnReadFileButton = await page.$('#btn-read-file')
+      await btnReadFileButton.tap()
+      await isDone()
+      let readFileRet = await page.data('readFileRet')
+      expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升再说一遍")
     });
 
-  it('removeSavedFileTest',
-    async () => {
-      if (!isApp()) {
-        return
-      }
+    //nlinkSyncTest mkdirSyncTest appendFileTest writeFileSyncTest readFileSyncTest rmdirSyncTest readDirSyncTest accessFileSyncTest
+    //renameFileSync copyFileSyncTest appendFileSyncTest truncateFileTest truncateFileSyncTest
+    it('sync test', async () => {
+        await page.setData({
+          basePath: mBasePath,
+          recursiveVal: false,
+          logAble: false,
+          rmDirFile: 'sync',
+          mkdirFile: 'sync',
+          writeFileContent: "我爱北京天安门，天安门前太阳升",
+          appendFileContent: "再说一遍",
+          writeFileEncoding: "utf-8",
+          readFileEncoding: "utf-8",
+          readDir: 'sync',
+          rmDirFile: 'sync',
+          unlinkFile: 'sync/sync.txt',
+          readFile: 'sync/sync.txt',
+          writeFile: 'sync/sync.txt',
+          accessFile: 'sync/sync.txt',
+          renameToFile: 'sync/sync.txt',
+          renameFromFile: 'sync/sync.txt',
+        })
+        await clearDir('sync')
+        // 重新创建测试目录，期望通过 recursive = true的 文件夹删除，得到一个空的  目录
+        const btnMkdDirButton = await page.$('#btn-mkdir-sync')
+        await btnMkdDirButton.tap()
+        await isDone()
+
+        const btnReadDirButton = await page.$('#btn-read-dir-sync')
+        await btnReadDirButton.tap()
+        await isDone()
+        const fileListSuccess = await page.data('fileListSuccess')
+        expect(JSON.stringify(fileListSuccess)).toEqual('[]')
+
+        // 先用utf-8 写入内容
+        const btnWriteFileButton = await page.$('#btn-write-file-sync')
+        await btnWriteFileButton.tap()
+        await isDone()
+
+        let btnAccessFileButton = await page.$('#btn-access-file-sync')
+        await btnAccessFileButton.tap()
+        await isDone()
+        let accessFileRet = await page.data("accessFileRet")
+        expect(accessFileRet).toEqual('access:ok')
+
+        //重新命名文件
+        const btnRenameFileButton = await page.$('#btn-rename-file-sync')
+        await btnRenameFileButton.tap()
+        await isDone()
+        let renameFileRet = await page.data("renameFileRet")
+        expect(renameFileRet).toEqual("rename:ok")
+
+        //追加内容
+        let btnAppendFileButton = await page.$('#btn-append-file')
+        await btnAppendFileButton.tap()
+        await isDone()
+
+        btnAppendFileButton = await page.$('#btn-append-file-sync')
+        await btnAppendFileButton.tap()
+
+        let btnReadFileButton = await page.$('#btn-read-file-sync')
+        await btnReadFileButton.tap()
+        await isDone()
+        readFileRet = await page.data('readFileRet')
+        expect(readFileRet).toEqual("我爱北京天安门，天安门前太阳升再说一遍再说一遍")
+
+        //truncateFileTest
+        let btnTruncateFile = await page.$('#btn-truncate-file')
+        await btnTruncateFile.tap()
+        await isDone()
+        btnReadFileButton = await page.$('#btn-read-file-sync')
+        await btnReadFileButton.tap()
+        await isDone()
+        readFileRet = await page.data('readFileRet')
+        expect(readFileRet).toEqual("我爱")
+
+        btnTruncateFile = await page.$('#btn-truncate-file-sync')
+        await btnTruncateFile.tap()
+        await isDone()
+        btnReadFileButton = await page.$('#btn-read-file-sync')
+        await btnReadFileButton.tap()
+        await isDone()
+        readFileRet = await page.data('readFileRet')
+        expect(readFileRet).toEqual("我")
+
+        // 测试 copyfile
+        await page.setData({
+          basePath: mBasePath,
+          copyToBasePath: mBasePath,
+          copyFromFile: "sync/sync.txt",
+          copyToFile: "sync/syncto.txt",
+          accessFile: "sync/syncto.txt"
+        })
+        const btnCopyFileButton = await page.$('#btn-copy-file-sync')
+        await btnCopyFileButton.tap()
+        await isDone()
+        btnAccessFileButton = await page.$('#btn-access-file-sync')
+        await btnAccessFileButton.tap()
+        await isDone()
+        accessFileRet = await page.data("accessFileRet")
+        expect(accessFileRet).toEqual('access:ok')
+
+        await clearDir('sync')
+    });
+
+    it('getSavedFileListTest', async () => {
+        // await page.setData({
+        //   logAble: false,
+        //   basePath: mBasePath
+        // })
+        // console.log('getSavedFileListTest', 'start')
+        // await clearDir('')
+        // console.log('getSavedFileListTest', 'end')
+        await page.setData({
+          logAble: false,
+          basePath: mGlobalTempPath,
+          temFile: 'save3/2.txt',
+          mkdirFile: 'save3',
+          writeFile: 'save3/2.txt',
+          accessFile: '2.txt'
+        })
+        await createFile()
+        await page.setData({
+          basePath: mBasePath,
+          writeFile: 'save/2.txt',
+        })
+        btnSaveFile = await page.$('#btn-save-file-sync')
+        await btnSaveFile.tap()
+        await isDone()
+        let btnSavedFileList = await page.$('#btn-getsaved-filelist')
+        await btnSavedFileList.tap()
+        await isDone()
+        let getSavedFileListRet = await page.data("getSavedFileListRet")
+        console.log('getSavedFileListTest->' + getSavedFileListRet)
+        expect(getSavedFileListRet).toEqual('getSavedFileList:ok')
+    });
+
+    it('removeSavedFileTest', async () => {
+        await page.setData({
+          logAble: false,
+          basePath: mBasePath
+        })
+        await clearDir('save4')
+        await page.setData({
+          logAble: false,
+          basePath: mGlobalTempPath,
+          temFile: 'save4/saveSync.txt',
+          mkdirFile: 'save4',
+          writeFile: 'save4/saveSync.txt',
+          accessFile: 'saveSync.txt'
+        })
+        await createFile()
+        let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
+        await btnRemoveSavedFileRet.tap()
+        await isDone()
+        let removeSavedFileRet = await page.data("removeSavedFileRet")
+        expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
+
+    });
+
+    //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
+    it('openFiletest', async () => {
       await page.setData({
+        basePath: mBasePath,
         logAble: false,
-        basePath: mBasePath
+        mkdirFile: 'fd',
+        writeFile: 'fd/1.txt',
+        readFile: 'fd/1.txt'
       })
-      await clearDir('save4')
-      await page.setData({
-        logAble: false,
-        basePath: mGlobalTempPath,
-        temFile: 'save4/saveSync.txt',
-        mkdirFile: 'save4',
-        writeFile: 'save4/saveSync.txt',
-        accessFile: 'saveSync.txt'
-      })
+      await clearDir('fd')
       await createFile()
-      let btnRemoveSavedFileRet = await page.$('#btn-remove-saved-file')
-      await btnRemoveSavedFileRet.tap()
+      console.log('openFiletest', '2')
+      //openFiletest
+      let btnOpenFile = await page.$('#btn-open-file')
+      await btnOpenFile.tap()
       await isDone()
-      let removeSavedFileRet = await page.data("removeSavedFileRet")
-      expect(removeSavedFileRet).toEqual('removeSavedFile:ok')
+      let fd = await page.data("fd")
+      expect(fd).not.toBe('');
+      await page.setData({
+        fd: '',
+      })
+      console.log('openFiletest', '3')
+      //openFileSynctest
+      btnOpenFile = await page.$('#btn-open-file-sync')
+      await btnOpenFile.tap()
+      await isDone()
+      fd = await page.data("fd")
+      expect(fd).not.toBe('');
+      console.log('openFiletest', '4')
+    });
+
+    // closeTest closeTestSync
+    it('closeTest', async () => {
+      await page.setData({
+        basePath: mBasePath,
+        logAble: false,
+        mkdirFile: 'fd',
+        writeFile: 'fd/1.txt',
+        readFile: 'fd/1.txt'
+      })
+      await clearDir('fd')
+      await createFile()
+      //closeTest
+      let btnCloseFile = await page.$('#btn-close-file')
+      await btnCloseFile.tap()
+      await isDone()
+      let closeFileRet = await page.data("closeFileRet")
+      expect(closeFileRet).toEqual('close:ok')
+      await page.setData({
+        closeFileRet: '',
+      })
+      //closeTestSync
+      btnCloseFile = await page.$('#btn-close-file-sync')
+      await btnCloseFile.tap()
+      await isDone()
+      closeFileRet = await page.data("closeFileRet")
+      expect(closeFileRet).toEqual('close:ok')
 
     });
 
-  //openFiletest openFileSynctest closeTest closeTestSync writeTest writeSyncTest
-  it('openFiletest', async () => {
-    if (!isApp()) {
-      return
-    }
+    // writeTest writeSyncTest
+    it('writeTest', async () => {
+      console.log('writeTest', 'start')
 
-    await page.setData({
-      basePath: mBasePath,
-      logAble: false,
-      mkdirFile: 'fd',
-      writeFile: 'fd/1.txt',
-      readFile: 'fd/1.txt'
-    })
-    await clearDir('fd')
-    await createFile()
-    console.log('openFiletest', '2')
-    //openFiletest
-    let btnOpenFile = await page.$('#btn-open-file')
-    await btnOpenFile.tap()
-    await isDone()
-    let fd = await page.data("fd")
-    expect(fd).not.toBe('');
-    await page.setData({
-      fd: '',
-    })
-    console.log('openFiletest', '3')
-    //openFileSynctest
-    btnOpenFile = await page.$('#btn-open-file-sync')
-    await btnOpenFile.tap()
-    await isDone()
-    fd = await page.data("fd")
-    expect(fd).not.toBe('');
-    console.log('openFiletest', '4')
-  });
+      await page.setData({
+        basePath: mBasePath,
+        logAble: false,
+        mkdirFile: 'fd',
+        writeFile: 'fd/1.txt',
+        readFile: 'fd/1.txt',
+        writeData: '我是一只小小鸟'
+      })
+      await clearDir('fd')
+      await createFile()
+      console.log('writeTest', '1')
+      let btnWrite = await page.$('#btn-write')
+      await btnWrite.tap()
+      await isDone()
+      let bytesWritten = await page.data("bytesWritten")
+      let lastFailError = await page.data("lastFailError")
+      if (bytesWritten != 21) {
+        let writeData = await page.data("writeData")
+        console.log('writeTest', lastFailError.errCode, lastFailError.errMsg, bytesWritten,
+          writeData)
+      }
 
-  // closeTest closeTestSync
-  it('closeTest', async () => {
-    if (!isApp()) {
-      return
-    }
+      expect(bytesWritten).toEqual(21)
+      console.log('writeTest', '2')
+      //writeSyncTest
+      await page.setData({
+        writeFile: 'fd/1.txt',
+        readFile: 'fd/1.txt',
+        writeData: '我是'
+      })
 
-    await page.setData({
-      basePath: mBasePath,
-      logAble: false,
-      mkdirFile: 'fd',
-      writeFile: 'fd/1.txt',
-      readFile: 'fd/1.txt'
-    })
-    await clearDir('fd')
-    await createFile()
-    //closeTest
-    let btnCloseFile = await page.$('#btn-close-file')
-    await btnCloseFile.tap()
-    await isDone()
-    let closeFileRet = await page.data("closeFileRet")
-    expect(closeFileRet).toEqual('close:ok')
-    await page.setData({
-      closeFileRet: '',
-    })
-    //closeTestSync
-    btnCloseFile = await page.$('#btn-close-file-sync')
-    await btnCloseFile.tap()
-    await isDone()
-    closeFileRet = await page.data("closeFileRet")
-    expect(closeFileRet).toEqual('close:ok')
+      btnWrite = await page.$('#btn-write-sync')
+      await btnWrite.tap()
+      await isDone()
+      bytesWritten = await page.data("bytesWritten")
+      expect(bytesWritten).toEqual(6)
+      console.log('writeTest', '3')
+      //fstatTest
+      let btnFstat = await page.$('#btn-fstat-file')
+      await btnFstat.tap()
+      await isDone()
+      let fstatSize = await page.data("fstatSize")
+      expect(fstatSize > 0).toBe(true)
+      console.log('writeTest', '4')
 
-  });
+      //fstatSyncTest
+      btnFstat = await page.$('#btn-fstat-file-sync')
+      await btnFstat.tap()
+      await isDone()
+      fstatSize = await page.data("fstatSize")
+      expect(fstatSize > 0).toBe(true)
+      console.log('writeTest', '5')
 
-  // writeTest writeSyncTest
-  it('writeTest', async () => {
-    if (!isApp()) {
-      return
-    }
-    console.log('writeTest', 'start')
+      //ftruncateFileTest
+      let btnFTruncateFile = await page.$('#btn-ftruncate-file')
+      await btnFTruncateFile.tap()
+      await isDone()
+      let ftruncateRet = await page.data("ftruncateRet")
+      expect(ftruncateRet).toEqual('ftruncate:ok')
+      await page.setData({
+        ftruncate: '',
+      })
+      console.log('writeTest', '6')
 
-    await page.setData({
-      basePath: mBasePath,
-      logAble: false,
-      mkdirFile: 'fd',
-      writeFile: 'fd/1.txt',
-      readFile: 'fd/1.txt',
-      writeData: '我是一只小小鸟'
-    })
-    await clearDir('fd')
-    await createFile()
-    console.log('writeTest', '1')
-    let btnWrite = await page.$('#btn-write')
-    await btnWrite.tap()
-    await isDone()
-    let bytesWritten = await page.data("bytesWritten")
-    let lastFailError = await page.data("lastFailError")
-    if (bytesWritten != 21) {
-      let writeData = await page.data("writeData")
-      console.log('writeTest', lastFailError.errCode, lastFailError.errMsg, bytesWritten,
-        writeData)
-    }
+      //ftruncateFileSyncTest
+      btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
+      await btnFTruncateFile.tap()
+      await isDone()
+      ftruncateRet = await page.data("ftruncateRet")
+      expect(ftruncateRet).toEqual('ftruncate:ok')
+      console.log('writeTest', '7')
+    });
 
-    expect(bytesWritten).toEqual(21)
-    console.log('writeTest', '2')
-    //writeSyncTest
-    await page.setData({
-      writeFile: 'fd/1.txt',
-      readFile: 'fd/1.txt',
-      writeData: '我是'
-    })
+    //writeTest writeSyncTest
+    it('ftruncateFileTest', async () => {
+      await page.setData({
+        basePath: mBasePath,
+        logAble: false,
+        mkdirFile: 'fd',
+        writeFile: 'fd/1.txt',
+        readFile: 'fd/1.txt',
+        writeData: '我是一只小小鸟我是'
+      })
+      await clearDir('fd')
+      await createFile()
+      console.log('ftruncateFileTest', '1')
+      btnWrite = await page.$('#btn-write-sync')
+      await btnWrite.tap()
+      await isDone()
+      bytesWritten = await page.data("bytesWritten")
+      expect(bytesWritten).toEqual(27)
+      console.log('ftruncateFileTest', '3')
+      //ftruncateFileTest
+      let btnFTruncateFile = await page.$('#btn-ftruncate-file')
+      await btnFTruncateFile.tap()
+      await isDone()
+      let ftruncateRet = await page.data("ftruncateRet")
+      expect(ftruncateRet).toEqual('ftruncate:ok')
+      await page.setData({
+        ftruncate: '',
+      })
+      console.log('ftruncateFileTest', '6')
 
-    btnWrite = await page.$('#btn-write-sync')
-    await btnWrite.tap()
-    await isDone()
-    bytesWritten = await page.data("bytesWritten")
-    expect(bytesWritten).toEqual(6)
-    console.log('writeTest', '3')
-    //fstatTest
-    let btnFstat = await page.$('#btn-fstat-file')
-    await btnFstat.tap()
-    await isDone()
-    let fstatSize = await page.data("fstatSize")
-    expect(fstatSize > 0).toBe(true)
-    console.log('writeTest', '4')
+      //ftruncateFileSyncTest
+      btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
+      await btnFTruncateFile.tap()
+      await isDone()
+      ftruncateRet = await page.data("ftruncateRet")
+      expect(ftruncateRet).toEqual('ftruncate:ok')
+      console.log('ftruncateFileTest', '7')
+    });
 
-    //fstatSyncTest
-    btnFstat = await page.$('#btn-fstat-file-sync')
-    await btnFstat.tap()
-    await isDone()
-    fstatSize = await page.data("fstatSize")
-    expect(fstatSize > 0).toBe(true)
-    console.log('writeTest', '5')
+    //testAppendFileBuffer
+    it('testAppendFileBuffer', async () => {
+      var btnWrite = await page.$('#btn-appendfile-buffer')
+      await btnWrite.tap()
+      await isDone()
+      let arrayBufferRes = await page.data("arrayBufferRes")
+      expect(arrayBufferRes).toEqual(21)
+    });
 
-    //ftruncateFileTest
-    let btnFTruncateFile = await page.$('#btn-ftruncate-file')
-    await btnFTruncateFile.tap()
-    await isDone()
-    let ftruncateRet = await page.data("ftruncateRet")
-    expect(ftruncateRet).toEqual('ftruncate:ok')
-    await page.setData({
-      ftruncate: '',
-    })
-    console.log('writeTest', '6')
+    it('testAppendFileBufferSync', async () => {
+      var btnWrite = await page.$('#btn-appendfilesync-buffer')
+      await btnWrite.tap()
+      await isDone()
+      let arrayBufferRes = await page.data("arrayBufferRes")
+      expect(arrayBufferRes).toEqual(20)
+    });
 
-    //ftruncateFileSyncTest
-    btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
-    await btnFTruncateFile.tap()
-    await isDone()
-    ftruncateRet = await page.data("ftruncateRet")
-    expect(ftruncateRet).toEqual('ftruncate:ok')
-    console.log('writeTest', '7')
-  });
+    it('testWriteReadSyncBuffer', async () => {
+      var btnWrite = await page.$('#btn-writereadsync-buffer')
+      await btnWrite.tap()
+      await isDone()
+      let arrayBufferRes = await page.data("arrayBufferRes")
+      expect(arrayBufferRes).toEqual(1.11)
+    });
 
-  //writeTest writeSyncTest
-  it('ftruncateFileTest', async () => {
-    if (!isApp()) {
-      return
-    }
-    console.log('ftruncateFileTest', 'start')
+    it('testWriteReadBuffer', async () => {
+      var btnWrite = await page.$('#btn-writeread-buffer')
+      await btnWrite.tap()
+      await isDone()
+      let arrayBufferRes = await page.data("arrayBufferRes")
+      expect(arrayBufferRes).toEqual(1.24)
+    });
 
-    await page.setData({
-      basePath: mBasePath,
-      logAble: false,
-      mkdirFile: 'fd',
-      writeFile: 'fd/1.txt',
-      readFile: 'fd/1.txt',
-      writeData: '我是一只小小鸟我是'
-    })
-    await clearDir('fd')
-    await createFile()
-    console.log('ftruncateFileTest', '1')
-    btnWrite = await page.$('#btn-write-sync')
-    await btnWrite.tap()
-    await isDone()
-    bytesWritten = await page.data("bytesWritten")
-    expect(bytesWritten).toEqual(27)
-    console.log('ftruncateFileTest', '3')
-    //ftruncateFileTest
-    let btnFTruncateFile = await page.$('#btn-ftruncate-file')
-    await btnFTruncateFile.tap()
-    await isDone()
-    let ftruncateRet = await page.data("ftruncateRet")
-    expect(ftruncateRet).toEqual('ftruncate:ok')
-    await page.setData({
-      ftruncate: '',
-    })
-    console.log('ftruncateFileTest', '6')
+    it('testWriteReadFileSyncBuffer', async () => {
+      var btnWrite = await page.$('#btn-writereadfilesync-buffer')
+      await btnWrite.tap()
+      await isDone()
+      let arrayBufferRes = await page.data("arrayBufferRes")
+      expect(arrayBufferRes).toEqual(1.333)
+    });
 
-    //ftruncateFileSyncTest
-    btnFTruncateFile = await page.$('#btn-ftruncate-file-sync')
-    await btnFTruncateFile.tap()
-    await isDone()
-    ftruncateRet = await page.data("ftruncateRet")
-    expect(ftruncateRet).toEqual('ftruncate:ok')
-    console.log('ftruncateFileTest', '7')
-  });
+    it('testReadFileBuffer', async () => {
+      var btnWrite = await page.$('#btn-writereadfile-buffer')
+      await btnWrite.tap()
+      await isDone()
+      let arrayBufferRes = await page.data("arrayBufferRes")
+      expect(arrayBufferRes).toEqual(1.2222222)
+    });
 
-  //testAppendFileBuffer
-  it('testAppendFileBuffer', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    var btnWrite = await page.$('#btn-appendfile-buffer')
-    await btnWrite.tap()
-    await isDone()
-    let arrayBufferRes = await page.data("arrayBufferRes")
-    expect(arrayBufferRes).toEqual(21)
-  });
-
-  it('testAppendFileBufferSync', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    var btnWrite = await page.$('#btn-appendfilesync-buffer')
-    await btnWrite.tap()
-    await isDone()
-    let arrayBufferRes = await page.data("arrayBufferRes")
-    expect(arrayBufferRes).toEqual(20)
-  });
-
-  it('testWriteReadSyncBuffer', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    var btnWrite = await page.$('#btn-writereadsync-buffer')
-    await btnWrite.tap()
-    await isDone()
-    let arrayBufferRes = await page.data("arrayBufferRes")
-    expect(arrayBufferRes).toEqual(1.11)
-  });
-
-  it('testWriteReadBuffer', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    var btnWrite = await page.$('#btn-writeread-buffer')
-    await btnWrite.tap()
-    await isDone()
-    let arrayBufferRes = await page.data("arrayBufferRes")
-    expect(arrayBufferRes).toEqual(1.24)
-  });
-
-  it('testWriteReadFileSyncBuffer', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    var btnWrite = await page.$('#btn-writereadfilesync-buffer')
-    await btnWrite.tap()
-    await isDone()
-    let arrayBufferRes = await page.data("arrayBufferRes")
-    expect(arrayBufferRes).toEqual(1.333)
-  });
-
-  it('testReadFileBuffer', async () => {
-    if (!isApp()) {
-      return
-    }
-
-    var btnWrite = await page.$('#btn-writereadfile-buffer')
-    await btnWrite.tap()
-    await isDone()
-    let arrayBufferRes = await page.data("arrayBufferRes")
-    expect(arrayBufferRes).toEqual(1.2222222)
-  });
-
-  it('testReadAssetFile', async () => {
-    if (!isAndroid) {
-      return
-    }
-
-    await page.setData({
-      basePath: 'file:///android_asset/uni-app-x',
-      logAble: false,
-      readFileRet: "",
-      readFile: '/version.json'
-    })
-    let btnReadFileButton = await page.$('#btn-read-file-sync')
-    await btnReadFileButton.tap()
-    await isDone()
-    let readFileRet = await page.data('readFileRet')
-    expect(readFileRet.length > 0).toBe(true)
-  });
-
-  it('SavedFileTest',
-     async () => {
-       if (!isApp()) {
-         return
-       }
-       await page.setData({
-         logAble: false,
-         basePath: mBasePath,
-         writeFile: 'a/1.txt',
-         temFile: 'a/1.txt',
-         accessFile: 'a/1.txt'
-       })
+    it('SavedFileTest', async () => {
+      await page.setData({
+        logAble: false,
+        basePath: mBasePath,
+        writeFile: 'a/1.txt',
+        temFile: 'a/1.txt',
+        accessFile: 'a/1.txt'
+      })
 
        let saveFileFileButton = await page.$('#btn-save-file')
        await saveFileFileButton.tap()
@@ -1556,7 +1470,24 @@ describe('ExtApi-FileManagerTest', () => {
        await isDone()
        saveFileRet = await page.data('saveFileRet')
        expect(saveFileRet).toEqual('unifile://usr/local')
-   });
+    });
+  }
+
+  if (isAndroid) {
+    it('testReadAssetFile', async () => {
+      await page.setData({
+        basePath: 'file:///android_asset/uni-app-x',
+        logAble: false,
+        readFileRet: "",
+        readFile: '/version.json'
+      })
+      let btnReadFileButton = await page.$('#btn-read-file-sync')
+      await btnReadFileButton.tap()
+      await isDone()
+      let readFileRet = await page.data('readFileRet')
+      expect(readFileRet.length > 0).toBe(true)
+    });
+  }
 });
 
 

@@ -1,11 +1,10 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
+
 const PAGE_PATH = '/pages/component/switch/switch'
 
 describe('switch', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -57,7 +56,7 @@ describe('switch', () => {
   it('click', async () => {
     let switchElement
     // TODO 暂时通过获取组件内部的 class 触发模拟点击
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (isAndroid) {
       switchElement = await page.$('.uni-switch-input')
       await switchElement.tap()
       await page.waitFor(200)

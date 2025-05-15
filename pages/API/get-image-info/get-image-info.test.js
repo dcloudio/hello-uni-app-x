@@ -1,6 +1,9 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
+
 describe('API-getImageInfo', () => {
-  if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
+  if (isIOS) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
@@ -15,7 +18,7 @@ describe('API-getImageInfo', () => {
 
   it('test getImageInfo', async () => {
     await page.waitFor(500);
-    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (isWeb) {
       expect(await page.data('imageInfoForTest')).toEqual({
         width: 192,
         height: 192,

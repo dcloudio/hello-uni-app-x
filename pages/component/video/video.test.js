@@ -1,11 +1,13 @@
 jest.setTimeout(60000);
+
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+
 describe('component-native-video', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isHarmony = platformInfo.startsWith('harmony')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
   if (isWeb) {
     // TODO: web 端暂不支持测试
     it('web', async () => {
@@ -207,7 +209,7 @@ describe('component-native-video', () => {
       });
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (process.env.uniTestPlatformInfo.startsWith('android') && version >
+      if (isAndroid && version >
         5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
         await page.waitFor(5000);
         await program.adbCommand('input tap 10 10');

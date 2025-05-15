@@ -1,8 +1,11 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIOS = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
+
 let page;
 describe('web-clipboard', () => {
-  if (!(process.env.uniTestPlatformInfo.startsWith('web') || process.env.uniTestPlatformInfo.startsWith(
-        "android") ||
-      process.env.uniTestPlatformInfo.startsWith("ios"))) {
+  if (!(isAndroid || isIOS || isWeb)) {
     it('app', async () => {
       expect(1).toBe(1)
     })
