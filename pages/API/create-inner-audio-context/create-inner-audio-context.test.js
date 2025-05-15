@@ -5,7 +5,7 @@ const isHarmony = platformInfo.toLocaleLowerCase().startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
 
 describe('inner-audio', () => {
-  // TODO: safari 运行正常，测试时报错导致后续超时，暂时屏蔽
+  // safari 浏览器运行正常，playwright 环境下给 Audio 实例 src 属性赋值会崩溃
   if (isMP || isIos || isSafari) {
     it('not support', () => {
       expect(1).toBe(1)
@@ -31,18 +31,6 @@ describe('inner-audio', () => {
     }
   })
 
-  it('play-onPlay-onTimeUpdate', async () => {
-    await page.callMethod('play')
-    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 5000:3000
-    await page.waitFor(waitTime)
-    expect(await page.data('isPlaying')).toBeTruthy()
-    console.log("duration：",await page.data('duration'),"currentTime：",await page.data('currentTime'))
-    expect(await page.data('duration')).toBeCloseTo(175.109, 0);
-    // console.log("isPaused",await page.data('isPaused'))
-    // expect(await page.data('currentTime')).toBeGreaterThan(0);
-    // expect(await page.data('isPaused')).toBeFalsy();
-  });
-
   it('seek-onSeeking-onSeeked', async () => {
     if (process.env.uniTestPlatformInfo.indexOf('android') > -1 ) {
     	expect(1).toBe(1)
@@ -57,10 +45,23 @@ describe('inner-audio', () => {
     	return await page.data('onSeekingTest')
     })
     expect(await page.data('onSeekingTest')).toBeTruthy();
+    expect(await page.data('currentTime')).toBe(20);
     // expect(await page.data('onWaitingTest')).toBeTruthy();
     // expect(await page.data('onSeekedTest')).toBeTruthy();
     const image = await program.screenshot({fullPage: true})
     expect(image).toSaveImageSnapshot();
+  });
+
+  it('play-onPlay-onTimeUpdate', async () => {
+    await page.callMethod('play')
+    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 5000:3000
+    await page.waitFor(waitTime)
+    expect(await page.data('isPlaying')).toBeTruthy()
+    console.log("duration：",await page.data('duration'),"currentTime：",await page.data('currentTime'))
+    expect(await page.data('duration')).toBeCloseTo(175.109, 0);
+    // console.log("isPaused",await page.data('isPaused'))
+    // expect(await page.data('currentTime')).toBeGreaterThan(0);
+    // expect(await page.data('isPaused')).toBeFalsy();
   });
 
   it('pause-onPause', async () => {

@@ -15,7 +15,6 @@ beforeAll(async () => {
 describe('Radio.uvue', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
-  const isHarmony = platformInfo.startsWith('harmony')
   it('change', async () => {
     expect(await getData('value')).toEqual('')
     const radio1 = await page.$('.r1')

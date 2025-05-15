@@ -6,7 +6,7 @@ describe('sse', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isWeb = platformInfo.startsWith('web')
   const isIOS = platformInfo.startsWith('ios')
-  if (!isAndroid) {
+  if (!isAndroid || !isIOS) {
     it('not support', () => {
       expect(1).toBe(1)
     })

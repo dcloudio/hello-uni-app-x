@@ -101,8 +101,7 @@ describe('Progress.uvue', () => {
     expect(await el.attribute('background-color')).toEqual('#007aff')
   })
   it('trigger UniProgressActiveendEvent', async () => {
-
-    if (isWeb || isMP || isHarmony) {
+    if (isWeb || isMP) {
       expect(1).toBe(1)
       return
     }

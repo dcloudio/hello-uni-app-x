@@ -4,6 +4,8 @@ describe('component-native-input', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input')
@@ -202,6 +204,11 @@ describe('component-native-input', () => {
     if (isWeb || isMP || isIOS) {
       expect(1).toBe(1)
       return
+    }
+    // TODO: harmony 页面隐藏时需要隐藏键盘
+    if (isHarmony) {
+      await program.tap({ x: 100, y: 200 })
+      await page.waitFor(1000);
     }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);

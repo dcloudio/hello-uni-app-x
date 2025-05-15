@@ -23,7 +23,8 @@ describe('component-native-nested-scroll-body', () => {
   beforeAll(async () => {
     //打开lnested-scroll-body测试页
     page = await program.reLaunch('/pages/component/nested-scroll-body/nested-scroll-body')
-    await page.waitFor(600)
+    await page.waitFor('view')
+    await page.waitFor(1000)
   })
 
   //检测横向scroll_into_view属性赋值

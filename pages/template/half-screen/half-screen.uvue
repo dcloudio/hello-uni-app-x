@@ -1,8 +1,6 @@
 <template>
   <view ref="page" class="page">
-    <text
-      class="tip">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
-    <text class="tip">在小程序上本示例会卡顿，小程序上建议使用movable-view实现。</text>
+    <text class="tip">半屏弹窗，演示了弹出层内scroll-view滚动到顶时由滚变拖。本效果是通过监听TouchEvent实现，当半屏窗口移动时禁用scroll-view的滚动，避免两者的冲突。</text>
     <button class="bottomButton" @click="switchHalfScreen(true)">打开弹窗</button>
     <view ref="halfScreen" class="halfScreen" @touchstart="onHalfTouchStart" @touchmove="onHalfTouchMove"
       @touchend="onHalfTouchEnd">
@@ -195,6 +193,12 @@
 </script>
 
 <style>
+  /* #ifdef MP */
+  page {
+    overflow: hidden
+  }
+  /* #endif */
+
   .page {
     flex: 1;
     background-color: darkgrey;

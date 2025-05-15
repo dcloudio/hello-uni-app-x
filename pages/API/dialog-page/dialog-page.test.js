@@ -35,49 +35,48 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(0)
   });
 
-  if (!isHarmony) {
-    it('page pageBody safeAreaInsets', async () => {
-        const pageBodyWidth = await page.$('#page-body-width')
-        expect(parseInt(await pageBodyWidth.text())).toBeGreaterThanOrEqual(0)
-        const pageBodyHeight = await page.$('#page-body-height')
-        expect(parseInt(await pageBodyHeight.text())).toBeGreaterThanOrEqual(0)
+  it('page pageBody safeAreaInsets', async () => {
+    const pageBodyWidth = await page.$('#page-body-width')
+    expect(parseInt(await pageBodyWidth.text())).toBeGreaterThan(0)
+    const pageBodyHeight = await page.$('#page-body-height')
+    expect(parseInt(await pageBodyHeight.text())).toBeGreaterThan(0)
 
-      const pageBodyLeft = await page.$('#page-body-left')
-      const pageBodyRight = await page.$('#page-body-right')
-      const expectRightValue = parseInt(await pageBodyLeft.text()) + parseInt(await pageBodyWidth.text())
-      expect(parseInt(await pageBodyRight.text())).toBe(expectRightValue)
+    const pageBodyLeft = await page.$('#page-body-left')
+    const pageBodyRight = await page.$('#page-body-right')
+    const expectRightValue = parseInt(await pageBodyLeft.text()) + parseInt(await pageBodyWidth.text())
+    expect(parseInt(await pageBodyRight.text())).toBe(expectRightValue)
 
-      const pageBodyTop = await page.$('#page-body-top')
-      const pageBodyBottom = await page.$('#page-body-bottom')
-      const expectBottomValue = parseInt(await pageBodyTop.text()) + parseInt(await pageBodyHeight.text())
-      expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
+    const pageBodyTop = await page.$('#page-body-top')
+    const pageBodyBottom = await page.$('#page-body-bottom')
+    const expectBottomValue = parseInt(await pageBodyTop.text()) + parseInt(await pageBodyHeight.text())
+    expect(parseInt(await pageBodyBottom.text())).toBe(expectBottomValue)
 
-      pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
-      if(isWeb){
-        expect(await pageSafeAreaInsetsTop.text()).toBe('44')
-      } else {
-        expect(await pageSafeAreaInsetsTop.text()).toBe('0')
-      }
-      pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
-      if(isWeb){
-        expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
-      }
-      if(isIos || isAndroid){
-        expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
-      }
-      pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
-      expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
-      pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
-      expect(await pageSafeAreaInsetsRight.text()).toBe('0')
+    pageSafeAreaInsetsTop = await page.$('#page-safe-area-insets-top')
+    if(isWeb){
+      expect(await pageSafeAreaInsetsTop.text()).toBe('44')
+    } else {
+      expect(await pageSafeAreaInsetsTop.text()).toBe('0')
+    }
+    pageSafeAreaInsetsBottom = await page.$('#page-safe-area-insets-bottom')
+    if(isWeb){
+      expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
+    }
+    if(isIos || isAndroid){
+      expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
+    }
+    pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
+    expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
+    pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
+    expect(await pageSafeAreaInsetsRight.text()).toBe('0')
 
-      const pageWidth = await page.$('#page-width')
-      expect(parseInt(await pageWidth.text())).toBeGreaterThanOrEqual(0)
-      const pageHeight = await page.$('#page-height')
-      expect(parseInt(await pageHeight.text())).toBeGreaterThanOrEqual(0)
-      const pageStatusBarHeight = await page.$('#page-statusBarHeight')
-      expect(parseInt(await pageStatusBarHeight.text())).toBeGreaterThanOrEqual(0)
-    })
-  }
+    const pageWidth = await page.$('#page-width')
+    expect(parseInt(await pageWidth.text())).toBeGreaterThan(0)
+    const pageHeight = await page.$('#page-height')
+    expect(parseInt(await pageHeight.text())).toBeGreaterThan(0)
+    const pageStatusBarHeight = await page.$('#page-statusBarHeight')
+    expect(parseInt(await pageStatusBarHeight.text())).toBeGreaterThanOrEqual(0)
+  })
+
   it('dialogPage pageBody safeAreaInsets', async () => {
     await page.callMethod('openDialogCheckMoreAttribute')
     await page.waitFor(1000)

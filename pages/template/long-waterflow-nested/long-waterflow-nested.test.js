@@ -19,6 +19,7 @@ describe('long-waterflow-nested', () => {
     await page.waitFor(600)
   })
 
+  //测试验证Waterflow下拉刷新是否闪退问题
   it('check_refresherabort', async () => {
     //部分安卓设备需要延迟一段时间swipe才生效 此处暂时延迟1秒
     await page.waitFor(1000);
@@ -29,6 +30,7 @@ describe('long-waterflow-nested', () => {
       duration: 100
     })
     await page.waitFor(1500)
+    expect(page.path).toBe('pages/template/long-waterflow-nested/long-waterflow-nested')
   });
 
 })

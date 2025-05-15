@@ -5,7 +5,6 @@ describe('touch-events-test', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
 
   if (isAndroid || isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
@@ -39,7 +38,6 @@ describe('touch-events-test', () => {
   })
 
   it('touch-event-bubbles-test2', async () => {
-
     let viewEleRect = await page.data('viewEleRect')
     let x = viewEleRect.x + viewEleRect.width / 2.0
     let y = viewEleRect.y + 25
@@ -56,5 +54,4 @@ describe('touch-events-test', () => {
     const ret = await page.data('ret2')
     expect(ret).toBe(true)
   })
-
 })

@@ -1,10 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('issue-16162', () => {
-  if (isMP || isHarmony || isWeb) {
+  if (isMP || isWeb) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})

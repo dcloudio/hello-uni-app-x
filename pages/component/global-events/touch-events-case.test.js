@@ -56,7 +56,6 @@ describe('touch-events-test', () => {
     expect(ret).toBe(true)
   })
 
-  // TODO: harmony swiper preventDefault
   it('test swiper preventDefault stopPropagation', async () => {
     await page.waitFor(1500);
     await page.callMethod('resetEvent')
@@ -72,6 +71,7 @@ describe('touch-events-test', () => {
 
     await page.waitFor(1500);
     const swiperChangeEvent = await page.data('swiperChangeEvent')
+  // harmony 依赖 API 15+
     console.log("swiperChangeEvent:", swiperChangeEvent)
     expect(swiperChangeEvent).toBe(false)
   })

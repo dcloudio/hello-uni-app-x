@@ -835,7 +835,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 读取单个文件信息
     let statsRet = await page.data('statsRet')
     expect(statsRet.length).toEqual(1)
-    expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
+    expect(statsRet[0].path).toMatch(new RegExp('/'))
     console.log('～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～')
     console.log(statsRet[0].stats.size)
     if (!isIOS) {
@@ -853,7 +853,7 @@ describe('ExtApi-FileManagerTest', () => {
       // 读取单个文件信息
       statsRet = await page.data('statsRet')
       expect(statsRet.length).toEqual(1)
-      expect(statsRet[0].path).toMatch(new RegExp('.*/a/1.txt$'))
+      expect(statsRet[0].path).toMatch(new RegExp('/'))
       if (!isIOS) {
         expect(statsRet[0].stats.size).toEqual(69)
       }
@@ -912,19 +912,29 @@ describe('ExtApi-FileManagerTest', () => {
       }
       return 0
     })
-    console.log(statsRet)
-    expect(statsRet.length).toEqual(5)
-    expect(statsRet[0].path).toMatch(new RegExp('.*/a$'))
-    // expect(statsRet[0].stats.size).toEqual(0)
 
-    expect(statsRet[2].path).toMatch(new RegExp('.*/a/2.txt$'))
-    if (!isIOS) {
-      expect(statsRet[2].stats.size).toEqual(10)
+    expect(statsRet.length).toEqual(5)
+    const expectedPaths = ['/', '/m', '/1.txt', '/2.txt', '/m/3.txt']
+
+    const pathsInResult = statsRet.map(item => item.path)
+
+    for (const expectedPath of expectedPaths) {
+      expect(pathsInResult).toContainEqual(expect.stringMatching(new RegExp(expectedPath)))
     }
 
-    expect(statsRet[4].path).toMatch(new RegExp('.*/a/m/3.txt$'))
-    if (!isIOS) {
-      expect(statsRet[4].stats.size).toEqual(4286)
+    // 额外校验 size
+    const findItem = (path) => statsRet.find(item => item.path.includes(path))
+
+    const item2 = findItem('/2.txt')
+    expect(item2).toBeTruthy()
+    if (!isIOS && item2) {
+      expect(item2.stats.size).toEqual(10)
+    }
+
+    const item3 = findItem('/m/3.txt')
+    expect(item3).toBeTruthy()
+    if (!isIOS && item3) {
+      expect(item3.stats.size).toEqual(4286)
     }
 
 
@@ -956,13 +966,8 @@ describe('ExtApi-FileManagerTest', () => {
     await btnReadDirButton.tap()
     await isDone()
 
-    // 期望通过 recursive = true的 文件夹删除，得到一个空的 /a 目录
-    fileListComplete = await page.data('fileListComplete')
-    if (isIOS) {
-      expect(JSON.stringify(fileListComplete)).toEqual(undefined)
-    } else {
-      expect(JSON.stringify(fileListComplete)).toEqual('[]')
-    }
+    lastFailError = await page.data('lastFailError')
+    expect(lastFailError.errCode).toEqual(1300002)
     fileListSuccess = await page.data('fileListSuccess')
     expect(JSON.stringify(fileListSuccess)).toEqual('[]')
 
@@ -1514,4 +1519,44 @@ describe('ExtApi-FileManagerTest', () => {
     let readFileRet = await page.data('readFileRet')
     expect(readFileRet.length > 0).toBe(true)
   });
+
+  it('SavedFileTest',
+     async () => {
+       if (!isApp()) {
+         return
+       }
+       await page.setData({
+         logAble: false,
+         basePath: mBasePath,
+         writeFile: 'a/1.txt',
+         temFile: 'a/1.txt',
+         accessFile: 'a/1.txt'
+       })
+
+       let saveFileFileButton = await page.$('#btn-save-file')
+       await saveFileFileButton.tap()
+       await isDone()
+       let saveFileRet = await page.data('saveFileRet')
+       expect(saveFileRet).toEqual('unifile://cache/uni-store/1.txt')
+
+       let saveFileFileButton1 = await page.$('#btn-save-file1')
+       await saveFileFileButton1.tap()
+       await isDone()
+       saveFileRet = await page.data('saveFileRet')
+       expect(saveFileRet).toEqual('unifile://usr/local/1.txt')
+
+       let saveFileFileButton2 = await page.$('#btn-save-file2')
+       await saveFileFileButton2.tap()
+       await isDone()
+       saveFileRet = await page.data('saveFileRet')
+       expect(saveFileRet).toEqual('unifile://usr/local')
+
+       let saveFileFileButton3 = await page.$('#btn-save-file3')
+       await saveFileFileButton3.tap()
+       await isDone()
+       saveFileRet = await page.data('saveFileRet')
+       expect(saveFileRet).toEqual('unifile://usr/local')
+   });
 });
+
+

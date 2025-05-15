@@ -1,5 +1,5 @@
 describe('css-variable', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
     it('app 与 web 存在差异, webview 不进行截图', () => {
       expect(1).toBe(1)
       return
