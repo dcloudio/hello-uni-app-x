@@ -1,12 +1,12 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
-const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('API-theme-change', () => {
   let page;
   let originalTheme;
-  if (!isAndroid || !isIos || isWebView) {
+  if (!isAndroid || !isIos || isAppWebView) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })

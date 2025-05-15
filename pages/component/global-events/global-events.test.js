@@ -3,6 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
   
 const PAGE_PATH = '/pages/component/global-events/global-events'
 
@@ -26,7 +27,7 @@ describe('event trigger', () => {
   })
 
   it('touch', async () => {
-    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (!isAppWebView) {
       const el = await page.$('#touch-target')
       await el.touchstart({
         touches: [{
@@ -217,7 +218,7 @@ describe('event trigger', () => {
   })
 
   it('longPress', async () => {
-    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (!isAppWebView) {
       const el = await page.$('#longpress-target')
       await el.longpress()
       await page.waitFor(100)

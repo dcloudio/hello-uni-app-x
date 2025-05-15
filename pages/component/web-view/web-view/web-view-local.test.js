@@ -3,9 +3,10 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-  if(isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW || isIOS){
+  if(isWeb || isMP || isAppWebView || isIOS){
     it('not support', () => {
       expect(1).toBe(1)
     })

@@ -1,5 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('template-list-news', () => {
   let page;

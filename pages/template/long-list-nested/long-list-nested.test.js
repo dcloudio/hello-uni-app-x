@@ -3,11 +3,11 @@ const isIos = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isIos || isAndroid || isHarmony
-const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 
 describe('long-waterflow-nested', () => {
-  if (isWebView || !isApp) {
+  if (isAppWebView || !isApp) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })

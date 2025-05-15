@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 let pageIndex = 0
 const pages = [

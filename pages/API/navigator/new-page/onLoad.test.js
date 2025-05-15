@@ -8,7 +8,7 @@ const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
-const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 let page;
 
 describe("onLoad", () => {
@@ -57,7 +57,7 @@ describe("onLoad", () => {
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
-    if (isAndroid && !isWebView) {
+    if (isAndroid && !isAppWebview) {
       page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
       await page.waitFor('view');
       await page.callMethod("navigateToOnLoadWithType", "navigateBack");

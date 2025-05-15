@@ -2,10 +2,10 @@ const PAGE_PATH = '/pages/API/upload-file/upload-file'
 
 describe('ExtApi-UploadFile', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
   if (isWeb || isMP) {
     it('not support', async () => {
       expect(1).toBe(1)
@@ -67,7 +67,7 @@ describe('ExtApi-UploadFile', () => {
 
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (process.env.uniTestPlatformInfo.startsWith('android') && !isAppWebView) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
