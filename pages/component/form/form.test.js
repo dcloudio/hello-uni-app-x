@@ -1,3 +1,7 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isHarmony = platformInfo.startsWith('harmony')
+const isMP = platformInfo.startsWith('mp')
+
 const PAGE_PATH = '/pages/component/form/form'
 
 const DEFAULT_NICK_NAME = ''
@@ -15,8 +19,6 @@ const CHANGE_SWITCH = false
 const CHANGE_COMMENT = '备注'
 
 describe('form', () => {
-  const isMP = process.env.uniTestPlatformInfo.startsWith('mp')
-  const isHarmony = process.env.uniTestPlatformInfo.startsWith('harmony')
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

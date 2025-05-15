@@ -1,7 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 const PAGE_PATH = '/pages/API/download-file/download-file'
 
 describe('ExtApi-DownloadFile', () => {
-
   let page;
   let res;
   let timeout = 3000
@@ -47,10 +52,7 @@ describe('ExtApi-DownloadFile', () => {
     expect(res).toBe(true)
   })
 
-  if (
-    !process.env.uniTestPlatformInfo.startsWith('web') &&
-    !process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if (!(isMP || isWeb)) {
     it('Check uni.env', async () => {
       await page.callMethod('jest_downloadFile_with_uni_env');
       await waitCallbackTriggredOrTimeout()
@@ -74,11 +76,11 @@ describe('ExtApi-DownloadFile', () => {
 
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android') && process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isAndroid && isAppWebView) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
-  } else if (process.env.uniTestPlatformInfo.startsWith('web')) {
+  } else if (isWeb) {
     // TODO 测试网址调整后放开此测试
     shouldTestCookie = false
   }

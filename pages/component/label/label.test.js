@@ -1,7 +1,9 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+
 let page;
 describe('label.uvue', () => {
-  console.log(process.env.uniTestPlatformInfo,process.env.uniTestPlatformInfo.startsWith('web'))
-  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (!isWeb) {
     it('app', () => {
       expect(1).toBe(1)
     })

@@ -1,28 +1,25 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isAndroid = platformInfo.startsWith('android')
+
 describe('API-compressVideo', () => {
-  if (
-    process.env.uniTestPlatformInfo.startsWith('web') ||
-    process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios') ||
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if (isWeb || isIOS || isMP) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
     return;
   }
 
-  let page;
-  beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/compress-video/compress-video');
-    await page.waitFor(500);
-  });
-
   it('test compressVideo', async () => {
+    const page = await program.reLaunch('/pages/API/compress-video/compress-video');
+    await page.waitFor('view');
     await page.callMethod('testCompressVideo');
     await page.waitFor(5000);
     var width = await page.data('videoSrcForTestWidth')
     var height = await page.data('videoSrcForTestHeight')
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (isAndroid) {
       width = 640
       height = 360
       const infos = process.env.uniTestPlatformInfo.split(' ');

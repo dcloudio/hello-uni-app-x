@@ -3,6 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.toLocaleLowerCase().startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
+const isAndroid = platformInfo.startsWith('android')
 
 describe('inner-audio', () => {
   // safari 浏览器运行正常，playwright 环境下给 Audio 实例 src 属性赋值会崩溃
@@ -90,7 +91,7 @@ describe('inner-audio', () => {
     // expect(await page.data('isPlayEnd')).toBeTruthy();
   });
   it('onEnded-android', async () => {
-    if (!process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (!isAndroid) {
       expect(1).toBe(1)
       return
     }

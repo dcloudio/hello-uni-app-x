@@ -1,10 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
+
 const PAGE_PATH = '/pages/component/picker/picker'
 
 describe('Picker.uvue', () => {
-  const harmony = process.env.uniTestPlatformInfo.startsWith('harmony')
-  const web = process.env.uniTestPlatformInfo.startsWith('web')
-  if (!harmony && !web) {
-    it('app', () => {
+  if (!isHarmony && !isWeb) {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return

@@ -3,6 +3,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIOS || isHarmony
+const isWeb = platformInfo.startsWith('web')
 
 describe('API-toast', () => {
   let page;
@@ -73,7 +74,7 @@ describe('API-toast', () => {
     await toScreenshot('toast-duration-end')
   })
 
-  if(process.env.uniTestPlatformInfo.startsWith('web')){
+  if(isWeb){
     return
   }
 

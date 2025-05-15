@@ -1,11 +1,10 @@
-jest.setTimeout(30000)
-
-const HOME_PAGE_PATH = '/pages/tabBar/component'
-const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+
+const HOME_PAGE_PATH = '/pages/tabBar/component'
+const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 
 describe('getCurrentPages', () => {
   let page
@@ -18,7 +17,7 @@ describe('getCurrentPages', () => {
   }
   it('getCurrentPages', async () => {
     // web 端等待应用首页加载完成
-    if (process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (isWeb) {
       const waitTime = process.env.uniTestPlatformInfo.includes('safari') ?
         5000 :
         3000

@@ -3,6 +3,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
@@ -100,7 +101,7 @@ describe('component-native-web-view', () => {
     it('test event message', async () => {
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (process.env.uniTestPlatformInfo.startsWith('android') && version > 6) {
+      if (isAndroid && version > 6) {
         await page.callMethod('testEventMessage');
         start = Date.now();
         await page.waitFor(async () => {

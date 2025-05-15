@@ -1,13 +1,12 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
-  const isAndroid = platformInfo.startsWith('android')
-  const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
   if (isWeb || isAppWebView) {
     it('web', async () => {
@@ -145,7 +144,7 @@ describe('component-native-web-view', () => {
   it('test event error', async () => {
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
-    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+    if (isAndroid && version > 5) {
       await page.setData({
         src: 'https://www.dclou.io/uni-app-x'
       });

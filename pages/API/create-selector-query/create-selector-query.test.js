@@ -1,3 +1,7 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+
 const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query'
 
 const RECT_LEFT = 15;
@@ -5,8 +9,6 @@ const RECT_WIDTH = 150;
 const RECT_HEIGHT = 100;
 
 describe('nodes-info', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -80,29 +82,17 @@ describe('nodes-info', () => {
   }) */
   // #endif
 
-  it('test filelds', async () => {
-    if (
-      process.env.uniTestPlatformInfo.startsWith('web') ||
-      process.env.uniTestPlatformInfo.startsWith('mp')
-    ) {
-      expect(true).toBe(true)
-    } else {
+  if (!(isWeb || isMP)) {
+    it('test fields', async () => {
       const pageData = await page.data()
       expect(pageData.fieldsResultContainNode).toBe(true)
-    }
-  })
+    })
 
-  it('test node', async () => {
-    if (
-      process.env.uniTestPlatformInfo.startsWith('web') ||
-      process.env.uniTestPlatformInfo.startsWith('mp')
-    ) {
-      expect(true).toBe(true)
-    } else {
+    it('test node', async () => {
       const pageData = await page.data()
       expect(pageData.nodeResultContainNode).toBe(true)
-    }
-  })
+    })
+  }
 })
 
 async function getRootNode(selector) {
