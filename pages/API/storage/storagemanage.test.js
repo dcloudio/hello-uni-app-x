@@ -10,7 +10,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 describe('Storage管理器页面-多类型新增', () => {
   let page
   beforeAll(async () => {
-    page = await program.navigateTo('/pages/storage/storagemanage')
+    page = await program.navigateTo('/pages/API/storage/storagemanage')
     // 开启测试模式，跳过确认弹窗
     await page.callMethod('setTestMode', true)
     await page.waitFor(500)
