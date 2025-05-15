@@ -1,7 +1,11 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
+
 describe('css-custom-variable', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
-    it('app 与 web 存在差异, webview 不进行截图', () => {
+  if (!(isAndroid || isIos || isWeb)) {
+    it('not support platform', () => {
       expect(1).toBe(1)
       return
     })
