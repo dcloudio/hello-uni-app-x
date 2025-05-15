@@ -1,5 +1,4 @@
 jest.setTimeout(50000);
-const PAGE_PATH = "/pages/API/request-payment/request-payment";
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
@@ -7,6 +6,9 @@ const isMP = platformInfo.startsWith('mp')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
+const PAGE_PATH = "/pages/API/request-payment/request-payment";
 
 describe("payment", () => {
   // 下面的测试在鸿蒙平台有弹窗，暂时不支持
@@ -16,7 +18,7 @@ describe("payment", () => {
     isHarmony ||
     isIOS ||
     isAndroid ||
-    process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true'
+    isAppWebView
   ) {
     it('not support', () => {
       expect(1).toBe(1)

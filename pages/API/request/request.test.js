@@ -2,7 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
-const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/API/request/request'
 const methodMap = {
@@ -99,13 +99,13 @@ describe('ExtApi-Request', () => {
   })
 
   let shouldTestCookie = false
-  if (isAndroid && !isAppWebview) {
+  if (isAndroid && !isAppWebView) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
   }
 
-  if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') && !isAppWebview) {
+  if (isIOS && !isAppWebView) {
     shouldTestCookie = true
   }
 

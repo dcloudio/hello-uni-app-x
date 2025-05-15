@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 let pageIndex = 0
 const pages = [
@@ -297,7 +297,7 @@ if(!isMP) {
   }
 }
 
-if (!isAppWebview) {
+if (!isAppWebView) {
   if (isApp) {
     pages.push(
       '/pages/template/custom-refresher/custom-refresher',
@@ -325,7 +325,7 @@ if (!isAppWebview) {
   pages.push('/pages/API/request-payment/request-payment/request-payment-uni-pay')
 }
 
-if (isAndroid && !isAppWebview) {
+if (isAndroid && !isAppWebView) {
   pages.push(
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
@@ -421,7 +421,7 @@ describe("page screenshot test", () => {
     const screenshotParams = {
       fullPage
     }
-    if (!fullPage && !isAppWebview) {
+    if (!fullPage && !isAppWebView) {
       screenshotParams.offsetY = isApp ? `${windowInfo.safeAreaInsets.top + 44}` : '0'
     }
 
