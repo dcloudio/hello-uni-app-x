@@ -6,14 +6,14 @@ const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isApp = isAndroid || isIOS || isHarmony && !isAppWebview
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isApp = isAndroid || isIOS || isHarmony && !isAppWebView
 
 const PAGE_PATH = '/pages/API/get-file-system-manager/get-file-system-manager'
 
 
 describe('ExtApi-FileManagerTest', () => {
-  if (isWeb || isAppWebview) {
+  if (isWeb || isAppWebView) {
     it('not support', () => {
       expect(1).toBe(1)
     })
