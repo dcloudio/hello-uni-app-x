@@ -2,9 +2,9 @@ const PAGE_PATH = '/pages/component/swiper/swiper'
 
 describe('swiper-touch-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
+  const isHarmony = platformInfo.startsWith('harmony')
   // 屏蔽 web & 小程序，不支持 program.swipe
   if (isWeb || isMP) {
     it('other platform', () => {
@@ -23,6 +23,10 @@ describe('swiper-touch-test', () => {
   it('滑动切换 swiper', async () => {
     let x = await page.data('swipeX')
     let y = await page.data('swipeY')
+    // harmony onReady getBoundingClientRect 获取节点宽度错误
+    if (isHarmony && x < 20) {
+      x = 300
+    }
 
     await program.swipe({
       startPoint: {x, y},
