@@ -1,6 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
-const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-overflow', () => {
   let page
@@ -12,7 +12,7 @@ describe('component-native-overflow', () => {
 
   //检测overflow设置hidden，visible
   it('check_view_overflow', async () => {
-    if (isAndroid && !isAppWebview) {
+    if (isAndroid && !isAppWebView) {
         let version = process.env.uniTestPlatformInfo
         version = parseInt(version.split(" ")[1])
         //安卓7模拟器不截图 导致闪退

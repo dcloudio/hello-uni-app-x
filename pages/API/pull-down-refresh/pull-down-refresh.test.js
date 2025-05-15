@@ -3,13 +3,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe("payment", () => {
-  if (
-    isWeb ||
-    process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' ||
-    isMP
-  ) {
+  if (isWeb || isAppWebView || isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })

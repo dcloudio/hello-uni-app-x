@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 
 describe('showActionSheet', () => {
@@ -33,7 +33,7 @@ describe('showActionSheet', () => {
 
     page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
-    if (isApp && !isAppWebview) {
+    if (isApp && !isAppWebView) {
       if(isAndroid || isIos){
         await page.callMethod('setThemeAuto')
       }
@@ -170,7 +170,7 @@ describe('showActionSheet', () => {
     })
   }
   afterAll(async () => {
-    if(isApp && !isAppWebview){
+    if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')
     }
   });

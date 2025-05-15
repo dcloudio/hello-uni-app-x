@@ -1,6 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isAndroid = platformInfo.startsWith('android')
 
 describe('component-native-image', () => {
@@ -46,7 +46,7 @@ describe('component-native-image', () => {
     expect(await page.data('loadError')).toBe(true)
   })
 
-  if (isAndroid && !isAppWebview) {
+  if (isAndroid && !isAppWebView) {
     it('check-cookie', async () => {
       await page.setData({
         autoTest: true,

@@ -1,12 +1,14 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 const PAGE_PATH = '/pages/component/picker-view/picker-view'
 let page, pickerViewEl;
 describe('PickerView.uvue', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
@@ -96,7 +98,7 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true' && !isMP && !isHarmony) {
+  if (!isAppWebView && !isMP && !isHarmony) {
     it('mask-top-bottom-style', async () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
@@ -135,4 +137,4 @@ describe('PickerView.uvue', () => {
     })
   }
 
-})
+})

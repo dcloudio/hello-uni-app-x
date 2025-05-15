@@ -2,11 +2,12 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = "/pages/API/provider/provider";
 
 describe("provider", () => {
-  if (isMP || isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
+  if (isMP || isWeb || isAppWebView) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
