@@ -14,6 +14,13 @@ describe('Storage管理器页面-多类型新增', () => {
     // 开启测试模式，跳过确认弹窗
     await page.callMethod('setTestMode', true)
     await page.waitFor(500)
+    const list = await page.callMethod('getStorageList')
+    // 先清空
+    if(list.length){
+    	const clearBtn = await page.$('.btn-clear')
+    	await clearBtn.tap()
+    	await page.waitFor(300)
+    }
   })
   afterAll(async () => {
     // 关闭测试模式
