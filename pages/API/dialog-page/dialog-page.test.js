@@ -578,6 +578,20 @@ describe('dialog page', () => {
       expect(image).toSaveImageSnapshot();
       await page.waitFor(2000);
       await page.callMethod('closeDialog2ForTest');
+      await page.waitFor(1000);
+      await page.callMethod('setPageStyleForTest2', {
+        hideStatusBar: true,
+        hideBottomNavigationIndicator: true
+      });
+      await page.waitFor(1000);
+      await page.callMethod('openDialog2ForTest');
+      await page.waitFor(1000);
+      await page.callMethod('closeDialog2ForTest');
+      await page.waitFor(1000);
+      const image2 = await program.screenshot({
+        deviceShot: true
+      });
+      expect(image2).toSaveImageSnapshot();
     }
   });
 
