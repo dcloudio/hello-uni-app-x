@@ -120,7 +120,8 @@ describe('component-native-web-view', () => {
     expect(await page.data('eventLoad')).toEqual({
       tagName: 'WEB-VIEW',
       type: 'load',
-      src: 'https://www.dcloud.io/'
+      src: 'https://www.dcloud.io/',
+      url: 'https://www.dcloud.io/'
     });
   });
 
