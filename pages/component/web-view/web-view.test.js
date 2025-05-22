@@ -198,4 +198,11 @@ describe('component-native-web-view', () => {
     const has = await page.callMethod('checkNativeWebView')
     expect(has).toBe(true)
   })
+
+  it('test lodaData', async () => {
+    await page.callMethod('loadData');
+    await page.waitFor(1000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
 });
