@@ -5,7 +5,7 @@
       <button class="button_item" @click="switchItemContent">修改item子元素</button>
     </scroll-view>
     <list-view v-show="list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
-      <list-item v-for="index in item_count" class="item" @click="itemClick(index)">
+      <list-item v-for="index in item_count" :id="'item_'+index" class="item" @click="itemClick(index)">
         <view style="flex-direction: row;">
           <text>item-------<text>{{index}}</text></text>
           <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
@@ -57,6 +57,11 @@
       },
       switchItemContent() {
         this.displayArrow = !this.displayArrow
+        this.modify1ItemPadding(1)
+      },
+      modifyItemPadding(index: number) {
+        var element = uni.getElementById("item_"+index)
+        element?.style.setProperty("padding", "0px")
       }
     }
   }
