@@ -90,6 +90,7 @@ const pages = [
   '/pages/component/global-events/global-events',
   '/pages/component/global-events/transition-events',
   '/pages/component/global-events/touch-events',
+  '/pages/component/global-events/global-events-transform',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
   // 单独测试例截图
