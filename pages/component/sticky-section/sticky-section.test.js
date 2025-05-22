@@ -5,7 +5,7 @@ const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-sticky-section', () => {
-  if (isMP || isHarmony) {
+  if (isMP) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
@@ -45,7 +45,7 @@ describe('component-native-sticky-section', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if (isWeb || isAppWebView || isHarmony) {
+  if (isWeb || isAppWebView) {
     return
   }
 
@@ -54,7 +54,7 @@ describe('component-native-sticky-section', () => {
     await page.callMethod('toTop')
     page.waitFor(100)
     await page.setData({
-      scrolling: 'true'
+      scrolling: true
     })
     if (!isAppWebView) {
       //跳转到id为C的StickyHeader位置
