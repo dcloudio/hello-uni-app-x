@@ -119,9 +119,10 @@
           },
           fail: (err) => {
             console.error("login fail => " + err);
+            const hasCauseMessage = (err.cause?.cause?.message ?? '').length > 0
             uni.showModal({
               title: '登录失败',
-              content: JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") ?? err.errMsg,
+              content: hasCauseMessage ? JSON.parseObject(err.cause?.cause?.message ?? "")?.getString("errorDesc") : err.errMsg,
               showCancel: false
             });
           }
