@@ -20,12 +20,15 @@
 		data() {
 			return {
 				appear: false,
-				title:'intersectionObserver'
+				title:'intersectionObserver',
+				// 自动化测试
+				testRes: null as ObserveResult | null
 			}
 		},
 		onReady() {
 			observer = uni.createIntersectionObserver(this,{});
 			observer.relativeTo('.scroll-view').observe('.ball', (res:ObserveResult) => {
+				this.testRes = res;
 				if (res.intersectionRatio > 0 && !this.appear) {
 					this.appear = true;
 				} else if (res.intersectionRatio <= 0 && this.appear) {
