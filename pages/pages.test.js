@@ -130,7 +130,8 @@ const pages = [
   // '/pages/API/show-action-sheet/show-action-sheet',
   // 单独测试例截图
   // '/pages/API/show-modal/show-modal',
-  '/pages/API/show-loading/show-loading',
+  // 单独测试例截图
+  // '/pages/API/show-loading/show-loading',
   // 单独测试例截图
   // '/pages/API/show-toast/show-toast',
   // 单独测试例截图
