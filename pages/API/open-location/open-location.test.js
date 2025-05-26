@@ -3,14 +3,8 @@ const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
 
 describe('dialog page', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
-  	it('skip app-webview', () => {
-  		expect(1).toBe(1)
-  	})
-  	return
-  }
-  if (isMP) {
-  	it('skip mp', () => {
+  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP) {
+  	it('skip', () => {
   		expect(1).toBe(1)
   	})
   	return
@@ -32,7 +26,7 @@ describe('dialog page', () => {
 		const dialogPagesNum = await page.data('dialogPagesNum')
 		expect(dialogPagesNum).toBe(1)
 	})
-	
+
 	afterAll(async () => {
 		await page.callMethod('setLifeCycleNum', originLifeCycleNum)
   });
