@@ -1,9 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
+const isAndroid = platformInfo.startsWith('android')
 
 let page;
 describe('label.uvue', () => {
-  if (!isWeb) {
+  if (!isWeb && !isAndroid) {
     it('app', () => {
       expect(1).toBe(1)
     })

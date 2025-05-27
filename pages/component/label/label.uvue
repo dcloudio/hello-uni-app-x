@@ -5,7 +5,7 @@
       <view class="uni-form-item uni-column">
         <view class="title">表单组件在label内</view>
         <checkbox-group class="uni-list" @change="checkboxChange">
-          <label class="uni-list-cell uni-list-cell-pd checkboxItemsTest" v-for="item in checkboxItems"
+          <label class="uni-list-cell uni-list-cell-pd checkboxItemsTest label" v-for="item in checkboxItems"
             :key="item.name">
             <view>
               <checkbox :value="item.name" :checked="item.checked"></checkbox>
@@ -17,7 +17,7 @@
 
       <view class="uni-form-item uni-column">
         <view class="title">label用for标识表单组件</view>
-        <radio-group class="uni-list" @change="radioChange">
+        <radio-group class="uni-list radio-group" @change="radioChange">
           <view class="uni-list-cell uni-list-cell-pd" v-for="(item,index) in radioItems" :key="index">
             <view>
               <radio :id="item.name" :value="item.name" :checked="item.checked"></radio>
@@ -32,7 +32,7 @@
       <view class="uni-form-item uni-column">
         <view class="title">label内有多个时选中第一个</view>
         <checkbox-group class="uni-list" @change="checkboxChange">
-          <label class="label-3">
+          <label class="label-3 label">
             <view class="uni-list-cell uni-list-cell-pd">
               <checkbox>选项一</checkbox>
             </view>
@@ -47,6 +47,11 @@
   </view>
 </template>
 <script lang="uts">
+  type ItemType = {
+    value : string
+    name : string
+    checked : boolean
+  }
   export default {
     data() {
       return {
@@ -58,9 +63,9 @@
         {
           name: 'CHN',
           value: '中国',
-          checked: 'true'
+          checked: true
         }
-        ],
+        ] as ItemType[],
         radioItems: [{
           name: 'USA',
           value: '美国'
@@ -68,9 +73,9 @@
         {
           name: 'CHN',
           value: '中国',
-          checked: 'true'
+          checked: true
         }
-        ],
+        ] as ItemType[],
         hidden: false,
         checkboxValue: [] as string[],
         radioValue: ''
@@ -89,7 +94,7 @@
   }
 </script>
 
-<style>
+<style lang="scss">
   .uni-list-cell {
     justify-content: flex-start
   }
@@ -112,11 +117,11 @@
     padding: 10rpx 25rpx;
   }
 
-  radio-group {
+  .radio-group {
     padding: 0 20rpx;
   }
 
-  checkbox-group label {
+  .label {
     margin: 0 20rpx;
   }
 </style>

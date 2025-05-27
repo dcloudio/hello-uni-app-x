@@ -1,0 +1,91 @@
+const interactiveTags = ['CHECKBOX', 'RADIO', 'SWITCH', 'BUTTON']
+
+export class UniLabelElement extends UniViewElementImpl implements UniCustomElement {
+
+	private controls : UniElement[] = [];
+	private controlNodeIds : string[] = [];
+
+	constructor() {
+		super();
+
+		this.addEventListener('click', (event : UniPointerEvent) => {
+			if (this.disabled) {
+				return
+			}
+
+			this.controls = this.findFormControls(this);
+
+			for (let i = 0; i < this.controls.length; i++) {
+				// TODO getNodeId 在鸿蒙上还未实现
+				let id = this.controls[i].getNodeId()
+				if (!this.controlNodeIds.includes(id)) {
+					this.controls[i].addEventListener('click', (controlEvent : UniPointerEvent) => {
+						controlEvent.stopPropagation()
+					})
+					this.controlNodeIds.push(id)
+				}
+			}
+
+			if (this.for != '') {
+				const target = this.uniPage.getElementById(this.for)
+				if (target != null) {
+					target.dispatchEvent('click', event)
+				}
+			} else if (this.controls.length > 0) {
+				this.controls[0].dispatchEvent('click', event)
+			}
+
+		});
+	}
+
+	get disabled() : boolean {
+		return this.getAttribute('disabled') == 'true' ? true : false
+	}
+
+	get for() : string {
+		return this.getAttributeValue('for', '')
+	}
+
+	private getAttributeValue(key : string, defaultValue : string) : string {
+		const value = this.getAttribute(key)
+		if (value != null && value!.length > 0) {
+			return value!
+		}
+		return defaultValue
+	}
+
+	private findFormControls(el : UniElement) : UniElement[] {
+		const controls : UniElement[] = []
+		for (let i = 0; i < el.children.length; i++) {
+			const item = el.children[i]
+      // TODO ios 上,无法通过 tagName 判断是否是可以触发的组件
+			if (interactiveTags.includes(item.tagName)) {
+				if (item.tagName.length > 0) {
+					controls.push(item)
+				}
+			} else {
+				const childControls = this.findFormControls(item)
+				childControls.forEach((childItem : UniElement) => {
+					controls.push(childItem)
+				})
+			}
+		}
+		return controls
+	}
+
+	connectedCallback() {
+
+	}
+
+	disconnectedCallback() {
+		this.controls.forEach((item : UniElement) => {
+			// TODO removeEventListener 未实现
+			// 类型不匹配: 推断类型是(UniPointerEvent) -> Unit /* = void */，但预期的是UniCallbackWrapper。‌
+			// item.removeEventListener('click', ()=>{})
+		})
+	}
+
+	adoptedCallback() { }
+
+	attributeChangedCallback(name : string, oldValue : string, newValue : string) { }
+}
