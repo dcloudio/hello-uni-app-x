@@ -140,9 +140,10 @@
 
 	const deleteFile = (fileItem: fileListType) => {
     const fileManager = uni.getFileSystemManager()
+    let path = cacheOrData.value + fileItem.path
     if (fileItem.isFile) {
       fileManager.unlink({
-      	filePath: fileItem.path,
+      	filePath: path,
       	success: () => {
       		refreshFile()
       		closeDialog()
@@ -157,7 +158,7 @@
       })
     } else {
       fileManager.rmdir({
-      	dirPath: fileItem.path,
+      	dirPath: path,
         recursive: true,
       	success: () => {
       		refreshFile()
@@ -205,7 +206,7 @@
   }
 
   const openFile = (fileItem: fileListType) => {
-		let path = fileItem.path
+		let path = cacheOrData.value + fileItem.path
 		let suffix = path.split('.').pop()
 		switch(suffix) {
 			case 'jpg':
@@ -225,7 +226,6 @@
 				break
 
       default:
-        // #ifdef APP-HARMONY || MP-WEIXIN
         uni.openDocument({
         	filePath: path,
         	success: (res) => {
@@ -240,13 +240,7 @@
             })
         	}
         })
-        break
-        // #endif
-				uni.showToast({
-					title: '暂不支持打开该文件',
-					icon: 'none'
-				})
-				break
+
 		}
   }
 	const snapshot = () => {
