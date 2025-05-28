@@ -2,6 +2,8 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
+const isMp = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/API/request/request'
@@ -109,43 +111,41 @@ describe('ExtApi-Request', () => {
     shouldTestCookie = true
   }
 
-  if (!shouldTestCookie) {
-    return
+  if (shouldTestCookie) {
+    it('Check Set Cookie', async () => {
+      res = await page.callMethod('jest_set_cookie')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+    it('Check Delete Cookie', async () => {
+      res = await page.callMethod('jest_delete_cookie')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+    it('Check Set Cookie Expires', async () => {
+      await page.callMethod('jest_set_cookie_expires')
+      await page.waitFor(2000);
+      res = await page.data('jest_result_data');
+      console.log("request expires cookie data :", res);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+      await page.setData({
+        jest_result: false,
+        jest_result_data: "",
+        data: null,
+        header: null
+      })
+      await page.waitFor(5000);
+      await page.callMethod('jest_cookie_request', false)
+      await page.waitFor(2000);
+      res = await page.data('jest_result_data');
+      console.log("verify request data :", res);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
   }
-
-  it('Check Set Cookie', async () => {
-    res = await page.callMethod('jest_set_cookie')
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
-  it('Check Delete Cookie', async () => {
-    res = await page.callMethod('jest_delete_cookie')
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
-  it('Check Set Cookie Expires', async () => {
-    await page.callMethod('jest_set_cookie_expires')
-    await page.waitFor(2000);
-    res = await page.data('jest_result_data');
-    console.log("request expires cookie data :", res);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-    await page.setData({
-      jest_result: false,
-      jest_result_data: "",
-      data: null,
-      header: null
-    })
-    await page.waitFor(5000);
-    await page.callMethod('jest_cookie_request', false)
-    await page.waitFor(2000);
-    res = await page.data('jest_result_data');
-    console.log("verify request data :", res);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
   it('Check Get With Data', async () => {
     res = await page.callMethod('jest_get_with_data')
     await page.waitFor(2000);
@@ -163,7 +163,7 @@ describe('ExtApi-Request', () => {
   let version = process.env.uniTestPlatformInfo
   let split = version.split(" ")
   version = parseInt(split[split.length - 1])
-  if (!process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') || version > 15) {
+  if (isIOS && version > 15 || isAndroid || isHarmony) {
     it('Check Post In UTS Module', async () => {
       res = await page.callMethod('jest_uts_module_invoked')
       await page.waitFor(2000);
