@@ -451,7 +451,6 @@
           },
         });
 
-        // #ifdef APP-IOS
         const onHeadersReceivedCallback1 = (res : RequestTaskOnHeadersReceivedListenerResult) => {
           console.log("-------onHeadersReceived监听1------", res)
           this.res += `onHeadersReceived监听1：\n ${JSON.stringify(res)} \n\n`
@@ -462,13 +461,13 @@
         }
 
         if (this.onHeadersReceivedObseves.includes(1)) {
-          this.onHeadersReceived_returnid_1 = this.task?.onHeadersReceived(onHeadersReceivedCallback1)
+          this.onHeadersReceived_returnid_1 = this.task?.onHeadersReceived(onHeadersReceivedCallback1) ?? -1
         }
 
-        if (this.onHeadersReceivedObseves.length != null && this.onHeadersReceivedObseves.length! == 0) {
-          this.task?.offHeadersReceived()
+        if (this.onHeadersReceivedObseves.length == 0) {
+          this.task?.offHeadersReceived(null)
           this.res += "点击了 offHeadersReceived \n\n"
-        } else if (this.onHeadersReceivedObseves.length != null && this.onHeadersReceivedObseves.length! == 1) {
+        } else if (this.onHeadersReceivedObseves.length == 1) {
           this.task?.offHeadersReceived(this.onHeadersReceived_returnid_2)
           this.res += "点击了 offHeadersReceived \n\n"
         }
@@ -485,24 +484,21 @@
         }
 
         if (this.onHeadersReceivedObseves.includes(2)) {
-          this.onHeadersReceived_returnid_2 = this.task?.onHeadersReceived(onHeadersReceivedCallback2)
+          this.onHeadersReceived_returnid_2 = this.task?.onHeadersReceived(onHeadersReceivedCallback2) ?? -1
         }
 
         if (this.onChunkReceivedObseves.includes(1)) {
-          let a1 = this.task?.onChunkReceived(onChunkReceivedCallback1)
+          this.task?.onChunkReceived(onChunkReceivedCallback1)
         }
 
         if (this.onChunkReceivedObseves.includes(2)) {
-          let a2 = this.task?.onChunkReceived(onChunkReceivedCallback2)
+          this.task?.onChunkReceived(onChunkReceivedCallback2)
         }
 
         if (this.onChunkReceivedObseves.length == 0) {
-          this.task?.offChunkReceived()
+          this.task?.offChunkReceived(null)
           this.res += "点击了 offChunkReceived \n\n"
-
         }
-        // #endif
-
       },
       //自动化测试例专用
       jest_request() {
