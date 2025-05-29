@@ -1,11 +1,11 @@
 <template>
   <view style="flex: 1; background-color: aliceblue">
-    <page-head :title="title"></page-head>
-    <view class="tips">list-view组件虽然在UI层有recycle机制，但长列表的vnode太多也会造成初始化卡顿。本示例通过分批创建列表项，减少页面跳转卡顿。</view>
+    <view class="tips">list-view组件虽然在渲染层有recycle机制，但长列表的vnode/Element太多也会造成初始化卡顿。
+    本示例有2000条数据，通过分批创建列表项，减少初始化卡顿。并通过闲时创建机制避免影响列表滚动等UI操作</view>
     <list-view style="flex: 1" :refresher-enabled="true" :refresher-triggered="refresherTriggered" @scroll="onScroll"
       @scrolltolower="onScrollToLower" @refresherrefresh="onRefresh">
       <list-item class="item" v-for="(item, index) in list" :key="index + '_' + item.id">
-        <view><text style="font-size: 14px">{{ item.name }}</text></view>
+        <view><text>{{ item.name }}</text></view>
         <view><text style="font-size: 12px; color: #999999">{{
             item.info
           }}</text></view>
@@ -69,7 +69,6 @@
   export default {
     data() {
       return {
-        title: "延迟加载长列表",
         bigList: [] as Item[],
         list: [] as Item[],
         jobs: new Jobs(),
