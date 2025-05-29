@@ -1,0 +1,159 @@
+<template>
+  <view style="flex: 1; background-color: aliceblue">
+    <page-head :title="title"></page-head>
+    <view class="tips">list-view组件虽然在UI层有recycle机制，但长列表的vnode太多也会造成初始化卡顿。本示例通过分批创建列表项，减少页面跳转卡顿。</view>
+    <list-view style="flex: 1" :refresher-enabled="true" :refresher-triggered="refresherTriggered" @scroll="onScroll"
+      @scrolltolower="onScrollToLower" @refresherrefresh="onRefresh">
+      <list-item class="item" v-for="(item, index) in list" :key="index + '_' + item.id">
+        <view><text style="font-size: 14px">{{ item.name }}</text></view>
+        <view><text style="font-size: 12px; color: #999999">{{
+            item.info
+          }}</text></view>
+      </list-item>
+    </list-view>
+  </view>
+</template>
+
+<script lang="ts">
+  type Item = {
+    id : number;
+    name : string;
+    info : string;
+  };
+
+  class Jobs {
+    private jobs : (() => Promise<void>)[] = [];
+    private paused : boolean = false;
+    constructor() { }
+    add(job : () => Promise<void>) {
+      this.jobs.push(job);
+    }
+    pause() {
+      this.paused = true;
+    }
+    execute() {
+      if (this.paused) {
+        return;
+      }
+      if (this.jobs.length == 0) {
+        return;
+      }
+      const job = this.jobs.shift();
+      if (job != null) {
+        job().then(() => {
+          this.execute();
+        });
+      }
+    }
+    resume() {
+      this.paused = false;
+      this.execute();
+    }
+    reset() {
+      this.jobs = [];
+      this.paused = false;
+    }
+    get done() : boolean {
+      return this.jobs.length == 0;
+    }
+  }
+
+  function delay(time : number) : Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, time)
+    })
+  }
+
+  export default {
+    data() {
+      return {
+        title: "延迟加载长列表",
+        bigList: [] as Item[],
+        list: [] as Item[],
+        jobs: new Jobs(),
+        batchSize: 50,
+        scrolling: false,
+        refresherTriggered: false,
+        scrollendTimeout: -1
+      };
+    },
+    created() {
+      for (let i = 0; i < 2000; i++) {
+        this.bigList.push({
+          id: i,
+          name: `Wifi_` + i,
+          info: `信号强度: -${Math.floor(Math.random() * 60) + 40
+            } db, 安全性: WPA/WPA2/WPA3-Personal`,
+        } as Item);
+      }
+    },
+    onReady() {
+      this.init();
+    },
+    methods: {
+      init() {
+        const batchCount = Math.ceil(this.bigList.length / this.batchSize);
+        for (let i = 0; i < batchCount; i++) {
+          const start = i * this.batchSize;
+          const end = Math.min(start + this.batchSize, this.bigList.length);
+          this.jobs.add(async () => {
+            this.list.push(...this.bigList.slice(start, end));
+            console.log(this.list.length)
+            await this.$nextTick();
+            await delay(100)
+          });
+        }
+        this.jobs.resume();
+      },
+
+      onScroll() {
+        clearTimeout(this.scrollendTimeout)
+        this.scrollendTimeout = setTimeout(() => {
+          this.onScrollEnd()
+        }, 100)
+        if (this.scrolling) {
+          return;
+        }
+        this.scrolling = true;
+        this.jobs.pause();
+      },
+      onScrollEnd() {
+        this.scrolling = false;
+        this.jobs.resume();
+      },
+      onScrollToLower() {
+        if (!this.jobs.done) {
+          return;
+        }
+        // 加载更多数据
+      },
+      onRefresh() {
+        this.refresherTriggered = true;
+        setTimeout(() => {
+          this.list = [];
+          this.jobs.reset();
+          this.init();
+          this.refresherTriggered = false;
+        }, 500);
+      },
+    },
+  };
+</script>
+
+<style>
+  .tips {
+    margin: 10px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+  }
+
+  .item {
+    margin: 5px 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+  }
+</style>
