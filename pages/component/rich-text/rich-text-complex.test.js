@@ -10,7 +10,7 @@ const PAGE_PATH = '/pages/component/rich-text/rich-text-complex'
 describe('rich-text-test', () => {
 
   // 先屏蔽 android 及 web 平台
-  if (isAndroid || isWeb || isMP || isHarmony) {
+  if (isWeb || isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -30,6 +30,17 @@ describe('rich-text-test', () => {
     await page.waitFor(1500);
   })
 
+  if (isAndroid) {
+    it("test attr type", async () => {
+      await page.setData({
+        type: 'native'
+      });
+      await page.waitFor(1000);
+      const image = await program.screenshot({ fullPage: true });
+      expect(image).toSaveImageSnapshot();
+    });
+    return;
+  }
 
   it('click-event', async () => {
     await program.tap({

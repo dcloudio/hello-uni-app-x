@@ -3,6 +3,9 @@
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <page-head title="rich-text-tags"></page-head>
+    <!-- #ifdef APP-ANDROID -->
+    <enum-data title="设置type（仅Android平台支持，默认值为web）" :items="typeItemTypes" @change="onTypeChange"></enum-data>
+    <!-- #endif -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
         <text class="uni-title-text">支持的HTML标签</text>
@@ -10,7 +13,7 @@
       <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
         <text class="uni-subtitle-text">{{item.name}}</text>
         <view style="background:#FFFFFF;">
-          <rich-text :nodes="item.html" @itemclick="itemClick"></rich-text>
+          <rich-text :nodes="item.html" @itemclick="itemClick" :type="type"></rich-text>
         </view>
       </view>
     </view>
@@ -20,6 +23,7 @@
 </template>
 
 <script>
+  import { ItemType } from '@/components/enum-data/enum-data-types';
   export default {
     data() {
       return {
@@ -296,7 +300,10 @@
               }
             ] as Array<UTSJSONObject>
           }
-        ] as Array<TagInfo>
+        ] as Array<TagInfo>,
+        type: 'web',
+        typeItems: ['web', 'native'],
+        typeItemTypes: [{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[]
       }
     },
     methods: {
@@ -312,6 +319,9 @@
           content: clicktext,
           showCancel: false
         });
+      },
+      onTypeChange: function (value : number) {
+        this.type = this.typeItems[value];
       }
     }
   }
