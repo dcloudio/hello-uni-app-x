@@ -1,9 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
 
 let page;
 describe('label.uvue', () => {
-  if (!isWeb) {
+  if (!isWeb && !isHarmony) {
     it('app', () => {
       expect(1).toBe(1)
     })
@@ -41,6 +42,6 @@ describe('label.uvue', () => {
   it('label内有多个时选中第一个', async () => {
     const labelText = await page.$('.uni-center')
     await labelText.tap()
-    expect(await getData('checkboxValue')).toEqual([''])
+    expect(await getData('checkboxForValue')).toEqual(['for1'])
   })
 })
