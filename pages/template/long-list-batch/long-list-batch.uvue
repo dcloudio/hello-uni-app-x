@@ -1,11 +1,11 @@
 <template>
   <view style="flex: 1; background-color: aliceblue">
-    <view class="tips">list-view组件虽然在渲染层有recycle机制，但长列表的vnode/Element太多也会造成初始化卡顿。
-    本示例有2000条数据，通过分批创建列表项，减少初始化卡顿。并通过闲时创建机制避免影响列表滚动等UI操作</view>
+    <page-head :title="title"></page-head>
+    <view class="tips">list-view组件虽然在UI层有recycle机制，但长列表的vnode太多也会造成初始化卡顿。本示例通过分批创建列表项，减少页面跳转卡顿。</view>
     <list-view style="flex: 1" :refresher-enabled="true" :refresher-triggered="refresherTriggered" @scroll="onScroll"
-      @scrolltolower="onScrollToLower" @refresherrefresh="onRefresh">
+      @scrolltolower="onScrollToLower" @refresherrefresh="onRefresh" @touchmove="onTouchMove" @refresherpulling="onRefresherPulling" @refresherrestore="onRefresherRestore">
       <list-item class="item" v-for="(item, index) in list" :key="index + '_' + item.id">
-        <view><text>{{ item.name }}</text></view>
+        <view><text style="font-size: 14px">{{ item.name }}</text></view>
         <view><text style="font-size: 12px; color: #999999">{{
             item.info
           }}</text></view>
@@ -23,7 +23,7 @@
 
   class Jobs {
     private jobs : (() => Promise<void>)[] = [];
-    private paused : boolean = false;
+    paused : boolean = true;
     constructor() { }
     add(job : () => Promise<void>) {
       this.jobs.push(job);
@@ -31,11 +31,12 @@
     pause() {
       this.paused = true;
     }
-    execute() {
+    private execute() {
       if (this.paused) {
         return;
       }
       if (this.jobs.length == 0) {
+        this.paused = true
         return;
       }
       const job = this.jobs.shift();
@@ -46,12 +47,17 @@
       }
     }
     resume() {
+      if(!this.paused) {
+        return
+      }
       this.paused = false;
-      this.execute();
+      setTimeout(() => {
+        this.execute();
+      }, 0)
     }
     reset() {
       this.jobs = [];
-      this.paused = false;
+      this.paused = true;
     }
     get done() : boolean {
       return this.jobs.length == 0;
@@ -69,13 +75,15 @@
   export default {
     data() {
       return {
+        title: "分批加载长列表",
         bigList: [] as Item[],
         list: [] as Item[],
         jobs: new Jobs(),
         batchSize: 50,
         scrolling: false,
         refresherTriggered: false,
-        scrollendTimeout: -1
+        scrollendTimeout: -1,
+        pulling: false,
       };
     },
     created() {
@@ -92,19 +100,18 @@
       this.init();
     },
     methods: {
-      init() {
+      init(autoResumeJobs: boolean = true) {
         const batchCount = Math.ceil(this.bigList.length / this.batchSize);
         for (let i = 0; i < batchCount; i++) {
           const start = i * this.batchSize;
           const end = Math.min(start + this.batchSize, this.bigList.length);
           this.jobs.add(async () => {
             this.list.push(...this.bigList.slice(start, end));
-            console.log(this.list.length)
             await this.$nextTick();
             await delay(100)
           });
         }
-        this.jobs.resume();
+        autoResumeJobs && this.jobs.resume();
       },
 
       onScroll() {
@@ -129,14 +136,25 @@
         // 加载更多数据
       },
       onRefresh() {
-        this.refresherTriggered = true;
+        this.refresherTriggered = true
         setTimeout(() => {
-          this.list = [];
-          this.jobs.reset();
-          this.init();
           this.refresherTriggered = false;
-        }, 500);
+          this.list.splice(0, this.list.length);
+          this.jobs.reset();
+          this.init(false);
+        }, 500)
       },
+      onRefresherPulling() {
+        if(this.pulling) {
+          return
+        }
+        this.pulling = true
+        this.jobs.pause()
+      },
+      onRefresherRestore() {
+        this.pulling = false
+        this.jobs.resume();
+      }
     },
   };
 </script>
