@@ -4,7 +4,7 @@
   <!-- #endif -->
     <page-head title="rich-text-tags"></page-head>
     <!-- #ifdef APP-ANDROID -->
-    <enum-data title="设置type（仅Android平台支持，默认值为web）" :items="typeItemTypes" @change="onTypeChange"></enum-data>
+    <enum-data title="设置mode（仅Android平台支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data>
     <!-- #endif -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
@@ -13,7 +13,7 @@
       <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
         <text class="uni-subtitle-text">{{item.name}}</text>
         <view style="background:#FFFFFF;">
-          <rich-text :nodes="item.html" @itemclick="itemClick" :type="type"></rich-text>
+          <rich-text :nodes="item.html" @itemclick="itemClick" :mode="mode"></rich-text>
         </view>
       </view>
     </view>
@@ -301,13 +301,13 @@
             ] as Array<UTSJSONObject>
           }
         ] as Array<TagInfo>,
-        type: 'web',
-        typeItems: ['web', 'native'],
-        typeItemTypes: [{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[]
+        mode: 'web',
+        modeItems: ['web', 'native'],
+        modeItemTypes: [{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[]
       }
     },
     methods: {
-      itemClick(e : RichTextItemClickEvent) {
+      itemClick(e : UniRichTextItemClickEvent) {
         console.log(JSON.stringify(e.detail));
         let clicktext = '';
         if (e.detail.src != null) {
@@ -320,8 +320,8 @@
           showCancel: false
         });
       },
-      onTypeChange: function (value : number) {
-        this.type = this.typeItems[value];
+      onModeChange: function (value : number) {
+        this.mode = this.modeItems[value];
       }
     }
   }
