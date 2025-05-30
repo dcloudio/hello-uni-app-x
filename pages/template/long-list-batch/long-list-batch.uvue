@@ -86,6 +86,7 @@
       };
     },
     created() {
+      // 模拟大列表数据
       for (let i = 0; i < 2000; i++) {
         this.bigList.push({
           id: i,
@@ -100,12 +101,14 @@
     },
     methods: {
       init(autoResumeJobs: boolean = true) {
+        // 将数据分批放入任务队列
         const batchCount = Math.ceil(this.bigList.length / this.batchSize);
         for (let i = 0; i < batchCount; i++) {
           const start = i * this.batchSize;
           const end = Math.min(start + this.batchSize, this.bigList.length);
           this.jobs.add(async () => {
             this.list.push(...this.bigList.slice(start, end));
+            // 两批数据之间增加延迟，防止卡顿时间太久
             await this.$nextTick();
             await delay(100)
           });
@@ -116,6 +119,7 @@
       },
 
       onScroll() {
+        // 部分平台不支持scrollend事件，使用定时器模拟
         clearTimeout(this.scrollendTimeout)
         this.scrollendTimeout = setTimeout(() => {
           this.onScrollEnd()
@@ -124,13 +128,16 @@
           return;
         }
         this.scrolling = true;
+        // 滚动期间暂停分批加载，保证滚动流畅度
         this.jobs.pause();
       },
       onScrollEnd() {
         this.scrolling = false;
+        // 滚动结束，继续执行分批加载逻辑
         this.jobs.resume();
       },
       onScrollToLower() {
+        // 分批加载进行中，暂不执行滚动到底部加载更多数据的逻辑
         if (!this.jobs.done) {
           return;
         }
@@ -141,7 +148,12 @@
         setTimeout(() => {
           this.refresherTriggered = false;
           this.list.splice(0, this.list.length);
+          // 下拉刷新触发，重置任务队列
           this.jobs.reset();
+          /**
+           * refreshRestore事件会触发继续分批加载，此处init不自动调用resume。这样做能减少一些下拉刷新复位期间加载数据引发的卡顿。
+           * TODO 清空列表也会导致下拉刷新复位时发生卡顿，后续再优化
+           */
           this.init(false);
         }, 500)
       },
@@ -150,10 +162,12 @@
           return
         }
         this.pulling = true
+        // 在下拉刷新时暂停分批加载，避免影响刷新操作
         this.jobs.pause()
       },
       onRefresherRestore() {
         this.pulling = false
+        // 下拉刷新结束后恢复分批加载
         this.jobs.resume();
       }
     },
