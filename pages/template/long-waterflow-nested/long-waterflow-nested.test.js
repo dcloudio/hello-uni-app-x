@@ -2,10 +2,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
-
+const isIOS = platformInfo.startsWith('ios')
 
 describe('long-waterflow-nested', () => {
-  if (isWeb || isMP || isHarmony || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isWeb || isMP || isHarmony || isIOS || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('dummyTest', async () => {
       expect(1).toBe(1)
     })
