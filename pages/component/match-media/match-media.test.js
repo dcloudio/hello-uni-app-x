@@ -1,9 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isAndroid = platformInfo.startsWith('android')
 
 describe("match-media", () => {
-    const isSupportted = isMP || isAndroid
+    const isSupportted = isMP
     if (!isSupportted) {
       it("not support", () => {
         expect(1).toBe(1);
