@@ -6,7 +6,7 @@ const isApp = isIos || isAndroid || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 
-describe('long-waterflow-nested', () => {
+describe('long-list-nested', () => {
   if (isAppWebView || !isApp) {
     it('dummyTest', async () => {
       expect(1).toBe(1)
