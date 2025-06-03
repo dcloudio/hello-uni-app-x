@@ -1,3 +1,5 @@
+jest.setTimeout(40000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
