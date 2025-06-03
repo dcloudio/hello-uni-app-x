@@ -12,9 +12,9 @@ describe("rich-text-tags", () => {
   })
 
   if (isAndroid) {
-    it("test attr type", async () => {
+    it("test attr mode", async () => {
       await page.setData({
-        type: 'native'
+        mode: 'native'
       });
       await page.waitFor(1000);
       const image = await program.screenshot({ fullPage: true });
