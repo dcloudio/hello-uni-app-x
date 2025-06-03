@@ -8,7 +8,10 @@
         <text class="banner-title">{{title}}</text>
       </view>
     </share-element>
-    <rich-text class="rich-text" :nodes="htmlNodes" mode="native"></rich-text>
+		<view v-if="loading" class="loading-container">
+			<text>加载中...</text>
+		</view>
+    <rich-text v-else class="rich-text" :nodes="htmlNodes"></rich-text>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -16,29 +19,54 @@
 
 <script>
   export default {
+		props: {
+			// 作为页面渲染时，props会接收url中的参数
+			// 作为组件使用时，可以正常传递props
+			post_id: {
+				type: String,
+				default: ''
+			},
+			cover: {
+				type: String,
+				default: ''
+			},
+			title: {
+				type: String,
+				default: ''
+			},
+			share_key: {
+				type: String,
+				default: ''
+			}
+		},
     data() {
       return {
         htmlNodes: "",
-        title: '',
-        cover: "",
-        post_id: "",
-        share_key: ""
+				loading:true
       }
     },
-    onLoad(event : OnLoadOptions) {
-      this.post_id = event["post_id"] ?? "";
-      this.cover = event["cover"] ?? ""
-      // #ifdef APP-ANDROID
-      this.cover = atob(this.cover);
-      // #endif
-      this.title = event["title"] ?? "";
-      this.share_key = event["shareKey"] ?? ""
-      this.getDetail();
-    },
+		onLoad() {
+			// #ifdef APP-ANDROID
+			this.cover = atob(this.cover);
+			// #endif
+		},
+		watch: {
+			// 监听itemId变化，当id变化时加载数据
+			post_id: {
+				immediate: true,  // 初始化时立即触发一次
+				deep:true,
+				handler(newVal) {
+					if (newVal != '') {
+						this.getDetail(newVal); // 首次加载+后续更新都触发
+					}
+				}
+			}
+		},
     methods: {
-      getDetail() {
+      getDetail(post_id:string) {
+				this.loading = true
         uni.request({
-          url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.post_id,
+          url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + post_id,
           success: (data) => {
             if (data.statusCode == 200) {
               const result = data.data as UTSJSONObject
@@ -48,7 +76,10 @@
           },
           fail: () => {
             console.log('fail');
-          }
+          },
+					complete: () => {
+					  this.loading = false
+					},
         });
       },
     }
@@ -56,6 +87,12 @@
 </script>
 
 <style>
+	.loading-container{
+		height: 200px;
+		justify-content: center;
+		align-items: center;
+	}
+
   .banner {
     height: 180px;
     overflow: hidden;
