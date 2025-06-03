@@ -1,49 +1,50 @@
 <template>
-	<view :class="{'flex-row': isWideScreen}" style="flex: 1;">
-		<!-- 列表区域 -->
-		<list-view  class="list-container" :class="{'list-narrow': isWideScreen}"  refresher-enabled=true @refresherrefresh="onRefresherrefresh"
-			:refresher-triggered="refresherTriggered" enable-back-to-top="true">
-			<list-item class="banner" @click="bannerClick(banner)" type=1>
-					<image class="banner-img" :src="banner.cover"></image>
-				<text class="banner-title">{{ banner.title }}</text>
-			</list-item>
-			<!-- #ifdef APP-HARMONY -->
-			<sticky-section>
-			<!-- #endif -->
-			<sticky-header>
-				<view
-					style="width: 100%;height:44px;background-color: #f5f5f5;flex-direction: row;justify-content:center;align-items:center;">
-					<text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" style="margin-right: 20px;">
-						{{name}}
-					</text>
-				</view>
-			</sticky-header>
-			<list-item v-for="(value, index) in listData" :key="index" type=2>
-				<view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
-					<view class="uni-media-list">
-						<share-element :share-key="'image_'+index">
-							<image class="uni-media-list-logo" :src="value.cover"></image>
-						</share-element>
-						<view class="uni-media-list-body">
-							<text class="uni-media-list-text-top">{{ value.title }}</text>
-							<view class="uni-media-list-text-bottom">
-								<text class="uni-media-list-text">{{ value.author_name }}</text>
-								<text class="uni-media-list-text">{{ value.published_at }}</text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</list-item>
-			<!-- #ifdef APP-HARMONY -->
-			</sticky-section>
-			<!-- #endif -->
-		</list-view>
+  <view :class="{'flex-row': isWideScreen}" style="flex: 1;">
+    <!-- 列表区域 -->
+    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled=true
+      @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top="true">
+      <list-item class="banner" @click="bannerClick(banner)" type=1>
+        <image class="banner-img" :src="banner.cover"></image>
+        <text class="banner-title">{{ banner.title }}</text>
+      </list-item>
+      <!-- #ifdef APP-HARMONY -->
+      <sticky-section>
+      <!-- #endif -->
+        <sticky-header>
+          <view
+            style="width: 100%;height:44px;background-color: #f5f5f5;flex-direction: row;justify-content:center;align-items:center;">
+            <text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" style="margin-right: 20px;">
+              {{name}}
+            </text>
+          </view>
+        </sticky-header>
+        <list-item v-for="(value, index) in listData" :key="index" type=2>
+          <view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
+            <view class="uni-media-list">
+              <share-element :share-key="'image_'+index">
+                <image class="uni-media-list-logo" :src="value.cover"></image>
+              </share-element>
+              <view class="uni-media-list-body">
+                <text class="uni-media-list-text-top">{{ value.title }}</text>
+                <view class="uni-media-list-text-bottom">
+                  <text class="uni-media-list-text">{{ value.author_name }}</text>
+                  <text class="uni-media-list-text">{{ value.published_at }}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </list-item>
+      <!-- #ifdef APP-HARMONY -->
+      </sticky-section>
+      <!-- #endif -->
+    </list-view>
 
-		<!-- 详情区域 -->
-		<view v-if="isWideScreen" class="detail-container" >
-			<detail v-if="post_id != '' && title != '' && cover != ''" :post_id="post_id" :cover="cover" :title="title"></detail>
-		</view>
-	</view>
+    <!-- 详情区域 -->
+    <view v-if="isWideScreen" class="detail-container">
+      <detail v-if="post_id != '' && title != '' && cover != ''" :post_id="post_id" :cover="cover" :title="title">
+      </detail>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -60,11 +61,11 @@
     published_at : string,
     title : string
   }
-	import detail from './detail/detail.uvue'
+  import detail from './detail/detail.uvue'
   export default {
-		components:{
-		  detail
-		},
+    components: {
+      detail
+    },
     data() {
       return {
         th_item: ["排序", "筛选"],
@@ -72,29 +73,29 @@
         banner: {} as Banner,
         listData: [] as Item[],
         last_id: '',
-				isWideScreen: false,
-				currentIndex: 0, // 当前选中的列表项索引
-				post_id:'',
-				cover: '',
-				title: '',
+        isWideScreen: false,
+        currentIndex: 0, // 当前选中的列表项索引
+        post_id: '',
+        cover: '',
+        title: '',
       };
     },
     onLoad() {
-			this.checkScreenWidth()
+      this.checkScreenWidth()
       this.getBanner();
       this.getList();
     },
     onUnload() {
     },
-		onResize() {
-			// 监听屏幕尺寸变化
-			this.checkScreenWidth()
-		},
+    onResize() {
+      // 监听屏幕尺寸变化
+      this.checkScreenWidth()
+    },
     methods: {
-			checkScreenWidth() {
-				const { windowWidth } = uni.getWindowInfo()
-				this.isWideScreen = windowWidth > 768 // 假设768px为宽屏阈值
-			},
+      checkScreenWidth() {
+        const { windowWidth } = uni.getWindowInfo()
+        this.isWideScreen = windowWidth > 768 // 假设768px为宽屏阈值
+      },
       getBanner() {
         let data = {
           column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
@@ -134,12 +135,12 @@
               const result = res.data
               if (result != null) {
                 this.listData = result //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
-								if(this.isWideScreen){
-									 // 初始加载完成后选中第一个
-									if (this.listData.length > 0) {
-										this.goDetail(this.listData[0],0)
-									}
-								}
+                if (this.isWideScreen) {
+                  // 初始加载完成后选中第一个
+                  if (this.listData.length > 0) {
+                    this.goDetail(this.listData[0], 0)
+                  }
+                }
                 // this.listData.push(...result)
                 // this.last_id = this.listData[0].id + "";
               }
@@ -153,7 +154,7 @@
         });
       },
       goDetail(e : Item, key : number) {
-				this.currentIndex = key
+        this.currentIndex = key
         const detail = e;
         this.post_id = detail.post_id;
         this.cover = detail.cover;
@@ -161,11 +162,11 @@
         this.cover = btoa(this.cover);
         // #endif
         this.title = detail.title;
-				if(!this.isWideScreen){
-					uni.navigateTo({
-					  url: '/pages/template/list-news/detail/detail?post_id=' + this.post_id + "&cover=" + this.cover + "&title=" + this.title +"&shareKey=image_"+key
-					});
-				}
+        if (!this.isWideScreen) {
+          uni.navigateTo({
+            url: '/pages/template/list-news/detail/detail?post_id=' + this.post_id + "&cover=" + this.cover + "&title=" + this.title + "&shareKey=image_" + key
+          });
+        }
       },
       bannerClick(e : Banner) {
         const detail = e;
@@ -195,26 +196,28 @@
 </script>
 
 <style>
-	.flex-row{
-		flex-direction: row;
-	}
+  .flex-row {
+    flex-direction: row;
+  }
 
-	.list-container {
-		width: 100%;
-		background-color: #f5f5f5;
-		/* #ifdef APP */
-		flex: 1;
-		/* #endif */
-	}
+  .list-container {
+    width: 100%;
+    background-color: #f5f5f5;
+    /* #ifdef APP */
+    flex: 1;
+    /* #endif */
+  }
 
-	.list-narrow {
-		width: 30%;
-	}
-	.detail-container {
-		width: 70%;
-		padding: 20px;
-		background-color: #fff;
-	}
+  .list-narrow {
+    width: 30%;
+  }
+
+  .detail-container {
+    width: 70%;
+    padding: 20px;
+    background-color: #fff;
+  }
+
   .banner {
     height: 180px;
     overflow: hidden;
