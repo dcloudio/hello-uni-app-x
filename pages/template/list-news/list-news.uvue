@@ -1,6 +1,6 @@
 <template>
   <view :class="{'flex-row': isWideScreen}" style="flex: 1;">
-    <!-- 列表区域 -->
+    <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
     <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled=true
       @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top="true">
       <list-item class="banner" @click="bannerClick(banner)" type=1>
@@ -21,7 +21,8 @@
         <list-item v-for="(value, index) in listData" :key="index" type=2>
           <view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
             <view class="uni-media-list">
-              <share-element :share-key="'image_'+index">
+              <image v-if="isWideScreen" class="uni-media-list-logo" :src="value.cover"></image>
+              <share-element v-else :share-key="'image_'+index">
                 <image class="uni-media-list-logo" :src="value.cover"></image>
               </share-element>
               <view class="uni-media-list-body">
@@ -39,10 +40,10 @@
       <!-- #endif -->
     </list-view>
 
-    <!-- 详情区域 -->
+    <!-- 详情区域：宽屏时，右侧显示-->
     <view v-if="isWideScreen" class="detail-container">
-      <detail v-if="post_id != '' && title != '' && cover != ''" :post_id="post_id" :cover="cover" :title="title">
-      </detail>
+      <detail v-if="post_id != '' && title != '' && cover != ''" :post_id="post_id" :cover="cover" :title="title"
+        :isWideScreen="isWideScreen" :firstDetailContent="currentDetailContent" />
     </view>
   </view>
 </template>
@@ -61,6 +62,7 @@
     published_at : string,
     title : string
   }
+  // 导入详情组件，宽屏时，右侧直接展示详情内容
   import detail from './detail/detail.uvue'
   export default {
     components: {
@@ -73,14 +75,16 @@
         banner: {} as Banner,
         listData: [] as Item[],
         last_id: '',
-        isWideScreen: false,
+        isWideScreen: false,// 是否为宽屏模式
         currentIndex: 0, // 当前选中的列表项索引
         post_id: '',
         cover: '',
         title: '',
+        firstDetailContent: '', // 并行预加载的第一个详情内容
       };
     },
     onLoad() {
+      // 判断是否为宽屏
       this.checkScreenWidth()
       this.getBanner();
       this.getList();
@@ -88,13 +92,19 @@
     onUnload() {
     },
     onResize() {
-      // 监听屏幕尺寸变化
+      // 监听屏幕尺寸变化，动态切换宽屏/窄屏
       this.checkScreenWidth()
     },
     methods: {
       checkScreenWidth() {
+        const deviceType = uni.getDeviceInfo().deviceType
         const { windowWidth } = uni.getWindowInfo()
-        this.isWideScreen = windowWidth > 768 // 假设768px为宽屏阈值
+        // 只要是pad/pc，或者宽度大于700，都算宽屏
+        this.isWideScreen = (
+          deviceType === 'pad' ||
+          deviceType === 'pc' ||
+          windowWidth > 700
+        )
       },
       getBanner() {
         let data = {
@@ -125,24 +135,32 @@
           const pageSize = 10;
           url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
         } */
-
         uni.request<Item[]>({
           url: url,
           method: "GET",
           success: (res) => {
             if (res.statusCode == 200) {
-              // console.log(res);
               const result = res.data
+              //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
+              // this.listData.push(...result)
+              // this.last_id = this.listData[0].id + "";
               if (result != null) {
-                this.listData = result //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
-                if (this.isWideScreen) {
-                  // 初始加载完成后选中第一个
-                  if (this.listData.length > 0) {
-                    this.goDetail(this.listData[0], 0)
-                  }
+                this.listData = result
+                // 宽屏模式下，自动选中并展示第一个新闻详情
+                if (this.isWideScreen && this.listData.length > 0) {
+                  this.goDetail(this.listData[0], 0)
+                  // 并行预加载第一个详情内容，提升右侧展示速度
+                  const first = this.listData[0]
+                  uni.request({
+                    url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + first.post_id,
+                    success: (res) => {
+                      if (res.statusCode == 200) {
+												const result = res.data as UTSJSONObject;
+                        this.firstDetailContent = result["content"] as string
+                      }
+                    }
+                  })
                 }
-                // this.listData.push(...result)
-                // this.last_id = this.listData[0].id + "";
               }
               this.refresherTriggered = false;
             }
@@ -158,11 +176,12 @@
         const detail = e;
         this.post_id = detail.post_id;
         this.cover = detail.cover;
-        // #ifdef APP-ANDROID
-        this.cover = btoa(this.cover);
-        // #endif
         this.title = detail.title;
+        // 窄屏时跳转到详情页，宽屏时右侧直接展示
         if (!this.isWideScreen) {
+          // #ifdef APP-ANDROID
+          this.cover = btoa(this.cover);
+          // #endif
           uni.navigateTo({
             url: '/pages/template/list-news/detail/detail?post_id=' + this.post_id + "&cover=" + this.cover + "&title=" + this.title + "&shareKey=image_" + key
           });
@@ -191,6 +210,20 @@
         this.getBanner();
         this.getList();
       }
+    },
+    computed: {
+      currentDetailContent() {
+        // 只在宽屏且是第一个文章时用预加载内容
+        if (
+          this.isWideScreen &&
+          this.listData.length > 0 &&
+          this.post_id === this.listData[0].post_id &&
+          this.firstDetailContent !== ''
+        ) {
+          return this.firstDetailContent
+        }
+        return ''
+      }
     }
   };
 </script>
@@ -209,11 +242,18 @@
   }
 
   .list-narrow {
-    width: 30%;
+    /* #ifdef WEB */
+    width: 360px;
+    /* #endif */
+    /* #ifndef WEB */
+    width: 100px;
+    /* #endif */
   }
 
   .detail-container {
-    width: 70%;
+    flex: 1;
+    min-width: 0;
+    /* 防止溢出 */
     padding: 20px;
     background-color: #fff;
   }

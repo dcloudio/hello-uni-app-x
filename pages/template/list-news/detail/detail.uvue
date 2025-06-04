@@ -2,16 +2,18 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <share-element :share-key="share_key">
+    <!-- 宽屏时不使用共享元素组件 -->
+    <view v-if="isWideScreen">
+      <image class="banner-img" :src="cover"></image>
+      <text class="banner-title">{{title}}</text>
+    </view>
+    <share-element v-else :share-key="share_key">
       <view>
-        <image class="banner-img" :src="cover"></image>
+        <image class="banner-img" :src="btCover"></image>
         <text class="banner-title">{{title}}</text>
       </view>
     </share-element>
-    <view v-if="loading" class="loading-container">
-      <text>加载中...</text>
-    </view>
-    <rich-text v-else class="rich-text" :nodes="htmlNodes"></rich-text>
+    <rich-text class="rich-text" :nodes="htmlNodes" mode="native"></rich-text>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -34,7 +36,16 @@
         type: String,
         default: ''
       },
+      isWideScreen: {
+        type: Boolean,
+        default: false
+      },
       share_key: {
+        type: String,
+        default: ''
+      },
+      // list-news预加载传入的详情内容，仅用于宽屏第一个新闻
+      firstDetailContent: {
         type: String,
         default: ''
       }
@@ -42,44 +53,58 @@
     data() {
       return {
         htmlNodes: "",
-        loading: true
+        // 标记是否已经用过firstDetailContent
+        usedContent: false,
+        btCover: ''
       }
     },
     onLoad() {
-      // #ifdef APP-ANDROID
-      this.cover = atob(this.cover);
-      // #endif
+      if (!this.isWideScreen) {
+        this.btCover = this.cover;
+        // #ifdef APP-ANDROID
+        this.btCover = atob(this.btCover);
+        // #endif
+      }
     },
     watch: {
-      // 监听itemId变化，当id变化时加载数据
+      // 监听post_id变化，当id变化时加载数据
       post_id: {
-        immediate: true,  // 初始化时立即触发一次
+        immediate: true,
         deep: true,
         handler(newVal) {
           if (newVal != '') {
-            this.getDetail(newVal); // 首次加载+后续更新都触发
+            // 优先用传入的预载详情内容（只在第一个新闻时有值）
+            if (this.firstDetailContent !== '') {
+              this.htmlNodes = this.firstDetailContent
+              this.usedContent = true
+            } else {
+              this.getDetail(newVal)
+              this.usedContent = false
+            }
           }
+        }
+      },
+      firstDetailContent(newVal) {
+        // 只有没用过firstDetailContent时才赋值，防止重复
+        if (!this.usedContent && newVal !== '') {
+          this.htmlNodes = newVal
+          this.usedContent = true
         }
       }
     },
     methods: {
       getDetail(post_id : string) {
-        this.loading = true
         uni.request({
           url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + post_id,
           success: (data) => {
             if (data.statusCode == 200) {
-              const result = data.data as UTSJSONObject
-              // console.log(result["content"]);
+              const result = data.data as UTSJSONObject;
               this.htmlNodes = result["content"] as string;
             }
           },
           fail: () => {
             console.log('fail');
-          },
-          complete: () => {
-            this.loading = false
-          },
+          }
         });
       },
     }
@@ -87,12 +112,6 @@
 </script>
 
 <style>
-  .loading-container {
-    height: 200px;
-    justify-content: center;
-    align-items: center;
-  }
-
   .banner {
     height: 180px;
     overflow: hidden;
