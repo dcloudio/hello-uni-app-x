@@ -6,6 +6,7 @@ describe('view-test', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
 
   if (isAndroid || isWeb || isMP) {
     it('other platform', () => {
@@ -45,4 +46,29 @@ describe('view-test', () => {
     expect(1).toBe(1)
   })
 
+  if (isHarmony) {
+    it('hover-class', async () => {
+      await page.setData({
+        hover_class: true,
+        stay_time: 1000 * 10
+      })
+      await page.waitFor(100)
+
+      await program.tap({ x: 150, y: 325, duration: 2000 })
+
+      // const systemInfo = await program.systemInfo()
+      // const devicePixelRatio = systemInfo.devicePixelRatio
+      // const positionX = systemInfo.screenWidth / 2
+      // const positionY = systemInfo.screenWidth
+      // await program.tap({
+      //   x: positionX,
+      //   y: positionY,
+      //   duration: 5000
+      // })
+
+      // 通过检查样式来判断 hover-class 是否生效
+      const viewChild1 = await page.$('#view-child1')
+      expect(await viewChild1.style('background-color')).toBe('#179b16')
+    })
+  }
 })
