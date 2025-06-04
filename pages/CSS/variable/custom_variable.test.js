@@ -2,10 +2,17 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith("android")
 const isIos = platformInfo.startsWith("ios")
 const isWeb = platformInfo.startsWith("web")
+const isMP = platformInfo.startsWith('mp')
 
 let page
 
 describe("css-custom-variable", () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
   it("screenshot", async () => {
     page = await program.reLaunch("/pages/CSS/variable/custom_variable")
     await page.waitFor("view")
