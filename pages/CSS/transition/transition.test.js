@@ -22,6 +22,9 @@ describe('/pages/CSS/transition/transition.uvue', () => {
     await page.callMethod('changeTransformWithOrigin')
     await page.callMethod('changeBorder')
     await page.callMethod('changestylePosition')
+    // changeTransitionAll
+    await page.callMethod('changeTransitionAll')
+
     await page.waitFor(3000)
     const image = await program.screenshot({
       fullPage: true

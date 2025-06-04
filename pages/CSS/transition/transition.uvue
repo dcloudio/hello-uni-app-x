@@ -79,6 +79,11 @@
     </view>
 
     <view class="container">
+      <text class="text">transition-property: all/none 演示</text>
+      <view class="base-style transition-all" id="styleTransitionAll" @click="changeTransitionAll"></view>
+    </view>
+
+    <view class="container">
       <text class="text">在组件内滑动测试是否闪动</text>
       <view class="base-style transition-transform" id="styleTransformTranslateScale" @touchmove="handleTouchMove" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
         这是一段文字
@@ -139,7 +144,9 @@
         startX: 0,
         moveX: 0,
         oldX: 0,
-        changestyleTransitionDuration:'background-color:brown;'
+        changestyleTransitionDuration:'background-color:brown;',
+        styleTransitionAll: null as UniElement | null,
+        isTransitionAll: false
       }
     },
     onReady() {
@@ -159,6 +166,7 @@
       this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
       this.styleTransformTranslate = uni.getElementById("transformTranslate")
       this.styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
+      this.styleTransitionAll = uni.getElementById("styleTransitionAll")
     },
     methods: {
       changeWidthOrHeight() {
@@ -307,6 +315,24 @@
         console.log("doChangeTransitionDuration")
         this.changestyleTransitionDuration
         = this.changestyleTransitionDuration ==='background-color:brown;'?'transition-duration: 2000ms;background-color: blue;':'background-color:brown;'
+      },
+      changeTransitionAll() {
+        if (!this.isTransitionAll) {
+          // 设置为 all 时的效果
+          this.styleTransitionAll?.style?.setProperty("transition-property", "all")
+          this.styleTransitionAll?.style?.setProperty("width", "300px")
+          this.styleTransitionAll?.style?.setProperty("height", "300px")
+          this.styleTransitionAll?.style?.setProperty("background-color", "blue")
+          this.styleTransitionAll?.style?.setProperty("transform", "rotate(45deg)")
+        } else {
+          // 设置为 none 时的效果
+          this.styleTransitionAll?.style?.setProperty("transition-property", "none")
+          this.styleTransitionAll?.style?.setProperty("width", "200px")
+          this.styleTransitionAll?.style?.setProperty("height", "200px")
+          this.styleTransitionAll?.style?.setProperty("background-color", "brown")
+          this.styleTransitionAll?.style?.setProperty("transform", "rotate(0deg)")
+        }
+        this.isTransitionAll = !this.isTransitionAll
       }
     },
   }
@@ -388,6 +414,11 @@
   .transition-transform-width {
     transform: rotate(0deg);
     transition-property: transform, width;
+    transition-duration: 1s;
+  }
+
+  .transition-all {
+    transition-property: all;
     transition-duration: 1s;
   }
 </style>
