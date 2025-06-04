@@ -17,7 +17,6 @@ describe('unicloud-call-function', () => {
 
   it('callFunction', async () => {
     await page.callMethod('callFunction')
-    await page.waitFor(1000)
     const {
       callFunctionResult,
       callFunctionError,
@@ -33,7 +32,6 @@ describe('unicloud-call-function', () => {
 
   it('callFunctionWithGeneric', async () => {
     await page.callMethod('callFunctionWithGeneric')
-    await page.waitFor(1000)
     const {
       genericDemoShowMessage,
     } = await page.data()

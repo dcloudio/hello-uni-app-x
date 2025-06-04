@@ -51,14 +51,14 @@
           console.log(title, content)
         }
       },
-      callFunctionWithGeneric() {
+      async callFunctionWithGeneric(): Promise<void> {
         type EchoCfResult = {
           showMessage : string
         }
         uni.showLoading({
           title: '加载中...'
         })
-        uniCloud.callFunction<EchoCfResult>({
+        await uniCloud.callFunction<EchoCfResult>({
           name: 'echo-cf',
           data: {
             num: 1,
@@ -79,11 +79,11 @@
           this.notify(error.errMsg, '错误')
         })
       },
-      callFunction() {
+      async callFunction(): Promise<void> {
         uni.showLoading({
           title: '加载中...'
         })
-        uniCloud.callFunction({
+        await uniCloud.callFunction({
           name: 'echo-cf',
           data: {
             num: 1,
