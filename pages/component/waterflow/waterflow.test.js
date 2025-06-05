@@ -2,9 +2,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-waterflow', () => {
-  if (isMP || isWeb || isHarmony) {
+  if (isMP || isWeb || isHarmony || isAppWebView) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
