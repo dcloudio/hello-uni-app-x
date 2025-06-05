@@ -10,6 +10,8 @@
       </view>
       <view class="uni-btn-v uni-common-mt">
         <button type="primary" @click="sendRequest">发起请求</button>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendChunkRequest">发起流式请求</button>
       </view>
     </view>
     <scroll-view style="flex: 1;" show-scrollbar="true">
@@ -78,30 +80,6 @@
       </view>
       <!-- #endif -->
 
-      <view style="padding: 20px;">
-        <text>ResquestTask 测试</text>
-        <view class="uni-common-pb"></view>
-        <view style="flex-direction: row;flex-wrap: wrap;">
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onHeadersReceived_observe_1"
-            id="onHeadersReceived_observe_1">onHeadersReceived监听1</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onHeadersReceived_observe_2"
-            id="onHeadersReceived_observe_2">onHeadersReceived监听2</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onChunkReceived_observe_1"
-            id="onChunkReceived_observe_1">onChunkReceived监听1</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="onChunkReceived_observe_2"
-            id="onChunkReceived_observe_2">onChunkReceived监听2</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="offHeadersReceived_id"
-            id="offHeadersReceived_id">offHeadersReceived(id)</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="offHeadersReceived_observe"
-            id="offHeadersReceived_observe">offHeadersReceived移除所有</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="offChunkReceived_observe"
-            id="offChunkReceived_observe">offChunkReceived移除所有</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="checkRequestTask"
-            id="checkRequestTask">发起请求（设置监听需重新点击）</button>
-          <button style="padding: 5px;" type="primary" size="mini" @tap="abort"
-              id="abort">中断流式请求</button>
-        </view>
-      </view>
     </scroll-view>
   </view>
 </template>
@@ -197,6 +175,11 @@
       this.task?.abort();
     },
     methods: {
+      sendChunkRequest() {
+        uni.navigateTo({
+          url:"/pages/API/request/requestTask"
+        })
+      },
       onHeadersReceived_observe_1: function () {
         this.onHeadersReceivedObseves.push(1)
       },
