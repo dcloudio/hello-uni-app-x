@@ -160,20 +160,11 @@
           "/api/http/contentType/json",
           "/api/http/contentType/xWwwFormUrlencoded",
         ],
-        onHeadersReceivedObseves: [] as number[],
-        onChunkReceivedObseves: [] as number[],
-        onHeadersReceived_returnid_1: -1,
-        onHeadersReceived_returnid_2: -1,
-        isAbort: false,
         //自动化测试例专用
         jest_requestTask_result: false,
         jest_result: false,
         jest_result_data: ""
       }
-    },
-    onLoad() {
-      this.onHeadersReceivedObseves.push(1)
-      this.onChunkReceivedObseves.push(1)
     },
     onUnload() {
       uni.hideLoading();
@@ -184,28 +175,6 @@
         uni.navigateTo({
           url: "/pages/API/request/requestTask"
         })
-      },
-      onHeadersReceived_observe_1: function () {
-        this.onHeadersReceivedObseves.push(1)
-      },
-      onHeadersReceived_observe_2: function () {
-        this.onHeadersReceivedObseves.push(2)
-      },
-      offHeadersReceived_observe: function () {
-        this.onHeadersReceivedObseves = []
-      },
-      offHeadersReceived_id: function () {
-        this.onHeadersReceivedObseves = []
-        this.onHeadersReceivedObseves.push(1)
-      },
-      onChunkReceived_observe_1: function () {
-        this.onChunkReceivedObseves.push(1)
-      },
-      onChunkReceived_observe_2: function () {
-        this.onChunkReceivedObseves.push(2)
-      },
-      offChunkReceived_observe: function () {
-        this.onChunkReceivedObseves = []
       },
       changeMethod(e : RequestMethod) {
         this.method = e;
@@ -405,95 +374,6 @@
             this.task = null
           },
         });
-      },
-      checkRequestTask: function () {
-        this.isAbort = false
-        this.res = '发起post流式请求 \n\n'
-        this.task = uni.request({
-          url: "https://request.dcloud.net.cn/api/http/contentType/eventStream?limit=10",
-          timeout: 600000,
-          method: "POST",
-          enableChunked: true,
-          success: (res) => {
-            this.jest_requestTask_result = true
-
-            console.log('request success', JSON.stringify(res.data))
-            console.log('request success header is :', JSON.stringify(res.header))
-            uni.showToast({
-              title: '流式请求结束',
-              icon: 'success',
-              mask: true
-            });
-            console.log('请求结果 : ' + JSON.stringify(res))
-          },
-          fail: (err) => {
-            this.jest_requestTask_result = false
-            let content = err.errMsg
-            if (this.isAbort) {
-              content = "中断成功"
-            }
-            console.log('request fail', err);
-            uni.showModal({
-              content: content,
-              showCancel: false
-            });
-          },
-          complete: () => {
-            this.task = null
-          },
-        });
-
-        const onHeadersReceivedCallback1 = (res : RequestTaskOnHeadersReceivedListenerResult) => {
-          console.log("-------onHeadersReceived监听1------", res)
-          this.res += `onHeadersReceived监听1：\n ${JSON.stringify(res)} \n\n`
-        }
-        const onHeadersReceivedCallback2 = (res : RequestTaskOnHeadersReceivedListenerResult) => {
-          console.log("-------onHeadersReceived监听2------", res)
-          this.res += `onHeadersReceived监听2：\n ${JSON.stringify(res)}  \n\n`
-        }
-
-        if (this.onHeadersReceivedObseves.includes(1)) {
-          this.onHeadersReceived_returnid_1 = this.task?.onHeadersReceived(onHeadersReceivedCallback1) ?? -1
-        }
-
-        if (this.onHeadersReceivedObseves.length == 0) {
-          this.task?.offHeadersReceived(null)
-          this.res += "点击了 offHeadersReceived \n\n"
-        } else if (this.onHeadersReceivedObseves.length == 1) {
-          this.task?.offHeadersReceived(this.onHeadersReceived_returnid_2)
-        }
-
-        const onChunkReceivedCallback1 = (res : RequestTaskOnChunkReceivedListenerResult) => {
-          const chunkText : string = new TextDecoder().decode(res.data)
-          console.log("-------onChunkReceived监听1------", chunkText)
-          this.res += `onChunkReceived监听1：\n ${chunkText}`
-        }
-        const onChunkReceivedCallback2 = (res : RequestTaskOnChunkReceivedListenerResult) => {
-          const chunkText : string = new TextDecoder().decode(res.data)
-          console.log("-------onChunkReceived监听2------", chunkText)
-          this.res += `onChunkReceived监听2：\n ${chunkText}`
-        }
-
-        if (this.onHeadersReceivedObseves.includes(2)) {
-          this.onHeadersReceived_returnid_2 = this.task?.onHeadersReceived(onHeadersReceivedCallback2) ?? -1
-        }
-
-        if (this.onChunkReceivedObseves.includes(1)) {
-          this.task?.onChunkReceived(onChunkReceivedCallback1)
-        }
-
-        if (this.onChunkReceivedObseves.includes(2)) {
-          this.task?.onChunkReceived(onChunkReceivedCallback2)
-        }
-
-        if (this.onChunkReceivedObseves.length == 0) {
-          this.task?.offChunkReceived(null)
-          this.res += "点击了 offChunkReceived \n\n"
-        }
-      },
-      abort() {
-        this.isAbort = true
-        this.task?.abort()
       },
       //自动化测试例专用
       jest_request() {
