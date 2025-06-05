@@ -192,7 +192,7 @@ export class Report {
     const time = get_residence_time('app')
     // 需要判断进入后台是否超过时限 ，默认是 5min ，是的话需要执行进入应用的上报
     if (time.overtime) {
-      let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE') as string
+      let lastPageRoute = uni.getStorageSync('UNI_STAT_LAST_PAGE_ROUTE') as string
       let options : OnLaunchOptionsWithCst = {
         path: lastPageRoute,
         scene: this.statData.sc,
@@ -214,7 +214,7 @@ export class Report {
     const time = get_residence_time('outher')
 
     const route = get_route().fullpath
-    uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', route)
+    uni.setStorageSync('UNI_STAT_LAST_PAGE_ROUTE', route)
 
     const formdata : PageParams = {
       url: route,
@@ -250,7 +250,7 @@ export class Report {
     if (this.licationShow) {
       // 更新页面首次访问时间
       set_first_time()
-      uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', fullpath)
+      uni.setStorageSync('UNI_STAT_LAST_PAGE_ROUTE', fullpath)
       this.licationShow = false
       return
     }
@@ -280,13 +280,13 @@ export class Report {
     const time = get_residence_time('page')
 
     let fullpath = get_route(self).fullpath
-    let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE')
+    let lastPageRoute = uni.getStorageSync('UNI_STAT_LAST_PAGE_ROUTE')
 
     // 如果不存在的话，复制当前的路径，说明之前没有页面
     if (lastPageRoute == null) {
       lastPageRoute = fullpath
     }
-    uni.setStorageSync('_STAT_LAST_PAGE_ROUTE', fullpath)
+    uni.setStorageSync('UNI_STAT_LAST_PAGE_ROUTE', fullpath)
 
     const options : PageParams = {
       url: fullpath,

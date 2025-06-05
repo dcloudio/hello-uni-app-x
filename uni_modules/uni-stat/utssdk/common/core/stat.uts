@@ -2,15 +2,16 @@
 import { Report } from "./report.uts";
 import { StatType } from "./stat-type";
 import { EventParams, UniStatOptions, ErrorCallback, ReportErrorCode } from '../../interface.uts'
-import { is_page, is_page_report, get_space, is_push_clientid, calibration,get_crash_logs } from '../utils/pageInfo.uts'
+import { is_page, is_page_report, get_space, calibration,get_crash_logs } from '../utils/pageInfo.uts'
 import { Config } from "../config";
+
+const reportInstance = new Report()
 
 export class Stat {
   static __stat_instance : Stat | null = null;
   static is_register : boolean = false
   static no_space : boolean = false
   // 上报逻辑实例
-  report : Report;
   // 使用单例，只初始化一次
   static getInstance() : Stat {
     // 获取服务空间配置信息
@@ -66,9 +67,7 @@ export class Stat {
   appInstance ?: Page | null = null
 
   private isHide : boolean = false
-  constructor() {
-    this.report = new Report()
-  }
+  constructor() {}
 
   /**
    * 初始化插件参数
@@ -81,7 +80,7 @@ export class Stat {
     Config.setOptions({ ...options } as UniStatOptions)
     const uniStatConfig = Config.getOptions()
     // 设置上报周期时间
-    this.report.eportInterval = uniStatConfig.reportInterval ?? 10
+    reportInstance.eportInterval = uniStatConfig.reportInterval ?? 10
 
 		// #ifdef APP
 		// 获取崩溃日志
@@ -175,7 +174,7 @@ export class Stat {
   //         const cid = res.cid
   //         //  只有获取到才会上传
   //         // if (cid != null) {
-  //         this.report.sendPushRequest(options, cid)
+  //         reportInstance.sendPushRequest(options, cid)
   //         // }
   //       },
   //     } as GetPushClientIdOptions)
@@ -195,40 +194,40 @@ export class Stat {
     switch (EventType) {
       case StatType.LifeCycleLaunch:
         // 使用非空断言，options在这里肯定非空
-        this.report.launch(options!)
+        reportInstance.launch(options!)
         // this.pushEvent(options)
         break
       case StatType.LifeCycleAppShow:
         // TODO 目前只兼容 web 和 app ，小程序等平台需要调用 api onAppHide
-        this.report.appShow()
+        reportInstance.appShow()
         break
       case StatType.LifeCycleAppHide:
-        this.report.appHide(true)
+        reportInstance.appHide(true)
         break
       case StatType.LifeCycleLoad:
         break
       case StatType.LifeCyclePageShow:
         if (isPageReport) {
-          this.report.pageShow(appInstance!)
+          reportInstance.pageShow(appInstance!)
         }
         break
       case StatType.LifeCyclePageHide:
         if (isPageReport) {
-          this.report.pageHide(appInstance!)
+          reportInstance.pageHide(appInstance!)
         }
         break
       case StatType.LifeCyclePageUnLoad:
         if (isPageReport) {
-          this.report.pageHide(appInstance!)
+          reportInstance.pageHide(appInstance!)
         }
         break
       case StatType.LifeCycleError:
         if (error != null) {
-          this.report.appError(error)
+          reportInstance.appError(error)
         }
         break
 			case StatType.Crash:
-			    this.report.appCrash(options as string[])
+			    reportInstance.appCrash(options as string[])
 			  break
     }
   }
@@ -277,14 +276,14 @@ export class Stat {
     }
 
     if (name == 'uni-page-show') {
-      this.report.pageShow(options as Page)
+      reportInstance.pageShow(options as Page)
       // 61001 占位，无实际用途
       fn(true, 61001 as ReportErrorCode)
       return
     }
 
     if (name == 'uni-page-hide') {
-      this.report.pageHide(options as Page)
+      reportInstance.pageHide(options as Page)
       // 61001 占位，无实际用途
       fn(true, 61001 as ReportErrorCode)
       return
@@ -305,7 +304,7 @@ export class Stat {
     }
 
     if (name === 'title') {
-      this.report._navigationBarTitle.report = (options as string)
+      reportInstance._navigationBarTitle.report = (options as string)
     }
 
     const value = (typeof options === 'object' ? JSON.stringify(options) : options) as string
@@ -313,7 +312,7 @@ export class Stat {
       key: name,
       value: value as string,
     }
-    this.report.sendEventRequest(data)
+    reportInstance.sendEventRequest(data)
     // 61001 占位，无实际用途
     fn(true, 61001 as ReportErrorCode)
   }

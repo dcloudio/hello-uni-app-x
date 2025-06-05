@@ -7,6 +7,8 @@ const isIOS = platformInfo.startsWith('ios')
 const StorageKeysBlackList = [
   '$$STAT__DBDATA:__UNI__HelloUniAppX',
   '_STAT_LAST_PAGE_ROUTE',
+  'UNI_STAT_DATA:__UNI__HelloUniAppX',
+  'UNI_STAT_LAST_PAGE_ROUTE'
 ]
 const filterStorageKeys = (keys) => {
   return keys.filter(key => {
