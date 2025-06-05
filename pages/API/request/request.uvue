@@ -10,8 +10,6 @@
       </view>
       <view class="uni-btn-v uni-common-mt">
         <button type="primary" @click="sendRequest">发起请求</button>
-        <view class="uni-common-pb"></view>
-        <button type="primary" @click="sendChunkRequest">发起流式请求</button>
       </view>
     </view>
     <scroll-view style="flex: 1;" show-scrollbar="true">
@@ -80,6 +78,13 @@
       </view>
       <!-- #endif -->
 
+      <view style="padding: 20px;">
+        <text>RequestTask 测试</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendChunkRequest">流式请求</button>
+      </view>
+      <view class="uni-common-pb"></view>
+      <view class="uni-common-pb"></view>
     </scroll-view>
   </view>
 </template>
@@ -157,7 +162,7 @@
         ],
         onHeadersReceivedObseves: [] as number[],
         onChunkReceivedObseves: [] as number[],
-        onHeadersReceived_returnid_1:  -1,
+        onHeadersReceived_returnid_1: -1,
         onHeadersReceived_returnid_2: -1,
         isAbort: false,
         //自动化测试例专用
@@ -177,7 +182,7 @@
     methods: {
       sendChunkRequest() {
         uni.navigateTo({
-          url:"/pages/API/request/requestTask"
+          url: "/pages/API/request/requestTask"
         })
       },
       onHeadersReceived_observe_1: function () {
@@ -458,12 +463,12 @@
           this.task?.offHeadersReceived(this.onHeadersReceived_returnid_2)
         }
 
-        const onChunkReceivedCallback1 = (res: RequestTaskOnChunkReceivedListenerResult) => {
+        const onChunkReceivedCallback1 = (res : RequestTaskOnChunkReceivedListenerResult) => {
           const chunkText : string = new TextDecoder().decode(res.data)
           console.log("-------onChunkReceived监听1------", chunkText)
           this.res += `onChunkReceived监听1：\n ${chunkText}`
         }
-        const onChunkReceivedCallback2 = (res: RequestTaskOnChunkReceivedListenerResult) => {
+        const onChunkReceivedCallback2 = (res : RequestTaskOnChunkReceivedListenerResult) => {
           const chunkText : string = new TextDecoder().decode(res.data)
           console.log("-------onChunkReceived监听2------", chunkText)
           this.res += `onChunkReceived监听2：\n ${chunkText}`
@@ -709,7 +714,7 @@
 </script>
 
 <style>
- .uni-textarea {
+  .uni-textarea {
     padding: 9px;
     font-size: 14px;
   }
