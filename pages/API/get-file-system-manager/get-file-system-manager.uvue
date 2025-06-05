@@ -81,9 +81,12 @@
     <button class="btnstyle" type="primary" @tap="copyStaticToFilesTest"
       id="btn-copyStatic-file">从static目录复制文件到a目录</button>
     <button class="btnstyle" type="primary" @tap="saveFileTest" id="btn-save-file">保存临时文件到本地, filePath=null</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest1" id="btn-save-file1">保存临时文件到本地, filePath=xxx/path.txt</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest2" id="btn-save-file2">保存临时文件到本地, filePath=xxx/path</button>
-    <button class="btnstyle" type="primary" @tap="saveFileTest3" id="btn-save-file3">保存临时文件到本地, filePath=xxx/path/</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest1" id="btn-save-file1">保存临时文件到本地,
+      filePath=xxx/path.txt</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest2" id="btn-save-file2">保存临时文件到本地,
+      filePath=xxx/path</button>
+    <button class="btnstyle" type="primary" @tap="saveFileTest3" id="btn-save-file3">保存临时文件到本地,
+      filePath=xxx/path/</button>
 
     <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
     <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
@@ -834,35 +837,63 @@
         fileManager.access({
           path: `${this.basePath}local`,
           success: () => {
-            fileManager.unlinkSync(`${this.basePath}local`)
-            fileManager.rmdirSync(`${this.basePath}local`, true)
+            if (fileManager.fstatSync({ fd: fileManager.openSync({ filePath: `${this.basePath}local`, flag: "r" }) }).isDirectory()) {
+              fileManager.rmdirSync(`${this.basePath}local`, true)
+            } else {
+              fileManager.unlinkSync(`${this.basePath}local`)
+            }
+            fileManager.saveFile({
+              tempFilePath: `${this.basePath}${this.temFile}`,
+              filePath: `${this.basePath}local/1.txt`,
+              success: (res : SaveFileSuccessResult) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('success', res)
+                this.saveFileRet = res.savedFilePath
+                this.done = true
+              },
+              fail: (res : IUniError) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('saveFileTest fail', res)
+                this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+                this.done = true
+              },
+              complete: (_) => {
+                this.done = true
+              }
+            } as SaveFileOptions)
+          },
+          fail() {
+            fileManager.saveFile({
+              tempFilePath: `${this.basePath}${this.temFile}`,
+              filePath: `${this.basePath}local/1.txt`,
+              success: (res : SaveFileSuccessResult) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('success', res)
+                this.saveFileRet = res.savedFilePath
+                this.done = true
+              },
+              fail: (res : IUniError) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('saveFileTest fail', res)
+                this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+                this.done = true
+              },
+              complete: (_) => {
+                this.done = true
+              }
+            } as SaveFileOptions)
           }
         })
-
-        fileManager.saveFile({
-          tempFilePath: `${this.basePath}${this.temFile}`,
-          filePath:`${this.basePath}local/1.txt`,
-          success: (res : SaveFileSuccessResult) => {
-            if (this.logAble) {
-              this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log('success', res)
-            this.saveFileRet = res.savedFilePath
-            this.done = true
-          },
-          fail: (res : IUniError) => {
-            if (this.logAble) {
-              this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
-            }
-            console.log('saveFileTest fail', res)
-            this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
-
-            this.done = true
-          },
-          complete: (_) => {
-            this.done = true
-          }
-        } as SaveFileOptions)
       },
       saveFileTest2: function (_ : any) {
         const fileManager = uni.getFileSystemManager()
@@ -870,36 +901,35 @@
         fileManager.access({
           path: `${this.basePath}local`,
           success: () => {
-            fileManager.rmdir({
-              dirPath: `${this.basePath}local`,
-              recursive: true,
-              success: () => {
-                fileManager.saveFile({
-                  tempFilePath: `${this.basePath}${this.temFile}`,
-                  filePath:`${this.basePath}local`,
-                  success: (res : SaveFileSuccessResult) => {
-                    if (this.logAble) {
-                      this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
-                    }
-                    console.log('success', res)
-                    this.saveFileRet = res.savedFilePath
-                    this.done = true
-                  },
-                  fail: (res : IUniError) => {
-                    if (this.logAble) {
-                      this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
-                    }
-                    console.log('saveFileTest fail', res)
-                    this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+            if (fileManager.fstatSync({ fd: fileManager.openSync({ filePath: `${this.basePath}local`, flag: "r" }) }).isDirectory()) {
+              fileManager.rmdirSync(`${this.basePath}local`, true)
+            } else {
+              fileManager.unlinkSync(`${this.basePath}local`)
+            }
+            fileManager.saveFile({
+              tempFilePath: `${this.basePath}${this.temFile}`,
+              filePath: `${this.basePath}local`,
+              success: (res : SaveFileSuccessResult) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('success', res)
+                this.saveFileRet = res.savedFilePath
+                this.done = true
+              },
+              fail: (res : IUniError) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('saveFileTest fail', res)
+                this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
 
-                    this.done = true
-                  },
-                  complete: (_) => {
-                    this.done = true
-                  }
-                } as SaveFileOptions)
+                this.done = true
+              },
+              complete: (_) => {
+                this.done = true
               }
-            })
+            } as SaveFileOptions)
           }
         })
       },
@@ -909,35 +939,35 @@
         fileManager.access({
           path: `${this.basePath}local`,
           success: () => {
-            fileManager.rmdir({
-              dirPath: `${this.basePath}local`,
-              recursive: true,
-              success: () => {
-                fileManager.saveFile({
-                  tempFilePath: `${this.basePath}${this.temFile}`,
-                  filePath:`${this.basePath}local/`,
-                  success: (res : SaveFileSuccessResult) => {
-                    if (this.logAble) {
-                      this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
-                    }
-                    console.log('success', res)
-                    this.saveFileRet = res.savedFilePath
-                    this.done = true
-                  },
-                  fail: (res : IUniError) => {
-                    if (this.logAble) {
-                      this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
-                    }
-                    console.log('saveFileTest fail', res)
-                    this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
-                    this.done = true
-                  },
-                  complete: (_) => {
-                    this.done = true
-                  }
-                } as SaveFileOptions)
+            if (fileManager.fstatSync({ fd: fileManager.openSync({ filePath: `${this.basePath}local`, flag: "r" }) }).isDirectory()) {
+              fileManager.rmdirSync(`${this.basePath}local`, true)
+            } else {
+              fileManager.unlinkSync(`${this.basePath}local`)
+            }
+
+            fileManager.saveFile({
+              tempFilePath: `${this.basePath}${this.temFile}`,
+              filePath: `${this.basePath}local/`,
+              success: (res : SaveFileSuccessResult) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('success', res)
+                this.saveFileRet = res.savedFilePath
+                this.done = true
+              },
+              fail: (res : IUniError) => {
+                if (this.logAble) {
+                  this.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+                }
+                console.log('saveFileTest fail', res)
+                this.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+                this.done = true
+              },
+              complete: (_) => {
+                this.done = true
               }
-            })
+            } as SaveFileOptions)
           }
         })
       },
@@ -1899,9 +1929,9 @@
         })
       },
       // #endif
-      gotoExplore(){
+      gotoExplore() {
         uni.navigateTo({
-          url:"/pages/API/get-file-system-manager/filemanage"
+          url: "/pages/API/get-file-system-manager/filemanage"
         })
       }
     },

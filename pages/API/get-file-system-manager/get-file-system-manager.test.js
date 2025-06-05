@@ -1450,24 +1450,28 @@ describe('ExtApi-FileManagerTest', () => {
        let saveFileFileButton = await page.$('#btn-save-file')
        await saveFileFileButton.tap()
        await isDone()
+       await page.waitFor(600);
        let saveFileRet = await page.data('saveFileRet')
        expect(saveFileRet).toEqual('unifile://cache/uni-store/1.txt')
 
        let saveFileFileButton1 = await page.$('#btn-save-file1')
        await saveFileFileButton1.tap()
        await isDone()
+       await page.waitFor(600);
        saveFileRet = await page.data('saveFileRet')
        expect(saveFileRet).toEqual('unifile://usr/local/1.txt')
 
        let saveFileFileButton2 = await page.$('#btn-save-file2')
        await saveFileFileButton2.tap()
        await isDone()
+       await page.waitFor(600);
        saveFileRet = await page.data('saveFileRet')
        expect(saveFileRet).toEqual('unifile://usr/local')
 
        let saveFileFileButton3 = await page.$('#btn-save-file3')
        await saveFileFileButton3.tap()
        await isDone()
+       await page.waitFor(600);
        saveFileRet = await page.data('saveFileRet')
        expect(saveFileRet).toEqual('unifile://usr/local')
     });
