@@ -1158,38 +1158,6 @@ describe('ExtApi-FileManagerTest', () => {
         await clearDir('sync')
     });
 
-    it('getSavedFileListTest', async () => {
-        // await page.setData({
-        //   logAble: false,
-        //   basePath: mBasePath
-        // })
-        // console.log('getSavedFileListTest', 'start')
-        // await clearDir('')
-        // console.log('getSavedFileListTest', 'end')
-        await page.setData({
-          logAble: false,
-          basePath: mGlobalTempPath,
-          temFile: 'save3/2.txt',
-          mkdirFile: 'save3',
-          writeFile: 'save3/2.txt',
-          accessFile: '2.txt'
-        })
-        await createFile()
-        await page.setData({
-          basePath: mBasePath,
-          writeFile: 'save/2.txt',
-        })
-        btnSaveFile = await page.$('#btn-save-file-sync')
-        await btnSaveFile.tap()
-        await isDone()
-        let btnSavedFileList = await page.$('#btn-getsaved-filelist')
-        await btnSavedFileList.tap()
-        await isDone()
-        let getSavedFileListRet = await page.data("getSavedFileListRet")
-        console.log('getSavedFileListTest->' + getSavedFileListRet)
-        expect(getSavedFileListRet).toEqual('getSavedFileList:ok')
-    });
-
     it('removeSavedFileTest', async () => {
         await page.setData({
           logAble: false,
@@ -1474,6 +1442,38 @@ describe('ExtApi-FileManagerTest', () => {
        await page.waitFor(600);
        saveFileRet = await page.data('saveFileRet')
        expect(saveFileRet).toEqual('unifile://usr/local')
+    });
+
+    it('getSavedFileListTest', async () => {
+        // await page.setData({
+        //   logAble: false,
+        //   basePath: mBasePath
+        // })
+        // console.log('getSavedFileListTest', 'start')
+        // await clearDir('')
+        // console.log('getSavedFileListTest', 'end')
+        await page.setData({
+          logAble: false,
+          basePath: mGlobalTempPath,
+          temFile: 'save3/2.txt',
+          mkdirFile: 'save3',
+          writeFile: 'save3/2.txt',
+          accessFile: '2.txt'
+        })
+        await createFile()
+        await page.setData({
+          basePath: mBasePath,
+          writeFile: 'save/2.txt',
+        })
+        btnSaveFile = await page.$('#btn-save-file-sync')
+        await btnSaveFile.tap()
+        await isDone()
+        let btnSavedFileList = await page.$('#btn-getsaved-filelist')
+        await btnSavedFileList.tap()
+        await isDone()
+        let getSavedFileListRet = await page.data("getSavedFileListRet")
+        console.log('getSavedFileListTest->' + getSavedFileListRet)
+        expect(getSavedFileListRet).toEqual('getSavedFileList:ok')
     });
   }
 
