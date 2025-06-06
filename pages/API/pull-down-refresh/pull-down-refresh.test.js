@@ -20,8 +20,20 @@ describe("payment", () => {
     return
   }
 
+  let page;
+  let mBasePath;
+  let mGlobalTempPath;
+
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH)
+  });
+
+  it("test uni.startPullDownRefresh screenshot", async () => {
+    const image = await program.screenshot({ fullPage: false });
+    expect(image).toSaveImageSnapshot();
+  })
+
   it("trigger pulldown refresh by swipe", async () => {
-    const page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
     await page.waitFor(4000)
     await page.setData({
@@ -51,4 +63,5 @@ describe("payment", () => {
     const image = await program.screenshot({ fullPage: true });
     expect(image).toSaveImageSnapshot();
   })
+
 });
