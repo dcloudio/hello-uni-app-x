@@ -28,7 +28,7 @@ describe('rich-text-test', () => {
     await page.callMethod('changeText')
     await page.waitFor(500)
     await page.callMethod('changeText')
-    await page.waitFor(1000)
+    await page.waitFor(1500)
     let afterValue = await page.data('richTextHeight')
     console.log('beforeValue:', beforeValue)
     console.log('afterValue:', afterValue)
