@@ -2,11 +2,11 @@ const PAGE_PATH = '/pages/component/text/issues18068'
 
 describe('text-nested-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isWeb || isMP || isAppWebView || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
       expect(1).toBe(1)
     })
