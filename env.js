@@ -30,7 +30,7 @@ module.exports = {
         "uni-app-x": {
             "version": "/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uniappx-launcher/base/version.txt",
             "android": {
-                "id": "f19cb539",
+                "id": "emulator-5554",
                 "executablePath": "/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uniappx-launcher/base/android_base.apk"
             },
             "ios": {
