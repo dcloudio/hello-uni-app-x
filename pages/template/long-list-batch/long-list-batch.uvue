@@ -144,12 +144,12 @@
         // 加载更多数据
       },
       onRefresh() {
+        // 下拉刷新触发，重置任务队列
+        this.jobs.reset();
         this.refresherTriggered = true
         setTimeout(() => {
           this.refresherTriggered = false;
           this.list.splice(0, this.list.length);
-          // 下拉刷新触发，重置任务队列
-          this.jobs.reset();
           /**
            * refreshRestore事件会触发继续分批加载，此处init不自动调用resume。这样做能减少一些下拉刷新复位期间加载数据引发的卡顿。
            * TODO 清空列表也会导致下拉刷新复位时发生卡顿，后续再优化
