@@ -99,7 +99,9 @@
     flex-direction: row;
     align-items: center;
     padding: 12px 18px;
-    background-color: #fff;
+    /* 临时解决：组件样式跟随主题切换 */
+    background-color: var(--list-background-color);
+    /* background-color: #ffffff; */
   }
 
   .uni-collapse-item .down_arrow {
@@ -120,14 +122,16 @@
 
   .uni-collapse-item .uni-collapse-item__title-text {
     flex: 1;
-    color: #000;
+    /* color: #000; */
+    color: var(--text-color);
     font-size: 14px;
     font-weight: 400;
   }
 
   .uni-collapse-item .open--active {
     /* background-color: #f0f0f0; */
-    color: #bbb;
+    /* color: #bbb; */
+    color: var(--active-color);
   }
 
   .uni-collapse-item .is-disabled {
