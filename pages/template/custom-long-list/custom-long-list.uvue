@@ -3,7 +3,7 @@
     <page-head :title="title"></page-head>
     <view class="tips">list-view组件虽然在UI层有recycle机制，但长列表的vnode太多也会造成初始化卡顿。本组件仅创建部分vnode，而未使用list-view，也就是UI层其实是短列表。
     此示例中仅渲染滚动容器上下5屏的内容。适用于仅使用一个for循环创建所有列表项的场景。文档详见插件市场：https://ext.dcloud.net.cn/plugin?id=17385</view>
-    <uni-recycle-view style="flex: 1;" :list="list" @scrolltoupper="scrolltoupper" @scroll="scroll">
+    <uni-recycle-view style="flex: 1;" :list="list" @scrolltoupper="onScrollToUpper" @scrolltolower="onScrollToLower" @scroll="onScroll">
       <template v-slot:default="{items}">
         <!-- scroll-view内:key只绑定数据内的id时在微信小程序端有Bug，表现为滚动位置跳动，初步判断为微信scroll-view的Bug。 -->
         <uni-recycle-item class="item" v-for="(item, index) in (items as Item[])" :item="item" :key="index + '_' + item.id">
@@ -40,10 +40,20 @@
       }
     },
     methods: {
-      scrolltoupper() {
+      onScrollToUpper() {
         console.log('scroll top upper')
       },
-      scroll() {
+      onScrollToLower() {
+        const listLength = this.list.length
+        for (let i = listLength; i < listLength + 100; i++) {
+          this.list.push({
+            id: i,
+            name: `Wifi_` + i,
+            info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
+          } as Item)
+        }
+      },
+      onScroll() {
         // console.log('scroll')
       }
     }

@@ -142,11 +142,18 @@
           })
         },
         deep: true
+      },
+      listLength() {
+        this.calcPlaceholderHeight()
+        this.rearrangeOnNextScroll = true
       }
     },
     computed: {
       realDefaultItemSize() {
         return this.itemHeight != 0 ? this.itemHeight : this.defaultItemSize
+      },
+      listLength() {
+        return this.list.length
       }
     },
     data() {
@@ -160,7 +167,10 @@
         initialized: false,
         defaultItemSize: 80,
         lastScrollTop: 0,
-        rearrangeQueue: [] as number[]
+        rearrangeQueue: [] as number[],
+        startIndex: 0,
+        endIndex: 0,
+        rearrangeOnNextScroll: false,
       };
     },
     provide() {
@@ -228,6 +238,11 @@
           return
         }
         const scrollTop = e.detail.scrollTop
+        if (this.rearrangeOnNextScroll) {
+          this.queue(scrollTop)
+          this.rearrangeOnNextScroll = false
+          return
+        }
         if (scrollTop === this.lastScrollTop || scrollTop < 0) {
           return
         }
@@ -255,13 +270,25 @@
         this.rearrange(lastScrollTop)
         this.rearrangeQueue = [] as number[]
       },
-      calcItemTotalSize(startIndex : number, endIndex : number) {
+      calcItemTotalSize(startIndex : number) {
         let totalSize = 0
-        for (let i = startIndex; i <= endIndex; i++) {
+        for (let i = startIndex; i < this.list.length; i++) {
           const item = this.list[i]
           totalSize += (this.cachedSize.get(item) ?? this.realDefaultItemSize)
         }
         return totalSize
+      },
+      calcPlaceholderHeight() {
+        /**
+         * 加载下一屏时下一屏的item大小为预估大小，因此可能出现已渲染的高度不到加载下一页的阈值。此处逻辑将阈值调整到可见范围内。
+         */
+        const expectedOffsetBottom = this.containerTop + this.calcItemTotalSize(this.startIndex)
+        if (this.placeholderHeight < expectedOffsetBottom) {
+          this.placeholderHeight = expectedOffsetBottom
+        }
+        if (expectedOffsetBottom < this.offsetThreshold[2] + this.scrollElementHeight) {
+          this.offsetThreshold[2] = expectedOffsetBottom - this.scrollElementHeight
+        }
       },
       rearrange(scrollTop : number) {
         this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 7, 0)
@@ -309,17 +336,10 @@
         this.items = this.list.slice(startIndex, endIndex + 1)
         this.containerTop = containerTop
         this.$nextTick(() => {
-          /**
-           * 加载下一屏时下一屏的item大小为预估大小，因此可能出现已渲染的高度不到加载下一页的阈值。此处逻辑将阈值调整到可见范围内。
-           */
-          const expectedOffsetBottom = this.containerTop + this.calcItemTotalSize(startIndex, endIndex)
-          if(this.placeholderHeight < expectedOffsetBottom) {
-            this.placeholderHeight = expectedOffsetBottom
-          }
-          if (expectedOffsetBottom < this.offsetThreshold[2] + this.scrollElementHeight) {
-            this.offsetThreshold[2] = expectedOffsetBottom - this.scrollElementHeight
-          }
+          this.calcPlaceholderHeight()
         })
+        this.startIndex = startIndex
+        this.endIndex = endIndex
       }
     }
   }
