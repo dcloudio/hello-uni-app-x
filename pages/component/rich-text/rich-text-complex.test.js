@@ -4,6 +4,7 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/rich-text/rich-text-complex'
 
@@ -30,7 +31,7 @@ describe('rich-text-test', () => {
     await page.waitFor(1500);
   })
 
-  if (isAndroid) {
+  if (isAndroid && !isAppWebView) {
     it("test attr mode", async () => {
       await page.setData({
         mode: 'native'
