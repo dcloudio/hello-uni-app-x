@@ -3,10 +3,10 @@ const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
-describe("match-media", () => {
+describe('match-media', () => {
     const isSupportted = isMP || isAndroid || isHarmony;
     if (!isSupportted) {
-      it("not support", () => {
+      it('not support', () => {
         expect(1).toBe(1);
       });
       return;
@@ -18,7 +18,7 @@ describe("match-media", () => {
       await page.waitFor(2000);
     });
 
-  it("match-media screenshot", async () => {
+  it('match-media screenshot', async () => {
     const image = await program.screenshot({
       fullPage: true,
     });
