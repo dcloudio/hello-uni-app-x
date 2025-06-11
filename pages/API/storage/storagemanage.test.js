@@ -68,7 +68,7 @@ describe('Storage管理器页面-多类型新增', () => {
     await page.waitFor(300)
     // 验证修改成功
     const list = await page.callMethod('getStorageList')
-    // mp获取 value是[object HTMLElement] 暂时跳过
+    // 微信小程序端，基础库3.5.8以上版本，获取 value是[object HTMLElement] 暂时跳过
     if (!platformInfo.startsWith('mp')) {
       expect(list[0].key).toBe('test_string_edited')
       expect(list[0].value).toBe('hello world edited')
