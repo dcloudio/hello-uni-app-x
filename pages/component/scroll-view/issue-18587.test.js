@@ -10,6 +10,7 @@ describe('issue-18587', () => {
       it('not support', async() => {
         expect(1).toBe(1)
       })
+      return
     }
 
     let page;
