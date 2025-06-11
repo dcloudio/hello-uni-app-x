@@ -18,9 +18,11 @@ describe('API-intersection-observer', () => {
   });
 
   it('scroll-to-show-ball', async () => {
-    const scrollView = await page.$('.scroll-view')
-    await scrollView.scrollTo(0, 200)
-    await page.waitFor(300)
+    await page.setData({scrollTop: 180})
+    await page.waitFor(500)
+    // 微信小程序端，仅在基础库3.5.8及以下版本支持scrollTo方法
+    // const scrollView = await page.$('.scroll-view')
+    // await scrollView.scrollTo(0, 200)
     const appear = await page.data('appear')
     expect(appear).toBe(true)
     const testRes = await page.data('testRes')
@@ -34,4 +36,4 @@ describe('API-intersection-observer', () => {
     expect(testRes.boundingClientRect.top).toBeDefined()
   })
 
-}); 
+});
