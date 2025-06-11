@@ -68,7 +68,8 @@ const pages = [
   // 截图过大
   // '/pages/component/image/image-large',
   '/pages/component/video/video',
-  '/pages/component/video/video-format',
+  // 单独测试例截图
+  // '/pages/component/video/video-format',
   '/pages/component/navigator/navigator',
   '/pages/component/navigator/navigate',
   '/pages/component/navigator/redirect',
@@ -124,7 +125,8 @@ const pages = [
   // '/pages/API/get-element-by-id/get-element-by-id',
   // 单独测试例截图
   // '/pages/API/get-element-by-id/get-element-by-id-multiple-root-node',
-  '/pages/API/create-selector-query/create-selector-query',
+  // 单独测试例截图
+  // '/pages/API/create-selector-query/create-selector-query',
   '/pages/API/storage/storage',
   // 单独测试例截图
   // '/pages/API/show-action-sheet/show-action-sheet',
@@ -157,7 +159,8 @@ const pages = [
   '/pages/API/get-app-base-info/get-app-base-info',
   '/pages/API/preview-image/preview-image',
   '/pages/API/choose-image/choose-image',
-  '/pages/API/choose-video/choose-video',
+  // 单独测试例截图
+  // '/pages/API/choose-video/choose-video',
   '/pages/API/get-network-type/get-network-type',
   '/pages/API/page-scroll-to/page-scroll-to',
   '/pages/API/event-bus/event-bus',

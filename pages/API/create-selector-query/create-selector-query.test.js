@@ -12,8 +12,14 @@ describe('nodes-info', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500)
+    await page.waitFor('view')
   })
+
+  it("screenshot", async () => {
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  })
+
   it('get-root-node-info', async () => {
     // 测试 class 选择器
     await getRootNode('.page')
