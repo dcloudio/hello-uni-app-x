@@ -840,7 +840,7 @@ describe('ExtApi-FileManagerTest', () => {
     // 读取单个文件信息
     let statsRet = await page.data('statsRet')
     expect(statsRet.length).toEqual(1)
-    expect(statsRet[0].path).toMatch(new RegExp('/'))
+    expect(statsRet[0].path).toEqual('')
     if (!isIOS) {
       expect(statsRet[0].stats.size).toEqual(69)
     }
@@ -856,7 +856,7 @@ describe('ExtApi-FileManagerTest', () => {
       // 读取单个文件信息
       statsRet = await page.data('statsRet')
       expect(statsRet.length).toEqual(1)
-      expect(statsRet[0].path).toMatch(new RegExp('/'))
+      expect(statsRet[0].path).toEqual('')
       if (!isIOS) {
         expect(statsRet[0].stats.size).toEqual(69)
       }
