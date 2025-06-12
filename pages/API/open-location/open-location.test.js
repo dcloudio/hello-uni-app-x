@@ -8,7 +8,21 @@ describe('dialog page', () => {
   		expect(1).toBe(1)
   	})
   	return
-  }
+	}
+	
+	if (
+		isIos &&
+		(
+			platformInfo.indexOf('14.5') != -1 ||
+			platformInfo.indexOf('13.7') != -1 ||
+			platformInfo.indexOf('12.4') != -1
+		)
+	) {
+		it('ios 14.5 及以下, xcode 版本太低, uts 插件编译失败', () => {
+  		expect(1).toBe(1)
+		})
+		return
+	}
 
 	let page;
 	let originLifeCycleNum;
