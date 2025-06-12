@@ -28,18 +28,16 @@ describe('component-native-video', () => {
     await page.$('.video');
   });
 
-  it('test API', async () => {
+  it('test play pause', async () => {
     expect(await page.data('isError')).toBe(false);
     // play
     await page.callMethod('play');
-    await page.waitFor(async () => {
-      return await page.data('isPlaying');
-    });
+    await page.waitFor(3000);
+    expect(await page.data('isPlaying')).toBe(true);
     // pause
     await page.callMethod('pause');
-    await page.waitFor(async () => {
-      return await page.data('isPause');
-    });
+    await page.waitFor(3000);
+    expect(await page.data('isPause')).toBe(true);
   });
 
   if (!isMP) {
