@@ -1,14 +1,14 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
-  const isAndroid = platformInfo.startsWith('android')
 
-  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (isWeb || isAppWebView) {
     it('web', async () => {
       expect(1).toBe(1)
     })
@@ -120,7 +120,25 @@ describe('component-native-web-view', () => {
     expect(await page.data('eventLoad')).toEqual({
       tagName: 'WEB-VIEW',
       type: 'load',
-      src: 'https://www.dcloud.io/'
+      src: 'https://www.dcloud.io/',
+      url: 'https://www.dcloud.io/'
+    });
+  });
+
+  it('test event contentheightchange', async () => {
+    if (!isAndroid && !isIOS && !isHarmony) {
+      expect(1).toBe(1);
+      return;
+    }
+    expect(await page.callMethod('getContentHeight')).toBeGreaterThan(0);
+    start = Date.now();
+    await page.waitFor(async () => {
+      return (await page.data('eventContentHeightChange')) || (Date.now() - start > 500);
+    });
+    expect(await page.data('eventContentHeightChange')).toEqual({
+      tagName: 'WEB-VIEW',
+      type: 'contentheightchange',
+      isValidHeight: true
     });
   });
 
@@ -144,7 +162,7 @@ describe('component-native-web-view', () => {
   it('test event error', async () => {
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
-    if (process.env.uniTestPlatformInfo.startsWith('android') && version > 5) {
+    if (isAndroid && version > 5) {
       await page.setData({
         src: 'https://www.dclou.io/uni-app-x'
       });
@@ -181,4 +199,11 @@ describe('component-native-web-view', () => {
     const has = await page.callMethod('checkNativeWebView')
     expect(has).toBe(true)
   })
+
+  it('test lodaData', async () => {
+    await page.callMethod('loadData');
+    await page.waitFor(1000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
 });

@@ -23,8 +23,10 @@
         title: 'audio-path',
         playIndex: 0,
         isPlaying: false,
+        // #ifdef APP
         nativePath: uni.env.CACHE_PATH + 'uni-audio/test/test.mp3' as string,
-        sdcardPath: 'sdcard/uni-audio/test.mp3',
+        // sdcardPath: 'sdcard/uni-audio/test.mp3',
+        // #endif
         _audioContext: null as InnerAudioContext | null,
         supportPaths: [
           {
@@ -35,10 +37,12 @@
             description: '本地路径：../static/',
             src: '../../../static/test-audio/ForElise.mp3'
           },
+          // #ifdef APP
           {
             description: '本地路径：env方式',
             src: 'env'
           },
+          // #endif
           {
             description: '网络路径',
             src: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/audio/ForElise.mp3'
@@ -68,6 +72,7 @@
         console.log('err', err);
       });
 
+      // #ifdef APP
       const fileManager = uni.getFileSystemManager()
       fileManager.mkdir({
         dirPath: uni.env.CACHE_PATH + 'uni-audio/test',
@@ -98,6 +103,7 @@
           }
         }
       })
+      // #endif
     },
 
     onUnload() {
@@ -117,9 +123,11 @@
           this.pause();
           return;
         }
+        // #ifdef APP
         if (audioUrl == 'env') {
           audioUrl = this.nativePath
         }
+        // #endif
 
         this.playIndex = index
         this._audioContext!.src = audioUrl;

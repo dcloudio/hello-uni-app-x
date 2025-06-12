@@ -2,8 +2,8 @@
   <!-- #ifdef WEB -->
   <view>
   <!-- #endif -->
-    <list-view class="list">
-      <list-item class="list-item" v-for="(_,index) in 20">
+    <list-view class="list" @scrolltolower="onScrollTolower">
+      <list-item class="list-item" v-for="(_,index) in item_count">
         <text>第{{index + 1}}个视频</text>
         <video class="video" :src="src" :controls="true" @pause="onPause"></video>
       </list-item>
@@ -17,13 +17,23 @@
   export default {
     data() {
       return {
-        src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4'
+        item_count: 10,
+        src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
+        isTesting: false
       }
     },
     methods: {
       onPause(e : UniEvent) {
         console.log(JSON.stringify(e));
-      }
+      },
+      onScrollTolower(_ : ScrollToLowerEvent) {
+        setTimeout(() => {
+          if (this.isTesting && this.item_count >= 10) {
+            return
+          }
+          this.item_count += 10
+        }, 300)
+      },
     }
   }
 </script>

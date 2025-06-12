@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 let pageIndex = 0
 const pages = [
@@ -23,8 +23,10 @@ const pages = [
   // '/pages/component/scroll-view/scroll-view-refresher',
   // 单独测试例截图
   // '/pages/component/scroll-view/scroll-view-props',
-  '/pages/component/scroll-view/scroll-view-refresher-props',
-  '/pages/component/scroll-view/scroll-view-custom-refresher-props',
+  // 单独测试例截图
+  // '/pages/component/scroll-view/scroll-view-refresher-props',
+  // 单独测试例截图
+  // '/pages/component/scroll-view/scroll-view-custom-refresher-props',
   '/pages/component/swiper/swiper',
   // '/pages/component/list-view/list-view',
   // 单独测试例截图
@@ -66,7 +68,8 @@ const pages = [
   // 截图过大
   // '/pages/component/image/image-large',
   '/pages/component/video/video',
-  '/pages/component/video/video-format',
+  // 单独测试例截图
+  // '/pages/component/video/video-format',
   '/pages/component/navigator/navigator',
   '/pages/component/navigator/navigate',
   '/pages/component/navigator/redirect',
@@ -88,6 +91,7 @@ const pages = [
   '/pages/component/global-events/global-events',
   '/pages/component/global-events/transition-events',
   '/pages/component/global-events/touch-events',
+  '/pages/component/global-events/global-events-transform',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
   // 单独测试例截图
@@ -115,19 +119,21 @@ const pages = [
   // '/pages/API/navigator/new-page/new-page-1',
   '/pages/API/navigator/new-page/new-page-3',
   '/pages/API/navigator/new-page/onLoad',
-  // 下拉刷新，不进行截图
-  '/pages/API/pull-down-refresh/pull-down-refresh',
+  // 单独测试例截图
+  // '/pages/API/pull-down-refresh/pull-down-refresh',
   // 单独测试例截图
   // '/pages/API/get-element-by-id/get-element-by-id',
   // 单独测试例截图
   // '/pages/API/get-element-by-id/get-element-by-id-multiple-root-node',
-  '/pages/API/create-selector-query/create-selector-query',
+  // 单独测试例截图
+  // '/pages/API/create-selector-query/create-selector-query',
   '/pages/API/storage/storage',
   // 单独测试例截图
   // '/pages/API/show-action-sheet/show-action-sheet',
   // 单独测试例截图
   // '/pages/API/show-modal/show-modal',
-  '/pages/API/show-loading/show-loading',
+  // 单独测试例截图
+  // '/pages/API/show-loading/show-loading',
   // 单独测试例截图
   // '/pages/API/show-toast/show-toast',
   // 单独测试例截图
@@ -153,14 +159,14 @@ const pages = [
   '/pages/API/get-app-base-info/get-app-base-info',
   '/pages/API/preview-image/preview-image',
   '/pages/API/choose-image/choose-image',
-  '/pages/API/choose-video/choose-video',
+  // 单独测试例截图
+  // '/pages/API/choose-video/choose-video',
   '/pages/API/get-network-type/get-network-type',
   '/pages/API/page-scroll-to/page-scroll-to',
   '/pages/API/event-bus/event-bus',
   // '/pages/API/get-battery-info/get-battery-info',
   '/pages/API/get-window-info/get-window-info',
   '/pages/API/rpx2px/rpx2px',
-  '/pages/API/request-payment/request-payment/request-payment-uni-pay',
   '/pages/API/request-payment/request-payment/order-detail',
   // 单独测试例截图
   // '/pages/API/resize-observer/resize-observer',
@@ -272,6 +278,8 @@ const pages = [
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
   '/pages/template/slider-100/slider-100',
+  // 单独测试例截图
+  // '/pages/template/long-list-nested/long-list-nested',
 ]
 
 if (isAndroid && isWeb) {
@@ -283,8 +291,6 @@ if (isAndroid && isWeb) {
 if(!isMP) {
   pages.push(
     '/pages/component/list-view/list-view',
-    '/pages/component/list-view/list-view-multiplex-input',
-    '/pages/component/list-view/list-view-multiplex-video',
     '/pages/component/list-view/list-view-children-in-slot',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
@@ -296,11 +302,10 @@ if(!isMP) {
   }
 }
 
-if (!isAppWebview) {
+if (!isAppWebView) {
   if (isApp) {
     pages.push(
       '/pages/template/custom-refresher/custom-refresher',
-      '/pages/template/long-list-nested/long-list-nested',
       '/pages/API/get-file-system-manager/get-file-system-manager',
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
@@ -322,9 +327,10 @@ if (!isAppWebview) {
       '/pages/template/test-uts-button/test-uts-button'
     )
   }
+  pages.push('/pages/API/request-payment/request-payment/request-payment-uni-pay')
 }
 
-if (isAndroid && !isAppWebview) {
+if (isAndroid && !isAppWebView) {
   pages.push(
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
@@ -420,7 +426,7 @@ describe("page screenshot test", () => {
     const screenshotParams = {
       fullPage
     }
-    if (!fullPage && !isAppWebview) {
+    if (!fullPage && !isAppWebView) {
       screenshotParams.offsetY = isApp ? `${windowInfo.safeAreaInsets.top + 44}` : '0'
     }
 

@@ -1,14 +1,17 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isIOS = platformInfo.startsWith('ios')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 const PAGE_PATH = '/pages/component/rich-text/rich-text-complex'
 
 describe('rich-text-test', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
 
   // 先屏蔽 android 及 web 平台
-  if (isAndroid || isWeb || isMP || isHarmony) {
+  if (isWeb || isMP || isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -28,6 +31,17 @@ describe('rich-text-test', () => {
     await page.waitFor(1500);
   })
 
+  if (isAndroid && !isAppWebView) {
+    it("test attr mode", async () => {
+      await page.setData({
+        mode: 'native'
+      });
+      await page.waitFor(1000);
+      const image = await program.screenshot({ fullPage: true });
+      expect(image).toSaveImageSnapshot();
+    });
+    return;
+  }
 
   it('click-event', async () => {
     await program.tap({
@@ -54,7 +68,7 @@ describe('rich-text-test', () => {
     await page.waitFor(500);
 
     // 关闭弹窗逻辑各平台需要适配不同机型
-    if (process.env.uniTestPlatformInfo.startsWith('IOS')) {
+    if (isIOS) {
         // 关闭弹窗 iPhone Pro 机型
         await program.tap({
           x: 200,

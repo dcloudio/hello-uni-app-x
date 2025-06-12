@@ -4,22 +4,15 @@ describe('rich-text-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isIOS = platformInfo.startsWith('ios')
+  const isiOS = platformInfo.startsWith('ios')
+  const isAndroid = platformInfo.startsWith('android')
   const isHarmony = platformInfo.startsWith('harmony')
-
-  if (isWeb || isMP) {
-    it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
 
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(1500);
   })
-
 
   it('richt-text-height', async () => {
     let beforeValue = await page.data('richTextHeight')
@@ -35,14 +28,14 @@ describe('rich-text-test', () => {
     await page.callMethod('changeText')
     await page.waitFor(500)
     await page.callMethod('changeText')
-    await page.waitFor(1000)
+    await page.waitFor(1500)
     let afterValue = await page.data('richTextHeight')
     console.log('beforeValue:', beforeValue)
     console.log('afterValue:', afterValue)
     expect(beforeValue).toBe(afterValue)
   })
 
-  if (!isIOS && !isHarmony) {
+  if (isAndroid || isiOS || isHarmony) {
     it('test selectable itemclick', async () => {
       await page.setData({
         autoTest: true,

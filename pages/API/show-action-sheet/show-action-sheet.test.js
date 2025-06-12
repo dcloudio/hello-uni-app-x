@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 
 describe('showActionSheet', () => {
@@ -24,13 +24,16 @@ describe('showActionSheet', () => {
   }
 
   beforeAll(async () => {
+    page = await program.reLaunch('/pages/tabBar/API')
+    await page.waitFor('view');
+
     const windowInfo = await program.callUniMethod('getWindowInfo');
     // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
     topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
 
-    page = await program.reLaunch('/pages/API/show-action-sheet/show-action-sheet')
+    page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
-    if (isApp && !isAppWebview) {
+    if (isApp && !isAppWebView) {
       if(isAndroid || isIos){
         await page.callMethod('setThemeAuto')
       }
@@ -52,6 +55,15 @@ describe('showActionSheet', () => {
   it("onload showActionSheet", async () => {
     await page.waitFor(isWeb ? 3000 : 1000);
     await screenshot();
+    // 非交互关闭应触发 fail 回调
+    if (!isMP) {
+      const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
+      await program.navigateBack();
+      await page.waitFor(1000);
+      page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
+      const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
+      expect(newLifeCycleNum).toBe(originLifeCycleNum + 2);
+    }
   })
 
   it("有标题", async () => {
@@ -160,7 +172,7 @@ describe('showActionSheet', () => {
     })
   }
   afterAll(async () => {
-    if((isAndroid || isIos) && !isAppWebview){
+    if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')
     }
   });

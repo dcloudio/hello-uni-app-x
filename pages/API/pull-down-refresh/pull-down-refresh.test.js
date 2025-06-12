@@ -3,13 +3,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe("payment", () => {
-  if (
-    isWeb ||
-    process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' ||
-    isMP
-  ) {
+  if (isWeb || isAppWebView || isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -23,8 +20,20 @@ describe("payment", () => {
     return
   }
 
+  let page;
+  let mBasePath;
+  let mGlobalTempPath;
+
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH)
+  });
+
+  it("test uni.startPullDownRefresh screenshot", async () => {
+    const image = await program.screenshot({ fullPage: false });
+    expect(image).toSaveImageSnapshot();
+  })
+
   it("trigger pulldown refresh by swipe", async () => {
-    const page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
     await page.waitFor(4000)
     await page.setData({
@@ -50,4 +59,9 @@ describe("payment", () => {
     await page.waitFor(1500)
     expect(await page.data('pulldownRefreshTriggered')).toBe(true)
   });
+  it("screenshot", async () => {
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  })
+
 });

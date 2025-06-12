@@ -7,11 +7,12 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
-const isWebView = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 let page;
 
 describe("onLoad", () => {
- if (isMP) {
+ if (isMP || isHarmony) {
     it('mp not support', () => {
       expect(1).toBe(1)
     })
@@ -56,7 +57,7 @@ describe("onLoad", () => {
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
   it("navigateBack", async () => {
-    if (isAndroid && !isWebView) {
+    if (isAndroid && !isAppWebView) {
       page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
       await page.waitFor('view');
       await page.callMethod("navigateToOnLoadWithType", "navigateBack");

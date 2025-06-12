@@ -3,9 +3,10 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-scroll-view-refresher', () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (isAppWebView) {
     it('other platform', () => {
       expect(1).toBe(1)
     })

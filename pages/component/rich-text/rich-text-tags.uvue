@@ -3,6 +3,9 @@
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <page-head title="rich-text-tags"></page-head>
+    <!-- #ifdef APP-ANDROID -->
+    <enum-data title="设置mode（仅Android平台支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data>
+    <!-- #endif -->
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
         <text class="uni-title-text">支持的HTML标签</text>
@@ -10,7 +13,7 @@
       <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
         <text class="uni-subtitle-text">{{item.name}}</text>
         <view style="background:#FFFFFF;">
-          <rich-text :nodes="item.html" @itemclick="itemClick"></rich-text>
+          <rich-text :nodes="item.html" @itemclick="itemClick" :mode="mode"></rich-text>
         </view>
       </view>
     </view>
@@ -20,6 +23,7 @@
 </template>
 
 <script>
+  import { ItemType } from '@/components/enum-data/enum-data-types';
   export default {
     data() {
       return {
@@ -43,7 +47,7 @@
               }
             ] as Array<UTSJSONObject>
           },
-          {
+           {
             name: '<p/>',
             html: [
               {
@@ -296,11 +300,14 @@
               }
             ] as Array<UTSJSONObject>
           }
-        ] as Array<TagInfo>
+        ] as Array<TagInfo>,
+        mode: 'web',
+        modeItems: ['web', 'native'],
+        modeItemTypes: [{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[]
       }
     },
     methods: {
-      itemClick(e : RichTextItemClickEvent) {
+      itemClick(e : UniRichTextItemClickEvent) {
         console.log(JSON.stringify(e.detail));
         let clicktext = '';
         if (e.detail.src != null) {
@@ -312,6 +319,9 @@
           content: clicktext,
           showCancel: false
         });
+      },
+      onModeChange: function (value : number) {
+        this.mode = this.modeItems[value];
       }
     }
   }

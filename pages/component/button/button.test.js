@@ -1,3 +1,6 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 const PAGE_PATH = '/pages/component/button/button'
 
 describe('Button.uvue', () => {
@@ -79,7 +82,7 @@ describe('Button.uvue', () => {
   })
 
   it("checkUniButtonElement", async () => {
-    if (process.env.uniTestPlatformInfo.startsWith('mp')) {
+    if (isMP) {
       expect(1).toBe(1)
       return
     }

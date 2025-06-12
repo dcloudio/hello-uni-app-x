@@ -19,7 +19,8 @@
     data() {
       return {
         item_count: 20,
-        listViewElement: null as UniListViewElement | null
+        listViewElement: null as UniListViewElement | null,
+        isTesting: false
       }
     },
     onReady() {
@@ -28,6 +29,9 @@
     methods: {
       onScrollTolower(_ : ScrollToLowerEvent) {
         setTimeout(() => {
+          if (this.isTesting && this.item_count > 20) {
+            return
+          }
           this.item_count += 20
         }, 300)
       },

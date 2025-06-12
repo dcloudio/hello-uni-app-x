@@ -1,5 +1,8 @@
 <template>
   <view class="app">
+    <view class="uni-common-mb">
+      <text>如对当前页面的支付示例功能有任何疑问，通过电子邮件：service@dcloud.io 联系我们</text>
+    </view>
     <view v-if="errMsg != ''">
       <text class="err-msg">注意：{{ errMsg }}</text>
     </view>
@@ -180,6 +183,7 @@
           type: this.type, // 支付回调类型
           openid: this.openid, // 微信公众号需要
           custom: this.custom, // 自定义数据
+          qr_code: this.isPcCom, // 如果是PC端，则强制扫码支付
         });
       },
       /**
@@ -200,6 +204,7 @@
           type: this.type, // 支付回调类型
           openid: this.openid, // 微信公众号需要
           custom: this.custom, // 自定义数据
+          qr_code: this.isPcCom, // 如果是PC端，则强制扫码支付
         });
       },
       /**
@@ -465,7 +470,7 @@
       // 计算当前是否是PC环境
       isPcCom() : boolean {
         let isPC = false;
-        // #ifdef H5
+        // #ifdef WEB
         let info = uni.getSystemInfoSync();
         isPC = info.deviceType == 'pc' ? true : false;
         // #endif

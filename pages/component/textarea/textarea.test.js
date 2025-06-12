@@ -46,14 +46,15 @@ describe('component-native-textarea', () => {
   it("auto-height", async () => {
     await page.setData({
       default_value: "",
+    })
+    await page.waitFor(500)
+    await page.setData({
       auto_height_boolean: true
     })
     await page.waitFor(500)
-    var {
-      width,
-      height
-    } = await textarea.size()
-    expect(height).toBeLessThanOrEqual(200)
+    let textareaSize = await textarea.size()
+    let textareaHeight = textareaSize.height
+    expect(textareaHeight).toBeLessThanOrEqual(150)
     if(!isMP) {
       // TODO 微信小程序auto-height由true切换成false时不会影响text-area高度
       await page.setData({
@@ -61,11 +62,9 @@ describe('component-native-textarea', () => {
         auto_height_boolean: false
       })
       await page.waitFor(500)
-      var {
-        width,
-        height
-      } = await textarea.size()
-      expect(height).toEqual(200)
+      textareaSize = await textarea.size()
+      textareaHeight = textareaSize.height
+      expect(textareaHeight).toEqual(200)
     }
   })
 
@@ -95,7 +94,6 @@ describe('component-native-textarea', () => {
       const inputmodeEnum = await page.data("inputmode_enum")
       for (var i = 0; i < inputmodeEnum.length; i++) {
         var x = inputmodeEnum[i]
-        console.log(x['value'], x['name'])
         var selected = x['value'] - 1
         if (i == inputmodeEnum.length - 1) {
           selected = i
@@ -136,7 +134,6 @@ describe('component-native-textarea', () => {
       })
       await page.waitFor(500)
       const rect = await page.callMethod("getBoundingClientRectForTest")
-      console.log('rect:', rect)
       expect(rect.width).toBe(100)
     })
   }

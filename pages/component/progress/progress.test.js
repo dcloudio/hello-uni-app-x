@@ -91,6 +91,16 @@ describe('Progress.uvue', () => {
       strokeWidth: 6
     })
     expect(await el.attribute('stroke-width')).toEqual(6 + '')
+    if(isWeb) {
+      await page.setData({
+        strokeWidth: '10px'
+      })
+      expect(await el.attribute('stroke-width')).toEqual('10px')
+      await page.setData({
+        strokeWidth: '30rpx'
+      })
+      expect(await el.attribute('stroke-width')).toEqual('30rpx')
+    }
   })
   it('backgroundColor', async () => {
     const el = await page.$('.p')
@@ -101,8 +111,7 @@ describe('Progress.uvue', () => {
     expect(await el.attribute('background-color')).toEqual('#007aff')
   })
   it('trigger UniProgressActiveendEvent', async () => {
-
-    if (isWeb || isMP || isHarmony) {
+    if (isWeb || isMP) {
       expect(1).toBe(1)
       return
     }

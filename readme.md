@@ -50,3 +50,26 @@ pages/CSS/xxx/xxx 的页面应该相邻放置，\
 `pages.json/groups` 中维护了基于 `syntaxdoc/modules.json` 获取的目录信息。
 
 调整现有页面的路径或平台兼容性，或移除页面时，如果该页面涉及截图对比测试，需要同时调整 `pages/pages.test.js` 中的页面地址。
+
+### 仓库分支与 HBuilder 版本对应关系
+
+- master 对应 [HBuilder](https://www.dcloud.io/hbuilderx.html) 正式版
+- alpha 对应 [HBuilder](https://www.dcloud.io/hbuilderx.html) Alpha 版
+- dev 对应 [HBuilder](https://www.dcloud.io/hbuilderx.html) 内部 dev 版
+
+### tags 与 HBuilder 版本对应关系
+
+例: v_4.63-alpha 对应 HBuilder 4.63-alpha 版本
+
+### 鸿蒙新用户指引
+
+普通用户首次运行 hello uni-app x 需要做如下调整：
+
+- 配置签名证书。修改 `harmony-configs/build-profile.json5` 文件，修改为自己的证书签名
+- 配置包名。修改 `manifest.json` 的鸿蒙 App 配置 - 包名，修改为自己的包名
+- 移除敏感 ACL 权限，普通开发者可能并没有剪切板操作权限，打开 `harmony-configs/entry/src/main/module.json5` 找到 `READ_PAATEBOARD` 删除。对应的页面示例也会失效。
+- 移除功能依赖的页面，有些用户并没有开通 uni-push/一键登录，可选注释 pages.json 中的
+  - `pages/API/get-univerify-manager/get-univerify-manager`
+  - `pages/API/get-univerify-manager/univerify-custom-page`
+  - `pages/API/uni-push/uni-push`
+- 同步调整 manfest.json，`app` 和 `app-harmony` 的 module 节点根据需求调整。

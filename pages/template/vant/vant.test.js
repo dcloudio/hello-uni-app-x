@@ -1,7 +1,9 @@
-jest.setTimeout(30000);
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('test vant', () => {
   let page,vantBtnContainer,vantBtn;
-  if (!process.env.uniTestPlatformInfo.startsWith('mp')) {
+  if (!isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })

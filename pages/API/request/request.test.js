@@ -1,6 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIOS = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
+const isMp = platformInfo.startsWith('mp')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 const PAGE_PATH = '/pages/API/request/request'
-
-
 const methodMap = {
   "GET": "/api/http/method/get",
   "POST": "/api/http/method/post",
@@ -31,14 +37,9 @@ describe('ExtApi-Request', () => {
   let page;
   let res;
 
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isIOS = platformInfo.startsWith('ios')
-  const isAndroid = platformInfo.startsWith('android')
-  const isHarmony = platformInfo.startsWith('harmony')
-
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(600);
+    await page.waitFor('view');
   });
 
 
@@ -73,7 +74,7 @@ describe('ExtApi-Request', () => {
     await request(page, 'DELETE');
   });
   // 鸿蒙平台暂不支持PATCH方法
-  if(!isHarmony) {
+  if (!isHarmony) {
     it('Check PATCH', async () => {
       await request(page, 'PATCH');
     });
@@ -100,53 +101,51 @@ describe('ExtApi-Request', () => {
   })
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (isAndroid && !isAppWebView) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
   }
 
-  if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (isIOS && !isAppWebView) {
     shouldTestCookie = true
   }
 
-  if (!shouldTestCookie) {
-    return
+  if (shouldTestCookie) {
+    it('Check Set Cookie', async () => {
+      res = await page.callMethod('jest_set_cookie')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+    it('Check Delete Cookie', async () => {
+      res = await page.callMethod('jest_delete_cookie')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
+    it('Check Set Cookie Expires', async () => {
+      await page.callMethod('jest_set_cookie_expires')
+      await page.waitFor(2000);
+      res = await page.data('jest_result_data');
+      console.log("request expires cookie data :", res);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+      await page.setData({
+        jest_result: false,
+        jest_result_data: "",
+        data: null,
+        header: null
+      })
+      await page.waitFor(5000);
+      await page.callMethod('jest_cookie_request', false)
+      await page.waitFor(2000);
+      res = await page.data('jest_result_data');
+      console.log("verify request data :", res);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    });
   }
-
-  it('Check Set Cookie', async () => {
-    res = await page.callMethod('jest_set_cookie')
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
-  it('Check Delete Cookie', async () => {
-    res = await page.callMethod('jest_delete_cookie')
-    await page.waitFor(2000);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
-  it('Check Set Cookie Expires', async () => {
-    await page.callMethod('jest_set_cookie_expires')
-    await page.waitFor(2000);
-    res = await page.data('jest_result_data');
-    console.log("request expires cookie data :", res);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-    await page.setData({
-      jest_result: false,
-      jest_result_data: "",
-      data: null,
-      header: null
-    })
-    await page.waitFor(5000);
-    await page.callMethod('jest_cookie_request', false)
-    await page.waitFor(2000);
-    res = await page.data('jest_result_data');
-    console.log("verify request data :", res);
-    res = await page.data('jest_result');
-    expect(res).toBe(true)
-  });
   it('Check Get With Data', async () => {
     res = await page.callMethod('jest_get_with_data')
     await page.waitFor(2000);
@@ -164,7 +163,7 @@ describe('ExtApi-Request', () => {
   let version = process.env.uniTestPlatformInfo
   let split = version.split(" ")
   version = parseInt(split[split.length - 1])
-  if(!process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('ios') || version > 15) {
+  if (isIOS && version > 15 || isAndroid || isHarmony) {
     it('Check Post In UTS Module', async () => {
       res = await page.callMethod('jest_uts_module_invoked')
       await page.waitFor(2000);
@@ -180,7 +179,7 @@ describe('ExtApi-Request', () => {
     expect(res).toBe(true)
   })
 
-  if(process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')){
+  if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
     it('Check Respone With String Generics', async () => {
       res = await page.callMethod('jest_respone_with_string_generics')
       await page.waitFor(2000);
@@ -189,7 +188,7 @@ describe('ExtApi-Request', () => {
     })
   }
 
-  if(process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')){
+  if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
     it('Check Respone string generics when status is 404', async () => {
       res = await page.callMethod('jest_respone_with_404_and_string_generics')
       await page.waitFor(2000);
@@ -200,10 +199,11 @@ describe('ExtApi-Request', () => {
 
   if (isAndroid || isIOS) {
     it('send arraybuffer', async () => {
-      res = await page.callMethod('sendArrayBuffer',true)
+      res = await page.callMethod('sendArrayBuffer', true)
       await page.waitFor(5000);
       res = await page.data('res');
       expect(res).toEqual('请求结果 : 123,34,104,101,108,108,111,34,58,34,119,111,114,108,100,34,125')
     })
   }
+
 });

@@ -1,3 +1,20 @@
+/* 主题变量 */
+.theme-light {
+	--list-background-color: #ffffff;
+	--background-color: #f8f8f8;
+	--active-color:#a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+}
+
+.theme-dark {
+	--list-background-color: #2d2d2d;
+	--background-color: #1a1a1a;
+	--active-color:#8f8f8f;
+	--active-background-color: #3b3b3b;
+	--text-color: #ffffff;
+}
+
 .uni-padding-wrap {
   padding: 0 15px;
 }
@@ -35,12 +52,12 @@
 }
 
 .uni-hello-text {
-  color: #7A7E83;
+  color: var(--text-color,#333333);
   line-height: 22px;
 }
 
 .uni-list {
-  background-color: #FFFFFF;
+  background-color: var(--list-background-color,#ffffff);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -96,7 +113,7 @@
   padding: 8px 13px;
   /* line-height: 25px; */
   font-size: 14px;
-  background: #FFF;
+  background: var(--list-background-color,#ffffff);
   flex: 1;
   box-sizing: content-box;
 }
@@ -164,7 +181,7 @@
 
 .uni-container {
   padding: 15px;
-  background-color: #f8f8f8;
+  background-color: var(--background-color,#f8f8f8);
 }
 
 .uni-header-logo {
@@ -185,7 +202,7 @@
 }
 
 .hello-text {
-  color: #7A7E83;
+  color: var(--text-color);
   font-size: 14px;
   line-height: 20px;
 }
@@ -196,31 +213,25 @@
 }
 
 .text-disabled {
-  color: #a0a0a0 !important;
+  color: var(--active-color)!important;
 }
-
 
 /* --tab-bar-begin-- */
 
 .uni-panel-h {
-  background-color: #ffffff;
+  background-color: var(--list-background-color);
   flex-direction: row !important;
   justify-content: space-between !important;
   align-items: center !important;
   padding: 12px;
 }
 
-/*
-.uni-panel-h:active {
-    background-color: #f8f8f8;
-}
- */
 .uni-panel-h-on {
   background-color: #f0f0f0;
 }
 
 .uni-panel-text {
-  color: #000000;
+  color: var(--text-color);
   font-size: 14px;
   font-weight: normal;
 }
@@ -228,7 +239,7 @@
 .uni-navigate-item {
   flex-direction: row;
   align-items: center;
-  background-color: #FFFFFF;
+  background-color: var(--list-background-color);
   border-top-style: solid;
   border-top-color: #f0f0f0;
   border-top-width: 1px;
@@ -239,16 +250,18 @@
   /* #endif */
 }
 
-.uni-navigate-item:active {
-  background-color: #f8f8f8;
-}
-
 .is--active {
-  background-color: #f8f8f8;
+  /* 临时方案：解决鸿蒙端view的hover-class绑定的样式，使用自定义css变量无效 */
+  /* #ifdef APP-HARMONY */
+  background-color: #cecece;
+  /* #endif */
+  /* #ifndef APP-HARMONY */
+  background-color: var(--active-background-color);
+  /* #endif */
 }
 
 .uni-navigate-text {
-  color: #000000;
+  color: var(--text-color);
   font-size: 14px;
   font-weight: normal;
 }
@@ -259,6 +272,17 @@
 }
 
 /* --tab-bar-end-- */
+.uni-container ::v-deep .uni-collapse-item .uni-collapse-item__title{
+  background-color: var(--list-background-color)!important;
+}
+
+.uni-container ::v-deep .uni-collapse-item .uni-collapse-item__title .uni-collapse-item__title-text{
+  color: var(--text-color)!important;
+}
+
+.uni-container ::v-deep .uni-collapse-item .uni-collapse-item__title .uni-collapse-item__title-text.open--active{
+  color: var(--active-color)!important;
+}
 
 /* #ifdef APP */
 .page-scroll-view {
@@ -268,46 +292,12 @@
 
 /* web端适配暗黑主题 */
 /* #ifdef WEB */
-@media (prefers-color-scheme: dark) {
+ @media (prefers-color-scheme: dark) {
   body,
   uni-page-body {
     color: rgba(0, 0, 0, 0.9);
   }
-  .uni-list {
-    background-color: #646464;
-  }
-  .uni-list-cell-db, .uni-radio-wrapper{
-    color: #ffffff;
-  }
-  .uni-container {
-    background-color: #1a1a1a;
-    color: #ffffff;
-  }
 }
-
-.uni-container.dark-mode :deep(.uni-collapse-item .uni-collapse-item__title),
-.uni-container.dark-mode .uni-navigate-item,
-.uni-container.dark-mode .uni-panel-h {
-  background-color: #2d2d2d;
-  border-bottom-color: #3d3d3d;
-}
-
-.uni-container.dark-mode :deep(.uni-collapse-item .uni-collapse-item__title),
-.uni-container.dark-mode .uni-navigate-item {
-  padding: 12px 18px;
-}
-
-.uni-container.dark-mode :deep(.uni-collapse-item .uni-collapse-item__title-text),
-.uni-container.dark-mode .hello-text,
-.uni-container.dark-mode .uni-navigate-text,
-.uni-container.dark-mode .uni-panel-text {
-  color: #ffffff;
-}
-
-.uni-container.dark-mode .text-disabled {
-  color: #666666 !important;
-}
-
 /* #endif */
 
 

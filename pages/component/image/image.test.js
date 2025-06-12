@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
-const isAppWebview = !!process.env.UNI_AUTOMATOR_APP_WEBVIEW
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAndroid = platformInfo.startsWith('android')
 
 describe('component-native-image', () => {
   const screenshotParams = { fullPage: true }
@@ -45,7 +46,7 @@ describe('component-native-image', () => {
     expect(await page.data('loadError')).toBe(true)
   })
 
-  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (isAndroid && !isAppWebView) {
     it('check-cookie', async () => {
       await page.setData({
         autoTest: true,
@@ -120,7 +121,7 @@ describe('component-native-image', () => {
   });
 
   it('long-path-screenshot', async() => {
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (isAndroid) {
        const infos = process.env.uniTestPlatformInfo.split(' ');
        const version = parseInt(infos[infos.length - 1]);
        if (version < 8) {

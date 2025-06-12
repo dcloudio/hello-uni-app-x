@@ -2,9 +2,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-sticky-section', () => {
-  if (isMP || isHarmony) {
+  if (isMP) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
@@ -44,7 +45,7 @@ describe('component-native-sticky-section', () => {
     expect(image).toSaveImageSnapshot();
   })
 
-  if (isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true' || isHarmony) {
+  if (isWeb || isAppWebView) {
     return
   }
 
@@ -53,9 +54,9 @@ describe('component-native-sticky-section', () => {
     await page.callMethod('toTop')
     page.waitFor(100)
     await page.setData({
-      scrolling: 'true'
+      scrolling: true
     })
-    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (!isAppWebView) {
       //跳转到id为C的StickyHeader位置
       await page.callMethod('gotoStickyHeader', 'C')
     }

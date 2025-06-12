@@ -3,7 +3,7 @@ describe('PagesJson-backgroundColorContent', () => {
   beforeAll(async () => {
     page = await program.reLaunch(
       '/pages/template/test-background-color-content/test-background-color-content')
-    await page.waitFor(500);
+    await page.waitFor('view');
   });
 
   it('background color content size', async () => {

@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-sticky-header', () => {
   if (isMP || isHarmony) {
@@ -14,7 +15,7 @@ describe('component-native-sticky-header', () => {
   const screenshotParams = { }
 
   beforeAll(async () => {
-    if (!process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+    if (!isAppWebView) {
       const windowInfo = await program.callUniMethod('getWindowInfo');
       screenshotParams.offsetY = `${windowInfo.safeAreaInsets.top + 44}`
     }

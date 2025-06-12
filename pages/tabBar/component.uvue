@@ -2,7 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
   <!-- #endif -->
-    <view class="uni-container" :class="{ 'dark-mode': isDarkMode }">
+    <view class="uni-container" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/componentIndex.png"></image>
       </view>
@@ -13,7 +13,7 @@
       </view>
       <uni-collapse>
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
-          class="item">
+          class="uni-panel">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
             <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
@@ -23,7 +23,7 @@
               <image :src="arrowRightIcon" class="uni-icon-size"></image>
             </view>
             <uni-collapse v-else style="width: 100%;">
-              <uni-collapse-item :title="childMenuItem.name" class="item" style="margin-bottom: 0;">
+              <uni-collapse-item :title="childMenuItem.name" class="uni-panel" style="margin-bottom: 0;">
                 <view class="uni-navigate-item pl" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
@@ -45,10 +45,9 @@
 </template>
 
 <script lang="uts">
-  import { generateMenu } from './generateMenu.uts'
-  import { MenuItem } from './generateMenu.uts'
+  import { generateMenu, MenuItem } from './generateMenu.uts'
   const menu = generateMenu('pages/component')
-  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  // #ifdef APP
   import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
   // #endif
   import { state } from '@/store/index.uts'
@@ -144,15 +143,12 @@
 </script>
 
 <style>
-  .item {
-    margin-bottom: 12px;
-  }
   .pl{
     padding-left: 18px
   }
   /* web端适配暗黑主题 */
   /* #ifdef WEB */
-  .uni-container.dark-mode {
+  .uni-container.theme-dark {
     min-height: calc(100vh - var(--uni-safe-area-inset-top));
   }
   /* #endif */
