@@ -1,3 +1,6 @@
+// @Author-APP-HARMONY:DCloud_UNI_WZF
+
+
 jest.setTimeout(30000);
 describe('test swiper', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
