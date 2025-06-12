@@ -6,7 +6,7 @@ describe('/pages/CSS/layout/width.uvue', () => {
 
   it('test nest components width', async () => {
     await page.waitFor('view');
-    const element = await page.$('#child_box');
+    const element = await page.$('.child_box');
 
     console.log('element',element)
     const size = await element.size()
