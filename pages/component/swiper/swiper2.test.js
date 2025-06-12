@@ -1,3 +1,4 @@
+// @Author-APP-ANDROID:DCloud_Android_DQQ
 const PAGE_PATH = '/pages/component/swiper/swiper'
 
 describe('swiper-touch-test', () => {

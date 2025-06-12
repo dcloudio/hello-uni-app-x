@@ -1,3 +1,4 @@
+// @Author-APP-ANDROID:DCloud_Android_DQQ
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
@@ -55,4 +56,4 @@ describe('API-loading', () => {
     await toScreenshot('loading-manual-hide')
   })
 
-}); 
+});
