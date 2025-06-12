@@ -18,7 +18,7 @@ describe('dialog page', () => {
 			platformInfo.indexOf('12.4') != -1
 		)
 	) {
-		it('ios 14.5 及以下, xcode 版本太低, uts 插件编译失败', () => {
+		it('ios 14.5 及以下, xcode 版本太低, uts plugin compile fail', () => {
   		expect(1).toBe(1)
 		})
 		return
