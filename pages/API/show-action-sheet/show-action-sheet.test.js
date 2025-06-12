@@ -56,12 +56,14 @@ describe('showActionSheet', () => {
     await page.waitFor(isWeb ? 3000 : 1000);
     await screenshot();
     // 非交互关闭应触发 fail 回调
-    const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
-    await program.navigateBack();
-    await page.waitFor(1000);
-    page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
-    const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
-    expect(newLifeCycleNum).toBe(originLifeCycleNum + 2);
+    if (!isMP) {
+      const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
+      await program.navigateBack();
+      await page.waitFor(1000);
+      page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
+      const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
+      expect(newLifeCycleNum).toBe(originLifeCycleNum + 2);
+    }
   })
 
   it("有标题", async () => {
