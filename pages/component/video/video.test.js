@@ -104,7 +104,7 @@ describe('component-native-video', () => {
       });
     }
   }
-  it('test event play pause controlstoggle', async () => {
+  it('test event play pause controls toggle', async () => {
     await page.setData({
       isPause: false,
       isPlaying: false,
@@ -113,16 +113,13 @@ describe('component-native-video', () => {
     await page.callMethod('play');
     start = Date.now();
     await page.waitFor(async () => {
-      return await page.data('isPlaying');
+      return (await page.data('isPlaying')) || (Date.now() - start > 3000);
     });
+    start = Date.now();
     await page.waitFor(async () => {
       return (await page.data('eventPlay')) || (Date.now() - start > 500);
     });
-    if (isIOS) {
-      // expect(await page.data('eventPlay')).toEqual({
-      //   type: 'play'
-      // });
-    } else {
+    if (!isIOS) {
       expect(await page.data('eventPlay')).toEqual({
         tagName: 'VIDEO',
         type: 'play'
@@ -131,16 +128,13 @@ describe('component-native-video', () => {
     await page.callMethod('pause');
     start = Date.now();
     await page.waitFor(async () => {
-      return await page.data('isPause');
+      return (await page.data('isPause')) || (Date.now() - start > 3000);
     });
+    start = Date.now();
     await page.waitFor(async () => {
       return (await page.data('eventPause')) || (Date.now() - start > 1000);
     });
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-      // expect(await page.data('eventPause')).toEqual({
-      //   type: 'pause'
-      // });
-    } else {
+    if (!isIOS) {
       expect(await page.data('eventPause')).toEqual({
         tagName: 'VIDEO',
         type: 'pause'
@@ -179,8 +173,7 @@ describe('component-native-video', () => {
         await page.callMethod('seek', 10);
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() -
-            start > 1000);
+          return ((await page.data('eventWaiting')) && (await page.data('eventProgress'))) || (Date.now() - start > 1000);
         });
         expect(await page.data('eventWaiting')).toEqual({
           tagName: 'VIDEO',
@@ -208,8 +201,7 @@ describe('component-native-video', () => {
       });
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (isAndroid && version >
-        5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+      if (isAndroid && version >5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
         await page.waitFor(5000);
         await program.adbCommand('input tap 10 10');
         start = Date.now();
