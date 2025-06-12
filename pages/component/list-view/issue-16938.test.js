@@ -17,6 +17,7 @@ describe('issue-16938', () => {
 
   it('activate', async () => {
     await page.callMethod('setScrollTop', 1000)
+    await page.waitFor(500)
     await page.callMethod('toNextPage')
     await page.waitFor(1000)
     page = await program.navigateBack()
