@@ -1,3 +1,7 @@
+// @Author-APP-HARMONY:DCloud_UNI_LXH
+// @Author-MP-WEIXIN:DCloud_UNI_WYQ
+
+
 jest.setTimeout(60000);
 describe('component-native-video', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
