@@ -6,9 +6,10 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-video', () => {
-  if (isWeb) {
+  if (isWeb || isAppWebView) {
     // TODO: web 端暂不支持测试
     it('web', async () => {
       expect(1).toBe(1)
