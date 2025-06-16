@@ -4,6 +4,9 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIOS || isHarmony
+
+const PAGE_PATH = '/pages/API/loading/loading'
+
 describe('API-loading', () => {
   let page;
   const screeShotParams = {
@@ -11,7 +14,7 @@ describe('API-loading', () => {
     fullPage: true
   }
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/show-loading/show-loading')
+    page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
     if (isApp) {
       const windowInfo = await program.callUniMethod('getWindowInfo');

@@ -5,6 +5,8 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIOS || isHarmony
 const isWeb = platformInfo.startsWith('web')
 
+const PAGE_PATH = '/pages/API/toast/toast'
+
 describe('API-toast', () => {
   let page;
   const screeShotParams = {
@@ -12,7 +14,7 @@ describe('API-toast', () => {
     fullPage: true
   }
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/show-toast/show-toast')
+    page = await program.reLaunch(PAGE_PATH)
     await page.waitFor("view");
     if (isApp) {
       const windowInfo = await program.callUniMethod('getWindowInfo');

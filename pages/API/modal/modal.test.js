@@ -9,6 +9,8 @@ describe('API-loading', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isApp = isIos || isAndroid || isHarmony
 
+  const PAGE_PATH = '/pages/API/modal/modal'
+
   if(isMP) {
     // 微信小程序截图无法截到弹框
     it('not support', () => {
@@ -34,7 +36,7 @@ describe('API-loading', () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
 
-    page = await program.reLaunch('/pages/API/show-modal/show-modal')
+    page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
 
   });
