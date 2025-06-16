@@ -7,6 +7,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
+const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
 describe('showActionSheet', () => {
   let topSafeArea = 0;
@@ -31,7 +32,7 @@ describe('showActionSheet', () => {
     // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
     topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
 
-    page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
+    page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view');
     if (isApp && !isAppWebView) {
       if(isAndroid || isIos){
@@ -60,7 +61,7 @@ describe('showActionSheet', () => {
       const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
       await program.navigateBack();
       await page.waitFor(1000);
-      page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
+      page = await program.navigateTo(PAGE_PATH)
       const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
       expect(newLifeCycleNum).toBe(originLifeCycleNum + 2);
     }

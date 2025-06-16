@@ -129,7 +129,7 @@ const pages = [
   // '/pages/API/create-selector-query/create-selector-query',
   '/pages/API/storage/storage',
   // 单独测试例截图
-  // '/pages/API/show-action-sheet/show-action-sheet',
+  // '/pages/API/action-sheet/action-sheet',
   // 单独测试例截图
   // '/pages/API/show-modal/show-modal',
   // 单独测试例截图
