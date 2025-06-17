@@ -11,7 +11,7 @@ describe('api-resize-observer', () => {
 
   let page
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/resize-observer/resize-observer')
+    page = await program.reLaunch('/pages/API/uni-resize-observer/uni-resize-observer')
     await page.waitFor('button')
   })
 
