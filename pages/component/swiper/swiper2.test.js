@@ -34,17 +34,19 @@ describe('swiper-touch-test', () => {
     }
     // program.swipe Android10以上不生效
     if(isAndroid && res.osAndroidAPILevel > 28){
-    }else{
-      await program.swipe({
-        startPoint: {x, y},
-        endPoint: {x: 10, y},
-        duration: 200
-      })
-
-      await page.waitFor(1000)
-      let val = await page.data('currentValChange')
-      expect(val).toEqual(1)
+      // 避免 android 10 侧滑影响
+      x -= 20
     }
+
+    await program.swipe({
+      startPoint: {x, y},
+      endPoint: {x: 10, y},
+      duration: 200
+    })
+
+    await page.waitFor(1000)
+    let val = await page.data('currentValChange')
+    expect(val).toEqual(1)
 
   })
 
