@@ -1,11 +1,14 @@
 // @Author-APP-ANDROID:DCloud_Android_DQQ
 const PAGE_PATH = '/pages/component/swiper/swiper'
 
+
 describe('swiper-touch-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
   const isHarmony = platformInfo.startsWith('harmony')
+  const isAndroid = platformInfo.startsWith('android')
+  let res;
   // 屏蔽 web & 小程序，不支持 program.swipe
   if (isWeb || isMP) {
     it('other platform', () => {
@@ -18,6 +21,7 @@ describe('swiper-touch-test', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
+    res = await page.callMethod('jest_getSystemInfo')
   })
 
 
@@ -25,19 +29,24 @@ describe('swiper-touch-test', () => {
     let x = await page.data('swipeX')
     let y = await page.data('swipeY')
     // harmony onReady getBoundingClientRect 获取节点宽度错误
+    console.log(res)
     if (isHarmony && x < 20) {
       x = 300
     }
+    // program.swipe Android10以上不生效
+    if(isAndroid && res.osAndroidAPILevel > 28){
+    }else{
+      await program.swipe({
+        startPoint: {x, y},
+        endPoint: {x: 10, y},
+        duration: 200
+      })
 
-    await program.swipe({
-      startPoint: {x, y},
-      endPoint: {x: 120, y},
-      duration: 200
-    })
+      await page.waitFor(1000)
+      let val = await page.data('currentValChange')
+      expect(val).toEqual(1)
+    }
 
-    await page.waitFor(1000)
-    let val = await page.data('currentValChange')
-    expect(val).toEqual(1)
   })
 
 })
