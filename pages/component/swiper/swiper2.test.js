@@ -31,7 +31,7 @@ describe('swiper-touch-test', () => {
 
     await program.swipe({
       startPoint: {x, y},
-      endPoint: {x: 10, y},
+      endPoint: {x: 120, y},
       duration: 200
     })
 
