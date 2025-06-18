@@ -29,7 +29,6 @@ describe('swiper-touch-test', () => {
     let x = await page.data('swipeX')
     let y = await page.data('swipeY')
     // harmony onReady getBoundingClientRect 获取节点宽度错误
-    console.log(res)
     if (isHarmony && x < 20) {
       x = 300
     }
