@@ -282,7 +282,7 @@ const pages = [
   // '/pages/template/long-list-nested/long-list-nested',
 ]
 
-if (isAndroid && isWeb) {
+if (!isIos) {
   pages.push(
     '/pages/API/get-battery-info/get-battery-info',
   )
