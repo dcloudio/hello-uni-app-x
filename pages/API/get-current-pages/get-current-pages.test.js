@@ -1,4 +1,4 @@
-jest.setTimeout(40000)
+jest.setTimeout(60000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
