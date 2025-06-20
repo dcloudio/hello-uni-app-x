@@ -30,13 +30,8 @@ describe('css-variable', () => {
     console.log(size1.height);
     expect(size1.height > 0).toBe(true)
 
-    const element2 = await page.$('.uni-fixed-bottom')
-    const size2 = await element2.size()
-    expect(size2.height > 0).toBe(true)
+    // 其他变量在不同机型表现不同，多设备测试无意义
 
-    const element3 = await page.$('.uni-safe-area-inset-bottom')
-    const size3 = await element3.size()
-    expect(size3.height > 0).toBe(true)
   })
 
   it('screenshot', async () => {
