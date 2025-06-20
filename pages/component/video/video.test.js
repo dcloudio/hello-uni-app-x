@@ -223,6 +223,16 @@ describe('component-native-video', () => {
         });
       }
       await page.callMethod('exitFullScreen');
+      await page.waitFor(1000);
+      await page.callMethod('requestVerticalFullScreen');
+      await page.waitFor(1000);
+      expect(await page.data('eventFullscreenchange')).toEqual({
+        tagName: 'VIDEO',
+        type: 'fullscreenchange',
+        fullScreen: true,
+        direction: 'vertical'
+      });
+      await page.callMethod('exitFullScreen');
     });
 
     it('test event ended timeupdate', async () => {
@@ -288,6 +298,21 @@ describe('component-native-video', () => {
         });
         await page.waitFor(100);
         expect(await page.callMethod('hasSubComponent')).toBe(true);
+        await page.callMethod('requestFullScreen');
+        await page.waitFor(2000);
+        const image = await program.screenshot({ deviceShot: true });
+        expect(image).toSaveImageSnapshot();
+        await page.callMethod('exitFullScreen');
+        await page.waitFor(2000);
+        await page.callMethod('requestVerticalFullScreen');
+        await page.waitFor(2000);
+        const image2 = await program.screenshot({ deviceShot: true });
+        expect(image2).toSaveImageSnapshot();
+        await page.callMethod('exitFullScreen');
+        await page.setData({
+          subCompEnable: false,
+          subCompShow: false
+        });
       });
     }
 
