@@ -38,10 +38,9 @@
       </list-item>
     </list-view>
     <web-view v-if="indexView==2" src="/hybrid/html/local.html" id="webv" class="scroll-view"></web-view>
-    <view style="position:relative;background-color:white;z-index:1000;" :style="{bottom: inputBottom}">
-      <input id="input" placeholder="滚动视图外的居底输入框,不上推,手动控制输入框top" :adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
+    <view class="bottomInput" :style="{bottom: inputBottom}">
+      <input id="input" style="background-color: white;" placeholder="滚动视图外底部输入框，焦点时手动控制显示位置" :adjust-position="false" @blur="onInputBlur" @keyboardheightchange="onInputKeyboardChange" />
     </view>
-
   </view>
 </template>
 
@@ -54,8 +53,6 @@
         isLeft: false,
         navigationBarTextColor: '#000',
         indexView: 0,
-        windowHeight: 0,
-        inputRemainHeight: 0,  //输入框距离底部的距离
         inputBottom: '0px'
       }
     },
@@ -108,8 +105,13 @@
         this.inputBottom = '0px';
       },
       onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
-        let bottom = (this.inputRemainHeight > e.detail.height)?0:(e.detail.height-this.inputRemainHeight);
-        this.inputBottom = `${bottom}px`;
+        let height = e.detail.height;
+        // #ifdef APP-IOS
+        if(height>0){  //iOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
+          height -= this.$page.safeAreaInsets.bottom;
+        }
+        // #endif
+        this.inputBottom = `${height}px`;
       },
       // 自动化测试
       getLifeCycleNum() : number {
@@ -118,22 +120,11 @@
       // 自动化测试
       setLifeCycleNum(num : number) {
         setLifeCycleNum(num)
-      },
-      async calcInputRemainHeight() {
-        let windowHeight = uni.getWindowInfo().windowHeight
-        const rect = await uni.getElementById('input')!.getBoundingClientRectAsync()!
-        this.inputRemainHeight = windowHeight - rect.bottom
       }
     },
     onReady() {
-      this.calcInputRemainHeight()
-      // let windowHeight = uni.getWindowInfo().windowHeight;
-      // this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
     },
     onResize() {
-      this.calcInputRemainHeight()
-      // let windowHeight = uni.getWindowInfo().windowHeight;
-      // this.inputRemainHeight = windowHeight - (uni.getElementById('input')?.getBoundingClientRect()?.bottom??windowHeight);
     }
   }
 </script>
@@ -166,5 +157,12 @@
   .text {
     font-size: 14px;
     color: #666;
+  }
+
+  .bottomInput {
+    position: relative;
+    z-index: 1000;
+    padding: 0 5px;
+    margin-bottom: var(--uni-safe-area-inset-bottom);
   }
 </style>
