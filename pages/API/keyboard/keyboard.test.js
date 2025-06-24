@@ -11,11 +11,6 @@ describe('keyboard', () => {
       expect(1).toBe(1)
     })
     return
-  } else if(!isAndroid || !isIOS) {
-    it('app', async () => {
-      expect(1).toBe(1)
-    })
-    return
   }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
