@@ -46,7 +46,8 @@ const pages = [
   '/pages/component/rich-text/rich-text',
   '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
-  '/pages/component/form/form',
+  // 单独测试例截图
+  // '/pages/component/form/form',
   '/pages/component/button/button',
   '/pages/component/button/buttonstatus',
   '/pages/component/radio/radio',
