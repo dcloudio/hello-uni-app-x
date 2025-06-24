@@ -598,22 +598,36 @@ describe('dialog page', () => {
     }
   });
 
-  it('dialogPage androidThreeButtonNavigationTranslucent', async () => {
-    if (isAndroid) {
-      await page.callMethod('openDialog2ForTest');
-      await page.waitFor(1000);
-      await page.callMethod('setPageStyleForTest', {
-        androidThreeButtonNavigationTranslucent: false
-      });
+  if (isAndroid) {
+    it('dialogPage androidThreeButtonNavigationTranslucent', async () => {
+        await page.callMethod('openDialog2ForTest');
+        await page.waitFor(1000);
+        await page.callMethod('setPageStyleForTest', {
+          androidThreeButtonNavigationTranslucent: false
+        });
+        await page.waitFor(2000);
+        const image = await program.screenshot({
+          deviceShot: true
+        });
+        expect(image).toSaveImageSnapshot();
+        await page.waitFor(2000);
+        await page.callMethod('closeDialog2ForTest');
+    });
+  }
+
+  if ('open dialogPage with relative path', async () => {
+    await page.callMethod('closeDialog')
+    await page.waitFor(1000);
+    await page.callMethod('setLifeCycleNum', 0)
+    await page.callMethod('openDialogWithRelativePath');
+    await page.waitFor(1000);
+    if (isWeb) {
       await page.waitFor(2000);
-      const image = await program.screenshot({
-        deviceShot: true
-      });
-      expect(image).toSaveImageSnapshot();
-      await page.waitFor(2000);
-      await page.callMethod('closeDialog2ForTest');
     }
-  });
+    lifecycleNum = await page.callMethod('getLifeCycleNum')
+    expect(lifecycleNum).toBe(6)
+    await page.callMethod('setLifeCycleNum', 0)
+  })
 
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', initLifeCycleNum)
