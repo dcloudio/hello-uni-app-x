@@ -42,6 +42,19 @@ describe('component-native-textarea', () => {
       await page.waitFor(500)
       expect(await textarea.attribute("focus")).toBe("false")
     });
+
+    it('focus-keyboard-height', async () => {
+      await page.setData({
+        focus_boolean: true,
+      })
+      await page.waitFor(500)
+      let res = await page.data('jest_result');
+      expect(res).toBe(true)
+      await page.setData({
+        focus_boolean: false,
+      })
+      await page.waitFor(500)
+    })
   }
   it("auto-height", async () => {
     await page.setData({
