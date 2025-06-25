@@ -2,7 +2,7 @@
 import { Report } from "./report.uts";
 import { StatType } from "./stat-type";
 import { EventParams, UniStatOptions, ErrorCallback, ReportErrorCode } from '../../interface.uts'
-import { is_page, is_page_report, get_space, calibration,get_crash_logs } from '../utils/pageInfo.uts'
+import { is_page, is_page_report, get_space, calibration, get_crash_logs } from '../utils/pageInfo.uts'
 import { Config } from "../config";
 
 const reportInstance = new Report()
@@ -67,7 +67,7 @@ export class Stat {
   appInstance ?: Page | null = null
 
   private isHide : boolean = false
-  constructor() {}
+  constructor() { }
 
   /**
    * 初始化插件参数
@@ -79,15 +79,16 @@ export class Stat {
     // 参数处理
     Config.setOptions({ ...options } as UniStatOptions)
     const uniStatConfig = Config.getOptions()
+
     // 设置上报周期时间
     reportInstance.eportInterval = uniStatConfig.reportInterval ?? 10
 
-		// #ifdef APP
-		// 获取崩溃日志
-		get_crash_logs((logs)=>{
-			this.registerEvent(StatType.Crash, null, logs)
-		})
-		// #endif
+    // #ifdef APP
+    // 获取崩溃日志
+    get_crash_logs((logs) => {
+      this.registerEvent(StatType.Crash, null, logs)
+    })
+    // #endif
   }
   /**
    * 应用启动
@@ -188,6 +189,8 @@ export class Stat {
    * @param {UTSJSONObject} options 应用参数
    */
   registerEvent(EventType : number, appInstance : Page | null, options : any | null = null, error : any | null = '') {
+    const statConfig = Config.getOptions()
+    if (statConfig.enable == false) return
     this.appInstance = appInstance
     // 是否要上报页面数据
     const isPageReport = is_page_report()
@@ -226,9 +229,9 @@ export class Stat {
           reportInstance.appError(error)
         }
         break
-			case StatType.Crash:
-			    reportInstance.appCrash(options as string[])
-			  break
+      case StatType.Crash:
+        reportInstance.appCrash(options as string[])
+        break
     }
   }
 
@@ -237,6 +240,8 @@ export class Stat {
   }
   // 自定义参数上报
   appEvent(name : string, options : any | null = null, fn : ErrorCallback) {
+    const statConfig = Config.getOptions()
+    if (statConfig.enable == false) return
     if (Stat.no_space) {
       fn(false, 61000 as ReportErrorCode)
       return
