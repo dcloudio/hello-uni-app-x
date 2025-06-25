@@ -27,7 +27,8 @@
         adjust_position: false,
         disabled: false,
         jest_result: false,
-        isAutoTest: false
+        isAutoTest: false,
+        changeValue:""
       }
     },
 
@@ -49,6 +50,10 @@
       textarea_keyboardheightchange() { console.log("键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}") },
       textarea_focus(event: UniTextareaFocusEvent) {
         this.jest_result = event.detail.height >= 0
+      },
+      textarea_change(event: UniInputChangeEvent) {
+        console.log("textarea_change", event.detail.value);
+        this.changeValue = event.detail.value
       },
       change_adjust_position_boolean(checked : boolean) { this.adjust_position_boolean = checked },
       change_show_confirm_bar_boolean(checked : boolean) { this.show_confirm_bar_boolean = checked },
@@ -101,7 +106,7 @@
         @touchstart="textarea_touchstart" @touchmove="textarea_touchmove" @touchcancel="textarea_touchcancel"
         @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
         @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
-        @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus"
+        @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"
         style="padding: 10px; border: 1px solid #666;height: 200px" />
     </view>
     <view style="margin-bottom: 40px;">
