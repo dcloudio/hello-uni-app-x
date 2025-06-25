@@ -26,6 +26,20 @@ describe('component-native-textarea', () => {
         let res = await page.data('jest_result');
         expect(res).toBe(true)
     })
+
+    it('trigger change event', async () => {
+      await page.setData({
+        focus_boolean: false,
+      })
+      await page.waitFor(500)
+      const changeValue = await page.data('changeValue');
+      expect(changeValue).not.toBe("")
+      await page.setData({
+        focus_boolean: true,
+      })
+      await page.waitFor(500)
+    })
+
     it("reset status", async () => {
       await program.adbCommand("input keyevent KEYCODE_DEL")
       await page.waitFor(2000)
