@@ -421,7 +421,10 @@
 						let errMsg = err.errMsg;
 						if (errCode == 700601 || errMsg.indexOf("fail cancel") > -1) {
 							// 用户取消支付
-							this.$emit("cancel", err);
+							this.$emit("cancel", {
+							  errCode: errCode,
+							  errMsg: errMsg
+							});
 						} else {
 							// 发起支付失败
 							console.error("uni.requestPayment:fail", err);
@@ -1007,7 +1010,7 @@
 			flex-direction: row;
 
 			.pc-pay-popup-qrcode-box {
-				height: calc(600px - 66px);
+				height: 534px;
 				flex: 1;
 				background-color: #ffffff;
 				display: flex;
