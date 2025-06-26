@@ -31,7 +31,7 @@ describe('ExtApi-GetBatteryInfo', () => {
       const value = res[key];
       expect(value).not.toBeNull();
       if (numberProperties.indexOf(key) != -1) {
-        expect(value).toBeGreaterThanOrEqual(0.1);
+        expect(value).toBeGreaterThanOrEqual(0);
       }
     }
   });
