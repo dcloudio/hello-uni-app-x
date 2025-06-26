@@ -17,10 +17,13 @@ describe('API-loading', () => {
   }
 
   if (
-    platformInfo.indexOf('15.5') != -1 ||
-    platformInfo.indexOf('14.5') != -1 ||
-    platformInfo.indexOf('13.7') != -1 ||
-    platformInfo.indexOf('12.4') != -1
+    isIos &&
+    (
+      platformInfo.indexOf('15.5') != -1 ||
+      platformInfo.indexOf('14.5') != -1 ||
+      platformInfo.indexOf('13.7') != -1 ||
+      platformInfo.indexOf('12.4') != -1
+    )
   ) {
     // TODO: 排查 ios 不兼容版本 测试异常原因
     it('ios 15.5 14.5 13.7 12.4 测试异常', () => {
