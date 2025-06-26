@@ -119,6 +119,9 @@ describe('dialog page', () => {
     // 2. dialog page 生命周期
     expect(lifecycleNum).toBe(7)
     await page.callMethod('setLifeCycleNum', 0)
+
+    const dialogPageRoute = await page.callMethod('getDialogPageRoute')
+    expect(dialogPageRoute).toBe('pages/API/dialog-page/dialog-1')
   });
   it('check dialogPage methods', async () => {
     expect(await page.callMethod('dialogPageCheckGetDialogPages')).toBe(true)
