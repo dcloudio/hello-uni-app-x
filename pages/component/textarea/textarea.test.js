@@ -3,6 +3,8 @@ describe('component-native-textarea', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isWeb = platformInfo.startsWith('web')
 
   let page;
   let textarea;
@@ -19,34 +21,19 @@ describe('component-native-textarea', () => {
     })
   });
 
-  if(isAndroid){
-    it("input event triggered when the default value is", async () => {
-        await program.adbCommand("input text 1")
-        await page.waitFor(2000)
-        let res = await page.data('jest_result');
-        expect(res).toBe(true)
-    })
-
-    it('trigger change event', async () => {
-      await page.setData({
-        focus_boolean: false,
-      })
-      await page.waitFor(500)
-      const changeValue = await page.data('changeValue');
-      expect(changeValue).not.toBe("")
-      await page.setData({
-        focus_boolean: true,
-      })
-      await page.waitFor(500)
-    })
-
-    it("reset status", async () => {
-      await program.adbCommand("input keyevent KEYCODE_DEL")
+  if(!isMP){
+    it("input event should triggered", async () => {
+      const options = {text: '1'}
+      if (isHarmony) {
+        const textareaRect = await page.data('textareaRect');
+        options.x = textareaRect.x + textareaRect.width / 2.0;
+        options.y = textareaRect.y + textareaRect.height - 5;
+      }
+      await program.keyboardInput(options)
       await page.waitFor(2000)
+      expect(await page.data('jest_result')).toBe(true)
     })
-  }
 
-  if(!isMP) {
     // TODO 微信小程序自动化测试textarea focus属性取到的是数字
     it('focus', async () => {
       expect(await textarea.attribute("focus")).toBe("true")
@@ -57,19 +44,59 @@ describe('component-native-textarea', () => {
       expect(await textarea.attribute("focus")).toBe("false")
     });
 
-    it('focus-keyboard-height', async () => {
+    if (!isWeb) {
+      it('trigger change event', async () => {
+        const changeValue = await page.data('changeValue');
+        expect(changeValue).not.toBe("")
+
+        if (isAndroid) {
+          await program.adbCommand("input keyevent KEYCODE_DEL")
+          await page.waitFor(2000)
+        }      
+      })
+
+      if (isAndroid || isIOS) {
+        it('focus-keyboard-height', async () => {
+          await page.setData({
+            focus_boolean: true,
+          })
+          await page.waitFor(500)
+          let res = await page.data('jest_result');
+          expect(res).toBe(true)
+          await page.setData({
+            focus_boolean: false,
+          })
+          await page.waitFor(500)
+        })
+      }
+    }
+
+    // 微信小程序text-area不支持cursor-color属性
+    it("cursor-color", async () => {
       await page.setData({
-        focus_boolean: true,
+        cursor_color: "transparent",
       })
       await page.waitFor(500)
-      let res = await page.data('jest_result');
-      expect(res).toBe(true)
-      await page.setData({
-        focus_boolean: false,
-      })
-      await page.waitFor(500)
+      expect(await textarea.attribute("cursor-color")).toBe("transparent")
+    })
+
+    // 微信小程序自动化测试无法获取inputmode属性
+    it("inputmode", async () => {
+      const inputmodeEnum = await page.data("inputmode_enum")
+      for (var i = 0; i < inputmodeEnum.length; i++) {
+        var x = inputmodeEnum[i]
+        var selected = x['value'] - 1
+        if (i == inputmodeEnum.length - 1) {
+          selected = i
+        }
+        await page.callMethod("radio_change_inputmode_enum", selected);
+        await page.waitFor(500)
+        expect(await textarea.attribute("inputmode")).toEqual(x['name'])
+        await page.waitFor(500)
+      }
     })
   }
+
   it("auto-height", async () => {
     await page.setData({
       default_value: "",
@@ -95,17 +122,6 @@ describe('component-native-textarea', () => {
     }
   })
 
-  if(!isMP) {
-    // 微信小程序text-area不支持cursor-color属性
-    it("cursor-color", async () => {
-      await page.setData({
-        cursor_color: "transparent",
-      })
-      await page.waitFor(500)
-      expect(await textarea.attribute("cursor-color")).toBe("transparent")
-    })
-  }
-
   it("flex 1 height exception", async () => {
     const bottomTextarea = await page.$('#textarea-height-exception');
     var {
@@ -113,25 +129,6 @@ describe('component-native-textarea', () => {
     } = await bottomTextarea.size()
     expect(height).toEqual(150)
   })
-
-
-  if(!isMP) {
-    // 微信小程序自动化测试无法获取inputmode属性
-    it("inputmode", async () => {
-      const inputmodeEnum = await page.data("inputmode_enum")
-      for (var i = 0; i < inputmodeEnum.length; i++) {
-        var x = inputmodeEnum[i]
-        var selected = x['value'] - 1
-        if (i == inputmodeEnum.length - 1) {
-          selected = i
-        }
-        await page.callMethod("radio_change_inputmode_enum", selected);
-        await page.waitFor(500)
-        expect(await textarea.attribute("inputmode")).toEqual(x['name'])
-        await page.waitFor(500)
-      }
-    })
-  }
 
   it("maxlength", async () => {
     const input = await page.$('#textarea-instance-maxlength');
