@@ -27,10 +27,19 @@
         adjust_position: false,
         disabled: false,
         jest_result: false,
-        isAutoTest: false
+        isAutoTest: false,
+        changeValue: "",
+        textareaRect: null as DOMRect | null,
       }
     },
-
+    // #ifdef APP
+    onReady() {
+      const textarea = uni.getElementById("uni-textarea")
+      this.textareaRect = textarea?.getBoundingClientRect()
+      // 加上导航栏及状态栏高度
+      this.textareaRect!.y += uni.getSystemInfoSync().safeArea.top + 44
+    },
+    // #endif
     methods: {
       textarea_click() { console.log("组件被点击时触发") },
       textarea_touchstart() { console.log("手指触摸动作开始") },
@@ -40,14 +49,25 @@
       textarea_tap() { console.log("手指触摸后马上离开") },
       textarea_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
       textarea_confirm() { console.log("点击完成时， 触发 confirm 事件，event.detail = {value: value}") },
-      textarea_input() {
+      textarea_input(e: UniInputEvent) {
         console.log("当键盘输入时，触发 input 事件，event.detail = {value, cursor}， @input 处理函数的返回值并不会反映到 textarea 上")
-        this.jest_result = true
+        // #ifdef WEB
+        this.jest_result = e.detail.value == '11\n2\n3\n4\n5\n6'
+        // #endif
+        // #ifdef APP
+        this.jest_result = e.detail.value == '1\n2\n3\n4\n5\n61'
+        // #endif
       },
       textarea_linechange() { console.log("输入框行数变化时调用，event.detail = {height: 0, height: 0, lineCount: 0}") },
       textarea_blur() { console.log("输入框失去焦点时触发，event.detail = {value, cursor}") },
       textarea_keyboardheightchange() { console.log("键盘高度发生变化的时候触发此事件，event.detail = {height: height, duration: duration}") },
-      textarea_focus() { console.log("输入框聚焦时触发，event.detail = { value, height }，height 为键盘高度") },
+      textarea_focus(event: UniTextareaFocusEvent) {
+        this.jest_result = event.detail.height >= 0
+      },
+      textarea_change(event: UniInputChangeEvent) {
+        console.log("textarea_change", event.detail.value);
+        this.changeValue = event.detail.value
+      },
       change_adjust_position_boolean(checked : boolean) { this.adjust_position_boolean = checked },
       change_show_confirm_bar_boolean(checked : boolean) { this.show_confirm_bar_boolean = checked },
       change_fixed_boolean(checked : boolean) { this.fixed_boolean = checked },
@@ -90,7 +110,7 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="main">
-      <textarea :value="default_value" class="uni-textarea" :auto-focus="true" :focus="focus_boolean"
+      <textarea :value="default_value" id="uni-textarea" class="uni-textarea" :auto-focus="true" :focus="focus_boolean"
         :confirm-hold="confirm_hold_boolean" :auto-height="auto_height_boolean" :fixed="fixed_boolean"
         :show-confirm-bar="show_confirm_bar_boolean" :adjust-position="adjust_position_boolean"
         :cursor-color="cursor_color" :cursor="cursor" :placeholder="placeholder_value"
