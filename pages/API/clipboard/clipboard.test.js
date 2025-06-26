@@ -27,16 +27,18 @@ describe('web-clipboard', () => {
   });
   it('getClipboardData', async () => {
     if (
+     isIOS &&
       platformInfo.indexOf('15.5') != -1
     ) {
       // 该api在iOS 15.5版本的模拟器上有系统bug
       it('ios 15.5 测试异常', () => {
         expect(1).toBe(1)
       })
-      return
+    }else{
+      await page.callMethod('getClipboard')
+      expect(await page.data('getDataTest')).toBe('123456')
     }
-    await page.callMethod('getClipboard')
-    expect(await page.data('getDataTest')).toBe('123456')
+
   });
 
 });
