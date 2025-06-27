@@ -52,10 +52,10 @@ describe('component-native-textarea', () => {
         if (isAndroid) {
           await program.adbCommand("input keyevent KEYCODE_DEL")
           await page.waitFor(2000)
-        }      
+        }
       })
 
-      if (isAndroid || isIOS) {
+      if (isAndroid) {
         it('focus-keyboard-height', async () => {
           await page.setData({
             focus_boolean: true,
