@@ -1,3 +1,6 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 const PAGE_PATH = '/pages/API/load-font-face/load-font-face'
 const CHILD_PAGE_PATH = "/pages/API/load-font-face/load-font-face-child";
 
@@ -7,10 +10,13 @@ describe("loadFontFace", () => {
     page = await program.navigateTo(PAGE_PATH);
     await page.waitFor(4000);
   });
-  it("check callback triggered", async () => {
-    const successTriggeredNum = await page.data('successTriggeredNum');
-    expect(successTriggeredNum).toBe(6);
-  });
+  if (!isMP) {
+    // 小程序部分 url 不支持
+    it("check callback triggered", async () => {
+      const successTriggeredNum = await page.data('successTriggeredNum');
+      expect(successTriggeredNum).toBe(6);
+    });
+  }
 
   it("parent screenshot", async () => {
     const image = await program.screenshot({fullPage: true});
