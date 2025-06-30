@@ -6,6 +6,11 @@ describe("loadFontFace", () => {
     const page = await program.navigateTo(PAGE_PATH);
     await page.waitFor(4000);
   });
+  it("check callback triggered", async () => {
+    const successTriggeredNum = await page.data('successTriggeredNum');
+    expect(successTriggeredNum).toBe(6);
+  });
+
   it("parent screenshot", async () => {
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
