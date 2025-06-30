@@ -10,8 +10,16 @@ describe("loadFontFace", () => {
     page = await program.navigateTo(PAGE_PATH);
     await page.waitFor(4000);
   });
-  if (!isMP) {
-    // 小程序部分 url 不支持
+  if (!(
+      // 小程序部分 url 不支持
+      isMP || 
+      // android 不同版本针对 woff2 字体回调触发不一致
+      platformInfo.startsWith('android 5') ||
+      platformInfo.startsWith('android 6') ||
+      platformInfo.startsWith('android 7') ||
+      platformInfo.startsWith('android 8')
+    )
+  ) {
     it("check callback triggered", async () => {
       const successTriggeredNum = await page.data('successTriggeredNum');
       expect(successTriggeredNum).toBe(6);
