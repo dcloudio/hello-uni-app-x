@@ -20,6 +20,13 @@ describe('touch-events-test', () => {
     await page.waitFor(1000);
   })
 
+  it('screenshot', async () => {
+    const image = await program.screenshot({
+      fullPage: true,
+    });
+    expect(image).toSaveImageSnapshot();
+  });
+
   it('touchStart-tagName-touchCount', async () => {
     let iconRect = await page.data('iconRect')
     let x = iconRect.x + iconRect.width / 2.0

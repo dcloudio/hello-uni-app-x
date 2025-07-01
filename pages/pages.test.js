@@ -46,7 +46,8 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/text/text-props',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/rich-text/rich-text-complex',
+  // 单独测试例截图
+  // '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
   '/pages/component/form/form',
   '/pages/component/button/button',
@@ -95,7 +96,8 @@ const pages = [
   // '/pages/component/global-properties/global-properties',
   '/pages/component/global-events/global-events',
   '/pages/component/global-events/transition-events',
-  '/pages/component/global-events/touch-events',
+  // 单独测试例截图
+  // '/pages/component/global-events/touch-events',
   '/pages/component/global-events/global-events-transform',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
@@ -264,7 +266,8 @@ const pages = [
   '/pages/template/drop-card/drop-card',
   '/pages/template/swiper-list/swiper-list',
   '/pages/template/swiper-list2/swiper-list2',
-  '/pages/template/swiper-vertical-video/swiper-vertical-video',
+  // 单独测试例截图
+  // '/pages/template/swiper-vertical-video/swiper-vertical-video',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
   // 单独测试例截图
   // '/pages/template/half-screen/half-screen',

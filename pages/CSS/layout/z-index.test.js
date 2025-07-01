@@ -23,16 +23,18 @@ describe('css-z-index', () => {
       });
     });
   }
-
-  it('screenshot', async () => {
-    const windowInfo = await program.callUniMethod('getWindowInfo');
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44
-      }
+  // web 与 app 在某种情况下表现不同，不进行 app-webview 截图对比
+  if (!isAppWebView) {
+    it('screenshot', async () => {
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.safeAreaInsets.top + 44
+        }
+      });
+      expect(image).toSaveImageSnapshot();
     });
-    expect(image).toSaveImageSnapshot();
-  });
+  }
 });
