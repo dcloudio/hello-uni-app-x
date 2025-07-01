@@ -15,8 +15,8 @@ describe('component-native-sticky-section', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/sticky-section/sticky-section')
-    // harmony querySelector('sticky-section') 取不到
     await page.waitFor('sticky-section')
+    await page.waitFor(2000); // 等待页面加载完成
   })
 
   it('check_delete_and_refresher', async () => {

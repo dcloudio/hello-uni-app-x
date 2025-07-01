@@ -122,7 +122,8 @@ describe('Checkbox.uvue', () => {
     it('trigger UniCheckboxGroupChangeEvent', async () => {
       const element = await page.$('.checkbox-item-0')
       await element.tap()
-      await page.waitFor(1000)
+      // 设置等待2.5s,避免 toast 弹框影响后续截图测试
+      await page.waitFor(2500)
       const { testEvent } = await page.data()
       expect(testEvent).toBe(true)
     })

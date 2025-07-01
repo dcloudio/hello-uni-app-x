@@ -280,8 +280,8 @@ const pages = [
   // 依赖 onload 参数获取 web-view src
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
   // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
-  '/pages/template/custom-long-list/custom-long-list',
-  '/pages/template/test-background-color-content/test-background-color-content',
+  // 单独测试例截图
+  // '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/slider-100/slider-100',
   // 动态内容
   // '/pages/template/long-list-nested/long-list-nested',
@@ -315,8 +315,7 @@ if (!isAppWebView) {
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
       '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
-      // 进入页面崩溃，暂时规避
-      // '/pages/API/get-univerify-manager/get-univerify-manager',
+      '/pages/API/get-univerify-manager/get-univerify-manager',
       '/pages/API/request-payment/request-payment',
       '/pages/template/scroll-sticky/scroll-sticky',
     )
@@ -327,7 +326,8 @@ if (!isAppWebView) {
       '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
       '/pages/API/env/env',
       '/pages/API/element-draw/element-draw',
-      '/pages/component/waterflow/waterflow-fit-height',
+      // 动态内容
+      // '/pages/component/waterflow/waterflow-fit-height',
       '/pages/API/share-with-system/share-with-system',
       '/pages/template/test-uts-button/test-uts-button'
     )
@@ -363,7 +363,8 @@ if (isWeb) {
     '/pages/API/clipboard/clipboard',
     '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
-    '/pages/component/canvas/canvas/ball',
+    // 动态内容
+    // '/pages/component/canvas/canvas/ball',
     '/pages/template/browser-element/browser-element',
   )
 }
