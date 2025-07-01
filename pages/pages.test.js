@@ -44,7 +44,8 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/text/text-props',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/rich-text/rich-text-complex',
+  // 单独测试例截图
+  // '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
   // 单独测试例截图
   // '/pages/component/form/form',
@@ -61,7 +62,8 @@ const pages = [
   // '/pages/component/picker-view/picker-view',
   '/pages/component/switch/switch',
   '/pages/component/image/image',
-  '/pages/component/image/image-format',
+  // 单独测试例截图
+  // '/pages/component/image/image-format',
   // 判断CPU类型，单独测试例截图
   // '/pages/component/image/image-mode',
   // 网络资源加载，单独测试例截图
@@ -91,7 +93,8 @@ const pages = [
   // '/pages/component/global-properties/global-properties',
   '/pages/component/global-events/global-events',
   '/pages/component/global-events/transition-events',
-  '/pages/component/global-events/touch-events',
+  // 单独测试例截图
+  // '/pages/component/global-events/touch-events',
   '/pages/component/global-events/global-events-transform',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
@@ -258,7 +261,8 @@ const pages = [
   '/pages/template/drop-card/drop-card',
   '/pages/template/swiper-list/swiper-list',
   '/pages/template/swiper-list2/swiper-list2',
-  '/pages/template/swiper-vertical-video/swiper-vertical-video',
+  // 单独测试例截图
+  // '/pages/template/swiper-vertical-video/swiper-vertical-video',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
   '/pages/template/half-screen/half-screen',
   // 动态内容
