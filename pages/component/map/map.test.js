@@ -23,27 +23,18 @@ describe('web-map', () => {
 
   if (isApp) {
     it('handleMoveToLocation', async () => {
-      await page.callMethod('handleMoveToLocation',false)
+      await page.callMethod('handleMoveToLocation')
       await page.waitFor(500);
       const moveToLocationRes = await page.data('jestResult')
       expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
     });
-  }
 
-  it('Check EventDetail JsonStringify', async () => {
-    if(isMP || isWeb) {
-      expect(1).toBe(1)
-    } else {
+    it('Check EventDetail JsonStringify', async () => {
       const res = await page.data('jestResult')
       console.log(res.eventDetailJsonStringify);
       expect(res.eventDetailJsonStringify).not.toBe("{}");
-    }
-  })
-
-  if (!isWeb && !isMP) {
-    it('app', () => {
-      expect(1).toBe(1)
     })
+
     return
   }
 
@@ -51,7 +42,7 @@ describe('web-map', () => {
     const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
     for (var i = 0; i < mapMethods.length; i++) {
       await page.callMethod(mapMethods[i])
-      await page.waitFor(500);
+      await page.waitFor(2000);
       expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
         return 'map-' + mapMethods[i]
       }});
@@ -80,7 +71,7 @@ describe('web-map', () => {
 
   it('handleTranslateMarker', async () => {
     await page.callMethod('handleTranslateMarker')
-    await page.waitFor(2000);
+    await page.waitFor(3000);
     expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'map-handleTranslateMarker'
     }});

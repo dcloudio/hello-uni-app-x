@@ -12,6 +12,7 @@ describe('component-native-sticky-section', () => {
 
   it('check_issues-16118', async () => {
     let page = await program.reLaunch('/pages/component/sticky-section/issues-16118')
+    await page.waitFor('view')
     await page.waitFor(500)
     //显示内容
     await page.callMethod('switchDisplay')
