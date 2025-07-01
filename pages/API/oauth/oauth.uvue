@@ -1,0 +1,70 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex:1">
+  <!-- #endif -->
+    <page-head :title="title"></page-head>
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="uni-container">
+        <view class="uni-center">登录状态</view>
+        <view v-if="userInfo == null">
+          <view class="uni-center uni-common-mt">未登录</view>
+          <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
+        </view>
+        <view v-else>
+          <view class="uni-center uni-common-mt">
+            <image :src="userInfo.avatarUrl" style="width: 60px;height: 60px;border-radius: 30px;"></image>
+          </view>
+          <view class="uni-center uni-common-mt">Hello, {{userInfo.nickName}}</view>
+        </view>
+      </view>
+      <view class="uni-btn-v uni-common-mt">
+        <!-- #ifdef APP-HARMONY -->
+        <button type="primary" @click="hwLogin">华为登录</button>
+        <!-- #endif -->
+        <button class="uni-common-mt" @click="clear">清空</button>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { state, setUserInfo, UserInfo } from '@/store/index.uts'
+
+  const title = ref('OAuth')
+  const userInfo = computed(() => state.userInfo)
+
+  const clear = () => {
+    setUserInfo(null)
+  }
+
+  const hwLogin = () => {
+    uni.login({
+      provider: 'huawei',
+      success() {
+        uni.getUserInfo({
+          provider: 'huawei',
+          success(res) {
+            setUserInfo({
+              nickName: res.userInfo.nickName,
+              avatarUrl: res.userInfo.avatarUrl
+            } as UserInfo)
+          },
+          fail(err) {
+            clear()
+            console.log('获取用户信息错误: ', JSON.stringify(err));
+          }
+        })
+      },
+      fail(err) {
+        clear()
+        console.log('获取用户信息错误: ', JSON.stringify(err));
+      }
+    })
+  }
+</script>
+
+<style>
+
+</style>
