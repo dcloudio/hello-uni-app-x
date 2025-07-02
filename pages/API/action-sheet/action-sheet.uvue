@@ -227,6 +227,10 @@
         return state.lifeCycleNum
       },
       // 自动化测试
+      setLifeCycleNum(num: number){
+        return setLifeCycleNum(num)
+      },
+      // 自动化测试
       // #ifdef WEB
       closeWebActionSheet(){
         document.querySelector('.uni-action-sheet_dialog__cell').click()
@@ -235,6 +239,21 @@
       // 自动化测试
       hideActionSheet(){
         uni.hideActionSheet()
+      },
+      // 自动化测试
+      showActionSheetAndNavigateBackInSuccessCallback(){
+        uni.showActionSheet({
+          title: 'showActionSheetAndNavigateBackInSuccessCallback',
+          itemList: ['1','2','3'],
+          success: (res) => {
+            console.log('wzf showActionSheetAndNavigateBackInSuccessCallback success', res)
+            setLifeCycleNum(state.lifeCycleNum + 1)
+            uni.navigateBack()
+          },
+          fail: (error) => {
+            console.log('wzf showActionSheetAndNavigateBackInSuccessCallback fail', error)
+          }
+        })
       }
     }
   }

@@ -172,7 +172,28 @@ describe('showActionSheet', () => {
       await screenshot();
     })
   }
+  // 针对 https://issues.dcloud.net.cn/pages/issues/detail?id=19068 的补充测试，故仅测试 Android 一台设备
+  if (platformInfo.startsWith('android 13')) {
+    it('navigateBack in action-sheet success callback', async () => {
+      const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
+      await page.callMethod('showActionSheetAndNavigateBackInSuccessCallback');
+      await page.waitFor(1000);
+      await program.tap({
+        x: 100,
+        y: 700 + topSafeArea,
+      });
+      // success callback + 1
+      // 等待 back 完成
+      await page.waitFor(1000);
+      page = await program.navigateTo(PAGE_PATH)
+      // 等待页面跳转完成
+      await page.waitFor('view');
+      const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
+      expect(newLifeCycleNum).toBe(originLifeCycleNum + 1);
+    });
+  }
   afterAll(async () => {
+    await page.callMethod('setLifeCycleNum', 1100);
     if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')
     }
