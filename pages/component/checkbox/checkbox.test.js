@@ -2,44 +2,30 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 
-function getData(key = '') {
-  return new Promise(async (resolve, reject) => {
-    const data = await page.data()
-    resolve(key ? data[key] : data)
-  })
-}
-
-
 describe('Checkbox.uvue', () => {
-  if (isHarmony) {
-    it('因运行时错误，暂时屏蔽', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/checkbox/checkbox')
-    await page.waitFor(2000)
+    await page.waitFor('view')
+    await page.waitFor(1000)
   })
   it('change', async () => {
-    expect(await getData('value')).toEqual([])
+    expect(await page.data('value')).toEqual([])
     const cb1 = await page.$('.cb1')
     await cb1.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb', 'cb1'])
+    expect(await page.data('value')).toEqual(['cb', 'cb1'])
     const cb = await page.$('.cb')
     await cb.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb1'])
+    expect(await page.data('value')).toEqual(['cb1'])
     const cb2 = await page.$('.cb2')
     await cb2.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb1'])
+    expect(await page.data('value')).toEqual(['cb1'])
     await cb1.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual([])
+    expect(await page.data('value')).toEqual([])
   })
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
