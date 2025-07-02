@@ -15,8 +15,8 @@
         <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="uni-panel">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
-              hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
+            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl" hover-class="is--active"
+              @click="goPage(`/${childMenuItem.path}`)">
               <text class="uni-navigate-text" :class="{
                   'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
                 }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
@@ -117,14 +117,16 @@
       // #ifdef UNI-APP-X && APP
       uni.getPrivacySetting({
         success(res) {
-          if (res.needAuthorization) {
-            uni.onPrivacyAuthorizationChange((res) => {
-              if (!res.needAuthorization) {
-                checkUpdate()
-              }
-            })
-          } else {
-            checkUpdate()
+          if (process.env.NODE_ENV !== 'development') {
+            if (res.needAuthorization) {
+              uni.onPrivacyAuthorizationChange((res) => {
+                if (!res.needAuthorization) {
+                  checkUpdate()
+                }
+              })
+            } else {
+              checkUpdate()
+            }
           }
         }
       })
@@ -143,13 +145,15 @@
 </script>
 
 <style>
-  .pl{
+  .pl {
     padding-left: 18px
   }
+
   /* web端适配暗黑主题 */
   /* #ifdef WEB */
   .uni-container.theme-dark {
     min-height: calc(100vh - var(--uni-safe-area-inset-top));
   }
+
   /* #endif */
 </style>
