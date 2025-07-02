@@ -278,7 +278,7 @@ const pages = [
   '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/test-background-color-content/test-background-color-content',
   '/pages/template/slider-100/slider-100',
-  // 单独测试例截图
+  // 动态内容
   // '/pages/template/long-list-nested/long-list-nested',
 ]
 
