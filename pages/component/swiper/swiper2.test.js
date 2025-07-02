@@ -47,7 +47,5 @@ describe('swiper-touch-test', () => {
     await page.waitFor(1000)
     let val = await page.data('currentValChange')
     expect(val).toEqual(1)
-
   })
-
 })

@@ -18,7 +18,6 @@ describe('component-native-scroll-view', () => {
     await page.waitFor(1000)
     // 设置top 是否触发scroll 事件
     const topScrollDetail = await page.data('scrollDetailTest')
-    console.log('topScrollDetail:', topScrollDetail)
     expect(topScrollDetail.scrollLeft).toBe(0)
     // Android 差异scrollTop：99.809525
     expect(topScrollDetail.scrollTop).toBeGreaterThan(99.5)
@@ -36,7 +35,6 @@ describe('component-native-scroll-view', () => {
     await page.waitFor(1000)
     //设置left 是否触发scroll 事件
     const leftScrollDetail = await page.data('scrollDetailTest')
-    console.log('leftScrollDetail:', leftScrollDetail)
     // Android 差异scrollLeft：219.80952
     expect(leftScrollDetail.scrollLeft).toBeGreaterThan(219.5)
     //expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
@@ -83,7 +81,6 @@ describe('component-native-scroll-view', () => {
         await page.waitFor(500)
       }
       const endDetail = await page.data('scrollEndDetailTest')
-      console.log('scrollEndDetailTest:', endDetail)
       expect(endDetail.scrollLeft).toBe(0)
       expect(endDetail.scrollTop).toBe(0)
       expect(endDetail.deltaY).toBe(0)
@@ -98,7 +95,6 @@ describe('component-native-scroll-view', () => {
       await page.callMethod('setVerticalScrollBy', 120)
       await page.waitFor(600)
       const scrollDetail = await page.data('scrollDetailTest')
-      console.log('setVerticalScrollBy scrollDetail:', scrollDetail)
       expect(scrollDetail.scrollTop).toBeGreaterThan(119)
     })
   }
