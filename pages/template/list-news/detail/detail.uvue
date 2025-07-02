@@ -157,9 +157,14 @@
               const result = data.data as UTSJSONObject;
               let content = result["content"] as string;
               // #ifdef APP
-              // 鸿蒙的 webview 不显示 16 进制颜色 '#ffffff' : '#333333'
-              let color = this.isDarkMode ? 'rgb(255,255,255)' : 'rgb(51,51,51)';
               if (this.isDarkMode) {
+                let color:string;
+                // #ifdef APP-HARMONY
+                color = 'rgb(255,255,255)';  // android 无效，rgb(255,255,255)和white
+                // #endif
+                // #ifndef APP-HARMONY
+                color = '#ffffff'; // 鸿蒙的 webview 不显示 16 进制颜色 '#ffffff'
+                // #endif
                 content = this.processHtmlContent(content, color);
               }
               // #endif
@@ -207,4 +212,5 @@
     padding: 3px 3px 0px;
     color: var(--text-color,#333333);
   }
+
 </style>
