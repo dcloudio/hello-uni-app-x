@@ -1,6 +1,3 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isHarmony = platformInfo.startsWith('harmony')
-
 describe('Radio.uvue', () => {
   let page
   beforeAll(async () => {

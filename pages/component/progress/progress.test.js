@@ -1,7 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.startsWith('harmony')
 
 function getData(key = '') {
   return new Promise(async (resolve, reject) => {
@@ -11,13 +10,6 @@ function getData(key = '') {
 }
 
 describe('Progress.uvue', () => {
-  if (isHarmony) {
-    it('因运行时错误，暂时屏蔽', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/progress/progress')
