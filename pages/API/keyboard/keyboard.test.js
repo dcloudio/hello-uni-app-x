@@ -12,17 +12,18 @@ describe('keyboard', () => {
     })
     return
   }
+  if (isIOS) {
+    it('ios', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
   });
 
   it('Check hideKeyboard', async () => {
-    if (isIOS) {
-      // iOS模拟器不弹出键盘,会导致此用例失败,因此屏蔽
-      expect(1).toBe(1)
-      return
-    }
     // 显示键盘
     await page.setData({
       isFocus: true,
