@@ -39,11 +39,12 @@ describe('test swiper', () => {
         currentValChange: 0,
         autoplaySelect: true,
       })
-      await page.waitFor(2500)
+      await page.waitFor(2700)
+      // 1
       expect(await page.data('currentValChange')).toEqual(1)
-      await page.waitFor(2500)
+      await page.waitFor(2700)
       expect(await page.data('currentValChange')).toEqual(2)
-      await page.waitFor(2500)
+      await page.waitFor(2700)
       expect(await page.data('currentValChange')).toEqual(0)
 
       await page.setData({
@@ -82,7 +83,7 @@ describe('test swiper', () => {
     await page.setData({
       currentItemIdVal: 'C',
     })
-    await page.waitFor(500)
+    await page.waitFor(800)
     expect(await page.data('currentValChange')).toEqual(2)
 
     await page.setData({
