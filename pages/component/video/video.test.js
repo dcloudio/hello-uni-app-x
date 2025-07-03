@@ -53,6 +53,8 @@ describe('component-native-video', () => {
       await page.setData({
         src: oldSrc
       });
+      // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
+      await page.waitFor(2000);
     });
 
     it('test video local mp4', async () => {
@@ -69,6 +71,8 @@ describe('component-native-video', () => {
       await page.setData({
         src: oldSrc
       });
+      // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
+      await page.waitFor(2000);
     })
     // 鸿蒙不播放本地 m3u8
     if (!isHarmony) {
