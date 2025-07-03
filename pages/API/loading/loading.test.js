@@ -18,7 +18,7 @@ describe('API-loading', () => {
     await page.waitFor('view');
     if (isApp) {
       const windowInfo = await program.callUniMethod('getWindowInfo');
-      const topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+      const topSafeArea = windowInfo.safeAreaInsets.top;
       screeShotParams.area = {
         x: 0,
         y: topSafeArea + 44

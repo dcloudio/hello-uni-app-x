@@ -19,7 +19,7 @@ describe('API-toast', () => {
     if (isApp) {
       const windowInfo = await program.callUniMethod('getWindowInfo');
       // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
-      const topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+      const topSafeArea = windowInfo.safeAreaInsets.top;
       screeShotParams.area = {
         x: 0,
         y: topSafeArea + 44

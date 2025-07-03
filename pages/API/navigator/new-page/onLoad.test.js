@@ -35,7 +35,7 @@ describe("onLoad", () => {
   let topSafeArea = 0;
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+    topSafeArea = windowInfo.safeAreaInsets.top;
   })
 
   it("adjustData", async () => {
