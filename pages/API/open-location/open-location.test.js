@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony');
 
 describe('dialog page', () => {
   if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isMP) {
@@ -31,9 +32,13 @@ describe('dialog page', () => {
 		await page.waitFor('view');
 
 		originLifeCycleNum = await page.callMethod('getLifeCycleNum')
-
 		await page.callMethod('openLocation')
-		await page.waitFor(1000)
+		await page.waitFor(2000)
+		if (isHarmony) {
+			console.log('before harmony tap')
+			await program.tap({ x: 100, y: 545 })
+			await page.waitFor(1000)
+		}
   });
 
   it('dialogPage should be opened', async () => {
