@@ -89,7 +89,7 @@ describe('test swiper', () => {
     await page.setData({
       currentItemIdVal: 'A',
     })
-    await page.waitFor(500)
+    await page.waitFor(800)
     expect(await page.data('currentValChange')).toEqual(0)
   });
 
