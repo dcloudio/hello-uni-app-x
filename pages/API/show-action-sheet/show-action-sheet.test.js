@@ -29,7 +29,7 @@ describe('showActionSheet', () => {
 
     const windowInfo = await program.callUniMethod('getWindowInfo');
     // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
-    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+    topSafeArea = windowInfo.safeAreaInsets.top;
 
     page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
     await page.waitFor('view');
