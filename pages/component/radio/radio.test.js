@@ -1,34 +1,24 @@
-function getData(key = '') {
-  return new Promise(async (resolve, reject) => {
-    const data = await page.data()
-    resolve(key ? data[key] : data)
-  })
-}
-
-let page
-let originEventCallbackNum
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/radio/radio')
-  await page.waitFor(2000)
-})
-
 describe('Radio.uvue', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/radio/radio')
+    await page.waitFor(2000)
+  })
   const isMP = platformInfo.startsWith('mp')
   it('change', async () => {
-    expect(await getData('value')).toEqual('')
+    expect(await page.data('value')).toEqual('')
     const radio1 = await page.$('.r1')
     await radio1.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual('r1')
+    expect(await page.data('value')).toEqual('r1')
     const radio = await page.$('.r')
     await radio.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual('r')
+    expect(await page.data('value')).toEqual('r')
     const radio2 = await page.$('.r2')
     await radio2.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual('r')
+    expect(await page.data('value')).toEqual('r')
   })
   it('length', async () => {
     const radioGroupElements = await page.$$('.radio-group')
