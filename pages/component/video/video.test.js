@@ -28,6 +28,13 @@ describe('component-native-video', () => {
     await page.$('.video');
   });
 
+  it('screenshot', async () => {
+    // 等待视频封面图加载完成
+    await page.waitFor(2000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
+
   it('test play pause', async () => {
     expect(await page.data('isError')).toBe(false);
     // play
