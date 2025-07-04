@@ -23,7 +23,6 @@ describe('swiper-touch-test', () => {
     res = await page.callMethod('jest_getSystemInfo')
   })
 
-
   it('滑动切换 swiper', async () => {
     let x = await page.data('swipeX')
     let y = await page.data('swipeY')
@@ -42,11 +41,8 @@ describe('swiper-touch-test', () => {
       duration: 200
     })
 
-      await page.waitFor(1000)
-      let val = await page.data('currentValChange')
-      expect(val).toEqual(1)
-    }
-
+    await page.waitFor(1000)
+    let val = await page.data('currentValChange')
+    expect(val).toEqual(1)
   })
-
 })
