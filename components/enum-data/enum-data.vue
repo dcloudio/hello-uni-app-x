@@ -42,14 +42,14 @@
 </script>
 
 <template>
-  <view class="uni-padding-wrap" :class="{ 'dark-mode': isDarkMode }">
+  <view class="uni-padding-wrap" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-list uni-common-pl" :class="{ 'dark-mode': isDarkMode }">
+  <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <radio-group @change="_change">
-      <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.name"
+      <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
         :class="index < items.length - 1 ? 'uni-list-cell-line' : ''"
          :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
         <text class="radio-text">{{ item.name }}</text>
@@ -59,17 +59,7 @@
 </template>
 
 <style>
-/* 适配暗黑主题 */
-.uni-padding-wrap.dark-mode .uni-title-text {
-  color: #ffffff;
-}
-.uni-list.dark-mode .radio-text {
-  color: #ffffff;
-}
-.uni-list.dark-mode .uni-list-cell-line {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-.uni-list.dark-mode {
-  background-color: #353535;
+.uni-list .radio-text {
+  color: var(--text-color, #333333);
 }
 </style>
