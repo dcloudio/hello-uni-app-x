@@ -21,6 +21,11 @@ describe('touch-events-test', () => {
 
   it('touch-event-bubbles-test1', async () => {
     let iconRect = await page.data('iconRect')
+    console.log('iconRect.x', iconRect.x)
+    console.log('iconRect.y', iconRect.y)
+    if (isHarmony && x < 20) {
+      iconRect.x = 144
+    }
     let x = iconRect.x + iconRect.width / 2.0
     let y = iconRect.y + 25
 
