@@ -1,10 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 describe('Radio.uvue', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/radio/radio')
     await page.waitFor(2000)
   })
-  const isMP = platformInfo.startsWith('mp')
   it('change', async () => {
     expect(await page.data('value')).toEqual('')
     const radio1 = await page.$('.r1')
