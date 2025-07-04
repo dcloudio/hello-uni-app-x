@@ -1,10 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+
 const PAGE_PATH = '/pages/component/global-events/touch-events-bubbles'
 
 describe('touch-events-test', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
 
   if (isAndroid || isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('other platform', () => {
@@ -23,7 +25,7 @@ describe('touch-events-test', () => {
     let iconRect = await page.data('iconRect')
     console.log('iconRect.x', iconRect.x)
     console.log('iconRect.y', iconRect.y)
-    if (isHarmony && x < 20) {
+    if (isHarmony && iconRect.x < 20) {
       iconRect.x = 144
     }
     let x = iconRect.x + iconRect.width / 2.0
