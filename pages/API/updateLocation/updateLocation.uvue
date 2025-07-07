@@ -1,0 +1,106 @@
+<template>
+	<!-- #ifdef APP -->
+	<text>显示简易操作日志(可滚动查看)</text><button size="mini" @click="log=''">清空日志</button>
+	<scroll-view style="max-height: 300px;">
+		<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
+	</scroll-view>
+
+	<scroll-view style="flex:1">
+	<!-- #endif -->
+		<button @click="startLocationUpdate">点击连续定位</button>
+		<button @click="startLocationUpdateBackground">后台点击连续定位</button>
+		<button @click="stopLocationUpdate">点击关闭定位</button>
+		<button @click="onLocationChange">onLocationChange</button>
+		<button @click="offLocationChange">offLocationChange</button>
+		<button @click="onLocationChangeError">onLocationChangeError</button>
+		<button @click="offLocationChangeError">offLocationChangeError</button>
+	<!-- #ifdef APP -->
+	</scroll-view>
+	<!-- #endif -->
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				log: ""
+			}
+		},
+		onUnload() {
+			uni.stopLocationUpdate({})
+			uni.offLocationChange(null)
+			uni.offLocationChangeError(null)
+		},
+		methods: {
+			offLocationChangeError() {
+				this.log += "关闭offLocationChangeError监听" + '\n\n'
+				console.log("关闭onLocationChangeError监听")
+				uni.offLocationChangeError(null)
+			},
+			onLocationChangeError() {
+				uni.offLocationChangeError(null)
+				this.log += "开启onLocationChangeError监听" + '\n\n'
+				console.log("开启onLocationChangeError监听")
+				uni.onLocationChangeError((e) => {
+					console.log("onLocationChangeError回调: ", e)
+					this.log += JSON.stringify(e) + '\n\n'
+				})
+			},
+			onLocationChange() {
+				uni.offLocationChange(null)
+				console.log("开启onLocationChange监听")
+				this.log += "开启onLocationChange监听" + '\n\n'
+				uni.onLocationChange((e) => {
+					console.log("onLocationChange持续监听回调: ", e)
+					this.log += JSON.stringify(e) + '\n\n'
+				})
+			},
+			offLocationChange() {
+				this.log += "关闭offLocationChange监听" + '\n\n'
+
+				console.log("关闭offLocationChange监听")
+				uni.offLocationChange(null)
+			},
+			startLocationUpdate() {
+
+				uni.startLocationUpdate({
+
+					success: () => {
+						this.log += "开启startLocationUpdate成功" + '\n\n'
+						console.log("持续定位启动成功")
+					},
+					fail: (err) => {
+						this.log += "启动startLocationUpdate失败：erroCode=" + err.errCode + '\n\n'
+						console.log("持续定位启动失败")
+					}
+
+				})
+			},
+			startLocationUpdateBackground() {
+				uni.startLocationUpdateBackground({
+
+					success: () => {
+						this.log += "开启startLocationUpdateBackground成功" + '\n\n'
+						console.log("后台持续定位api启动成功")
+					}, fail: (err) => {
+						this.log += "启动startLocationUpdateBackground失败：erroCode=" + err.errCode + '\n\n'
+						console.log("后台持续定位启动失败")
+					}
+
+				})
+			},
+			stopLocationUpdate() {
+				uni.stopLocationUpdate({
+					success: () => {
+						this.log += "成功关闭stopLocationUpdate定位" + '\n\n'
+						console.log("成功关闭stopLocationUpdate定位")
+					}
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
