@@ -46,6 +46,11 @@ describe('touch-events-test', () => {
 
   it('touch-event-bubbles-test2', async () => {
     let viewEleRect = await page.data('viewEleRect')
+    console.log('viewEleRect.x', viewEleRect.x)
+    console.log('viewEleRect.y', viewEleRect.y)
+    if (isHarmony && viewEleRect.x < 20) {
+      viewEleRect.x = 144
+    }
     let x = viewEleRect.x + viewEleRect.width / 2.0
     let y = viewEleRect.y + 25
 

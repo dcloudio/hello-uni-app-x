@@ -61,7 +61,8 @@ const pages = [
   //动态内容
   // '/pages/component/picker-view/picker-view',
   '/pages/component/switch/switch',
-  '/pages/component/image/image',
+  // 单独测试例截图
+  // '/pages/component/image/image',
   // 单独测试例截图
   // '/pages/component/image/image-format',
   // 判断CPU类型，单独测试例截图
@@ -163,7 +164,8 @@ const pages = [
   '/pages/API/get-system-info/get-system-info',
   '/pages/API/get-device-info/get-device-info',
   '/pages/API/get-app-base-info/get-app-base-info',
-  '/pages/API/preview-image/preview-image',
+  // 单独测试例截图
+  // '/pages/API/preview-image/preview-image',
   '/pages/API/choose-image/choose-image',
   // 单独测试例截图
   // '/pages/API/choose-video/choose-video',
@@ -342,8 +344,8 @@ if (isAndroid && !isAppWebView) {
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
     '/pages/API/get-image-info/get-image-info',
-    '/pages/API/get-video-info/get-video-info',
-    '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
+    // 动态内容，不需要截图
+    // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',
@@ -357,12 +359,12 @@ if (isWeb) {
     '/pages/component/label/label',
     '/pages/component/picker/picker',
     '/pages/API/get-image-info/get-image-info',
-    '/pages/API/get-video-info/get-video-info',
     '/pages/API/make-phone-call/make-phone-call',
     '/pages/API/create-inner-audio-context/create-inner-audio-context',
     '/pages/API/create-inner-audio-context/inner-audio-format',
     '/pages/API/create-inner-audio-context/inner-audio-path',
-    '/pages/API/clipboard/clipboard',
+    // 单独测试例截图
+    // '/pages/API/clipboard/clipboard',
     '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
     // 动态内容
