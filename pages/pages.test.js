@@ -338,8 +338,8 @@ if (isAndroid && !isAppWebView) {
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
     '/pages/API/get-image-info/get-image-info',
-    '/pages/API/get-video-info/get-video-info',
-    '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
+    // 动态内容，不需要截图
+    // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',
