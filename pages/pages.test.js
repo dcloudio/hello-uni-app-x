@@ -61,8 +61,10 @@ const pages = [
   //动态内容
   // '/pages/component/picker-view/picker-view',
   '/pages/component/switch/switch',
-  '/pages/component/image/image',
-  '/pages/component/image/image-format',
+  // 单独测试例截图
+  // '/pages/component/image/image',
+  // 单独测试例截图
+  // '/pages/component/image/image-format',
   // 判断CPU类型，单独测试例截图
   // '/pages/component/image/image-mode',
   // 网络资源加载，单独测试例截图
@@ -161,7 +163,8 @@ const pages = [
   '/pages/API/get-system-info/get-system-info',
   '/pages/API/get-device-info/get-device-info',
   '/pages/API/get-app-base-info/get-app-base-info',
-  '/pages/API/preview-image/preview-image',
+  // 单独测试例截图
+  // '/pages/API/preview-image/preview-image',
   '/pages/API/choose-image/choose-image',
   // 单独测试例截图
   // '/pages/API/choose-video/choose-video',
