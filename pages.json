@@ -1102,12 +1102,15 @@
 			}
 		},
 		// #endif
-    {
-    	"path": "pages/API/location-change/location-change",
-    	"style": {
-    		"navigationBarTitleText": "uni.startLocationUpdate | 位置更新"
-    	}
-    },
+		// #ifdef APP-IOS || WEB || MP-WEIXIN
+		{
+			"path": "pages/API/location-change/location-change",
+			"group": "1,11,3",
+			"style": {
+				"navigationBarTitleText": "locationChange | 位置更新"
+			}
+		},
+		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
 		{
 			"path": "pages/API/open-location/open-location",
@@ -1475,12 +1478,14 @@
 				"navigationBarTitleText": "requestFullscreen | 请求全屏显示"
 			}
 		},
-    {
-      "path" : "pages/API/element-request-fullscreen/element-request-fullscreen-bugs",
-      "style": {
-      	"navigationBarTitleText": "request-fullscreen-bugs"
-      }
-    },
+		// #endif
+		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+		{
+			"path": "pages/API/element-request-fullscreen/element-request-fullscreen-bugs",
+			"style": {
+				"navigationBarTitleText": "request-fullscreen-bugs"
+			}
+		},
 		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 		{
@@ -1861,14 +1866,14 @@
 		},
 		// #endif
 		// #ifdef APP-ANDROID || WEB || MP-WEIXIN
-		// {
-		// 	"path": "pages/API/set-inner-audio-option/set-inner-audio-option",
-		// 	"group": "1,7,12",
-		// 	"style": {
-		// 		"navigationBarTitleText": "uni.setInnerAudioOption | 音频播放选项",
-		// 		"enablePullDownRefresh": false
-		// 	}
-		// },
+		{
+			"path": "pages/API/set-inner-audio-option/set-inner-audio-option",
+			"group": "1,7,12",
+			"style": {
+				"navigationBarTitleText": "uni.setInnerAudioOption | 音频播放选项",
+				"enablePullDownRefresh": false
+			}
+		},
 		// #endif
 		// #ifdef APP-ANDROID || APP-IOS || MP-WEIXIN || APP-HARMONY
 		{
@@ -1883,9 +1888,9 @@
 		// #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
 		{
 			"path": "pages/API/share-with-system/share-with-system",
-			"group": "1,15,0",
+			"group": "1,15,1",
 			"style": {
-				"navigationBarTitleText": "uni.shareWithSystem",
+				"navigationBarTitleText": "uni.shareWithSystem | 系统分享",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -2079,20 +2084,21 @@
 				"navigationBarTitleText": ""
 			}
 		},
-    {
-    	"path": "pages/API/request/requestTask",
-    	"style": {
-    		"navigationBarTitleText": "requestTask | 发起流式请求"
-    	}
-    }
-    // #ifdef APP-HARMONY
-    ,{
-      "path" : "pages/API/oauth/oauth",
+		{
+			"path": "pages/API/request/requestTask",
+			"style": {
+				"navigationBarTitleText": "requestTask | 发起流式请求"
+			}
+		}
+		// #ifdef APP-HARMONY
+		,
+		{
+			"path": "pages/API/oauth/oauth",
 			"group": "1,12,0",
-      "style" : {
-        "navigationBarTitleText" : "uni.login | 登录"
-      }
-    }
+			"style": {
+				"navigationBarTitleText": "uni.login | 登录"
+			}
+		}
 		// #endif
 	],
 	"subPackages": [
@@ -3704,6 +3710,10 @@
 						{
 							"id": "api.location.chooseLocation",
 							"name": "uni.chooseLocation"
+						},
+						{
+							"id": "api.location.locationChange",
+							"name": "locationChange"
 						}
 					]
 				},
@@ -3711,7 +3721,7 @@
 					"id": "api.loginVerify",
 					"name": "登录与认证",
 					"children": [
-            {
+						{
               "id": "api.loginVerify.oauth",
               "name": "oauth",
               "zh-name": "登录"
@@ -3767,6 +3777,7 @@
 					"id": "api.share",
 					"name": "分享",
 					"children": [
+						null,
 						{
 							"id": "api.share.shareWithSystem",
 							"name": "uni.shareWithSystem"
