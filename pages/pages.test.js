@@ -361,7 +361,8 @@ if (isWeb) {
     '/pages/API/create-inner-audio-context/create-inner-audio-context',
     '/pages/API/create-inner-audio-context/inner-audio-format',
     '/pages/API/create-inner-audio-context/inner-audio-path',
-    '/pages/API/clipboard/clipboard',
+    // 单独测试例截图
+    // '/pages/API/clipboard/clipboard',
     '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
     // 动态内容

@@ -2,6 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-sticky-header', () => {
   if (isMP) {
@@ -21,7 +22,7 @@ describe('component-native-sticky-header', () => {
     }
     page = await program.reLaunch('/pages/component/sticky-header/sticky-header')
     await page.waitFor('sticky-header')
-    await page.waitFor(2000); // 等待页面加载完成
+    await page.waitFor(isWeb ? 5000 : 2000); // 等待页面加载完成
   })
 
   //检测吸顶效果
