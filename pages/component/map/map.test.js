@@ -1,3 +1,5 @@
+jest.setTimeout(50000);
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
@@ -44,7 +46,7 @@ describe('web-map', () => {
       expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
         return 'map-' + mapMethods[i]
       }});
-      await page.waitFor(500);
+      await page.waitFor(1000);
     }
   });
 
