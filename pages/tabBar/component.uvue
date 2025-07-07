@@ -119,10 +119,9 @@
         success(res) {
           if (process.env.NODE_ENV !== 'development') {
             if (res.needAuthorization) {
-              uni.onPrivacyAuthorizationChange((res) => {
-                if (!res.needAuthorization) {
-                  checkUpdate()
-                }
+              let cbId = uni.onPrivacyAuthorizationChange(() => {
+                checkUpdate()
+                uni.offPrivacyAuthorizationChange(cbId)
               })
             } else {
               checkUpdate()
