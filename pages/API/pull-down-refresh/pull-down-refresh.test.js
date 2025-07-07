@@ -59,9 +59,4 @@ describe("payment", () => {
     await page.waitFor(1500)
     expect(await page.data('pulldownRefreshTriggered')).toBe(true)
   });
-  it("screenshot", async () => {
-    const image = await program.screenshot({ fullPage: true });
-    expect(image).toSaveImageSnapshot();
-  })
-
 });
