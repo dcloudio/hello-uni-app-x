@@ -102,7 +102,6 @@
     justify-content: center;
     padding: 0;
     margin: 0 10px;
-    flex-direction: row;
     flex-wrap: nowrap;
     background-color: #ffffff;
   }

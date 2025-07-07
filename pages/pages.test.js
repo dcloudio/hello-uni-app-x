@@ -67,7 +67,8 @@ const pages = [
   // '/pages/component/image/image-path',
   // 截图过大
   // '/pages/component/image/image-large',
-  '/pages/component/video/video',
+  // 动态内容（视频封面）
+  // '/pages/component/video/video',
   // 单独测试例截图
   // '/pages/component/video/video-format',
   '/pages/component/navigator/navigator',
@@ -108,7 +109,8 @@ const pages = [
   // 单独测试例截图
   // '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh',
   '/pages/API/get-launch-options-sync/get-launch-options-sync',
-  '/pages/API/navigator/navigator',
+  // 动态时间戳
+  // '/pages/API/navigator/navigator',
   // 单独测试例截图
   // '/pages/API/set-navigation-bar-color/set-navigation-bar-color',
   // 单独测试例截图

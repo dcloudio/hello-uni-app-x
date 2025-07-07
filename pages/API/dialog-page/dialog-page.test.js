@@ -26,7 +26,7 @@ describe('dialog page', () => {
   let lifecycleNum;
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+    topSafeArea = windowInfo.safeAreaInsets.top;
 
     page = await program.reLaunch(FIRST_PAGE_PATH)
     await page.waitFor('view');

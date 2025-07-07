@@ -1,3 +1,7 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+
 function getData(key = '') {
   return new Promise(async (resolve, reject) => {
     const data = await page.data()
@@ -5,21 +9,17 @@ function getData(key = '') {
   })
 }
 
-let page
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/progress/progress')
-  await page.waitFor(2000);
-})
-
-beforeEach(async () => {
-  await page.callMethod('setEventCallbackNum', 0)
-})
-
 describe('Progress.uvue', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/progress/progress')
+    await page.waitFor(2000);
+  })
+
+  beforeEach(async () => {
+    await page.callMethod('setEventCallbackNum', 0)
+  })
+
   
   it('percent', async () => {
     await page.callMethod('setProgress')

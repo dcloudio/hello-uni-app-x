@@ -23,28 +23,26 @@ describe('swiper-touch-test', () => {
     res = await page.callMethod('jest_getSystemInfo')
   })
 
-
   it('滑动切换 swiper', async () => {
     let x = await page.data('swipeX')
     let y = await page.data('swipeY')
-    // harmony onReady getBoundingClientRect 获取节点宽度错误
+    // harmony onReady getBoundingClientRect 获取节点宽度不稳定，偶发错误
     if (isHarmony && x < 20) {
       x = 300
     }
     // program.swipe Android10以上不生效
     if(isAndroid && res.osAndroidAPILevel > 28){
-    }else{
-      await program.swipe({
-        startPoint: {x, y},
-        endPoint: {x: 10, y},
-        duration: 200
-      })
-
-      await page.waitFor(1000)
-      let val = await page.data('currentValChange')
-      expect(val).toEqual(1)
+      // 避免 android 10 侧滑影响
+      x -= 20
     }
+    await program.swipe({
+      startPoint: {x, y},
+      endPoint: {x: 10, y},
+      duration: 200
+    })
 
+    await page.waitFor(1000)
+    let val = await page.data('currentValChange')
+    expect(val).toEqual(1)
   })
-
 })

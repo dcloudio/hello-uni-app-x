@@ -34,7 +34,7 @@ describe('API-loading', () => {
 
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-    topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+    topSafeArea = windowInfo.safeAreaInsets.top;
 
     page = await program.reLaunch('/pages/API/show-modal/show-modal')
     await page.waitFor('view');

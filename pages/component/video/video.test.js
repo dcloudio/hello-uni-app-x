@@ -28,6 +28,13 @@ describe('component-native-video', () => {
     await page.$('.video');
   });
 
+  it('screenshot', async () => {
+    // 等待视频封面图加载完成
+    await page.waitFor(2000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
+
   it('test play pause', async () => {
     expect(await page.data('isError')).toBe(false);
     // play
@@ -53,6 +60,8 @@ describe('component-native-video', () => {
       await page.setData({
         src: oldSrc
       });
+      // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
+      await page.waitFor(2000);
     });
 
     it('test video local mp4', async () => {
@@ -69,6 +78,8 @@ describe('component-native-video', () => {
       await page.setData({
         src: oldSrc
       });
+      // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
+      await page.waitFor(2000);
     })
     // 鸿蒙不播放本地 m3u8
     if (!isHarmony) {
