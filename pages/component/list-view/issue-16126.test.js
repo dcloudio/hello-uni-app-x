@@ -62,13 +62,11 @@ describe('issue-16162', () => {
       endPoint: {x: 50,y: 400},
       duration: 100
     })
-    await page.waitFor(500)
+    await page.waitFor(2000)
 
     const image = await program.screenshot({
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
-
   })
-
 })

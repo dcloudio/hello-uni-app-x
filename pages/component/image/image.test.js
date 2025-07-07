@@ -2,6 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-image', () => {
   const screenshotParams = { fullPage: true }
@@ -10,7 +11,13 @@ describe('component-native-image', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/image/image');
-    await page.waitFor(600);
+    await page.waitFor('view');
+    await page.waitFor(isWeb ? 4000 : 100);
+  });
+
+  it('screenshot', async () => {
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot()
   });
 
   it('check_image_load', async () => {
