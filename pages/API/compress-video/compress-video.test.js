@@ -3,9 +3,10 @@ const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('API-compressVideo', () => {
-  if (isWeb || isIOS || isMP) {
+  if (isWeb || isIOS || isMP || (isHarmony && platformInfo.includes('模拟器'))) {
     it('pass', async () => {
       expect(1).toBe(1);
     });
