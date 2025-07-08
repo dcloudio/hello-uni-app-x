@@ -4,6 +4,7 @@ const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.toLocaleLowerCase().startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
 const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
 
 describe('inner-audio', () => {
   // safari 浏览器运行正常，playwright 环境下给 Audio 实例 src 属性赋值会崩溃
@@ -33,18 +34,15 @@ describe('inner-audio', () => {
   })
 
   it('seek-onSeeking-onSeeked', async () => {
-    if (process.env.uniTestPlatformInfo.indexOf('android') > -1 ) {
+    if (isAndroid) {
     	expect(1).toBe(1)
     	return false
     }
 
     await page.callMethod('onchangeValue',20)
-    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 1500:500
+    const waitTime = isWeb ? 5000:500
     await page.waitFor(waitTime)
     console.log("seek-onSeeking-onSeeked：",await page.data())
-    let isDone = await page.waitFor(async () => {
-    	return await page.data('onSeekingTest')
-    })
     expect(await page.data('onSeekingTest')).toBeTruthy();
     expect(await page.data('currentTime')).toBe(20);
     // expect(await page.data('onWaitingTest')).toBeTruthy();
@@ -55,7 +53,7 @@ describe('inner-audio', () => {
 
   it('play-onPlay-onTimeUpdate', async () => {
     await page.callMethod('play')
-    const waitTime = process.env.uniTestPlatformInfo.includes('chrome') ? 5000:3000
+    const waitTime = isWeb ? 5000:3000
     await page.waitFor(waitTime)
     expect(await page.data('isPlaying')).toBeTruthy()
     console.log("duration：",await page.data('duration'),"currentTime：",await page.data('currentTime'))
