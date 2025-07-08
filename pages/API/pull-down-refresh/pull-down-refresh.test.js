@@ -21,17 +21,12 @@ describe("payment", () => {
   }
 
   let page;
-  let mBasePath;
-  let mGlobalTempPath;
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
   });
 
-  it("test uni.startPullDownRefresh screenshot", async () => {
-    const image = await program.screenshot({ fullPage: false });
-    expect(image).toSaveImageSnapshot();
-  })
+  // 因页面进入后就开始下拉刷新，无法保证每次截图位置相同，所以移除截图
 
   it("trigger pulldown refresh by swipe", async () => {
     await page.waitFor('view')

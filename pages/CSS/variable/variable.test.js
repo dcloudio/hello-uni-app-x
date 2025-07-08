@@ -12,8 +12,8 @@ describe('css-variable', () => {
   if (isAppWebView) {
     it('app 与 web 存在差异, webview 不进行截图', () => {
       expect(1).toBe(1)
-      return
     })
+    return
   }
 
   it('css test', async () => {

@@ -13,7 +13,7 @@ describe('API-getImageInfo', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/get-image-info/get-image-info');
-    await page.waitFor(500);
+    await page.waitFor('view');
   });
 
   it('test getImageInfo', async () => {

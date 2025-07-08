@@ -7,7 +7,6 @@ const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-
   if (isWeb || isAppWebView) {
     it('web', async () => {
       expect(1).toBe(1)
