@@ -6,14 +6,9 @@ describe('keyboard', () => {
   const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
   const isWeb = platformInfo.startsWith('web')
-  if (isWeb) {
-    it('web', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-  if (isIOS) {
-    it('ios', async () => {
+  const isMP = platformInfo.startsWith('mp')
+  if (isWeb || isMP || isIOS) {
+    it('not support', async () => {
       expect(1).toBe(1)
     })
     return
