@@ -1,9 +1,29 @@
 <template>
 	<!-- #ifdef APP -->
-	<text>显示简易操作日志(可滚动查看)</text><button size="mini" @click="log=''">清空日志</button>
+
+	<text>显示简易操作日志(可滚动查看),详细日志需真机运行查看</text><button size="mini" @click="log=''">清空日志</button>
 	<scroll-view style="max-height: 300px;">
 		<text style="margin: 2px; padding: 2px; border: 1px solid #000000;">{{ log }}</text>
 	</scroll-view>
+	<view class="uni-list">
+		<text style="margin-bottom: 10px"> 请选择定位服务提供商：</text>
+		<radio-group class="uni-flex uni-row" @change="providerChange" style="flex-wrap: wrap">
+			<radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in providers" :key="item.value"
+				:value="item.value" :checked="index === currentSelectedProvider">
+				{{ item.name }}
+			</radio>
+		</radio-group>
+	</view>
+
+	<view class="uni-list">
+		<text style="margin-bottom: 10px"> 请选择坐标系：</text>
+		<radio-group class="uni-flex uni-row" @change="typeChange" style="flex-wrap: wrap">
+			<radio class="uni-list-cell" style="margin-right: 15px" v-for="(item, index) in types" :key="item.value"
+				:value="item.value" :checked="index === currentSelectedType">
+				{{ item.name }}
+			</radio>
+		</radio-group>
+	</view>
 
 	<scroll-view style="flex:1">
 	<!-- #endif -->
@@ -20,10 +40,35 @@
 </template>
 
 <script>
+	export type ItemType = { value : string, name : string }
+
 	export default {
 		data() {
 			return {
-				log: ""
+				log: "",
+				providers: [
+					{
+						value: 'system',
+						name: 'system'
+					},
+					{
+						value: 'tencent',
+						name: 'tencent'
+					}
+				] as ItemType[],
+				types: [
+					{
+						value: 'wgs84',
+						name: 'wgs84'
+					},
+					{
+						value: 'gcj02',
+						name: 'gcj02'
+					}
+				] as ItemType[],
+				currentSelectedProvider: 0,
+				currentSelectedType: 0
+
 			}
 		},
 		onUnload() {
@@ -32,6 +77,28 @@
 			uni.offLocationChangeError(null)
 		},
 		methods: {
+			providerChange(e : UniRadioGroupChangeEvent) {
+				for (let i = 0; i < this.providers.length; i++) {
+					if (this.providers[i].value === e.detail.value) {
+						this.currentSelectedProvider = i;
+						break;
+					}
+				}
+
+				if (e.detail.value == "system") {
+					this.currentSelectedType = 0
+				} else if (e.detail.value == "tencent") {
+					this.currentSelectedType = 1
+				}
+			},
+			typeChange(e : UniRadioGroupChangeEvent) {
+				for (let i = 0; i < this.types.length; i++) {
+					if (this.types[i].value === e.detail.value) {
+						this.currentSelectedType = i;
+						break;
+					}
+				}
+			},
 			offLocationChangeError() {
 				this.log += "关闭offLocationChangeError监听" + '\n\n'
 				console.log("关闭onLocationChangeError监听")
@@ -64,7 +131,8 @@
 			startLocationUpdate() {
 
 				uni.startLocationUpdate({
-
+					provider: this.providers[this.currentSelectedProvider].value,
+					type: this.types[this.currentSelectedType].value,
 					success: () => {
 						this.log += "开启startLocationUpdate成功" + '\n\n'
 						console.log("持续定位启动成功")
@@ -78,7 +146,8 @@
 			},
 			startLocationUpdateBackground() {
 				uni.startLocationUpdateBackground({
-
+					provider: this.providers[this.currentSelectedProvider].value,
+					type: this.types[this.currentSelectedType].value,
 					success: () => {
 						this.log += "开启startLocationUpdateBackground成功" + '\n\n'
 						console.log("后台持续定位api启动成功")
@@ -102,5 +171,20 @@
 </script>
 
 <style>
+	.uni-list {
+		border-bottom: 0px;
+		background-color: transparent;
+		margin-left: 30px;
+		margin-right: 30px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
 
+	.uni-list-cell {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
 </style>
