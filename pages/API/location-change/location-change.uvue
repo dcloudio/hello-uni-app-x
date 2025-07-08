@@ -67,7 +67,6 @@
 				] as ItemType[],
 				currentSelectedProvider: 0,
 				currentSelectedType: 0
-
 			}
 		},
 		onUnload() {
@@ -118,7 +117,7 @@
 				this.log += "开启onLocationChange监听" + '\n\n'
 				uni.onLocationChange((e) => {
 					console.log("onLocationChange持续监听回调: ", e)
-					this.log += JSON.stringify(e) + '\n\n'
+					this.log += "provider= " + this.providers[this.currentSelectedProvider].value + '\n' + JSON.stringify(e) + '\n\n'
 				})
 			},
 			offLocationChange() {
@@ -133,7 +132,7 @@
 					provider: this.providers[this.currentSelectedProvider].value,
 					type: this.types[this.currentSelectedType].value,
 					success: () => {
-						this.log += "开启startLocationUpdate成功" + '\n\n'
+						this.log += "开启startLocationUpdate成功, provider= " + this.providers[this.currentSelectedProvider].value + '\n\n'
 						console.log("持续定位启动成功")
 					},
 					fail: (err) => {
@@ -148,7 +147,7 @@
 					provider: this.providers[this.currentSelectedProvider].value,
 					type: this.types[this.currentSelectedType].value,
 					success: () => {
-						this.log += "开启startLocationUpdateBackground成功" + '\n\n'
+						this.log += "开启startLocationUpdateBackground成功, provider= " + this.providers[this.currentSelectedProvider].value + '\n\n'
 						console.log("后台持续定位api启动成功")
 					}, fail: (err) => {
 						this.log += "启动startLocationUpdateBackground失败：erroCode=" + err.errCode + '\n\n'
