@@ -88,6 +88,7 @@ describe('getCurrentPages', () => {
     expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-js-get-current-pages-page-style-after-set-page-style'
     }});
+    await page.waitFor(3500)
 
     // setPageStyle
     await page.callMethod('setPageStyle', {
