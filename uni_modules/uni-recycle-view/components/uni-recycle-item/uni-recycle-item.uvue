@@ -33,8 +33,10 @@
       if (this.itemHeight == 0) {
         const cachedSize = this.getCachedSize(this.item)
         if(cachedSize == null) {
-          uni.createSelectorQuery().in(this).select('.uni-recycle-view-item').boundingClientRect().exec((ret) => {
-            this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
+          this.$nextTick(() => {
+            uni.createSelectorQuery().in(this).select('.uni-recycle-view-item').boundingClientRect().exec((ret) => {
+              this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
+            })
           })
         }
       }

@@ -1,18 +1,19 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+
 let page;
 describe('movable-view.uvue', () => {
-  console.log(process.env.uniTestPlatformInfo,process.env.uniTestPlatformInfo.startsWith('web'))
-  if (!process.env.uniTestPlatformInfo.startsWith('web')) {
+  if (!isWeb) {
     it('app', () => {
       expect(1).toBe(1)
     })
     return
   }
-  beforeAll(async () => {
-    page = await program.reLaunch('/pages/component/movable-view/movable-view')
-    await page.waitFor('view');
-  });
 
   it('移动至 (30px, 30px)', async () => {
+    page = await program.reLaunch('/pages/component/movable-view/movable-view')
+    await page.waitFor('view');
+    
     expect(await page.data('x')).toBe(0)
     expect(await page.data('y')).toBe(0)
     await page.callMethod('tap')

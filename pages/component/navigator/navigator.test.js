@@ -1,3 +1,6 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+
 const PAGE_PATH = '/pages/component/navigator/navigator'
 const PAGE_PATH_NAVIGATE = '/pages/component/navigator/navigate'
 const PAGE_PATH_REDIRECT = '/pages/component/navigator/redirect'
@@ -5,7 +8,7 @@ const PAGE_PATH_REDIRECT = '/pages/component/navigator/redirect'
 describe('navigator', () => {
   let page
   beforeAll(async () => {
-    if(process.env.uniTestPlatformInfo.startsWith('web')) {
+    if (isWeb) {
       // 由于开发期间跳转页面需要编译，web端先跳转一次
       await program.reLaunch(PAGE_PATH_NAVIGATE)
       await program.reLaunch(PAGE_PATH_REDIRECT)

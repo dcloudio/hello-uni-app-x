@@ -158,7 +158,7 @@
         offsetThreshold: [0, 0, 0, 0], // -5, -3, 3, 5 屏对应的offset
         cachedSize: new Map<any, number>(),
         initialized: false,
-        defaultItemSize: 40,
+        defaultItemSize: 80,
         lastScrollTop: 0,
         rearrangeQueue: [] as number[]
       };
@@ -189,12 +189,13 @@
       if (this.list.length > 0) {
         this.placeholderHeight = this.list.length * this.realDefaultItemSize
       }
+      this.scrollElementHeight = uni.getWindowInfo().screenHeight
+      this.rearrange(0)
     },
     mounted() {
-      nextTick(() => {
+      this.$nextTick(() => {
         uni.createSelectorQuery().in(this).select('.uni-recycle-view-main').boundingClientRect().exec((ret) => {
           this.scrollElementHeight = (ret[0] as NodeInfo).height!
-          this.rearrange(0)
           this.initialized = true
         })
       })
@@ -263,10 +264,10 @@
         return totalSize
       },
       rearrange(scrollTop : number) {
-        this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 10, 0)
-        this.offsetThreshold[1] = Math.max(scrollTop - this.scrollElementHeight * 8, 0)
-        this.offsetThreshold[2] = Math.min(scrollTop + this.scrollElementHeight * 10, this.placeholderHeight)
-        this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 12, this.placeholderHeight)
+        this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 7, 0)
+        this.offsetThreshold[1] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
+        this.offsetThreshold[2] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
+        this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 8, this.placeholderHeight)
         const offsetStart = this.offsetThreshold[0]
         const offsetEnd = this.offsetThreshold[3]
         const defaultItemSize = this.realDefaultItemSize

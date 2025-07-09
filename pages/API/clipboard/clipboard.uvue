@@ -27,7 +27,7 @@
       }
     },
     methods: {
-      dataChange: function (e) {
+      dataChange: function (e:UniInputEvent) {
         this.data = e.detail.value
       },
       getClipboard: function () {
@@ -35,7 +35,7 @@
           success: (res) => {
             console.log(res.data);
             this.getDataTest = res.data;
-            const content = res.data ? '剪贴板内容为:' + res.data : '剪贴板暂无内容';
+            const content = res.data != "" ? '剪贴板内容为:' + res.data : '剪贴板暂无内容';
             uni.showModal({
               content,
               title: '读取剪贴板',
@@ -51,7 +51,7 @@
         });
       },
       setClipboard: function () {
-        if (this.data.length === 0) {
+        if (this.data.length == 0) {
           uni.showModal({
             title: '设置剪贴板失败',
             content: '内容不能为空',
@@ -65,8 +65,7 @@
               // 成功处理
               uni.showToast({
                 title: '设置剪贴板成功',
-                icon: "success",
-                mask: !1
+                icon: "success"
               })
             },
             fail: () => {
@@ -75,8 +74,7 @@
               // 失败处理
               uni.showToast({
                 title: '储存数据失败!',
-                icon: "none",
-                mask: !1
+                icon: "none"
               })
             }
           });

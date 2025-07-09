@@ -1,7 +1,11 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 const PAGE_PATH = '/pages/API/get-system-setting/get-system-setting'
 
 describe('ExtApi-GetSystemSetting', () => {
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isWeb || isAppWebView) {
     it('web', () => {
       expect(1).toBe(1)
     })

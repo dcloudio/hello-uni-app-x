@@ -1,8 +1,9 @@
-const CURRENT_PAGE_PATH =
-  "/pages/API/set-navigation-bar-title/set-navigation-bar-title";
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
+const CURRENT_PAGE_PATH = "/pages/API/set-navigation-bar-title/set-navigation-bar-title";
 
 describe("setNavigationBarColor", () => {
-  if (process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isAppWebView) {
     it('not support', () => {
       expect(1).toBe(1)
     })

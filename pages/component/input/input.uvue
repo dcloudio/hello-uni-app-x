@@ -3,7 +3,7 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="title"></page-head>
-    <view class="uni-common-mt uni-padding-wrap">
+    <view class="uni-common-mt uni-padding-wrap" style="padding-bottom: 30px;">
       <view>
         <view class="uni-title">
           <text class="uni-title-text">设置输入框的初始内容</text>
@@ -29,6 +29,20 @@
         <view class="input-wrapper">
           <input id="uni-input-type-tel" class="uni-input" :type="inputTypeTel" placeholder="电话输入键盘" />
         </view>
+        <!-- #ifdef APP-IOS || APP-ANDROID -->
+        <view class="input-wrapper">
+          <input id="uni-input-type-tel" class="uni-input" type="search" placeholder="搜索输入键盘" />
+        </view>
+        <view class="input-wrapper">
+          <input id="uni-input-type-tel" class="uni-input" type="email" placeholder="邮箱输入键盘" />
+        </view>
+        <view class="input-wrapper">
+          <input id="uni-input-type-tel" class="uni-input" type="url" placeholder="url输入键盘" />
+        </view>
+        <view class="input-wrapper">
+          <input id="uni-input-type-tel" class="uni-input" type="none" placeholder="聚焦但不弹出键盘" />
+        </view>
+        <!-- #endif -->
       </view>
 
       <view>
@@ -36,7 +50,7 @@
           <text class="uni-title-text">密码输入框</text>
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-password" class="uni-input" :password="inputPassword" :value="inputPasswordValue" />
+          <input id="uni-input-password" class="uni-input" :password="inputPassword" type="text" :value="inputPasswordValue" />
         </view>
       </view>
 
@@ -45,7 +59,7 @@
           <text class="uni-title-text">无value设置的密码输入框</text>
         </view>
         <view class="input-wrapper">
-          <input class="uni-input" :password="true" />
+          <input class="uni-input" :password="true" type="text" />
         </view>
       </view>
 
@@ -60,6 +74,10 @@
         <view class="input-wrapper">
           <input id="uni-input-placeholder2" class="uni-input" :placeholder-class="inputPlaceHolderClass"
             placeholder="占位符字体大小为10px" />
+        </view>
+        <view class="input-wrapper">
+          <input id="uni-input-placeholder3" class="uni-input" placeholder-class=""
+            placeholder="placeholder-class 传入空字符串" />
         </view>
         <view class="input-wrapper">
           <input class="uni-input" :placeholder-style="inputPlaceHolderStyle"
@@ -225,12 +243,24 @@
 
       <view>
         <view class="uni-title">
+          <text class="uni-title-text">change事件</text>
+          <text class="uni-subtitle-text" v-if="changeEventDetail">{{
+            changeEventDetail
+          }}</text>
+        </view>
+        <view class="input-wrapper">
+          <input class="uni-input" @change="onChange" />
+        </view>
+      </view>
+
+      <view>
+        <view class="uni-title">
           <text class="uni-title-text">keyboardheightchange事件</text>
           <text class="uni-subtitle-text"
             v-if="keyboardHeightChangeEventDetail">{{ keyboardHeightChangeEventDetail }}</text>
         </view>
         <view class="input-wrapper">
-          <input class="uni-input" @keyboardheightchange="onKeyborardHeightChange"
+          <input class="uni-input" @keyboardheightchange="onKeyboardHeightChange"
             :focus="focusedForKeyboardHeightChangeTest" />
         </view>
       </view>
@@ -311,6 +341,7 @@
         inputEventDetail: '',
         focusAndBlurEventDetail: '',
         confirmEventDetail: '',
+        changeEventDetail: '',
         keyboardHeightChangeEventDetail: '',
         focus: true,
         inputPassword: true,
@@ -388,7 +419,11 @@
         console.log("点击完成按钮", JSON.stringify(event.detail));
         this.confirmEventDetail = JSON.stringify(event.detail);
       },
-      onKeyborardHeightChange: function (event : UniInputKeyboardHeightChangeEvent) {
+      onChange: function (event : UniInputChangeEvent) {
+        console.log("输入内容变化", JSON.stringify(event.detail));
+        this.changeEventDetail = JSON.stringify(event.detail);
+      },
+      onKeyboardHeightChange: function (event : UniInputKeyboardHeightChangeEvent) {
         console.log("键盘高度发生变化", JSON.stringify(event.detail));
         this.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
         this.keyboardHeight = event.detail.height;

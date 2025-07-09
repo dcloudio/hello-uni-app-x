@@ -32,6 +32,10 @@ module.exports = {
             "android": {
                 "id": "emulator-5554",
                 "executablePath": "/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uniappx-launcher/base/android_base.apk"
+            },
+            "ios": {
+                "id": "CA80343E-7D4C-401D-81BA-B5B7D446C11D",
+                "executablePath": "/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uniappx-launcher/base/Pandora_simulator.app"
             }
         }
     }

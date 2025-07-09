@@ -1,19 +1,20 @@
-const PAGE_PATH = '/pages/API/rpx2px/rpx2px'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
+const PAGE_PATH = '/pages/API/rpx2px/rpx2px'
+  
 describe('API-rpx2px', () => {
-  if(
-    process.env.uniTestPlatformInfo.startsWith('mp')
-  ) {
+  if(isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })
     return
   }
-  beforeAll(async () => {
+  
+  it('rpx2px', async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
-  });
-  it('rpx2px', async () => {
+
     const btnConvert = await page.$('#convert')
     await btnConvert.tap()
     await page.waitFor(100)

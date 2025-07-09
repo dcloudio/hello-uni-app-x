@@ -1,3 +1,6 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+
 const PAGE_PATH = '/pages/API/get-system-info/get-system-info'
 
 describe('ExtApi-GetSystemInfo', () => {
@@ -56,7 +59,7 @@ describe('ExtApi-GetSystemInfo', () => {
         expect(['light', 'dark', 'auto']).toContain(value);
       }
     }
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (isAndroid) {
       if (res.safeAreaInsets.bottom > 0) {
         expect(res.safeAreaInsets.top + 44 + res.windowHeight).toBe(res.screenHeight);
       } else {

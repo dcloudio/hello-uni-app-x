@@ -1,23 +1,22 @@
-// uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 describe('css-font-family-icon', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase();
   const isMP = platformInfo.startsWith('mp');
   const isWeb = platformInfo.startsWith('web');
+  const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true';
   let page;
 
-  if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isWeb || isMP || isAppWebView) {
     it('other platform', () => {
       expect(1).toBe(1);
     });
     return;
   }
 
-  beforeAll(async () => {
-    page = await program.reLaunch('/pages/CSS/text/font-family-icon');
-    await page.waitFor(1000);
-  });
 
   it('screenshot', async () => {
+    page = await program.reLaunch('/pages/CSS/text/font-family-icon');
+    await page.waitFor('view');
+    
     const image = await program.screenshot({
       fullPage: true
     });

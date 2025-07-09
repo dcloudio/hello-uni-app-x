@@ -1,16 +1,15 @@
-// @Author-APP-HARMONY:DCloud_UNI_LXH
-// @Author-MP-WEIXIN:DCloud_UNI_WYQ
-
-
 jest.setTimeout(60000);
+
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 describe('component-native-video', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isHarmony = platformInfo.startsWith('harmony')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  if (isWeb) {
+  if (isWeb || isAppWebView) {
     // TODO: web 端暂不支持测试
     it('web', async () => {
       expect(1).toBe(1)
@@ -29,18 +28,23 @@ describe('component-native-video', () => {
     await page.$('.video');
   });
 
-  it('test API', async () => {
+  it('screenshot', async () => {
+    // 等待视频封面图加载完成
+    await page.waitFor(2000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
+
+  it('test play pause', async () => {
     expect(await page.data('isError')).toBe(false);
     // play
     await page.callMethod('play');
-    await page.waitFor(async () => {
-      return await page.data('isPlaying');
-    });
+    await page.waitFor(3000);
+    expect(await page.data('isPlaying')).toBe(true);
     // pause
     await page.callMethod('pause');
-    await page.waitFor(async () => {
-      return await page.data('isPause');
-    });
+    await page.waitFor(3000);
+    expect(await page.data('isPause')).toBe(true);
   });
 
   if (!isMP) {
@@ -56,6 +60,8 @@ describe('component-native-video', () => {
       await page.setData({
         src: oldSrc
       });
+      // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
+      await page.waitFor(2000);
     });
 
     it('test video local mp4', async () => {
@@ -72,6 +78,8 @@ describe('component-native-video', () => {
       await page.setData({
         src: oldSrc
       });
+      // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
+      await page.waitFor(2000);
     })
     // 鸿蒙不播放本地 m3u8
     if (!isHarmony) {
@@ -107,7 +115,7 @@ describe('component-native-video', () => {
       });
     }
   }
-  it('test event play pause controlstoggle', async () => {
+  it('test event play pause controls toggle', async () => {
     await page.setData({
       isPause: false,
       isPlaying: false,
@@ -116,16 +124,13 @@ describe('component-native-video', () => {
     await page.callMethod('play');
     start = Date.now();
     await page.waitFor(async () => {
-      return await page.data('isPlaying');
+      return (await page.data('isPlaying')) || (Date.now() - start > 3000);
     });
+    start = Date.now();
     await page.waitFor(async () => {
       return (await page.data('eventPlay')) || (Date.now() - start > 500);
     });
-    if (isIOS) {
-      // expect(await page.data('eventPlay')).toEqual({
-      //   type: 'play'
-      // });
-    } else {
+    if (!isIOS) {
       expect(await page.data('eventPlay')).toEqual({
         tagName: 'VIDEO',
         type: 'play'
@@ -134,16 +139,13 @@ describe('component-native-video', () => {
     await page.callMethod('pause');
     start = Date.now();
     await page.waitFor(async () => {
-      return await page.data('isPause');
+      return (await page.data('isPause')) || (Date.now() - start > 3000);
     });
+    start = Date.now();
     await page.waitFor(async () => {
       return (await page.data('eventPause')) || (Date.now() - start > 1000);
     });
-    if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
-      // expect(await page.data('eventPause')).toEqual({
-      //   type: 'pause'
-      // });
-    } else {
+    if (!isIOS) {
       expect(await page.data('eventPause')).toEqual({
         tagName: 'VIDEO',
         type: 'pause'
@@ -182,8 +184,7 @@ describe('component-native-video', () => {
         await page.callMethod('seek', 10);
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventWaiting')) && (await page.data('eventProgress')) || (Date.now() -
-            start > 1000);
+          return ((await page.data('eventWaiting')) && (await page.data('eventProgress'))) || (Date.now() - start > 1000);
         });
         expect(await page.data('eventWaiting')).toEqual({
           tagName: 'VIDEO',
@@ -211,8 +212,7 @@ describe('component-native-video', () => {
       });
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (process.env.uniTestPlatformInfo.startsWith('android') && version >
-        5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
+      if (isAndroid && version >5) { // android5.1模拟器全屏时会弹出系统提示框，无法响应adb tap命令
         await page.waitFor(5000);
         await program.adbCommand('input tap 10 10');
         start = Date.now();

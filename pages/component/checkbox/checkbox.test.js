@@ -1,38 +1,30 @@
-function getData(key = '') {
-  return new Promise(async (resolve, reject) => {
-    const data = await page.data()
-    resolve(key ? data[key] : data)
-  })
-}
-
-let page
-let originEventCallbackNum
-
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/checkbox/checkbox')
-  await page.waitFor(2000)
-})
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('Checkbox.uvue', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/checkbox/checkbox')
+    await page.waitFor('view')
+    await page.waitFor(1000)
+  })
   it('change', async () => {
-    expect(await getData('value')).toEqual([])
+    expect(await page.data('value')).toEqual([])
     const cb1 = await page.$('.cb1')
     await cb1.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb', 'cb1'])
+    expect(await page.data('value')).toEqual(['cb', 'cb1'])
     const cb = await page.$('.cb')
     await cb.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb1'])
+    expect(await page.data('value')).toEqual(['cb1'])
     const cb2 = await page.$('.cb2')
     await cb2.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual(['cb1'])
+    expect(await page.data('value')).toEqual(['cb1'])
     await cb1.tap()
     await page.waitFor(100)
-    expect(await getData('value')).toEqual([])
+    expect(await page.data('value')).toEqual([])
   })
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
@@ -115,7 +107,8 @@ describe('Checkbox.uvue', () => {
     it('trigger UniCheckboxGroupChangeEvent', async () => {
       const element = await page.$('.checkbox-item-0')
       await element.tap()
-      await page.waitFor(1000)
+      // 设置等待2.5s,避免 toast 弹框影响后续截图测试
+      await page.waitFor(2500)
       const { testEvent } = await page.data()
       expect(testEvent).toBe(true)
     })

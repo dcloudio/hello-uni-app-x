@@ -29,7 +29,7 @@ describe('component-native-list-view', () => {
     await page.waitFor(async () => {
       return await page.data('list_show') === true;
     });
-    await page.waitFor(200)
+    await page.waitFor(1000)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })

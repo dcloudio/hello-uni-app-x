@@ -13,7 +13,7 @@ describe('API-cancelAnimationFrame', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(600);
+    await page.waitFor('view');
   });
 
   it('cancelAnimationFrame', async () => {

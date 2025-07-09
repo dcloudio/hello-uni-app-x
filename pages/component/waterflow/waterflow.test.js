@@ -2,9 +2,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-waterflow', () => {
-  if (isMP || isWeb || isHarmony) {
+  if (isMP || isWeb || isHarmony || isAppWebView) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
@@ -130,6 +131,15 @@ describe('component-native-waterflow', () => {
   //检测waterflow属性变化 截图校验
   it('check_waterflow_view_props', async () => {
     await page.callMethod('testModifyWaterflowProps')
+    await page.waitFor(600)
+    const image = await program.screenshot({fullPage: false});
+    expect(image).toSaveImageSnapshot();
+    await page.waitFor(1000)
+  })
+
+  //检测waterflow 单列 截图校验
+  it('check_waterflow_single_row', async () => {
+    await page.callMethod('testModifyWaterflowSingleRow')
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});
     expect(image).toSaveImageSnapshot();

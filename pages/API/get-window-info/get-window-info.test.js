@@ -1,3 +1,6 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+
 const PAGE_PATH = '/pages/API/get-window-info/get-window-info'
 
 describe('ExtApi-GetWindowInfo', () => {
@@ -24,7 +27,7 @@ describe('ExtApi-GetWindowInfo', () => {
         expect(value).toBeGreaterThanOrEqual(0);
       }
     }
-    if (process.env.uniTestPlatformInfo.startsWith('android')) {
+    if (isAndroid) {
       if (res.safeAreaInsets.bottom > 0) {
         expect(res.safeAreaInsets.top + 44 + res.windowHeight).toBe(res.screenHeight);
       } else {

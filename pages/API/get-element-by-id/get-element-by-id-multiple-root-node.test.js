@@ -1,5 +1,7 @@
-const PAGE_PATH =
-  "/pages/API/get-element-by-id/get-element-by-id-multiple-root-node";
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
+const PAGE_PATH = "/pages/API/get-element-by-id/get-element-by-id-multiple-root-node";
 let page;
 
 describe("getElementByIdForMultipleRootNode", () => {
@@ -12,7 +14,7 @@ describe("getElementByIdForMultipleRootNode", () => {
     expect(res).toBe(null);
   });
   it("changeStyle", async () => {
-    if (!process.env.uniTestPlatformInfo.startsWith('mp')) {
+    if (!isMP) {
       await page.callMethod("changePageHeadBackgroundColor");
     }
     await page.callMethod("changeTextColor");

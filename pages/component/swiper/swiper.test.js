@@ -1,6 +1,3 @@
-// @Author-APP-HARMONY:DCloud_UNI_WZF
-
-
 jest.setTimeout(30000);
 describe('test swiper', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -22,19 +19,6 @@ describe('test swiper', () => {
     page = await program.reLaunch('/pages/component/swiper/swiper')
     await page.waitFor(600)
   })
-  it('check indicator show', async () => {
-    await page.setData({
-      dotsSelect: true,
-    })
-    await page.waitFor(600)
-    await page.setData({
-      dotsSelect: false,
-    })
-    await page.waitFor(600)
-    /**
-     * todo 暂无判断条件
-     */
-  });
 
   if(!isMP) {
     it('check autoplay loop', async () => {
@@ -42,11 +26,11 @@ describe('test swiper', () => {
         currentValChange: 0,
         autoplaySelect: true,
       })
-      await page.waitFor(2600)
+      await page.waitFor(isHarmony ? 2700 : 2500)
       expect(await page.data('currentValChange')).toEqual(1)
-      await page.waitFor(2600)
+      await page.waitFor(isHarmony ? 2700 : 2500)
       expect(await page.data('currentValChange')).toEqual(2)
-      await page.waitFor(2600)
+      await page.waitFor(isHarmony ? 2700 : 2500)
       expect(await page.data('currentValChange')).toEqual(0)
 
       await page.setData({
@@ -85,13 +69,13 @@ describe('test swiper', () => {
     await page.setData({
       currentItemIdVal: 'C',
     })
-    await page.waitFor(600)
+    await page.waitFor(800)
     expect(await page.data('currentValChange')).toEqual(2)
 
     await page.setData({
       currentItemIdVal: 'A',
     })
-    await page.waitFor(600)
+    await page.waitFor(800)
     expect(await page.data('currentValChange')).toEqual(0)
   });
 

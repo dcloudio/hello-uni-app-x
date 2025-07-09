@@ -3,6 +3,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIOS || isHarmony
+const isWeb = platformInfo.startsWith('web')
 
 describe('API-toast', () => {
   let page;
@@ -16,7 +17,7 @@ describe('API-toast', () => {
     if (isApp) {
       const windowInfo = await program.callUniMethod('getWindowInfo');
       // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
-      const topSafeArea = isAndroid ? 60 : windowInfo.safeAreaInsets.top;
+      const topSafeArea = windowInfo.safeAreaInsets.top;
       screeShotParams.area = {
         x: 0,
         y: topSafeArea + 44
@@ -73,7 +74,7 @@ describe('API-toast', () => {
     await toScreenshot('toast-duration-end')
   })
 
-  if(process.env.uniTestPlatformInfo.startsWith('web')){
+  if(isWeb){
     return
   }
 

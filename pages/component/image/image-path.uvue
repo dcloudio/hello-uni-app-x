@@ -94,13 +94,86 @@
           {
             src: './logo.png',
             description: '非static目录的动态路径（不显示是对的）'
-          }
+          },
+          // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || MP-WEIXIN
+          {
+            src: uni.env.USER_DATA_PATH+'/uni.png',
+            description: 'uni.env.USER_DATA_PATH 路径'
+          },
+          // #endif
+          // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+          {
+            src: uni.env.CACHE_PATH+'/uni.png',
+            description: 'uni.env.CACHE_PATH 路径'
+          },
+          {
+            src: uni.env.SANDBOX_PATH+'/uni.png',
+            description: 'uni.env.SANDBOX_PATH 路径'
+          },
+          // #endif
+          // #ifdef APP-HARMONY
+          {
+            src: `$uni.env.TEMP_PATH/uni.png`,
+            description: 'uni.env.TEMP_PATH 路径'
+          },
+          // #endif
+          // #ifdef APP-ANDROID
+          {
+            src: uni.env.ANDROID_INTERNAL_SANDBOX_PATH+'/uni.png',
+            description: 'uni.env.ANDROID_INTERNAL_SANDBOX_PATH 路径'
+          },
+          // #endif
         ] as Array<ImagePath>
       }
     },
+    onLoad() {
+      let fileManager = uni.getFileSystemManager()
+      // #ifdef APP-ANDROID || APP-HARMONY || MP-WEIXIN
+      try{
+        fileManager.accessSync(`${uni.env.USER_DATA_PATH}/uni.png`)
+      } catch (e) {
+        fileManager.copyFileSync("/static/uni.png", `${uni.env.USER_DATA_PATH}/uni.png`)
+      }
+      // #endif
+
+      // #ifdef APP-IOS
+      fileManager.copyFileSync("/static/uni.png", `${uni.env.USER_DATA_PATH}/uni.png`)
+      // #endif
+
+      // #ifdef APP-ANDROID || APP-HARMONY
+      try{
+        fileManager.accessSync(`${uni.env.CACHE_PATH}/uni.png`)
+        fileManager.accessSync(`${uni.env.SANDBOX_PATH}/uni.png`)
+      } catch (e) {
+        console.log("CACHE_PATH  error")
+        fileManager.copyFileSync("/static/uni.png", `${uni.env.CACHE_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/uni.png", `${uni.env.SANDBOX_PATH}/uni.png`)
+      }
+      // #endif
+
+      // #ifdef APP-IOS
+      fileManager.copyFileSync("/static/uni.png", `${uni.env.CACHE_PATH}/uni.png`)
+      fileManager.copyFileSync("/static/uni.png", `${uni.env.SANDBOX_PATH}/uni.png`)
+      // #endif
+
+      // #ifdef APP-HARMONY
+      try{
+        fileManager.accessSync(`${uni.env.TEMP_PATH}/uni.png`)
+      } catch (e) {
+        fileManager.copyFileSync("/static/uni.png", `${uni.env.TEMP_PATH}/uni.png`)
+      }
+      // #endif
+      // #ifdef APP-ANDROID
+      try{
+        fileManager.accessSync(`${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
+      } catch (e) {
+        fileManager.copyFileSync("/static/uni.png", `${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
+      }
+      // #endif
+    },
     methods: {
       imageErrorEvent(index : number, e : ImageErrorEvent) {
-        console.log("图片加载错误", e.detail);
+        console.log("图片加载错误", e.detail.errMsg);
         // 图片加载失败，加载本地占位图
         this.data[index].errorImage = '/static/template/drop-card/dislike.png'
       }

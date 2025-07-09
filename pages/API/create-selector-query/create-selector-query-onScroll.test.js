@@ -1,7 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isHarmony = platformInfo.startsWith('harmony')
 
 const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query-onScroll'
 

@@ -1,5 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = "/pages/API/element-takesnapshot/element-takesnapshot";
 
 describe("element-takesnapshot", () => {
@@ -10,7 +12,7 @@ describe("element-takesnapshot", () => {
   	return
   }
 
-  if (process.env.uniTestPlatformInfo.indexOf('web') > -1 || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isWeb || isAppWebView) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })

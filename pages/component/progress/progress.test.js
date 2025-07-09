@@ -1,3 +1,7 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+
 function getData(key = '') {
   return new Promise(async (resolve, reject) => {
     const data = await page.data()
@@ -5,21 +9,17 @@ function getData(key = '') {
   })
 }
 
-let page
-beforeAll(async () => {
-  page = await program.reLaunch('/pages/component/progress/progress')
-  await page.waitFor(2000);
-})
-
-beforeEach(async () => {
-  await page.callMethod('setEventCallbackNum', 0)
-})
-
 describe('Progress.uvue', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/progress/progress')
+    await page.waitFor(2000);
+  })
+
+  beforeEach(async () => {
+    await page.callMethod('setEventCallbackNum', 0)
+  })
+
   
   it('percent', async () => {
     await page.callMethod('setProgress')
@@ -91,6 +91,16 @@ describe('Progress.uvue', () => {
       strokeWidth: 6
     })
     expect(await el.attribute('stroke-width')).toEqual(6 + '')
+    if(isWeb) {
+      await page.setData({
+        strokeWidth: '10px'
+      })
+      expect(await el.attribute('stroke-width')).toEqual('10px')
+      await page.setData({
+        strokeWidth: '30rpx'
+      })
+      expect(await el.attribute('stroke-width')).toEqual('30rpx')
+    }
   })
   it('backgroundColor', async () => {
     const el = await page.$('.p')
@@ -101,8 +111,7 @@ describe('Progress.uvue', () => {
     expect(await el.attribute('background-color')).toEqual('#007aff')
   })
   it('trigger UniProgressActiveendEvent', async () => {
-
-    if (isWeb || isMP || isHarmony) {
+    if (isWeb || isMP) {
       expect(1).toBe(1)
       return
     }

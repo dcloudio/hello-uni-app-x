@@ -3,9 +3,10 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('get-native-view', () => {
-  if (isMP || isHarmony || isWeb || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isMP || isHarmony || isWeb || isAppWebView) {
   	it('skip mp', () => {
   		expect(1).toBe(1)
   	})

@@ -3,7 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('component-native-sticky-section', () => {
-  if (isMP || isHarmony) {
+  if (isMP) {
   	it('skip mp', () => {
   		expect(1).toBe(1)
   	})

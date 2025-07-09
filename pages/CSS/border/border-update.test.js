@@ -4,7 +4,7 @@ describe('css-border-update', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch("/pages/CSS/border/border-update")
-    await page.waitFor(600);
+    await page.waitFor('view');
   });
 
   it('Check Border Update', async () => {

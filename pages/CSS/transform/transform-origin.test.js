@@ -19,10 +19,7 @@ describe('transform-origin-test', () => {
   })
 
   it('transform-origin-test', async () => {
-    let x = 100
-    let y = 160
-
-    await program.tap({x: x, y: y})
+    await program.tap({x: 100, y: 160})
 
     await page.waitFor(500);
     const image = await program.screenshot({

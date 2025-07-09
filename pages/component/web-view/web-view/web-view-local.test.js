@@ -3,9 +3,11 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isIOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-  if(isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW || isIOS){
+  if(isWeb || isMP || isAppWebView || isIOS){
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -34,11 +36,6 @@ describe('component-native-web-view', () => {
     });
 
     it('test event download', async () => {
-      if(isHarmony) {
-        // 鸿蒙保存文件会出现弹窗无法关闭，影响自动化测试，暂时屏蔽此测试
-        expect(1).toBe(1)
-        return
-      }
       await page.setData({
         autoTest: true
       });
@@ -47,6 +44,22 @@ describe('component-native-web-view', () => {
       await page.waitFor(async () => {
         return (await page.data('eventDownload')) || (Date.now() - start > 1000);
       });
+      if (isHarmony) {
+        await page.waitFor(1500);
+        // 关闭弹框
+        await program.tap({ x: 26, y: 80 })
+        
+        expect(await page.data('eventDownload')).toEqual({
+          tagName: 'WEB-VIEW',
+          type: 'download',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          userAgent: 'Mobile',
+          contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
+          mimetype: 'application/vnd.android.package-archive',
+          isContentLengthValid: true
+        });
+        return;
+      }
       if (isIOS) {
         // expect(await page.data('eventDownload')).toEqual({
         //   tagName: 'WEB-VIEW',
@@ -88,7 +101,7 @@ describe('component-native-web-view', () => {
     it('test event message', async () => {
       const infos = process.env.uniTestPlatformInfo.split(' ');
       const version = parseInt(infos[infos.length - 1]);
-      if (process.env.uniTestPlatformInfo.startsWith('android') && version > 6) {
+      if (isAndroid && version > 6) {
         await page.callMethod('testEventMessage');
         start = Date.now();
         await page.waitFor(async () => {

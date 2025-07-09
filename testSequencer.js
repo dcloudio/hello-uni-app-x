@@ -17,13 +17,15 @@ const startTestFilePaths = [
   "pages/component/scroll-view/scroll-view-custom-refresher-props.test.js",
   "pages/component/waterflow/waterflow.test.js",
   "pages/component/text/text-props.test.js",
-  "pages/component/rich-text/rich-text-complex.test.js"
+  "pages/component/rich-text/rich-text-complex.test.js",
+  "pages/component/web-view/web-view/web-view-local.test.js"
 ]
 const endTestFilePaths = [
   "pages/API/navigator/new-page/onLoad.test.js",
   // 切换页面 modal 弹框无法关闭
   "pages/API/show-modal/show-modal.test.js",
   "pages/API/storage/storage.test.js",
+  "pages/component/web-view/web-view.test.js"
 ]
 
 class CustomSequencer extends Sequencer {

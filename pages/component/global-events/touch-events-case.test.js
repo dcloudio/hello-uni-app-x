@@ -25,30 +25,23 @@ describe('touch-events-test', () => {
     await page.waitFor(500);
   })
 
-
   it('touch-event-case1', async () => {
-
-    // const windowInfo = await program.callUniMethod('getWindowInfo');
-    // const halfWidth = windowInfo.windowWidth / 2
     let x = 40
     let y = 150
 
     // 滑动事件
     await program.swipe({
-      startPoint: {x: x, y: y},
-      endPoint: {x: x + 300, y: y},
-      // endPoint: {x: x + halfWidth + 20, y: y},
+      startPoint: {x, y},
+      endPoint: {x: x + 300, y},
       duration: 300
     })
 
     await page.waitFor(1500);
     const swiperChangeEvent = await page.data('swiperChangeEvent')
-    // console.log("swiperChangeEvent:", swiperChangeEvent)
     expect(swiperChangeEvent).toBe(true)
   })
 
   it('touch-event-case2', async () => {
-
     const viewTouchEvent = await page.data('viewTouchEvent')
     const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
     const swiperTouchEvent = await page.data('swiperTouchEvent')
@@ -56,7 +49,6 @@ describe('touch-events-test', () => {
     expect(ret).toBe(true)
   })
 
-  // TODO: harmony swiper preventDefault
   it('test swiper preventDefault stopPropagation', async () => {
     await page.waitFor(1500);
     await page.callMethod('resetEvent')
@@ -65,13 +57,14 @@ describe('touch-events-test', () => {
 
     // 滑动事件
     await program.swipe({
-      startPoint: {x: x, y: y},
-      endPoint: {x: x+200,y: y},
+      startPoint: {x, y},
+      endPoint: {x: x+200,y},
       duration: 300
     })
 
     await page.waitFor(1500);
     const swiperChangeEvent = await page.data('swiperChangeEvent')
+  // harmony 依赖 API 15+
     console.log("swiperChangeEvent:", swiperChangeEvent)
     expect(swiperChangeEvent).toBe(false)
   })
@@ -83,5 +76,4 @@ describe('touch-events-test', () => {
     let ret = viewTouchEvent && !swiperItemTouchEvent && !swiperTouchEvent
     expect(ret).toBe(true)
   })
-
 })

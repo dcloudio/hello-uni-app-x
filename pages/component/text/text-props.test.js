@@ -64,13 +64,9 @@ describe('text-props', () => {
 
       const rect = await page.callMethod("getBoundingClientRectForTest")
       const windowInfo = await program.callUniMethod('getWindowInfo');
-
-      let x = Math.ceil(rect.left + rect.width / 2)
-      let y = Math.ceil(windowInfo.statusBarHeight + 44 + rect.top + rect.height / 2)
-
       await program.tap({
-        x: x,
-        y: y
+        x: Math.ceil(rect.left + rect.width / 2),
+        y: Math.ceil(windowInfo.statusBarHeight + 44 + rect.top + rect.height / 2)
       })
 
       await page.waitFor(300)

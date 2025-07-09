@@ -1,11 +1,19 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isAndroid = platformInfo.startsWith('android')
+
 const PAGE_PATH = '/pages/API/upload-file/upload-file'
 
 describe('ExtApi-UploadFile', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
+  let page;
+  let res;
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH)
+  });
+
   if (isWeb || isMP) {
     it('not support', async () => {
       expect(1).toBe(1)
@@ -13,21 +21,13 @@ describe('ExtApi-UploadFile', () => {
     return
   }
 
-  const isUploadProjectFileSupported = !process.env.uniTestPlatformInfo.startsWith('mp')
-
-  let page;
-  let res;
-  beforeAll(async () => {
-    page = await program.reLaunch(PAGE_PATH)
-  });
-
   beforeEach(async () => {
     await page.setData({
       jest_result: false
     })
   });
 
-  if(isUploadProjectFileSupported) {
+  if(!isMP) {
     it('Check ', async () => {
       await page.waitFor(600);
       await page.callMethod('jest_uploadFile');
@@ -67,7 +67,7 @@ describe('ExtApi-UploadFile', () => {
 
 
   let shouldTestCookie = false
-  if (process.env.uniTestPlatformInfo.startsWith('android') && !process.env.UNI_AUTOMATOR_APP_WEBVIEW) {
+  if (isAndroid && !isAppWebView) {
     let version = process.env.uniTestPlatformInfo
     version = parseInt(version.split(" ")[1])
     shouldTestCookie = version > 9
