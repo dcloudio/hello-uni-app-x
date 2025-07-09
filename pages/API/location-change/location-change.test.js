@@ -8,7 +8,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("location-change", () => {
-  if (isMP || isWeb) {
+  if (isMP || isWeb || isHarmony) {
     // 微信、web harmony 上会有权限弹框，暂时屏蔽测试
     it('not support', async () => {
       expect(1).toBe(1)
