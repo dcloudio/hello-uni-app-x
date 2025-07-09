@@ -112,6 +112,11 @@
     </view>
     <!-- #endif -->
 
+    <view class="container">
+      <text class="text">点击修改宽度(值为auto有无动画交替出现)</text>
+      <view class="base-style transition-width" id="widthOrHeightAuto" @click="changeWidthOrHeightAuto"></view>
+    </view>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -122,6 +127,8 @@
     data() {
       return {
         isTranstionWidthOrHeight: false,
+        isTranstionWidthAuto: false,
+        widthOrHeightAuto: null as UniElement | null,
         widthOrHeight: null as UniElement | null,
         widthProgress: null as UniElement | null,
         isTranstionWidthOrHeightStyle: false,
@@ -181,6 +188,7 @@
       this.styleTransformTranslate = uni.getElementById("transformTranslate")
       this.styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
       this.styleTransitionAll = uni.getElementById("styleTransitionAll")
+      this.widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
     },
     methods: {
       changeWidthOrHeight() {
@@ -188,6 +196,12 @@
           ? '200px'
           : '300px')
         this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
+      },
+      changeWidthOrHeightAuto(){
+        this.widthOrHeightAuto?.style?.setProperty("width", this.isTranstionWidthAuto
+          ? '200px'
+          : 'auto')
+        this.isTranstionWidthAuto = !this.isTranstionWidthAuto
       },
       changeWidthProgress() {
         this.progressWidth += 20
