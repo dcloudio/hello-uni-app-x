@@ -26,13 +26,13 @@
 
 	<scroll-view style="flex:1">
 	<!-- #endif -->
-		<button class="btnstyle" type="primary" @click="startLocationUpdate">点击连续定位</button>
-		<button class="btnstyle" type="primary" @click="startLocationUpdateBackground">后台点击连续定位</button>
-		<button class="btnstyle" type="primary" @click="stopLocationUpdate">点击关闭定位</button>
-		<button class="btnstyle" type="primary" @click="onLocationChange">onLocationChange</button>
-		<button class="btnstyle" type="primary" @click="offLocationChange">offLocationChange</button>
-		<button class="btnstyle" type="primary" @click="onLocationChangeError">onLocationChangeError</button>
-		<button class="btnstyle" type="primary" @click="offLocationChangeError">offLocationChangeError</button>
+		<button class="btnstyle" type="primary" @tap="startLocationUpdate" id="startLocationUpdate">点击连续定位</button>
+		<button class="btnstyle" type="primary" @tap="startLocationUpdateBackground" id="startLocationUpdateBackground">后台点击连续定位</button>
+		<button class="btnstyle" type="primary" @tap="stopLocationUpdate" id="stopLocationUpdate">点击关闭定位</button>
+		<button class="btnstyle" type="primary" @tap="onLocationChange" id="onLocationChange">onLocationChange</button>
+		<button class="btnstyle" type="primary" @tap="offLocationChange" id="offLocationChange">offLocationChange</button>
+		<button class="btnstyle" type="primary" @tap="onLocationChangeError" id="onLocationChangeError">onLocationChangeError</button>
+		<button class="btnstyle" type="primary" @tap="offLocationChangeError" id="offLocationChangeError">offLocationChangeError</button>
 	<!-- #ifdef APP -->
 	</scroll-view>
 	<!-- #endif -->
@@ -45,6 +45,7 @@
 		data() {
 			return {
 				log: "",
+        logAble: true,
 				providers: [
 					{
 						value: 'system',
@@ -66,7 +67,9 @@
 					}
 				] as ItemType[],
 				currentSelectedProvider: 0,
-				currentSelectedType: 0
+				currentSelectedType: 0,
+        startSuccess: false,
+        errCode: 0
 			}
 		},
 		onUnload() {
@@ -98,31 +101,42 @@
 				}
 			},
 			offLocationChangeError() {
-				this.log += "关闭offLocationChangeError监听" + '\n\n'
+        if (this.logAble) {
+          this.log += "关闭offLocationChangeError监听" + '\n\n'
+        }
 				console.log("关闭onLocationChangeError监听")
 				uni.offLocationChangeError(null)
 			},
 			onLocationChangeError() {
 				uni.offLocationChangeError(null)
-				this.log += "开启onLocationChangeError监听" + '\n\n'
+        if (this.logAble) {
+          this.log += "开启onLocationChangeError监听" + '\n\n'
+        }
 				console.log("开启onLocationChangeError监听")
 				uni.onLocationChangeError((e) => {
 					console.log("onLocationChangeError回调: ", e)
-					this.log += JSON.stringify(e) + '\n\n'
+          if (this.logAble) {
+            this.log += JSON.stringify(e) + '\n\n'
+          }
 				})
 			},
 			onLocationChange() {
 				uni.offLocationChange(null)
 				console.log("开启onLocationChange监听")
-				this.log += "开启onLocationChange监听" + '\n\n'
+        if (this.logAble) {
+          this.log += "开启onLocationChange监听" + '\n\n'
+        }
 				uni.onLocationChange((e) => {
 					console.log("onLocationChange持续监听回调: ", e)
-					this.log += "provider= " + this.providers[this.currentSelectedProvider].value + '\n' + JSON.stringify(e) + '\n\n'
+          if (this.logAble) {
+            this.log += "provider= " + this.providers[this.currentSelectedProvider].value + '\n' + JSON.stringify(e) + '\n\n'
+          }
 				})
 			},
 			offLocationChange() {
-				this.log += "关闭offLocationChange监听" + '\n\n'
-
+        if (this.logAble) {
+          this.log += "关闭offLocationChange监听" + '\n\n'
+        }
 				console.log("关闭offLocationChange监听")
 				uni.offLocationChange(null)
 			},
@@ -132,12 +146,19 @@
 					provider: this.providers[this.currentSelectedProvider].value,
 					type: this.types[this.currentSelectedType].value,
 					success: () => {
-						this.log += "开启startLocationUpdate成功, provider= " + this.providers[this.currentSelectedProvider].value + '\n\n'
+            if (this.logAble) {
+              this.log += "开启startLocationUpdate成功, provider= " + this.providers[this.currentSelectedProvider].value + '\n\n'
+            }
 						console.log("持续定位启动成功")
+            this.startSuccess = true
 					},
 					fail: (err) => {
-						this.log += "启动startLocationUpdate失败：erroCode=" + err.errCode + '\n\n'
+            if (this.logAble) {
+              this.log += "启动startLocationUpdate失败：erroCode=" + err.errCode + '\n\n'
+            }
 						console.log("持续定位启动失败")
+             this.startSuccess = false
+             this.errCode = err.errCode
 					}
 
 				})
@@ -147,11 +168,18 @@
 					provider: this.providers[this.currentSelectedProvider].value,
 					type: this.types[this.currentSelectedType].value,
 					success: () => {
-						this.log += "开启startLocationUpdateBackground成功, provider= " + this.providers[this.currentSelectedProvider].value + '\n\n'
+            if (this.logAble) {
+              this.log += "开启startLocationUpdateBackground成功, provider= " + this.providers[this.currentSelectedProvider].value + '\n\n'
+            }
 						console.log("后台持续定位api启动成功")
+            this.startSuccess = true
 					}, fail: (err) => {
-						this.log += "启动startLocationUpdateBackground失败：erroCode=" + err.errCode + '\n\n'
+            if (this.logAble) {
+              this.log += "启动startLocationUpdateBackground失败：erroCode=" + err.errCode + '\n\n'
+            }
 						console.log("后台持续定位启动失败")
+            this.startSuccess = false
+            this.errCode = err.errCode
 					}
 
 				})
@@ -159,7 +187,9 @@
 			stopLocationUpdate() {
 				uni.stopLocationUpdate({
 					success: () => {
-						this.log += "成功关闭stopLocationUpdate定位" + '\n\n'
+            if (this.logAble) {
+              this.log += "成功关闭stopLocationUpdate定位" + '\n\n'
+            }
 						console.log("成功关闭stopLocationUpdate定位")
 					}
 				})
