@@ -490,6 +490,9 @@ describe('dialog page', () => {
         screenShotArea.x = 204
         screenShotArea.width = 34
         screenShotArea.height = 16
+      } else if (platformInfo.startsWith('android 8')) {
+        screenShotArea.y = 4
+        screenShotArea.x = 336
       } else if (platformInfo.startsWith('android 12')) {
         screenShotArea.x = 336
         screenShotArea.y = 3
