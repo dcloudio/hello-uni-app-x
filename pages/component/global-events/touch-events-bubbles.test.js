@@ -25,6 +25,7 @@ describe('touch-events-test', () => {
     let iconRect = await page.data('iconRect')
     console.log('iconRect.x', iconRect.x)
     console.log('iconRect.y', iconRect.y)
+    console.log('iconRect.width', iconRect.width)
     if (isHarmony && iconRect.x < 20) {
       iconRect.x = 144
     }
