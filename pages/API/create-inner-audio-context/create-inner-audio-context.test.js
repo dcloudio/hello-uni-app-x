@@ -17,7 +17,14 @@ describe('inner-audio', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/create-inner-audio-context/create-inner-audio-context')
     await page.waitFor('view');
+    await page.waitFor(1000);
   });
+  if (isWeb) {
+    it('screenshot', async () => {
+      const image = await program.screenshot({fullPage: true})
+      expect(image).toSaveImageSnapshot();
+    });
+  }
 
   it('onCanplay',async()=>{
     await page.waitFor(1000)
