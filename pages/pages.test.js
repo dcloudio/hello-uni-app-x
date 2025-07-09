@@ -300,7 +300,8 @@ if (!isIos) {
 
 if(!isMP) {
   pages.push(
-    '/pages/component/list-view/list-view-children-in-slot',
+  // 单独测试例截图
+    // '/pages/component/list-view/list-view-children-in-slot',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
@@ -370,8 +371,10 @@ if (isWeb) {
     // '/pages/API/get-image-info/get-image-info',
     '/pages/API/make-phone-call/make-phone-call',
     '/pages/API/create-inner-audio-context/create-inner-audio-context',
-    '/pages/API/create-inner-audio-context/inner-audio-format',
-    '/pages/API/create-inner-audio-context/inner-audio-path',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/inner-audio-format',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/inner-audio-path',
     // 单独测试例截图
     // '/pages/API/clipboard/clipboard',
     '/pages/API/compass/compass',

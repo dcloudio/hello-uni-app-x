@@ -13,8 +13,13 @@ describe('list-view-children-in-slot', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/list-view/list-view-children-in-slot')
     await page.waitFor('list-view')
-    await page.waitFor(300)
+    await page.waitFor(1000)
   })
+
+  it('screenshot', async () => {
+    const image = await program.screenshot({fullPage: true})
+    expect(image).toSaveImageSnapshot();
+  });
 
   it('basic', async () => {
     let listItems = await page.$$('list-item')
