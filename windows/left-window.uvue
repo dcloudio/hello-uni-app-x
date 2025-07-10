@@ -78,8 +78,22 @@
               url: '/pages/error/404'
             })
           } else {
+            // 检查是否为首页
+            let isHome = newRoute.path === '/' && newRoute.meta?.route === 'pages/tabBar/component'
+            if (isHome) {
+              // 自动跳转到第一个子页面
+              const defaultPage = '/pages/component/view/view'
+              setLeftWinActive(defaultPage)
+              setActive('componentPage')
+              uni.redirectTo({ url: defaultPage })
+              return
+            }
+
             setLeftWinActive(newRoute.path)
             let active = newRoute.path.split('/')[2]
+            if (!active && newRoute.meta?.route) {
+              active = newRoute.meta.route.split('/')[2]
+            }
             if (this.nav.includes(active)) {
               if (active === 'component') {
                 active = 'componentPage'
