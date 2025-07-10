@@ -280,6 +280,7 @@ const pages = [
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // 动态内容
   // '/pages/template/calendar/calendar',
+  // 不同平台存在差异，且页面简单
   // '/pages/template/schema/schema',
   // '/uni_modules/uni-pay-x/pages/success/success',
   // 依赖 onload 参数获取 web-view src
@@ -305,11 +306,6 @@ if(!isMP) {
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
-  if (!isHarmony) {
-    pages.push(
-      '/pages/template/schema/schema',
-    )
-  }
   if (!isAppWebView) {
     pages.push(
       '/pages/component/list-view/list-view',

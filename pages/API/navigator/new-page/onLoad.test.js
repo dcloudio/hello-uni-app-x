@@ -106,6 +106,7 @@ describe("onLoad", () => {
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
+    await page.waitFor(2000);
   });
   it("showLoading", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -123,6 +124,7 @@ describe("onLoad", () => {
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
+    await page.waitFor(2000);
   });
   it("showModal", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);

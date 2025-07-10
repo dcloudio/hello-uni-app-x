@@ -54,7 +54,7 @@ describe('component-native-scroll-view', () => {
     await page.setData({
         showScrollbar: false
     })
-    await page.waitFor(300);
+    await page.waitFor(1000);
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   });
