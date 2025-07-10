@@ -44,104 +44,105 @@
   <!-- #endif -->
 </template>
 
-<script lang="uts">
+<script lang="uts" setup>
   import { generateMenu, MenuItem } from './generateMenu.uts'
-  const menu = generateMenu('pages/component')
   // #ifdef APP
   import checkUpdate from '@/uni_modules/uni-upgrade-center-app/utils/check-update'
   // #endif
   import { state } from '@/store/index.uts'
-  export default {
-    data() {
-      return {
-        menu: menu as MenuItem[],
-        arrowRightIcon: '/static/icons/arrow-right.png' as string.ImageURIString,
-        pageHiden: false
-      }
-    },
-    computed: {
-      hasLeftWin() : boolean {
-        return !state.noMatchLeftWindow
-      },
-      leftWinActive() : string {
-        return state.leftWinActive.slice(1)
-      },
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      },
-      netless() : boolean {
-        return state.netless
-      }
-    },
-    // #ifdef APP-HARMONY
-    watch: {
-      'netless': {
-        immediate: true,
-        handler(netless) {
-          if (netless) {
-            this.menu = this.menu.filter(item => {
-              return !['unicloud'].includes(item.id)
-            })
-          }
-        }
-      }
-    },
-    // #endif
-    methods: {
-      goPage(url : string) {
-        if (this.hasLeftWin) {
-          uni.reLaunch({ url })
-        } else {
-          uni.navigateTo({ url })
-        }
-      }
-    },
-    // #ifdef WEB
-    watch: {
-      $route: {
-        immediate: true,
-        handler(newRoute) {
-          if (newRoute.matched.length) {
-            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
-            if (activeCategoryIndex > -1) {
-              this.$nextTick(() => {
-                ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
-              })
-            }
-          }
-        }
-      }
-    },
-    // #endif
-    onReady() {
-      // #ifdef UNI-APP-X && APP
-      uni.getPrivacySetting({
-        success(res) {
-          if (process.env.NODE_ENV !== 'development') {
-            if (res.needAuthorization) {
-              let cbId: number = 0
-              cbId = uni.onPrivacyAuthorizationChange(() => {
-                checkUpdate()
-                uni.offPrivacyAuthorizationChange(cbId)
-              })
-            } else {
-              checkUpdate()
-            }
-          }
-        }
+
+  const menu = ref(generateMenu('pages/component') as MenuItem[])
+  const arrowRightIcon = ref('/static/icons/arrow-right.png' as string.ImageURIString)
+  const pageHiden = ref(false)
+  const category = ref<ComponentPublicInstance[]>([])
+
+  const hasLeftWin = computed(() => {
+    return !state.noMatchLeftWindow
+  })
+
+  const leftWinActive = computed(() => {
+    return state.leftWinActive.slice(1)
+  })
+
+  const isDarkMode = computed(() => {
+    return state.isDarkMode
+  })
+
+  const netless = computed(() => {
+    return state.netless
+  })
+
+  // #ifdef APP-HARMONY
+  watch(netless, (newNetless) => {
+    if (newNetless) {
+      menu.value = menu.value.filter(item => {
+        return !['unicloud'].includes(item.id)
       })
-      // #endif
-    },
-    onShow() {
-      this.pageHiden = false
-    },
-    onHide() {
-      this.pageHiden = true
-    },
-    beforeUnmount() {
-      uni.showTabBar()?.catch(_ => { })
+    }
+  }, { immediate: true })
+  // #endif
+
+  const goPage = (url: string) => {
+    if (hasLeftWin.value) {
+      uni.reLaunch({ url })
+    } else {
+      uni.navigateTo({ url })
     }
   }
+
+  // #ifdef WEB
+  import { useRoute } from 'vue-router'
+  const route = useRoute()
+  watch(
+    () => route.fullPath, // 只监听 fullPath 变化，避免整个对象深度监听
+    (newFullPath, oldFullPath) => {
+      // 通过 route 拿到所有路由信息
+      if (route.matched.length) {
+        const activeCategoryIndex = menu.value.findIndex(menuItem =>
+          menuItem?.items.some(item => leftWinActive.value && leftWinActive.value === item?.path)
+        )
+        if (activeCategoryIndex > -1) {
+          nextTick(() => {
+            category.value[activeCategoryIndex]?.$callMethod('openCollapse', true)
+          })
+        }
+      }
+    },
+    { immediate: true }
+  )
+  // #endif
+
+  onReady(() => {
+    // #ifdef UNI-APP-X && APP
+    uni.getPrivacySetting({
+      success(res) {
+        if (process.env.NODE_ENV !== 'development') {
+          if (res.needAuthorization) {
+            let cbId: number = 0
+            cbId = uni.onPrivacyAuthorizationChange(() => {
+              checkUpdate()
+              uni.offPrivacyAuthorizationChange(cbId)
+            })
+          } else {
+            checkUpdate()
+          }
+        }
+      }
+    })
+    // #endif
+  })
+
+  onPageShow(() => {
+    pageHiden.value = false
+  })
+
+  onPageHide(() => {
+    pageHiden.value = true
+  })
+
+  onBeforeUnmount(() => {
+    uni.showTabBar()?.catch(_ => { })
+  })
 </script>
 
 <style>

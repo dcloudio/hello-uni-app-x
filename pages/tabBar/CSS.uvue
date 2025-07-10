@@ -45,55 +45,52 @@
   <!-- #endif -->
 </template>
 
-<script lang="uts">
+<script lang="uts" setup>
   import { generateMenu, MenuItem } from './generateMenu.uts'
-  const menu = generateMenu('pages/CSS')
   import { state } from '@/store/index.uts'
-  export default {
-    data() {
-      return {
-        menu: menu as MenuItem[],
-        arrowRightIcon: '/static/icons/arrow-right.png'
-      }
-    },
-    computed: {
-      hasLeftWin() : boolean {
-        return !state.noMatchLeftWindow
-      },
-      leftWinActive() : string {
-        return state.leftWinActive.slice(1)
-      },
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      }
-    },
-    methods: {
-      goPage(url : string) {
-        if (this.hasLeftWin) {
-          uni.reLaunch({ url })
-        } else {
-          uni.navigateTo({ url })
-        }
-      }
-    },
-    // #ifdef WEB
-    watch: {
-      $route: {
-        immediate: true,
-        handler(newRoute) {
-          if (newRoute.matched.length) {
-            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
-            if (activeCategoryIndex > -1) {
-              this.$nextTick(() => {
-                ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex]).$callMethod('openCollapse', true)
-              })
-            }
-          }
-        }
-      }
-    },
-    // #endif
+
+  const menu = ref(generateMenu('pages/CSS') as MenuItem[])
+  const arrowRightIcon = ref('/static/icons/arrow-right.png')
+  const category = ref<ComponentPublicInstance[]>([])
+
+  const hasLeftWin = computed(() => {
+    return !state.noMatchLeftWindow
+  })
+
+  const leftWinActive = computed(() => {
+    return state.leftWinActive.slice(1)
+  })
+
+  const isDarkMode = computed(() => {
+    return state.isDarkMode
+  })
+
+  const goPage = (url: string) => {
+    if (hasLeftWin.value) {
+      uni.reLaunch({ url })
+    } else {
+      uni.navigateTo({ url })
+    }
   }
+
+  // #ifdef WEB
+  import { useRoute } from 'vue-router'
+  const route = useRoute()
+  watch(
+    () => route.fullPath,
+    (newFullPath, oldFullPath) => {
+      if (route.matched.length) {
+        const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value && leftWinActive.value === item?.path))
+        if (activeCategoryIndex > -1) {
+          nextTick(() => {
+            category.value[activeCategoryIndex]?.$callMethod('openCollapse', true)
+          })
+        }
+      }
+    },
+    { immediate: true }
+  )
+  // #endif
 </script>
 
 <style>
