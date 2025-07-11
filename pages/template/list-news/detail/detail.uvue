@@ -77,12 +77,7 @@
             // 优先用传入的预载详情内容（只在第一个新闻时有值）
             if (this.firstDetailContent !== '') {
               let content = this.firstDetailContent;
-              // #ifdef APP
-              if (this.isDarkMode) {
-                content = this.processHtmlContent(content, '#ffffff');
-              }
-              // #endif
-              this.htmlNodes = content;
+              this.htmlNodes = this.adaptContentForDarkMode(content);
               this.usedContent = true;
             } else {
               this.getDetail(newVal)
@@ -94,7 +89,7 @@
       firstDetailContent(newVal) {
         // 只有没用过firstDetailContent时才赋值，防止重复
         if (!this.usedContent && newVal !== '') {
-          this.htmlNodes = newVal
+          this.htmlNodes = this.adaptContentForDarkMode(newVal)
           this.usedContent = true
         }
       }
@@ -155,6 +150,14 @@
         return content;
       },
       // #endif
+      adaptContentForDarkMode(content: string): string {
+        // #ifdef APP
+        if (this.isDarkMode) {
+          return this.processHtmlContent(content, '#ffffff');
+        }
+        // #endif
+        return content;
+      },
       getDetail(post_id : string) {
         uni.request({
           url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + post_id,
@@ -162,12 +165,7 @@
             if (data.statusCode == 200) {
               const result = data.data as UTSJSONObject;
               let content = result["content"] as string;
-              // #ifdef APP
-              if (this.isDarkMode) {
-                content = this.processHtmlContent(content, '#ffffff');
-              }
-              // #endif
-              this.htmlNodes = content;
+              this.htmlNodes = this.adaptContentForDarkMode(content);
             }
           },
           fail: (err) => {
