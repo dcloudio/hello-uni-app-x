@@ -13,39 +13,36 @@
   <view :style="{'height': safeAreaInsetsBottom}"></view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'sliderx100通信性能测试(小程序卡为正常)',
-        sliderValue: 50,
-        safeAreaInsetsBottom: 0
-      }
-    },
-    onReady() {
-      this.safeAreaInsetsBottom = uni.getWindowInfo().safeAreaInsets.bottom;
-    },
-    methods: {
-      sliderChange(e : UniSliderChangeEvent) {
-        this.updateSliderValue(e.detail.value)
-      },
-      sliderChanging(e : UniSliderChangeEvent) {
-        this.updateSliderValue(e.detail.value)
-      },
-      updateSliderValue(value : number) {
-        // #ifndef MP
-        // TODO 跳过vue框架，直接修改原生组件
-        (this.$refs["slider"] as UniSliderElement[]).forEach((item) => {
-          item.value = value
-        });
-        // #endif
+<script setup lang="uts">
+const title = ref('sliderx100通信性能测试(小程序卡为正常)')
+const sliderValue = ref(50)
+const safeAreaInsetsBottom = ref(0)
+const slider = ref<UniSliderElement[]>([])
 
-        // #ifdef MP
-        this.sliderValue = value
-        // #endif
-      }
-    },
-  }
+function updateSliderValue(value: number) {
+  // #ifndef MP
+  // TODO 跳过vue框架，直接修改原生组件
+  slider.value.forEach((item) => {
+    item.value = value
+  })
+  // #endif
+
+  // #ifdef MP
+  sliderValue.value = value
+  // #endif
+}
+
+function sliderChange(e: UniSliderChangeEvent) {
+  updateSliderValue(e.detail.value)
+}
+
+function sliderChanging(e: UniSliderChangeEvent) {
+  updateSliderValue(e.detail.value)
+}
+
+onReady(() => {
+  safeAreaInsetsBottom.value = uni.getWindowInfo().safeAreaInsets.bottom
+})
 </script>
 
 <style>
