@@ -286,7 +286,7 @@ const pages = [
   // 依赖 onload 参数获取 web-view src
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
   // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
-  // 单独测试例截图
+  // 页面内容不稳定
   // '/pages/template/custom-long-list/custom-long-list',
   '/pages/template/slider-100/slider-100',
   // 动态内容
