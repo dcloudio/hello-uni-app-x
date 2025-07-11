@@ -13,7 +13,7 @@
         <text class="banner-title">{{title}}</text>
       </view>
     </share-element>
-    <rich-text class="rich-text" :nodes="htmlNodes" mode="native"></rich-text>
+    <rich-text v-if="htmlNodes" class="rich-text" :nodes="htmlNodes" mode="native"></rich-text>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -76,8 +76,14 @@
           if (newVal != '') {
             // 优先用传入的预载详情内容（只在第一个新闻时有值）
             if (this.firstDetailContent !== '') {
-              this.htmlNodes = this.firstDetailContent
-              this.usedContent = true
+              let content = this.firstDetailContent;
+              // #ifdef APP
+              if (this.isDarkMode) {
+                content = this.processHtmlContent(content, '#ffffff');
+              }
+              // #endif
+              this.htmlNodes = content;
+              this.usedContent = true;
             } else {
               this.getDetail(newVal)
               this.usedContent = false
@@ -164,8 +170,8 @@
               this.htmlNodes = content;
             }
           },
-          fail: () => {
-            console.log('fail');
+          fail: (err) => {
+            console.log('fail',err);
           }
         });
       },
