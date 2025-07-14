@@ -20,13 +20,39 @@ describe('dialog page', () => {
     return
   }
 
-  let topSafeArea = 0;
+  let deviceShotOptions = {}
   let page;
   let initLifeCycleNum;
   let lifecycleNum;
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-    topSafeArea = windowInfo.safeAreaInsets.top;
+    let topSafeArea = windowInfo.safeAreaInsets.top;
+    if (isAppWebView) {
+      if (isIos) {
+        topSafeArea = 59
+      } else if (isAndroid) {
+        topSafeArea = 24
+        if (platformInfo.startsWith('android 5')) {
+          topSafeArea = 25
+        } else if (platformInfo.startsWith('android 11')) {
+          topSafeArea = 52
+        } else if (platformInfo.startsWith('android 13')) {
+          topSafeArea = 49
+        }
+      } else if (isHarmony) {
+        // mate 60
+        // topSafeArea = 33
+        // mate 60 pro
+        topSafeArea = 38
+      }
+    }
+    deviceShotOptions = {
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: topSafeArea + 44,
+      },
+    };
 
     page = await program.reLaunch(FIRST_PAGE_PATH)
     await page.waitFor('view');
@@ -84,13 +110,7 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     await page.callMethod('closeDialog');
     lifecycleNum = await page.callMethod('getLifeCycleNum');
@@ -105,13 +125,7 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // 不应触发父页面的生命周期,应该触发:
@@ -138,13 +152,7 @@ describe('dialog page', () => {
 
   it('closeDialogPage', async () => {
     await page.callMethod('closeDialog');
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     // closeDialogPage success & complete callback 应被触发
     // dialogPage onUnload 应被触发
@@ -172,13 +180,7 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(-4)
@@ -190,13 +192,7 @@ describe('dialog page', () => {
     page = await program.currentPage()
     // dialogPage onBackPress 返回 true, 应可以拦截 navigateBack
     expect(page.path).toBe(NEXT_PAGE_PATH.substring(1))
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // onBackPress 生命周期应该被触发
@@ -224,13 +220,7 @@ describe('dialog page', () => {
     // 应触发 dialogPage 的 unload，下层的 dialogPage 会先 show 再 unload
     expect(lifecycleNum).toBe(-7)
 
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     await page.callMethod('setLifeCycleNum', 0)
   })
@@ -241,13 +231,7 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image1 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image1 = await program.screenshot(deviceShotOptions);
     expect(image1).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(4)
@@ -257,13 +241,7 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image2 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image2 = await program.screenshot(deviceShotOptions);
     expect(image2).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(8)
@@ -286,13 +264,7 @@ describe('dialog page', () => {
     await program.navigateBack()
     page = await program.currentPage()
     expect(page.path).toBe(FIRST_PAGE_PATH.substring(1))
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     // dialogPage2 onBackPress +1 dialogPage1 show +1 dialogPage unload -5*2 firstPage show +10
@@ -306,13 +278,7 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image1 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image1 = await program.screenshot(deviceShotOptions);
     expect(image1).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(4)
@@ -322,49 +288,25 @@ describe('dialog page', () => {
     if (isWeb) {
       await page.waitFor(2000)
     }
-    const image2 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image2 = await program.screenshot(deviceShotOptions);
     expect(image2).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(10)
 
     await page.callMethod('closeSpecifiedDialog', 0)
-    const image3 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image3 = await program.screenshot(deviceShotOptions);
     expect(image3).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(7)
 
     await page.callMethod('closeSpecifiedDialog', 1)
-    const image4 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image4 = await program.screenshot(deviceShotOptions);
     expect(image4).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(5)
 
     await page.callMethod('closeSpecifiedDialog', 0)
-    const image5 = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    });
+    const image5 = await program.screenshot(deviceShotOptions);
     expect(image5).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(2)
@@ -554,13 +496,7 @@ describe('dialog page', () => {
     })
 
     await page.waitFor(1000);
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44
-      }
-    })
+    const image = await program.screenshot(deviceShotOptions)
     expect(image).toSaveImageSnapshot()
     await page.waitFor(2000);
     await page.callMethod('jest_CloseDialog1')
