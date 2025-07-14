@@ -57,91 +57,91 @@
   <!-- #endif -->
 </template>
 
-<script lang="uts" setup>
+<script lang="uts">
   import { generateMenu, MenuItem } from './generateMenu.uts'
+  const menu = generateMenu('pages/API')
   import { state } from '@/store/index.uts'
-
-  const menu = ref(generateMenu('pages/API') as MenuItem[])
-  const arrowRightIcon = ref('/static/icons/arrow-right.png')
-  const category = ref<ComponentPublicInstance[]>([])
-  const pop = ref<UniElement | null>(null)
-
-  const hasLeftWin = computed(() => {
-    return !state.noMatchLeftWindow
-  })
-
-  const leftWinActive = computed(() => {
-    return state.leftWinActive.slice(1)
-  })
-
-  const windowWidth = computed(() => {
-    return uni.getWindowInfo().windowWidth
-  })
-
-  const isDarkMode = computed(() => {
-    return state.isDarkMode
-  })
-
-  const netless = computed(() => {
-    return state.netless
-  })
-
-  // #ifdef APP-HARMONY
-  watch(netless, (newNetless) => {
-    if (newNetless) {
-      menu.value = menu.value.filter(item => {
-        return !['unicloud'].includes(item.id)
-      })
-    }
-  }, { immediate: true })
-  // #endif
-
-  const showPop = () => {
-    pop.value?.style.setProperty("display", "flex")
-  }
-
-  const hidePop = () => {
-    pop.value?.style.setProperty("display", "none")
-  }
-
-  const stopClickPop = (e: PointerEvent) => {
-    e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
-  }
-
-  const stopPropagation = () => {
-
-  }
-
-  const goPage = (url: string) => {
-    if (url == '/set-tab-bar') {
-      showPop()
-    } else {
-      if (hasLeftWin.value) {
-        uni.reLaunch({ url })
-      } else {
-        uni.navigateTo({ url })
+  export default {
+    data() {
+      return {
+        menu: menu as MenuItem[],
+        arrowRightIcon: '/static/icons/arrow-right.png'
       }
-    }
-  }
-
-  // #ifdef WEB
-  import { useRoute } from 'vue-router'
-  const route = useRoute()
-  watch(
-    () => route.fullPath,
-    (newFullPath, oldFullPath) => {
-      if (route.matched.length) {
-        const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value && leftWinActive.value === item?.path))
-        if (activeCategoryIndex > -1) {
-          nextTick(() => {
-            category.value[activeCategoryIndex]?.$callMethod('openCollapse', true)
-          })
+    },
+    computed: {
+      hasLeftWin() : boolean {
+        return !state.noMatchLeftWindow
+      },
+      leftWinActive() : string {
+        return state.leftWinActive.slice(1)
+      },
+      windowWidth() : number {
+        return uni.getWindowInfo().windowWidth
+      },
+      isDarkMode() : boolean {
+        return state.isDarkMode
+      },
+      netless() : boolean {
+        return state.netless
+      }
+    },
+    // #ifdef APP-HARMONY
+    watch: {
+      'netless': {
+        immediate: true,
+        handler(netless) {
+          if (netless) {
+            this.menu = this.menu.filter(item => {
+              return !['unicloud'].includes(item.id)
+            })
+          }
         }
       }
     },
-    { immediate: true }
-  )
-  // #endif
+    // #endif
+    methods: {
+      goPage(url : string) {
+        if (url == '/set-tab-bar') {
+          this.showPop()
+        }else {
+          if (this.hasLeftWin) {
+            uni.reLaunch({ url })
+          } else {
+            uni.navigateTo({ url })
+          }
+        }
+      },
+      showPop: function () {
+        (this.$refs["pop"] as UniElement).style.setProperty("display", "flex")
+      },
+      hidePop: function () {
+        (this.$refs["pop"] as UniElement).style.setProperty("display", "none")
+      },
+      stopClickPop: function (e : PointerEvent) {
+        e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
+      },
+      stopPropagation() {
+
+      }
+    },
+    // #ifdef WEB
+    watch: {
+      $route: {
+        immediate: true,
+        handler(newRoute) {
+          if (newRoute.matched.length) {
+            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
+            if (activeCategoryIndex > -1) {
+              this.$nextTick(() => {
+                ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
+              })
+            }
+          }
+        }
+      }
+    },
+    // #endif
+  }
 </script>
 
 <style>
