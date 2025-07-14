@@ -4,6 +4,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isIos = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
 const isApp = isIos || isAndroid || isHarmony
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/API/modal/modal'
   
@@ -32,19 +33,37 @@ describe('API-loading', () => {
     return
   }
 
-  let screenshotParams = {}
   let page;
+  let deviceShotOptions = {}
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-      screenshotParams = isApp ? {
-        deviceShot: true,
-        area: {
-          x: 0,
-          y: windowInfo.safeAreaInsets.top + 44
+    let topSafeArea = windowInfo.safeAreaInsets.top;
+    if (isAppWebView) {
+      if (isIos) {
+        topSafeArea = 59
+      } else if (isAndroid) {
+        topSafeArea = 24
+        if (platformInfo.startsWith('android 5')) {
+          topSafeArea = 25
+        } else if (platformInfo.startsWith('android 11')) {
+          topSafeArea = 52
+        } else if (platformInfo.startsWith('android 13')) {
+          topSafeArea = 49
         }
-      } : {
-        fullPage: true
+      } else if (isHarmony) {
+        // mate 60
+        // topSafeArea = 33
+        // mate 60 pro
+        topSafeArea = 38
       }
+    }
+    deviceShotOptions = {
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: topSafeArea + 44,
+      },
+    };
 
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
@@ -52,7 +71,7 @@ describe('API-loading', () => {
   });
 
   it("onload-modal-test", async () => {
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
   })
 
@@ -80,7 +99,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -111,7 +130,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     await page.waitFor(2000);
   })
@@ -140,7 +159,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -170,7 +189,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -200,7 +219,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -230,7 +249,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -260,7 +279,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -291,7 +310,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -321,7 +340,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -351,7 +370,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -381,7 +400,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -411,7 +430,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -441,7 +460,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -472,7 +491,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -502,7 +521,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -532,7 +551,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
      await page.waitFor(2000);
@@ -562,7 +581,7 @@ describe('API-loading', () => {
     await btnModalButton.tap()
     await page.waitFor(500);
 
-    const image = await program.screenshot(screenshotParams);
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
@@ -588,13 +607,13 @@ describe('API-loading', () => {
     await btnModalButtonMultiTime.tap()
     await page.waitFor(1000);
 
-    const image1 = await program.screenshot(screenshotParams);
+    const image1 = await program.screenshot(deviceShotOptions);
     expect(image1).toSaveImageSnapshot();
     /**
      * 等待2s 全部关闭全部
      */
     await page.waitFor(2000);
-    const image2 = await program.screenshot(screenshotParams);
+    const image2 = await program.screenshot(deviceShotOptions);
     expect(image2).toSaveImageSnapshot();
   })
 
@@ -618,14 +637,14 @@ describe('API-loading', () => {
     await btnModalButtonMultiTime.tap()
     await page.waitFor(1000);
 
-    const image1 = await program.screenshot(screenshotParams);
+    const image1 = await program.screenshot(deviceShotOptions);
     expect(image1).toSaveImageSnapshot();
     /**
      * 等待2s 还剩下两个
      */
     await page.waitFor(2000);
 
-    const image2 = await program.screenshot(screenshotParams);
+    const image2 = await program.screenshot(deviceShotOptions);
     expect(image2).toSaveImageSnapshot();
   })
 });

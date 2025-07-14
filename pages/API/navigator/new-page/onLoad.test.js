@@ -49,7 +49,10 @@ describe("onLoad", () => {
           topSafeArea = 49
         }
       } else if (isHarmony) {
-        topSafeArea = 33
+        // mate 60
+        // topSafeArea = 33
+        // mate 60 pro
+        topSafeArea = 38
       }
     }
     deviceShotOptions = {

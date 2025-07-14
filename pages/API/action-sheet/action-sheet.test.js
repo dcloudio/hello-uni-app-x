@@ -10,9 +10,8 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
 describe('showActionSheet', () => {
-  let topSafeArea = 0;
-  let page;
   let screenShotOptions = {};
+  let page;
   async function showActionSheet(page) {
     const btn = await page.$('#btn-action-sheet-show')
     await btn.tap()
@@ -25,12 +24,37 @@ describe('showActionSheet', () => {
   }
 
   beforeAll(async () => {
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    let topSafeArea = windowInfo.safeAreaInsets.top;
+    if (isAppWebView) {
+      if (isIos) {
+        topSafeArea = 59
+      } else if (isAndroid) {
+        topSafeArea = 24
+        if (platformInfo.startsWith('android 5')) {
+          topSafeArea = 25
+        } else if (platformInfo.startsWith('android 11')) {
+          topSafeArea = 52
+        } else if (platformInfo.startsWith('android 13')) {
+          topSafeArea = 49
+        }
+      } else if (isHarmony) {
+        // mate 60
+        // topSafeArea = 33
+        // mate 60 pro
+        topSafeArea = 38
+      }
+    }
+    deviceShotOptions = {
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: topSafeArea + 44,
+      },
+    };
+
     page = await program.reLaunch('/pages/tabBar/API')
     await page.waitFor('view');
-
-    const windowInfo = await program.callUniMethod('getWindowInfo');
-    // android 端 app-webview 时顶部安全区高度为0，所以统一设置为60
-    topSafeArea = windowInfo.safeAreaInsets.top;
 
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view');
