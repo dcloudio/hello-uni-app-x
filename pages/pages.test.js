@@ -352,10 +352,14 @@ if (isWeb) {
     '/pages/API/get-video-info/get-video-info',
     '/pages/API/make-phone-call/make-phone-call',
     '/pages/API/create-inner-audio-context/create-inner-audio-context',
-    '/pages/API/create-inner-audio-context/inner-audio-format',
-    '/pages/API/create-inner-audio-context/inner-audio-path',
-    '/pages/API/clipboard/clipboard',
-    '/pages/API/compass/compass',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/inner-audio-format',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/inner-audio-path',
+    // 单独测试例截图
+    // '/pages/API/clipboard/clipboard',
+    // 单独测试例截图
+    // '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
     '/pages/component/canvas/canvas/ball',
     '/pages/template/browser-element/browser-element',
