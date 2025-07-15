@@ -8,9 +8,10 @@ describe('slider', () => {
   })
   it('value', async () => {
     const sliderValue = 80
-    await page.setData({
-      sliderValue: sliderValue,
-    })
+    await page.callMethod('updateSliderValueTest',sliderValue)
+    // await page.setData({
+    //   sliderValue: sliderValue,
+    // })
     await page.waitFor(100)
 
     // TODO 暂时仅获取第一个
