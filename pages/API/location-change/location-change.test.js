@@ -8,7 +8,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("location-change", () => {
-  if (isMP || isWeb || isHarmony || isAndroid) {
+  if (isMP || isWeb || isAndroid) {
     // 微信、web harmony 上会有权限弹框，暂时屏蔽测试
     it('not support', async () => {
       expect(1).toBe(1)
@@ -35,23 +35,28 @@ describe("location-change", () => {
     const startLocationUpdateBtn = await page.$('#startLocationUpdate')
     await startLocationUpdateBtn.tap()
 
+    await page.waitFor(500)
+
     let data = await page.data()
     let startSuccess = data['startSuccess']
     expect(startSuccess).toEqual(true);
 
-    await page.setData({
-      startSuccess: false
-    })
+    if (!isHarmony) {
+      // NOTE 鸿蒙上需要在设置中允许，屏蔽该测试
+      await page.setData({
+        startSuccess: false
+      })
 
-    const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
-    await startLocationUpdateBackgroundBtn.tap()
+      const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
+      await startLocationUpdateBackgroundBtn.tap()
 
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    expect(startSuccess).toEqual(true);
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      epect(startSuccess).toEqual(true);
+    }
   });
 
-  it("system+type=gcj02+fail", async () => {
+  it(`system+type=gcj02+${isHarmony ? 'success' : 'fail'}`, async () => {
 
     await page.setData({
       currentSelectedProvider: 0,
@@ -67,164 +72,188 @@ describe("location-change", () => {
     const startLocationUpdateBtn = await page.$('#startLocationUpdate')
     await startLocationUpdateBtn.tap()
 
-    let data = await page.data()
-    let startSuccess = data['startSuccess']
-    let errCode = data['errCode']
-    expect(startSuccess).toEqual(false);
-    expect(errCode).toEqual(1505601);
-
-    await page.setData({
-      currentSelectedProvider: 0,
-      currentSelectedType: 1,
-      startSuccess: false,
-      errCode: 0
-    })
-
-    const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
-    await startLocationUpdateBackgroundBtn.tap()
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    errCode = data['errCode']
-    expect(startSuccess).toEqual(false);
-    expect(errCode).toEqual(1505601);
-  });
-
-  it("tencent+type=wgs84+fail", async () => {
-    await page.setData({
-      logAble: false,
-      currentSelectedProvider: 1,
-      currentSelectedType: 0,
-      startSuccess: false,
-      errCode: 0
-    })
-
-    await page.setData({
-      currentSelectedType: 0
-    })
-
-    const stopLocationUpdateBtn = await page.$('#stopLocationUpdate')
-    await stopLocationUpdateBtn.tap()
-
-    const startLocationUpdateBtn = await page.$('#startLocationUpdate')
-    await startLocationUpdateBtn.tap()
+    await page.waitFor(500)
 
     let data = await page.data()
     let startSuccess = data['startSuccess']
-    let errCode = data['errCode']
-    expect(startSuccess).toEqual(false);
-    expect(errCode).toEqual(1505607);
+    if (!isHarmony) {
+      let errCode = data['errCode']
+      expect(startSuccess).toEqual(false);
+      expect(errCode).toEqual(1505601);
+    } else {
+      expect(startSuccess).toEqual(true);
+    }
 
-    await page.setData({
-      currentSelectedProvider: 1,
-      currentSelectedType: 0,
-      startSuccess: false,
-      errCode: 0
-    })
+    if (!isHarmony) {
+      // NOTE 鸿蒙上需要在设置中允许，屏蔽该测试
+      await page.setData({
+        currentSelectedProvider: 0,
+        currentSelectedType: 1,
+        startSuccess: false,
+        errCode: 0
+      })
 
-    const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
-    await startLocationUpdateBackgroundBtn.tap()
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    errCode = data['errCode']
-    expect(startSuccess).toEqual(false);
-    expect(errCode).toEqual(1505607);
+      const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
+      await startLocationUpdateBackgroundBtn.tap()
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      errCode = data['errCode']
+      expect(startSuccess).toEqual(false);
+      expect(errCode).toEqual(1505601);
+    }
   });
 
-  it("tencent+type=gcj02+success", async () => {
+  if (!isHarmony) {
+    it("tencent+type=wgs84+fail", async () => {
+      await page.setData({
+        logAble: false,
+        currentSelectedProvider: 1,
+        currentSelectedType: 0,
+        startSuccess: false,
+        errCode: 0
+      })
+
+      await page.setData({
+        currentSelectedType: 0
+      })
+
+      const stopLocationUpdateBtn = await page.$('#stopLocationUpdate')
+      await stopLocationUpdateBtn.tap()
+
+      const startLocationUpdateBtn = await page.$('#startLocationUpdate')
+      await startLocationUpdateBtn.tap()
+
+      let data = await page.data()
+      let startSuccess = data['startSuccess']
+      let errCode = data['errCode']
+      expect(startSuccess).toEqual(false);
+      expect(errCode).toEqual(1505607);
+
+      await page.setData({
+        currentSelectedProvider: 1,
+        currentSelectedType: 0,
+        startSuccess: false,
+        errCode: 0
+      })
+
+      const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
+      await startLocationUpdateBackgroundBtn.tap()
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      errCode = data['errCode']
+      expect(startSuccess).toEqual(false);
+      expect(errCode).toEqual(1505607);
+    });
+
+    it("tencent+type=gcj02+success", async () => {
+      await page.setData({
+        currentSelectedProvider: 1,
+        currentSelectedType: 1,
+        startSuccess: false,
+        errCode: 0,
+        logAble: false
+      })
+
+      const stopLocationUpdateBtn = await page.$('#stopLocationUpdate')
+      await stopLocationUpdateBtn.tap()
+
+      const startLocationUpdateBtn = await page.$('#startLocationUpdate')
+      await startLocationUpdateBtn.tap()
+
+      let data = await page.data()
+      let startSuccess = data['startSuccess']
+      expect(startSuccess).toEqual(true);
+
+      await page.setData({
+        currentSelectedProvider: 1,
+        currentSelectedType: 1,
+        startSuccess: false,
+        errCode: 0
+      })
+
+      const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
+      await startLocationUpdateBackgroundBtn.tap()
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      expect(startSuccess).toEqual(true);
+    });
+
+    it("tencent+system+fail", async () => {
+      await page.setData({
+        currentSelectedProvider: 1,
+        currentSelectedType: 1,
+        startSuccess: false,
+        errCode: 0,
+        logAble: false
+      })
+
+      const stopLocationUpdateBtn = await page.$('#stopLocationUpdate')
+      await stopLocationUpdateBtn.tap()
+
+      const startLocationUpdateBtn = await page.$('#startLocationUpdate')
+      await startLocationUpdateBtn.tap()
+
+      let data = await page.data()
+      let startSuccess = data['startSuccess']
+      expect(startSuccess).toEqual(true);
+
+      await page.setData({
+        currentSelectedProvider: 0,
+        currentSelectedType: 0,
+        startSuccess: false,
+        errCode: 0
+      })
+
+      await startLocationUpdateBtn.tap()
+
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      let errCode = data['errCode']
+      expect(startSuccess).toEqual(false);
+      expect(errCode).toEqual(1505608);
+
+      await stopLocationUpdateBtn.tap()
+
+      await page.setData({
+        currentSelectedProvider: 0,
+        currentSelectedType: 0,
+        startSuccess: false,
+        errCode: 0
+      })
+
+      await startLocationUpdateBtn.tap()
+
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      expect(startSuccess).toEqual(true);
+
+      await page.setData({
+        currentSelectedProvider: 1,
+        currentSelectedType: 1,
+        startSuccess: false,
+        errCode: 0
+      })
+
+      await startLocationUpdateBtn.tap()
+      data = await page.data()
+      startSuccess = data['startSuccess']
+      errCode = data['errCode']
+      expect(startSuccess).toEqual(false);
+      expect(errCode).toEqual(1505608);
+    });
+  }
+
+  it("stopLocationUpdate", async () => {
     await page.setData({
-      currentSelectedProvider: 1,
-      currentSelectedType: 1,
-      startSuccess: false,
+      stopSuccess: false,
       errCode: 0,
       logAble: false
     })
 
-    const stopLocationUpdateBtn = await page.$('#stopLocationUpdate')
-    await stopLocationUpdateBtn.tap()
-
-    const startLocationUpdateBtn = await page.$('#startLocationUpdate')
-    await startLocationUpdateBtn.tap()
+    await page.callMethod('stopLocationUpdate')
 
     let data = await page.data()
-    let startSuccess = data['startSuccess']
-    expect(startSuccess).toEqual(true);
-
-    await page.setData({
-      currentSelectedProvider: 1,
-      currentSelectedType: 1,
-      startSuccess: false,
-      errCode: 0
-    })
-
-    const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
-    await startLocationUpdateBackgroundBtn.tap()
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    expect(startSuccess).toEqual(true);
-  });
-
-  it("tencent+system+fail", async () => {
-    await page.setData({
-      currentSelectedProvider: 1,
-      currentSelectedType: 1,
-      startSuccess: false,
-      errCode: 0,
-      logAble: false
-    })
-
-    const stopLocationUpdateBtn = await page.$('#stopLocationUpdate')
-    await stopLocationUpdateBtn.tap()
-
-    const startLocationUpdateBtn = await page.$('#startLocationUpdate')
-    await startLocationUpdateBtn.tap()
-
-    let data = await page.data()
-    let startSuccess = data['startSuccess']
-    expect(startSuccess).toEqual(true);
-
-    await page.setData({
-      currentSelectedProvider: 0,
-      currentSelectedType: 0,
-      startSuccess: false,
-      errCode: 0
-    })
-
-    await startLocationUpdateBtn.tap()
-
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    let errCode = data['errCode']
-    expect(startSuccess).toEqual(false);
-    expect(errCode).toEqual(1505608);
-
-    await stopLocationUpdateBtn.tap()
-
-    await page.setData({
-      currentSelectedProvider: 0,
-      currentSelectedType: 0,
-      startSuccess: false,
-      errCode: 0
-    })
-
-    await startLocationUpdateBtn.tap()
-
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    expect(startSuccess).toEqual(true);
-
-    await page.setData({
-      currentSelectedProvider: 1,
-      currentSelectedType: 1,
-      startSuccess: false,
-      errCode: 0
-    })
-
-    await startLocationUpdateBtn.tap()
-    data = await page.data()
-    startSuccess = data['startSuccess']
-    errCode = data['errCode']
-    expect(startSuccess).toEqual(false);
-    expect(errCode).toEqual(1505608);
-  });
-
+    let stopSuccess = data['stopSuccess']
+    expect(stopSuccess).toEqual(true);
+  })
 });
