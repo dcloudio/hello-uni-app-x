@@ -373,7 +373,8 @@ if (isWeb) {
     // '/pages/API/create-inner-audio-context/inner-audio-path',
     // 单独测试例截图
     // '/pages/API/clipboard/clipboard',
-    '/pages/API/compass/compass',
+    // 单独测试例截图
+    // '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
     // 动态内容
     // '/pages/component/canvas/canvas/ball',
