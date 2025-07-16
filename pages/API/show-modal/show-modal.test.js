@@ -47,9 +47,13 @@ describe('API-loading', () => {
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
+    console.log('platformInfo', platformInfo)
     if (isAppWebView) {
       if (isIos) {
         topSafeArea = 59
+        if (platformInfo.indexOf('15.5') != -1) {
+          topSafeArea = 47
+        }
       } else if (isAndroid) {
         topSafeArea = 24
         if (platformInfo.startsWith('android 5')) {
