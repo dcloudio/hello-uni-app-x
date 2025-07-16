@@ -246,8 +246,7 @@ describe("location-change", () => {
   it("stopLocationUpdate", async () => {
     await page.setData({
       stopSuccess: false,
-      errCode: 0,
-      logAble: false
+      logAble: true
     })
 
     await page.callMethod('stopLocationUpdate')
