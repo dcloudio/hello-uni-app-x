@@ -34,9 +34,11 @@
 
   const title = ref('OAuth')
   const userInfo = computed(() => state.userInfo)
+  const testUserInfo = ref<UserInfo>(null)
 
   const clear = () => {
     setUserInfo(null)
+    testUserInfo.value = null
   }
 
   const hwLogin = () => {
@@ -46,10 +48,13 @@
         uni.getUserInfo({
           provider: 'huawei',
           success(res) {
-            setUserInfo({
+            console.log('获取用户信息成功')
+            const info : UserInfo = {
               nickName: res.userInfo.nickName,
               avatarUrl: res.userInfo.avatarUrl
-            } as UserInfo)
+            }
+            testUserInfo.value = info
+            setUserInfo(info)
           },
           fail(err) {
             clear()
@@ -63,6 +68,16 @@
       }
     })
   }
+
+  function getTestUserInfo() {
+    return testUserInfo.value
+  }
+
+  defineExpose({
+    getTestUserInfo,
+    hwLogin,
+    setUserInfo
+  })
 </script>
 
 <style>
