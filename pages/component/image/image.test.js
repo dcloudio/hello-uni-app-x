@@ -104,13 +104,15 @@ describe('component-native-image', () => {
     // TODO 整理小程序、web支持的类型，页面上进行条件编译展示
     return
   }
-
-  it('path-screenshot', async () => {
-    const page = await program.navigateTo('/pages/component/image/image-path');
-    await page.waitFor(3000);
-    const image = await program.screenshot(screenshotParams)
-    expect(image).toSaveImageSnapshot()
-  });
+  // app web 存在差异
+  if (!isAppWebView) {
+    it('path-screenshot', async () => {
+      const page = await program.navigateTo('/pages/component/image/image-path');
+      await page.waitFor(3000);
+      const image = await program.screenshot(screenshotParams)
+      expect(image).toSaveImageSnapshot()
+    });
+  }
 
   it('mode-screenshot', async () => {
     if (process.env.android_cpu_type === 'x86_64') return
