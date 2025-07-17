@@ -314,18 +314,21 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(10)
 
     await page.callMethod('closeSpecifiedDialog', 0)
+    await page.waitFor(1000)
     const image3 = await program.screenshot(deviceShotOptions);
     expect(image3).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(7)
 
     await page.callMethod('closeSpecifiedDialog', 1)
+    await page.waitFor(1000)
     const image4 = await program.screenshot(deviceShotOptions);
     expect(image4).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
     expect(lifecycleNum).toBe(5)
 
     await page.callMethod('closeSpecifiedDialog', 0)
+    await page.waitFor(1000)
     const image5 = await program.screenshot(deviceShotOptions);
     expect(image5).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
