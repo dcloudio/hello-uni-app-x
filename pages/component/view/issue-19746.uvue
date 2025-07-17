@@ -1,0 +1,47 @@
+<template>
+    <!-- <button @click="addEl">Add Element</button>
+		<button @click="setPointEventAuto">Set point-events auto</button> -->
+    <view ref="container"></view>
+</template>
+
+<script lang="ts" setup>
+
+    const clickCount = ref(0);
+    const container = ref<UniElement | null>(null);
+		const viewEle = ref<UniElement | null>(null);
+    let instance : ComponentInternalInstance | null = null;
+
+    function addEl() {
+        const document = (instance!.proxy as Page).$nativePage!.document
+				const view = document.createElement('view');
+				view.addEventListener('click', (_e: Event) => {
+          clickCount.value += 1
+          console.log('click: ',clickCount.value)
+				})
+				container.value!.appendChild(view);
+				view.style.setProperty('width', '200px')
+				view.style.setProperty('height', '500px')
+				view.style.setProperty('background-color', 'red')
+				view.style.setProperty('pointer-events', 'none')
+				viewEle.value = view
+    }
+
+		function setPointEventAuto() {
+			viewEle.value?.style.setProperty('pointer-events', 'auto')
+		}
+
+		function getClickCount() {
+			return clickCount.value
+		}
+
+    onMounted(() => {
+        instance = getCurrentInstance()
+    });
+
+    defineExpose({
+      addEl,
+			getClickCount,
+			setPointEventAuto
+    })
+
+</script>
