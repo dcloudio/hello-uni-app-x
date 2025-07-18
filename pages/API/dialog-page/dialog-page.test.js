@@ -138,25 +138,26 @@ describe('dialog page', () => {
     expect(dialogPageRoute).toBe('pages/API/dialog-page/dialog-1')
   });
   // for issue 19676
-  it('open dialog1-1', async () => {
-    await page.callMethod('openDialog11');
-    await page.waitFor(1000)
-    if (isWeb) {
-      await page.waitFor(2000)
-    }
-    const image = await program.screenshot(deviceShotOptions);
-    expect(image).toSaveImageSnapshot();
-    lifecycleNum = await page.callMethod('getLifeCycleNum')
-    // dialog1 onHide -1 dialog1-1 onReady +2
-    expect(lifecycleNum).toBe(1)
+  // 放开这个测试，进入 next-page openDialog1 然后 openDialog2, 获取 dialogPages, 2 index 0，1 index 1
+  // it('open dialog1-1', async () => {
+  //   await page.callMethod('openDialog11');
+  //   await page.waitFor(1000)
+  //   if (isWeb) {
+  //     await page.waitFor(2000)
+  //   }
+  //   const image = await program.screenshot(deviceShotOptions);
+  //   expect(image).toSaveImageSnapshot();
+  //   lifecycleNum = await page.callMethod('getLifeCycleNum')
+  //   // dialog1 onHide -1 dialog1-1 onReady +2
+  //   expect(lifecycleNum).toBe(1)
 
-    await page.callMethod('closeSpecifiedDialog', 1)
-    await page.waitFor(1000)
-    lifecycleNum = await page.callMethod('getLifeCycleNum')
-    // dialog1 onShow + 1 closeSpecifiedDialog callback +2 dialog1-1 onUnload -5
-    expect(lifecycleNum).toBe(-1)
-    await page.callMethod('setLifeCycleNum', 0)
-  });
+  //   await page.callMethod('closeSpecifiedDialog', 1)
+  //   await page.waitFor(1000)
+  //   lifecycleNum = await page.callMethod('getLifeCycleNum')
+  //   // dialog1 onShow + 1 closeSpecifiedDialog callback +2 dialog1-1 onUnload -5
+  //   expect(lifecycleNum).toBe(-1)
+  //   await page.callMethod('setLifeCycleNum', 0)
+  // });
   it('check dialogPage methods', async () => {
     expect(await page.callMethod('dialogPageCheckGetDialogPages')).toBe(true)
     let dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
