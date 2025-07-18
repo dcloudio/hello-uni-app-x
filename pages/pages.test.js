@@ -263,7 +263,8 @@ const pages = [
   '/pages/template/swiper-list2/swiper-list2',
   '/pages/template/swiper-vertical-video/swiper-vertical-video',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
-  '/pages/template/half-screen/half-screen',
+  // 单独测试例截图
+  // '/pages/template/half-screen/half-screen',
   // 动态内容
   // '/pages/template/long-list/long-list',
   // 动态内容
