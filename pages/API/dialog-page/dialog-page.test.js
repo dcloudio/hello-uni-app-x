@@ -118,6 +118,30 @@ describe('dialog page', () => {
     await page.callMethod('setLifeCycleNum', 0);
   })
 
+  // for issue 19676
+  // ios 增加该测试，open multiple dialog page 后 dialogPages[0] 是 dialog2, dialogPages[1] 是 dialog1，自动化测试可以复现，同样流程运行无法复现，暂时规避
+  if (!isIos) {
+    it('open dialog1-1', async () => {
+      await page.callMethod('openDialog11');
+      await page.waitFor(1000)
+      if (isWeb) {
+        await page.waitFor(2000)
+      }
+      const image = await program.screenshot(deviceShotOptions);
+      expect(image).toSaveImageSnapshot();
+      lifecycleNum = await page.callMethod('getLifeCycleNum')
+      // dialog1-1 onReady +2
+      expect(lifecycleNum).toBe(2)
+
+      await page.callMethod('closeDialog')
+      await page.waitFor(1000)
+      lifecycleNum = await page.callMethod('getLifeCycleNum')
+      // closeDialog callback +2 dialog1-1 onUnload -5
+      expect(lifecycleNum).toBe(-1)
+      await page.callMethod('setLifeCycleNum', 0)
+    });
+  }
+
   it('open dialog1', async () => {
     await page.callMethod('openDialog1');
     // 无法通过获取 dom 元素来判断是否打开了 dialogPage
@@ -137,27 +161,7 @@ describe('dialog page', () => {
     const dialogPageRoute = await page.callMethod('getDialogPageRoute')
     expect(dialogPageRoute).toBe('pages/API/dialog-page/dialog-1')
   });
-  // for issue 19676
-  // 放开这个测试，进入 next-page openDialog1 然后 openDialog2, 获取 dialogPages, 2 index 0，1 index 1
-  // it('open dialog1-1', async () => {
-  //   await page.callMethod('openDialog11');
-  //   await page.waitFor(1000)
-  //   if (isWeb) {
-  //     await page.waitFor(2000)
-  //   }
-  //   const image = await program.screenshot(deviceShotOptions);
-  //   expect(image).toSaveImageSnapshot();
-  //   lifecycleNum = await page.callMethod('getLifeCycleNum')
-  //   // dialog1 onHide -1 dialog1-1 onReady +2
-  //   expect(lifecycleNum).toBe(1)
 
-  //   await page.callMethod('closeSpecifiedDialog', 1)
-  //   await page.waitFor(1000)
-  //   lifecycleNum = await page.callMethod('getLifeCycleNum')
-  //   // dialog1 onShow + 1 closeSpecifiedDialog callback +2 dialog1-1 onUnload -5
-  //   expect(lifecycleNum).toBe(-1)
-  //   await page.callMethod('setLifeCycleNum', 0)
-  // });
   it('check dialogPage methods', async () => {
     expect(await page.callMethod('dialogPageCheckGetDialogPages')).toBe(true)
     let dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
