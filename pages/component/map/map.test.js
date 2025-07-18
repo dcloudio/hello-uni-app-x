@@ -18,17 +18,15 @@ describe('web-map', () => {
     await page.callMethod('updateAutoTest',true)
   });
 
-  it('handleMoveToLocation', async () => {
-    await page.callMethod('handleMoveToLocation')
-    await page.waitFor(500);
-    const moveToLocationRes = await page.data('jestResult')
-    if(isMP || isWeb) {
-      // TODO 使用其他信息作为测试依据
-      expect(1).toBe(1)
-    } else {
+
+  if (isApp) {
+    it('handleMoveToLocation', async () => {
+      await page.callMethod('handleMoveToLocation',true)
+      await page.waitFor(500);
+      const moveToLocationRes = await page.data('jestResult')
       expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
-    }
-  });
+    });
+  }
 
   it('Check EventDetail JsonStringify', async () => {
     if(isMP || isWeb) {
