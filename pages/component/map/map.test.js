@@ -21,7 +21,7 @@ describe('web-map', () => {
 
   if (isApp) {
     it('handleMoveToLocation', async () => {
-      await page.callMethod('handleMoveToLocation',true)
+      await page.callMethod('handleMoveToLocation',false)
       await page.waitFor(500);
       const moveToLocationRes = await page.data('jestResult')
       expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
