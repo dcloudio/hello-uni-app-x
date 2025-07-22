@@ -1,66 +1,72 @@
 <template>
-  <view style="padding: 15px;">
-    <view id="box" ref="box">
-      <text class="uni-title-text">元素的id：{{ attrId }}</text>
+  <!-- #ifdef APP -->
+  <scroll-view class="page-scroll-view">
+  <!-- #endif -->
+    <view style="padding: 15px;">
+      <view id="box" ref="box">
+        <text class="uni-title-text">元素的id：{{ attrId }}</text>
+        <!-- #ifndef APP -->
+        <text class="uni-title-text">元素的style：{{ attrStyle }}</text>
+        <!-- #endif -->
+        <text class="uni-title-text">元素的背景色样式值：{{ propertyValue }}</text>
+        <text class="uni-subtitle-text">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
+        <text class="uni-subtitle-text">App端：getAttribute 不支持获取 class、style 属性</text>
+      </view>
+      <button @click="getAttributeId">getAttribute获取元素的id</button>
+      <button @click="setStyle">setProperty设置背景色</button>
       <!-- #ifndef APP -->
-      <text class="uni-title-text">元素的style：{{ attrStyle }}</text>
+      <button @click="getAttributeStyle">getAttribute获取元素的style</button>
       <!-- #endif -->
-      <text class="uni-title-text">元素的背景色样式值：{{ propertyValue }}</text>
-      <text class="uni-subtitle-text">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
-      <text class="uni-subtitle-text">App端：getAttribute 不支持获取 class、style 属性</text>
-    </view>
-    <button @click="getAttributeId">getAttribute获取元素的id</button>
-    <button @click="setStyle">setProperty设置背景色</button>
-    <!-- #ifndef APP -->
-    <button @click="getAttributeStyle">getAttribute获取元素的style</button>
-    <!-- #endif -->
-    <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
+      <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
 
-    <child id="child" ref="child"></child>
-    <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
-    <view class="rect-info" v-if="rectInfo">
-      <view class="node-info-item">
-        <text class="node-info-item-k">x: </text>
-        <text class="node-info-item-v">{{rectInfo.x}}</text>
+      <child id="child" ref="child"></child>
+      <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
+      <view class="rect-info" v-if="rectInfo">
+        <view class="node-info-item">
+          <text class="node-info-item-k">x: </text>
+          <text class="node-info-item-v">{{rectInfo.x}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">y: </text>
+          <text class="node-info-item-v">{{rectInfo.y}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">width: </text>
+          <text class="node-info-item-v">{{rectInfo.width}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">height: </text>
+          <text class="node-info-item-v">{{rectInfo.height}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">left: </text>
+          <text class="node-info-item-v">{{rectInfo.left}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">top: </text>
+          <text class="node-info-item-v">{{rectInfo.top}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">right: </text>
+          <text class="node-info-item-v">{{rectInfo.right}}</text>
+        </view>
+        <view class="node-info-item">
+          <text class="node-info-item-k">bottom: </text>
+          <text class="node-info-item-v">{{rectInfo.bottom}}</text>
+        </view>
       </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">y: </text>
-        <text class="node-info-item-v">{{rectInfo.y}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">width: </text>
-        <text class="node-info-item-v">{{rectInfo.width}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">height: </text>
-        <text class="node-info-item-v">{{rectInfo.height}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">left: </text>
-        <text class="node-info-item-v">{{rectInfo.left}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">top: </text>
-        <text class="node-info-item-v">{{rectInfo.top}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">right: </text>
-        <text class="node-info-item-v">{{rectInfo.right}}</text>
-      </view>
-      <view class="node-info-item">
-        <text class="node-info-item-k">bottom: </text>
-        <text class="node-info-item-v">{{rectInfo.bottom}}</text>
-      </view>
+      <scroll-view ref="scrollView" class="scroll-view_H" direction="horizontal">
+        <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
+        <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
+        <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
+      </scroll-view>
+      <!-- #ifndef WEB -->
+      <button @click="scrollTo">scrollTo设置left滚动200px</button>
+      <!-- #endif -->
     </view>
-    <scroll-view ref="scrollView" class="scroll-view_H" direction="horizontal">
-      <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
-      <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
-      <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
-    </scroll-view>
-    <!-- #ifndef WEB -->
-    <button @click="scrollTo">scrollTo设置left滚动200px</button>
-    <!-- #endif -->
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 <script lang="uts">
   import child from './child.uvue'
