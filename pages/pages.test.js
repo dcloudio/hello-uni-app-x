@@ -291,7 +291,8 @@ const pages = [
   // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   // 页面内容不稳定
   // '/pages/template/custom-long-list/custom-long-list',
-  '/pages/template/slider-100/slider-100',
+  // 单独测试例截图
+  // '/pages/template/slider-100/slider-100',
   // 动态内容
   // '/pages/template/long-list-nested/long-list-nested',
 ]

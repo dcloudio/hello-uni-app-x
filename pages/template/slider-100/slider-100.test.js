@@ -5,8 +5,12 @@ describe('slider', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
-    await page.waitFor(1000)
+    await page.waitFor(2000)
   })
+  it('screenshot', async () => {
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
   it('value', async () => {
     const sliderValue = 80
     await page.callMethod('updateSliderValueTest',sliderValue)
