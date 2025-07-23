@@ -52,7 +52,7 @@ describe("location-change", () => {
 
       data = await page.data()
       startSuccess = data['startSuccess']
-      epect(startSuccess).toEqual(true);
+      expect(startSuccess).toEqual(true);
     }
   });
 
