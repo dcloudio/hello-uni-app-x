@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-const PAGE_PATH = '/pages/API/loading/loading'
+const PAGE_PATH = '/pages/API/show-loading/show-loading'
 
 describe('API-loading', () => {
   let deviceShotOptions = {}
@@ -77,4 +77,4 @@ describe('API-loading', () => {
     await toScreenshot('loading-manual-hide')
   })
 
-}); 
+});

@@ -6,18 +6,9 @@ const isAndroid = platformInfo.startsWith('android')
 const isApp = isIos || isAndroid || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-const PAGE_PATH = '/pages/API/modal/modal'
+const PAGE_PATH = '/pages/API/show-modal/show-modal'
   
 describe('API-loading', () => {
-  let topSafeArea = 0
-  let page;
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
-  const isHarmony = platformInfo.startsWith('harmony')
-  const isIos = platformInfo.startsWith('ios')
-  const isAndroid = platformInfo.startsWith('android')
-  const isApp = isIos || isAndroid || isHarmony
-
   if(isMP) {
     // 微信小程序截图无法截到弹框
     it('not support', () => {
@@ -89,7 +80,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-0", async () => {
-
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
     /**
      * 延迟3s 关闭
      */
@@ -118,8 +110,9 @@ describe('API-loading', () => {
 
   })
 
-
   it("modal-test-current-1", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     await page.setData({
       current: 1,
@@ -144,11 +137,11 @@ describe('API-loading', () => {
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     await page.waitFor(2000);
-
   })
 
-
   it("modal-test-current-2", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -174,11 +167,11 @@ describe('API-loading', () => {
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
-
   })
 
-
   it("modal-test-current-2-showCancel", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -207,6 +200,9 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-cancelText", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
+
     await page.setData({
       current: 2,
       showCancelSelect: true,
@@ -231,10 +227,11 @@ describe('API-loading', () => {
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
-
   })
 
   it("modal-test-current-2-showCancel-cancelText-confirmText", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     await page.setData({
       current: 2,
@@ -244,7 +241,6 @@ describe('API-loading', () => {
       editableSelect: false,
       placeholderTextSelect: false,
     })
-
 
     /**
      * 延迟3s 关闭
@@ -261,10 +257,11 @@ describe('API-loading', () => {
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
-
   })
 
   it("modal-test-current-2-showCancel-cancelText-confirmText-editable-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -290,11 +287,12 @@ describe('API-loading', () => {
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
-
   })
 
 
   it("modal-test-current-2-showCancel-confirmText-editable-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -323,6 +321,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-editable-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -351,6 +351,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -379,6 +381,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -407,6 +411,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-cancelText-editable-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -435,6 +441,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-cancelText-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -464,6 +472,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-cancelText", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -489,10 +499,11 @@ describe('API-loading', () => {
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
-
   })
 
   it("modal-test-current-2-showCancel-cancelText-confirmText-placeholder", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -518,10 +529,11 @@ describe('API-loading', () => {
     expect(image).toSaveImageSnapshot();
 
     await page.waitFor(2000);
-
   })
 
   it("modal-test-current-2-showCancel-cancelText-confirmText", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -550,6 +562,8 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-2-showCancel-cancelText-confirmText-editable", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     /**
      * 延迟3s 关闭
@@ -577,8 +591,9 @@ describe('API-loading', () => {
     await page.waitFor(2000);
   })
 
-
   it("modal-test-current-0-multi-time-show-hideall", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
 
     await page.setData({
       current: 0,
@@ -607,6 +622,9 @@ describe('API-loading', () => {
   })
 
   it("modal-test-current-1-multi-time-show-hidelast", async () => {
+    page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
+    await page.waitFor('view');
+    
     await page.setData({
       current: 1,
     })
@@ -633,6 +651,4 @@ describe('API-loading', () => {
     const image2 = await program.screenshot(deviceShotOptions);
     expect(image2).toSaveImageSnapshot();
   })
-
-
 });

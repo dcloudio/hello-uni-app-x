@@ -6,6 +6,8 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
+const PAGE_PATH = '/pages/API/show-toast/show-toast'
+
 describe('API-toast', () => {
   let page;
   let deviceShotOptions = {}

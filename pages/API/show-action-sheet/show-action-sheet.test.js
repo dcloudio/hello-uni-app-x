@@ -7,6 +7,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
+const PAGE_PATH = '/pages/API/show-action-sheet/show-action-sheet'
 
 describe('showActionSheet', () => {
   let screenShotOptions = {};
@@ -84,7 +85,7 @@ describe('showActionSheet', () => {
       const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
       await program.navigateBack();
       await page.waitFor(1000);
-      page = await program.navigateTo('/pages/API/show-action-sheet/show-action-sheet')
+      page = await program.navigateTo(PAGE_PATH)
       const newLifeCycleNum = await page.callMethod('getLifeCycleNum');
       expect(newLifeCycleNum).toBe(originLifeCycleNum + 2);
     }
@@ -196,6 +197,7 @@ describe('showActionSheet', () => {
     })
   }
   afterAll(async () => {
+    await page.callMethod('setLifeCycleNum', 1100);
     if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')
     }
