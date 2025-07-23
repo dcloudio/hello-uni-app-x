@@ -38,7 +38,7 @@ describe('web-clipboard', () => {
       await page.callMethod('getClipboard')
       expect(await page.data('getDataTest')).toBe('123456')
     }
-
+    // 等待 toast 隐藏
+    await page.waitFor(2000);
   });
-
 });
