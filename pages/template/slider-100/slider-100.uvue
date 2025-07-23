@@ -4,7 +4,7 @@
   <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="grid-view">
-      <slider ref="slider" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
+      <slider ref="sliderRef" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
         @change="sliderChange" :value="sliderValue" :block-size="20" :show-value="true" />
     </view>
   <!-- #ifdef APP -->
@@ -17,13 +17,13 @@
 const title = ref('sliderx100通信性能测试(小程序卡为正常)')
 const sliderValue = ref(50)
 const safeAreaInsetsBottom = ref(0)
-const slider = ref<UniSliderElement[]>([])
+const sliderRef = ref<UniSliderElement[]>([])
 
 
 function updateSliderValue(value: number) {
   // #ifndef MP
   // TODO 跳过vue框架，直接修改原生组件
-  slider.value.forEach((item) => {
+  sliderRef.value.forEach((item) => {
     item.value = value
   })
   // #endif
