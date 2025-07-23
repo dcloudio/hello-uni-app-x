@@ -8,6 +8,7 @@ describe("loadFontFace", () => {
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH);
+    await page.waitFor('view');
     await page.waitFor(4000);
   });
   if (!(
