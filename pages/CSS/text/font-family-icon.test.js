@@ -16,6 +16,7 @@ describe('css-font-family-icon', () => {
   it('screenshot', async () => {
     page = await program.reLaunch('/pages/CSS/text/font-family-icon');
     await page.waitFor('view');
+    await page.waitFor(1000);
     
     const image = await program.screenshot({
       fullPage: true
