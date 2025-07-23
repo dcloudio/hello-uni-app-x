@@ -12,8 +12,8 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 let page;
 
 describe("onLoad", () => {
- if (isMP || isHarmony) {
-    it('mp not support', () => {
+ if (isMP) {
+    it('not support', () => {
       expect(1).toBe(1)
     })
     return
@@ -32,7 +32,7 @@ describe("onLoad", () => {
     return
   }
 
-  let topSafeArea = 0;
+  let deviceShotOptions = {}
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
@@ -121,13 +121,7 @@ describe("onLoad", () => {
     await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showToast");
     await page.waitFor(1000);
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44,
-      },
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
@@ -139,13 +133,7 @@ describe("onLoad", () => {
     await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showLoading");
     await page.waitFor(1000);
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44,
-      },
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
@@ -157,13 +145,7 @@ describe("onLoad", () => {
     await page.waitFor("view");
     await page.callMethod("navigateToOnLoadWithType", "showModal");
     await page.waitFor(1000);
-    const image = await program.screenshot({
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44,
-      },
-    });
+    const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot({
       failureThreshold: 0.05,
       failureThresholdType: "percent",
