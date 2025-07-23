@@ -24,6 +24,8 @@ describe('web-clipboard', () => {
     console.log(await page.data('setClipboardTest'), 'setClipboardTest')
     // bug：自动化测试时设置成功也进入了fail
     // expect(await page.data('setClipboardTest')).toBeTruthy()
+    // 等待 toast 隐藏
+    await page.waitFor(2000);
   });
   it('getClipboardData', async () => {
     if (
