@@ -168,7 +168,8 @@ const pages = [
   '/pages/API/get-app-base-info/get-app-base-info',
   // 单独测试例截图
   // '/pages/API/preview-image/preview-image',
-  '/pages/API/choose-image/choose-image',
+  // 单独测试例截图
+  // '/pages/API/choose-image/choose-image',
   // 单独测试例截图
   // '/pages/API/choose-video/choose-video',
   '/pages/API/get-network-type/get-network-type',
