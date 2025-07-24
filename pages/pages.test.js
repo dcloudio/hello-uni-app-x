@@ -343,7 +343,8 @@ if (isAndroid && !isAppWebView) {
   pages.push(
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
-    '/pages/API/get-image-info/get-image-info',
+    // 动态内容，单独测试例截图
+    // '/pages/API/get-image-info/get-image-info',
     // 动态内容，不需要截图
     // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
