@@ -14,7 +14,13 @@ describe('API-getImageInfo', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/get-image-info/get-image-info');
     await page.waitFor('view');
+    await page.waitFor(6000);
   });
+
+  it('screenshot', async () => {
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot()
+  })
 
   it('test getImageInfo', async () => {
     await page.waitFor(500);
