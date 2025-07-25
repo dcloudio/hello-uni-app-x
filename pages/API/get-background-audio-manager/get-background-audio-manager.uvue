@@ -6,6 +6,7 @@
 				注意：1.离开当前页面后背景音乐将保持播放；\n
 				2. 硬退出app、调用stop api、播放结束都会清理后台控制中心和锁屏信息显示
 			</text>
+			<boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
 			<view class="uni-common-mt">
 				<slider ref="slider" :value="position" :min="0" :max="duration" @changing="onchanging"
 					@change="onchange"></slider>
@@ -45,6 +46,7 @@
 				currentTime: 0,
 				_isChanging: false,
 				buffered: 0,
+				isLoop: false
 			}
 		},
 		computed: {
@@ -59,8 +61,8 @@
 			bgAudioMannager.singer = '歌手：暂无' + this.count;
 			bgAudioMannager.coverImgUrl = 'https://web-assets.dcloud.net.cn/unidoc/zh/Alice.jpeg';
 			bgAudioMannager.src = this.dataUrl;
-      this.currentTime = bgAudioMannager.currentTime
-      this.duration = bgAudioMannager.duration
+			this.currentTime = bgAudioMannager.currentTime
+			this.duration = bgAudioMannager.duration
 			bgAudioMannager.onCanplay(() => {
 				console.log("音频进入可以播放状态事件");
 				this.buffered = bgAudioMannager.buffered;
@@ -79,11 +81,17 @@
 				this.playing = false;
 			})
 			bgAudioMannager.onEnded(() => {
-				console.log("播放结束");
-				this.playing = false;
-				this.currentTime = 0;
-				this.isPlayEnd = true;
-				(this.$refs["slider"] as UniSliderElement).value = 0
+				if (this.isLoop == false) {
+					console.log("播放结束");
+					this.playing = false;
+					this.currentTime = 0;
+					this.isPlayEnd = true;
+					(this.$refs["slider"] as UniSliderElement).value = 0
+				} else {
+					console.log("播放结束, 开始循环播放");
+					this.bgAudioMannager!.src = this.dataUrl;
+					this.bgAudioMannager?.play()
+				}
 			})
 			bgAudioMannager.onNext(() => {
 				this.count++
@@ -163,6 +171,10 @@
 				this.bgAudioMannager!.seek(pos);
 				this._isChanging = false;
 			},
+			setLoop() {
+				this.isLoop = !this.isLoop;
+				console.log('当前是否设置循环播放，loop= ', this.isLoop);
+			}
 		}
 	}
 </script>
