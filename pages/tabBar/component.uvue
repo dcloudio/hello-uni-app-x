@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
-  <!-- #endif -->
+    <!-- #endif -->
     <view class="uni-container" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/componentIndex.png"></image>
@@ -39,7 +39,7 @@
         </uni-collapse-item>
       </uni-collapse>
     </view>
-  <!-- #ifdef APP -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -114,10 +114,10 @@
     },
     // #endif
     onReady() {
-      // #ifdef UNI-APP-X && APP
-      uni.getPrivacySetting({
-        success(res) {
-          if (process.env.NODE_ENV !== 'development') {
+      // #ifdef APP
+      if (process.env.NODE_ENV !== 'development') {
+        uni.getPrivacySetting({
+          success(res) {
             if (res.needAuthorization) {
               let cbId: number = 0
               cbId = uni.onPrivacyAuthorizationChange(() => {
@@ -128,8 +128,8 @@
               checkUpdate()
             }
           }
-        }
-      })
+        })
+      }
       // #endif
     },
     onShow() {
