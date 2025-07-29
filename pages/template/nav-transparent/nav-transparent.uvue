@@ -169,6 +169,14 @@
     }
 
   }
+
+  async function calcStickyTop() {
+    const stickyRect = await (tabRef.value! as UniElement).getBoundingClientRectAsync()!;
+    const navbarRect = await (navbar.value! as UniElement).getBoundingClientRectAsync()!;
+    navbarHeight.value = navbarRect.height
+    tabTop.value = stickyRect.top - navbarHeight.value
+  }
+
   const back = () => {
     uni.navigateBack({});
   }
@@ -180,10 +188,13 @@
     getList()
   })
   onReady(() => {
-    const top = tabRef.value!.getBoundingClientRect().top
-    navbarHeight.value = navbar.value!.offsetHeight
-    tabTop.value = top - navbarHeight.value
+    // const top = tabRef.value!.getBoundingClientRect().top
+    // navbarHeight.value = navbar.value!.offsetHeight
+    // tabTop.value = top - navbarHeight.value
+    calcStickyTop()
   })
+
+
 </script>
 
 <style>
