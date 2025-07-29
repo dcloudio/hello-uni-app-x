@@ -9,14 +9,6 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = '/pages/component/picker-view/picker-view'
 let page, pickerViewEl;
 describe('PickerView.uvue', () => {
-  if (isHarmony) {
-    it('因运行时错误，暂时屏蔽', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(1000)
