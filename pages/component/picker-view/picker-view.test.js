@@ -16,15 +16,12 @@ describe('PickerView.uvue', () => {
     return
   }
 
+
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(1000)
     await page.callMethod('setEventCallbackNum', 0)
     pickerViewEl = await page.$('.picker-view')
-  })
-
-  afterEach(async () => {
-    await page.callMethod('setEventCallbackNum', 0)
   })
 
   async function toScreenshot(imgName) {
@@ -41,21 +38,25 @@ describe('PickerView.uvue', () => {
 
   it('value', async () => {
     await page.callMethod('setValue')
-    await page.waitFor(1000)
+    await page.waitFor(1500)
     const newValue1 = await pickerViewEl.property('value')
     // TODO
     expect(newValue1.toString()).toEqual('0,1,30')
     // 仅在App端，setValue可触发change事件
     if (isAndroid || isIOS) {
-      expect(await page.data('result')).toEqual([ 0, 1, 30 ])
+      const res = await page.data('result')
+      await page.waitFor(500)
+      expect(res).toEqual([ 0, 1, 30 ])
     }
     await page.callMethod('setValue1')
-    await page.waitFor(1000)
+    await page.waitFor(1500)
     const newValue2 = await pickerViewEl.property('value')
     // TODO
     expect(newValue2.toString()).toEqual('10,10,10')
     if (isAndroid || isIOS) {
-      expect(await page.data('result')).toEqual([10, 10, 10])
+      const res = await page.data('result')
+      await page.waitFor(500)
+      expect(res).toEqual([10, 10, 10])
     }
   })
 
@@ -136,6 +137,7 @@ describe('PickerView.uvue', () => {
     })
 
     it('trigger UniPickerViewChangeEvent', async () => {
+      await page.callMethod('setEventCallbackNum', 0)
       await page.callMethod('setValue')
       await page.waitFor(1500)
       const eventCallbackNum = await page.callMethod('getEventCallbackNum')
