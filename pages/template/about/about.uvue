@@ -1,5 +1,5 @@
 <template>
-  <scroll-view style="flex:1;">
+  <scroll-view style="flex:1;" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <view class="content">
       <image class="qrcode" src="https://web-ext-storage.dcloud.net.cn/uni-app-x/hello-uniappx-qrcode.png"></image>
       <text class="tip">扫码体验 uni-app x</text>
@@ -9,7 +9,7 @@
       </text>
       <text class="source desc">本应用源码获取方式：</text>
       <view class="sourcelist">
-        <text class="desc">1. </text>
+        <text class="desc" space="nbsp">1. </text>
         <text>
           <text class="desc">在 HBuilderX 中新建 uni-app 项目时选择 </text>
           <text class="code">Hello uni-app x</text>
@@ -24,7 +24,7 @@
     <view class="panel">
       <text class="uni-panel-text title">服务协议</text>
       <view class="item">
-        <view style="padding-left: 18px;" class="uni-navigate-item" hover-class="is--active" @click="openUrl('https://dcloud.io/license/DCloud.html')">
+        <view style="padding-left: 18px; border-top-style: none;" class="uni-navigate-item" hover-class="is--active" @click="openUrl('https://dcloud.io/license/DCloud.html')">
           <text class="uni-navigate-text">用户协议</text>
           <image :src="arrowRightIcon" class="uni-icon-size"></image>
         </view>
@@ -40,7 +40,7 @@
 
 <script lang="uts">
 import { openSchema } from '@/uni_modules/uts-openSchema'
-
+import { state } from '@/store/index.uts'
 export default {
   data() {
     return {
@@ -50,6 +50,11 @@ export default {
   },
   onLoad() {
     this.version = uni.getAppBaseInfo().appVersion??''
+  },
+  computed: {
+    isDarkMode() : boolean {
+      return state.isDarkMode
+    },
   },
   methods: {
     openUrl(url:string) {
@@ -72,19 +77,21 @@ export default {
 .tip {
   margin: 12px;
   font-size: 14px;
+  color: var(--text-color)
 }
 .desc {
   font-size: 14px;
   line-height: 18px;
+  color: var(--text-color)
 }
 .code {
   font-size: 14px;
   color: #e96900;
-  background-color: #f8f8f8;
 }
 .source {
   align-self: flex-start;
   margin-top: 18px;
+  color: var(--text-color)
 }
 .sourcelist {
   flex-direction: row;
