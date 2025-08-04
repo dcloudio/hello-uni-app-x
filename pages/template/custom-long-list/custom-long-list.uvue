@@ -17,46 +17,36 @@
   </view>
 </template>
 
-<script>
+<script setup>
   type Item = {
     id : number
     name : string
     info : string
   }
-  export default {
-    data() {
-      return {
-        title: '自定义虚拟列表组件uni-recycle-view',
-        list: [] as Item[]
-      }
-    },
-    created() {
-      for (let i = 0; i < 2000; i++) {
-        this.list.push({
-          id: i,
-          name: `Wifi_` + i,
-          info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
-        } as Item)
-      }
-    },
-    methods: {
-      onScrollToUpper() {
-        console.log('scroll top upper')
-      },
-      onScrollToLower() {
-        const listLength = this.list.length
-        for (let i = listLength; i < listLength + 100; i++) {
-          this.list.push({
-            id: i,
-            name: `Wifi_` + i,
-            info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
-          } as Item)
-        }
-      },
-      onScroll() {
-        // console.log('scroll')
-      }
+
+  const title = '自定义虚拟列表组件uni-recycle-view'
+  const list = reactive<Item[]>([])
+  for (let i = 0; i < 2000; i++) {
+    list.push({
+      id: i,
+      name: `Wifi_` + i,
+      info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
+    } as Item)
+  }
+  function onScrollToUpper() {
+    console.log('scroll top upper')
+  }
+  function onScrollToLower() {
+    const listLength = list.length
+    for (let i = listLength; i < listLength + 100; i++) {
+      list.push({
+        id: i,
+        name: `Wifi_` + i,
+        info: `信号强度: -${(Math.floor(Math.random() * 60) + 40)} db, 安全性: WPA/WPA2/WPA3-Personal`
+      } as Item)
     }
+  }
+  function onScroll() {
   }
 </script>
 
