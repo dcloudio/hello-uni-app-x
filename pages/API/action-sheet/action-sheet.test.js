@@ -12,6 +12,7 @@ const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 describe('showActionSheet', () => {
   let screenShotOptions = {};
   let page;
+  let topSafeArea = 0
   async function showActionSheet(page) {
     const btn = await page.$('#btn-action-sheet-show')
     await btn.tap()
@@ -25,7 +26,7 @@ describe('showActionSheet', () => {
 
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-    let topSafeArea = windowInfo.safeAreaInsets.top;
+    topSafeArea = windowInfo.safeAreaInsets.top;
     if (isAppWebView) {
       if (isIos) {
         topSafeArea = 59
