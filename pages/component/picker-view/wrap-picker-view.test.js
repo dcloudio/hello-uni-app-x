@@ -14,7 +14,5 @@ describe('wrap-picker-view', () => {
     await page.waitFor(1000)
     const childExits = await page.$('.picker-view')
     expect(!!childExits).toBe(true)
-
   })
-
 })

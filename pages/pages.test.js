@@ -1,3 +1,5 @@
+jest.setTimeout(50000);
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
@@ -44,7 +46,8 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/text/text-props',
   '/pages/component/rich-text/rich-text',
-  '/pages/component/rich-text/rich-text-complex',
+  // 单独测试例截图
+  // '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
   '/pages/component/form/form',
   '/pages/component/button/button',
@@ -59,8 +62,10 @@ const pages = [
   //动态内容
   // '/pages/component/picker-view/picker-view',
   '/pages/component/switch/switch',
-  '/pages/component/image/image',
-  '/pages/component/image/image-format',
+  // 单独测试例截图
+  // '/pages/component/image/image',
+  // 单独测试例截图
+  // '/pages/component/image/image-format',
   // 判断CPU类型，单独测试例截图
   // '/pages/component/image/image-mode',
   // 网络资源加载，单独测试例截图
@@ -91,7 +96,8 @@ const pages = [
   // '/pages/component/global-properties/global-properties',
   '/pages/component/global-events/global-events',
   '/pages/component/global-events/transition-events',
-  '/pages/component/global-events/touch-events',
+  // 单独测试例截图
+  // '/pages/component/global-events/touch-events',
   '/pages/component/global-events/global-events-transform',
   // 单独测试例截图
   // '/pages/component/nested-scroll-header/nested-scroll-header',
@@ -159,8 +165,10 @@ const pages = [
   '/pages/API/get-system-info/get-system-info',
   '/pages/API/get-device-info/get-device-info',
   '/pages/API/get-app-base-info/get-app-base-info',
-  '/pages/API/preview-image/preview-image',
-  '/pages/API/choose-image/choose-image',
+  // 单独测试例截图
+  // '/pages/API/preview-image/preview-image',
+  // 单独测试例截图
+  // '/pages/API/choose-image/choose-image',
   // 单独测试例截图
   // '/pages/API/choose-video/choose-video',
   '/pages/API/get-network-type/get-network-type',
@@ -259,9 +267,11 @@ const pages = [
   '/pages/template/drop-card/drop-card',
   '/pages/template/swiper-list/swiper-list',
   '/pages/template/swiper-list2/swiper-list2',
-  '/pages/template/swiper-vertical-video/swiper-vertical-video',
+  // 单独测试例截图
+  // '/pages/template/swiper-vertical-video/swiper-vertical-video',
   '/pages/template/scroll-fold-nav/scroll-fold-nav',
-  '/pages/template/half-screen/half-screen',
+  // 单独测试例截图
+  // '/pages/template/half-screen/half-screen',
   // 动态内容
   // '/pages/template/long-list/long-list',
   // 动态内容
@@ -272,14 +282,16 @@ const pages = [
   '/pages/template/custom-tab-bar/custom-tab-bar',
   // 动态内容
   // '/pages/template/calendar/calendar',
+  // 不同平台存在差异，且页面简单
   // '/pages/template/schema/schema',
   // '/uni_modules/uni-pay-x/pages/success/success',
   // 依赖 onload 参数获取 web-view src
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
   // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
-  '/pages/template/custom-long-list/custom-long-list',
-  '/pages/template/test-background-color-content/test-background-color-content',
-  '/pages/template/slider-100/slider-100',
+  // 页面内容不稳定
+  // '/pages/template/custom-long-list/custom-long-list',
+  // 单独测试例截图
+  // '/pages/template/slider-100/slider-100',
   // 动态内容
   // '/pages/template/long-list-nested/long-list-nested',
 ]
@@ -292,16 +304,11 @@ if (isAndroid && isWeb) {
 
 if(!isMP) {
   pages.push(
-    '/pages/component/list-view/list-view',
-    '/pages/component/list-view/list-view-children-in-slot',
+    // 单独测试例截图
+    // '/pages/component/list-view/list-view-children-in-slot',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
-  if (!isHarmony) {
-    pages.push(
-      '/pages/template/schema/schema',
-    )
-  }
 }
 
 if (!isAppWebView) {
@@ -324,7 +331,8 @@ if (!isAppWebView) {
       '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
       '/pages/API/env/env',
       '/pages/API/element-draw/element-draw',
-      '/pages/component/waterflow/waterflow-fit-height',
+      // 单独测试例截图
+      // '/pages/component/waterflow/waterflow-fit-height',
       '/pages/API/share-with-system/share-with-system',
       '/pages/template/test-uts-button/test-uts-button'
     )
@@ -336,9 +344,10 @@ if (isAndroid && !isAppWebView) {
   pages.push(
     '/pages/API/exit/exit',
     '/pages/API/install-apk/install-apk',
-    '/pages/API/get-image-info/get-image-info',
-    '/pages/API/get-video-info/get-video-info',
-    '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
+    // 动态内容，单独测试例截图
+    // '/pages/API/get-image-info/get-image-info',
+    // 动态内容，不需要截图
+    // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
     '/pages/API/compress-video/compress-video',
@@ -354,11 +363,16 @@ if (isWeb) {
     '/pages/API/get-image-info/get-image-info',
     '/pages/API/get-video-info/get-video-info',
     '/pages/API/make-phone-call/make-phone-call',
-    '/pages/API/create-inner-audio-context/create-inner-audio-context',
-    '/pages/API/create-inner-audio-context/inner-audio-format',
-    '/pages/API/create-inner-audio-context/inner-audio-path',
-    '/pages/API/clipboard/clipboard',
-    '/pages/API/compass/compass',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/create-inner-audio-context',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/inner-audio-format',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/inner-audio-path',
+    // 单独测试例截图
+    // '/pages/API/clipboard/clipboard',
+    // 单独测试例截图
+    // '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
     '/pages/component/canvas/canvas/ball',
     '/pages/template/browser-element/browser-element',

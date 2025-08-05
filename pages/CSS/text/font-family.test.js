@@ -4,6 +4,7 @@ describe('css-font-family', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/CSS/text/font-family');
+    await page.waitFor('view');
     await page.waitFor(3000);
   });
 

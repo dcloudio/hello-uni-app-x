@@ -4,13 +4,19 @@ describe('slider', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500)
+    await page.waitFor('view')
+    await page.waitFor(2000)
   })
+  it('screenshot', async () => {
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
   it('value', async () => {
     const sliderValue = 80
-    await page.setData({
-      sliderValue: sliderValue,
-    })
+    await page.callMethod('updateSliderValueTest',sliderValue)
+    // await page.setData({
+    //   sliderValue: sliderValue,
+    // })
     await page.waitFor(100)
 
     // TODO 暂时仅获取第一个

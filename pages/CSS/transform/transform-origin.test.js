@@ -15,13 +15,14 @@ describe('transform-origin-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view');
     await page.waitFor(500);
   })
 
   it('transform-origin-test', async () => {
     await program.tap({x: 100, y: 160})
 
-    await page.waitFor(500);
+    await page.waitFor(1000);
     const image = await program.screenshot({
       fullPage: true
     })

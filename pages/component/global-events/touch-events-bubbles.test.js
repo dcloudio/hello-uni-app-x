@@ -18,17 +18,16 @@ describe('touch-events-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view');
     await page.waitFor(500);
   })
 
   it('touch-event-bubbles-test1', async () => {
     let iconRect = await page.data('iconRect')
-    console.log('iconRect.x', iconRect.x)
-    console.log('iconRect.y', iconRect.y)
     if (isHarmony && iconRect.x < 20) {
       iconRect.x = 144
     }
-    let x = iconRect.x + iconRect.width / 2.0
+    let x = iconRect.x + 10
     let y = iconRect.y + 25
 
     // 滑动事件
@@ -46,7 +45,10 @@ describe('touch-events-test', () => {
 
   it('touch-event-bubbles-test2', async () => {
     let viewEleRect = await page.data('viewEleRect')
-    let x = viewEleRect.x + viewEleRect.width / 2.0
+    if (isHarmony && viewEleRect.x < 20) {
+      viewEleRect.x = 144
+    }
+    let x = viewEleRect.x + 10
     let y = viewEleRect.y + 25
 
     // 滑动事件

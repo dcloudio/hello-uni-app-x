@@ -28,8 +28,19 @@ describe('rich-text-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(1500);
+    await page.waitFor('view');
+    await page.waitFor(2000);
   })
+
+  // 不进行 app-webview 截图对比
+  if (!isAppWebView) {
+    it('screenshot', async () => {
+      const image = await program.screenshot({
+       fullPage: true,
+      });
+      expect(image).toSaveImageSnapshot();
+    });
+  }
 
   if (isAndroid && !isAppWebView) {
     it("test attr mode", async () => {

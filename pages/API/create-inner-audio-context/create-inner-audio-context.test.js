@@ -4,6 +4,7 @@ const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.toLocaleLowerCase().startsWith('harmony')
 const isSafari = platformInfo.indexOf('safari') > -1
 const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
 
 describe('inner-audio', () => {
   // safari 浏览器运行正常，playwright 环境下给 Audio 实例 src 属性赋值会崩溃
@@ -17,7 +18,14 @@ describe('inner-audio', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/create-inner-audio-context/create-inner-audio-context')
     await page.waitFor('view');
+    await page.waitFor(1000);
   });
+  if (isWeb) {
+    it('screenshot', async () => {
+      const image = await program.screenshot({fullPage: true})
+      expect(image).toSaveImageSnapshot();
+    });
+  }
 
   it('onCanplay',async()=>{
     await page.waitFor(1000)

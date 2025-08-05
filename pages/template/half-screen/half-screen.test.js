@@ -3,15 +3,22 @@ describe('template-half-screen', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/template/half-screen/half-screen')
+    await page.waitFor('view')
   });
 
   it('screenshot', async () => {
-    await page.waitFor('view')
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toSaveImageSnapshot()
+  });
+
+  it('打开弹窗 screenshot', async () => {
     const btn = await page.$('.bottomButton')
     await btn.tap()
-    await page.waitFor(500)
+    await page.waitFor(1000)
     const image = await program.screenshot({
-      fullPage: true ,
+      fullPage: true
     })
     expect(image).toSaveImageSnapshot()
   });

@@ -19,7 +19,6 @@ describe('test element-get-attribute', () => {
     await page.callMethod('setStyle')
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
-      console.log('attrStyle:',await page.data('attrStyle'))
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
       expect(await page.data('attrStyle')).toEqual(attrStyle);
     }
@@ -28,7 +27,6 @@ describe('test element-get-attribute', () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
     const propertyValue = isWeb?'rgb(255, 240, 0)':'#FFF000'
-    console.log('propertyValue: ',propertyValue,await page.data('propertyValue'));
     expect(await page.data('propertyValue')).toEqual(propertyValue);
   });
 
@@ -38,8 +36,6 @@ describe('test element-get-attribute', () => {
     const rectInfo = await page.data("rectInfo")
     const systemInfo = await program.systemInfo();
     const width = systemInfo.screenWidth
-    console.log('width: ',width);
-    console.log('rectInfo: ',rectInfo);
     expect(Math.round(rectInfo.x)).toBe(15)
     expect(Math.round(rectInfo.y) >= 242).toBe(true)
     expect(width - 15 * 2 - Math.round(rectInfo.width) >= 0).toBe(true)
