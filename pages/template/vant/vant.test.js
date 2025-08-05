@@ -24,7 +24,6 @@ describe('test vant', () => {
     vantBtn = await vantBtnContainer.$('button')
     await vantBtn.tap()
     await page.waitFor(1000);
-    console.log('jest',await page.data('jest'))
     expect(await page.data('jest')).toBe(true);
   });
 });
