@@ -27,7 +27,6 @@ describe('test page-meta', () => {
     const buttonEl = await page.$("button")
     await buttonEl.tap()
     await page.waitFor(2100)
-    console.log('scrollType',await page.data('scrollType'));
     expect(await page.data('scrollTop')).toEqual('300px');
     expect(await page.data('scrollType')).toEqual('scroll');
     expect(await page.data('scrolldoneType')).toEqual('scrolldone');
