@@ -7,8 +7,13 @@
       <view class="uni-container">
         <view class="uni-center">登录状态</view>
         <view v-if="userInfo == null">
-          <view class="uni-center uni-common-mt">未登录</view>
-          <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
+          <template v-if="logging">
+            <view class="uni-center uni-common-mt">登录中...</view>
+          </template>
+          <template v-else>
+            <view class="uni-center uni-common-mt">未登录</view>
+            <view class="uni-center uni-common-mt">请点击下面按钮登录</view>
+          </template>
         </view>
         <view v-else>
           <view class="uni-center uni-common-mt">
@@ -33,15 +38,19 @@
   import { state, setUserInfo, UserInfo } from '@/store/index.uts'
 
   const title = ref('OAuth')
+  const logging = ref(false)
   const userInfo = computed(() => state.userInfo)
   const testUserInfo = ref<UserInfo | null>(null)
 
   const clear = () => {
     setUserInfo(null)
     testUserInfo.value = null
+    logging.value = false
   }
 
   const hwLogin = () => {
+    logging.value = true
+    if (userInfo.value != null) return
     uni.login({
       provider: 'huawei',
       success() {
@@ -55,6 +64,7 @@
             }
             testUserInfo.value = info
             setUserInfo(info)
+            logging.value = false
           },
           fail(err) {
             clear()
