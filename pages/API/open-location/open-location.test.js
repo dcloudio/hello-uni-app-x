@@ -42,11 +42,11 @@ describe('dialog page', () => {
   });
 
   it('dialogPage should be opened', async () => {
-		const dialogPagesNum = await page.data('dialogPagesNum')
+		const dialogPagesNum = (await page.data('dialogPagesNum')).value
 		expect(dialogPagesNum).toBe(1)
 	})
 
 	afterAll(async () => {
-		await page.callMethod('setLifeCycleNum', originLifeCycleNum)
+		await page.callMethod('pageSetLifeCycleNum', originLifeCycleNum)
   });
 })
