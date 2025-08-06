@@ -8,7 +8,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("location-change", () => {
-  if (isMP || isWeb || isAndroid) {
+  if (isMP || isWeb) {
     // 微信、web harmony 上会有权限弹框，暂时屏蔽测试
     it('not support', async () => {
       expect(1).toBe(1)
@@ -21,7 +21,14 @@ describe("location-change", () => {
   });
 
   it("system+type=wgs84+success", async () => {
-
+  if (isAndroid) {
+    await program.adbCommand(
+      'pm grant io.dcloud.uniappx android.permission.ACCESS_FINE_LOCATION');
+    await program.adbCommand(
+      'pm grant io.dcloud.uniappx android.permission.ACCESS_COARSE_LOCATION');
+    await program.adbCommand(
+      'pm grant io.dcloud.uniappx android.permission.ACCESS_BACKGROUND_LOCATION');
+  }
     await page.setData({
       currentSelectedProvider: 0,
       currentSelectedType: 0,
