@@ -25,6 +25,7 @@
       <view class="uni-btn-v uni-common-mt">
         <!-- #ifdef APP-HARMONY -->
         <button type="primary" @click="hwLogin">华为登录</button>
+        <button class="uni-common-mt" type="primary" @click="wxLogin">微信登录</button>
         <!-- #endif -->
         <button class="uni-common-mt" @click="clear">清空</button>
       </view>
@@ -75,6 +76,28 @@
       fail(err) {
         clear()
         console.log('获取用户信息错误: ', JSON.stringify(err));
+      }
+    })
+  }
+
+  const wxLogin = () => {
+    uni.showLoading({
+      title: '微信登录...'
+    })
+    uni.login({
+      provider: 'weixin',
+      success(res) {
+        uni.hideLoading()
+        uni.showModal({
+          title: '微信登录成功',
+          content: `code: ${res.code}`
+        })
+      },
+      fail(err) {
+        uni.hideLoading()
+        uni.showToast({
+          title: err.errMsg
+        })
       }
     })
   }
