@@ -47,66 +47,78 @@
     </view>
   </view>
 </template>
-<script lang="uts">
+<script lang="uts" setup>
+  type DialogPagesNum = {
+    value: number
+  }
+
   import {
     state,
     setLifeCycleNum
   } from '@/store/index.uts'
 
-  export default {
-    data() {
-      return {
-        title: 'openLocation',
-        longitude: 116.39747,
-        latitude: 39.9085,
-        name: '天安门',
-        address: '北京市东城区东长安街',
-        // 自动化测试
-        dialogPagesNum: -1,
-      }
-    },
-    onShow() {
-      console.log("Page Show");
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-    },
-    onHide() {
-      console.log("Page Hide");
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum - 1)
-    },
-    methods: {
-      openLocation: function () {
-        uni.openLocation({
-          longitude: this.longitude,
-          latitude: this.latitude,
-          name: this.name,
-          address: this.address
-        })
-        // 自动化测试
-        setTimeout(() => {
-          this.test()
-        }, 500)
-      },
-      // 自动化测试
-      test() {
-        const pages = getCurrentPages()
-        const page = pages[pages.length - 1]
-        // #ifdef APP || WEB
-        const dialogPages = page.getDialogPages()
-        this.dialogPagesNum = dialogPages.length
-        // #endif
-      },
-      // 自动化测试
-      setLifeCycleNum(value : number) {
-        setLifeCycleNum(value)
-      },
-      // 自动化测试
-      getLifeCycleNum() : number {
-        return state.lifeCycleNum
-      },
-    }
+  // 响应式数据
+  const title = ref('openLocation')
+  const longitude = ref(116.39747)
+  const latitude = ref(39.9085)
+  const name = ref('天安门')
+  const address = ref('北京市东城区东长安街')
+  // 自动化测试
+  const dialogPagesNum = reactive({ value: -1 } as DialogPagesNum)
+
+  // 生命周期钩子
+  onPageShow(() => {
+    console.log("Page Show")
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onPageHide(() => {
+    console.log("Page Hide")
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 1)
+  })
+
+  // 自动化测试
+  const test = () => {
+    const pages = getCurrentPages()
+    const page = pages[pages.length - 1]
+    // #ifdef APP || WEB
+    const dialogPages = page.getDialogPages()
+    dialogPagesNum.value = dialogPages.length
+    // #endif
   }
+
+  // 方法
+  const openLocation = () => {
+    uni.openLocation({
+      longitude: longitude.value,
+      latitude: latitude.value,
+      name: name.value,
+      address: address.value
+    })
+    // 自动化测试
+    setTimeout(() => {
+      test()
+    }, 500)
+  }
+
+  // 自动化测试
+  const pageSetLifeCycleNum = (value: number) => {
+    setLifeCycleNum(value)
+  }
+
+  // 自动化测试
+  const getLifeCycleNum = (): number => {
+    return state.lifeCycleNum
+  }
+
+  defineExpose({
+    dialogPagesNum,
+    openLocation,
+    pageSetLifeCycleNum,
+    getLifeCycleNum,
+  })
 </script>
 
 <style>
