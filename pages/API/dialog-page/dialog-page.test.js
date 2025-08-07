@@ -516,7 +516,7 @@ describe('dialog page', () => {
     })
   }
   it('input-hold-keyboard in dialog', async () => {
-    await page.callMethod('jest_OpenDialog1')
+    await page.callMethod('openDialogWithInput')
     await page.waitFor(2000);
     await page.callMethod('jest_getTapPoint')
     const point_x = await page.data('jest_click_x');
@@ -530,44 +530,42 @@ describe('dialog page', () => {
     const image = await program.screenshot(deviceShotOptions)
     expect(image).toSaveImageSnapshot()
     await page.waitFor(2000);
-    await page.callMethod('jest_CloseDialog1')
+    await page.callMethod('closeDialogSimple')
   })
 
-  it('dialogPage hideStatusBar hideBottomNavigationIndicator', async () => {
-    if (isAndroid) {
-      await page.callMethod('openDialog2ForTest');
-      await page.waitFor(1000);
-      await page.callMethod('setPageStyleForTest', {
-        hideStatusBar: true,
-        hideBottomNavigationIndicator: true
-      });
-      await page.waitFor(2000);
-      const image = await program.screenshot({
-        deviceShot: true
-      });
-      expect(image).toSaveImageSnapshot();
-      await page.waitFor(2000);
-      await page.callMethod('closeDialog2ForTest');
-      await page.waitFor(1000);
-      await page.callMethod('setPageStyleForTest2', {
-        hideStatusBar: true,
-        hideBottomNavigationIndicator: true
-      });
-      await page.waitFor(1000);
-      await page.callMethod('openDialog2ForTest');
-      await page.waitFor(1000);
-      await page.callMethod('closeDialog2ForTest');
-      await page.waitFor(1000);
-      const image2 = await program.screenshot({
-        deviceShot: true
-      });
-      expect(image2).toSaveImageSnapshot();
-    }
-  });
-
   if (isAndroid) {
+    it('dialogPage hideStatusBar hideBottomNavigationIndicator', async () => {
+        await page.callMethod('openDialog2Simple');
+        await page.waitFor(1000);
+        await page.callMethod('setPageStyleForTest', {
+          hideStatusBar: true,
+          hideBottomNavigationIndicator: true
+        });
+        await page.waitFor(2000);
+        const image = await program.screenshot({
+          deviceShot: true
+        });
+        expect(image).toSaveImageSnapshot();
+        await page.waitFor(2000);
+        await page.callMethod('closeDialogSimple');
+        await page.waitFor(1000);
+        await page.callMethod('setPageStyleForTest2', {
+          hideStatusBar: true,
+          hideBottomNavigationIndicator: true
+        });
+        await page.waitFor(1000);
+        await page.callMethod('openDialog2Simple');
+        await page.waitFor(1000);
+        await page.callMethod('closeDialogSimple');
+        await page.waitFor(1000);
+        const image2 = await program.screenshot({
+          deviceShot: true
+        });
+        expect(image2).toSaveImageSnapshot();
+    });
+
     it('dialogPage androidThreeButtonNavigationTranslucent', async () => {
-        await page.callMethod('openDialog2ForTest');
+        await page.callMethod('openDialog2Simple');
         await page.waitFor(1000);
         await page.callMethod('setPageStyleForTest', {
           androidThreeButtonNavigationTranslucent: false
@@ -578,7 +576,7 @@ describe('dialog page', () => {
         });
         expect(image).toSaveImageSnapshot();
         await page.waitFor(2000);
-        await page.callMethod('closeDialog2ForTest');
+        await page.callMethod('closeDialogSimple');
     });
   }
 
