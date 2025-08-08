@@ -45,5 +45,9 @@ describe('web-clipboard', () => {
     }
     // 等待 toast 隐藏
     await page.waitFor(3000);
+    if(isAndroid) {
+      // Android平台规避部分设备左下角弹框影响其他测试例
+      await page.waitFor(3000);
+    }
   });
 });
