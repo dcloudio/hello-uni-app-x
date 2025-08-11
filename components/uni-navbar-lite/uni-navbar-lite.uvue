@@ -41,7 +41,7 @@
     stat: { type: Boolean, default: false }
   })
 
-  let statusBarHeight = 0
+  let statusBarHeight = ref(0)
 
   const unicode = computed(() : string => "\ue600")
 
@@ -56,6 +56,15 @@
         console.log(err);
       },
     });
+    // #endif
+
+    uni.setNavigationBarColor({
+      frontColor: "#000000",
+      backgroundColor: "#ffffff",
+    });
+    // #ifdef MP-WEIXIN
+    // TODO 部分小程序平台不支持getWindowInfo
+    statusBarHeight.value = uni.getWindowInfo().statusBarHeight
     // #endif
 
     if (props.stat && props.title != '') {
