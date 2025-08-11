@@ -76,7 +76,8 @@
 
   defineExpose({
     is_open,
-    openOrClose
+    openOrClose,
+    openCollapse
   })
 </script>
 
