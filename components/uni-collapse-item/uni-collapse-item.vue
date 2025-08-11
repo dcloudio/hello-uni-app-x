@@ -38,6 +38,9 @@
 
 
   function openOrClose(open : boolean) {
+    setTimeout(()=>{
+      box_is_open.value = !box_is_open.value
+    },10)
     // #ifndef MP-WEIXIN
     const bNode = boxRef.value?.style!;
     const cNode = contentRef.value?.style!;
