@@ -221,13 +221,16 @@ describe('component-native-input', () => {
     await page.waitFor(2000);
 
     const keyboardHeight = await page.data('keyboardHeight');
-    console.log("keyboardHeight :", keyboardHeight);
     expect(keyboardHeight).toBeGreaterThan(25)
     //reset
     await page.setData({
       focusedForKeyboardHeightChangeTest: false,
       keyboardHeight: 0
     })
+    if (isHarmony) {
+      await program.tap({ x: 100, y: 200 })
+      await page.waitFor(1000);
+    }
   })
 
   it("afterAllTestScreenshot", async () => {
