@@ -1,8 +1,8 @@
 <template>
   <view class="uni-flex-item">
-    <live-pusher id="live-pusher" class="live-pusher" :url="url" :beauty="beauty" :whiten="whiten"
-      :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition" :mode="mode"
-      :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
+    <live-pusher v-if="isPermissionGranted && isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
+      :whiten="whiten" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
+      :mode="mode" :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
       :enable-mic="enableMic" :audio-quality="audioQuality" :min-bitrate="minBitrate" :max-bitrate="maxBitrate"
       :audio-volume-type="audioVolumeType" :aspect="aspect" :background-mute="backgroundMute"
       :waiting-image="waitingImage" :zoom="zoom" @statechange="statechange" @netstatus="netstatus" @error="error">
@@ -53,8 +53,8 @@
         <slider :min="0" :max="9" @change="onWhitenChange" />
       </view>
       <boolean-data title="设置是否静音" :defaultValue="muted" @change="onMutedChange"></boolean-data>
-      <boolean-data title="设置是否开启摄像头" :defaultValue="enableCamera" @change="onEnableCameraChange"></boolean-data>
-      <boolean-data title="设置是否开启麦克风" :defaultValue="enableMic" @change="onEnableMicChange"></boolean-data>
+      <!-- <boolean-data title="设置是否开启摄像头" :defaultValue="enableCamera" @change="onEnableCameraChange"></boolean-data> -->
+      <!-- <boolean-data title="设置是否开启麦克风" :defaultValue="enableMic" @change="onEnableMicChange"></boolean-data> -->
       <boolean-data title="设置是否自动聚焦" :defaultValue="autoFocus" @change="onAutoFocusChange"></boolean-data>
       <boolean-data title="设置进入后台时是否静音" :defaultValue="backgroundMute" @change="onBackgroundMuteChange"></boolean-data>
       <boolean-data title="设置推流画面是否镜像" :defaultValue="remoteMirror" @change="onRemoteMirrorChange"></boolean-data>
@@ -72,7 +72,8 @@
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
   const context = ref(null as LivePusherContext | null);
-  const url = ref("rtmp://push.pcwant.com");
+  const instance = ref(null as ComponentPublicInstance | null);
+  const url = ref("rtmp://test");
   const beauty = ref(0);
   const whiten = ref(0);
   const remoteMirror = ref(false);
@@ -95,9 +96,22 @@
   const videoWidth = ref(0);
   const videoHeight = ref(0);
   const fps = ref(0);
+  const isPermissionGranted = ref(false);
+  const isUrlSet = ref(true);
 
   onReady(() => {
-    context.value = uni.createLivePusherContext("live-pusher", getCurrentInstance()!.proxy);
+    instance.value = getCurrentInstance()?.proxy;
+    // #ifdef APP-ANDROID
+    const permissions = ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"];
+    UTSAndroid.requestSystemPermission(UTSAndroid.getUniActivity()!, permissions, (allRight : boolean, grantedList : string[]) => {
+      if (allRight) {
+        isPermissionGranted.value = true;
+      }
+    }, (doNotAskAgain : boolean, grantedList : string[]) => { });
+    // #endif
+    // #ifndef APP-ANDROID
+    isPermissionGranted.value = true;
+    // #endif
   });
 
   const statechange = (e : UniLivePusherStatechangeEvent) => {
@@ -110,6 +124,9 @@
     console.log("error", e);
   };
   const start = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.start({
       success: (res) => {
         console.log("start", JSON.stringify(res));
@@ -123,6 +140,9 @@
     });
   };
   const pause = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.pause({
       success: (res) => {
         console.log("pause", JSON.stringify(res));
@@ -136,6 +156,9 @@
     });
   };
   const resume = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.resume({
       success: (res) => {
         console.log("resume", JSON.stringify(res));
@@ -149,6 +172,9 @@
     });
   };
   const stop = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.stop({
       success: (res) => {
         console.log("stop", JSON.stringify(res));
@@ -162,6 +188,9 @@
     });
   };
   const switchCamera = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.switchCamera({
       success: (res) => {
         console.log("switchCamera", JSON.stringify(res));
@@ -175,6 +204,9 @@
     });
   };
   const snapshot = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.snapshot({
       success: (res) => {
         console.log("snapshot", JSON.stringify(res));
@@ -188,6 +220,9 @@
     });
   };
   const startPreview = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.startPreview({
       success: (res) => {
         console.log("startPreview", JSON.stringify(res));
@@ -201,6 +236,9 @@
     });
   };
   const stopPreview = () => {
+    if (context.value == null) {
+      context.value = uni.createLivePusherContext("live-pusher", instance.value);
+    }
     context.value?.stopPreview({
       success: (res) => {
         console.log("stopPreview", JSON.stringify(res));
@@ -229,7 +267,12 @@
   const onUrlComfirm = (event : UniInputConfirmEvent) => {
     let value = event.detail.value;
     if (value == '') return;
-    url.value = value;
+    context.value = null;
+    isUrlSet.value = false;
+    setTimeout(() => {
+      url.value = value;
+      isUrlSet.value = true;
+    }, 100);
     console.log("url ->", value);
   };
   const onMinBitrateComfirm = (event : UniInputConfirmEvent) => {
