@@ -1,7 +1,7 @@
 <template>
   <view class="uni-flex-item">
     <live-pusher v-if="isPermissionGranted && isUrlSet" id="live-pusher" class="live-pusher" :url="url" :beauty="beauty"
-      :whiten="whiten" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
+      :whiteness="whiteness" :remote-mirror="remoteMirror" :local-mirror="localMirror" :device-position="devicePosition"
       :mode="mode" :auto-focus="autoFocus" :muted="muted" :orientation="orientation" :enable-camera="enableCamera"
       :enable-mic="enableMic" :audio-quality="audioQuality" :min-bitrate="minBitrate" :max-bitrate="maxBitrate"
       :audio-volume-type="audioVolumeType" :aspect="aspect" :background-mute="backgroundMute"
@@ -50,7 +50,7 @@
       </view>
       <view class="margin-10">
         <text>美白, 取值范围0-9(iOS取值范围为1), 0表示关闭</text>
-        <slider :min="0" :max="9" @change="onWhitenChange" />
+        <slider :min="0" :max="9" @change="onWhitenessChange" />
       </view>
       <boolean-data title="设置是否静音" :defaultValue="muted" @change="onMutedChange"></boolean-data>
       <!-- <boolean-data title="设置是否开启摄像头" :defaultValue="enableCamera" @change="onEnableCameraChange"></boolean-data> -->
@@ -75,7 +75,7 @@
   const instance = ref(null as ComponentPublicInstance | null);
   const url = ref("rtmp://test");
   const beauty = ref(0);
-  const whiten = ref(0);
+  const whiteness = ref(0);
   const remoteMirror = ref(false);
   const localMirror = ref("auto");
   const devicePosition = ref("front");
@@ -303,9 +303,9 @@
     beauty.value = event.detail.value;
     console.log("beauty ->", beauty.value);
   };
-  const onWhitenChange = (event : UniSliderChangeEvent) => {
-    whiten.value = event.detail.value;
-    console.log("whiteness ->", whiten.value);
+  const onWhitenessChange = (event : UniSliderChangeEvent) => {
+    whiteness.value = event.detail.value;
+    console.log("whiteness ->", whiteness.value);
   };
   const onEnableCameraChange = (value : boolean) => {
     enableCamera.value = value;
