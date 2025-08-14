@@ -1,0 +1,83 @@
+<template>
+  <scroll-view scroll-y="true" @scroll="onScroll" @scrolltolower="onScrollToLower" @refresherrefresh="onRefresherRefresh" :refresher-enabled="props.refresherEnabled" :refresher-triggered="props.refresherTriggered" style="flex: 1;">
+    <view class="placeholder" :style="{height: placeholderHeight + 'px'}">
+      <view :style="{transform: 'translateY(' + offsetTop + 'px)'}">
+        <slot :items="items"></slot>
+      </view>
+    </view>
+    <slot name="load-more"></slot>
+  </scroll-view>
+</template>
+<script setup>
+  import {
+    LayoutItem
+  } from '../../common/types.uts'
+  const props = defineProps({
+    itemHeight: {
+      type: Number,
+      default: 40
+    },
+    list: {
+      type: Object as PropType<any[]>,
+      default: [] as any[]
+    },
+    refresherEnabled: {
+      type: Boolean,
+      default: false
+    },
+    refresherTriggered: {
+      type: Boolean,
+      default: false,
+    }
+  })
+
+  const emit = defineEmits([
+    'scroll',
+    'scrolltolower',
+    'refresherrefresh'
+  ])
+
+  const windowInfo = uni.getWindowInfo()
+
+  // TODO 规避鸿蒙平台过早取不到windowHeight的Bug
+  // 使用窗口高度计算节省不少逻辑，通常也不会有滚动区域超出窗口大小的需求
+  const windowHeight = windowInfo.windowHeight === 0 ? windowInfo.screenHeight : windowInfo.windowHeight
+  const renderItemCount = computed(() => {
+    return Math.min(
+      props.list.length,
+      Math.ceil(
+        windowHeight / props.itemHeight) + 1
+    )
+  })
+
+  const placeholderHeight = computed(() => {
+    return props.list.length * props.itemHeight
+  })
+
+  const scrollTop = ref(0)
+
+  const startIndex = computed(() => {
+    return Math.min(Math.floor(scrollTop.value / props.itemHeight), props.list.length - renderItemCount.value);
+  })
+  const items = computed<any[]>(() => {
+    return props.list.slice(startIndex.value, Math.min(props.list.length, startIndex.value + renderItemCount.value))
+  })
+  const offsetTop = computed(() => {
+    return startIndex.value * props.itemHeight;
+  })
+
+  function onScroll(e: UniScrollEvent) {
+    scrollTop.value = e.detail.scrollTop
+    emit('scroll', e)
+  }
+
+  function onRefresherRefresh(e) {
+    emit('refresherrefresh', e)
+  }
+
+  function onScrollToLower(e) {
+    emit('scrolltolower', e)
+  }
+</script>
+<style>
+</style>
