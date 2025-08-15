@@ -1,105 +1,103 @@
-<script>
+
+
+<script setup>
   type ItemType = {
     value : string
     name : string
     checked : boolean
   }
-  export default {
-    data() {
-      return {
-        items: [
-          {
-            value: 'CHN',
-            name: '中国',
-            checked: true,
-          },
-          {
-            value: 'USA',
-            name: '美国',
-            checked: false,
-          },
-          {
-            value: 'BRA',
-            name: '巴西',
-            checked: false,
-          },
-          {
-            value: 'JPN',
-            name: '日本',
-            checked: false,
-          },
-          {
-            value: 'ENG',
-            name: '英国',
-            checked: false,
-          },
-          {
-            value: 'FRA',
-            name: '法国',
-            checked: false,
-          },
-        ] as ItemType[],
-        testEvent: false,
-        text: '未选中',
-        wrapText: 'uni-app x，终极跨平台方案\nuts，大一统语言',
-        value: [] as string[],
-        disabled: true,
-        checked: true,
-        color: '#007aff',
-        iconColor: '#211cfe',
-        foreColor: '#ff0000',
-        // 组件属性 autotest
-        checked_boolean: false,
-        disabled_boolean: false,
-        color_input: "#007aff",
-        backgroundColor_input: "#ffffff",
-        borderColor_input: "#d1d1d1",
-        activeBackgroundColor_input: "#ffffff",
-        activeBorderColor_input: "#d1d1d1",
-        iconColor_input: "#007aff",
-        foreColor_input: '#ff0000'
-      }
+
+  const items = ref([
+    {
+      value: 'CHN',
+      name: '中国',
+      checked: true,
     },
-    methods: {
+    {
+      value: 'USA',
+      name: '美国',
+      checked: false,
+    },
+    {
+      value: 'BRA',
+      name: '巴西',
+      checked: false,
+    },
+    {
+      value: 'JPN',
+      name: '日本',
+      checked: false,
+    },
+    {
+      value: 'ENG',
+      name: '英国',
+      checked: false,
+    },
+    {
+      value: 'FRA',
+      name: '法国',
+      checked: false,
+    },
+  ] as ItemType[])
 
-      checkboxChange: function (e : UniCheckboxGroupChangeEvent) {
-        // 自动化测试
-        if ((e.target?.tagName ?? '') == 'CHECKBOX-GROUP' && e.type === 'change') {
-          this.testEvent = true
-        }
+  const testEvent = ref(false)
+  const text = ref('未选中')
+  const wrapText = ref('uni-app x，终极跨平台方案\nuts，大一统语言')
+  const value = ref([] as string[])
+  const disabled = ref(true)
+  const checked = ref(true)
+  const color = ref('#007aff')
+  const iconColor = ref('#211cfe')
+  const foreColor = ref('#ff0000')
+  // 组件属性 autotest
+  const checked_boolean = ref(false)
+  const disabled_boolean = ref(false)
+  const color_input = ref("#007aff")
+  const backgroundColor_input = ref("#ffffff")
+  const borderColor_input = ref("#d1d1d1")
+  const activeBackgroundColor_input = ref("#ffffff")
+  const activeBorderColor_input = ref("#d1d1d1")
+  const iconColor_input = ref("#007aff")
+  const foreColor_input = ref('#ff0000')
 
-        const selectedNames : string[] = []
-        this.items.forEach((item) => {
-          if (e.detail.value.includes(item.value)) {
-            selectedNames.push(item.name)
-          }
-        })
-        uni.showToast({
-          icon: 'none',
-          title: '当前选中:' + selectedNames.join(','),
-        })
-      },
-      testChange: function (e : UniCheckboxGroupChangeEvent) {
-        this.value = e.detail.value
-      },
-      checkbox_click() { console.log("组件被点击时触发") },
-      checkbox_touchstart() { console.log("手指触摸动作开始") },
-      checkbox_touchmove() { console.log("手指触摸后移动") },
-      checkbox_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") },
-      checkbox_touchend() { console.log("手指触摸动作结束") },
-      checkbox_tap() { console.log("手指触摸后马上离开") },
-      checkbox_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
-      change_checked_boolean(checked : boolean) { this.checked_boolean = checked },
-      change_disabled_boolean(checked : boolean) { this.disabled_boolean = checked },
-      confirm_color_input(value : string) { this.color_input = value },
-      confirm_backgroundColor_input(value : string) { this.backgroundColor_input = value },
-      confirm_borderColor_input(value : string) { this.borderColor_input = value },
-      confirm_activeBackgroundColor_input(value : string) { this.activeBackgroundColor_input = value },
-      confirm_activeBorderColor_input(value : string) { this.activeBorderColor_input = value },
-      confirm_iconColor_input(value : string) { this.iconColor_input = value },
-      confirm_foreColor_input(value : string) { this.foreColor_input = value }
+  const checkboxChange = (e : UniCheckboxGroupChangeEvent) => {
+    // 自动化测试
+    if ((e.target?.tagName ?? '') == 'CHECKBOX-GROUP' && e.type === 'change') {
+      testEvent.value = true
     }
+
+    const selectedNames : string[] = []
+    items.value.forEach((item) => {
+      if (e.detail.value.includes(item.value)) {
+        selectedNames.push(item.name)
+      }
+    })
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + selectedNames.join(','),
+    })
   }
+
+  const testChange = (e : UniCheckboxGroupChangeEvent) => {
+    value.value = e.detail.value
+  }
+
+  const checkbox_click = () => { console.log("组件被点击时触发") }
+  const checkbox_touchstart = () => { console.log("手指触摸动作开始") }
+  const checkbox_touchmove = () => { console.log("手指触摸后移动") }
+  const checkbox_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
+  const checkbox_touchend = () => { console.log("手指触摸动作结束") }
+  const checkbox_tap = () => { console.log("手指触摸后马上离开") }
+  const checkbox_longpress = () => { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+  const change_checked_boolean = (checked_val : boolean) => { checked_boolean.value = checked_val }
+  const change_disabled_boolean = (checked_val : boolean) => { disabled_boolean.value = checked_val }
+  const confirm_color_input = (value_val : string) => { color_input.value = value_val }
+  const confirm_backgroundColor_input = (value_val : string) => { backgroundColor_input.value = value_val }
+  const confirm_borderColor_input = (value_val : string) => { borderColor_input.value = value_val }
+  const confirm_activeBackgroundColor_input = (value_val : string) => { activeBackgroundColor_input.value = value_val }
+  const confirm_activeBorderColor_input = (value_val : string) => { activeBorderColor_input.value = value_val }
+  const confirm_iconColor_input = (value_val : string) => { iconColor_input.value = value_val }
+  const confirm_foreColor_input = (value_val : string) => { foreColor_input.value = value_val }
 </script>
 
 <template>

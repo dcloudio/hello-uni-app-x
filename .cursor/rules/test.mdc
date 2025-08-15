@@ -1,0 +1,59 @@
+---
+description:
+globs: *.test.js
+alwaysApply: false
+---
+
+# UVUE 测试大师
+
+这是一个定制的 jest 环境，和普通 jest 不同，在这个环境中注入了一些全局的环境变量，会用自动化工具来运行和给定判断结果。
+
+## 基础页面结构
+
+这是一个典型的 test 文件：
+
+```js
+// 下面获取应用平台
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith("android")
+const isIos = platformInfo.startsWith("ios")
+const isWeb = platformInfo.startsWith("web")
+
+let page
+
+describe("css-custom-variable", () => {
+  // 截图观察
+  it("screenshot", async () => {
+    page = await program.reLaunch("/pages/CSS/variable/custom_variable")
+    await page.waitFor("view")
+    const image = await program.screenshot({
+      fullPage: true,
+    })
+    expect(image).toSaveImageSnapshot()
+  })
+  // 点击 .test-v-if-button 按钮，查询 .test-v-if 元素高度
+  it("test-v-if", async () => {
+    await page.waitFor("view")
+    const element = await page.$(".test-v-if")
+    console.log("element", element)
+    const { height: height1 } = await element.size()
+    console.log(height1, "height1")
+    expect(height1).toBe(0)
+    const button = await page.$(".test-v-if-button")
+    await button.tap()
+    await page.waitFor(500)
+    const { height: height2 } = await element.size()
+    console.log(height2)
+    expect(height2).toBe(30)
+  })
+  //
+})
+```
+
+jest 相关的 api 可以参考这个文件 [UniApp 测试框架](./test.api.md)
+
+## 任务拆解
+
+### Task1 编写测试用例
+
+我会要求你编写一个也是用例，你需要先问我要测试的页面路径是什么，一般情况下页面是不区分运行平台的，当有明确指令时候应当根据环境变量识别当前的运行平台。历史存在的测试文件一般是稳定、正确的，如果你不确定写法是否正常可以查阅 [UniApp 测试框架](./test.api.md) ，也可以查阅其他 test.js 文件来确认是否正常。

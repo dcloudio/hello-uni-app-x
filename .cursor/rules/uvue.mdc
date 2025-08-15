@@ -1,0 +1,37 @@
+---
+globs: **/*.uvue
+alwaysApply: false
+---
+
+# UVUE 大师
+
+## 基础介绍
+
+这是一个 uvue 工程，可以理解为是一个特殊环境的 Vue 文件。
+
+## 任务介绍
+
+### Task1: 修改为组合式写法
+
+如果我要求你修正选项式为组合式，这句话的意思是为了后续工作开发，需要把 `<script>` 修改成 `<script setup>`，同时修正内部的数据。
+
+语法结构和 Vue 是一致的。uvue 有部分生命周期是增强的，比如 onReady/onShow/onHide，原本的生命周期 `onMounted/watch/defineExpose` 是全局。也就是说不需要刻意引入这些方法。
+
+你可以参考下面要求
+
+1. 在进行“选项式 API → 组合式 API”改造时，只做语法层面的转换，保证代码不报错，避免引入业务逻辑变更。
+2. 在改造过程中，不要删除或遗漏任何已有代码和注释，也不要新增任何注释，确保代码完整性。
+3. 在组合式 API 中，必须保证所有函数和变量在调用前已定义，如顺序不对，要根据依赖关系调整函数定义顺序，避免未定义前调用。
+4. 在组合式 API 中，不需要 import 所有 vue 的 API 和 uni-app-x 的生命周期函数（如 `ref`、`computed`、`watch`、`onLoad`、`onMounted` 等），uni-app x 会自动引入。
+5. 在选项式 API 中的 `onShow`、`onHide` 页面生命周期，改为组合式 API 时，分别改成 onPageShow、onPageHide。
+6. 在组件生命周期兼容性方面，选项式 API 的 beforeUnmount、mounted、unmounted，改为组合式 API 时，分别改成 onBeforeUnmount、onMounted、onUnmounted，避免生命周期名称不一致；选项式 API 的 created 改为组合式的 `<script setup>` 顶层代码直接执行。
+7. 在使用 ref 时：
+
+   - 如果引用内置组件（例如：`scroll-view`、`swiper`、`slider` 等），类型应为：Uni 组件名(驼峰)Element，例如 `<slider>` 组件类型为 UniSliderElement，声明为 const sliderRef = ref<UniSliderElement | null>(null)；避免类型错误，错误示例：swiper 上的 ref 写成了 const swiper = ref<UniElement|null>(null)。
+   - 如果引用内置 DOM 元素（例如：view、text），类型为 ref<UniElement|null>(null) 或 ref<UniElement[]|null>(null)；
+   - 如果引用自定义组件，类型为 ref<ComponentPublicInstance|null>(null) 或 ref<ComponentPublicInstance[]|null>(null)，避免类型声明错误。
+
+8. 在组合式 API 中，每个 ref 要单独声明，变量名与模板 ref 保持一致，直接用 xxx.value 访问，避免变量名与 import 的组件名重复，否则会报错。
+9. 在组合式 API 下，子组件方法不会自动暴露给父组件，只有通过 defineExpose 显式暴露的方法，父组件才能通过 ref 调用，避免父组件无法访问子组件方法。
+10. 在测试例页面用到页面中的数据或方法时，必须通过 defineExpose 显式暴露数据和方法，避免测试无法访问。
+11. 在页面生命周期中，onPullDownRefresh 应作为页面生命周期函数处理，而不是写成普通方法。
