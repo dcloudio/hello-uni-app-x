@@ -326,7 +326,7 @@ if (!isAppWebView) {
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
       '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
-      '/pages/API/get-univerify-manager/get-univerify-manager',
+      '/pages/API/get-uni-verify-manager/get-uni-verify-manager',
       '/pages/API/request-payment/request-payment',
       '/pages/template/scroll-sticky/scroll-sticky',
     )
