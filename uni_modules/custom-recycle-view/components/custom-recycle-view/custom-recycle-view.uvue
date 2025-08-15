@@ -1,9 +1,7 @@
 <template>
   <scroll-view scroll-y="true" @scroll="onScroll" @scrolltolower="onScrollToLower" @refresherrefresh="onRefresherRefresh" :refresher-enabled="props.refresherEnabled" :refresher-triggered="props.refresherTriggered" style="flex: 1;">
     <view class="placeholder" :style="{height: placeholderHeight + 'px'}">
-      <!-- <view :style="{transform: 'translateY(' + offsetTop + 'px)'}"> -->
       <slot :layoutItems="layoutItems" :items="items"></slot>
-      <!-- </view> -->
     </view>
     <slot name="load-more"></slot>
   </scroll-view>
@@ -63,7 +61,7 @@
     return props.list.slice(startIndex.value, Math.min(props.list.length, startIndex.value + renderItemCount.value))
   })
   const layoutItems = ref<LayoutItem[]>([])
-  
+
   type ItemAndIndex = {
     item: any,
     index: number
@@ -114,19 +112,17 @@
         }
       }
     }
-    
+
     layoutItems.value.sort((a, b) => {
       return items.value.indexOf(a.item) - items.value.indexOf(b.item)
     })
   }, {
     immediate: true
   })
-  // const offsetTop = computed(() => {
-  //   return startIndex.value * props.itemHeight;
-  // })
 
   function onScroll(e: UniScrollEvent) {
-    scrollTop.value = e.detail.scrollTop
+    const _scrollTop = e.detail.scrollTop
+    scrollTop.value = _scrollTop < 0 ? 0 : _scrollTop
     emit('scroll', e)
   }
 
