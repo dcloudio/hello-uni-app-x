@@ -2,18 +2,29 @@
   <view style="flex: 1;">
     <page-head :title="title"></page-head>
     <view class="tips">滚动期间对子组件回收复用。此示例限制列表子项固定高度。注意回收复用引发的副作用，详情参考custom-recycle-view-buttons组件内的错误用法。</view>
-    <custom-recycle-view :itemHeight="120" :list="list" style="flex: 1;" @scrolltolower="onScrollToLower" @refresherrefresh="onRefresherRefresh" :refresher-enabled="refresherEnabled" :refresher-triggered="refresherTriggered">
-      <template v-slot:default="{items}">
+    <custom-recycle-view :itemHeight="140" :list="list" style="flex: 1;" @scrolltolower="onScrollToLower"
+      @refresherrefresh="onRefresherRefresh" :refresher-enabled="refresherEnabled"
+      :refresher-triggered="refresherTriggered">
+      <template v-slot:default="{layoutItems, items}">
         <!-- 注意为复用custom-recycle-item，key只能是index -->
-        <custom-recycle-item class="item" v-for="(item, index) in (items as Item[])" :key="index">
+        <custom-recycle-item v-for="(item, index) in (items as Item[])" :key="(layoutItems as LayoutItem[])[index].id" :style="{transform: 'translateY(' + (layoutItems as LayoutItem[])[index].offset + 'px)'}">
           <view class="item-wrapper">
-            <navigator hover-stay-time="0" :url="'/pages/template/custom-recycle-scroll-view/detail?name='+item.name">
+            <navigator :hover-stay-time="0" :url="'/pages/detail/detail?name='+item.name">
               <!-- 测试稍微复杂的模板 -->
-              <view><text class="name">{{item.name}}</text></view>
-              <view><text class="info">{{item.name.length % 2 == 0 ? "name长度为偶数" : "name长度为奇数"}}</text></view>
-              <view><text class="info">{{item.info}}</text></view>
-              <view><text class="info">{{item.info.length % 2 == 0 ? "info长度为偶数" : "info长度为奇数"}}</text></view>
-              <view><text class="info">{{(item.info.length + item.name.length) % 2 == 0 ? "name+info长度为偶数" : "name+info长度为奇数"}}</text></view>
+              <view class="item-content">
+                <image class="item-image" :src="item.img" mode="aspectFill"></image>
+                <view class="item-text">
+                  <view><text class="item-name">{{item.name}}</text></view>
+                  <view><text class="item-info">{{item.name.length % 2 == 0 ? "name长度为偶数" : "name长度为奇数"}}</text></view>
+                  <view><text class="item-info">{{item.info}}</text></view>
+                  <view><text class="item-info">{{item.info.length % 2 == 0 ? "info长度为偶数" : "info长度为奇数"}}</text></view>
+                  <view><text
+                      class="item-info">{{(item.info.length +item.name.length) % 2 == 0 ? "name+info长度为偶数" : "name+info长度为奇数"}}</text>
+                  </view>
+                  <view class="item-tags"><text class="item-tag" v-for="(tag, index) in item.tags"
+                      :key="index">{{tag}}</text></view>
+                </view>
+              </view>
             </navigator>
             <!-- 由于存在Element复用，事件内使用实例相关的变量时务必每次从实例上获取，不要获取后保存再使用，详见custom-recycle-view-buttons组件内的错误用法 -->
             <custom-recycle-view-buttons :name="item.name"></custom-recycle-view-buttons>
@@ -21,16 +32,21 @@
         </custom-recycle-item>
       </template>
       <template #load-more>
-        <view class="load-more">{{ hasMore ? "加载中..." : "没有更多"}}</view>
+        <view class="load-more"><text class="load-more-text">{{ hasMore ? "加载中..." : "没有更多"}}</text></view>
       </template>
     </custom-recycle-view>
   </view>
 </template>
 
 <script setup>
+  import {
+    LayoutItem
+  } from '@/uni_modules/custom-recycle-view/common/types.uts'
   type Item = {
-    name: string,
-    info: string
+    img : string,
+    name : string,
+    info : string,
+    tags : string[]
   }
   const title = ref('自定义复用滚动列表')
   const list = reactive<Item[]>([] as Item[])
@@ -39,12 +55,36 @@
   const refresherTriggered = ref(false)
   const hasMore = ref(true)
 
+  function generateRandomChineseString(length = 4) {
+    let result = '';
+    // 常用中文字符Unicode范围: 0x4E00 - 0x9FFF
+    const minCode = 0x4E00;
+    const maxCode = 0x9FFF;
+
+    for (let i = 0; i < length; i++) {
+      const randomCode = Math.floor(Math.random() * (maxCode - minCode + 1)) + minCode;
+      result += String.fromCharCode(randomCode);
+    }
+
+    return result;
+  }
+
+  // 使用示例
+  console.log(generateRandomChineseString()); // 例如: "愰笔镾痈"
+  console.log(generateRandomChineseString(4)); // 例如: "釜鳖龄嗨"
+
   function loadData() {
     for (var i = 0; i < 200; i++) {
       const index = list.length
+      const tags : string[] = []
+      for (let i = 0; i < Math.floor(Math.random() * 5); i++) {
+        tags.push(generateRandomChineseString(4))
+      }
       list.push({
+        img: `https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-${Math.floor(Math.random() * 3) + 1}.jpg`,
         name: 'Name_' + index,
-        info: 'Info_' + index
+        info: 'Info_' + index,
+        tags
       } as Item)
     }
   }
@@ -63,13 +103,12 @@
   }
 
   function onScrollToLower() {
-    if(list.length >= 5000) {
+    if (list.length >= 5000) {
       hasMore.value = false
     } else {
       loadData()
     }
   }
-
 </script>
 
 <style>
@@ -81,23 +120,54 @@
   }
 
   .item-wrapper {
-    height: 120px;
+    height: 140px;
     justify-content: center;
     box-sizing: border-box;
     border-bottom: solid 1px #cccccc;
     padding: 0px 15px;
   }
 
-  .name {
+  .item-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .item-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .item-text {
+    flex-direction: column;
+    margin-left: 5px;
+  }
+
+  .item-name {
     font-size: 14px;
   }
 
-  .info {
+  .item-info {
     font-size: 12px;
     color: #999999;
   }
 
-  .load-more {
+  .item-tags {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .item-tag {
+    background-color: aliceblue;
+    color: #999999;
+    border: solid 1px #999999;
+    border-radius: 3px;
+    padding: 5px;
+    font-size: 12px;
+    margin-right: 5px;
+  }
+
+  .load-more-text {
     color: #cccccc;
     font-size: 12px;
     text-align: center;

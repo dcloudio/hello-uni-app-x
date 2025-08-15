@@ -1,9 +1,9 @@
 <template>
   <scroll-view scroll-y="true" @scroll="onScroll" @scrolltolower="onScrollToLower" @refresherrefresh="onRefresherRefresh" :refresher-enabled="props.refresherEnabled" :refresher-triggered="props.refresherTriggered" style="flex: 1;">
     <view class="placeholder" :style="{height: placeholderHeight + 'px'}">
-      <view :style="{transform: 'translateY(' + offsetTop + 'px)'}">
-        <slot :items="items"></slot>
-      </view>
+      <!-- <view :style="{transform: 'translateY(' + offsetTop + 'px)'}"> -->
+      <slot :layoutItems="layoutItems" :items="items"></slot>
+      <!-- </view> -->
     </view>
     <slot name="load-more"></slot>
   </scroll-view>
@@ -41,7 +41,7 @@
 
   // TODO 规避鸿蒙平台过早取不到windowHeight的Bug
   // 使用窗口高度计算节省不少逻辑，通常也不会有滚动区域超出窗口大小的需求
-  const windowHeight = windowInfo.windowHeight === 0 ? windowInfo.screenHeight : windowInfo.windowHeight
+  const windowHeight = windowInfo.windowHeight == 0 ? windowInfo.screenHeight : windowInfo.windowHeight
   const renderItemCount = computed(() => {
     return Math.min(
       props.list.length,
@@ -62,20 +62,79 @@
   const items = computed<any[]>(() => {
     return props.list.slice(startIndex.value, Math.min(props.list.length, startIndex.value + renderItemCount.value))
   })
-  const offsetTop = computed(() => {
-    return startIndex.value * props.itemHeight;
+  const layoutItems = ref<LayoutItem[]>([])
+  
+  type ItemAndIndex = {
+    item: any,
+    index: number
+  }
+  watch([items, startIndex], () => {
+    if(layoutItems.value.length !== items.value.length) {
+      layoutItems.value.splice(0, layoutItems.value.length)
+      items.value.forEach((item, index) => {
+        layoutItems.value.push({
+          id: index,
+          offset: (startIndex.value + index) * props.itemHeight,
+          item
+        })
+      })
+    } else {
+      // 仍存活的item仅更新offset，新生的item复用并更新死亡的item的layoutItem，注意id无论如何都不更新
+      // TODO 当前方案在列表末尾向列表开头滚动时可能会命中if分支，导致所有item都触发更新
+      const newItems: ItemAndIndex[] = []
+      const aliveItems: ItemAndIndex[] = []
+      for(let i = 0;i< items.value.length;i++) {
+        const item = items.value[i]
+        const layoutItemIndex = layoutItems.value.findIndex((layoutItem) => {
+          return item == layoutItem.item
+        })
+        if(layoutItemIndex > -1) {
+          aliveItems.push({
+            item,
+            index: i
+          } as ItemAndIndex)
+        } else {
+          newItems.push({
+            item,
+            index: i
+          } as ItemAndIndex)
+        }
+      }
+      for(let i = 0;i < layoutItems.value.length;i++) {
+        const layoutItem = layoutItems.value[i]
+        const aliveItemAndIndex = aliveItems.find((aliveItem) => {
+          return aliveItem.item == layoutItem.item
+        })
+        if(aliveItemAndIndex != null) {
+          layoutItem.offset = (startIndex.value + aliveItemAndIndex!.index) * props.itemHeight
+        } else {
+          const newItemAndIndex = newItems.pop()!
+          layoutItem.item = newItemAndIndex.item
+          layoutItem.offset = (startIndex.value + newItemAndIndex.index) * props.itemHeight
+        }
+      }
+    }
+    
+    layoutItems.value.sort((a, b) => {
+      return items.value.indexOf(a.item) - items.value.indexOf(b.item)
+    })
+  }, {
+    immediate: true
   })
+  // const offsetTop = computed(() => {
+  //   return startIndex.value * props.itemHeight;
+  // })
 
   function onScroll(e: UniScrollEvent) {
     scrollTop.value = e.detail.scrollTop
     emit('scroll', e)
   }
 
-  function onRefresherRefresh(e) {
+  function onRefresherRefresh(e: UniRefresherEvent) {
     emit('refresherrefresh', e)
   }
 
-  function onScrollToLower(e) {
+  function onScrollToLower(e: UniScrollToLowerEvent) {
     emit('scrolltolower', e)
   }
 </script>
