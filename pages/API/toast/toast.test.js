@@ -100,7 +100,9 @@ describe('API-toast', () => {
 
   it("position-toast-test", async () => {
     const positions = await page.$$('.radio-position')
-    for (let i = 0; i < positions.length; i++) {
+    for (let i = 0;i < positions.length;i++) {
+      // 等待上一个 toast 消失
+      await page.waitFor(2000);
       await positions[i].tap()
       const positionsText = await positions[i].attribute('value')
       await page.callMethod('toast2Tap')
