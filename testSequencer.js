@@ -1,5 +1,6 @@
 const Sequencer = require("@jest/test-sequencer").default
 const startTestFilePaths = [
+  "pages/API/get-launch-options-sync/get-launch-options-sync.test.js",
   "pages/API/get-current-pages/get-current-pages.test.js",
   "pages/component/view/view.test.js",
   "pages/API/pull-down-refresh/pull-down-refresh.test.js",
