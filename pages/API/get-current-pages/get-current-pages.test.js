@@ -118,15 +118,12 @@ describe('getCurrentPages', () => {
       return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
     }});
 
+    await program.adbCommand('settings put secure immersive_mode_confirmations confirmed');
     await page.callMethod('setPageStyle', {
       hideBottomNavigationIndicator: true,
       hideStatusBar: true
     })
     await page.waitFor(2000);
-    await program.adbCommand('input keyevent 66');
-    await program.adbCommand('input keyevent 66');
-    await program.tap({ x: 0, y: 0 });
-    await page.waitFor(1000);
     const image7 = await program.screenshot(deviceScreenshotParams);
     expect(image7).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
