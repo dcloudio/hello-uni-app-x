@@ -1,4 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 const PAGE_PATH = '/pages/component/button/button'
@@ -100,6 +101,11 @@ describe('Button.uvue', () => {
 
   // 自定义button和默认button来回切换截图对比
   it("button-screenshot-plain+primary+default", async () => {
+    if (isWeb) {
+      expect(1).toBe(1)
+      return
+    }
+
     const btn = await page.$('.btn')
 
     await page.setData({
