@@ -7,6 +7,7 @@ describe('getLaunchOptionsSync', () => {
     await page.waitFor('view')
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
+    await page.waitFor(1000)
     await page.callMethod('getLaunchOptionsSync')
     const data = await page.data()
     expect(data.checked).toBe(true)
