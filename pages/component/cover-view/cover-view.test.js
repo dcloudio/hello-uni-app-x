@@ -25,7 +25,7 @@ describe('web-cover-view', () => {
       await page.waitFor('map');
     }
     // 等待地图加载完成
-    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:3000
+    const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:4000
     await page.waitFor(waitTime)
 
     const image = await program.screenshot({

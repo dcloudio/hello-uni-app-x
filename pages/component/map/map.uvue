@@ -43,10 +43,9 @@
       <button class="button" @click="handleGetCenterLocation">获取当前地图中心的经纬度</button>
       <button class="button" @click="handleGetRegion">获取当前地图的视野范围</button>
       <button class="button" @click="handleTranslateMarker">平移marker</button>
-      <button class="button" @click="handleMoveToLocation">将地图中心移动到指定坐标</button>
+      <button class="button" @click="handleMoveToLocation(true)">将地图中心移动到指定坐标</button>
       <button class="button" @click="handleMoveToMyLocation">将地图中心移动到当前位置</button>
       <button class="button" @click="handleGetScale">获取当前地图的缩放级别</button>
-
     </scroll-view>
   </view>
 </template>
@@ -508,17 +507,17 @@
   };
 
   const handleGetCenterLocation = () => {
-      mapContext.value?.getCenterLocation({
-        success: ret => {
-          // console.log('getCenterLocation',ret);
-          jestResult.centerPoints = ret;
-          if (!autoTest.value) {
-            uni.showModal({
-              content: JSON.stringify(ret)
-            });
-          }
+    mapContext.value?.getCenterLocation({
+      success: ret => {
+        // console.log('getCenterLocation',ret);
+        jestResult.centerPoints = ret;
+        if (!autoTest.value) {
+          uni.showModal({
+            content: JSON.stringify(ret)
+          });
         }
-      });
+      }
+    });
   };
 
   const handleGetRegion = () => {
@@ -600,16 +599,17 @@
       });
   };
 
-  const handleMoveToLocation = () => {
+  // showModal - 操作结束后是否显示 Modal 弹框，默认为 true。在自动化或内部调用时可设为 false。
+  function handleMoveToLocation(showModal: boolean = true) {
       mapContext.value?.moveToLocation({
         latitude: 39.909,
         longitude: 116.39742,
         success: res => {
-          console.log('moveToLocation',res);
+          // console.log('moveToLocation',res);
           const result = res as UTSJSONObject
           jestResult.moveToLocationMsg = result["errMsg"] as string;
 
-          if (!autoTest.value) {
+          if (!autoTest.value && showModal) {
             uni.showModal({
               content: JSON.stringify(res)
             });
@@ -619,7 +619,7 @@
           console.log(error)
         }
       });
-  };
+  }
 
   const handleMoveToMyLocation = () => {
     mapContext.value?.moveToLocation({
@@ -686,11 +686,25 @@
   };
 
   const onupdated = (e : UniMapUpdatedEvent) => {
-    console.log('在地图渲染更新完成时触发', e)
+    // console.log('在地图渲染更新完成时触发', e)
+    // 检查地图位置，如果经纬度为0则调用moveToLocation将地图中心移动到当前定位点
+    // #ifdef MP
+    if (mapContext.value) {
+      mapContext.value.getCenterLocation({
+        success: ret => {
+          // console.log('地图更新后获取中心位置:', ret)
+          if (ret.latitude === 0 && ret.longitude === 0) {
+            // console.log('检测到无效经纬度')
+            handleMoveToLocation(false); // 不显示弹框
+          }
+        }
+      })
+    }
+    // #endif
   };
 
   const onregionchange = (e : UniMapRegionChangeEvent) => {
-    console.log('视野发生变化时触发', e.detail)
+    // console.log('视野发生变化时触发', e.detail)
     jestResult.eventDetailJsonStringify = JSON.stringify(e.detail)
   };
 

@@ -23,5 +23,6 @@ describe('base64', () => {
     await page.waitFor(200)
     const data = await page.data()
     expect(data.base64ToArrayBufferRes).toEqual('11,22,33')
+    await page.waitFor(3000)
   })
 })

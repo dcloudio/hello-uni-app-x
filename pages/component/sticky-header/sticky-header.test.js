@@ -21,6 +21,7 @@ describe('component-native-sticky-header', () => {
     }
     page = await program.reLaunch('/pages/component/sticky-header/sticky-header')
     await page.waitFor('sticky-header')
+    await page.waitFor(2000); // 等待页面加载完成
   })
 
   //检测吸顶效果

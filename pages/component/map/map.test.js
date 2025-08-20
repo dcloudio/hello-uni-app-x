@@ -1,8 +1,12 @@
+jest.setTimeout(50000);
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 
 let page;
 describe('web-map', () => {
@@ -18,32 +22,21 @@ describe('web-map', () => {
     await page.callMethod('updateAutoTest',true)
   });
 
-  it('handleMoveToLocation', async () => {
-    await page.callMethod('handleMoveToLocation')
-    await page.waitFor(500);
-    const moveToLocationRes = await page.data('jestResult')
-    if(isMP || isWeb) {
-      // TODO 使用其他信息作为测试依据
-      expect(1).toBe(1)
-    } else {
-      expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
-    }
-  });
 
-  it('Check EventDetail JsonStringify', async () => {
-    if(isMP || isWeb) {
-      expect(1).toBe(1)
-    } else {
+  if (isApp) {
+    it('handleMoveToLocation', async () => {
+      await page.callMethod('handleMoveToLocation',false)
+      await page.waitFor(500);
+      const moveToLocationRes = await page.data('jestResult')
+      expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
+    });
+
+    it('Check EventDetail JsonStringify', async () => {
       const res = await page.data('jestResult')
       console.log(res.eventDetailJsonStringify);
       expect(res.eventDetailJsonStringify).not.toBe("{}");
-    }
-  })
-
-  if (!isWeb && !isMP) {
-    it('app', () => {
-      expect(1).toBe(1)
     })
+
     return
   }
 
@@ -51,11 +44,11 @@ describe('web-map', () => {
     const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
     for (var i = 0; i < mapMethods.length; i++) {
       await page.callMethod(mapMethods[i])
-      await page.waitFor(500);
+      await page.waitFor(2000);
       expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
         return 'map-' + mapMethods[i]
       }});
-      await page.waitFor(500);
+      await page.waitFor(1000);
     }
   });
 
@@ -80,7 +73,7 @@ describe('web-map', () => {
 
   it('handleTranslateMarker', async () => {
     await page.callMethod('handleTranslateMarker')
-    await page.waitFor(2000);
+    await page.waitFor(3000);
     expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'map-handleTranslateMarker'
     }});

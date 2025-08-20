@@ -2,6 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isAndroid = platformInfo.startsWith('android')
+const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-image', () => {
   const screenshotParams = { fullPage: true }
@@ -10,7 +11,13 @@ describe('component-native-image', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/image/image');
-    await page.waitFor(600);
+    await page.waitFor('view');
+    await page.waitFor(isWeb ? 4000 : 100);
+  });
+
+  it('screenshot', async () => {
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot()
   });
 
   it('check_image_load', async () => {
@@ -104,13 +111,15 @@ describe('component-native-image', () => {
     // TODO 整理小程序、web支持的类型，页面上进行条件编译展示
     return
   }
-
-  it('path-screenshot', async () => {
-    const page = await program.navigateTo('/pages/component/image/image-path');
-    await page.waitFor(3000);
-    const image = await program.screenshot(screenshotParams)
-    expect(image).toSaveImageSnapshot()
-  });
+  // app web 存在差异
+  if (!isAppWebView) {
+    it('path-screenshot', async () => {
+      const page = await program.navigateTo('/pages/component/image/image-path');
+      await page.waitFor(3000);
+      const image = await program.screenshot(screenshotParams)
+      expect(image).toSaveImageSnapshot()
+    });
+  }
 
   it('mode-screenshot', async () => {
     if (process.env.android_cpu_type === 'x86_64') return

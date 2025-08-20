@@ -1,5 +1,5 @@
 <template>
-  <view :class="['uni-container', { 'flex-row': isWideScreen }, isDarkMode ? 'theme-dark' : 'theme-light']" style="flex: 1;">
+  <view :class="['uni-container', { 'flex-row': isWideScreen }, isDarkMode ? 'theme-dark' : 'theme-light']" style="flex: 1;padding: 0px;">
     <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
     <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled=true
       @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top="true">
@@ -50,7 +50,7 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
   import { state } from '@/store/index.uts'
   type Banner = {
     cover : string | null,
@@ -67,171 +67,164 @@
   }
   // 导入详情组件，宽屏时，右侧直接展示详情内容
   import detail from './detail/detail.uvue'
-  export default {
-    components: {
-      detail
-    },
-    data() {
-      return {
-        th_item: ["排序", "筛选"],
-        refresherTriggered: false,
-        banner: {} as Banner,
-        listData: [] as Item[],
-        last_id: '',
-        isWideScreen: false,// 是否为宽屏模式
-        currentIndex: 0, // 当前选中的列表项索引
-        post_id: '',
-        cover: '',
-        title: '',
-        firstDetailContent: '', // 并行预加载的第一个详情内容
-      };
-    },
-    onLoad() {
-      // 判断是否为宽屏
-      this.checkScreenWidth()
-      this.getBanner();
-      this.getList();
-    },
-    onUnload() {
-    },
-    onResize() {
-      // 监听屏幕尺寸变化，动态切换宽屏/窄屏
-      this.checkScreenWidth()
-    },
-    methods: {
-      checkScreenWidth() {
-        const deviceType = uni.getDeviceInfo().deviceType
-        const { windowWidth } = uni.getWindowInfo()
-        // 只要是pad/pc，或者宽度大于700，都算宽屏
-        this.isWideScreen = (
-          deviceType === 'pad' ||
-          deviceType === 'pc' ||
-          windowWidth > 700
-        )
-      },
-      getBanner() {
-        let data = {
-          column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
-        };
-        uni.request<Banner>({
-          url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
-          data: data,
-          success: data => {
-            this.refresherTriggered = false
-            if (data.statusCode == 200) {
-              const result = data.data
-              if (result != null) {
-                this.banner = result;
-              }
-            }
-          },
-          fail: (e) => {
-            console.log('fail', e);
+
+  const th_item = ref(["排序", "筛选"])
+  const refresherTriggered = ref(false)
+  const banner = ref({} as Banner)
+  const listData = ref([] as Item[])
+  const last_id = ref('')
+  const isWideScreen = ref(false) // 是否为宽屏模式
+  const currentIndex = ref(0) // 当前选中的列表项索引
+  const post_id = ref('')
+  const cover = ref('')
+  const title = ref('')
+  const firstDetailContent = ref('') // 并行预加载的第一个详情内容
+
+  function checkScreenWidth() {
+    const deviceType = uni.getDeviceInfo().deviceType
+    const { windowWidth } = uni.getWindowInfo()
+    // 只要是pad/pc，或者宽度大于700，都算宽屏
+    isWideScreen.value = (
+      deviceType === 'pad' ||
+      deviceType === 'pc' ||
+      windowWidth > 700
+    )
+  }
+
+  function getBanner() {
+    let data = {
+      column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
+    };
+    uni.request<Banner>({
+      url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
+      data: data,
+      success: data => {
+        refresherTriggered.value = false
+        if (data.statusCode == 200) {
+          const result = data.data
+          if (result != null) {
+            banner.value = result;
           }
-        });
-      },
-      getList() {
-        let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
-        /* if (this.last_id != "") {
-          const minId = parseInt((this.last_id))
-          const time = new Date().getTime() + '';
-          const pageSize = 10;
-          url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
-        } */
-        uni.request<Item[]>({
-          url: url,
-          method: "GET",
-          success: (res) => {
-            if (res.statusCode == 200) {
-              const result = res.data
-              //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
-              // this.listData.push(...result)
-              // this.last_id = this.listData[0].id + "";
-              if (result != null) {
-                this.listData = result
-                // 宽屏模式下，自动选中并展示第一个新闻详情
-                if (this.isWideScreen && this.listData.length > 0) {
-                  this.goDetail(this.listData[0], 0)
-                  // 并行预加载第一个详情内容，提升右侧展示速度
-                  const first = this.listData[0]
-                  uni.request({
-                    url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + first.post_id,
-                    success: (res) => {
-                      if (res.statusCode == 200) {
-												const result = res.data as UTSJSONObject;
-                        this.firstDetailContent = result["content"] as string
-                      }
-                    }
-                  })
-                }
-              }
-              this.refresherTriggered = false;
-            }
-          },
-          fail: (res) => {
-            console.log('fail', res);
-            this.refresherTriggered = false
-          }
-        });
-      },
-      goDetail(e : Item, key : number) {
-        this.currentIndex = key
-        const detail = e;
-        this.post_id = detail.post_id;
-        this.cover = detail.cover;
-        this.title = detail.title;
-        // 窄屏时跳转到详情页，宽屏时右侧直接展示
-        if (!this.isWideScreen) {
-          // #ifdef APP-ANDROID
-          this.cover = btoa(this.cover);
-          // #endif
-          uni.navigateTo({
-            url: '/pages/template/list-news/detail/detail?post_id=' + this.post_id + "&cover=" + this.cover + "&title=" + this.title + "&shareKey=image_" + key
-          });
         }
       },
-      bannerClick(e : Banner) {
-        const detail = e;
-        const post_id = detail.post_id;
-        let cover = detail.cover ?? "";
-        // #ifdef APP-ANDROID
-        cover = btoa(cover);
-        // #endif
-        const title = detail.title;
-        uni.navigateTo({
-          url: '/pages/template/list-news/detail/detail?post_id=' + post_id + "&cover=" + cover + "&title=" + title
-        });
-      },
-      clickTH(index : number) {
-        uni.showModal({
-          content: "点击表头项：" + index,
-          showCancel: false
-        });
-      },
-      onRefresherrefresh() {
-        this.refresherTriggered = true
-        this.getBanner();
-        this.getList();
+      fail: (e) => {
+        console.log('fail', e);
       }
-    },
-    computed: {
-      currentDetailContent() {
-        // 只在宽屏且是第一个文章时用预加载内容
-        if (
-          this.isWideScreen &&
-          this.listData.length > 0 &&
-          this.post_id === this.listData[0].post_id &&
-          this.firstDetailContent !== ''
-        ) {
-          return this.firstDetailContent
-        }
-        return ''
-      },
-      isDarkMode():boolean {
-        return state.isDarkMode
-      }
+    });
+  }
+
+  function goDetail(e: Item, key: number) {
+    currentIndex.value = key
+    const detail = e;
+    post_id.value = detail.post_id;
+    cover.value = detail.cover;
+    title.value = detail.title;
+    // 窄屏时跳转到详情页，宽屏时右侧直接展示
+    if (!isWideScreen.value) {
+      // #ifdef APP-ANDROID
+      cover.value = btoa(cover.value);
+      // #endif
+      uni.navigateTo({
+        url: '/pages/template/list-news/detail/detail?post_id=' + post_id.value + "&cover=" + cover.value + "&title=" + title.value + "&shareKey=image_" + key
+      });
     }
-  };
+  }
+
+  function getList() {
+    let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
+    /* if (last_id.value != "") {
+      const minId = parseInt((last_id.value))
+      const time = new Date().getTime() + '';
+      const pageSize = 10;
+      url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
+    } */
+    uni.request<Item[]>({
+      url: url,
+      method: "GET",
+      success: (res) => {
+        if (res.statusCode == 200) {
+          const result = res.data
+          //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
+          // listData.value.push(...result)
+          // last_id.value = listData.value[0].id + "";
+          if (result != null) {
+            listData.value = result
+            // 宽屏模式下，自动选中并展示第一个新闻详情
+            if (isWideScreen.value && listData.value.length > 0) {
+              goDetail(listData.value[0], 0)
+              // 并行预加载第一个详情内容，提升右侧展示速度
+              const first = listData.value[0]
+              uni.request({
+                url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + first.post_id,
+                success: (res) => {
+                  if (res.statusCode == 200) {
+                    const result = res.data as UTSJSONObject;
+                    firstDetailContent.value = result["content"] as string
+                  }
+                }
+              })
+            }
+          }
+          refresherTriggered.value = false;
+        }
+      },
+      fail: (res) => {
+        console.log('fail', res);
+        refresherTriggered.value = false
+      }
+    });
+  }
+
+  function bannerClick(e: Banner) {
+    const detail = e;
+    const post_id_val = detail.post_id;
+    let cover_val = detail.cover ?? "";
+    // #ifdef APP-ANDROID
+    cover_val = btoa(cover_val);
+    // #endif
+    const title_val = detail.title;
+    uni.navigateTo({
+      url: '/pages/template/list-news/detail/detail?post_id=' + post_id_val + "&cover=" + cover_val + "&title=" + title_val
+    });
+  }
+
+  function clickTH(index: number) {
+    uni.showModal({
+      content: "点击表头项：" + index,
+      showCancel: false
+    });
+  }
+
+  function onRefresherrefresh() {
+    refresherTriggered.value = true
+    getBanner();
+    getList();
+  }
+
+  const currentDetailContent = computed(() => {
+    // 只在宽屏且是第一个文章时用预加载内容
+    if (
+      isWideScreen.value &&
+      listData.value.length > 0 &&
+      post_id.value === listData.value[0].post_id &&
+      firstDetailContent.value !== ''
+    ) {
+      return firstDetailContent.value
+    }
+    return ''
+  })
+
+  const isDarkMode = computed(() => state.isDarkMode)
+
+  onLoad(() => {
+    checkScreenWidth()
+    getBanner()
+    getList()
+  })
+
+  onResize(() => {
+    checkScreenWidth()
+  })
 </script>
 
 <style>

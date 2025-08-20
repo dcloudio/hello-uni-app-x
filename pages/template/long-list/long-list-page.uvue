@@ -29,131 +29,121 @@
   </list-view>
 </template>
 
-<script>
-  const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
-  const PAGE_SIZE = 10; // 最大值 10
+<script setup lang="uts">
+const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
+const PAGE_SIZE = 10
 
-  type ListItem = {
-    plugin_id : number,
-    plugin_img_link : string,
-    plugin_name : string,
-    plugin_intro : string,
-    score : number,
-    tags : Array<string>,
-    update_date : string,
-    author_name : string,
+type ListItem = {
+  plugin_id : number,
+  plugin_img_link : string,
+  plugin_name : string,
+  plugin_intro : string,
+  score : number,
+  tags : Array<string>,
+  update_date : string,
+  author_name : string,
+}
+
+type ResponseDataType = {
+  code : number,
+  data : ListItem[]
+}
+
+const props = defineProps({
+  type: { type: String, default: '' },
+  preload: { type: Boolean, default: false },
+  id: { type: String, default: '' }
+})
+
+const loading = ref(false)
+const dataList = ref<ListItem[]>([])
+const isEnded = ref(false)
+const loadingError = ref('')
+const currentPage = ref(1)
+
+const loadingText = computed((): string => {
+  if (loading.value) {
+    return "加载中..."
+  } else if (isEnded.value) {
+    return "没有更多了"
+  } else if (loadingError.value.length > 0) {
+    return loadingError.value
+  } else {
+    return ""
   }
+})
 
-  type ResponseDataType = {
-    code : number,
-    data : ListItem[]
+function convertToStarUnicode(score : number) : string {
+  const fill_code = '\ue879'
+  const half_code = '\ue87a'
+  const null_code = '\ue87b'
+
+  const fillStarCount = parseInt(score / 10 % 10 + '')
+  const halfStarCount = score % 10 >= 5 ? 1 : 0
+  const nullStarCount = 5 - fillStarCount - halfStarCount
+
+  let result = ''
+  if (fillStarCount > 0) { result += fill_code.repeat(fillStarCount) }
+  if (halfStarCount > 0) { result += half_code.repeat(halfStarCount) }
+  if (nullStarCount > 0) { result += null_code.repeat(nullStarCount) }
+
+  return result
+}
+
+function loadData(loadComplete : (() => void) | null) {
+  if (loading.value || isEnded.value) {
+    return
   }
+  loading.value = true
 
-  export default {
-    props: {
-      type: {
-        type: String,
-        default: ''
-      },
-      preload: {
-        type: Boolean,
-        default: false
-      },
-      id: {
-        type: String,
-        default: ''
+  uni.request<ResponseDataType>({
+    url: SERVER_URL,
+    data: {
+      type: props.type,
+      page: currentPage.value,
+      page_size: PAGE_SIZE
+    },
+    success: (res) => {
+      const responseData = res.data
+      // console.log('responseData',responseData)
+      if (responseData == null) {
+        return
+      }
+      dataList.value.push(...responseData.data)
+      if (responseData.data.length == 0) {
+        isEnded.value = true
+      } else {
+        currentPage.value++
       }
     },
-    data() {
-      return {
-        loading: false,
-        dataList: [] as ListItem[],
-        isEnded: false,
-        loadingError: '',
-        currentPage: 1
-      }
+    fail: (err) => {
+      loadingError.value = err.errMsg
     },
-    computed: {
-      loadingText() : string {
-        if (this.loading) {
-          return "加载中..."
-        } else if (this.isEnded) {
-          return "没有更多了"
-        } else if (this.loadingError.length > 0) {
-          return this.loadingError
-        } else {
-          return ""
-        }
-      }
-    },
-    created() {
-      if (this.preload) {
-        this.loadData(null)
-      }
-    },
-    methods: {
-      refreshData(loadComplete : (() => void) | null) {
-        this.dataList.length = 0
-        this.currentPage = 1
-        this.loadData(loadComplete)
-      },
-      loadData(loadComplete : (() => void) | null) {
-        if (this.loading || this.isEnded) {
-          return
-        }
-        this.loading = true
-
-        uni.request<ResponseDataType>({
-          url: SERVER_URL,
-          data: {
-            type: this.type,
-            page: this.currentPage,
-            page_size: PAGE_SIZE
-          },
-          success: (res) => {
-            const responseData = res.data
-            if (responseData == null) {
-              return
-            }
-
-            this.dataList.push(...responseData.data)
-
-            if (responseData.data.length == 0) {
-              this.isEnded = true
-            } else {
-              this.currentPage++
-            }
-          },
-          fail: (err) => {
-            this.loadingError = err.errMsg
-          },
-          complete: () => {
-            this.loading = false
-            if (loadComplete != null) {
-              loadComplete()
-            }
-          }
-        })
-      },
-      // score 0 ~ 50
-      convertToStarUnicode(score : number) : string {
-        const fill_code = '\ue879'
-        const half_code = '\ue87a'
-        const null_code = '\ue87b'
-
-        const fillStarCount = parseInt(score / 10 % 10 + '')
-        const halfStarCount = score % 10 >= 5 ? 1 : 0
-        const nullStarCount = 5 - fillStarCount - halfStarCount
-
-        let result = ''
-        if (fillStarCount > 0) { result += fill_code.repeat(fillStarCount) }
-        if (halfStarCount > 0) { result += half_code.repeat(halfStarCount) }
-        if (nullStarCount > 0) { result += null_code.repeat(nullStarCount) }
-
-        return result
+    complete: () => {
+      loading.value = false
+      if (loadComplete != null) {
+        loadComplete()
       }
     }
+  })
+}
+
+function refreshData(loadComplete : (() => void) | null) {
+  dataList.value.length = 0
+  currentPage.value = 1
+  loadData(loadComplete)
+}
+
+onMounted(() => {
+  if (props.preload) {
+    loadData(null)
   }
+})
+
+defineExpose({
+  loadData,
+  refreshData
+})
 </script>
 
 <style>
