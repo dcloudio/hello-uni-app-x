@@ -117,6 +117,11 @@
       <view class="base-style transition-width" id="widthOrHeightAuto" @click="changeWidthOrHeightAuto"></view>
     </view>
 
+    <view class="container">
+      <view class="text">重复修改width</view>
+      <view class="base-style transition-width" id="changeWidthInEnd" style="transition-duration: 0.5s;" @transitionend="onChangeWidthEnd" @click="changeWidthInEndFun"></view>
+    </view>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -168,6 +173,8 @@
         isTransitionAll: false,
         lineLeft: 0,
         lineWidth: 200,
+        changeWidthInEnd: null as UniElement | null,
+        changeWidthInEndCount:0
       }
     },
     onReady() {
@@ -189,6 +196,7 @@
       this.styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
       this.styleTransitionAll = uni.getElementById("styleTransitionAll")
       this.widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
+      this.changeWidthInEnd = uni.getElementById("changeWidthInEnd")
     },
     methods: {
       changeWidthOrHeight() {
@@ -370,6 +378,13 @@
           this.lineLeft = 0
           this.lineWidth = 200
         }
+      },
+      onChangeWidthEnd(event : UniEvent){
+          this.changeWidthInEnd?.style.setProperty("width","300px");
+          this.changeWidthInEndCount ++;
+      },
+      changeWidthInEndFun(event : UniPointerEvent){
+          this.changeWidthInEnd?.style.setProperty("width","300px");
       },
     },
   }
