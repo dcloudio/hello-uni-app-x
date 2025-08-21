@@ -7,6 +7,8 @@
 
 		<view class="button-group">
 			<button class="btn" @click="create">创建Worker</button>
+      <button class="btn" @click="onWorkerMsg">添加消息监听</button>
+      <button class="btn" @click="onWorkerError">添加错误监听</button>
 			<button class="btn" @click="destory" :disabled="workerStatus != 'created'">销毁Worker</button>
 		</view>
 
@@ -29,15 +31,18 @@
 </template>
 
 <script>
-	import { onWorkerError,createWorkers,sendWorkerMessage,onWorkerMessage,destoryWorker, UTSWorkerAddListenerOptions, UTSWorkerReceiveEventCallback, UTSWorkerSendWorkerMessageOptions, UTSWorkerErrorOptions } from "@/uni_modules/uts-worker";
 	export default {
+    onUnload() {
+      this.destory();
+    },
 		data() {
 			return {
 				workerStatus: 'none', // none, created, destroyed
 				isListening: false,
 				logs: [] as Array<UTSJSONObject>,
 				inputValue: '1', // 默认值为1
-				taskResult: ''
+				taskResult: '',
+        worker: null as Worker | null
 			}
 		},
 		computed: {
@@ -69,49 +74,57 @@
 
 			// 创建Worker
 			create(){
-				createWorkers();
+        this.worker  = uni.createWorker('workers/helloWorkerTask.uts');
 				this.workerStatus = 'created';
 				this.addLog('Worker创建成功', 'success');
 			},
+      onWorkerMsg(){
+        if (this.worker == null) {
+        	this.addLog('请先创建worker', 'warning');
+        	return;
+        }
+        this.worker!.onMessage((result) => {
+        	// 处理Worker返回的消息
+        	console.log(`收到Worker消息:`, result);
+          const res = result as Map<string,any>;
+            const resultData = res["data"] as string;
+						this.taskResult = resultData;
+						this.addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
+        })
+      },
+      onWorkerError(){
+        if (this.worker == null) {
+        	this.addLog('请先创建worker', 'warning');
+        	return;
+        }
+        this.worker!.onError((error) => {
+        	console.error('Worker发生错误:', error);
+          // this.addLog(`Worker错误: ${error.message}`, 'error');
+        })
+      },
 
 			// 向workerTask发送消息
 			sendMessage(){
 				// 检查输入值
-				if (!this.inputValue || this.inputValue.trim() === '') {
+				if (this.inputValue == '') {
 					this.addLog('请输入有效的数字', 'warning');
 					return;
 				}
-
-				// 添加消息监听
-				onWorkerMessage({
-					success: (res) => {
-						const result = res.result;
-						const resultData = result["data"];
-						this.taskResult = resultData;
-						this.addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
-					}
-				});
-
-				// 添加错误监听
-				onWorkerError({
-					success: (error) => {
-						this.addLog(`Worker错误: ${error.message}`, 'error');
-						console.log("Worker错误:", error);
-					}
-				} as UTSWorkerErrorOptions);
-
-				const options = {
-					data: this.inputValue,
-					needReply: true
-				} as UTSWorkerSendWorkerMessageOptions;
-
-				sendWorkerMessage(options);
+        const options = {
+        	data: this.inputValue,
+        	needReply: true
+        };
+        this.worker!.postMessage(options,null);
 				this.addLog(`发送值到WorkerTask: ${this.inputValue}`, 'send');
 			},
 
 			// 销毁Worker
 			destory(){
-				destoryWorker();
+        if (this.worker == null) {
+        	this.addLog('没有创建worker,无法销毁', 'warning');
+        	return;
+        }
+				this.worker!.terminate();
 				this.workerStatus = 'destroyed';
 				this.isListening = false;
 				this.addLog('Worker已销毁', 'warning');
@@ -160,7 +173,7 @@
 
 .button-group {
 	flex-direction: column;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 .input-section {
@@ -181,8 +194,9 @@
 }
 
 .btn {
+/*  height: 50px; */
 	margin-bottom: 10px;
-	padding: 12px 10px;
+	padding: 5px 10px;
 	background-color: #2196F3;
 	color: #ffffff;
 	border-radius: 6px;

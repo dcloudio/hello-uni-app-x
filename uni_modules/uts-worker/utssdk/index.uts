@@ -1,5 +1,5 @@
-import { CreateWorkers, DestoryWorker, OnWorkerError, 
-OnWorkerMessage, SendWorkerMessage, 
+import { CreateWorkers, DestroyWorker, OnWorkerError,
+OnWorkerMessage, SendWorkerMessage,
 UTSWorkerAddListenerOptions , UTSWorkerAddListenerOptionsSuccess, UTSWorkerSendWorkerMessageOptions, UTSWorkerErrorOptions, UTSWorkerErrorCallbackSuccess } from './interface.uts';
 
 
@@ -14,8 +14,8 @@ export const onWorkerMessage : OnWorkerMessage  = function (options : UTSWorkerA
 	UTSWorkerImpl.onMessage(options);
 }
 
-export const destoryWorker : DestoryWorker = function () : void {
-	UTSWorkerImpl.destory();
+export const destroyWorker : DestroyWorker = function () : void {
+	UTSWorkerImpl.destroy();
 }
 
 export const onWorkerError : OnWorkerError = function (options: UTSWorkerErrorOptions) : void {
@@ -26,51 +26,51 @@ export class UTSWorkerImpl{
 	static workerImp : Worker | null = null;
 	static options : UTSWorkerAddListenerOptions | null = null;
 	static errorOptions : UTSWorkerErrorOptions | null = null;
-	
+
 	static create(){
 		if (this.workerImp != null) {
 			console.warn('[UTS Plugin] Worker已存在，先销毁旧的Worker');
-			this.destory();
+			this.destroy();
 		}
-		
+
 		console.log('[UTS Plugin] 创建Worker');
 		const worker = uni.createWorker('workers/helloWorkerTask.uts');
 		this.workerImp = worker;
 	}
-	
-	
+
+
 	static sendMessage(options : UTSWorkerSendWorkerMessageOptions){
 		if (this.workerImp == null) {
 			console.error('Worker未创建，无法发送消息');
 			return;
 		}
-		
+
 		// 获取消息信息并添加日志
 		const msgData = options.data;
 		const needReply = options.needReply;
-		
+
 		console.log(`[UTS Plugin] 向Worker发送消息: ${msgData} (需要回复: ${needReply})`);
-		
+
 		// 构造要发送给Worker的消息对象
 		const messageToWorker = {
 			data: msgData,
 			needReply: needReply
 		};
-		
-		this.workerImp.postMessage(messageToWorker);
+
+		this.workerImp!.postMessage(messageToWorker,null);
 	}
-	
+
 	static onMessage(options : UTSWorkerAddListenerOptions){
 		if (this.workerImp == null) {
 			console.error('Worker未创建，无法监听消息');
 			return;
 		}
-		
+
 		this.options = options;
-		this.workerImp.onMessage((result) => {
+		this.workerImp!.onMessage((result) => {
 			// 处理Worker返回的消息
 			console.log(`[UTS Plugin] 收到Worker消息:`, result);
-			
+
 			if (this.options != null && this.options.success != null){
 				let success : UTSWorkerAddListenerOptionsSuccess = {
 					result: result as Map<string, any>
@@ -84,11 +84,11 @@ export class UTSWorkerImpl{
 			console.error('Worker未创建，无法监听错误');
 			return;
 		}
-		
+
 		this.errorOptions = options;
-		this.workerImp.onError((error) => {
+		this.workerImp!.onError((error) => {
 			console.error('[UTS Plugin] Worker发生错误:', error);
-			
+
 			if (this.errorOptions != null && this.errorOptions.success != null) {
 				const errorInfo: UTSWorkerErrorCallbackSuccess = {
 					message: error.message
@@ -97,8 +97,8 @@ export class UTSWorkerImpl{
 			}
 		})
 	}
-	static destory(){
-		
+	static destroy(){
+
 		if (this.workerImp != null) {
 			console.log('[UTS Plugin] 销毁Worker');
 			this.workerImp.terminate();

@@ -1,4 +1,4 @@
-const PAGE_PATH = '/pages/API/worker/worker'
+const PAGE_PATH = '/pages/API/create-worker/uts-create-worker'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 
 const isIOS = platformInfo.startsWith('ios')
@@ -7,8 +7,8 @@ const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
-describe('Api-worker', () => {
-  if(isMP || isWeb || isAndroid || isHarmony) {
+describe('Api-uts-createWorker', () => {
+  if(isMP || isWeb || isHarmony) {
     it('skip', async () => {
       expect(1).toBe(1)
     })
