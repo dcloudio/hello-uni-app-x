@@ -106,7 +106,7 @@ describe('API-toast', () => {
       await positions[i].tap()
       const positionsText = await positions[i].attribute('value')
       await page.callMethod('toast2Tap')
-      await page.waitFor(100);
+      await page.waitFor(500);
       await toScreenshot(`toast-position-${positionsText}`)
     }
   })
