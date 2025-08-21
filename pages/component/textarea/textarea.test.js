@@ -44,31 +44,29 @@ describe('component-native-textarea', () => {
       expect(await textarea.attribute("focus")).toBe("false")
     });
 
-    if (!isWeb) {
-      it('trigger change event', async () => {
-        const changeValue = await page.data('changeValue');
-        expect(changeValue).not.toBe("")
-
-        if (isAndroid) {
-          await program.adbCommand("input keyevent KEYCODE_DEL")
-          await page.waitFor(2000)
-        }
-      })
+    it('trigger change event', async () => {
+      const changeValue = await page.data('changeValue');
+      expect(changeValue).not.toBe("")
 
       if (isAndroid) {
-        it('focus-keyboard-height', async () => {
-          await page.setData({
-            focus_boolean: true,
-          })
-          await page.waitFor(500)
-          let res = await page.data('jest_result');
-          expect(res).toBe(true)
-          await page.setData({
-            focus_boolean: false,
-          })
-          await page.waitFor(500)
-        })
+        await program.adbCommand("input keyevent KEYCODE_DEL")
+        await page.waitFor(2000)
       }
+    })
+
+    if (isAndroid) {
+      it('focus-keyboard-height', async () => {
+        await page.setData({
+          focus_boolean: true,
+        })
+        await page.waitFor(500)
+        let res = await page.data('jest_result');
+        expect(res).toBe(true)
+        await page.setData({
+          focus_boolean: false,
+        })
+        await page.waitFor(500)
+      })
     }
 
     // 微信小程序text-area不支持cursor-color属性
