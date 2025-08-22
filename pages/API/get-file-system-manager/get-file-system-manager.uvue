@@ -113,6 +113,7 @@
       @tap="testReadFileSyncArrayBuffer()">readFileSync(content://arraybuffer)</button>
     <button class="btnstyle" type="primary" @tap="copyFileByContent()">copyFile(content://)</button>
     <button class="btnstyle" type="primary" @tap="copyFileSyncByContent()">copyFileSync(content://)</button>
+    <button class="btnstyle" type="primary" @tap="getFileInfoByContent">getFileInfo(content://)</button>
 
     <!-- #endif -->
     <button class="btnstyle" type="primary" @tap="gotoExplore()">前往沙盒文件管理器</button>
@@ -1938,6 +1939,20 @@
         uni.navigateTo({
           url: "/pages/API/get-file-system-manager/testStatic"
         })
+      },
+      getFileInfoByContent(event : UniPointerEvent){
+          uni.chooseFile({
+            count:1,
+            success(e){
+              console.log(JSON.stringify(e.tempFiles[0].path))
+              uni.getFileSystemManager().getFileInfo({
+                filePath:e.tempFiles[0].path,
+                success(e2) {
+                  console.log('success:', (e2))
+                }
+              })
+            }
+          })
       }
     },
 
