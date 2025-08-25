@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 
-describe('image format', () => {
+describe('image path', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/image/image-path');
