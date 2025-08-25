@@ -4,30 +4,31 @@ UTSWorkerAddListenerOptions , UTSWorkerAddListenerOptionsSuccess, UTSWorkerSendW
 
 
 export const createWorkers : CreateWorkers = function () : void {
-	UTSWorkerImpl.create();
+	UTSWorkerImpl.shared.create();
 }
 export const sendWorkerMessage : SendWorkerMessage = function (options : UTSWorkerSendWorkerMessageOptions) : void {
-	UTSWorkerImpl.sendMessage(options);
+	UTSWorkerImpl.shared.sendMessage(options);
 }
 
 export const onWorkerMessage : OnWorkerMessage  = function (options : UTSWorkerAddListenerOptions) : void {
-	UTSWorkerImpl.onMessage(options);
+	UTSWorkerImpl.shared.onMessage(options);
 }
 
 export const destroyWorker : DestroyWorker = function () : void {
-	UTSWorkerImpl.destroy();
+	UTSWorkerImpl.shared.destroy();
 }
 
 export const onWorkerError : OnWorkerError = function (options: UTSWorkerErrorOptions) : void {
-	UTSWorkerImpl.onError(options);
+	UTSWorkerImpl.shared.onError(options);
 }
 
 export class UTSWorkerImpl{
-	static workerImp : Worker | null = null;
-	static options : UTSWorkerAddListenerOptions | null = null;
-	static errorOptions : UTSWorkerErrorOptions | null = null;
+  static shared : UTSWorkerImpl = new UTSWorkerImpl()
+	private workerImp : Worker | null = null;
+	private options : UTSWorkerAddListenerOptions | null = null;
+	private errorOptions : UTSWorkerErrorOptions | null = null;
 
-	static create(){
+	create(){
 		if (this.workerImp != null) {
 			console.warn('[UTS Plugin] Worker已存在，先销毁旧的Worker');
 			this.destroy();
@@ -39,7 +40,7 @@ export class UTSWorkerImpl{
 	}
 
 
-	static sendMessage(options : UTSWorkerSendWorkerMessageOptions){
+	sendMessage(options : UTSWorkerSendWorkerMessageOptions){
 		if (this.workerImp == null) {
 			console.error('Worker未创建，无法发送消息');
 			return;
@@ -60,7 +61,7 @@ export class UTSWorkerImpl{
 		this.workerImp!.postMessage(messageToWorker,null);
 	}
 
-	static onMessage(options : UTSWorkerAddListenerOptions){
+	onMessage(options : UTSWorkerAddListenerOptions){
 		if (this.workerImp == null) {
 			console.error('Worker未创建，无法监听消息');
 			return;
@@ -79,7 +80,7 @@ export class UTSWorkerImpl{
 			}
 		})
 	}
-	static onError(options: UTSWorkerErrorOptions){
+	onError(options: UTSWorkerErrorOptions){
 		if (this.workerImp == null) {
 			console.error('Worker未创建，无法监听错误');
 			return;
@@ -90,14 +91,17 @@ export class UTSWorkerImpl{
 			console.error('[UTS Plugin] Worker发生错误:', error);
 
 			if (this.errorOptions != null && this.errorOptions.success != null) {
-				const errorInfo: UTSWorkerErrorCallbackSuccess = {
-					message: error.message
-				};
+				// const errorInfo: UTSWorkerErrorCallbackSuccess = {
+				// 	message: error.message
+				// };
+        const errorInfo: UTSWorkerErrorCallbackSuccess = {
+        	message: "worker error"
+        };
 				this.errorOptions.success(errorInfo);
 			}
 		})
 	}
-	static destroy(){
+	destroy(){
 
 		if (this.workerImp != null) {
 			console.log('[UTS Plugin] 销毁Worker');
