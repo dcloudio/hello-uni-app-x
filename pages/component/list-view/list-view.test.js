@@ -16,8 +16,7 @@ describe('component-native-list-view', () => {
   beforeAll(async () => {
     //打开list-view测试页
     page = await program.reLaunch('/pages/component/list-view/list-view')
-    await page.waitFor('view')
-    await page.waitFor(1000)
+    await page.waitFor(600)
   })
 
   //检测竖向scrolltop属性赋值

@@ -17,7 +17,7 @@ describe('touch-events-test', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
-    await page.waitFor(1000);
+    await page.waitFor(isWeb ? 5000 : 1000);
   })
 
   it('screenshot', async () => {

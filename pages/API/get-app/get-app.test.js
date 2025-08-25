@@ -45,7 +45,7 @@ describe('getApp', () => {
   })
   it('method', async () => {
     const oldLifeCycleNum = await page.data('lifeCycleNum')
-    await page.callMethod('_increasetLifeCycleNum')
+    await page.callMethod('_increaseLifeCycleNum')
     const newLifeCycleNum = await page.data('lifeCycleNum')
     expect(newLifeCycleNum - oldLifeCycleNum).toBe(100)
     await page.callMethod('setLifeCycleNum', oldLifeCycleNum)

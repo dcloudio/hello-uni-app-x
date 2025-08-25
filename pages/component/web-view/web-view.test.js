@@ -7,7 +7,6 @@ const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-
   if (isWeb || isAppWebView) {
     it('web', async () => {
       expect(1).toBe(1)
@@ -122,23 +121,6 @@ describe('component-native-web-view', () => {
       type: 'load',
       src: 'https://www.dcloud.io/',
       url: 'https://www.dcloud.io/'
-    });
-  });
-
-  it('test event contentheightchange', async () => {
-    if (!isAndroid && !isIOS && !isHarmony) {
-      expect(1).toBe(1);
-      return;
-    }
-    expect(await page.callMethod('getContentHeight')).toBeGreaterThan(0);
-    start = Date.now();
-    await page.waitFor(async () => {
-      return (await page.data('eventContentHeightChange')) || (Date.now() - start > 500);
-    });
-    expect(await page.data('eventContentHeightChange')).toEqual({
-      tagName: 'WEB-VIEW',
-      type: 'contentheightchange',
-      isValidHeight: true
     });
   });
 

@@ -1,11 +1,7 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 
 describe('component-native-scroll-view-props', () => {
     const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-    const isAndroid = platformInfo.startsWith('android')
-    const isIOS = platformInfo.startsWith('ios')
     const isMP = platformInfo.startsWith('mp')
-    const isWeb = platformInfo.startsWith('web')
 
     let page;
     beforeAll(async () => {
@@ -107,7 +103,7 @@ describe('component-native-scroll-view-props', () => {
       await page.setData({
           showScrollbar: false
       })
-      await page.waitFor(300);
+      await page.waitFor(1000);
       const image = await program.screenshot({fullPage: true});
       expect(image).toSaveImageSnapshot();
     })
@@ -119,7 +115,7 @@ describe('component-native-scroll-view-props', () => {
       await page.setData({
           scrollLeft: 10000
       })
-      await page.waitFor(300);
+      await page.waitFor(1000);
       const image = await program.screenshot({fullPage: true});
       expect(image).toSaveImageSnapshot();
     })

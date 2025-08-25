@@ -32,6 +32,9 @@
     <button class="uni-common-mt" id="open-dialog1" @click="openDialog1">
       open dialog 1
     </button>
+    <button class="uni-common-mt" id="open-dialog1" @click="openDialog11">
+      open dialog 1-1
+    </button>
     <button class="uni-common-mt" id="open-dialog1-wrong-path" @click="openDialog1WrongPath">
       open dialog page 1 with wrong path
     </button>
@@ -49,6 +52,12 @@
     </button>
     <button class="uni-common-mt" id="open-dialog5" @click="openDialogWithRelativePath">
       openDialog with relative path
+    </button>
+    <button class="uni-common-mt" @click="openDialogWithTextarea">
+      openDialog with textarea
+    </button>
+    <button class="uni-common-mt" @click="openDialogWithInput">
+      openDialog with input
     </button>
     <text class="uni-common-mt choose-open-animation-type-title">choose open dialogPage animationType</text>
     <radio-group class="choose-open-animation-type-radio-group" @change="handleOpenAnimationType">
@@ -152,6 +161,12 @@
             // 自动化测试
             setLifeCycleNum(state.lifeCycleNum + 1)
           }
+        })
+      },
+      openDialog11(){
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-1-1',
+          animationType: this.openAnimationType
         })
       },
       openDialog2() {
@@ -295,19 +310,24 @@
           url: '/pages/API/dialog-page/dialog-5',
         })
       },
+      openDialogWithTextarea() {
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-textarea'
+        })
+      },
+      openDialogWithInput() {
+        uni.openDialogPage({
+          url: '/pages/API/dialog-page/dialog-input'
+        })
+      },
       setLifeCycleNum(value : number) {
         setLifeCycleNum(value)
       },
       getLifeCycleNum() : number {
         return state.lifeCycleNum
       },
-      jest_OpenDialog1() {
-        uni.openDialogPage({
-          url: '/pages/API/dialog-page/dialog-1?name=dialog1'
-        })
-      },
-      jest_CloseDialog1() {
-        uni.closeDialogPage({})
+      closeDialogSimple() {
+        uni.closeDialogPage()
       },
       jest_getTapPoint() {
         const systemInfo = uni.getSystemInfoSync()
@@ -318,13 +338,10 @@
         this.jest_click_x = systemInfo.screenWidth / 2 * ratio
         this.jest_click_y = systemInfo.statusBarHeight * ratio + 10
       },
-      openDialog2ForTest() {
+      openDialog2Simple() {
         uni.openDialogPage({
           url: '/pages/API/dialog-page/dialog-2'
         });
-      },
-      closeDialog2ForTest() {
-        uni.closeDialogPage({});
       },
       setPageStyleForTest(style : UTSJSONObject) {
         const pages = this.$page.getDialogPages();

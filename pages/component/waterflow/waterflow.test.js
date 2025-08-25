@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-waterflow', () => {
-  if (isMP || isWeb || isHarmony || isAppWebView) {
+  if (isMP || isWeb || isAppWebView) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
@@ -105,28 +105,31 @@ describe('component-native-waterflow', () => {
     await page.waitFor(2000)
   })
 
-  //检测竖向scroll_into_view属性赋值
-  it('check_scroll_into_view_top', async () => {
-    await page.callMethod('setScrollIntoView', 'item---3')
-    await page.waitFor(600)
-    const scrollTop = await page.callMethod('getScrollTop')
-    console.log("check_scroll_into_view_top--"+scrollTop)
-    await page.callMethod('setScrollIntoView', 'item---0')
-    expect(scrollTop-280).toBeGreaterThanOrEqual(0)
-  })
+  if(!isHarmony) {
+    // 鸿蒙平台waterflow不支持scroll-into-view
+    //检测竖向scroll_into_view属性赋值
+    it('check_scroll_into_view_top', async () => {
+      await page.callMethod('setScrollIntoView', 'item---3')
+      await page.waitFor(600)
+      const scrollTop = await page.callMethod('getScrollTop')
+      console.log("check_scroll_into_view_top--"+scrollTop)
+      await page.callMethod('setScrollIntoView', 'item---0')
+      expect(scrollTop-280).toBeGreaterThanOrEqual(0)
+    })
 
-  it('check_scroll_into_view_top_2', async () => {
-    await page.callMethod('confirm_scroll_top_input', 2000)
-    await page.waitFor(600)
-    //需要先赋值空，不然不会引起变化
-    await page.callMethod('setScrollIntoView', '')
-    await page.waitFor(300)
-    await page.callMethod('setScrollIntoView', 'item---0')
-    await page.waitFor(600)
-    const scrollTop = await page.callMethod('getScrollTop')
-    console.log("check_scroll_into_view_top2--"+scrollTop)
-    expect(scrollTop).toBeLessThanOrEqual(10)
-  })
+    it('check_scroll_into_view_top_2', async () => {
+      await page.callMethod('confirm_scroll_top_input', 2000)
+      await page.waitFor(600)
+      //需要先赋值空，不然不会引起变化
+      await page.callMethod('setScrollIntoView', '')
+      await page.waitFor(300)
+      await page.callMethod('setScrollIntoView', 'item---0')
+      await page.waitFor(600)
+      const scrollTop = await page.callMethod('getScrollTop')
+      console.log("check_scroll_into_view_top2--"+scrollTop)
+      expect(scrollTop).toBeLessThanOrEqual(10)
+    })
+  }
 
   //检测waterflow属性变化 截图校验
   it('check_waterflow_view_props', async () => {

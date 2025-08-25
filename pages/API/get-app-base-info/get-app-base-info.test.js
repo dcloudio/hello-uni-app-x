@@ -29,7 +29,6 @@ describe('ExtApi-GetAppBaseInfo', () => {
   it('Check properties', async () => {
     for (const key in res) {
       const value = res[key];
-      console.log("key :",key , "value :", value);
       if (stringProperties.indexOf(key) != -1) {
         expect(value).not.toBeNull();
         expect(value).not.toBe("");

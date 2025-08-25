@@ -1,7 +1,7 @@
 <template>
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1;" enable-back-to-top="true">
-  <!-- #endif -->
+    <!-- #endif -->
     <view class="uni-container" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
       <view v-if="!hasLeftWin" class="uni-header-logo">
         <image class="uni-header-image" src="/static/componentIndex.png"></image>
@@ -39,7 +39,7 @@
         </uni-collapse-item>
       </uni-collapse>
     </view>
-  <!-- #ifdef APP -->
+    <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -102,10 +102,10 @@
         immediate: true,
         handler(newRoute) {
           if (newRoute.matched.length) {
-            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive && this.leftWinActive === item?.path))
+            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive !== "" && this.leftWinActive === item?.path))
             if (activeCategoryIndex > -1) {
               this.$nextTick(() => {
-                ((this.$refs.category as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
+                ((this.$refs['category'] as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
               })
             }
           }
@@ -114,22 +114,22 @@
     },
     // #endif
     onReady() {
-      // #ifdef UNI-APP-X && APP
-      uni.getPrivacySetting({
-        success(res) {
-          if (process.env.NODE_ENV !== 'development') {
+      // #ifdef APP
+      if (process.env.NODE_ENV !== 'development') {
+        uni.getPrivacySetting({
+          success(res) {
             if (res.needAuthorization) {
-              uni.onPrivacyAuthorizationChange((res) => {
-                if (!res.needAuthorization) {
-                  checkUpdate()
-                }
+              let cbId: number = 0
+              cbId = uni.onPrivacyAuthorizationChange(() => {
+                checkUpdate()
+                uni.offPrivacyAuthorizationChange(cbId)
               })
             } else {
               checkUpdate()
             }
           }
-        }
-      })
+        })
+      }
       // #endif
     },
     onShow() {

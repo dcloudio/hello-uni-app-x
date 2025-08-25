@@ -112,6 +112,16 @@
     </view>
     <!-- #endif -->
 
+    <view class="container">
+      <text class="text">点击修改宽度(值为auto有无动画交替出现)</text>
+      <view class="base-style transition-width" id="widthOrHeightAuto" @click="changeWidthOrHeightAuto"></view>
+    </view>
+
+    <view class="container">
+      <view class="text">重复修改width</view>
+      <view class="base-style transition-width" id="changeWidthInEnd" style="transition-duration: 0.5s;" @transitionend="onChangeWidthEnd" @click="changeWidthInEndFun"></view>
+    </view>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -122,6 +132,8 @@
     data() {
       return {
         isTranstionWidthOrHeight: false,
+        isTranstionWidthAuto: false,
+        widthOrHeightAuto: null as UniElement | null,
         widthOrHeight: null as UniElement | null,
         widthProgress: null as UniElement | null,
         isTranstionWidthOrHeightStyle: false,
@@ -161,6 +173,8 @@
         isTransitionAll: false,
         lineLeft: 0,
         lineWidth: 200,
+        changeWidthInEnd: null as UniElement | null,
+        changeWidthInEndCount:0
       }
     },
     onReady() {
@@ -181,6 +195,8 @@
       this.styleTransformTranslate = uni.getElementById("transformTranslate")
       this.styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
       this.styleTransitionAll = uni.getElementById("styleTransitionAll")
+      this.widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
+      this.changeWidthInEnd = uni.getElementById("changeWidthInEnd")
     },
     methods: {
       changeWidthOrHeight() {
@@ -188,6 +204,12 @@
           ? '200px'
           : '300px')
         this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
+      },
+      changeWidthOrHeightAuto(){
+        this.widthOrHeightAuto?.style?.setProperty("width", this.isTranstionWidthAuto
+          ? '200px'
+          : 'auto')
+        this.isTranstionWidthAuto = !this.isTranstionWidthAuto
       },
       changeWidthProgress() {
         this.progressWidth += 20
@@ -356,6 +378,13 @@
           this.lineLeft = 0
           this.lineWidth = 200
         }
+      },
+      onChangeWidthEnd(event : UniEvent){
+          this.changeWidthInEnd?.style.setProperty("width","300px");
+          this.changeWidthInEndCount ++;
+      },
+      changeWidthInEndFun(event : UniPointerEvent){
+          this.changeWidthInEnd?.style.setProperty("width","300px");
       },
     },
   }

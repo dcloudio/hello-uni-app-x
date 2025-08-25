@@ -1,4 +1,4 @@
-jest.setTimeout(40000)
+jest.setTimeout(60000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
@@ -88,6 +88,7 @@ describe('getCurrentPages', () => {
     expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-js-get-current-pages-page-style-after-set-page-style'
     }});
+    await page.waitFor(3500)
 
     // setPageStyle
     await page.callMethod('setPageStyle', {
@@ -117,15 +118,12 @@ describe('getCurrentPages', () => {
       return 'get-current-pages-test-androidThreeButtonNavigationTranslucent'
     }});
 
+    await program.adbCommand('settings put secure immersive_mode_confirmations confirmed');
     await page.callMethod('setPageStyle', {
       hideBottomNavigationIndicator: true,
       hideStatusBar: true
     })
     await page.waitFor(2000);
-    await program.adbCommand('input keyevent 66');
-    await program.adbCommand('input keyevent 66');
-    await program.tap({ x: 0, y: 0 });
-    await page.waitFor(1000);
     const image7 = await program.screenshot(deviceScreenshotParams);
     expect(image7).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'

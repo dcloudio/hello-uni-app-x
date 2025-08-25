@@ -6,88 +6,82 @@
     </view>
     <view ref="boxRef" class="uni-collapse-item__content" :class="{'box-open--active':is_open}">
       <view ref="contentRef" class="uni-collapse-item__content-box" :class="{'content-open--active':box_is_open}">
-       <slot></slot>
+        <slot></slot>
       </view>
     </view>
   </view>
 </template>
 
-<script lang="uts">
+<script lang="uts" setup>
   import { $dispatch } from './util.uts'
-  export default {
-    name: "UniCollapseItem",
-    props: {
-      // 列表标题
-      title: {
-        type: String,
-        default: ''
-      },
-      open: {
-        type: Boolean,
-        default: false
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      }
-    },
-    data() {
-      return {
-        height: 0,
-        is_open: this.open as boolean,
-        box_is_open: this.open as boolean,
-        boxNode: null as UniElement | null,
-        contentNode: null as UniElement | null,
-      };
-    },
-    watch: {
-      open(value : boolean) {
-        // this.is_open = value
-        if (this.boxNode != null) {
-          this.openCollapse(value)
-        }
-      }
-    },
-    created() {
-      $dispatch(this, 'UniCollapse', 'init', this)
-    },
-    mounted() {
-      this.boxNode = this.$refs['boxRef'] as UniElement;
-      this.contentNode = this.$refs['contentRef'] as UniElement;
-      // this.openCollapse(this.open)
-    },
-    methods: {
-      // 开启或关闭折叠面板
-      openCollapse(open : boolean) {
-        if (this.disabled) return
-        // 关闭其他已打开
-        $dispatch(this, 'UniCollapse', 'cloceAll')
-        this.is_open = open
-        this.openOrClose(open)
-      },
-      openOrClose(open : boolean) {
-        // #ifdef MP-WEIXIN
-        setTimeout(() => {
-          this.box_is_open = open
-        }, 10)
-        // #endif
-        // #ifndef MP-WEIXIN
-        const boxNode = this.boxNode?.style!;
-        const contentNode = this.contentNode?.style!;
-        let hide = open ? 'flex' : 'none';
-        const opacity = open ? "1" : "0"
-        let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
-        boxNode.setProperty('display', hide);
-        this.$nextTick(() => {
-          setTimeout(() => {
-            contentNode.setProperty('transform', ani_transform);
-            contentNode.setProperty('opacity', opacity);
-          }, 10)
-        })
-        // #endif
-      }
-    }
+
+  const instance = getCurrentInstance()!.proxy!
+
+  defineOptions({
+    name: "UniCollapseItem"
+  })
+
+  const props = defineProps({
+    title: { type: String, default: '' },
+    open: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false }
+  })
+  let height = 0
+  let is_open = ref<boolean>(props.open)
+  let box_is_open = ref<boolean>(props.open)
+
+  let boxRef = ref<UniViewElement | null>(null)
+  let contentRef = ref<UniViewElement | null>(null)
+
+  let openType = computed(() => props.open)
+
+
+
+  function openOrClose(open : boolean) {
+    setTimeout(()=>{
+      box_is_open.value = !box_is_open.value
+    },10)
+    // #ifndef MP-WEIXIN
+    const bNode = boxRef.value?.style!;
+    const cNode = contentRef.value?.style!;
+    let hide = open ? 'flex' : 'none';
+    const opacity = open ? "1" : "0"
+    let ani_transform = open ? 'translateY(0)' : 'translateY(-100%)';
+    bNode.setProperty('display', hide);
+    nextTick(() => {
+      setTimeout(() => {
+        cNode.setProperty('transform', ani_transform);
+        cNode.setProperty('opacity', opacity);
+      }, 10)
+    })
+    // #endif
   }
+
+  // 开启或关闭折叠面板
+  function openCollapse(open : boolean) {
+    if (props.disabled) return
+    // 关闭其他已打开
+    $dispatch(instance, 'UniCollapse', 'cloceAll')
+    is_open.value = open
+    openOrClose(open)
+  }
+
+
+  onMounted(() => {
+    $dispatch(instance, 'UniCollapse', 'init', instance)
+  })
+
+  watch(openType, (value : boolean) => {
+    if (boxRef.value != null) {
+      openCollapse(value)
+    }
+  })
+
+  defineExpose({
+    is_open,
+    openOrClose,
+    openCollapse
+  })
 </script>
 
 <style>
@@ -151,10 +145,9 @@
     transform: translateY(-100%);
     opacity: 0;
   }
-  /* #ifdef MP-WEIXIN */
+
   .uni-collapse-item .content-open--active {
     transform: translateY(0%);
     opacity: 1;
   }
-  /* #endif */
 </style>

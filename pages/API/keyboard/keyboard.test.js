@@ -1,18 +1,16 @@
 const PAGE_PATH = '/pages/API/keyboard/keyboard'
 
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIOS = platformInfo.startsWith('ios')
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+
 describe('keyboard', () => {
   let page;
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isWeb = platformInfo.startsWith('web')
-  if (isWeb) {
-    it('web', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  } else if(!isAndroid || !isIOS) {
-    it('app', async () => {
+  if (isWeb || isMP || isIOS || isHarmony) {
+    it('not support', async () => {
       expect(1).toBe(1)
     })
     return

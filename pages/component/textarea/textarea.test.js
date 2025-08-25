@@ -21,9 +21,9 @@ describe('component-native-textarea', () => {
     })
   });
 
-  if(!isMP){
+  if (!isMP) {
     it("input event should triggered", async () => {
-      const options = {text: '1'}
+      const options = { text: '1' }
       if (isHarmony) {
         const textareaRect = await page.data('textareaRect');
         options.x = textareaRect.x + textareaRect.width / 2.0;
@@ -43,6 +43,7 @@ describe('component-native-textarea', () => {
       await page.waitFor(500)
       expect(await textarea.attribute("focus")).toBe("false")
     });
+
 
     it('trigger change event', async () => {
       const changeValue = await page.data('changeValue');
@@ -68,6 +69,7 @@ describe('component-native-textarea', () => {
         await page.waitFor(500)
       })
     }
+
 
     // 微信小程序text-area不支持cursor-color属性
     it("cursor-color", async () => {
@@ -107,7 +109,7 @@ describe('component-native-textarea', () => {
     let textareaSize = await textarea.size()
     let textareaHeight = textareaSize.height
     expect(textareaHeight).toBeLessThanOrEqual(150)
-    if(!isMP) {
+    if (!isMP) {
       // TODO 微信小程序auto-height由true切换成false时不会影响text-area高度
       await page.setData({
         default_value: "1\n2\n3\n4\n5\n6",

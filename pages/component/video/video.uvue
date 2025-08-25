@@ -101,10 +101,10 @@
       <enum-data title="设置视频大小与video容器大小不一致时，视频的表现形式" :items="objectFitItemTypes"
         @change="onObjectFitChange"></enum-data>
       <!-- #ifndef APP-HARMONY -->
-      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 App 平台，播放前设置有效）" :defaultValue="httpCache"
+      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :defaultValue="httpCache"
         @change="onHttpCacheChange"></boolean-data>
-      <enum-data title="设置解码器（仅 App 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
-      <enum-data title="设置播放策略（仅 App 平台，播放前设置有效）" :items="playStrategyItemTypes"
+      <enum-data title="设置解码器（仅 Android、iOS 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
+      <enum-data title="设置播放策略（仅 Android、iOS 平台，播放前设置有效）" :items="playStrategyItemTypes"
         @change="onPlayStrategyChange"></enum-data>
       <!-- #endif -->
     </scroll-view>
@@ -560,8 +560,13 @@
       hasSubComponent() : boolean {
         const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
         return view == null ? false : view.getChildAt(0) instanceof ViewGroup;
-      }
+      },
       // #endif
+      requestVerticalFullScreen() {
+        this.videoContext?.requestFullScreen({
+          direction: 0
+        } as RequestFullScreenOptions);
+      }
     }
   }
 </script>
