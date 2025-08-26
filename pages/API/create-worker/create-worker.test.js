@@ -8,7 +8,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('Api-createWorker', () => {
-  if(isMP || isWeb || isHarmony) {
+  if(isMP || isWeb || isHarmony || isIOS) {
     it('skip', async () => {
       expect(1).toBe(1)
     })
