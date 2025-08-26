@@ -10,11 +10,6 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = '/pages/CSS/pointer-events/issue-20923'
 
 describe('issue-20923', () => {
-  beforeAll(async () => {
-    page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
-  })
-
   // 此测试例暂时只对鸿蒙开放
   if(!isHarmony) {
     it('skip', () => {
@@ -22,6 +17,11 @@ describe('issue-20923', () => {
     })
     return
   }
+
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view')
+  })
 
   it('issue-20923', async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
