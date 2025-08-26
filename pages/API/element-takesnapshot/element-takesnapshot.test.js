@@ -42,5 +42,7 @@ describe("element-takesnapshot", () => {
     console.log(image)
     ///storage/emulated/0/Android/data/io.dcloud.uniappx/apps/__UNI__3584C99/cache/temp/screenshot/1697513148915.png
     expect(image.length).toBeGreaterThan(20)
+    const completeTriggered = await page.data('completeTriggered')
+    expect(completeTriggered).toBe(true)
   });
 });
