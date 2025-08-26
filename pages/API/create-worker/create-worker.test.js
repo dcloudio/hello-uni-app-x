@@ -19,9 +19,9 @@ describe('Api-createWorker', () => {
   let res;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(600);
+    await page.waitFor(500);
     await page.callMethod('test_resetInputValue');
-    await page.waitFor(1500);
+    await page.waitFor(500);
     await page.callMethod('create');
     await page.waitFor(500);
     await page.callMethod('sendMessage');
