@@ -5,7 +5,8 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-waterflow', () => {
-  if (isMP || isWeb || isAppWebView) {
+  // 鸿蒙平台api 20支持滚动相关事件，api 18支持load-more。目前先手动测试，后续升级测试机后再放开测试
+  if (isMP || isWeb || isAppWebView || isHarmony) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})
