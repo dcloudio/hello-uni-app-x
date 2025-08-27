@@ -93,7 +93,8 @@
         eventError: null as UTSJSONObject | null,
         eventContentHeightChange: null as UTSJSONObject | null,
         pointerEvents: 'auto',
-        isTouchEnable: false
+        isTouchEnable: false,
+        loadingCount: 0
       }
     },
     onReady() {
@@ -133,6 +134,7 @@
         webviewElement?.forward();
       },
       reload() {
+        this.loadingCount = 0
         webviewElement?.reload();
       },
       stop() {
@@ -179,6 +181,7 @@
         }
       },
       loading(event : UniWebViewLoadingEvent) {
+        this.loadingCount ++
         console.log(JSON.stringify(event.detail));
         if (this.autoTest) {
           this.eventLoading = {
@@ -253,6 +256,10 @@
         // #ifdef WEB
         return true
         // #endif
+      },
+      checkLoadingCount() {
+        this.loadingCount = 0
+        webviewElement?.reload();
       }
     }
   }

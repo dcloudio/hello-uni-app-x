@@ -188,4 +188,9 @@ describe('component-native-web-view', () => {
     const image = await program.screenshot({ fullPage: true });
     expect(image).toSaveImageSnapshot();
   });
+
+  it('checkLoadingCount', async () => {
+    await page.callMethod('checkLoadingCount')
+    expect(await page.data('loadingCount')).toBe(1);
+  })
 });
