@@ -41,6 +41,15 @@
           </view>
         </view>
       </view>
+      <text style="font-size: 15px;">同时设置overflow=visible、z-index的事件触发示例</text>
+      <view class="backgroundview">
+        <view id="zindex-overflow" style="width: 1px;height: 1px;overflow: visible;z-index: 100;" @click="handleClick('red')">
+        	<view style="width: 100px;height: 100px;background-color: red;"></view>
+        </view>
+        <view style="width: 1px;height: 1px;overflow: visible;">
+        	<view style="width: 100px;height: 100px;background-color: green;"></view>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -129,6 +138,12 @@
         this.jest_click_x = rect.x * ratio + 30
         this.jest_click_y = (rect.top + titleBarHeight) * ratio + 30
       },
+
+      async jest_restScorllView(){
+        const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+        scrollView.scrollTo(0, 0)
+      },
+
       async jest_scrollToDeepOverflow() {
         const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
         const rect = await uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!
@@ -141,6 +156,23 @@
           }
           const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
           uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
+            this.jest_click_x = afterRect.x * ratio + 30
+            this.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
+          })
+        }, 200)
+      },
+      async jest_scrollToZIndexOverflow() {
+        const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+        const rect = await uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!
+        scrollView.scrollTo(0, rect.top)
+        setTimeout(() => {
+          const systemInfo = uni.getSystemInfoSync()
+          let ratio = 1
+          if (uni.getSystemInfoSync().platform == 'android'){
+            ratio = uni.getSystemInfoSync().devicePixelRatio
+          }
+          const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+          uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
             this.jest_click_x = afterRect.x * ratio + 30
             this.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
           })
@@ -170,5 +202,11 @@
 
   .hover-class {
     background-color: aqua;
+  }
+
+  .box {
+    width: 1px;
+    height: 1px;
+    overflow: visible;
   }
 </style>
