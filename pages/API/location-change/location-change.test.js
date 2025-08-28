@@ -79,7 +79,7 @@ describe("location-change", () => {
     const startLocationUpdateBtn = await page.$('#startLocationUpdate')
     await startLocationUpdateBtn.tap()
 
-    await page.waitFor(500)
+    await page.waitFor(1000)
 
     let data = await page.data()
     let startSuccess = data['startSuccess']
@@ -102,6 +102,7 @@ describe("location-change", () => {
 
       const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
       await startLocationUpdateBackgroundBtn.tap()
+      await page.waitFor(1000)
       data = await page.data()
       startSuccess = data['startSuccess']
       errCode = data['errCode']
