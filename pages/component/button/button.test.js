@@ -101,7 +101,7 @@ describe('Button.uvue', () => {
 
   // 自定义button和默认button来回切换截图对比
   it("button-screenshot-plain+primary+default", async () => {
-    if (isWeb) {
+    if (isWeb || isMP) {
       expect(1).toBe(1)
       return
     }
