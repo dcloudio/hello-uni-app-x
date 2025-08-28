@@ -419,48 +419,49 @@ function getWaitForTagName(pagePath) {
   return 'view'
 }
 
-describe("page screenshot test", () => {
-  // TODO: 暂时屏蔽 harmony 截图测试，规避应用崩溃
-  if (platformInfo.indexOf('safari') !== -1) {
-    it('暂时规避 safari 截图测试', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
+// 将页面数组分组
+const BATCH_SIZE = 20;
+const pageBatches = [];
+for (let i = 0; i < pages.length; i += BATCH_SIZE) {
+  pageBatches.push(pages.slice(i, i + BATCH_SIZE));
+}
 
-  beforeAll(async () => {
-    console.log("page screenshot test start");
-    windowInfo = await program.callUniMethod('getWindowInfo');
-  });
-  beforeEach(async () => {
-    const currentPagePath = pages[pageIndex]
-    page = await program.reLaunch(currentPagePath);
-    await page.waitFor(getWaitForTagName(currentPagePath));
-  });
-  afterEach(() => {
-    pageIndex++;
-  });
-  afterAll(() => {
-    console.log("page screenshot test finish");
-  });
-  test.each(pages)("%s", async () => {
-    const currentPagePath = pages[pageIndex]
-    console.log("Taking screenshot: ", pageIndex, currentPagePath);
-    let fullPage = true;
+// 为每个批次创建独立的测试套件
+pageBatches.forEach((batch, batchIndex) => {
+  describe(`Page Screenshot Batch ${batchIndex + 1}`, () => {
+    let localPageIndex = 0;
+    
+    beforeAll(async () => {
+      console.log(`Starting batch ${batchIndex + 1} with ${batch.length} pages`);
+      windowInfo = await program.callUniMethod('getWindowInfo');
+    });
+    
+    afterAll(async () => {
+      console.log(`Finished batch ${batchIndex + 1}`);
+    });
+    
+    test.each(batch)("%s", async () => {
+      const currentPagePath = batch[localPageIndex];
+      page = await program.reLaunch(currentPagePath);
+      await page.waitFor(getWaitForTagName(currentPagePath));
+      console.log("Taking screenshot: ", pageIndex, currentPagePath);
+      let fullPage = true;
 
-    const screenshotParams = {
-      fullPage
-    }
-    if (!fullPage && !isAppWebView) {
-      screenshotParams.offsetY = isApp ? `${windowInfo.safeAreaInsets.top + 44}` : '0'
-    }
-
-    const image = await program.screenshot(screenshotParams);
-    expect(image).toSaveImageSnapshot({
-      customSnapshotIdentifier() {
-        return `__pages_test__/${currentPagePath.replace(/\//g, "-").substring(1)}`
+      const screenshotParams = {
+        fullPage
       }
-    })
-    await page.waitFor(800);
+      if (!fullPage && !isAppWebView) {
+        screenshotParams.offsetY = isApp ? `${windowInfo.safeAreaInsets.top + 44}` : '0'
+      }
+
+      const image = await program.screenshot(screenshotParams);
+      expect(image).toSaveImageSnapshot({
+        customSnapshotIdentifier() {
+          return `__pages_test__/${currentPagePath.replace(/\//g, "-").substring(1)}`
+        }
+      })
+      await page.waitFor(800);
+      localPageIndex++;
+    });
   });
 });
