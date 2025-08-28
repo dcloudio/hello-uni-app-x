@@ -2,6 +2,7 @@ import { CreateWorkers, DestroyWorker, OnWorkerError,
 OnWorkerMessage, SendWorkerMessage,
 UTSWorkerAddListenerOptions , UTSWorkerAddListenerOptionsSuccess, UTSWorkerSendWorkerMessageOptions, UTSWorkerErrorOptions, UTSWorkerErrorCallbackSuccess } from './interface.uts';
 
+export * from './interface.uts';
 
 export const createWorkers : CreateWorkers = function () : void {
 	UTSWorkerImpl.shared.create();
@@ -74,7 +75,7 @@ export class UTSWorkerImpl{
 
 			if (this.options != null && this.options.success != null){
 				let success : UTSWorkerAddListenerOptionsSuccess = {
-					result: result as Map<string, any>
+					result: result as UTSJSONObject
 				}
 				this.options.success(success);
 			}

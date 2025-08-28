@@ -31,15 +31,15 @@ export class HelloWorkerTask extends WorkerTaskImpl {
 
   // 发送回复消息
   private sendReply(msgData : string) {
-    const response = new Map<string, any>();
+    const response = new UTSJSONObject();
 
     // 尝试将接收到的数据转换为数字并加1
     const inputNumber = parseInt(msgData);
     if (isNaN(inputNumber)) {
-      response.set('data', `输入"${msgData}"不是有效数字`);
+      response.data = `输入"${msgData}"不是有效数字`;
     } else {
       const result = inputNumber + 1;
-      response.set('data', result.toString());
+      response.data = result.toString()
     }
 
     console.log('[WorkerTask] 发送回复消息:', response);
