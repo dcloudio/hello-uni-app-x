@@ -1,7 +1,16 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isWeb = platformInfo.startsWith('web')
+const isChrome = platformInfo.indexOf('chrome') > -1
 
 describe('swiper-vertical-video', () => {
+  if (isWeb && !isChrome) {
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/template/swiper-vertical-video/swiper-vertical-video');

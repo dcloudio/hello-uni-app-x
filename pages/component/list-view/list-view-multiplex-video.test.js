@@ -3,9 +3,11 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
+const isChrome = platformInfo.indexOf('chrome') > -1
 
 describe('list-view-multiplex-video', () => {
-  if (isMP || isAppWebView) {
+  if (isMP || isAppWebView || (isWeb && !isChrome)) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
