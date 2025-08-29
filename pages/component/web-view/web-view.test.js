@@ -191,6 +191,12 @@ describe('component-native-web-view', () => {
 
   it('checkLoadingCount', async () => {
     await page.callMethod('checkLoadingCount')
-    expect(await page.data('loadingCount')).toBe(1);
+    await page.waitFor(300);
+    const has = await page.callMethod('checkNativeWebView')
+    if (has) {
+      expect(await page.data('loadingCount')).toBe(1);
+    } else {
+      expect(await page.data('loadingCount')).toBe(0);
+    }
   })
 });
