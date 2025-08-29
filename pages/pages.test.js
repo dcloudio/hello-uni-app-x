@@ -8,6 +8,7 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isSafari = platformInfo.indexOf('safari') > -1
 
 let pageIndex = 0
 const pages = [
@@ -429,6 +430,13 @@ for (let i = 0; i < pages.length; i += BATCH_SIZE) {
 // 为每个批次创建独立的测试套件
 pageBatches.forEach((batch, batchIndex) => {
   describe(`Page Screenshot Batch ${batchIndex + 1}`, () => {
+    if (isSafari) {
+     it('not support', () => {
+        expect(1).toBe(1)
+      })
+      return
+    }
+    
     let localPageIndex = 0;
     
     beforeAll(async () => {

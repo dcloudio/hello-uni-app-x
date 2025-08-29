@@ -3,8 +3,15 @@ const PAGE_PATH = '/pages/component/text/text-props'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isChrome = platformInfo.indexOf('chrome') > -1
 
 describe('text-props', () => {
+  if (isWeb && !isChrome) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)

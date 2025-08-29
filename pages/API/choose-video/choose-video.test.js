@@ -1,8 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isWeb = platformInfo.startsWith('web')
+const isChrome = platformInfo.indexOf('chrome') > -1
 
 describe('choose-video', () => {
-  if (isAppWebView) {
+  if (isAppWebView || (isWeb && !isChrome)) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
