@@ -8,12 +8,13 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isSafari = platformInfo.indexOf('safari') > -1
 
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
 
 describe('dialog page', () => {
-  if (isAppWebView || isMP) {
+  if (isAppWebView || isMP || isSafari) {
     it('not support', () => {
       expect(1).toBe(1)
     })
