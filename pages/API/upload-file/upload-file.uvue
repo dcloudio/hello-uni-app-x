@@ -235,6 +235,29 @@
             this.jest_result = false;
           },
         })
+      },
+      jest_uploadFileVerifyUA(){
+        uni.uploadFile({
+          url: 'https://request.dcloud.net.cn/api/http/header/upload',
+          header:{
+            "User-Agent":"custom"
+          },
+          formData: {
+            'user': 'test'
+          },
+          success: (res : UploadFileSuccess) => {
+            const data = JSON.parseObject(res.data)
+            const innerData = data?.getJSON("data")
+            const header = innerData?.getJSON("requestHeaders")
+            const uas = header?.getArray("user-agent")
+            if(uas != null) {
+              this.jest_result = (uas.length == 1)
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        })
       }
     }
   }

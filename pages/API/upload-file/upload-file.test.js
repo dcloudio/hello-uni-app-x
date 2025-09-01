@@ -95,4 +95,10 @@ describe('ExtApi-UploadFile', () => {
     res = await page.data('jest_result');
     expect(res).toBe(true)
   })
+  it('Check verify useragent count', async () => {
+    res = await page.callMethod('jest_uploadFileVerifyUA')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+  })
 });
