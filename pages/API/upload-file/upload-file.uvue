@@ -218,6 +218,46 @@
           }
         } as CommonOptions)
         // #endif
+      },
+      jest_uploadFileWithoutFile(){
+        const imageSrc = "/static/uni.png";
+        uni.uploadFile({
+          url: 'https://unidemo.dcloud.net.cn/upload', //仅为示例，非真实的接口地址
+          formData: {
+            'user': 'test'
+          },
+          success: (res) => {
+            console.log("success: ",res);
+            this.jest_result = true;
+          },
+          fail: (err) => {
+            console.log("fail: ", err);
+            this.jest_result = false;
+          },
+        })
+      },
+      jest_uploadFileVerifyUA(){
+        uni.uploadFile({
+          url: 'https://request.dcloud.net.cn/api/http/header/upload',
+          header:{
+            "User-Agent":"custom"
+          },
+          formData: {
+            'user': 'test'
+          },
+          success: (res : UploadFileSuccess) => {
+            const data = JSON.parseObject(res.data)
+            const innerData = data?.getJSON("data")
+            const header = innerData?.getJSON("requestHeaders")
+            const uas = header?.getArray("user-agent")
+            if(uas != null) {
+              this.jest_result = (uas.length == 1)
+            }
+          },
+          fail: () => {
+            this.jest_result = false;
+          },
+        })
       }
     }
   }
