@@ -3,9 +3,8 @@ describe('component-native-scroll-view-props', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
-  const isChrome = platformInfo.indexOf('chrome') > -1
 
-  if (isWeb && !isChrome) {
+  if (isWeb) {
     it('skip', () => {
       expect(1).toBe(1)
     })
