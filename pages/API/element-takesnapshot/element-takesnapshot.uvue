@@ -17,7 +17,9 @@
     data() {
       return {
         mode: "center",//aspectFit
-        snapImage: "/static/uni.png"
+        snapImage: "/static/uni.png",
+        // for testing
+        completeTriggered: false
       }
     },
     methods: {
@@ -25,20 +27,25 @@
         const view = uni.getElementById('snapshot-content')!
         view.takeSnapshot({
           success: (res) => {
-            console.log(res.tempFilePath)
+            console.log('takeSnapshot success', res.tempFilePath)
             this.snapImage = res.tempFilePath
             this.mode = 'widthFix'
             uni.showToast({
               title: '截图成功，路径：' + res.tempFilePath,
               icon: "none"
             })
+            this.completeTriggered = true
           },
           fail: (res) => {
-            console.log(res)
+            console.log('takeSnapshot fail', res)
+            this.completeTriggered = true
             uni.showToast({
               icon: 'error',
               title: '截图失败'
             })
+          },
+          complete: (res) => {
+            console.log('takeSnapshot complete', res)
           }
         })
       },

@@ -1,10 +1,17 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 describe('component-native-input', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
+  if (isAppWebView) {
+  	it('app 与 web 存在差异, webview 不进行截图', () => {
+      expect(1).toBe(1)
+    })
+  	return
+  }
 
   let page;
   beforeAll(async () => {
@@ -12,12 +19,6 @@ describe('component-native-input', () => {
     await page.waitFor('view');
   });
 
-  // it("beforeAllTestScreenshot", async () => {
-  //   const image = await program.screenshot({
-  //     fullPage: true
-  //   })
-  //   expect(image).toSaveImageSnapshot()
-  // })
   // 测试焦点及键盘弹起
   if(!isMP) {
     it('focus', async () => {
@@ -220,13 +221,16 @@ describe('component-native-input', () => {
     await page.waitFor(2000);
 
     const keyboardHeight = await page.data('keyboardHeight');
-    console.log("keyboardHeight :", keyboardHeight);
     expect(keyboardHeight).toBeGreaterThan(25)
     //reset
     await page.setData({
       focusedForKeyboardHeightChangeTest: false,
       keyboardHeight: 0
     })
+    if (isHarmony) {
+      await program.tap({ x: 100, y: 200 })
+      await page.waitFor(1000);
+    }
   })
 
   it("afterAllTestScreenshot", async () => {

@@ -2,9 +2,6 @@ const PAGE_PATH = '/pages/template/calendar/calendar'
 
 describe('calendar', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIos = platformInfo.startsWith('ios')
-  const isApp = isAndroid || isIos
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
   if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {

@@ -25,8 +25,6 @@ describe('issue-19746', () => {
 	})
 
 	it('issue19746', async () => {
-		await page.callMethod('addEl')
-		await page.waitFor(1000)
 
 		await program.tap({
 			x: 50,

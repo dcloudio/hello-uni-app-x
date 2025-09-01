@@ -3,6 +3,7 @@
   export default {
     data() {
       return {
+        value2: '第一行\n第二行\n第三行\n第四行\n第五行\n第六行\n第七行\n第八行\n第九行\n第十行\n十一行',
         adjust_position_boolean: false,
         show_confirm_bar_boolean: false,
         fixed_boolean: false,
@@ -132,7 +133,7 @@
       <boolean-data :defaultValue="false" title="改变光标颜色为透明" @change="change_cursor_color_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="设置禁用输入框"
         @change="change_disabled_boolean"></boolean-data>
-      <enum-data :items="confirm_type_list" title="confirm-type，设置键盘右下角按钮。（Android仅支持return）"
+      <enum-data :items="confirm_type_list" title="confirm-type，设置键盘右下角按钮。"
         @change="radio_change_confirm_type"></enum-data>
       <boolean-data :defaultValue="false" title="点击软键盘右下角按钮时是否保持键盘不收起(confirm-type为return时必然不收起)"
         @change="change_confirm_hold_boolean"></boolean-data>
@@ -204,6 +205,18 @@
       <view class="textarea-wrap">
         <textarea class="textarea-instance" style="max-height: 50px;" auto-height="true" :value="default_value"></textarea>
       </view>
+      <view class="title-wrap">
+        <view>同时设置value与text-align</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance" style="height: 50px;text-align: right;" value="同时设置value与text-align"></textarea>
+      </view>
+      <view class="title-wrap">
+        <view>scroll-view嵌套textarea滚动</view>
+      </view>
+      <scroll-view  style="height: 150px;" direction="vertical">
+      	<textarea class="textarea-instance" :adjust-position="false" :auto-height="true" :value="value2" />
+      </scroll-view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -238,7 +251,7 @@
 
   .textarea-instance {
     flex: 1;
-    border: 1 solid #666;
+    border: 1px solid #666;
     margin: 10px;
   }
 

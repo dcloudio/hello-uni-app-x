@@ -69,8 +69,6 @@ describe('component-native-scroll-view-refresher', () => {
         })
       }
       await page.waitFor(1500)
-      console.log('onRefresherpullingTest',await page.data('onRefresherpullingTest'))
-      console.log(platformInfo,'onRefresherabortTest',await page.data('onRefresherabortTest'))
       if(isIos || platformInfo.startsWith('android 10') || platformInfo.startsWith('android 11')){
         expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
       }

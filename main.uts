@@ -1,6 +1,6 @@
 // 仅测试 console.log 时机问题
 import './test-main-console.uts'
-// #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN
+// #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
 import { uniStat } from '@/uni_modules/uni-stat/plugin.uts'
 // #endif
 import App from './App.uvue'
@@ -13,13 +13,14 @@ const uniStatcollectItems = {
 }
 
 const uniStatOptions = {
+  enable: true,
 	debug: false,
 	collectItems: uniStatcollectItems,
 }
 
 export function createApp() {
   const app = createSSRApp(App)
-  // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN
+  // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
   app.use(uniStat, uniStatOptions)
   // #endif
   // app.mixin({
@@ -33,3 +34,4 @@ export function createApp() {
     app
   }
 }
+// 此注释必须放在此文件的最后一行，用于测试issue#18520

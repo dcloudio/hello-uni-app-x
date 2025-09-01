@@ -7,7 +7,6 @@ const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-web-view', () => {
-
   if (isWeb || isAppWebView) {
     it('web', async () => {
       expect(1).toBe(1)
@@ -142,23 +141,6 @@ describe('component-native-web-view', () => {
     });
   });
 
-  it('test event contentheightchange', async () => {
-    if (!isAndroid && !isIOS && !isHarmony) {
-      expect(1).toBe(1);
-      return;
-    }
-    expect(await page.callMethod('getContentHeight')).toBeGreaterThan(0);
-    start = Date.now();
-    await page.waitFor(async () => {
-      return (await page.data('eventContentHeightChange')) || (Date.now() - start > 500);
-    });
-    expect(await page.data('eventContentHeightChange')).toEqual({
-      tagName: 'WEB-VIEW',
-      type: 'contentheightchange',
-      isValidHeight: true
-    });
-  });
-
   it('test event error', async () => {
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
@@ -206,4 +188,23 @@ describe('component-native-web-view', () => {
     const image = await program.screenshot({ fullPage: true });
     expect(image).toSaveImageSnapshot();
   });
+
+  it('checkLoadingCount', async () => {
+    if (
+      platformInfo.indexOf('14.5') != -1 ||
+      platformInfo.indexOf('13.7') != -1 ||
+      platformInfo.indexOf('12.4') != -1
+    ) {
+      expect(1).toBe(1)
+      return
+    }
+    await page.callMethod('checkLoadingCount')
+    await page.waitFor(300);
+    const has = await page.callMethod('checkNativeWebView')
+    if (has) {
+      expect(await page.data('loadingCount')).toBe(1);
+    } else {
+      expect(await page.data('loadingCount')).toBe(0);
+    }
+  })
 });

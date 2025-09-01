@@ -49,7 +49,7 @@
           },
           {
             src: '../../../static/Test-Image/Logo.png',
-            description: '本地相对路径忽略大小写（需注意iOS平台不支持，Android平台云端打包后无效）'
+            description: '本地相对路径忽略大小写（需注意iOS、HarmonyOS平台不支持，Android平台云端打包后无效）'
           },
           {
             src: logo,
@@ -97,17 +97,17 @@
           },
           // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY || MP-WEIXIN
           {
-            src: uni.env.USER_DATA_PATH+'/uni.png',
+            src: uni.env.USER_DATA_PATH + '/uni.png',
             description: 'uni.env.USER_DATA_PATH 路径'
           },
           // #endif
           // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
           {
-            src: uni.env.CACHE_PATH+'/uni.png',
+            src: uni.env.CACHE_PATH + '/uni.png',
             description: 'uni.env.CACHE_PATH 路径'
           },
           {
-            src: uni.env.SANDBOX_PATH+'/uni.png',
+            src: uni.env.SANDBOX_PATH + '/uni.png',
             description: 'uni.env.SANDBOX_PATH 路径'
           },
           // #endif
@@ -119,17 +119,25 @@
           // #endif
           // #ifdef APP-ANDROID
           {
-            src: uni.env.ANDROID_INTERNAL_SANDBOX_PATH+'/uni.png',
+            src: uni.env.ANDROID_INTERNAL_SANDBOX_PATH + '/uni.png',
             description: 'uni.env.ANDROID_INTERNAL_SANDBOX_PATH 路径'
           },
           // #endif
+          {
+            src: 'data:image/*;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI0LjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IuWbvuWxgl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiCiAgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTk2IDE5NiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTk2IDE5NjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgICAuc3QwIHsKICAgICAgZmlsbDogIzI0OTgzQTsKICAgIH0KCiAgICAuc3QxIHsKICAgICAgZmlsbDogI0ZGRkZGRjsKICAgIH0KICA8L3N0eWxlPgogIDxlbGxpcHNlIGNsYXNzPSJzdDAiIGN4PSI5Ny45IiBjeT0iOTguMSIgcng9Ijk2LjgiIHJ5PSI5Ni44IiAvPgogIDxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMTQyLjgsMTQ5LjggMTI1LjgsMTQ5LjggMTI1LjYsMTQ5LjggNzAuMiwxNDkuOCA3MC4yLDE0OS44IDUzLjEsMTQ5LjggNTMuMSw1Ni43IDcwLjMsNTYuNwoJNzAuMywxMzIuNiAxMjUuNiwxMzIuNiAxMjUuNiw1Ni43IDE0Mi44LDU2LjcgIiAvPgo8L3N2Zz4K',
+            description: "base64-svg",
+          },
+          {
+            src: 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/w3c.svg',
+            description: '正确的svg网络路径'
+          }
         ] as Array<ImagePath>
       }
     },
     onLoad() {
       let fileManager = uni.getFileSystemManager()
       // #ifdef APP-ANDROID || APP-HARMONY || MP-WEIXIN
-      try{
+      try {
         fileManager.accessSync(`${uni.env.USER_DATA_PATH}/uni.png`)
       } catch (e) {
         fileManager.copyFileSync("/static/uni.png", `${uni.env.USER_DATA_PATH}/uni.png`)
@@ -141,7 +149,7 @@
       // #endif
 
       // #ifdef APP-ANDROID || APP-HARMONY
-      try{
+      try {
         fileManager.accessSync(`${uni.env.CACHE_PATH}/uni.png`)
         fileManager.accessSync(`${uni.env.SANDBOX_PATH}/uni.png`)
       } catch (e) {
@@ -157,14 +165,14 @@
       // #endif
 
       // #ifdef APP-HARMONY
-      try{
+      try {
         fileManager.accessSync(`${uni.env.TEMP_PATH}/uni.png`)
       } catch (e) {
         fileManager.copyFileSync("/static/uni.png", `${uni.env.TEMP_PATH}/uni.png`)
       }
       // #endif
       // #ifdef APP-ANDROID
-      try{
+      try {
         fileManager.accessSync(`${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
       } catch (e) {
         fileManager.copyFileSync("/static/uni.png", `${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)

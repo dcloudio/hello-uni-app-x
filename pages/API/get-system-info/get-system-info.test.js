@@ -36,7 +36,6 @@ describe('ExtApi-GetSystemInfo', () => {
   it('Check GetSystemInfoSync', async () => {
     for (const key in res) {
       const value = res[key];
-      console.log("key :",key , "value :", value);
       if (stringProperties.indexOf(key) != -1) {
         expect(value).not.toBeNull();
         expect(value).not.toBe("");
@@ -75,7 +74,6 @@ describe('ExtApi-GetSystemInfo', () => {
   })
 
   it('Check screenHeight at different stages', async ()=> {
-    console.log("deviceOrientation ", res["deviceOrientation"]);
     if(res["deviceOrientation"] == "landscape"){
       expect(1).toBe(1)
     }else{

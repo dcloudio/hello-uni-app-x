@@ -5,31 +5,14 @@
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
 	import { createNativeButtonContext } from "@/uni_modules/native-button";
-
-	export default {
-		data() {
-			return {
-				title: '组件能力封装示例',
-			}
-		},
-
-		methods: {
-			ontap(e : UniNativeViewEvent) {
-				console.log("ontap----------" + e.type)
-			},
-
-			testCallMethod: function () {
-				let context = createNativeButtonContext("helloView1", this)
-				context?.updateText("test code")
-			}
-
-
-		}
-	}
+	const title = ref('组件能力封装示例');
+	const ontap = (e : UniNativeViewEvent) => {
+		console.log("ontap----------" + e.type)
+	};
+	const testCallMethod = () => {
+		let context = createNativeButtonContext("helloView1", getCurrentInstance()?.proxy)
+		context?.updateText("test code")
+	};
 </script>
-
-<style>
-
-</style>

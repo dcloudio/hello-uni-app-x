@@ -9,6 +9,14 @@
           <text class="time">{{ item['published_at'] }}</text>
         </view>
       </flow-item>
+      <!-- 测试验证issues 20342 问题 开始 -->
+      <flow-item slot="refresher" id="refresher" type=2>
+      	<text>自定义加载</text>
+      </flow-item>
+      <flow-item slot="load-more" id="loadmore" type=6 class="load-more-box">
+        <text>加载更多</text>
+      </flow-item>
+      <!-- 测试验证issues 20342 问题 结束-->
     </waterflow>
   </view>
 </template>
@@ -38,7 +46,7 @@
           const result = res.data
 
           if (result != null) {
-            list.value = result
+            list.value.push(...result)
           }
         }
       },
@@ -81,5 +89,14 @@
       color: gray;
       margin: 10px;
     }
+  }
+
+  .load-more-box {
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
+    border-style: solid;
   }
 </style>

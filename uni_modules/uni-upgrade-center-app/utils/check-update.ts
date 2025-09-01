@@ -36,7 +36,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
           // 静默更新，只有wgt有
           if (uniUpgradeCenterResult.is_silently) {
             uni.downloadFile({
-              url,
+              url: uniUpgradeCenterResult.url,
               success: res => {
                 if (res.statusCode == 200) {
                   // 下载好直接安装，下次启动生效

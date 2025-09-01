@@ -1,3 +1,4 @@
+// @Author-APP-ANDROID:DCloud_Android_DQQ
 const PAGE_PATH = '/pages/component/swiper/swiper'
 
 
@@ -22,6 +23,7 @@ describe('swiper-touch-test', () => {
     await page.waitFor('view');
     res = await page.callMethod('jest_getSystemInfo')
   })
+
 
   it('滑动切换 swiper', async () => {
     let x = await page.data('swipeX')

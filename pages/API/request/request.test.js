@@ -206,4 +206,13 @@ describe('ExtApi-Request', () => {
     })
   }
 
+  if(isWeb) {
+    it('issue 19687', async () => {
+      await page.callMethod('jest_issue_19687')
+      await page.waitFor(2000);
+      res = await page.data('jest_result');
+      expect(res).toBe(true)
+    })
+  }
+
 });

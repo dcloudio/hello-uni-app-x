@@ -13,7 +13,11 @@
       </view>
       <view>
         <text>style 动态切换 background</text>
-        <view @click='changeBg' class="common" :style='testStyle'></view>
+        <view @click='changeBgStyle' class="common" :style='testStyle'>{{ testStyle}}</view>
+      </view>
+      <view>
+        <text>class 动态切换 background</text>
+        <view @click='changeBgClass' class="common" :class='testClass'>{{testClass}}</view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -27,7 +31,8 @@
       return {
         backgroundSelect: true,
         directionData: ['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'],
-        testStyle: "background:linear-gradient(to right, red, yellow)"
+        testStyle: "background:linear-gradient(to right, red, yellow)",
+        testClass: "bg-color"
       }
     },
     methods: {
@@ -35,7 +40,7 @@
       updateBackgroundSelect() {
         this.backgroundSelect = !this.backgroundSelect
       },
-      changeBg() {
+      changeBgStyle() {
         const isColor = this.testStyle == "background:blue"
         if (isColor) {
           this.setBackgroundImage()
@@ -48,6 +53,9 @@
       },
       setBackgroundImage() {
         this.testStyle = "background:linear-gradient(to right, red, yellow)"
+      },
+      changeBgClass() {
+        this.testClass = this.testClass == "bg-color" ? "bg-image" : "bg-color"
       }
     }
   }
@@ -57,5 +65,11 @@
   .common {
     width: 250px;
     height: 250px;
+  }
+  .bg-color {
+    background: blue;
+  }
+  .bg-image {
+    background: linear-gradient(to right, red, yellow);
   }
 </style>

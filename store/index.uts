@@ -9,6 +9,11 @@ export type SafeArea = {
 
 export const AGREE_PRIVACY = 'UNI-PRIVACY-AGREE'
 
+export type UserInfo = {
+  nickName: string,
+  avatarUrl?: string
+}
+
 type State = {
   lifeCycleNum : number,
   // 状态栏高度
@@ -30,7 +35,9 @@ type State = {
   // 是否暗黑主题（适配web端）
   isDarkMode: boolean
   // 是否无网环境
-  netless: boolean
+  netless: boolean,
+  // 登录用户信息
+  userInfo: UserInfo | null
 }
 
 const getAgreePrivacy = () => {
@@ -63,8 +70,13 @@ export const state = reactive({
   agreeToPrivacy: getAgreePrivacy(),
   allowCapture: true,
   isDarkMode:false,
-  netless: false
+  netless: false,
+  userInfo: null
 } as State)
+
+export const setUserInfo = (userInfo : UserInfo | null) => {
+  state.userInfo = userInfo
+}
 
 export const setLifeCycleNum = (num : number) => {
   state.lifeCycleNum = num

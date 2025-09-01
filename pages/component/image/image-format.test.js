@@ -1,9 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+
 describe('image format', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/image/image-format');
     await page.waitFor('view')
-    await page.waitFor(2000); // 等待页面加载完成
+    await page.waitFor(isWeb ? 5000 : 2000); // 等待页面加载完成
   });
 
   it('screenshot', async () => {

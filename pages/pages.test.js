@@ -49,7 +49,8 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
-  '/pages/component/form/form',
+  // 单独测试例截图
+  // '/pages/component/form/form',
   '/pages/component/button/button',
   '/pages/component/button/buttonstatus',
   '/pages/component/radio/radio',
@@ -137,7 +138,7 @@ const pages = [
   // '/pages/API/create-selector-query/create-selector-query',
   '/pages/API/storage/storage',
   // 单独测试例截图
-  // '/pages/API/show-action-sheet/show-action-sheet',
+  // '/pages/API/action-sheet/action-sheet',
   // 单独测试例截图
   // '/pages/API/show-modal/show-modal',
   // 单独测试例截图
@@ -148,7 +149,6 @@ const pages = [
   // '/pages/API/load-font-face/load-font-face',
   // 单独测试例截图
   // '/pages/API/load-font-face/load-font-face-child',
-  '/pages/API/get-location/get-location',
   '/pages/API/interceptor/interceptor',
   '/pages/API/interceptor/page1',
   '/pages/API/interceptor/page2',
@@ -158,7 +158,8 @@ const pages = [
   '/pages/API/websocket/socketTask',
   // 页面销毁时会关闭socket连接，所以规避
   // '/pages/API/websocket/websocket',
-  '/pages/API/unicloud/unicloud/cloud-function',
+  // 页面只是按钮，且平台间存在差异
+  // '/pages/API/unicloud/unicloud/cloud-function',
   '/pages/API/unicloud/unicloud/cloud-object',
   '/pages/API/unicloud/unicloud/database',
   '/pages/API/unicloud/unicloud/cloud-storage',
@@ -258,13 +259,15 @@ const pages = [
   // 单独测试例截图
   // '/pages/CSS/variable/variable',
   '/pages/CSS/overflow/overflow-visible-event',
+  '/pages/CSS/overflow/issue-21223',
 
   // template
   // 网络资源加载，单独测试例截图
   // '/pages/template/list-news/list-news',
   // 依赖网络资源加载
   // '/pages/template/list-news/detail/detail',
-  '/pages/template/drop-card/drop-card',
+  // 动画页面
+  // '/pages/template/drop-card/drop-card',
   '/pages/template/swiper-list/swiper-list',
   '/pages/template/swiper-list2/swiper-list2',
   // 单独测试例截图
@@ -296,7 +299,7 @@ const pages = [
   // '/pages/template/long-list-nested/long-list-nested',
 ]
 
-if (isAndroid && isWeb) {
+if (!isIos) {
   pages.push(
     '/pages/API/get-battery-info/get-battery-info',
   )
@@ -304,11 +307,16 @@ if (isAndroid && isWeb) {
 
 if(!isMP) {
   pages.push(
-    '/pages/component/list-view/list-view',
-    '/pages/component/list-view/list-view-children-in-slot',
+  // 单独测试例截图
+    // '/pages/component/list-view/list-view-children-in-slot',
     '/uni_modules/uni-pay-x/pages/success/success',
     '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
   )
+  if (!isAppWebView) {
+    pages.push(
+      '/pages/component/list-view/list-view',
+    )
+  }
 }
 
 if (!isAppWebView) {
@@ -319,8 +327,7 @@ if (!isAppWebView) {
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
       '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
-      // 进入页面崩溃，暂时规避
-      // '/pages/API/get-univerify-manager/get-univerify-manager',
+      '/pages/API/get-uni-verify-manager/get-uni-verify-manager',
       '/pages/API/request-payment/request-payment',
       '/pages/template/scroll-sticky/scroll-sticky',
     )
@@ -331,13 +338,16 @@ if (!isAppWebView) {
       '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
       '/pages/API/env/env',
       '/pages/API/element-draw/element-draw',
-      // 单独测试例截图
+      // 动态内容
       // '/pages/component/waterflow/waterflow-fit-height',
       '/pages/API/share-with-system/share-with-system',
       '/pages/template/test-uts-button/test-uts-button'
     )
   }
-  pages.push('/pages/API/request-payment/request-payment/request-payment-uni-pay')
+  pages.push(
+    '/pages/API/request-payment/request-payment/request-payment-uni-pay',
+    '/pages/API/get-location/get-location',
+  )
 }
 
 if (isAndroid && !isAppWebView) {
@@ -360,8 +370,8 @@ if (isWeb) {
     '/pages/component/movable-view/movable-view',
     '/pages/component/label/label',
     '/pages/component/picker/picker',
-    '/pages/API/get-image-info/get-image-info',
-    '/pages/API/get-video-info/get-video-info',
+    // 单独测试例截图
+    // '/pages/API/get-image-info/get-image-info',
     '/pages/API/make-phone-call/make-phone-call',
     '/pages/API/create-inner-audio-context/create-inner-audio-context',
     // 单独测试例截图
@@ -373,7 +383,8 @@ if (isWeb) {
     // 单独测试例截图
     // '/pages/API/compass/compass',
     '/pages/component/canvas/canvas',
-    '/pages/component/canvas/canvas/ball',
+    // 动态内容
+    // '/pages/component/canvas/canvas/ball',
     '/pages/template/browser-element/browser-element',
   )
 }

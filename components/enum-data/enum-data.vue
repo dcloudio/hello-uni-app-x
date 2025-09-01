@@ -1,44 +1,35 @@
-<script lang="uts">
-  import { ItemType } from './enum-data-types'
-  import { state } from '@/store/index.uts'
-  export default {
-    emits: ['change'],
-    props: {
-      title: {
-        type: String,
-        default: ''
-      },
-      items: {
-        type: Array as PropType<Array<ItemType>>,
-        required: true
-      }
-    },
-    computed: {
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      }
-    },
-    data() {
-      return {
-        current: 0
-      }
-    },
-    methods: {
-      // @ts-ignore
-      _change(e : RadioGroupChangeEvent) {
-        const selected = this.items.find((item : ItemType) : boolean => {
-          return item.value.toString() == e.detail.value
-        })
-        if (selected != null) {
-          this.$emit('change', selected.value)
-          uni.showToast({
-            icon: 'none',
-            title: '当前选中:' + selected.name,
-          })
-        }
-      }
-    }
+<script setup lang="uts">
+import { ItemType } from './enum-data-types'
+import { state } from '@/store/index.uts'
+
+const emit = defineEmits(['change'])
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  items: {
+    type: Array as PropType<Array<ItemType>>,
+    required: true
   }
+})
+
+const isDarkMode = computed(() => state.isDarkMode)
+const current = ref(0)
+
+// @ts-ignore
+function _change(e : RadioGroupChangeEvent) {
+  const selected = props.items.find((item : ItemType) : boolean => {
+    return item.value.toString() == e.detail.value
+  })
+  if (selected != null) {
+    emit('change', selected.value)
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + selected.name,
+    })
+  }
+}
 </script>
 
 <template>

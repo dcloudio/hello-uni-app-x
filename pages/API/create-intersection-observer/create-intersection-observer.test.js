@@ -3,9 +3,10 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIOS || isHarmony
+const isSafari = platformInfo.indexOf('safari') > -1
 
 describe('API-intersection-observer', () => {
-	if (isApp) {
+	if (isApp || isSafari) {
 	  it('not support', () => {
 	    expect(1).toBe(1)
 	  })

@@ -33,15 +33,13 @@
   </view>
 </template>
 
-<script lang="uts">
+<script lang="uts" setup>
   import { openSchema } from '@/uni_modules/uts-openSchema'
   // #ifdef APP
   import { canOpenURL } from '@/uni_modules/uts-openSchema'
   // #endif
 
   import targetPath from '@/uni_modules/uni-openLocation/pages/openLocation/target.png'
-
-  //const targetPath = '/uni_modules/uni-openLocation/static/target.png'
 
   type AafeArea = {
     top : number,
@@ -69,302 +67,311 @@
     }
   };
 
-  export default {
-    data() {
-      const id1 = `UniMap1_${(Math.random() * 10e5).toString(36)}` as string;
-      return {
-        readyEventName: '',
-        optionsEventName: '',
-        successEventName: '',
-        failEventName: '',
-        openLocationOptions: {
-          latitude: 0,
-          longitude: 0,
-          scale: 18,
-          name: '',
-          address: ''
-        } as OpenLocationOptions,
-        safeArea: {
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0
-        } as AafeArea,
-        icon: {
-          target: '\ue683',
-          position: '\ue653',
-          navigation: '\ue640',
-          back: '\ue651',
-        } as IconPath,
-        language: "zh-Hans",
-        isLandscape: false,
-        theme: "light",
-        mapId: id1,
-        latitude: 0,
-        longitude: 0,
-        markers: [] as Marker[]
-      }
-    },
-    onLoad(options : UTSJSONObject) {
-      this.initPageOptions(options);
-      this.getSystemInfo();
-    },
-    onReady() {
+  const currentInstance = getCurrentInstance()!.proxy!
+  const uniPage = currentInstance.$page
 
-    },
-    onUnload() {
-      uni.$off(this.optionsEventName, null);
-      uni.$off(this.readyEventName, null);
-      uni.$off(this.successEventName, null);
-      uni.$off(this.failEventName, null);
-      // #ifdef APP-IOS
-      __uniappx__nativeEventBus.off(this.optionsEventName, null)
-      __uniappx__nativeEventBus.off(this.readyEventName, null)
-      __uniappx__nativeEventBus.off(this.successEventName, null)
-      __uniappx__nativeEventBus.off(this.failEventName, null)
-      // #endif
-    },
-    onResize() {
-      const systemInfo = uni.getSystemInfoSync();
-      this.isLandscape = systemInfo.deviceOrientation == 'landscape';
-    },
-    methods: {
-      initPageOptions(options : UTSJSONObject) {
-        this.readyEventName = options['readyEventName']! as string;
-        this.optionsEventName = options['optionsEventName']! as string;
-        this.successEventName = options['successEventName']! as string;
-        this.failEventName = options['failEventName']! as string;
-        uni.$on(this.optionsEventName, (data : UTSJSONObject) => {
-          console.log('data: ', JSON.stringify(data))
-          if (data['latitude'] != null) {
-            this.openLocationOptions.latitude = data['latitude'] as number;
-            this.latitude = this.openLocationOptions.latitude;
-          }
-          if (data['longitude'] != null) {
-            this.openLocationOptions.longitude = data['longitude'] as number;
-            this.longitude = this.openLocationOptions.longitude;
-          }
-          if (data['scale'] != null) {
-            this.openLocationOptions.scale = data['scale'] as number;
-          }
-          if (data['name'] != null) {
-            this.openLocationOptions.name = data['name'] as string;
-          }
-          if (data['address'] != null) {
-            this.openLocationOptions.address = data['address'] as string;
-          }
-          setTimeout(() => {
-            this.markers = [
-              {
-                id: 1,
-                latitude: this.openLocationOptions.latitude,
-                longitude: this.openLocationOptions.longitude,
-                iconPath: targetPath,
-                width: 50,
-                height: 50
-              } as Marker
-            ] as Marker[];
-          }, 300);
-          uni.$emit(this.successEventName, {});
-        });
-        uni.$emit(this.readyEventName, {});
-      },
-      getSystemInfo() {
-        const info = uni.getWindowInfo();
-        this.safeArea.top = info.safeAreaInsets.top;
-        this.safeArea.bottom = info.safeAreaInsets.bottom;
-        this.safeArea.left = info.safeAreaInsets.left;
-        this.safeArea.right = info.safeAreaInsets.right;
-        const systemInfo = uni.getSystemInfoSync()
-        // const osLanguage = systemInfo.osLanguage
-        const appLanguage = systemInfo.appLanguage
-        this.language = appLanguage
-        const osTheme = systemInfo.osTheme
-        const appTheme = systemInfo.appTheme
-        if (appTheme != null && appTheme != "auto") {
-          this.theme = appTheme
-        } else if (osTheme != null) {
-          this.theme = osTheme
-        }
-        this.isLandscape = systemInfo.deviceOrientation == 'landscape'
-        // #ifdef WEB
-        const hostTheme = systemInfo.hostTheme
-        if (hostTheme != null) {
-          this.theme = hostTheme
-        }
-        const locale = uni.getLocale()
-        this.language = locale
-        uni.onLocaleChange((res) => {
-          if (res.locale) {
-            this.language = res.locale
-          }
-        })
-        uni.onThemeChange((res) => {
-          this.theme = res.theme
-        });
-        // #endif
-        // #ifdef APP-ANDROID || APP-IOS
-        uni.onAppThemeChange((res : AppThemeChangeResult) => {
-          this.theme = res.appTheme
-        })
-        uni.onOsThemeChange((res : OsThemeChangeResult) => {
-          this.theme = res.osTheme
-        })
-        // #endif
-      },
-      closeDialogPage() {
-        // #ifdef APP-ANDROID
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
-        // #endif
-        // #ifndef APP-ANDROID
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        })
-        // #endif
-      },
-      back() {
-        this.closeDialogPage();
-      },
-      getMapContext() : MapContext | null {
-        return uni.createMapContext(this.mapId, this);
-      },
-      moveToLocation() {
-        const mapContext = this.getMapContext();
-        if (mapContext != null) {
-          mapContext.moveToLocation({});
-        }
-      },
-      mapReset() {
-        this.moveToLocation();
-      },
-      navigation() {
-        const appBaseInfo = uni.getAppBaseInfo();
-        // #ifdef APP-ANDROID
-        const src = appBaseInfo.packageName;
-        // #endif
-        // #ifdef APP-IOS
-        const src = appBaseInfo.bundleId;
-        // #endif
-        // #ifdef WEB
-        const src = 'webapp.baidu.openAPIdemo';
-        // #endif
-        // #ifdef APP-HARMONY
-        const src = appBaseInfo.packageName;
-        // #endif
+  const id1 = `UniMap1_${(Math.random() * 10e5).toString(36)}` as string;
 
-        const list = ["腾讯地图", "高德地图", "百度地图"] as Array<string>;
-        // #ifdef APP-IOS
-        list.push("苹果地图");
-        // #endif
-        // #ifdef APP-HARMONY
-        // TODO: 华为地图有问题，暂不支持
-        // list.push("华为地图");
-        // #endif
-        uni.showActionSheet({
-          itemList: list,
-          success: (res) => {
-            let index = res.tapIndex;
-            if (index >= 0) {
-              let item = list[index] as string;
-              try {
-                let url = "";
-                if (item == "腾讯地图") {
-                  // #ifdef APP
-                  url = `qqmap://map/routeplan?type=drive&from=我的位置&fromcoord=CurrentLocation&to=${this.openLocationOptions.name}&tocoord=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&referer=1`;
-                  // #endif
-                  // #ifdef WEB
-                  url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude};title:${this.openLocationOptions.name};addr:${this.openLocationOptions.address}&referer=1`;
-                  // #endif
-                } else if (item == "高德地图") {
-                  // #ifdef APP-ANDROID
-                  url = `androidamap://route/plan/?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&dev=0&t=0`;
-                  // #endif
-                  // #ifdef APP-IOS
-                  url = `iosamap://path?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&dev=0&t=0`;
-                  // #endif
-                  // #ifdef WEB
-                  url = `https://uri.amap.com/navigation?to=${this.openLocationOptions.longitude},${this.openLocationOptions.latitude},${this.openLocationOptions.name},${this.openLocationOptions.address}&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=1`;
-                  // #endif
-                  // #ifdef APP-HARMONY
-                  url = `amapuri://route/plan?dlat=${this.openLocationOptions.latitude}&dlon=${this.openLocationOptions.longitude}&dname=${this.openLocationOptions.name}&sname=我的位置&t=0&sourceApplication=${src}`;
-                  // #endif
-                } else if (item == "百度地图") {
-                  // #ifdef APP
-                  url = `baidumap://map/direction?origin=我的位置&destination=latlng:${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}|name:${this.openLocationOptions.name}&coord_type=gcj02&mode=driving&src=${src}`;
-                  // #endif
-                  // #ifdef WEB
-                  url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&title=${this.openLocationOptions.name}&content=${this.openLocationOptions.address}&output=html&src=${src}`;
-                  // #endif
-                } else if (item == "苹果地图") {
-                  // #ifdef APP-IOS
-                  url = `maps://?ll=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&q=${this.openLocationOptions.name}`;
-                  // #endif
-                } else if (item == "华为地图") {
-                  // #ifdef APP-HARMONY
-                  url = `petalmaps://route?saddr=我的位置&daddr=${this.openLocationOptions.latitude},${this.openLocationOptions.longitude}&type=drive&utm_source=${src}`;
-                  // #endif
-                }
-                if (url != "") {
-                  // #ifdef APP-HARMONY
-                  try {
-                    openSchema(url);
-                  } catch(err){
-                    uni.showToast({
-                      title: `打开失败${err.message}`,
-                      icon: "none"
-                    });
-                  }
-                  // #endif
+  // 响应式数据
+  const readyEventName = ref('');
+  const optionsEventName = ref('');
+  const successEventName = ref('');
+  const failEventName = ref('');
+  const openLocationOptions = ref({
+    latitude: 0,
+    longitude: 0,
+    scale: 18,
+    name: '',
+    address: ''
+  } as OpenLocationOptions);
+  const safeArea = ref({
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  } as AafeArea);
+  const icon = ref({
+    target: '\ue683',
+    position: '\ue653',
+    navigation: '\ue640',
+    back: '\ue651',
+  } as IconPath);
+  const language = ref("zh-Hans");
+  const isLandscape = ref(false);
+  const theme = ref("light");
+  const mapId = ref(id1);
+  const latitude = ref(0);
+  const longitude = ref(0);
+  const markers = ref([] as Marker[]);
 
-                  // #ifdef APP-ANDROID || APP-IOS
-                  let schemaPrefix = "";
-                  const schemaIndex = url.indexOf('?');
-                  if (schemaIndex != -1) {
-                    schemaPrefix = url.substring(0, schemaIndex);
-                  }
-                  if (canOpenURL(schemaPrefix)) {
-                    openSchema(url);
-                  } else {
-                    uni.showToast({
-                      title: `请先安装${item}`,
-                      icon: "none"
-                    });
-                  }
-                  // #endif
+  // 计算属性
+  const languageCom = computed(() => {
+    const textInfo = languageData[language.value] != null ? languageData[language.value] as UTSJSONObject : languageData['zh-Hans'] as UTSJSONObject;
+    return textInfo;
+  });
 
-                  // #ifdef WEB
-                  window.open(url);
-                  // #endif
-                }
-              } catch (err) {
-                console.error(err);
-              }
-            }
-          }
-        });
-      }
-    },
-    computed: {
-      languageCom() : UTSJSONObject {
-        const textInfo = languageData[this.language] != null ? languageData[this.language] as UTSJSONObject : languageData['zh-Hans'] as UTSJSONObject;
-        return textInfo;
-      },
-      classCom() : string {
-        let list = [] as Array<string>;
-        if (this.theme == 'dark') {
-          list.push('uni-open-location-dark');
-        } else {
-          list.push('uni-open-location-light');
-        }
-        return list.join(' ');
-      },
-      landscapeClassCom() : string {
-        return this.isLandscape ? 'uni-open-location-landscape' : '';
-      }
+  const classCom = computed(() => {
+    let list = [] as Array<string>;
+    if (theme.value == 'dark') {
+      list.push('uni-open-location-dark');
+    } else {
+      list.push('uni-open-location-light');
     }
-  }
+    return list.join(' ');
+  });
+
+  const landscapeClassCom = computed(() => {
+    return isLandscape.value ? 'uni-open-location-landscape' : '';
+  });
+
+  // 方法
+  const initPageOptions = (options : UTSJSONObject) => {
+    readyEventName.value = options['readyEventName']! as string;
+    optionsEventName.value = options['optionsEventName']! as string;
+    successEventName.value = options['successEventName']! as string;
+    failEventName.value = options['failEventName']! as string;
+    uni.$on(optionsEventName.value, (data : UTSJSONObject) => {
+      console.log('data: ', JSON.stringify(data))
+      if (data['latitude'] != null) {
+        openLocationOptions.value.latitude = data['latitude'] as number;
+        latitude.value = openLocationOptions.value.latitude;
+      }
+      if (data['longitude'] != null) {
+        openLocationOptions.value.longitude = data['longitude'] as number;
+        longitude.value = openLocationOptions.value.longitude;
+      }
+      if (data['scale'] != null) {
+        openLocationOptions.value.scale = data['scale'] as number;
+      }
+      if (data['name'] != null) {
+        openLocationOptions.value.name = data['name'] as string;
+      }
+      if (data['address'] != null) {
+        openLocationOptions.value.address = data['address'] as string;
+      }
+      setTimeout(() => {
+        markers.value = [
+          {
+            id: 1,
+            latitude: openLocationOptions.value.latitude,
+            longitude: openLocationOptions.value.longitude,
+            iconPath: targetPath,
+            width: 50,
+            height: 50
+          } as Marker
+        ] as Marker[];
+      }, 300);
+      uni.$emit(successEventName.value, {});
+    });
+    uni.$emit(readyEventName.value, {});
+  };
+
+  const getSystemInfo = () => {
+    const info = uni.getWindowInfo();
+    safeArea.value.top = info.safeAreaInsets.top;
+    safeArea.value.bottom = info.safeAreaInsets.bottom;
+    safeArea.value.left = info.safeAreaInsets.left;
+    safeArea.value.right = info.safeAreaInsets.right;
+    const systemInfo = uni.getSystemInfoSync()
+    // const osLanguage = systemInfo.osLanguage
+    const appLanguage = systemInfo.appLanguage
+    language.value = appLanguage
+    const osTheme = systemInfo.osTheme
+    const appTheme = systemInfo.appTheme
+    if (appTheme != null && appTheme != "auto") {
+      theme.value = appTheme
+    } else if (osTheme != null) {
+      theme.value = osTheme
+    }
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape'
+    // #ifdef WEB
+    const hostTheme = systemInfo.hostTheme
+    if (hostTheme != null) {
+      theme.value = hostTheme
+    }
+    const locale = uni.getLocale()
+    language.value = locale
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        language.value = res.locale
+      }
+    })
+    uni.onThemeChange((res) => {
+      theme.value = res.theme
+    });
+    // #endif
+    // #ifdef APP-ANDROID || APP-IOS
+    uni.onAppThemeChange((res : AppThemeChangeResult) => {
+      theme.value = res.appTheme
+    })
+    uni.onOsThemeChange((res : OsThemeChangeResult) => {
+      theme.value = res.osTheme
+    })
+    // #endif
+  };
+
+  const closeDialogPage = () => {
+    // #ifdef APP-ANDROID
+    uni.closeDialogPage({
+      dialogPage: uniPage
+    } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
+    // #endif
+    // #ifndef APP-ANDROID
+    uni.closeDialogPage({
+      dialogPage: uniPage
+    })
+    // #endif
+  };
+
+  const back = () => {
+    closeDialogPage();
+  };
+
+  const getMapContext = () : MapContext | null => {
+    return uni.createMapContext(mapId.value, currentInstance);
+  };
+
+  const moveToLocation = () => {
+    const mapContext = getMapContext();
+    if (mapContext != null) {
+      mapContext.moveToLocation({});
+    }
+  };
+
+  const mapReset = () => {
+    moveToLocation();
+  };
+
+  const navigation = () => {
+    const appBaseInfo = uni.getAppBaseInfo();
+    // #ifdef APP-ANDROID
+    const src = appBaseInfo.packageName;
+    // #endif
+    // #ifdef APP-IOS
+    const src = appBaseInfo.bundleId;
+    // #endif
+    // #ifdef WEB
+    const src = 'webapp.baidu.openAPIdemo';
+    // #endif
+    // #ifdef APP-HARMONY
+    const src = appBaseInfo.packageName;
+    // #endif
+
+    const list = ["腾讯地图", "高德地图", "百度地图"] as Array<string>;
+    // #ifdef APP-IOS
+    list.push("苹果地图");
+    // #endif
+    // #ifdef APP-HARMONY
+    // TODO: 华为地图有问题，暂不支持
+    // list.push("华为地图");
+    // #endif
+    uni.showActionSheet({
+      itemList: list,
+      success: (res) => {
+        let index = res.tapIndex;
+        if (index >= 0) {
+          let item = list[index] as string;
+          try {
+            let url = "";
+            if (item == "腾讯地图") {
+              // #ifdef APP
+              url = `qqmap://map/routeplan?type=drive&from=我的位置&fromcoord=CurrentLocation&to=${openLocationOptions.value.name}&tocoord=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&referer=1`;
+              // #endif
+              // #ifdef WEB
+              url = `https://apis.map.qq.com/uri/v1/marker?marker=coord:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude};title:${openLocationOptions.value.name};addr:${openLocationOptions.value.address}&referer=1`;
+              // #endif
+            } else if (item == "高德地图") {
+              // #ifdef APP-ANDROID
+              url = `androidamap://route/plan/?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&dev=0&t=0`;
+              // #endif
+              // #ifdef APP-IOS
+              url = `iosamap://path?sourceApplication=${src}&slat=&slon=&sname=我的位置&dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&dev=0&t=0`;
+              // #endif
+              // #ifdef WEB
+              url = `https://uri.amap.com/navigation?to=${openLocationOptions.value.longitude},${openLocationOptions.value.latitude},${openLocationOptions.value.name},${openLocationOptions.value.address}&mode=car&policy=0&src=mypage&coordinate=gaode&callnative=1`;
+              // #endif
+              // #ifdef APP-HARMONY
+              url = `amapuri://route/plan?dlat=${openLocationOptions.value.latitude}&dlon=${openLocationOptions.value.longitude}&dname=${openLocationOptions.value.name}&sname=我的位置&t=0&sourceApplication=${src}`;
+              // #endif
+            } else if (item == "百度地图") {
+              // #ifdef APP
+              url = `baidumap://map/direction?origin=我的位置&destination=latlng:${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}|name:${openLocationOptions.value.name}&coord_type=gcj02&mode=driving&src=${src}`;
+              // #endif
+              // #ifdef WEB
+              url = `https://api.map.baidu.com/marker?coord_type=gcj02&location=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&title=${openLocationOptions.value.name}&content=${openLocationOptions.value.address}&output=html&src=${src}`;
+              // #endif
+            } else if (item == "苹果地图") {
+              // #ifdef APP-IOS
+              url = `maps://?ll=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&q=${openLocationOptions.value.name}`;
+              // #endif
+            } else if (item == "华为地图") {
+              // #ifdef APP-HARMONY
+              url = `petalmaps://route?saddr=我的位置&daddr=${openLocationOptions.value.latitude},${openLocationOptions.value.longitude}&type=drive&utm_source=${src}`;
+              // #endif
+            }
+            if (url != "") {
+              // #ifdef APP-HARMONY
+              try {
+                openSchema(url);
+              } catch (err) {
+                uni.showToast({
+                  title: `打开失败${err.message}`,
+                  icon: "none"
+                });
+              }
+              // #endif
+
+              // #ifdef APP-ANDROID || APP-IOS
+              let schemaPrefix = "";
+              const schemaIndex = url.indexOf('?');
+              if (schemaIndex != -1) {
+                schemaPrefix = url.substring(0, schemaIndex);
+              }
+              if (canOpenURL(schemaPrefix)) {
+                openSchema(url);
+              } else {
+                uni.showToast({
+                  title: `请先安装${item}`,
+                  icon: "none"
+                });
+              }
+              // #endif
+
+              // #ifdef WEB
+              window.open(url);
+              // #endif
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }
+    });
+  };
+
+  // 生命周期
+  onLoad((options : UTSJSONObject) => {
+    initPageOptions(options);
+    getSystemInfo();
+  });
+
+  onUnload(() => {
+    uni.$off(optionsEventName.value, null);
+    uni.$off(readyEventName.value, null);
+    uni.$off(successEventName.value, null);
+    uni.$off(failEventName.value, null);
+    // #ifdef APP-IOS
+    __uniappx__nativeEventBus.off(optionsEventName.value, null)
+    __uniappx__nativeEventBus.off(readyEventName.value, null)
+    __uniappx__nativeEventBus.off(successEventName.value, null)
+    __uniappx__nativeEventBus.off(failEventName.value, null)
+    // #endif
+  });
+
+  onResize(() => {
+    const systemInfo = uni.getSystemInfoSync();
+    isLandscape.value = systemInfo.deviceOrientation == 'landscape';
+  });
 </script>
 
 <style>
