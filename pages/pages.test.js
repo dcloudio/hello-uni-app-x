@@ -260,6 +260,7 @@ const pages = [
   // 单独测试例截图
   // '/pages/CSS/variable/variable',
   '/pages/CSS/overflow/overflow-visible-event',
+  '/pages/CSS/overflow/issue-21223',
 
   // template
   // 网络资源加载，单独测试例截图
