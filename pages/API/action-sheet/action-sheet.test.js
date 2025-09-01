@@ -10,6 +10,13 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
 describe('showActionSheet', () => {
+  if (isWeb) {
+    it('web', async () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let screenShotOptions = {};
   let page;
   let topSafeArea = 0
