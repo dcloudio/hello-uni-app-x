@@ -4,13 +4,6 @@ const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('css-z-index', () => {
-  if (isWeb) {
-     it('not support', () => {
-        expect(1).toBe(1)
-      })
-      return
-    }
-
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/CSS/layout/z-index');
