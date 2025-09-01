@@ -361,7 +361,8 @@ if (isAndroid && !isAppWebView) {
     // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
     '/pages/API/create-request-permission-listener/create-request-permission-listener',
     '/pages/API/compress-image/compress-image',
-    '/pages/API/compress-video/compress-video',
+    // 单独测试例截图
+    // '/pages/API/compress-video/compress-video',
   )
 }
 

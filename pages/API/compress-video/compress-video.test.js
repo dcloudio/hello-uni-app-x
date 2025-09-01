@@ -14,9 +14,19 @@ describe('API-compressVideo', () => {
     return;
   }
 
-  it('test compressVideo', async () => {
-    const page = await program.reLaunch('/pages/API/compress-video/compress-video');
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/API/compress-video/compress-video');
     await page.waitFor('view');
+    await page.waitFor(1000);
+  });
+
+  it('screenshot', async () => {
+    const image = await program.screenshot({fullPage: true})
+    expect(image).toSaveImageSnapshot();
+  });
+
+  it('test compressVideo', async () => {
     await page.callMethod('testCompressVideo');
     await page.waitFor(5000);
     var width = await page.data('videoSrcForTestWidth')
