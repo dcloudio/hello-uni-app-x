@@ -4,10 +4,9 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
-const isChrome = platformInfo.indexOf('chrome') > -1
 
 describe('API-saveVideoToPhotosAlbum', () => {
-  if (isIOS || isWeb || isMP || (isWeb && !isChrome)) {
+  if (isIOS || isWeb || isMP || isWeb) {
     it('pass', async () => {
       expect(1).toBe(1);
     });

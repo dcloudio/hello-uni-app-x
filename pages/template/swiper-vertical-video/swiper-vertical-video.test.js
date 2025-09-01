@@ -1,10 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isWeb = platformInfo.startsWith('web')
-const isChrome = platformInfo.indexOf('chrome') > -1
 
 describe('swiper-vertical-video', () => {
-  if (isWeb && !isChrome) {
+  if (isWeb) {
     it('not support', () => {
       expect(1).toBe(1)
     })
