@@ -375,7 +375,8 @@ if (isWeb) {
     // 单独测试例截图
     // '/pages/API/get-image-info/get-image-info',
     '/pages/API/make-phone-call/make-phone-call',
-    '/pages/API/create-inner-audio-context/create-inner-audio-context',
+    // 单独测试例截图
+    // '/pages/API/create-inner-audio-context/create-inner-audio-context',
     // 单独测试例截图
     // '/pages/API/create-inner-audio-context/inner-audio-format',
     // 单独测试例截图
@@ -432,13 +433,6 @@ for (let i = 0; i < pages.length; i += BATCH_SIZE) {
 // 为每个批次创建独立的测试套件
 pageBatches.forEach((batch, batchIndex) => {
   describe(`Page Screenshot Batch ${batchIndex + 1}`, () => {
-    if (isWeb) {
-     it('not support', () => {
-        expect(1).toBe(1)
-      })
-      return
-    }
-    
     let localPageIndex = 0;
     
     beforeAll(async () => {

@@ -1,16 +1,7 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('component-native-scroll-view-props', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-
-  if (isWeb) {
-    it('skip', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   let page;
   beforeAll(async () => {
       page = await program.reLaunch('/pages/component/scroll-view/scroll-view-props');

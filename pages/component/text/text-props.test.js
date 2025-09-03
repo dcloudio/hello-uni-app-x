@@ -5,12 +5,6 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 
 describe('text-props', () => {
-  if (isWeb) {
-    it('skip', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   let page
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
