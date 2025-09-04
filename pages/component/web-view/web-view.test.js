@@ -207,4 +207,24 @@ describe('component-native-web-view', () => {
       expect(await page.data('loadingCount')).toBe(0);
     }
   })
+
+  it('test half screen toggle', async () => {
+    // 点击宽窄屏切换按钮
+    const toggleButton = await page.$('#half-screen-toggle');
+    expect(toggleButton).toBeTruthy();
+
+    await toggleButton.tap();
+    await page.waitFor(500);
+
+    // 点击后截图
+    const image = await program.screenshot({
+      fullPage: true,
+    });
+    expect(image).toSaveImageSnapshot();
+
+    // 截图点击恢复
+    await page.waitFor(200);
+    await toggleButton.tap();
+
+  });
 });
