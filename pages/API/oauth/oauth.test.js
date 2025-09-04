@@ -18,8 +18,10 @@ describe('API-OAuth', () => {
   }
 
   let page;
+  let systemInfo;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
+    systemInfo = await program.callUniMethod('getSystemInfoSync')
     await page.waitFor('view');
   });
 
@@ -27,9 +29,21 @@ describe('API-OAuth', () => {
     await page.callMethod('setUserInfo', null)
 
     await page.callMethod('hwLogin')
+    // TODO 请求后华为弹出认证窗时间不定，暂定为 10s
+    await page.waitFor(10000)
 
+    // 点击弹窗确认按钮
+    if (systemInfo && systemInfo.devicePixelRatio) {
+      await program.tap({
+        x: 975 / systemInfo.devicePixelRatio,
+        y: 2500 / systemInfo.devicePixelRatio
+      })
+    }
+
+    await page.waitFor(2000)
     const userInfo = await page.waitFor(async () => {
-      return await page.callMethod('getTestUserInfo')
+      const info = await page.callMethod('getTestUserInfo')
+      return info ? info : {}
     })
 
     expect(typeof userInfo.nickName).toBe('string')
