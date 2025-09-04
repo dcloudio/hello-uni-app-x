@@ -25,6 +25,8 @@ describe('/pages/CSS/transition/transition.uvue', () => {
     // changeTransitionAll
     await page.callMethod('changeTransitionAll')
     await page.callMethod('changeWidthInEndFun')
+    // 等待动画完成
+    await page.waitFor(2000)
     var changeWidthInEndCount = await page.data('changeWidthInEndCount')
     expect(changeWidthInEndCount).toEqual(1)
 
