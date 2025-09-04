@@ -123,7 +123,18 @@
   const error = (e : UniLivePusherErrorEvent) => {
     console.log("error", e);
   };
+  const isUrlValid = () : boolean => {
+    const valid = url.value != "rtmp://test";
+    if (!valid) {
+      uni.showToast({
+        title: "请输入推流地址",
+        icon: "none"
+      });
+    }
+    return valid;
+  };
   const start = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -140,6 +151,7 @@
     });
   };
   const pause = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -156,6 +168,7 @@
     });
   };
   const resume = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -172,6 +185,7 @@
     });
   };
   const stop = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
