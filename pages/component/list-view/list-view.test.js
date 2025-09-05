@@ -100,7 +100,7 @@ describe('component-native-list-view', () => {
   it('Event scrollend-滚动结束时触发',async()=>{
     // 仅App端支持,向上滑动页面
     await program.swipe({
-      startPoint: { x: 100, y: 300 },
+      startPoint: { x: 100, y: 200 },
       endPoint: { x: 100, y: 100 },
       duration: 100
     })
