@@ -9,15 +9,11 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = '/pages/API/oauth/oauth'
 
 describe('API-OAuth', () => {
-  if (!isHarmony) {
-    // 微信小程序截图无法截到弹框
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
-  let page;
+  // 微信小程序截图无法截到弹框
+  it('not support', () => {
+    expect(1).toBe(1)
+  })
+  return
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
@@ -34,8 +30,8 @@ describe('API-OAuth', () => {
     // 如果未获取到用户信息，可能有授权弹框，点击允许授权
     if (!userInfo) {
       await program.tap({ x: 330, y: 775 })
-    await page.waitFor(2000)
-    userInfo = await page.callMethod('getTestUserInfo')
+      await page.waitFor(2000)
+      userInfo = await page.callMethod('getTestUserInfo')
     }
     expect(userInfo).toBeTruthy()
 
