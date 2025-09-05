@@ -28,7 +28,7 @@ describe('page-scroll-to', () => {
 
     var scrollTop = await page.scrollTop()
     console.log("scrollTop: ", scrollTop)
-    // 设备精度问题，允许上下浮动 2px
+    // 设备精度问题，允许上下浮动 2px，鸿蒙低版本偏差稍大
     expect(scrollTop > 98 && scrollTop < 102).toBe(true)
 
 
@@ -47,7 +47,7 @@ describe('page-scroll-to', () => {
 
     console.log("scrollTop: ", scrollTop)
 
-    // 设备精度问题，允许上下浮动 2px
+    // 设备精度问题，允许上下浮动 2px，鸿蒙低版本偏差稍大
     expect(scrollTop > 98 && scrollTop < 102).toBe(true)
   })
 })
