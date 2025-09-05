@@ -24,9 +24,10 @@ describe('page-scroll-to', () => {
   it('issues-20664', async () => {
 
     await page.callMethod('scrollTo')
-    await page.waitFor(300)
+    await page.waitFor(500)
 
     var scrollTop = await page.scrollTop()
+    console.log("scrollTop: ", scrollTop)
     // 设备精度问题，允许上下浮动 1px
     expect(scrollTop > 99 && scrollTop < 101).toBe(true)
 
@@ -40,7 +41,7 @@ describe('page-scroll-to', () => {
     await page.waitFor(500)
 
     await page.callMethod('scrollTo')
-    await page.waitFor(300)
+    await page.waitFor(500)
 
     scrollTop = await page.scrollTop()
 
