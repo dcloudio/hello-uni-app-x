@@ -6,7 +6,7 @@
     </view>
 
     <view class="button-group">
-      <button class="btn" type="primary" @click="create">创建Worker</button>
+      <button class="btn" type="primary" :disabled="created_boolean" @click="create">创建Worker</button>
       <button class="btn" type="primary" @click="onWorkerMsg">添加消息监听</button>
       <button class="btn" type="primary" @click="onWorkerError">添加错误监听</button>
       <button class="btn" @click="destory" :disabled="workerStatus != 'created'">销毁Worker</button>
@@ -37,6 +37,7 @@
     },
     data() {
       return {
+        created_boolean: false,
         workerStatus: 'none', // none, created, destroyed
         isListening: false,
         logs: [] as Array<UTSJSONObject>,
@@ -77,6 +78,8 @@
         this.worker = uni.createWorker('workers/helloWorkerTask.uts');
         this.workerStatus = 'created';
         this.addLog('Worker创建成功', 'success');
+        this.created_boolean = true;
+
       },
       onWorkerMsg() {
         if (this.worker == null) {
@@ -129,6 +132,7 @@
         this.workerStatus = 'destroyed';
         this.isListening = false;
         this.addLog('Worker已销毁', 'warning');
+        this.created_boolean = false;
       },
 
       // 清空日志

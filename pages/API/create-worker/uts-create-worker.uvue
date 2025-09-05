@@ -6,7 +6,7 @@
     </view>
 
     <view class="button-group">
-      <button class="btn" type="primary" @click="create">UTS插件中创建Worker</button>
+      <button class="btn" type="primary" :disabled="created_boolean" @click="create">UTS插件中创建Worker</button>
       <button class="btn" @click="destory" :disabled="workerStatus != 'created'">UTS插件中销毁Worker</button>
     </view>
 
@@ -36,6 +36,7 @@
     },
     data() {
       return {
+        created_boolean: false,
         workerStatus: 'none', // none, created, destroyed
         isListening: false,
         logs: [] as Array<UTSJSONObject>,
@@ -75,6 +76,8 @@
         createWorkers();
         this.workerStatus = 'created';
         this.addLog('Worker创建成功', 'success');
+        this.created_boolean = true;
+        // #ifndef APP-IOS
         // 添加消息监听
         onWorkerMessage({
           success: (res) => {
@@ -93,7 +96,7 @@
             console.log("Worker错误:", error);
           }
         } as UTSWorkerErrorOptions);
-
+        // #endif
       },
 
       // 向workerTask发送消息
@@ -103,6 +106,26 @@
           this.addLog('请输入有效的数字', 'warning');
           return;
         }
+        // #ifdef APP-IOS
+        // 添加消息监听
+        onWorkerMessage({
+          success: (res) => {
+            const result = res.result;
+            const resultData = result['data'] as string;
+            this.taskResult = resultData as string;
+            this.inputValue = this.taskResult
+            this.addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
+          }
+        });
+
+        // 添加错误监听
+        onWorkerError({
+          success: (error) => {
+            this.addLog(`Worker错误: ${error.message}`, 'error');
+            console.log("Worker错误:", error);
+          }
+        } as UTSWorkerErrorOptions);
+        // #endif
 
         const options = {
           data: this.inputValue,
@@ -119,6 +142,7 @@
         this.workerStatus = 'destroyed';
         this.isListening = false;
         this.addLog('Worker已销毁', 'warning');
+        this.created_boolean = false;
       },
 
       // 清空日志
