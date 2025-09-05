@@ -3,12 +3,12 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
-const isApp = isAndroid || isIos
+const isHarmonySimulator = isHarmony && platformInfo.includes('模拟器')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe("location-change", () => {
-  if (isMP || isWeb) {
+  if (isMP || isWeb || isHarmonySimulator) {
     // 微信、web harmony 上会有权限弹框，暂时屏蔽测试
     it('not support', async () => {
       expect(1).toBe(1)
