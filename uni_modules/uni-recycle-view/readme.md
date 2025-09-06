@@ -1,6 +1,6 @@
 ## uni-recycle-view
 
-> 此组件支持uni-app-x（web端、app端、小程序端），不支持非uni-app-x项目。最低HBuilderX版本4.81
+> 此组件支持uni-app-x（web端、app端、小程序端），不支持非uni-app-x项目。此插件1.x版本最低支持HBuilderX 4.11，2.0及以上版本最低支持HBuilderX 4.81。
 
 > 为了实现更流畅的滚动性能，自此插件2.0版本起，itemHeight为必传属性，既所有item高度一致才可以使用此组件。如果有动态item高度的需求可以下载1.x版本使用。
 
