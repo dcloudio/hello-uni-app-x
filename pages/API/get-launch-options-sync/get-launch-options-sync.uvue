@@ -10,10 +10,15 @@
       <text>应用本次启动：</text>
       <text style="margin-top: 5px">{{ launchOptionsString }}</text>
     </view>
+    <view class="uni-common-mt">
+      <text>应用启动获取的push cid：</text>
+      <text style="margin-top: 5px">{{ appOnLaunchPushCid }}</text>
+    </view>
   </view>
 </template>
 
-<script>
+<script lang="uts">
+  import { state } from '@/store/index.uts'
   export default {
     data() {
       return {
@@ -21,11 +26,13 @@
         homePagePath: 'pages/tabBar/component',
         launchOptionsPath: '',
         launchOptionsString: '',
-        testResult: false
+        testResult: false,
+        appOnLaunchPushCid:''
       }
     },
     onReady() {
       this.compareOnLaunchRes()
+      this.getPushCid()
     },
     methods: {
       compareOnLaunchRes() {
@@ -48,6 +55,10 @@
           this.checked = true
         }
       },
+      // 测试提前获取推送 CID
+      getPushCid(){
+        this.appOnLaunchPushCid = state.pushCid
+      }
     },
   }
 </script>

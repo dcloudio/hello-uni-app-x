@@ -15,4 +15,9 @@ describe('getLaunchOptionsSync', () => {
     const pageData = await page.data()
     expect(pageData.testResult).toBe(true)
   })
+  it('测试提前获取推送 CID', async () => {
+    const pushCid = await page.data('appOnLaunchPushCid')
+    console.log('pushCid',pushCid)
+    expect(pushCid.length).toBe(32);
+  })
 })
