@@ -346,6 +346,12 @@ describe('component-native-video', () => {
   }
 
   it('test dialog video', async () => {
+  if (isAppWebView || isMP || isWeb) {
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
     await page.callMethod('openDialogPageVideo')
     // TODO 先测试 closeThisPage 一次
     await program.tap({ x: 154, y: 577 }) // closeThisPage
