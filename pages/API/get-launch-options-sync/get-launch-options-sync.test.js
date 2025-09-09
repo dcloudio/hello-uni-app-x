@@ -16,8 +16,9 @@ describe('getLaunchOptionsSync', () => {
     expect(pageData.testResult).toBe(true)
   })
   it('测试提前获取推送 CID', async () => {
+    await page.waitFor(3000)
+    // 自动化测试环境：app 启动时获取推送 CID 需等待，且需在 module.json5 配置 GETUI_APPID
     const pushCid = await page.data('appOnLaunchPushCid')
-    console.log('pushCid',pushCid)
     expect(pushCid.length).toBe(32);
   })
 })
