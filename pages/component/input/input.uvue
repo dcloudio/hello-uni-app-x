@@ -219,13 +219,13 @@
 
       <view>
         <view class="uni-title">
-          <text class="uni-title-text">focus事件和blur事件</text>
+          <text class="uni-title-text" @click="triggerFocusOrBlur">点击触发focus事件或blur事件</text>
           <text class="uni-subtitle-text" v-if="focusAndBlurEventDetail">{{
             focusAndBlurEventDetail
           }}</text>
         </view>
         <view class="input-wrapper">
-          <input class="uni-input" @focus="onFocus" @blur="onBlur" />
+          <input id="trigger-focus-blur-input" class="uni-input" @focus="onFocus" @blur="onBlur" />
         </view>
       </view>
 
@@ -378,7 +378,9 @@
         demoValue: '123',
         demoValue2: '123',
         adjustPosition: false,
-        syncDisplayValue: ''
+        syncDisplayValue: '',
+        triggerFocus: false,
+        triggerBlur: false,
       }
     },
     methods: {
@@ -427,10 +429,12 @@
         this.inputEventDetail = JSON.stringify(event.detail)
       },
       onFocus: function (event : UniInputFocusEvent) {
+        this.triggerFocus = true
         console.log("输入框聚焦", JSON.stringify(event.detail));
         this.focusAndBlurEventDetail = JSON.stringify(event.detail);
       },
       onBlur: function (event : UniInputBlurEvent) {
+        this.triggerBlur = true
         console.log("输入框失去焦点", JSON.stringify(event.detail));
         this.focusAndBlurEventDetail = JSON.stringify(event.detail);
       },
@@ -471,6 +475,16 @@
       changeAdjustPosition(event : UniSwitchChangeEvent) {
         const checked = event.detail.value;
         this.adjustPosition = checked
+      },
+      triggerFocusOrBlur(){
+        const input = uni.getElementById("trigger-focus-blur-input")!
+        if(this.triggerFocus){
+          this.triggerFocus = false
+          input.blur()
+        } else {
+          this.triggerBlur = false
+          input.focus()
+        }
       }
     }
   }

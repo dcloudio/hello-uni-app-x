@@ -5,6 +5,7 @@ const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-input', () => {
@@ -46,6 +47,32 @@ describe('component-native-input', () => {
       // await page.waitFor(1000)
       // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
       // await page.waitFor(1000)
+    });
+  }
+  // web ios 自动化测试时无法触发事件，手动测试可以
+  if (isHarmony || isAndroid) {
+    it("focus and blur event", async () => {
+      if (isHarmony) {
+        await program.tap({ x: 100, y: 50 })
+        await page.waitFor(1000);
+      }
+      let pageData = await page.data()
+      expect(pageData.triggerFocus).toBe(false)
+      expect(pageData.triggerBlur).toBe(false)
+      await page.callMethod('triggerFocusOrBlur')
+      await page.waitFor(500)
+      pageData = await page.data()
+      expect(pageData.triggerFocus).toBe(true)
+      expect(pageData.triggerBlur).toBe(false)
+      await page.callMethod('triggerFocusOrBlur')
+      await page.waitFor(500)
+      pageData = await page.data()
+      expect(pageData.triggerFocus).toBe(false)
+      expect(pageData.triggerBlur).toBe(true)
+      if (isHarmony) {
+        await program.tap({ x: 100, y: 50 })
+        await page.waitFor(1000);
+      }
     });
   }
 
@@ -210,7 +237,7 @@ describe('component-native-input', () => {
     }
     // TODO: harmony 页面隐藏时需要隐藏键盘
     if (isHarmony) {
-      await program.tap({ x: 100, y: 200 })
+      await program.tap({ x: 100, y: 50 })
       await page.waitFor(1000);
     }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
@@ -230,7 +257,7 @@ describe('component-native-input', () => {
       keyboardHeight: 0
     })
     if (isHarmony) {
-      await program.tap({ x: 100, y: 200 })
+      await program.tap({ x: 100, y: 50 })
       await page.waitFor(1000);
     }
   })
