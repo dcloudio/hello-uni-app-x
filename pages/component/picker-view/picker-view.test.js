@@ -60,7 +60,8 @@ describe('PickerView.uvue', () => {
   })
 
   // indicatorStyle 属性在编译时被解析成了对象，在获取时和用户设置的值格式不一样 [object Object]
-  if (!isHarmony) {
+  // app-ios 同上
+  if (!isHarmony && !isIOS) {
     it('indicator-style', async () => {
       const indicatorStyle = "height: 50px;border:#ff5500 solid 1px;background:rgba(182, 179, 255, 0.4);"
       await page.callMethod('setIndicatorStyle',true)
