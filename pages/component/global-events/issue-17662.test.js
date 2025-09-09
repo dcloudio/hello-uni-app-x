@@ -21,7 +21,7 @@ describe('issue-17662', () => {
 
 		await program.tap({
 			x: 50,
-			y: 150,
+			y: 200,
 			duration: 1000
 		})
 		await page.waitFor(300)
@@ -46,7 +46,7 @@ describe('issue-17662', () => {
 
 		await program.tap({
 			x: 50,
-			y: 150,
+			y: 200,
 			duration: 1000
 		})
 		await page.waitFor(300)
