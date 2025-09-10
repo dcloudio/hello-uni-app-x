@@ -37,9 +37,7 @@ type State = {
   // 是否无网环境
   netless: boolean,
   // 登录用户信息
-  userInfo: UserInfo | null,
-  // 测试提前获取推送 CID
-  pushCid: string
+  userInfo: UserInfo | null
 }
 
 const getAgreePrivacy = () => {
@@ -73,8 +71,7 @@ export const state = reactive({
   allowCapture: true,
   isDarkMode:false,
   netless: false,
-  userInfo: null,
-  pushCid:''
+  userInfo: null
 } as State)
 
 export const setUserInfo = (userInfo : UserInfo | null) => {
@@ -121,19 +118,6 @@ export const setAgreeToPrivacy = (agree: boolean) => {
 export const setAllowCapture = (allow: boolean) => {
   state.allowCapture = allow
 }
-
-// 测试提前获取推送 CID
-export const getPushCidTest = () => {
-  uni.getPushClientId({
-    success: (res: GetPushClientIdSuccess) => {
-      state.pushCid = res.cid
-    },
-    fail: (err: GetPushClientIdFail) => {
-      console.log('push',err)
-    }
-  })
-}
-
 
 // 检查系统主题
 export const checkSystemTheme = () => {
