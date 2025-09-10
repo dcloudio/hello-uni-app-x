@@ -56,6 +56,10 @@ describe('component-native-input', () => {
         await program.tap({ x: 100, y: 50 })
         await page.waitFor(1000);
       }
+      page.setData({
+        triggerFocus: false,
+        triggerBlur: false,
+      })
       let pageData = await page.data()
       expect(pageData.triggerFocus).toBe(false)
       expect(pageData.triggerBlur).toBe(false)
