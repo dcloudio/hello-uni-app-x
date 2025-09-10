@@ -15,39 +15,35 @@
     </view>
   </scroll-view>
 </template>
-<script>
+<script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
   import { state } from '@/store/index.uts'
-  export default {
-    data() {
-      return {
-        hover_class: false,
-        stop_propagation: false,
-        start_time: 50,
-        stay_time: 400,
-        start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[],
-        stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[]
-      }
-    },
-    computed: {
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      }
-    },
-    methods: {
-      change_hover_class_boolean(checked : boolean) {
-        this.hover_class = checked
-      },
-      change_stop_propagation_boolean(checked : boolean) {
-        this.stop_propagation = checked
-      },
-      radio_change_start_time_enum(time : number) {
-        this.start_time = time
-      },
-      radio_change_stay_time_enum(time : number) {
-        this.stay_time = time
-      }
-    }
+  
+  const hover_class = ref(false)
+  const stop_propagation = ref(false)
+  const start_time = ref(50)
+  const stay_time = ref(400)
+  const start_time_enum = ref([{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[])
+  const stay_time_enum = ref([{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }] as ItemType[])
+  
+  const isDarkMode = computed(() : boolean => {
+    return state.isDarkMode
+  })
+  
+  const change_hover_class_boolean = (checked : boolean) => {
+    hover_class.value = checked
+  }
+  
+  const change_stop_propagation_boolean = (checked : boolean) => {
+    stop_propagation.value = checked
+  }
+  
+  const radio_change_start_time_enum = (time : number) => {
+    start_time.value = time
+  }
+  
+  const radio_change_stay_time_enum = (time : number) => {
+    stay_time.value = time
   }
 </script>
 

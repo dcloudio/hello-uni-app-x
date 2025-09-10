@@ -1,38 +1,35 @@
 <template>
-  <scroll-view class="uni-recycle-view-main" ref="scroll" :type="type" :direction="direction"
-    :associative-container="associativeContainer" :enable-back-to-top="enableBackToTop" :bounces="bounces"
-    :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-top="scrollTop"
-    :scroll-left="scrollLeft" :scroll-into-view="scrollIntoView" :scroll-with-animation="scrollWithAnimation"
-    :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold"
-    :refresher-max-drag-distance="refresherMaxDragDistance" :refresher-default-style="refresherDefaultStyle"
-    :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered"
-    :show-scrollbar="showScrollbar" :custom-nested-scroll="customNestedScroll" :nested-scroll-child="nestedScrollChild"
+  <scroll-view scroll-y="true" style="flex: 1;" :type="props.type" :direction="props.direction"
+    :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :bounces="props.bounces"
+    :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-top="props.scrollTop"
+    :scroll-left="props.scrollLeft" :scroll-into-view="props.scrollIntoView" :scroll-with-animation="props.scrollWithAnimation"
+    :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
+    :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-default-style="props.refresherDefaultStyle"
+    :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
+    :show-scrollbar="props.showScrollbar" :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild"
     @scroll="onScroll" @scrollend="onScrollEnd" @scrolltolower="onScrollToLower" @scrolltoupper="onScrollToUpper"
     @refresherabort="onRefresherAbort" @refresherpulling="onRefresherPulling" @refresherrefresh="onRefresherRefresh"
     @refresherrestore="onRefresherRestore">
-    <view :style="{ height: placeholderHeight + 'px' }" class="uni-recycle-view-placeholder">
-      <view :style="{ transform: 'translateY(' + containerTop + 'px)' }" class="uni-recycle-view-container">
-        <slot :items="items"></slot>
-      </view>
+    <view class="placeholder" :style="{height: placeholderHeight + 'px'}">
+      <slot :layoutItems="layoutItems" :items="items"></slot>
     </view>
+    <slot name="load-more"></slot>
   </scroll-view>
 </template>
-
 <script setup>
-  /**
- * 使用限制
- * - 容器大小变动时未刷新缓存的子元素大小
- * - 不支持设置初始滚动位置
- * - list数据内每一项不可以是基础类型
- * - item不支持设置margin，会导致计算位置不准确
- */
-  /**
-   * recycle-view 虚拟长列表组件
-   * @description 用于超长列表的展示
-   * @property {any[]} list 列表所有数据
-   */
-
+  import {
+    LayoutItem
+  } from '../../common/types.uts'
   const props = defineProps({
+    itemHeight: {
+      type: Number,
+      default: 40,
+      required: true
+    },
+    list: {
+      type: Array as PropType<any[]>,
+      default: [] as any[]
+    },
     type: {
       type: String,
       default: ''
@@ -111,14 +108,6 @@
     nestedScrollChild: {
       type: String,
       default: ''
-    },
-    list: {
-      type: Array as PropType<any[]>,
-      default: [] as any[]
-    },
-    itemHeight: {
-      type: Number,
-      default: 0
     }
   })
   const emit = defineEmits([
@@ -132,220 +121,125 @@
     'refresherrestore',
   ])
 
-  const items = ref([] as any[])
-  const containerTop = ref(0)
-  const scrollElementHeight = ref(0)
-  const placeholderHeight = ref(0)
-  const offsetThreshold = reactive<number[]>([0, 0, 0, 0]) // -5, -3, 3, 5 屏对应的offset
-  const cachedSize =reactive(new Map<any, number>())
-  const initialized = ref( false)
-  const defaultItemSize = ref(80)
-  const lastScrollTop = ref(0)
-  const rearrangeQueue = reactive([] as number[])
-  const startIndex = ref(0)
-  const endIndex = ref(0)
-  const rearrangeOnNextScroll = ref(false)
+  const windowInfo = uni.getWindowInfo()
 
-  const realDefaultItemSize = computed(() => {
-    return props.itemHeight != 0 ? props.itemHeight : defaultItemSize.value
+  // TODO 规避鸿蒙平台过早取不到windowHeight的Bug
+  // 使用窗口高度计算节省不少逻辑，通常也不会有滚动区域超出窗口大小的需求
+  const windowHeight = windowInfo.windowHeight == 0 ? windowInfo.screenHeight : windowInfo.windowHeight
+  const cachedCount = 10
+  const renderItemCount = computed(() => {
+    return Math.min(
+      props.list.length,
+      Math.ceil(
+        windowHeight / props.itemHeight) + 1 + cachedCount
+    )
   })
 
-  provide('itemHeight', props.itemHeight)
-  provide('setCachedSize', (item : any, size : number) => {
-    if (props.itemHeight != 0) {
-      return
-    }
-    if (cachedSize.size == 0) {
-      defaultItemSize.value = size
-    } else {
-      defaultItemSize.value = ((cachedSize.size - 1) * defaultItemSize.value + size) / cachedSize.size
-    }
-    cachedSize.set(item, size)
+  const placeholderHeight = computed(() => {
+    return props.list.length * props.itemHeight
   })
 
-  provide('getCachedSize', (item : any) => {
-    return cachedSize.get(item)
+  const scrollTop = ref(0)
+
+  const startIndex = computed(() => {
+    return Math.min(
+      Math.max(
+        Math.floor(scrollTop.value / props.itemHeight) - Math.floor(cachedCount / 2),
+        0
+      ),
+      props.list.length - renderItemCount.value
+    );
   })
+  const items = computed < any[] > (() => {
+    return props.list.slice(startIndex.value, Math.min(props.list.length, startIndex.value + renderItemCount.value))
+  })
+  const layoutItems = ref < LayoutItem[] > ([])
 
-
-  onMounted(() => {
-    // TODO vapor模式不支持getCurrentInstance
-    const currentInstance = getCurrentInstance()
-    nextTick(() => {
-      uni.createSelectorQuery().in(currentInstance!.proxy).select('.uni-recycle-view-main').boundingClientRect().exec((ret) => {
-        scrollElementHeight.value = (ret[0] as NodeInfo).height!
-        initialized.value = true
+  type ItemAndIndex = {
+    item: any,
+    index: number
+  }
+  watch([items, startIndex], () => {
+    if (layoutItems.value.length !== items.value.length) {
+      layoutItems.value.splice(0, layoutItems.value.length)
+      items.value.forEach((item, index) => {
+        layoutItems.value.push({
+          id: index,
+          offset: (startIndex.value + index) * props.itemHeight,
+          item
+        })
       })
-    })
-  })
-
-
-  function onScrollEnd(e : UniScrollEvent) {
-    emit('scrollend', e)
-  }
-  function onScrollToLower(e : UniScrollToLowerEvent) {
-    emit('scrolltolower', e)
-  }
-  function onScrollToUpper(e : UniScrollToUpperEvent) {
-    emit('scrolltoupper', e)
-  }
-  function onRefresherAbort(e : UniRefresherEvent) {
-    emit('refresherabort', e)
-  }
-  function onRefresherPulling(e : UniRefresherEvent) {
-    emit('refresherpulling', e)
-  }
-  function onRefresherRefresh(e : UniRefresherEvent) {
-    emit('refresherrefresh', e)
-  }
-  function onRefresherRestore(e : UniRefresherEvent) {
-    emit('refresherrestore', e)
-  }
-  
-  function calcItemTotalSize(startIndex : number) {
-    let totalSize = 0
-    for (let i = startIndex; i < props.list.length; i++) {
-      const item = props.list[i]
-      totalSize += (cachedSize.get(item) ?? realDefaultItemSize.value)
-    }
-    return totalSize
-  }
-  function calcPlaceholderHeight() {
-    /**
-     * 加载下一屏时下一屏的item大小为预估大小，因此可能出现已渲染的高度不到加载下一页的阈值。此处逻辑将阈值调整到可见范围内。
-     */
-    const expectedOffsetBottom = containerTop.value + calcItemTotalSize(startIndex.value)
-    if (placeholderHeight.value < expectedOffsetBottom) {
-      placeholderHeight.value = expectedOffsetBottom
-    }
-    if (expectedOffsetBottom < offsetThreshold[2] + scrollElementHeight.value) {
-      offsetThreshold[2] = expectedOffsetBottom - scrollElementHeight.value
-    }
-  }
-  function rearrange(scrollTop : number) {
-    offsetThreshold[0] = Math.max(scrollTop - scrollElementHeight.value * 7, 0)
-    offsetThreshold[1] = Math.max(scrollTop - scrollElementHeight.value * 5, 0)
-    offsetThreshold[2] = Math.min(scrollTop + scrollElementHeight.value * 6, placeholderHeight.value)
-    offsetThreshold[3] = Math.min(scrollTop + scrollElementHeight.value * 8, placeholderHeight.value)
-    const offsetStart = offsetThreshold[0]
-    const offsetEnd = offsetThreshold[3]
-    const defaultItemSize = realDefaultItemSize.value
-    let tempTotalHeight = 0
-    let _containerTop = 0
-    let _startIndex = -1, _endIndex = -1
-    for (let i = 0; i < props.list.length; i++) {
-      const item = props.list[i]
-      let itemSize = defaultItemSize
-      const cachedItemSize = cachedSize.get(item)
-      if (cachedItemSize != null) {
-        itemSize = cachedItemSize
-      }
-      tempTotalHeight += itemSize
-      if (_endIndex > -1) {
-        continue
-      }
-      if (tempTotalHeight < offsetStart) {
-        _containerTop = tempTotalHeight
-      } else if (tempTotalHeight >= offsetStart && tempTotalHeight <= offsetEnd) {
-        if (_startIndex == -1) {
-          _startIndex = i
+    } else {
+      // 仍存活的item仅更新offset，新生的item复用并更新死亡的item的layoutItem，注意id无论如何都不更新
+      // TODO 当前方案在列表末尾向列表开头滚动时可能会命中if分支，导致所有item都触发更新
+      const newItems: ItemAndIndex[] = []
+      const aliveItems: ItemAndIndex[] = []
+      for (let i = 0; i < items.value.length; i++) {
+        const item = items.value[i]
+        const layoutItemIndex = layoutItems.value.findIndex((layoutItem) => {
+          return item == layoutItem.item
+        })
+        if (layoutItemIndex > -1) {
+          aliveItems.push({
+            item,
+            index: i
+          } as ItemAndIndex)
+        } else {
+          newItems.push({
+            item,
+            index: i
+          } as ItemAndIndex)
         }
-      } else {
-        if (_endIndex == -1) {
-          _endIndex = i - 1
+      }
+      for (let i = 0; i < layoutItems.value.length; i++) {
+        const layoutItem = layoutItems.value[i]
+        const aliveItemAndIndex = aliveItems.find((aliveItem) => {
+          return aliveItem.item == layoutItem.item
+        })
+        if (aliveItemAndIndex != null) {
+          layoutItem.offset = (startIndex.value + aliveItemAndIndex!.index) * props.itemHeight
+        } else {
+          const newItemAndIndex = newItems.pop()!
+          layoutItem.item = newItemAndIndex.item
+          layoutItem.offset = (startIndex.value + newItemAndIndex.index) * props.itemHeight
         }
       }
     }
-    if (_startIndex == -1) {
-      _startIndex = 0
-    }
-    if (_endIndex == -1) {
-      _endIndex = props.list.length - 1
-    }
-    placeholderHeight.value = Math.max(tempTotalHeight, scrollElementHeight.value)
-    items.value = props.list.slice(_startIndex, _endIndex + 1)
-    containerTop.value = _containerTop
-    nextTick(() => {
-      calcPlaceholderHeight()
-    })
-    startIndex.value = _startIndex
-    endIndex.value = _endIndex
-  }
-  function flush() {
-    const queueLength = rearrangeQueue.length
-    if (queueLength == 0) {
-      return
-    }
-    const lastScrollTop = rearrangeQueue[queueLength - 1]
-    rearrange(lastScrollTop)
-    rearrangeQueue.splice(0, rearrangeQueue.length)
-  }
-  function queue(scrollTop : number) {
-    /*
-     * rearrange内为大量同步逻辑，在上次rearrange未执行完毕的情况下将后续多个rearrange合并成一次执行，即仅执行最后一次
-     * 如何测试：push后console.log(this.rearrangeQueue.length) 输出结果大于1时触发优化
-     */
-    rearrangeQueue.push(scrollTop)
-    setTimeout(() => {
-      flush()
-    }, 50)
-  }
-  function onScroll(e : UniScrollEvent) {
-    emit('scroll', e)
-    if (!initialized.value) {
-      return
-    }
-    const scrollTop = e.detail.scrollTop
-    if (rearrangeOnNextScroll.value) {
-      queue(scrollTop)
-      rearrangeOnNextScroll.value = false
-      return
-    }
-    if (scrollTop === lastScrollTop.value || scrollTop < 0) {
-      return
-    }
-    lastScrollTop.value = scrollTop
-    if (scrollTop < offsetThreshold[1] || scrollTop > offsetThreshold[2]) {
-      queue(scrollTop)
-    }
-  }
-  
-  
-  if (props.itemHeight != 0) {
-    defaultItemSize.value = props.itemHeight
-  }
-  if (props.list.length > 0) {
-    placeholderHeight.value = props.list.length * realDefaultItemSize.value
-  }
-  scrollElementHeight.value = uni.getWindowInfo().screenHeight
-  rearrange(0)
-  
-  watch(props.list, (list : any[]) => {
-    cachedSize.forEach((_ : number, key : any) => {
-      if (!list.includes(key)) {
-        cachedSize.delete(key)
-      }
+
+    layoutItems.value.sort((a, b) => {
+      return items.value.indexOf(a.item) - items.value.indexOf(b.item)
     })
   }, {
-    deep: true
+    immediate: true
   })
-  const listLength = computed(() => {
-    return props.list.length
-  })
-  watch(listLength, () => {
-    calcPlaceholderHeight()
-    rearrangeOnNextScroll.value = true
-  })
+
+  function onScroll (e: UniScrollEvent) {
+    const _scrollTop = e.detail.scrollTop
+    scrollTop.value = _scrollTop < 0 ? 0 : _scrollTop
+    emit('scroll', e)
+  }
+  function onScrollToLower (e: UniScrollToLowerEvent) {
+    emit('scrolltolower', e)
+  }
+  function onScrollToUpper (e: UniScrollToUpperEvent) {
+    emit('scrolltoupper', e)
+  }
+  function onScrollEnd (e: UniScrollEvent) {
+    emit('scrollend', e)
+  }
+  function onRefresherAbort (e: UniRefresherEvent) {
+    emit('refresherabort', e)
+  }
+  function onRefresherPulling (e: UniRefresherEvent) {
+    emit('refresherpulling', e)
+  }
+  function onRefresherRefresh (e: UniRefresherEvent) {
+    emit('refresherrefresh', e)
+  }
+  function onRefresherRestore (e: UniRefresherEvent) {
+    emit('refresherrestore', e)
+  }
+
 </script>
-
 <style>
-  .uni-recycle-view-placeholder {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .uni-recycle-view-container {
-    position: absolute;
-    width: 100%;
-  }
 </style>
