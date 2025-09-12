@@ -54,18 +54,17 @@
   const refresherEnabled = ref(true)
   const refresherTriggered = ref(false)
   const hasMore = ref(true)
+  // 常用中文字符Unicode范围: 0x4E00 - 0x9FFF
+  const minCode = 0x4E00;
+  const maxCode = 0x9FFF;
+  const codeRange = maxCode - minCode
 
-  function generateRandomChineseString(length = 4) {
+  function generateChineseString(index: number, length = 4) {
     let result = '';
-    // 常用中文字符Unicode范围: 0x4E00 - 0x9FFF
-    const minCode = 0x4E00;
-    const maxCode = 0x9FFF;
-
     for (let i = 0; i < length; i++) {
-      const randomCode = Math.floor(Math.random() * (maxCode - minCode + 1)) + minCode;
-      result += String.fromCharCode(randomCode);
+      const code = (index * length + i) % codeRange + minCode;
+      result += String.fromCharCode(code);
     }
-
     return result;
   }
 
@@ -73,11 +72,12 @@
     for (var i = 0; i < 200; i++) {
       const index = list.length
       const tags : string[] = []
-      for (let i = 0; i < Math.floor(Math.random() * 5); i++) {
-        tags.push(generateRandomChineseString(4))
+      const tagCount = 4
+      for (let i = 0; i < tagCount; i++) {
+        tags.push(generateChineseString(index * tagCount + i, 4))
       }
       list.push({
-        img: `https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-${Math.floor(Math.random() * 3) + 1}.jpg`,
+        img: `https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-${index % 3 + 1}.jpg`,
         name: 'Name_' + index,
         info: 'Info_' + index,
         tags
@@ -162,7 +162,7 @@
     padding: 0px 2px;
     font-size: 12px;
     line-height: 16px;
-    margin-right: 5px;
+    margin-right: 2px;
   }
 
   .load-more-text {
