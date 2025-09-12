@@ -1,7 +1,8 @@
 <template>
   <view class="uni-flex-item">
     <web-view id="web-view" class="uni-flex-item" :style="webViewStyle" :src="src"
-      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess" :bounces="bounces" @message="message" @error="error" @loading="loading"
+      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess"
+      :bounces="bounces" :disable-user-select-menu="disableUserSelectMenu" @message="message" @error="error" @loading="loading"
       @load="load" @download="download" @contentheightchange="contentheightchange" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
@@ -49,6 +50,10 @@
         <view class="uni-row uni-flex-item align-items-center">
           <text>开启bounces</text>
           <switch :checked="true" @change="changeBounces"></switch>
+          <!-- #ifdef APP-ANDROID -->
+          <text>禁用选择菜单</text>
+          <switch :checked="false" @change="changeDisableUserSelectMenu"></switch>
+          <!-- #endif -->
         </view>
       </view>
       <!-- #endif -->
@@ -87,6 +92,7 @@
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
         bounces: true,
+        disableUserSelectMenu: false,
         canGoBack: false,
         canGoForward: false,
         // 自动化测试
@@ -253,6 +259,9 @@
       },
       changeBounces(event : UniSwitchChangeEvent) {
         this.bounces = event.detail.value;
+      },
+      changeDisableUserSelectMenu(event : UniSwitchChangeEvent) {
+        this.disableUserSelectMenu = event.detail.value;
       },
       // 自动化测试
       touchstart(event : UniTouchEvent) {
