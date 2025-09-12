@@ -7,7 +7,8 @@ describe('wrap-picker-view', () => {
     await page.waitFor('view')
   })
 
-  it('not crash', async () => {
+  // 此测试用例单独项目进行测试
+  it.skip('not crash', async () => {
     // 测试应用正常渲染，可以正常查询元素不会崩溃丢失
     const element = await page.$('.btn_toggle')
     await element.tap()
