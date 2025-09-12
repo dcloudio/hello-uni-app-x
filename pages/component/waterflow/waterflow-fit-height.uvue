@@ -1,6 +1,6 @@
 <template>
   <view style="flex: 1;">
-    <waterflow style="flex: 1;" cross-axis-gap="5" main-axis-gap="5">
+    <waterflow v-if="isShow" style="flex: 1;" cross-axis-gap="5" main-axis-gap="5">
       <flow-item v-for="(item, index) in list" :key="index" @click="itemClick(item['author_name'] as string | null)">
         <view class="item">
           <image class="img" :fade-show="true" :src="item['cover']" mode="widthFix"></image>
@@ -23,6 +23,7 @@
 
 <script setup>
   const list = ref<UTSJSONObject[]>([] as UTSJSONObject[])
+  const isShow = ref<boolean>(true)
 
   const itemClick = (title : string | null) => {
     if (title != null) {
@@ -56,9 +57,23 @@
     });
   }
 
+  function changeShow() {
+    isShow.value = false
+  }
+
+  function verify() {
+    return true
+  }
+
   onLoad((_: OnLoadOptions) => {
     getList()
   })
+
+  defineExpose({
+    changeShow,
+    verify
+  })
+
 </script>
 
 <style lang="scss">
