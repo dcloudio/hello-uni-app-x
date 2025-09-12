@@ -124,7 +124,7 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 	let confirmText = '立即下载更新'
 	// #endif
 
-    return uni.showModal({
+	uni.showModal({
       title,
       content: contents,
       showCancel: !is_mandatory,
