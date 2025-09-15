@@ -182,13 +182,6 @@ describe('component-native-web-view', () => {
     expect(has).toBe(true)
   })
 
-  it('test lodaData', async () => {
-    await page.callMethod('loadData');
-    await page.waitFor(1000);
-    const image = await program.screenshot({ fullPage: true });
-    expect(image).toSaveImageSnapshot();
-  });
-
   it('checkLoadingCount', async () => {
     if (
       platformInfo.indexOf('14.5') != -1 ||
@@ -207,6 +200,13 @@ describe('component-native-web-view', () => {
       expect(await page.data('loadingCount')).toBe(0);
     }
   })
+
+  it('test lodaData', async () => {
+    await page.callMethod('loadData');
+    await page.waitFor(1000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
 
   it('test half screen toggle', async () => {
     // 点击宽窄屏切换按钮
