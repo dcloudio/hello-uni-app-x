@@ -62,7 +62,7 @@ describe('component-native-scroll-view', () => {
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
     // 滚动到底部scrollTop:300,是否触发scrolltolower事件
-    await page.setData({scrollTop: 300})
+    await page.setData({data:{scrollTop: 300}})
     await page.waitFor(600)
     expect(await page.data('data.isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
   })
