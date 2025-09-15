@@ -4,6 +4,7 @@ describe('touch-events-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
 
   if (isWeb || isMP) {
     it('other platform', () => {
@@ -50,6 +51,11 @@ describe('touch-events-test', () => {
   })
 
   it('test swiper preventDefault stopPropagation', async () => {
+    if (isHarmony && platformInfo.indexOf('14') > -1) {
+      console.log('跳过鸿蒙14的测试，鸿蒙14的swiper组件不支持preventDefault stopPropagation')
+      expect(true).toBe(true)
+      return
+    }
     await page.waitFor(1500);
     await page.callMethod('resetEvent')
     let x = 25
