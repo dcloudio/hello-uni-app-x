@@ -9,6 +9,10 @@ function getData(key = '') {
   })
 }
 
+async function setPageData(newData) {
+  return page.setData({ data: newData });
+}
+
 describe('Progress.uvue', () => {
   let page
   beforeAll(async () => {
@@ -53,61 +57,45 @@ describe('Progress.uvue', () => {
     it('show-info', async () => {
       const el = await page.$('.p')
       expect(await el.property('showInfo')).toEqual(true)
-      await page.setData({
-        data:{showInfo: false}
-      })
+      await setPageData({showInfo: false})
       expect(await el.property('showInfo')).toEqual(false)
     })
   } else {
     it('show-info', async () => {
       const el = await page.$('.p')
       expect(await el.attribute('show-info')).toEqual(true + '')
-      await page.setData({
-        data:{showInfo: false}
-      })
+      await setPageData({showInfo: false})
       expect(await el.attribute('show-info')).toEqual(false + '')
     })
   }
   it('border-radius', async () => {
     const el = await page.$('.p')
     expect(await el.attribute('border-radius')).toEqual(0 + '')
-    await page.setData({
-      data:{borderRadius: 5}
-    })
+    await setPageData({borderRadius: 5})
     expect(await el.attribute('border-radius')).toEqual(5 + '')
   })
   it('font-size', async () => {
     const el = await page.$('.p')
     expect(await el.attribute('font-size')).toEqual(16 + '')
-    await page.setData({
-      data:{fontSize: 18}
-    })
+    await setPageData({fontSize: 18})
     expect(await el.attribute('font-size')).toEqual(18 + '')
   })
   it('stroke-width', async () => {
     const el = await page.$('.p')
     expect(await el.attribute('stroke-width')).toEqual(3 + '')
-    await page.setData({
-      data:{strokeWidth: 6}
-    })
+    await setPageData({strokeWidth: 6})
     expect(await el.attribute('stroke-width')).toEqual(6 + '')
     if(isWeb) {
-      await page.setData({
-        data:{strokeWidth: '10px'}
-      })
+      await setPageData({strokeWidth: '10px'})
       expect(await el.attribute('stroke-width')).toEqual('10px')
-      await page.setData({
-        data:{strokeWidth: '30rpx'}
-      })
+      await setPageData({strokeWidth: '30rpx'})
       expect(await el.attribute('stroke-width')).toEqual('30rpx')
     }
   })
   it('backgroundColor', async () => {
     const el = await page.$('.p')
     expect(await el.attribute('background-color')).toEqual('#EBEBEB')
-    await page.setData({
-      data:{backgroundColor: "#007aff"}
-    })
+    await setPageData({backgroundColor: "#007aff"})
     expect(await el.attribute('background-color')).toEqual('#007aff')
   })
   it('trigger UniProgressActiveendEvent', async () => {
@@ -116,9 +104,7 @@ describe('Progress.uvue', () => {
       return
     }
 
-    await page.setData({
-      data:{pgList: [21, 40, 60, 80]}
-    })
+    await setPageData({pgList: [21, 40, 60, 80]})
     // 动画执行
     await page.waitFor(1000);
     const eventCallbackNum = await page.callMethod('getEventCallbackNum')
