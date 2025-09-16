@@ -9,16 +9,16 @@ function getData(key = '') {
   })
 }
 
-async function setPageData(newData) {
-  return page.setData({ data: newData });
-}
-
 describe('Progress.uvue', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/progress/progress')
     await page.waitFor(2000);
   })
+
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
 
   beforeEach(async () => {
     await page.callMethod('setEventCallbackNumTest', 0)
