@@ -8,23 +8,28 @@ describe('Checkbox.uvue', () => {
     await page.waitFor('view')
     await page.waitFor(1000)
   })
+
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('change', async () => {
-    expect(await page.data('value')).toEqual([])
+    expect(await page.data('data.value')).toEqual([])
     const cb1 = await page.$('.cb1')
     await cb1.tap()
     await page.waitFor(100)
-    expect(await page.data('value')).toEqual(['cb', 'cb1'])
+    expect(await page.data('data.value')).toEqual(['cb', 'cb1'])
     const cb = await page.$('.cb')
     await cb.tap()
     await page.waitFor(100)
-    expect(await page.data('value')).toEqual(['cb1'])
+    expect(await page.data('data.value')).toEqual(['cb1'])
     const cb2 = await page.$('.cb2')
     await cb2.tap()
     await page.waitFor(100)
-    expect(await page.data('value')).toEqual(['cb1'])
+    expect(await page.data('data.value')).toEqual(['cb1'])
     await cb1.tap()
     await page.waitFor(100)
-    expect(await page.data('value')).toEqual([])
+    expect(await page.data('data.value')).toEqual([])
   })
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
@@ -35,9 +40,7 @@ describe('Checkbox.uvue', () => {
   it('text', async () => {
     const cb = await page.$('.cb1')
     expect(await cb.text()).toEqual('未选中')
-    await page.setData({
-      text: 'not selected',
-    })
+    await setPageData({text: 'not selected'})
     expect(await cb.text()).toEqual('not selected')
   })
   if(isMP) {
@@ -45,9 +48,7 @@ describe('Checkbox.uvue', () => {
       const cb = await page.$('.cb2')
       const disabled1 = await cb.property('disabled')
       expect(disabled1).toBe(true)
-      await page.setData({
-        disabled: false,
-      })
+      await setPageData({disabled: false})
       const disabled2 = await cb.property('disabled')
       expect(disabled2).toBe(false)
     })
@@ -56,9 +57,7 @@ describe('Checkbox.uvue', () => {
       const cb = await page.$('.cb2')
       const disabled1 = await cb.attribute('disabled')
       expect(disabled1).toBe(true + '')
-      await page.setData({
-        disabled: false,
-      })
+      await setPageData({disabled: false})
       const disabled2 = await cb.attribute('disabled')
       expect(disabled2).toBe(false + '')
     })
@@ -70,9 +69,7 @@ describe('Checkbox.uvue', () => {
       // TODO
       const newValue1 = await cb.property('checked')
       expect(newValue1.toString()).toBe(true + '')
-      await page.setData({
-        checked: false,
-      })
+      await setPageData({checked: false})
       // TODO
       const newValue2 = await cb.property('checked')
       expect(newValue2.toString()).toBe(false + '')
@@ -82,26 +79,20 @@ describe('Checkbox.uvue', () => {
     it('color', async () => {
       const cb = await page.$('.cb')
       expect(await cb.attribute('color')).toBe('#007aff')
-      await page.setData({
-        color: '#63acfc',
-      })
+      await setPageData({color: '#63acfc'})
       expect(await cb.attribute('color')).toBe('#63acfc')
     })
 
     it('icon color', async () => {
       const cb = await page.$('.cb')
       expect(await cb.attribute('iconColor')).toBe('#211cfe')
-      await page.setData({
-        iconColor: '#63acfc',
-      })
+      await setPageData({iconColor: '#63acfc'})
       expect(await cb.attribute('iconColor')).toBe('#63acfc')
     })
     it('foreColor', async () => {
       const cb = await page.$('.cb')
       expect(await cb.attribute('foreColor')).toBe('#ff0000')
-      await page.setData({
-        foreColor: '#63acfe',
-      })
+      await setPageData({foreColor: '#63acfe'})
       expect(await cb.attribute('foreColor')).toBe('#63acfe')
     })
     it('trigger UniCheckboxGroupChangeEvent', async () => {
@@ -109,7 +100,7 @@ describe('Checkbox.uvue', () => {
       await element.tap()
       // 设置等待2.5s,避免 toast 弹框影响后续截图测试
       await page.waitFor(2500)
-      const { testEvent } = await page.data()
+      const { testEvent } = await page.data('data')
       expect(testEvent).toBe(true)
     })
   }
