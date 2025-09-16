@@ -14,7 +14,7 @@ describe('editor.uvue', () => {
     editor = await page.$('#editor');
     await page.waitFor(3000);
     await page.setData({
-      autoTest: true
+      data:{autoTest: true}
     })
   });
 
@@ -22,7 +22,7 @@ describe('editor.uvue', () => {
     const start = Date.now();
     await page.callMethod('blur')
     await page.waitFor(async () => {
-      return await page.data('blurTest') === true || (Date.now() - start > 2000)
+      return await page.data('data.blurTest') === true || (Date.now() - start > 2000)
     })
   }
 
@@ -37,7 +37,7 @@ describe('editor.uvue', () => {
     for (var i = 0; i < iconfontsEl.length - 7; i++) {
       await iconfontsEl[i].tap()
       // await page.waitFor(500)
-      const getFormats = await page.data('formats')
+      const getFormats = await page.data('data.formats')
       const name = await iconfontsEl[i].attribute('data-name')
       options.push({
         insert: '文本内容' + name,
@@ -45,7 +45,7 @@ describe('editor.uvue', () => {
       })
       await page.callMethod('setContents', options)
       await page.setData({
-        formats: {}
+        data:{formats: {}}
       })
       await iconfontsEl[i].tap()
     }
@@ -67,9 +67,9 @@ describe('editor.uvue', () => {
     await page.waitFor(500)
     await page.callMethod('undo')
     await page.waitFor(500)
-    expect(await page.data('undoTest')).toBe(true)
+    expect(await page.data('data.undoTest')).toBe(true)
     await page.callMethod('redo')
-    expect(await page.data('redoTest')).toBe(true)
+    expect(await page.data('data.redoTest')).toBe(true)
   })
 
   it('insertImage', async () => {
@@ -77,7 +77,7 @@ describe('editor.uvue', () => {
     await page.callMethod('insertImage', 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
     const start1 = Date.now();
     await page.waitFor(async () => {
-      return await page.data('insertImageTest') === true || (Date.now() - start1 > 2000)
+      return await page.data('data.insertImageTest') === true || (Date.now() - start1 > 2000)
     })
   })
 
@@ -92,15 +92,15 @@ describe('editor.uvue', () => {
     const bgcolorEl = await page.$('.icon-fontbgcolor');
     await bgcolorEl.tap()
     await page.waitFor(500)
-    const getFormats = await page.data('formats')
+    const getFormats = await page.data('data.formats')
     await page.callMethod('setContents', [{
       insert: '设置字体样式bgcolor',
       attributes: getFormats
     }])
     await page.waitFor(500)
     await page.callMethod('removeFormat')
-    expect(await page.data('removeFormatTest')).toBe(true)
-    expect(await page.data('formats')).toEqual({})
+    expect(await page.data('data.removeFormatTest')).toBe(true)
+    expect(await page.data('data.formats')).toEqual({})
   })
 
 });

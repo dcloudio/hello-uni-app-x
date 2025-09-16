@@ -40,7 +40,7 @@ describe('form', () => {
       time,
       formData,
       testVerifySubmit
-    } = await page.data()
+    } = await page.data('data')
 
     expect(formData['nickname']).toBe(CHANGE_NICK_NAME)
     expect(formData['gender']).toBe(CHANGE_GENDER)
@@ -77,7 +77,7 @@ describe('form', () => {
       time,
       formData,
       testVerifyReset
-    } = await page.data()
+    } = await page.data('data')
 
     expect(formData['nickname']).toBe(DEFAULT_NICK_NAME)
     expect(formData['gender']).toBe(DEFAULT_GENDER)
@@ -95,12 +95,14 @@ describe('form', () => {
 
 async function changeData(page) {
   await page.setData({
-    nickname: CHANGE_NICK_NAME,
-    gender: CHANGE_GENDER,
-    loves: CHANGE_LOVES,
-    age: CHANGE_AGE,
-    switch: CHANGE_SWITCH,
-    comment:CHANGE_COMMENT
+    data:{
+      nickname: CHANGE_NICK_NAME,
+      gender: CHANGE_GENDER,
+      loves: CHANGE_LOVES,
+      age: CHANGE_AGE,
+      switch: CHANGE_SWITCH,
+      comment:CHANGE_COMMENT
+    }
   })
   await page.waitFor(100)
 }

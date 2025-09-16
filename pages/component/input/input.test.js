@@ -22,15 +22,17 @@ describe('component-native-input', () => {
     await page.waitFor('view');
   });
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   // 测试焦点及键盘弹起
   if(!isMP) {
     it('focus', async () => {
       const input = await page.$('#uni-input-focus');
       expect(await input.attribute('focus')).toBe("true")
       // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-      await page.setData({
-        focus: false,
-      })
+      await setPageData({focus: false})
       expect(await input.attribute('focus')).toBe("false")
       // await page.waitFor(1000)
       // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
@@ -60,17 +62,17 @@ describe('component-native-input', () => {
         triggerFocus: false,
         triggerBlur: false,
       })
-      let pageData = await page.data()
+      let pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(false)
       expect(pageData.triggerBlur).toBe(false)
       await page.callMethod('triggerFocusOrBlur')
       await page.waitFor(500)
-      pageData = await page.data()
+      pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(true)
       expect(pageData.triggerBlur).toBe(false)
       await page.callMethod('triggerFocusOrBlur')
       await page.waitFor(500)
-      pageData = await page.data()
+      pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(false)
       expect(pageData.triggerBlur).toBe(true)
       if (isHarmony) {
@@ -191,9 +193,7 @@ describe('component-native-input', () => {
       expect(await (await page.$('#uni-input-confirm-done')).attribute("confirmType")).toEqual("done")
     })
     it("cursor-color", async () => {
-      await page.setData({
-        cursor_color: "red",
-      })
+      await setPageData({cursor_color: "red"})
       await page.waitFor(500)
       expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
     })
@@ -215,23 +215,17 @@ describe('component-native-input', () => {
     for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
-    await page.setData({
-      inputMaxLengthValue: str
-    })
+    await setPageData({inputMaxLengthValue: str})
     let length = (await input.value()).length
     expect(length).toBe(10)
-    await page.setData({
-      inputMaxLengthValue: ""
-    })
+    await setPageData({inputMaxLengthValue: ""})
   })
 
   it("password and value order", async () => {
     const input = await page.$('#uni-input-password');
     let length = (await input.value()).length
     expect(length).toBe(6)
-    await page.setData({
-      inputPasswordValue: ""
-    })
+    await setPageData({inputPasswordValue: ""})
   })
 
   it("keyboard height changed after page back", async () => {
@@ -248,15 +242,13 @@ describe('component-native-input', () => {
     await page.waitFor(2000);
     await program.navigateBack()
     await page.waitFor(1000);
-    await page.setData({
-      focusedForKeyboardHeightChangeTest: true
-    })
+    await setPageData({focusedForKeyboardHeightChangeTest: true})
     await page.waitFor(2000);
 
-    const keyboardHeight = await page.data('keyboardHeight');
+    const keyboardHeight = await page.data('data.keyboardHeight');
     expect(keyboardHeight).toBeGreaterThan(25)
     //reset
-    await page.setData({
+    await setPageData({
       focusedForKeyboardHeightChangeTest: false,
       keyboardHeight: 0
     })

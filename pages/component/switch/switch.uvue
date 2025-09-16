@@ -3,25 +3,25 @@
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">默认样式</view>
       <view class="flex-row">
-        <switch class="switch-checked" :checked="checked" @change="switch1Change" />
+        <switch class="switch-checked" :checked="data.checked" @change="switch1Change" />
         <switch @change="switch2Change" />
       </view>
       <view class="uni-title">暗黑样式</view>
       <view class="flex-row">
         <switch id="darkChecked" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
-          activeForeColor="#ffffff" :checked="checked" />
+          activeForeColor="#ffffff" :checked="data.checked" />
         <switch id="dark" background-color="#1f1f1f" activeBackgroundColor="#007aff" foreColor="#f0f0f0"
           activeForeColor="#ffffff" />
       </view>
       <view class="uni-title">禁用样式</view>
       <view class="flex-row">
-        <switch class="switch-checked" :checked="checked" :disabled="true" />
+        <switch class="switch-checked" :checked="data.checked" :disabled="true" />
         <switch :disabled="true" />
       </view>
       <view class="uni-title">不同颜色和尺寸的switch</view>
       <view class="flex-row">
-        <switch class="switch-color-checked" :color="color" style="transform:scale(0.7)" :checked="true" />
-        <switch class="switch-color" :color="color" style="transform:scale(0.7)" />
+        <switch class="switch-color-checked" :color="data.color" style="transform:scale(0.7)" :checked="true" />
+        <switch class="switch-color" :color="data.color" style="transform:scale(0.7)" />
       </view>
       <view class="uni-title">推荐展示样式</view>
     </view>
@@ -38,30 +38,37 @@
   </view>
 </template>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        title: 'switch 开关',
-        checked: true,
-        color: '#FFCC33',
-        clickCheckedValue: true,
-        testVerifyEvent: false,
-      }
-    },
-    methods: {
-      switch1Change: function (e : UniSwitchChangeEvent) {
-        this.clickCheckedValue = e.detail.value
-        console.log('switch1 发生 change 事件，携带值为', e.detail.value)
-
-        // 仅测试
-        this.testVerifyEvent = (e.type == 'change' && (e.target?.tagName ?? '') == "SWITCH")
-      },
-      switch2Change: function (e : UniSwitchChangeEvent) {
-        console.log('switch2 发生 change 事件，携带值为', e.detail.value)
-      }
-    }
+<script setup lang="uts">
+  type DataType = {
+    title: string;
+    checked: boolean;
+    color: string;
+    clickCheckedValue: boolean;
+    testVerifyEvent: boolean;
   }
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    title: 'switch 开关',
+    checked: true,
+    color: '#FFCC33',
+    clickCheckedValue: true,
+    testVerifyEvent: false
+  } as DataType)
+
+  const switch1Change = (e: UniSwitchChangeEvent) => {
+    data.clickCheckedValue = e.detail.value
+    console.log('switch1 发生 change 事件，携带值为', e.detail.value)
+    // 仅测试
+    data.testVerifyEvent = (e.type == 'change' && (e.target?.tagName ?? '') == "SWITCH")
+  }
+
+  const switch2Change = (e: UniSwitchChangeEvent) => {
+    console.log('switch2 发生 change 事件，携带值为', e.detail.value)
+  }
+
+  defineExpose({
+    data
+  })
 </script>
 
 <style>
