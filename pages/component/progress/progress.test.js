@@ -4,7 +4,7 @@ const isWeb = platformInfo.startsWith('web')
 
 function getData(key = '') {
   return new Promise(async (resolve, reject) => {
-    const data = await page.data()
+    const data = await page.data('data')
     resolve(key ? data[key] : data)
   })
 }
@@ -17,10 +17,10 @@ describe('Progress.uvue', () => {
   })
 
   beforeEach(async () => {
-    await page.callMethod('setEventCallbackNum', 0)
+    await page.callMethod('setEventCallbackNumTest', 0)
   })
 
-  
+
   it('percent', async () => {
     await page.callMethod('setProgress')
     await page.waitFor(1000);
@@ -54,7 +54,7 @@ describe('Progress.uvue', () => {
       const el = await page.$('.p')
       expect(await el.property('showInfo')).toEqual(true)
       await page.setData({
-        showInfo: false
+        data:{showInfo: false}
       })
       expect(await el.property('showInfo')).toEqual(false)
     })
@@ -63,7 +63,7 @@ describe('Progress.uvue', () => {
       const el = await page.$('.p')
       expect(await el.attribute('show-info')).toEqual(true + '')
       await page.setData({
-        showInfo: false
+        data:{showInfo: false}
       })
       expect(await el.attribute('show-info')).toEqual(false + '')
     })
@@ -72,7 +72,7 @@ describe('Progress.uvue', () => {
     const el = await page.$('.p')
     expect(await el.attribute('border-radius')).toEqual(0 + '')
     await page.setData({
-      borderRadius: 5
+      data:{borderRadius: 5}
     })
     expect(await el.attribute('border-radius')).toEqual(5 + '')
   })
@@ -80,7 +80,7 @@ describe('Progress.uvue', () => {
     const el = await page.$('.p')
     expect(await el.attribute('font-size')).toEqual(16 + '')
     await page.setData({
-      fontSize: 18
+      data:{fontSize: 18}
     })
     expect(await el.attribute('font-size')).toEqual(18 + '')
   })
@@ -88,16 +88,16 @@ describe('Progress.uvue', () => {
     const el = await page.$('.p')
     expect(await el.attribute('stroke-width')).toEqual(3 + '')
     await page.setData({
-      strokeWidth: 6
+      data:{strokeWidth: 6}
     })
     expect(await el.attribute('stroke-width')).toEqual(6 + '')
     if(isWeb) {
       await page.setData({
-        strokeWidth: '10px'
+        data:{strokeWidth: '10px'}
       })
       expect(await el.attribute('stroke-width')).toEqual('10px')
       await page.setData({
-        strokeWidth: '30rpx'
+        data:{strokeWidth: '30rpx'}
       })
       expect(await el.attribute('stroke-width')).toEqual('30rpx')
     }
@@ -106,7 +106,7 @@ describe('Progress.uvue', () => {
     const el = await page.$('.p')
     expect(await el.attribute('background-color')).toEqual('#EBEBEB')
     await page.setData({
-      backgroundColor: "#007aff"
+      data:{backgroundColor: "#007aff"}
     })
     expect(await el.attribute('background-color')).toEqual('#007aff')
   })
@@ -117,7 +117,7 @@ describe('Progress.uvue', () => {
     }
 
     await page.setData({
-      pgList: [21, 40, 60, 80]
+      data:{pgList: [21, 40, 60, 80]}
     })
     // 动画执行
     await page.waitFor(1000);
