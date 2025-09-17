@@ -9,25 +9,25 @@
         <text class="uni-title-text">API示例</text>
       </View>
       <view class="uni-btn-v">
-        <button type="primary" @click="play">播放</button>
+        <button type="primary" @click="play" :disabled="playState">播放</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="pause">暂停</button>
+        <button type="primary" @click="pause" :disabled="!playState">暂停</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="resume">恢复</button>
+        <button type="primary" @click="resume" :disabled="initState || playState || stopState">恢复</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="stop">停止</button>
+        <button type="primary" @click="stop" :disabled="!playState">停止</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="mute">静音</button>
+        <button type="primary" @click="mute" :disabled="!playState">静音</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="requestFullScreen">进入全屏</button>
+        <button type="primary" @click="requestFullScreen" :disabled="!playState">进入全屏</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="exitFullScreen">退出全屏</button>
+        <button type="primary" @click="exitFullScreen" :disabled="!playState">退出全屏</button>
       </view>
       <view class="uni-title">
         <text class="uni-title-text">属性示例</text>
@@ -54,6 +54,9 @@
   const backgroundMute = ref(false);
   const soundMode = ref("speaker");
   const orientation = ref("vertical");
+  const initState = ref(true);
+  const playState = ref(false);
+  const stopState = ref(false);
 
   onReady(() => {
     context.value = uni.createLivePlayerContext("live-player", getCurrentInstance()!.proxy);
@@ -61,6 +64,21 @@
 
   const statechange = (e : UniLivePlayerStatechangeEvent) => {
     console.log("statechange", e);
+    switch (e.detail.code) {
+      case 10004:
+        initState.value = false;
+        playState.value = true;
+        stopState.value = false;
+        break;
+      case 10009:
+        stopState.value = true;
+      case 10006:
+      case 10007:
+      case 10010:
+      case 10011:
+        playState.value = false;
+        break;
+    }
   };
   const fullscreenchange = (e : UniLivePlayerFullscreenchangeEvent) => {
     console.log("fullscreenchange", e);
