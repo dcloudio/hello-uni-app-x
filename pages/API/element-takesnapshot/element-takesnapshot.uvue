@@ -24,7 +24,6 @@
     },
     methods: {
       takeSnapshotClick() {
-        let status = false
         const view = uni.getElementById('snapshot-content')!
         view.takeSnapshot({
           success: (res) => {
@@ -35,18 +34,16 @@
               title: '截图成功，路径：' + res.tempFilePath,
               icon: "none"
             })
-            status = true
           },
           fail: (res) => {
             console.log('takeSnapshot fail', res)
-            status = false
             uni.showToast({
               icon: 'error',
               title: '截图失败'
             })
           },
           complete: (res) => {
-            this.completeTriggered = status
+            this.completeTriggered = true
             console.log('takeSnapshot complete', res)
           }
         })
