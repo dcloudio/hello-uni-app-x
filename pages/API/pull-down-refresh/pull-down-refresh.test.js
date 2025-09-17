@@ -37,8 +37,12 @@ describe("payment", () => {
 
     if (isIos) {
       // 暂时通过点击关闭授权弹框，避免影响 swipe 测试
-      await program.tap({x: 100, y: 500})
+      await program.tap({
+        x: 100,
+        y: 500
+      })
     }
+    expect(await page.data('startPullDownRefreshStaus')).toBe(true)
 
     await program.swipe({
       startPoint: {
@@ -53,5 +57,6 @@ describe("payment", () => {
     })
     await page.waitFor(1500)
     expect(await page.data('pulldownRefreshTriggered')).toBe(true)
+    expect(await page.data('stopPullDownRefreshStatus')).toBe(true)
   });
 });

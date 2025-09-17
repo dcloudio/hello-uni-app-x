@@ -26,6 +26,9 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
     var fullscreenchange = await page.data('fullscreenchangeCount')
     expect(fullscreenchange).toBe(1)
 
+    // 验证进入全屏的回调状态
+    var requestCallbackStatus = await page.data('requestFullscreenCallbackStatus')
+    expect(requestCallbackStatus).toBe(true) // success 回调已执行
 
     // 退出全屏
     await page.callMethod('fullscreen')
@@ -33,6 +36,10 @@ describe('/pages/API/element-request-fullscreen/element-request-fullscreen', () 
 
     fullscreenchange = await page.data('fullscreenchangeCount')
     expect(fullscreenchange).toBe(2)
+
+    // 验证退出全屏的回调状态
+    var exitCallbackStatus = await page.data('exitFullscreenCallbackStatus')
+    expect(exitCallbackStatus).toBe(true) // success/fail 回调已执行
 
     const image2 = await program.screenshot({
       fullPage: true
