@@ -23,11 +23,11 @@ describe('component-native-sticky-section', () => {
     await page.callMethod('deleteSection')
     await page.waitFor(400)
     await page.setData({
-      refresherTriggered: true
+      pageData:{refresherTriggered: true}
     })
     await page.waitFor(500)
     await page.setData({
-      refresherTriggered: false
+      pageData:{refresherTriggered: false}
     })
     await page.waitFor(2000)
     const image = await program.screenshot({fullPage: true});
@@ -37,7 +37,7 @@ describe('component-native-sticky-section', () => {
   //检测吸顶上推效果
   it('check_sticky_section', async () => {
     await page.waitFor(async () => {
-      return await page.data('isReady') === true;
+      return await page.data('pageData.isReady') === true;
     });
     page.waitFor(600)
     await page.callMethod('listViewScrollByY', 1000)
@@ -54,14 +54,14 @@ describe('component-native-sticky-section', () => {
     await page.callMethod('toTop')
     page.waitFor(100)
     await page.setData({
-      scrolling: true
+      pageData:{scrolling: true}
     })
     if (!isAppWebView) {
       //跳转到id为C的StickyHeader位置
       await page.callMethod('gotoStickyHeader', 'C')
     }
     await page.waitFor(async () => {
-      return await page.data('scrolling') === false;
+      return await page.data('pageData.scrolling') === false;
     });
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();

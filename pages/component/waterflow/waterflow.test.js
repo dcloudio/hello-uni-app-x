@@ -33,7 +33,7 @@ describe('component-native-waterflow', () => {
   it('Event check_scroll', async () => {
     await page.callMethod('confirm_scroll_top_input', 300)
     await page.waitFor(600)
-    const scrollDetail = await page.data('scrollDetailTest')
+    const scrollDetail = await page.data('data.scrollDetailTest')
     // console.log('scrollDetailTest:', scrollDetail)
     expect(scrollDetail.scrollLeft).toBe(0)
     // scrollTop和deltaY 在安卓端差异 299.8095
@@ -45,7 +45,7 @@ describe('component-native-waterflow', () => {
     //此处可判断安卓issues:9121的问题
     expect(scrollDetail.deltaY).toBeGreaterThan(299.5)
     //expect([300.1905, 300, 299.8095]).toContain(scrollDetail.deltaY);
-    expect(await page.data('isScrollTest')).toBe('scroll:Success')
+    expect(await page.data('data.isScrollTest')).toBe('scroll:Success')
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
@@ -55,7 +55,7 @@ describe('component-native-waterflow', () => {
     // 滚动到底部,是否触发scrolltolower事件
     await page.callMethod('confirm_scroll_top_input', 2500)
     await page.waitFor(600)
-    expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
+    expect(await page.data('data.isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
     //截图 检测末尾处元素UI展示
     const image = await program.screenshot({fullPage: false});
     expect(image).toSaveImageSnapshot();
@@ -65,7 +65,7 @@ describe('component-native-waterflow', () => {
     // 滚动到顶部50,是否触发scrolltoupper事件
     await page.callMethod('confirm_scroll_top_input', 50)
     await page.waitFor(1000)
-    expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
+    expect(await page.data('data.isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
   it('Event scrollend-滚动结束时触发',async()=>{
@@ -76,7 +76,7 @@ describe('component-native-waterflow', () => {
       duration: 100
     })
     await page.waitFor(4200)
-    const endDetail = await page.data('scrollEndDetailTest')
+    const endDetail = await page.data('data.scrollEndDetailTest')
     console.log('scrollEndDetailTest:', endDetail)
     expect(endDetail.deltaY).toBe(0)
     expect(endDetail.deltaX).toBe(0)
@@ -97,11 +97,13 @@ describe('component-native-waterflow', () => {
   it('check_refresher', async () => {
     await page.callMethod('confirm_scroll_top_input', 0)
     await page.setData({
-        refresher_enabled_boolean: true,
-        refresher_triggered_boolean: true
+        data:{
+          refresher_enabled_boolean: true,
+          refresher_triggered_boolean: true
+        }
     })
     await page.waitFor(1000)
-    expect(await page.data('refresherrefresh')).toBe(true)
+    expect(await page.data('data.refresherrefresh')).toBe(true)
     //延迟 等待下拉刷新执行结束 防止后续测试任务结果异常
     await page.waitFor(2000)
   })
