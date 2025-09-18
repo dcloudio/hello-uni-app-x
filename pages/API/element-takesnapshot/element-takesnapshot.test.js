@@ -29,11 +29,8 @@ describe("element take snapshot", () => {
     expect(image.length).toBeGreaterThan(20)
   });
 
-  // TODO: ios 下 complete 无法触发, 待修复
-  if (!isIos) {
-    it("complete should be triggered", async () => {
-      const completeTriggered = await page.data('completeTriggered')
-      expect(completeTriggered).toBe(true)
-    });
-  }
+  it("complete should be triggered", async () => {
+    const completeTriggered = await page.data('completeTriggered')
+    expect(completeTriggered).toBe(true)
+  });
 });
