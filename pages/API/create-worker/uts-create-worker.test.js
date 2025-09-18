@@ -8,14 +8,6 @@ const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('Api-uts-createWorker', () => {
-  // 鸿蒙由于自动化测试生成安装包功能缺失 worker 文件拷贝，暂时跳过相关测试
-  if(isHarmony) {
-    it('skip Api-uts-createWorker', async () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   if (
     platformInfo.indexOf('14.5') != -1 ||
     platformInfo.indexOf('13.7') != -1 ||
