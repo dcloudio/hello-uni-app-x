@@ -15,73 +15,77 @@ describe('component-native-image', () => {
     await page.waitFor(isWeb ? 4000 : 100);
   });
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('screenshot', async () => {
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot()
   });
 
   it('check_image_load', async () => {
-    expect(await page.data('loadError')).toBe(false)
+    expect(await page.data('data.loadError')).toBe(false)
   });
 
   it('check_image_load_url', async () => {
-    await page.setData({
+    await setPageData({
       loadError: false,
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     })
     await page.waitFor(300);
-    expect(await page.data('loadError')).toBe(false)
+    expect(await page.data('data.loadError')).toBe(false)
   })
 
   if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     it('check_qurey_url', async () => {
-      await page.setData({
+      await setPageData({
         loadError: false,
         imageSrc: '/static/logo.png?t=11234'
       })
       await page.waitFor(300);
-      expect(await page.data('loadError')).toBe(false)
+      expect(await page.data('data.loadError')).toBe(false)
     })
   };
 
   it('check_image_load_error', async () => {
-    await page.setData({
+    await setPageData({
       loadError: false,
       imageSrc: 'testerror.jpg'
     })
     await page.waitFor(300);
-    expect(await page.data('loadError')).toBe(true)
+    expect(await page.data('data.loadError')).toBe(true)
   })
 
   if (isAndroid && !isAppWebView) {
     it('check-cookie', async () => {
-      await page.setData({
+      await setPageData({
         autoTest: true,
         setCookieImage: 'https://cdn.dcloud.net.cn/img/shadow-grey.png'
       });
       await page.waitFor(1000);
-      await page.setData({
+      await setPageData({
         loadError: false,
         verifyCookieImage: 'https://request.dcloud.net.cn/img/shadow-grey.png'
       });
       await page.waitFor(1000);
-      expect(await page.data('loadError')).toBe(false);
-      await page.setData({
+      expect(await page.data('data.loadError')).toBe(false);
+      await setPageData({
         autoTest: false
       });
     })
   }
 
   it('test event load', async () => {
-    await page.setData({
+    await setPageData({
       autoTest: true,
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     });
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventLoad')) || (Date.now() - start > 1000);
+      return (await page.data('data.eventLoad')) || (Date.now() - start > 1000);
     });
-    expect(await page.data('eventLoad')).toEqual({
+    expect(await page.data('data.eventLoad')).toEqual({
       tagName: isMP ? '' : 'IMAGE',
       type: 'load',
       width: 10,
@@ -90,19 +94,19 @@ describe('component-native-image', () => {
   });
 
   it('test event error', async () => {
-    await page.setData({
+    await setPageData({
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/404.png'
     });
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventError')) || (Date.now() - start > 1000);
+      return (await page.data('data.eventError')) || (Date.now() - start > 1000);
     });
-    expect(await page.data('eventError')).toEqual({
+    expect(await page.data('data.eventError')).toEqual({
       tagName: isMP ? '' : 'IMAGE',
       type: 'error'
     });
 
-    await page.setData({
+    await setPageData({
       autoTest: false
     });
   });

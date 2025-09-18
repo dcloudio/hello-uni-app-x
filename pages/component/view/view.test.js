@@ -49,8 +49,10 @@ describe('view-test', () => {
   if (isHarmony) {
     it('hover-class', async () => {
       await page.setData({
-        hover_class: true,
-        stay_time: 1000 * 10
+        data:{
+          hover_class: true,
+          stay_time: 1000 * 10
+        }
       })
       await page.waitFor(100)
 

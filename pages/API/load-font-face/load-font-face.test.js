@@ -25,6 +25,13 @@ describe("loadFontFace", () => {
       const successTriggeredNum = await page.data('successTriggeredNum');
       expect(successTriggeredNum).toBe(6);
     });
+
+    it("check callback status arrays", async () => {
+      // 读取 data 的 loadFontStatus 数组
+      const loadFontStatus = await page.data('loadFontStatus');
+      // 验证每个字体的 success 回调是否被触发
+      expect(loadFontStatus.every(status => status)).toBe(true);
+    });
   }
 
   it("parent screenshot", async () => {

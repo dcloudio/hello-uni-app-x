@@ -19,11 +19,24 @@
         loadMoreText: "加载中...",
         showLoadMore: false,
         max: 0,
-        pulldownRefreshTriggered: false
+        pulldownRefreshTriggered: false,
+        startPullDownRefreshStaus: false,
+        stopPullDownRefreshStatus: false
       }
     },
     onReady() {
-      uni.startPullDownRefresh();
+      let status = false
+      uni.startPullDownRefresh({
+        success() {
+          status = true
+        },
+        fail() {
+          status = false
+        },
+        complete: () => {
+          this.startPullDownRefreshStaus = status
+        }
+      });
       this.initData();
     },
     onReachBottom() {
@@ -53,6 +66,7 @@
             data.push(i)
           }
           this.data = this.data.concat(data);
+          let status = false
           uni.stopPullDownRefresh();
         }, 1000);
       },

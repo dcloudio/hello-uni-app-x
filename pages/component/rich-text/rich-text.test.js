@@ -14,22 +14,26 @@ describe('rich-text-test', () => {
     await page.waitFor(1500);
   })
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('richt-text-height', async () => {
-    let beforeValue = await page.data('richTextHeight')
+    let beforeValue = await page.data('data.richTextHeight')
     if (beforeValue < 10) {
       await page.waitFor(2000)
-      beforeValue = await page.data('richTextHeight')
+      beforeValue = await page.data('data.richTextHeight')
 
       if (beforeValue < 10) {
         await page.waitFor(2000)
-        beforeValue = await page.data('richTextHeight')
+        beforeValue = await page.data('data.richTextHeight')
       }
     }
     await page.callMethod('changeText')
     await page.waitFor(500)
     await page.callMethod('changeText')
     await page.waitFor(1500)
-    let afterValue = await page.data('richTextHeight')
+    let afterValue = await page.data('data.richTextHeight')
     console.log('beforeValue:', beforeValue)
     console.log('afterValue:', afterValue)
     expect(beforeValue).toBe(afterValue)
@@ -37,10 +41,10 @@ describe('rich-text-test', () => {
 
   if (isAndroid || isiOS || isHarmony) {
     it('test selectable itemclick', async () => {
-      await page.setData({
+      await setPageData({
         autoTest: true,
         isItemClickTrigger: false
-      });
+      })
       await page.waitFor(1000);
       const windowInfo = await program.callUniMethod('getWindowInfo');
       const rect = await page.callMethod('getBoundingClientRectForTest');
@@ -49,10 +53,10 @@ describe('rich-text-test', () => {
         y: windowInfo.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
       });
       await page.waitFor(1000);
-      expect(await page.data('isItemClickTrigger')).toBe(true);
-      await page.setData({
+      expect(await page.data('data.isItemClickTrigger')).toBe(true);
+      await setPageData({
         isItemClickTrigger: false
-      });
+      })
       await program.navigateTo("/pages/component/rich-text/rich-text-tags");
       await page.waitFor(500);
       await program.navigateBack();
@@ -61,10 +65,10 @@ describe('rich-text-test', () => {
         y: windowInfo.statusBarHeight + 44 + (rect.bottom - rect.top) / 2
       });
       await page.waitFor(1000);
-      expect(await page.data('isItemClickTrigger')).toBe(true);
-      await page.setData({
+      expect(await page.data('data.isItemClickTrigger')).toBe(true);
+      await setPageData({
         autoTest: false
-      });
+      })
     });
   }
 
