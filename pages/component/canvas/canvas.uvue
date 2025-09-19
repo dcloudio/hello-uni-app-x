@@ -53,6 +53,8 @@
 <script setup lang="uts">
   import CanvasChild from './canvas-child.uvue'
 
+  const instance = getCurrentInstance()!.proxy
+
   type DataType = {
     title: string;
     canvas: UniCanvasElement | null;
@@ -184,7 +186,7 @@
   const testCreateContextAsync = () => {
     uni.createCanvasContextAsync({
       id: 'canvas',
-      component: getCurrentInstance()!.proxy!,
+      component: instance!,
       success: () => {
         data.testCanvasCtx1 = true
       }
@@ -206,7 +208,7 @@
   onLoad(() => {
     uni.createCanvasContextAsync({
       id: 'canvas',
-      component: getCurrentInstance()!.proxy!,
+      component: instance!,
       success: (context : CanvasContext) => {
         data.canvasContext = context;
         data.renderingContext = context.getContext('2d')!;
