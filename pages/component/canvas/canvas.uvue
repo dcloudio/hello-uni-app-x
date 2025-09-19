@@ -5,7 +5,7 @@
       <!-- #ifdef WEB -->
       <button class="canvas-drawing-button" @click="canvasToBlob">canvasToBlob</button>
       <view>
-        <text>testToBlobResult: {{testToBlobResult}}</text>
+        <text>testToBlobResult: {{data.testToBlobResult}}</text>
       </view>
       <!-- #endif -->
       <button class="canvas-drawing-button" id="toDataURL" @click="canvasToDataURL">canvasToDataURL</button>
@@ -166,8 +166,9 @@
     }
   }
 
-  let startAnimationFrame = () => void
-  startAnimationFrame  = () => {
+  type StartAnimationFrameType = () => void
+  let startAnimationFrame: StartAnimationFrameType = () => {}
+  startAnimationFrame = () => {
     data.taskId = data.canvasContext!.requestAnimationFrame((timestamp : number) => {
         data.testFrameCount++
         updateFPS(timestamp)
