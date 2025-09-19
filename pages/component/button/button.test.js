@@ -1,4 +1,5 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 const PAGE_PATH = '/pages/component/button/button'
@@ -9,6 +10,7 @@ describe('Button.uvue', () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
   })
+
   it('click', async () => {
     // TODO 待测试框架支持text的dispatchEvent
     // const btn = await page.$('.btn')
@@ -95,5 +97,65 @@ describe('Button.uvue', () => {
       text: '',
     })
     expect(await textBtn.text()).toEqual('')
+  })
+
+  // 自定义button和默认button来回切换截图对比
+  it("button-screenshot-plain+primary+default", async () => {
+    if (isWeb || isMP) {
+      expect(1).toBe(1)
+      return
+    }
+
+    const btn = await page.$('.btn')
+
+    await page.setData({
+      text: 'uni-app-x',
+      plain_boolean: true,
+      type_enum_current: 1,
+      size_enum_current: 0,
+      disabled_boolean: false,
+      default_style: false
+    })
+
+    expect(await btn.property('size')).toBe('default')
+    expect(await btn.property('plain')).toBe('true')
+    expect(await btn.property('type')).toBe('primary')
+    const image1 = await program.screenshot({
+      fullPage: true
+    });
+    expect(image1).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'button-screenshot-plain+primary+default'
+    }});
+
+    await page.setData({
+      text: 'uni-app-x',
+      plain_boolean: true,
+      type_enum_current: 1,
+      size_enum_current: 0,
+      disabled_boolean: false,
+      default_style: true
+    })
+    const image2 = await program.screenshot({
+      fullPage: true
+    });
+    expect(image2).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'custom-button-screenshot-plain+primary+default'
+    }});
+
+    await page.setData({
+      text: 'uni-app-x',
+      plain_boolean: true,
+      type_enum_current: 1,
+      size_enum_current: 0,
+      disabled_boolean: false,
+      default_style: false
+    })
+    const image3 = await program.screenshot({
+      fullPage: true
+    });
+    expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'custom-button-screenshot-plain+primary+default-changeToDefault'
+    }});
+
   })
 })

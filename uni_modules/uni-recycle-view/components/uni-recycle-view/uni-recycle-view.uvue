@@ -1,338 +1,245 @@
 <template>
-  <scroll-view class="uni-recycle-view-main" ref="scroll" :type="type" :direction="direction"
-    :associative-container="associativeContainer" :enable-back-to-top="enableBackToTop" :bounces="bounces"
-    :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-top="scrollTop"
-    :scroll-left="scrollLeft" :scroll-into-view="scrollIntoView" :scroll-with-animation="scrollWithAnimation"
-    :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold"
-    :refresher-max-drag-distance="refresherMaxDragDistance" :refresher-default-style="refresherDefaultStyle"
-    :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered"
-    :show-scrollbar="showScrollbar" :custom-nested-scroll="customNestedScroll" :nested-scroll-child="nestedScrollChild"
+  <scroll-view scroll-y="true" style="flex: 1;" :type="props.type" :direction="props.direction"
+    :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :bounces="props.bounces"
+    :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-top="props.scrollTop"
+    :scroll-left="props.scrollLeft" :scroll-into-view="props.scrollIntoView" :scroll-with-animation="props.scrollWithAnimation"
+    :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
+    :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-default-style="props.refresherDefaultStyle"
+    :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
+    :show-scrollbar="props.showScrollbar" :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild"
     @scroll="onScroll" @scrollend="onScrollEnd" @scrolltolower="onScrollToLower" @scrolltoupper="onScrollToUpper"
     @refresherabort="onRefresherAbort" @refresherpulling="onRefresherPulling" @refresherrefresh="onRefresherRefresh"
     @refresherrestore="onRefresherRestore">
-    <view :style="{ height: placeholderHeight + 'px' }" class="uni-recycle-view-placeholder">
-      <view :style="{ transform: 'translateY(' + containerTop + 'px)' }" class="uni-recycle-view-container">
-        <slot :items="items"></slot>
-      </view>
+    <view class="placeholder" :style="{height: placeholderHeight + 'px'}">
+      <slot :layoutItems="layoutItems" :items="items"></slot>
     </view>
+    <slot name="load-more"></slot>
   </scroll-view>
 </template>
+<script setup>
+  import {
+    LayoutItem
+  } from '../../common/types.uts'
+  const props = defineProps({
+    itemHeight: {
+      type: Number,
+      default: 40,
+      required: true
+    },
+    list: {
+      type: Array as PropType<any[]>,
+      default: [] as any[]
+    },
+    type: {
+      type: String,
+      default: ''
+    },
+    direction: {
+      type: String,
+      default: 'vertical'
+    },
+    associativeContainer: {
+      type: String,
+      default: ''
+    },
+    enableBackToTop: {
+      type: Boolean,
+      default: false
+    },
+    bounces: {
+      type: Boolean,
+      default: true
+    },
+    upperThreshold: {
+      type: Number,
+      default: 50
+    },
+    lowerThreshold: {
+      type: Number,
+      default: 50
+    },
+    scrollTop: {
+      type: Number,
+      default: 0
+    },
+    scrollLeft: {
+      type: Number,
+      default: 0
+    },
+    scrollIntoView: {
+      type: String,
+      default: ''
+    },
+    scrollWithAnimation: {
+      type: Boolean,
+      default: false
+    },
+    refresherEnabled: {
+      type: Boolean,
+      default: false
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherMaxDragDistance: {
+      type: Number
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: 'black'
+    },
+    refresherBackground: {
+      type: String,
+      default: 'transparent'
+    },
+    refresherTriggered: {
+      type: Boolean,
+      default: false
+    },
+    showScrollbar: {
+      type: Boolean,
+      default: true
+    },
+    customNestedScroll: {
+      type: Boolean,
+      default: false
+    },
+    nestedScrollChild: {
+      type: String,
+      default: ''
+    }
+  })
+  const emit = defineEmits([
+    'scroll',
+    'scrollend',
+    'scrolltolower',
+    'scrolltoupper',
+    'refresherabort',
+    'refresherpulling',
+    'refresherrefresh',
+    'refresherrestore',
+  ])
 
-<script>
-  /**
- * 使用限制
- * - 容器大小变动时未刷新缓存的子元素大小
- * - 不支持设置初始滚动位置
- * - list数据内每一项不可以是基础类型
- * - item不支持设置margin，会导致计算位置不准确
- */
-  /**
-   * recycle-view 虚拟长列表组件
-   * @description 用于超长列表的展示
-   * @property {any[]} list 列表所有数据
-   */
-  export default {
-    name: "uni-recycle-view",
-    props: {
-      type: {
-        type: String,
-        default: ''
-      },
-      direction: {
-        type: String,
-        default: 'vertical'
-      },
-      associativeContainer: {
-        type: String,
-        default: ''
-      },
-      enableBackToTop: {
-        type: Boolean,
-        default: false
-      },
-      bounces: {
-        type: Boolean,
-        default: true
-      },
-      upperThreshold: {
-        type: Number,
-        default: 50
-      },
-      lowerThreshold: {
-        type: Number,
-        default: 50
-      },
-      scrollTop: {
-        type: Number,
-        default: 0
-      },
-      scrollLeft: {
-        type: Number,
-        default: 0
-      },
-      scrollIntoView: {
-        type: String,
-        default: ''
-      },
-      scrollWithAnimation: {
-        type: Boolean,
-        default: false
-      },
-      refresherEnabled: {
-        type: Boolean,
-        default: false
-      },
-      refresherThreshold: {
-        type: Number,
-        default: 45
-      },
-      refresherMaxDragDistance: {
-        type: Number
-      },
-      refresherDefaultStyle: {
-        type: String,
-        default: 'black'
-      },
-      refresherBackground: {
-        type: String,
-        default: 'transparent'
-      },
-      refresherTriggered: {
-        type: Boolean,
-        default: false
-      },
-      showScrollbar: {
-        type: Boolean,
-        default: true
-      },
-      customNestedScroll: {
-        type: Boolean,
-        default: false
-      },
-      nestedScrollChild: {
-        type: String,
-        default: ''
-      },
-      list: {
-        type: Array as PropType<any[]>,
-        default: [] as any[]
-      },
-      itemHeight: {
-        type: Number,
-        default: 0
-      }
-    },
-    emits: [
-      'scroll',
-      'scrollend',
-      'scrolltolower',
-      'scrolltoupper',
-      'refresherabort',
-      'refresherpulling',
-      'refresherrefresh',
-      'refresherrestore',
-    ],
-    watch: {
-      list: {
-        handler(list : any[]) {
-          this.cachedSize.forEach((_ : number, key : any) => {
-            if (!list.includes(key)) {
-              this.cachedSize.delete(key)
-            }
-          })
-        },
-        deep: true
-      }
-    },
-    computed: {
-      realDefaultItemSize() {
-        return this.itemHeight != 0 ? this.itemHeight : this.defaultItemSize
-      }
-    },
-    data() {
-      return {
-        items: [] as any[],
-        containerTop: 0,
-        scrollElementHeight: 0,
-        placeholderHeight: 0,
-        offsetThreshold: [0, 0, 0, 0], // -5, -3, 3, 5 屏对应的offset
-        cachedSize: new Map<any, number>(),
-        initialized: false,
-        defaultItemSize: 80,
-        lastScrollTop: 0,
-        rearrangeQueue: [] as number[]
-      };
-    },
-    provide() {
-      return {
-        itemHeight: this.itemHeight,
-        setCachedSize: (item : any, size : number) => {
-          if (this.itemHeight != 0) {
-            return
-          }
-          if (this.cachedSize.size == 0) {
-            this.defaultItemSize = size
-          } else {
-            this.defaultItemSize = ((this.cachedSize.size - 1) * this.defaultItemSize + size) / this.cachedSize.size
-          }
-          this.cachedSize.set(item, size)
-        },
-        getCachedSize: (item : any) => {
-          return this.cachedSize.get(item)
-        }
-      }
-    },
-    created() {
-      if (this.itemHeight != 0) {
-        this.defaultItemSize = this.itemHeight
-      }
-      if (this.list.length > 0) {
-        this.placeholderHeight = this.list.length * this.realDefaultItemSize
-      }
-      this.scrollElementHeight = uni.getWindowInfo().screenHeight
-      this.rearrange(0)
-    },
-    mounted() {
-      this.$nextTick(() => {
-        uni.createSelectorQuery().in(this).select('.uni-recycle-view-main').boundingClientRect().exec((ret) => {
-          this.scrollElementHeight = (ret[0] as NodeInfo).height!
-          this.initialized = true
+  const windowInfo = uni.getWindowInfo()
+
+  // TODO 规避鸿蒙平台过早取不到windowHeight的Bug
+  // 使用窗口高度计算节省不少逻辑，通常也不会有滚动区域超出窗口大小的需求
+  const windowHeight = windowInfo.windowHeight == 0 ? windowInfo.screenHeight : windowInfo.windowHeight
+  const cachedCount = 10
+  const renderItemCount = computed(() => {
+    return Math.min(
+      props.list.length,
+      Math.ceil(
+        windowHeight / props.itemHeight) + 1 + cachedCount
+    )
+  })
+
+  const placeholderHeight = computed(() => {
+    return props.list.length * props.itemHeight
+  })
+
+  const scrollTop = ref(0)
+
+  const startIndex = computed(() => {
+    return Math.min(
+      Math.max(
+        Math.floor(scrollTop.value / props.itemHeight) - Math.floor(cachedCount / 2),
+        0
+      ),
+      props.list.length - renderItemCount.value
+    );
+  })
+  const items = computed < any[] > (() => {
+    return props.list.slice(startIndex.value, Math.min(props.list.length, startIndex.value + renderItemCount.value))
+  })
+  const layoutItems = ref < LayoutItem[] > ([])
+
+  type ItemAndIndex = {
+    item: any,
+    index: number
+  }
+  watch([items, startIndex], () => {
+    if (layoutItems.value.length !== items.value.length) {
+      layoutItems.value.splice(0, layoutItems.value.length)
+      items.value.forEach((item, index) => {
+        layoutItems.value.push({
+          id: index,
+          offset: (startIndex.value + index) * props.itemHeight,
+          item
         })
       })
-    },
-    methods: {
-      onScrollEnd(e : UniScrollEvent) {
-        this.$emit('scrollend', e)
-      },
-      onScrollToLower(e : UniScrollToLowerEvent) {
-        this.$emit('scrolltolower', e)
-      },
-      onScrollToUpper(e : UniScrollToUpperEvent) {
-        this.$emit('scrolltoupper', e)
-      },
-      onRefresherAbort(e : UniRefresherEvent) {
-        this.$emit('refresherabort', e)
-      },
-      onRefresherPulling(e : UniRefresherEvent) {
-        this.$emit('refresherpulling', e)
-      },
-      onRefresherRefresh(e : UniRefresherEvent) {
-        this.$emit('refresherrefresh', e)
-      },
-      onRefresherRestore(e : UniRefresherEvent) {
-        this.$emit('refresherrestore', e)
-      },
-      onScroll(e : UniScrollEvent) {
-        this.$emit('scroll', e)
-        if (!this.initialized) {
-          return
-        }
-        const scrollTop = e.detail.scrollTop
-        if (scrollTop === this.lastScrollTop || scrollTop < 0) {
-          return
-        }
-        this.lastScrollTop = scrollTop
-        if (scrollTop < this.offsetThreshold[1] || scrollTop > this.offsetThreshold[2]) {
-          this.queue(scrollTop)
-        }
-      },
-      queue(scrollTop : number) {
-        /*
-         * rearrange内为大量同步逻辑，在上次rearrange未执行完毕的情况下将后续多个rearrange合并成一次执行，即仅执行最后一次
-         * 如何测试：push后console.log(this.rearrangeQueue.length) 输出结果大于1时触发优化
-         */
-        this.rearrangeQueue.push(scrollTop)
-        setTimeout(() => {
-          this.flush()
-        }, 50)
-      },
-      flush() {
-        const queueLength = this.rearrangeQueue.length
-        if (queueLength == 0) {
-          return
-        }
-        const lastScrollTop = this.rearrangeQueue[queueLength - 1]
-        this.rearrange(lastScrollTop)
-        this.rearrangeQueue = [] as number[]
-      },
-      calcItemTotalSize(startIndex : number, endIndex : number) {
-        let totalSize = 0
-        for (let i = startIndex; i <= endIndex; i++) {
-          const item = this.list[i]
-          totalSize += (this.cachedSize.get(item) ?? this.realDefaultItemSize)
-        }
-        return totalSize
-      },
-      rearrange(scrollTop : number) {
-        this.offsetThreshold[0] = Math.max(scrollTop - this.scrollElementHeight * 7, 0)
-        this.offsetThreshold[1] = Math.max(scrollTop - this.scrollElementHeight * 5, 0)
-        this.offsetThreshold[2] = Math.min(scrollTop + this.scrollElementHeight * 6, this.placeholderHeight)
-        this.offsetThreshold[3] = Math.min(scrollTop + this.scrollElementHeight * 8, this.placeholderHeight)
-        const offsetStart = this.offsetThreshold[0]
-        const offsetEnd = this.offsetThreshold[3]
-        const defaultItemSize = this.realDefaultItemSize
-        const cachedSize = this.cachedSize
-        const list = this.list
-        let tempTotalHeight = 0
-        let containerTop = 0
-        let startIndex = -1, endIndex = -1
-        for (let i = 0; i < list.length; i++) {
-          const item = list[i]
-          let itemSize = defaultItemSize
-          const cachedItemSize = cachedSize.get(item)
-          if (cachedItemSize != null) {
-            itemSize = cachedItemSize
-          }
-          tempTotalHeight += itemSize
-          if (endIndex > -1) {
-            continue
-          }
-          if (tempTotalHeight < offsetStart) {
-            containerTop = tempTotalHeight
-          } else if (tempTotalHeight >= offsetStart && tempTotalHeight <= offsetEnd) {
-            if (startIndex == -1) {
-              startIndex = i
-            }
-          } else {
-            if (endIndex == -1) {
-              endIndex = i - 1
-            }
-          }
-        }
-        if (startIndex == -1) {
-          startIndex = 0
-        }
-        if (endIndex == -1) {
-          endIndex = this.list.length - 1
-        }
-        this.placeholderHeight = Math.max(tempTotalHeight, this.scrollElementHeight)
-        this.items = this.list.slice(startIndex, endIndex + 1)
-        this.containerTop = containerTop
-        this.$nextTick(() => {
-          /**
-           * 加载下一屏时下一屏的item大小为预估大小，因此可能出现已渲染的高度不到加载下一页的阈值。此处逻辑将阈值调整到可见范围内。
-           */
-          const expectedOffsetBottom = this.containerTop + this.calcItemTotalSize(startIndex, endIndex)
-          if(this.placeholderHeight < expectedOffsetBottom) {
-            this.placeholderHeight = expectedOffsetBottom
-          }
-          if (expectedOffsetBottom < this.offsetThreshold[2] + this.scrollElementHeight) {
-            this.offsetThreshold[2] = expectedOffsetBottom - this.scrollElementHeight
-          }
+    } else {
+      // 仍存活的item仅更新offset，新生的item复用并更新死亡的item的layoutItem，注意id无论如何都不更新
+      // TODO 当前方案在列表末尾向列表开头滚动时可能会命中if分支，导致所有item都触发更新
+      const newItems: ItemAndIndex[] = []
+      const aliveItems: ItemAndIndex[] = []
+      for (let i = 0; i < items.value.length; i++) {
+        const item = items.value[i]
+        const layoutItemIndex = layoutItems.value.findIndex((layoutItem) => {
+          return item == layoutItem.item
         })
+        if (layoutItemIndex > -1) {
+          aliveItems.push({
+            item,
+            index: i
+          } as ItemAndIndex)
+        } else {
+          newItems.push({
+            item,
+            index: i
+          } as ItemAndIndex)
+        }
+      }
+      for (let i = 0; i < layoutItems.value.length; i++) {
+        const layoutItem = layoutItems.value[i]
+        const aliveItemAndIndex = aliveItems.find((aliveItem) => {
+          return aliveItem.item == layoutItem.item
+        })
+        if (aliveItemAndIndex != null) {
+          layoutItem.offset = (startIndex.value + aliveItemAndIndex!.index) * props.itemHeight
+        } else {
+          const newItemAndIndex = newItems.pop()!
+          layoutItem.item = newItemAndIndex.item
+          layoutItem.offset = (startIndex.value + newItemAndIndex.index) * props.itemHeight
+        }
       }
     }
+
+    layoutItems.value.sort((a, b) => {
+      return items.value.indexOf(a.item) - items.value.indexOf(b.item)
+    })
+  }, {
+    immediate: true
+  })
+
+  function onScroll (e: UniScrollEvent) {
+    const _scrollTop = e.detail.scrollTop
+    scrollTop.value = _scrollTop < 0 ? 0 : _scrollTop
+    emit('scroll', e)
   }
+  function onScrollToLower (e: UniScrollToLowerEvent) {
+    emit('scrolltolower', e)
+  }
+  function onScrollToUpper (e: UniScrollToUpperEvent) {
+    emit('scrolltoupper', e)
+  }
+  function onScrollEnd (e: UniScrollEvent) {
+    emit('scrollend', e)
+  }
+  function onRefresherAbort (e: UniRefresherEvent) {
+    emit('refresherabort', e)
+  }
+  function onRefresherPulling (e: UniRefresherEvent) {
+    emit('refresherpulling', e)
+  }
+  function onRefresherRefresh (e: UniRefresherEvent) {
+    emit('refresherrefresh', e)
+  }
+  function onRefresherRestore (e: UniRefresherEvent) {
+    emit('refresherrestore', e)
+  }
+
 </script>
-
 <style>
-  .uni-recycle-view-placeholder {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .uni-recycle-view-container {
-    position: absolute;
-    width: 100%;
-  }
 </style>

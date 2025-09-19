@@ -1,52 +1,24 @@
 <template>
-  <view class="uni-recycle-view-item" :style="this.itemHeight != 0 ? {height: this.itemHeight + 'px'} : {}">
+  <view class="recycle-item" :style="{transform: 'translateY(' + props.offset + 'px)'}">
     <slot></slot>
   </view>
 </template>
 
-<script>
-  /**
-   * recycle-item 长列表子项组件
-   * @description 用于展示超长列表数据每一项
-   * @property {any[]} item 当前组件渲染的列表项
-   */
-  export default {
-    name: "uni-recycle-item",
-    props: {
-      item: {
-        type: Object as PropType<any>,
-        required: true
-      }
-    },
-    inject: {
-      itemHeight: {
-        type: Number as PropType<number>
-      },
-      setCachedSize: {
-        type: Function as PropType<(item : any, size : number) => void>
-      },
-      getCachedSize: {
-        type: Function as PropType<(item : any) => number | null>
-      },
-    },
-    mounted() {
-      if (this.itemHeight == 0) {
-        const cachedSize = this.getCachedSize(this.item)
-        if(cachedSize == null) {
-          this.$nextTick(() => {
-            uni.createSelectorQuery().in(this).select('.uni-recycle-view-item').boundingClientRect().exec((ret) => {
-              this.setCachedSize(this.item, (ret[0] as NodeInfo).height!)
-            })
-          })
-        }
-      }
+<script setup>
+  const props = defineProps({
+    offset: {
+      type: Number,
+      default: 0
     }
-  }
+  })
 </script>
 
 <style>
-  .uni-recycle-view-item {
-    box-sizing: border-box;
-    overflow: hidden;
+  .recycle-item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
   }
 </style>

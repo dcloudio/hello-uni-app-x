@@ -25,6 +25,7 @@ describe('setNavigationBarColor', () => {
 
   it("setNavigationBarColor1", async () => {
     await page.callMethod("setNavigationBarColor1");
+    await page.waitFor(1000);
     const image = await program.screenshot();
     expect(image).toSaveImageSnapshot();
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
@@ -32,6 +33,7 @@ describe('setNavigationBarColor', () => {
   });
   it("setNavigationBarColor2", async () => {
     await page.callMethod("setNavigationBarColor2");
+    await page.waitFor(1000);
     const image = await program.screenshot();
     expect(image).toSaveImageSnapshot();
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");

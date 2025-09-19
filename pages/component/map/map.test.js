@@ -33,10 +33,8 @@ describe('web-map', () => {
 
     it('Check EventDetail JsonStringify', async () => {
       const res = await page.data('jestResult')
-      console.log(res.eventDetailJsonStringify);
       expect(res.eventDetailJsonStringify).not.toBe("{}");
     })
-
     return
   }
 
@@ -90,6 +88,5 @@ describe('web-map', () => {
     const scaleRes = await page.data('jestResult')
     expect(scaleRes.scale).toBeGreaterThanOrEqual(5);
     expect(scaleRes.scale).toBeLessThanOrEqual(18);
-    console.log("jestResult",await page.data())
   });
 });

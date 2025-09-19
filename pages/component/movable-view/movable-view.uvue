@@ -62,47 +62,51 @@
   </view>
 </template>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        x: 0,
-        y: 0,
-        scale: 2,
-        old: {
-          x: 0,
-          y: 0,
-          scale: 2
-        }
-      }
-    },
-    methods: {
-      tap: function (e) {
-        // 解决view层不同步的问题
-        this.x = this.old.x
-        this.y = this.old.y
-        this.$nextTick(function () {
-          this.x = 30
-          this.y = 30
-        })
-      },
-      tap2() {
-        // 解决view层不同步的问题
-        this.scale = this.old.scale
-        this.scale = this.old.scale
-        this.$nextTick(function () {
-          this.scale = 3
-        })
-      },
-      onChange: function (e) {
-        this.old.x = e.detail.x
-        this.old.y = e.detail.y
-      },
-      onScale: function (e) {
-        this.old.scale = e.detail.scale
-      }
-    }
+<script setup lang="uts">
+  const x = ref(0)
+  const y = ref(0)
+  const scale = ref(2)
+  const old = reactive({
+    x: 0,
+    y: 0,
+    scale: 2
+  })
+
+  const tap = (e) => {
+    // 解决view层不同步的问题
+    x.value = old.x
+    y.value = old.y
+    nextTick(() => {
+      x.value = 30
+      y.value = 30
+    })
   }
+
+  const tap2 = () => {
+    // 解决view层不同步的问题
+    scale.value = old.scale
+    nextTick(() => {
+      scale.value = 3
+    })
+  }
+
+  const onChange = (e) => {
+    old.x = e.detail.x
+    old.y = e.detail.y
+  }
+
+  const onScale = (e) => {
+    old.scale = e.detail.scale
+  }
+
+  defineExpose({
+  	x,
+  	y,
+  	scale,
+  	tap,
+  	tap2 // 仅供自动化测试用例调用
+  })
+
 </script>
 
 <style>

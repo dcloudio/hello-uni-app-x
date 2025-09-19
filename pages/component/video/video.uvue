@@ -24,6 +24,11 @@
           <button type="primary" @click="pause">视频格式示例</button>
         </navigator>
       </view>
+      <!-- #ifdef APP-HARMONY -->
+      <view class="uni-btn-v">
+        <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
+      </view>
+      <!-- #endif -->
       <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
         <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
         <switch :checked="subCompEnable" @change="onSubCompEnableChange" />
@@ -101,10 +106,10 @@
       <enum-data title="设置视频大小与video容器大小不一致时，视频的表现形式" :items="objectFitItemTypes"
         @change="onObjectFitChange"></enum-data>
       <!-- #ifndef APP-HARMONY -->
-      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 App 平台，播放前设置有效）" :defaultValue="httpCache"
+      <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :defaultValue="httpCache"
         @change="onHttpCacheChange"></boolean-data>
-      <enum-data title="设置解码器（仅 App 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
-      <enum-data title="设置播放策略（仅 App 平台，播放前设置有效）" :items="playStrategyItemTypes"
+      <enum-data title="设置解码器（仅 Android、iOS 平台，播放前设置有效）" :items="codecItemTypes" @change="onCodecChange"></enum-data>
+      <enum-data title="设置播放策略（仅 Android、iOS 平台，播放前设置有效）" :items="playStrategyItemTypes"
         @change="onPlayStrategyChange"></enum-data>
       <!-- #endif -->
     </scroll-view>
@@ -214,12 +219,24 @@
         eventError: null as UTSJSONObject | null,
         eventProgress: null as UTSJSONObject | null,
         eventFullscreenclick: null as UTSJSONObject | null,
-        eventControlstoggle: null as UTSJSONObject | null
+        eventControlstoggle: null as UTSJSONObject | null,
+        dialogPageVideo: null as UniPage | null
       }
     },
     onLoad() {
     },
     methods: {
+      openDialogPageVideo() {
+        this.pause()
+        this.dialogPageVideo = uni.openDialogPage({
+          url: '/pages/component/video/video-dialog-page'
+        })
+      },
+      closeDialogPageVideo() {
+        uni.closeDialogPage({
+          dialogPage: this.dialogPageVideo
+        })
+      },
       // API
       play: function () {
         console.log("play");
@@ -560,8 +577,13 @@
       hasSubComponent() : boolean {
         const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
         return view == null ? false : view.getChildAt(0) instanceof ViewGroup;
-      }
+      },
       // #endif
+      requestVerticalFullScreen() {
+        this.videoContext?.requestFullScreen({
+          direction: 0
+        } as RequestFullScreenOptions);
+      }
     }
   }
 </script>

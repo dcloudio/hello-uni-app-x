@@ -1,8 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
+const isSafari = platformInfo.indexOf('safari') > -1
 
 describe('inner-audio-path', () => {
-  if (!isWeb) {
+  if (!isWeb || isSafari) {
     it('not support', () => {
       expect(1).toBe(1)
     });

@@ -1,78 +1,75 @@
-<script lang="uts">
-  export default {
-    name: "input-data",
-    emits: ['confirm'],
-    props: {
-      title: {
-        type: String,
-        required: true
-      },
-      type: {
-        type: String,
-        required: true
-      },
-      defaultValue: {
-        type: String,
-        required: true,
-        default: ''
-      }
-    },
-    data() {
-      return {
-        inputClearValue: '' as any,
-        showClearIcon: false,
-        inputType: 'text'
-      }
-    },
-    created() {
-      switch (this.type) {
-        case 'number':
-          this.inputType = 'number'
-          break;
-      }
-      this.inputClearValue = this.getValue(this.defaultValue)
-    },
-    methods: {
-      input: function (event : InputEvent) {
-        // @ts-ignore
-        this.inputClearValue = event.detail.value
-        if ((this.inputClearValue as string).length > 0) {
-          this.showClearIcon = true
-        } else {
-          this.showClearIcon = false
-        }
-
-        this.$emit('confirm', this.getValue(this.inputClearValue))
-      },
-      clearIcon: function () {
-        this.inputClearValue = ''
-        this.showClearIcon = false
-        this.$emit('confirm', this.getValue(this.inputClearValue))
-      },
-      blur() {
-        this.showClearIcon = false
-      },
-      focus() {
-        let inputValue = this.inputClearValue
-        if (typeof inputValue !== 'string') {
-          inputValue = inputValue.toString()
-        }
-        if ((inputValue as string).length > 0) {
-          this.showClearIcon = true
-        } else {
-          this.showClearIcon = false
-        }
-      },
-      getValue(value : any) : any {
-        switch (this.type) {
-          case 'number':
-            return parseFloat(value as string)
-        }
-
-        return value
-      }
-    }
+<script setup lang="uts">
+type InputValue = string | number
+const emit = defineEmits(['confirm'])
+const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String,
+    required: true
+  },
+  defaultValue: {
+    type: String,
+    required: true,
+    default: ''
   }
+})
+
+const inputClearValue = ref<InputValue>('')
+const showClearIcon = ref(false)
+const inputType = ref('text')
+
+function _getValue(value : InputValue) : InputValue {
+  switch (props.type) {
+    case 'number':
+      return parseFloat(value as string)
+  }
+  return value
+}
+
+onMounted(() => {
+  switch (props.type) {
+    case 'number':
+      inputType.value = 'number'
+      break;
+  }
+  inputClearValue.value = _getValue(props.defaultValue)
+})
+
+function input(event : InputEvent) {
+  // @ts-ignore
+  inputClearValue.value = event.detail.value
+  if ((inputClearValue.value as string).length > 0) {
+    showClearIcon.value = true
+  } else {
+    showClearIcon.value = false
+  }
+  emit('confirm', _getValue(inputClearValue.value))
+}
+
+function clearIcon() {
+  inputClearValue.value = ''
+  showClearIcon.value = false
+  emit('confirm', _getValue(inputClearValue.value))
+}
+
+function blur() {
+  showClearIcon.value = false
+}
+
+function focus() {
+  let inputValue = inputClearValue.value
+  if (typeof inputValue !== 'string') {
+    inputValue = inputValue.toString()
+  }
+  if (inputValue.length > 0) {
+    showClearIcon.value = true
+  } else {
+    showClearIcon.value = false
+  }
+}
 </script>
 
 <template>

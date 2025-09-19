@@ -47,7 +47,7 @@
       //   entryTypes: ['render', 'navigation'],
       // } as PerformanceObserverOptions)
       // 统计上报 - 应用启动
-      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN
+      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
       uni.report({
       	name: 'uni-app-launch',
       	options: res,
@@ -69,18 +69,6 @@
              }
           }
         })
-
-        // #ifdef APP-HARMONY
-        uni.getNetworkType({
-          success(res) {
-            setNetless(res.networkType === 'none')
-          }
-        })
-
-        uni.onNetworkStatusChange((res) => {
-          setNetless(res.isConnected === false)
-        })
-        // #endif
       }
       // #endif
       // 获取系统主题
@@ -102,7 +90,7 @@
       setLifeCycleNum(state.lifeCycleNum + 100)
       console.log('App Show')
 
-      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN
+      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
       // 统计上报 - 应用显示
       uni.report({
       	name: 'uni-app-show',
@@ -119,7 +107,7 @@
       setLifeCycleNum(state.lifeCycleNum - 100)
       console.log('App Hide')
 
-      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN
+      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
       // 统计上报 - 应用进入后台
       uni.report({
       	name: 'uni-app-hide',
@@ -155,8 +143,10 @@
     },
     // #endif
     onError(err : any) {
+      console.log('App Error', err)
+      setLifeCycleNum(state.lifeCycleNum + 100)
       // console.log('App onError', err)
-      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN
+      // #ifdef APP-ANDROID || APP-IOS || WEB || MP-WEIXIN || APP-HARMONY
     	// 统计上报 - 应用发生错误
     	uni.report({
     		name: 'uni-app-error',
@@ -170,9 +160,9 @@
       // #endif
     },
     methods: {
-      increasetLifeCycleNum() {
+      increaseLifeCycleNum() {
         setLifeCycleNum(state.lifeCycleNum + 100)
-        console.log('App increasetLifeCycleNum')
+        console.log('App increaseLifeCycleNum')
       },
       getRedirectUrl(scheme : string | null, ulink : string | null) : string | null {
         //解析scheme或universal link启动直达页面：

@@ -46,7 +46,7 @@ describe('ExtApi-RequestTask', () => {
     await checkRequestTask_btn.tap()
 
 
-    await page.waitFor(5000);
+    await page.waitFor(8000);
     let jest_requestTask_result = await page.data('jest_requestTask_result')
     if (jest_requestTask_result) {
       let res = await page.data('res')
@@ -59,7 +59,7 @@ describe('ExtApi-RequestTask', () => {
 
       await checkRequestTask_btn.tap()
 
-      await page.waitFor(5000);
+      await page.waitFor(8000);
       jest_requestTask_result = await page.data('jest_requestTask_result')
       if (jest_requestTask_result) {
         res = await page.data('res')
@@ -74,7 +74,7 @@ describe('ExtApi-RequestTask', () => {
 
       await checkRequestTask_btn.tap()
 
-      await page.waitFor(5000);
+      await page.waitFor(8000);
       jest_requestTask_result = await page.data('jest_requestTask_result')
       if (jest_requestTask_result) {
         res = await page.data('res')
