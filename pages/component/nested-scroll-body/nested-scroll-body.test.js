@@ -51,7 +51,7 @@ describe('component-native-nested-scroll-body', () => {
 
       await page.waitFor(300)
 
-      let scrollTop = await page.data('testScrollTop')
+      let scrollTop = await page.data('data.testScrollTop')
       expect(scrollTop).toBeLessThan(250)
     })
   }

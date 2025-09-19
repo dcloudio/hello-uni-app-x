@@ -6,6 +6,8 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
+
+
 describe('component-native-web-view', () => {
   if (isWeb || isAppWebView) {
     it('web', async () => {
@@ -20,12 +22,17 @@ describe('component-native-web-view', () => {
     await page.waitFor(3000);
   });
 
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('check_load_url', async () => {
-    expect(await page.data('loadError')).toBe(false)
+    expect(await page.data('data.loadError')).toBe(false)
   });
 
   it('test attr webview-styles', async () => {
-    await page.setData({
+    await setPageData({
       webview_styles: {
         progress: {
           color: '#FF0'
@@ -35,7 +42,7 @@ describe('component-native-web-view', () => {
     await page.waitFor(100);
     await page.callMethod('reload');
     await page.waitFor(100);
-    await page.setData({
+    await setPageData({
       webview_styles: {
         progress: {
           color: 'yellow'
@@ -50,7 +57,7 @@ describe('component-native-web-view', () => {
     return
   }
   it('set auto test', async () => {
-    await page.setData({
+    await setPageData({
       autoTest: true
     });
     expect(1).toBe(1)
@@ -63,10 +70,10 @@ describe('component-native-web-view', () => {
     });
     await page.waitFor(500);
     if (!isIOS) {
-      expect(await page.data('isTouchEnable')).toBe(true);
+      expect(await page.data('data.isTouchEnable')).toBe(true);
     }
 
-    await page.setData({
+    await setPageData({
       pointerEvents: 'none',
       isTouchEnable: false
     });
@@ -77,9 +84,9 @@ describe('component-native-web-view', () => {
     });
     await page.waitFor(500);
     if (!isIOS && !isHarmony) {
-      expect(await page.data('isTouchEnable')).toBe(false);
+      expect(await page.data('data.isTouchEnable')).toBe(false);
     }
-    await page.setData({
+    await setPageData({
       pointerEvents: 'auto'
     });
   });
@@ -88,7 +95,7 @@ describe('component-native-web-view', () => {
     await page.callMethod('reload');
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventLoading')) || (Date.now() - start > 500);
+      return (await page.data('data.eventLoading')) || (Date.now() - start > 500);
     });
     if (isIOS) {
       const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -100,13 +107,13 @@ describe('component-native-web-view', () => {
         expect(1).toBe(1)
         return
       }
-      expect(await page.data('eventLoading')).toEqual({
+      expect(await page.data('data.eventLoading')).toEqual({
         "tagName": "WEB-VIEW",
         type: 'loading',
         src: 'https://www.dcloud.io/'
       });
     } else {
-      expect(await page.data('eventLoading')).toEqual({
+      expect(await page.data('data.eventLoading')).toEqual({
         tagName: 'WEB-VIEW',
         type: 'loading',
         src: 'https://www.dcloud.io/'
@@ -114,9 +121,9 @@ describe('component-native-web-view', () => {
     }
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventLoad')) || (Date.now() - start > 5000);
+      return (await page.data('data.eventLoad')) || (Date.now() - start > 5000);
     });
-    expect(await page.data('eventLoad')).toEqual({
+    expect(await page.data('data.eventLoad')).toEqual({
       tagName: 'WEB-VIEW',
       type: 'load',
       src: 'https://www.dcloud.io/',
@@ -132,9 +139,9 @@ describe('component-native-web-view', () => {
     expect(await page.callMethod('getContentHeight')).toBeGreaterThan(0);
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventContentHeightChange')) || (Date.now() - start > 500);
+      return (await page.data('data.eventContentHeightChange')) || (Date.now() - start > 500);
     });
-    expect(await page.data('eventContentHeightChange')).toEqual({
+    expect(await page.data('data.eventContentHeightChange')).toEqual({
       tagName: 'WEB-VIEW',
       type: 'contentheightchange',
       isValidHeight: true
@@ -145,14 +152,14 @@ describe('component-native-web-view', () => {
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
     if (isAndroid && version > 5) {
-      await page.setData({
+      await setPageData({
         src: 'https://www.dclou.io/uni-app-x'
       });
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventError')) || (Date.now() - start > 5000);
+        return (await page.data('data.eventError')) || (Date.now() - start > 5000);
       });
-      expect(await page.data('eventError')).toEqual({
+      expect(await page.data('data.eventError')).toEqual({
         tagName: 'WEB-VIEW',
         type: 'error',
         errCode: 100002,
@@ -162,7 +169,7 @@ describe('component-native-web-view', () => {
         src: 'https://www.dclou.io/uni-app-x'
       });
     }
-    await page.setData({
+    await setPageData({
       autoTest: false
     });
   });
@@ -195,9 +202,9 @@ describe('component-native-web-view', () => {
     await page.waitFor(300);
     const has = await page.callMethod('checkNativeWebView')
     if (has) {
-      expect(await page.data('loadingCount')).toBe(1);
+      expect(await page.data('data.loadingCount')).toBe(1);
     } else {
-      expect(await page.data('loadingCount')).toBe(0);
+      expect(await page.data('data.loadingCount')).toBe(0);
     }
   })
 

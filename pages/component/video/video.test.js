@@ -18,10 +18,16 @@ describe('component-native-video', () => {
   }
   let page;
   let start = 0;
+
+  // 辅助函数：简化页面数据设置
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/video/video');
     if (isWeb) {
-      await page.setData({
+      await setPageData({
         muted: true
       });
     }
@@ -36,28 +42,28 @@ describe('component-native-video', () => {
   });
 
   it('test play pause', async () => {
-    expect(await page.data('isError')).toBe(false);
+    expect(await page.data('data.isError')).toBe(false);
     // play
     await page.callMethod('play');
     await page.waitFor(3000);
-    expect(await page.data('isPlaying')).toBe(true);
+    expect(await page.data('data.isPlaying')).toBe(true);
     // pause
     await page.callMethod('pause');
     await page.waitFor(3000);
-    expect(await page.data('isPause')).toBe(true);
+    expect(await page.data('data.isPause')).toBe(true);
   });
 
   if (!isMP) {
     it('test download source', async () => {
-      await page.setData({
+      await setPageData({
         autoTest: true,
         isError: false
       });
-      const oldSrc = await page.data('src');
+      const oldSrc = await page.data('data.src');
       await page.callMethod('downloadSource');
       await page.waitFor(5000);
-      expect(await page.data('isError')).toBe(false);
-      await page.setData({
+      expect(await page.data('data.isError')).toBe(false);
+      await setPageData({
         src: oldSrc
       });
       // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
@@ -65,17 +71,17 @@ describe('component-native-video', () => {
     });
 
     it('test video local mp4', async () => {
-      await page.setData({
+      await setPageData({
         autoTest: true,
         isError: false
       });
-      const oldSrc = await page.data('src');
-      await page.setData({
+      const oldSrc = await page.data('data.src');
+      await setPageData({
         src: '/static/test-video/10second-demo.mp4'
       });
       await page.waitFor(1000);
-      expect(await page.data('isError')).toBe(false);
-      await page.setData({
+      expect(await page.data('data.isError')).toBe(false);
+      await setPageData({
         src: oldSrc
       });
       // 在性能差一些的 harmony 机器上，设置 src 后再次播放可能需要等待一段时间
@@ -84,17 +90,17 @@ describe('component-native-video', () => {
     // 鸿蒙不播放本地 m3u8
     if (!isHarmony) {
       it('test video local m3u8', async () => {
-        await page.setData({
+        await setPageData({
           autoTest: true,
           isError: false
         });
-        const oldSrc = await page.data('src');
-        await page.setData({
+        const oldSrc = await page.data('data.src');
+        await setPageData({
           src: '/static/test-video/2minute-demo.m3u8'
         });
         await page.waitFor(100);
-        expect(await page.data('isError')).toBe(false);
-        await page.setData({
+        expect(await page.data('data.isError')).toBe(false);
+        await setPageData({
           src: oldSrc
         });
       })
@@ -102,21 +108,21 @@ describe('component-native-video', () => {
 
     if (isAndroid) {
       it('android test assets path', async () => {
-        const oldSrc = await page.data('src');
-        await page.setData({
+        const oldSrc = await page.data('data.src');
+        await setPageData({
           isError: false,
           src: 'file:///android_asset/uni-autoTest/demo10s.mp4'
         });
         await page.waitFor(500);
-        expect(await page.data('isError')).toBe(false);
-        await page.setData({
+        expect(await page.data('data.isError')).toBe(false);
+        await setPageData({
           src: oldSrc
         });
       });
     }
   }
   it('test event play pause controls toggle', async () => {
-    await page.setData({
+    await setPageData({
       isPause: false,
       isPlaying: false,
       autoTest: true,
@@ -124,14 +130,14 @@ describe('component-native-video', () => {
     await page.callMethod('play');
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('isPlaying')) || (Date.now() - start > 3000);
+      return (await page.data('data.isPlaying')) || (Date.now() - start > 3000);
     });
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventPlay')) || (Date.now() - start > 500);
+      return (await page.data('data.eventPlay')) || (Date.now() - start > 500);
     });
     if (!isIOS) {
-      expect(await page.data('eventPlay')).toEqual({
+      expect(await page.data('data.eventPlay')).toEqual({
         tagName: 'VIDEO',
         type: 'play'
       });
@@ -139,14 +145,14 @@ describe('component-native-video', () => {
     await page.callMethod('pause');
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('isPause')) || (Date.now() - start > 3000);
+      return (await page.data('data.isPause')) || (Date.now() - start > 3000);
     });
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventPause')) || (Date.now() - start > 1000);
+      return (await page.data('data.eventPause')) || (Date.now() - start > 1000);
     });
     if (!isIOS) {
-      expect(await page.data('eventPause')).toEqual({
+      expect(await page.data('data.eventPause')).toEqual({
         tagName: 'VIDEO',
         type: 'pause'
       });
@@ -159,7 +165,7 @@ describe('component-native-video', () => {
       await page.callMethod('play');
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventControlstoggle')) || (Date.now() - start > 1000);
+        return (await page.data('data.eventControlstoggle')) || (Date.now() - start > 1000);
       });
       if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
         // expect(await page.data('eventControlstoggle')).toEqual({
@@ -168,7 +174,7 @@ describe('component-native-video', () => {
         //   show: true
         // });
       } else {
-        expect(await page.data('eventControlstoggle')).toEqual({
+        expect(await page.data('data.eventControlstoggle')).toEqual({
           tagName: 'VIDEO',
           type: 'controlstoggle',
           show: true
@@ -184,13 +190,13 @@ describe('component-native-video', () => {
         await page.callMethod('seek', 10);
         start = Date.now();
         await page.waitFor(async () => {
-          return ((await page.data('eventWaiting')) && (await page.data('eventProgress'))) || (Date.now() - start > 1000);
+          return ((await page.data('data.eventWaiting')) && (await page.data('eventProgress'))) || (Date.now() - start > 1000);
         });
-        expect(await page.data('eventWaiting')).toEqual({
+        expect(await page.data('data.eventWaiting')).toEqual({
           tagName: 'VIDEO',
           type: 'waiting'
         });
-        expect(await page.data('eventProgress')).toEqual({
+        expect(await page.data('data.eventProgress')).toEqual({
           tagName: 'VIDEO',
           type: 'progress',
           isBufferedValid: true
@@ -202,9 +208,9 @@ describe('component-native-video', () => {
       await page.callMethod('requestFullScreen');
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventFullscreenchange')) || (Date.now() - start > 1000);
+        return (await page.data('data.eventFullscreenchange')) || (Date.now() - start > 1000);
       });
-      expect(await page.data('eventFullscreenchange')).toEqual({
+      expect(await page.data('data.eventFullscreenchange')).toEqual({
         tagName: 'VIDEO',
         type: 'fullscreenchange',
         fullScreen: true,
@@ -217,14 +223,14 @@ describe('component-native-video', () => {
         await program.adbCommand('input tap 10 10');
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventFullscreenclick')) || (Date.now() - start > 1000);
+          return (await page.data('data.eventFullscreenclick')) || (Date.now() - start > 1000);
         });
         const res = await program.adbCommand('wm size');
         const width = res.data.split(' ').at(-1).split('x')[0];
         const height = res.data.split(' ').at(-1).split('x')[1];
         const res2 = await program.adbCommand('wm density');
         const scale = res2.data.split(' ').at(-1) / 160;
-        expect(await page.data('eventFullscreenclick')).toEqual({
+        expect(await page.data('data.eventFullscreenclick')).toEqual({
           tagName: 'VIDEO',
           type: 'fullscreenclick',
           screenX: parseInt(10 / scale),
@@ -237,7 +243,7 @@ describe('component-native-video', () => {
       await page.waitFor(1000);
       await page.callMethod('requestVerticalFullScreen');
       await page.waitFor(1000);
-      expect(await page.data('eventFullscreenchange')).toEqual({
+      expect(await page.data('data.eventFullscreenchange')).toEqual({
         tagName: 'VIDEO',
         type: 'fullscreenchange',
         fullScreen: true,
@@ -251,9 +257,9 @@ describe('component-native-video', () => {
       if (isAndroid) {
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventEnded')) || (Date.now() - start > 30000);
+          return (await page.data('data.eventEnded')) || (Date.now() - start > 30000);
         });
-        expect(await page.data('eventEnded')).toEqual({
+        expect(await page.data('data.eventEnded')).toEqual({
           tagName: 'VIDEO',
           type: 'ended'
         });
@@ -266,9 +272,9 @@ describe('component-native-video', () => {
         if (isHarmony) currentTime = 120
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventTimeupdate')) || (Date.now() - start > 500);
+          return (await page.data('data.eventTimeupdate')) || (Date.now() - start > 500);
         });
-        expect(await page.data('eventTimeupdate')).toEqual({
+        expect(await page.data('data.eventTimeupdate')).toEqual({
           tagName: 'VIDEO',
           type: 'timeupdate',
           currentTime,
@@ -278,15 +284,15 @@ describe('component-native-video', () => {
     });
 
     it('test event error', async () => {
-      const oldSrc = await page.data('src');
-      await page.setData({
+      const oldSrc = await page.data('data.src');
+      await setPageData({
         src: 'invalid url'
       });
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventError')) || (Date.now() - start > 1000);
+        return (await page.data('data.eventError')) || (Date.now() - start > 1000);
       });
-      const eventError = await page.data('eventError')
+      const eventError = await page.data('data.eventError')
       expect(eventError.tagName).toEqual('VIDEO')
       expect(eventError.type).toEqual('error')
       if (!isHarmony) {
@@ -295,7 +301,7 @@ describe('component-native-video', () => {
         // 鸿蒙 video onError 没有错误信息，恒为 200001 内部错误
         expect(eventError.errCode).toEqual(200001)
       }
-      await page.setData({
+      await setPageData({
         autoTest: false,
         src: oldSrc
       });
@@ -303,7 +309,7 @@ describe('component-native-video', () => {
 
     if (isAndroid) {
       it('test sub component', async () => {
-        await page.setData({
+        await setPageData({
           subCompEnable: true,
           subCompShow: true
         });
@@ -320,7 +326,7 @@ describe('component-native-video', () => {
         const image2 = await program.screenshot({ deviceShot: true });
         expect(image2).toSaveImageSnapshot();
         await page.callMethod('exitFullScreen');
-        await page.setData({
+        await setPageData({
           subCompEnable: false,
           subCompShow: false
         });
@@ -330,7 +336,7 @@ describe('component-native-video', () => {
     it('test enable-danmu', async () => {
       await page.callMethod('play');
       await page.waitFor(5000);
-      await page.setData({
+      await setPageData({
         enableDanmu: false
       });
       const windowInfo = await program.callUniMethod('getWindowInfo');
@@ -364,6 +370,6 @@ describe('component-native-video', () => {
   it('test format', async () => {
     page = await program.navigateTo('/pages/component/video/video-format');
     await page.waitFor(1000);
-    expect((await page.data('isError')).value).toBe(false);
+    expect((await page.data('data.isError')).value).toBe(false);
   });
 });
