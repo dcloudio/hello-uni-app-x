@@ -1,10 +1,10 @@
 <template>
   <view>
-    <page-head :title="title"></page-head>
+    <page-head :title="data.title"></page-head>
     <view class="uni-list">
       <view class="uni-list-cell uni-list-cell-pd">
         <view class="uni-list-cell-db">是否显示透明蒙层-屏蔽点击事件</view>
-        <switch :checked="maskSelect" @change="maskChange" />
+        <switch :checked="data.maskSelect" @change="maskChange" />
       </view>
       <view class="uni-padding-wrap">
         <view class="uni-title uni-common-mt">
@@ -13,9 +13,9 @@
       </view>
       <view class="uni-list uni-common-pl">
         <radio-group @change="radioChange">
-          <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in items" :key="item.value"
-            :class="index < items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
-            :checked="index === current">
+          <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items" :key="item.value"
+            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
+            :checked="index === data.current">
             {{ item.name }}
           </radio>
         </radio-group>
@@ -30,80 +30,91 @@
     </view>
   </view>
 </template>
-<script lang="uts">
+<script setup lang="uts">
   type ItemType = {
     value : string
     name : string
   }
-  export default {
-    data() {
-      return {
-        title: 'loading',
-        items: [
-          {
-            value: 'null',
-            name: '无标题',
-          },
-          {
-            value: '三秒后自动关闭',
-            name: '普通标题',
-          },
-          {
-            value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
-            name: '长标题',
-          },
-        ] as ItemType[],
-        current: 0,
-        maskSelect: false,
-        titleSelect: "null"
-      }
-    },
-    onLoad() {
-      uni.showLoading({
-        title: 'onLoad 调用示例,2秒后消失'
-      })
-      setTimeout(function () {
-        uni.hideLoading()
-      }, 2000);
-    },
-    methods: {
-      //自动化测试例专用
-      jest_getWindowInfo() : GetWindowInfoResult {
-        return uni.getWindowInfo();
-      },
 
-      radioChange(e : UniRadioGroupChangeEvent) {
-        const selected = this.items.find((item) : boolean => {
-          return item.value == e.detail.value
-        })
-        if (selected != null) {
-          this.titleSelect = selected.value
-        }
-      },
-      maskChange: function (e : UniSwitchChangeEvent) {
-        this.maskSelect = e.detail.value
-      },
-      showLoading: function () {
+  type DataType = {
+    title: string;
+    items: ItemType[];
+    current: number;
+    maskSelect: boolean;
+    titleSelect: string;
+  }
 
-        console.log(this.titleSelect)
-        if (this.titleSelect == "null") {
-          uni.showLoading({
-            title: "",
-            mask: this.maskSelect
-          });
-        } else {
-          uni.showLoading({
-            title: this.titleSelect,
-            mask: this.maskSelect
-          });
-        }
-        setTimeout(() => {
-          this.hideLoading();
-        }, 3000);
+  const data = reactive({
+    title: 'loading',
+    items: [
+      {
+        value: 'null',
+        name: '无标题',
       },
-      hideLoading: function () {
-        uni.hideLoading();
-      }
+      {
+        value: '三秒后自动关闭',
+        name: '普通标题',
+      },
+      {
+        value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
+        name: '长标题',
+      },
+    ],
+    current: 0,
+    maskSelect: false,
+    titleSelect: "null"
+  } as DataType)
+
+  const jest_getWindowInfo = (): GetWindowInfoResult => {
+    return uni.getWindowInfo();
+  }
+
+  const radioChange = (e: UniRadioGroupChangeEvent) => {
+    const selected = data.items.find((item): boolean => {
+      return item.value == e.detail.value
+    })
+    if (selected != null) {
+      data.titleSelect = selected.value
     }
   }
+
+  const maskChange = (e: UniSwitchChangeEvent) => {
+    data.maskSelect = e.detail.value
+  }
+
+  const hideLoading = () => {
+    uni.hideLoading();
+  }
+
+  const showLoading = () => {
+    console.log(data.titleSelect)
+    if (data.titleSelect == "null") {
+      uni.showLoading({
+        title: "",
+        mask: data.maskSelect
+      });
+    } else {
+      uni.showLoading({
+        title: data.titleSelect,
+        mask: data.maskSelect
+      });
+    }
+    setTimeout(() => {
+      hideLoading();
+    }, 3000);
+  }
+
+  onLoad(() => {
+    uni.showLoading({
+      title: 'onLoad 调用示例,2秒后消失'
+    })
+    setTimeout(() => {
+      uni.hideLoading()
+    }, 2000);
+  })
+
+  defineExpose({
+    showLoading,
+    hideLoading
+  })
 </script>

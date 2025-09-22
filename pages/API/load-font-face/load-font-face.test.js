@@ -13,7 +13,7 @@ describe("loadFontFace", () => {
   });
   if (!(
       // 小程序部分 url 不支持
-      isMP || 
+      isMP ||
       // android 不同版本针对 woff2 字体回调触发不一致
       platformInfo.startsWith('android 5') ||
       platformInfo.startsWith('android 6') ||
@@ -22,13 +22,13 @@ describe("loadFontFace", () => {
     )
   ) {
     it("check callback triggered", async () => {
-      const successTriggeredNum = await page.data('successTriggeredNum');
+      const successTriggeredNum = await page.data('data.successTriggeredNum');
       expect(successTriggeredNum).toBe(6);
     });
 
     it("check callback status arrays", async () => {
       // 读取 data 的 loadFontStatus 数组
-      const loadFontStatus = await page.data('loadFontStatus');
+      const loadFontStatus = await page.data('data.loadFontStatus');
       // 验证每个字体的 success 回调是否被触发
       expect(loadFontStatus.every(status => status)).toBe(true);
     });

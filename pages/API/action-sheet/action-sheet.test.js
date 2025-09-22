@@ -13,6 +13,12 @@ describe('showActionSheet', () => {
   let screenShotOptions = {};
   let page;
   let topSafeArea = 0
+  
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   async function showActionSheet(page) {
     const btn = await page.$('#btn-action-sheet-show')
     await btn.tap()
@@ -93,77 +99,61 @@ describe('showActionSheet', () => {
   })
 
   it("有标题", async () => {
-    await page.setData({
+    await setPageData({
       showErrorToast:false,
       current: 0,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
 
   it("有标题 长内容", async () => {
-    await page.setData({
+    await setPageData({
       itemContentLarge:true,
     })
-
     await showActionSheet(page);
-
     await screenshot();
-
-
   })
 
   it("有标题 超过6个item", async () => {
-    await page.setData({
+    await setPageData({
       itemContentLarge:false,
       itemNumLargeSelect:true,
     })
-
     await showActionSheet(page);
-
     await screenshot();
-
-
   })
 
   it("有标题 长内容 自定义 itemColor", async () => {
-    await page.setData({
+    await setPageData({
       itemContentLarge: true,
       itemNumLargeSelect: false,
       itemColorCustom: true,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
 
   it("无标题", async () => {
-    await page.setData({
+    await setPageData({
       current: 1,
       itemContentLarge:false,
       itemColorCustom:false,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
 
   it("长标题", async () => {
-    await page.setData({
+    await setPageData({
       current: 2,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
   if (!isMP) {
     it("custom titleColor cancelText cancelColor backgroundColor", async () => {
-      await page.setData({
+      await setPageData({
         titleColorCustom: true,
         cancelTextCustom: true,
         cancelColorCustom: true,
@@ -218,7 +208,7 @@ describe('showActionSheet', () => {
     });
   }
   afterAll(async () => {
-    await page.callMethod('setLifeCycleNum', 1100);
+    await page.callMethod('setLifeCycleNumFunc', 1100);
     if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')
     }
