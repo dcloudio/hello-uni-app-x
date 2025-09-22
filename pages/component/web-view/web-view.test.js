@@ -33,21 +33,13 @@ describe('component-native-web-view', () => {
 
   it('test attr webview-styles', async () => {
     await setPageData({
-      webview_styles: {
-        progress: {
-          color: '#FF0'
-        }
-      }
+        webview_progress_color: '#FF0'
     });
     await page.waitFor(100);
     await page.callMethod('reload');
     await page.waitFor(100);
     await setPageData({
-      webview_styles: {
-        progress: {
-          color: 'yellow'
-        }
-      }
+        webview_progress_color: 'yellow'
     });
     await page.waitFor(100);
     await page.callMethod('reload');

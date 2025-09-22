@@ -11,7 +11,7 @@ describe('getApp', () => {
   })
   it('globalData', async () => {
     await page.callMethod('getGlobalData')
-    let data = await page.data()
+    let data = await page.data('data')
     expect(data.originGlobalData.str).toBe('default globalData str')
     expect(data.originGlobalData.num).toBe(0)
     expect(data.originGlobalData.bool).toBe(false)
@@ -25,7 +25,7 @@ describe('getApp', () => {
     expect(data.originGlobalData.myMap).toEqual({})
     expect(data.originGlobalDataFuncRes).toBe('globalData func')
     await page.callMethod('setGlobalData')
-    data = await page.data()
+    data = await page.data('data')
     expect(data.newGlobalData.str).toBe('new globalData str')
     expect(data.newGlobalData.num).toBe(100)
     expect(data.newGlobalData.bool).toBe(true)
@@ -44,11 +44,11 @@ describe('getApp', () => {
     expect(data.newGlobalDataFuncRes).toBe('new globalData func')
   })
   it('method', async () => {
-    const oldLifeCycleNum = await page.data('lifeCycleNum')
+    const oldLifeCycleNum = await page.data('data.lifeCycleNum')
     await page.callMethod('_increaseLifeCycleNum')
-    const newLifeCycleNum = await page.data('lifeCycleNum')
+    const newLifeCycleNum = await page.data('data.lifeCycleNum')
     expect(newLifeCycleNum - oldLifeCycleNum).toBe(100)
-    await page.callMethod('setLifeCycleNum', oldLifeCycleNum)
+    await page.callMethod('setLifeCycleNumFunc', oldLifeCycleNum)
   })
   if (!isMP) {
     it('getAndroidApplication', async () => {

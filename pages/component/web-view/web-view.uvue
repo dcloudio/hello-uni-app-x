@@ -1,7 +1,7 @@
 <template>
   <view class="uni-flex-item">
     <web-view id="web-view" class="uni-flex-item" :style="webViewStyle" :src="data.src"
-      :webview-styles="data.webview_styles" :horizontalScrollBarAccess="data.horizontalScrollBarAccess" :verticalScrollBarAccess="data.verticalScrollBarAccess"
+      :webview-styles="{ progress: {color:data.webview_progress_color} }" :horizontalScrollBarAccess="data.horizontalScrollBarAccess" :verticalScrollBarAccess="data.verticalScrollBarAccess"
       :bounces="data.bounces" :disable-user-select-menu="data.disableUserSelectMenu" @message="message" @error="error" @loading="loading"
       @load="load" @download="download" @contentheightchange="contentheightchange" @touchstart="touchstart" @tap="tap">
     </web-view>
@@ -77,17 +77,9 @@
   import { canWebViewGoBack, canWebViewGoForward, hasNativeView } from '@/uni_modules/uts-get-native-view';
   // #endif
 
-  type ProgressStyle = {
-    color: string;
-  }
-
-  type WebviewStyles = {
-    progress: ProgressStyle;
-  }
-
   type DataType = {
     src: string;
-    webview_styles: WebviewStyles;
+    webview_progress_color: string;
     halfWindowMode: boolean;
     webviewContext: WebviewContext | null;
     loadError: boolean;
@@ -109,11 +101,7 @@
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
     src: 'https://www.dcloud.io',
-    webview_styles: {
-      progress: {
-        color: '#FF3333'
-      }
-    },
+    webview_progress_color:'#FF3333',
     halfWindowMode: false,
     webviewContext: null as WebviewContext | null,
     loadError: false,
