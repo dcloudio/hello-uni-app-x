@@ -51,7 +51,7 @@
       return {
         log: "",
         logAble: true,
-        providerList: [] as LocationItem[],
+        providerList: [] as (LocationItem | undefined)[],
         types: [
           {
             value: 'wgs84',
@@ -97,7 +97,7 @@
         })
 
         this.providerList.forEach((value, index) => {
-          if (value.id == "system") {
+          if (value != null && value.id == "system") {
             this.currentSelectedProvider = index
           }
         })
@@ -105,7 +105,8 @@
       },
       providerChange(e : UniRadioGroupChangeEvent) {
         for (let i = 0; i < this.providerList.length; i++) {
-          if (this.providerList[i].id === e.detail.value) {
+          const currentProvider = this.providerList[i]
+          if (currentProvider != null && currentProvider.id === e.detail.value) {
             this.currentSelectedProvider = i;
             break;
           }
@@ -146,6 +147,11 @@
         })
       },
       onLocationChange() {
+        const currentProvider = this.providerList[this.currentSelectedProvider]
+        if (currentProvider == null) {
+          this.log += `currentSelectedProvider = ${this.currentSelectedProvider} is undefined\n\n`
+          return
+        }
         uni.offLocationChange(null)
         console.log("开启onLocationChange监听")
         if (this.logAble) {
@@ -154,7 +160,7 @@
         uni.onLocationChange((e) => {
           console.log("onLocationChange持续监听回调: ", e)
           if (this.logAble) {
-            this.log += "provider= " + this.providerList[this.currentSelectedProvider].id + '\n' + JSON.stringify(e) + '\n\n'
+            this.log += "provider= " + currentProvider.id + '\n' + JSON.stringify(e) + '\n\n'
           }
         })
       },
@@ -176,13 +182,17 @@
           return
         }
         // #endif
-
+        const currentProvider = this.providerList[this.currentSelectedProvider]
+        if (currentProvider == null) {
+          this.log += `currentSelectedProvider = ${this.currentSelectedProvider} is undefined\n\n`
+          return
+        }
         uni.startLocationUpdate({
-          provider: this.providerList[this.currentSelectedProvider].id,
+          provider: currentProvider.id,
           type: this.types[this.currentSelectedType].value,
           success: () => {
             if (this.logAble) {
-              this.log += "开启startLocationUpdate成功, provider= " + this.providerList[this.currentSelectedProvider].id + '\n\n'
+              this.log += "开启startLocationUpdate成功, provider= " + currentProvider.id + '\n\n'
             }
             console.log("持续定位启动成功")
             this.startSuccess = true
@@ -210,12 +220,17 @@
           return
         }
         // #endif
+        const currentProvider = this.providerList[this.currentSelectedProvider]
+        if (currentProvider == null) {
+          this.log += `currentSelectedProvider = ${this.currentSelectedProvider} is undefined\n\n`
+          return
+        }
         uni.startLocationUpdateBackground({
-          provider: this.providerList[this.currentSelectedProvider].id,
+          provider: currentProvider.id,
           type: this.types[this.currentSelectedType].value,
           success: () => {
             if (this.logAble) {
-              this.log += "开启startLocationUpdateBackground成功, provider= " + this.providerList[this.currentSelectedProvider].id + '\n\n'
+              this.log += "开启startLocationUpdateBackground成功, provider= " + currentProvider.id + '\n\n'
             }
             console.log("后台持续定位api启动成功")
             this.startSuccess = true
