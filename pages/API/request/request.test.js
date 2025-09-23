@@ -179,6 +179,13 @@ describe('ExtApi-Request', () => {
     expect(res).toBe(true)
   })
 
+  it('Check iOS issue21823 Crash Bug', async () => {
+    res = await page.callMethod('jest_test_issue21823_crash')
+    await page.waitFor(2000);
+    res = await page.data('jest_result');
+    expect(res).toBe(false)
+  })
+
   if (process.env.uniTestPlatformInfo.toLocaleLowerCase().startsWith('android')) {
     it('Check Respone With String Generics', async () => {
       res = await page.callMethod('jest_respone_with_string_generics')
