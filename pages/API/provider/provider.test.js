@@ -14,7 +14,6 @@ describe("provider", () => {
   	return
   }
 
-
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600)
@@ -22,7 +21,7 @@ describe("provider", () => {
   it("test getprovider", async () => {
     await page.callMethod('getProvider');
     await page.waitFor(1000);
-    let providerIds = await page.data('providerIds')
+    let providerIds = await page.data('data.providerIds')
 
     expect(providerIds).toEqual(expect.arrayContaining(['wxpay', 'alipay', 'system']))
     if (!isHarmony) {
@@ -33,7 +32,7 @@ describe("provider", () => {
     }
     expect(providerIds).toHaveLength(isHarmony ? 6 : 4)
 
-    let providerObjects = await page.data('providerObjects')
+    let providerObjects = await page.data('data.providerObjects')
 
     expect(providerObjects).toEqual(expect.arrayContaining(['微信支付', '支付宝', '系统定位']))
     if (!isHarmony) {
