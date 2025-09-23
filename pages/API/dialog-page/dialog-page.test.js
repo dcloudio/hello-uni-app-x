@@ -521,8 +521,8 @@ describe('dialog page', () => {
     await page.callMethod('openDialogWithInput')
     await page.waitFor(2000);
     await page.callMethod('jest_getTapPoint')
-    const point_x = await page.data('jest_click_x');
-    const point_y = await page.data('jest_click_y');
+    const point_x = await page.data('data.jest_click_x');
+    const point_y = await page.data('data.jest_click_y');
     await program.tap({
       x: Math.round(point_x),
       y: Math.round(point_y)
@@ -594,9 +594,9 @@ describe('dialog page', () => {
     expect(lifecycleNum).toBe(7)
     await page.callMethod('closeDialogSimple');
     await page.callMethod('setLifeCycleNum', 0);
-    
+
   })
-    
+
   if (isApp) {
     it('check dialogPage uni.setNavigationBarColor should be black', async () => {
       await page.callMethod('openDialogCheckSetNavigationBarColor');
