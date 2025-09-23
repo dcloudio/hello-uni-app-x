@@ -24,6 +24,37 @@ describe('dialog page', () => {
   let page;
   let initLifeCycleNum;
   let lifecycleNum;
+
+  const screenShotArea = {
+    x: 342,
+    y:18,
+    width: 40,
+    height: 20
+  };
+  if (isIos) {
+    screenShotArea.x = 310
+    screenShotArea.y = 20
+    screenShotArea.width = 40
+    screenShotArea.height = 20
+  } else if (platformInfo.startsWith('android 6')) {
+    screenShotArea.x = 204
+    screenShotArea.width = 34
+    screenShotArea.height = 16
+  } else if (platformInfo.startsWith('android 8')) {
+    screenShotArea.y = 4
+    screenShotArea.x = 336
+  } else if (platformInfo.startsWith('android 12')) {
+    screenShotArea.x = 336
+    screenShotArea.y = 3
+    screenShotArea.width = 50
+    screenShotArea.height = 20
+  } else if (isHarmony) {
+    screenShotArea.x = 295
+    screenShotArea.y = 14
+    screenShotArea.width = 40
+    screenShotArea.height = 20
+  }
+
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
@@ -445,35 +476,6 @@ describe('dialog page', () => {
 
   if (isApp) {
     it('after closeDialogPage reset statusBar color', async () => {
-      const screenShotArea = {
-        x: 342,
-        y:18,
-        width: 40,
-        height: 20
-      };
-      if (isIos) {
-        screenShotArea.x = 310
-        screenShotArea.y = 20
-        screenShotArea.width = 40
-        screenShotArea.height = 20
-      } else if (platformInfo.startsWith('android 6')) {
-        screenShotArea.x = 204
-        screenShotArea.width = 34
-        screenShotArea.height = 16
-      } else if (platformInfo.startsWith('android 8')) {
-        screenShotArea.y = 4
-        screenShotArea.x = 336
-      } else if (platformInfo.startsWith('android 12')) {
-        screenShotArea.x = 336
-        screenShotArea.y = 3
-        screenShotArea.width = 50
-        screenShotArea.height = 20
-      } else if (isHarmony) {
-        screenShotArea.x = 295
-        screenShotArea.y = 14
-        screenShotArea.width = 40
-        screenShotArea.height = 20
-      }
       const imageForParentInit = await program.screenshot({
         deviceShot: true,
         area: screenShotArea,
@@ -531,6 +533,7 @@ describe('dialog page', () => {
     expect(image).toSaveImageSnapshot()
     await page.waitFor(2000);
     await page.callMethod('closeDialogSimple')
+    await page.callMethod('setLifeCycleNum', 0);
   })
 
   if (isAndroid) {
@@ -577,22 +580,39 @@ describe('dialog page', () => {
         expect(image).toSaveImageSnapshot();
         await page.waitFor(2000);
         await page.callMethod('closeDialogSimple');
+        await page.callMethod('setLifeCycleNum', 0);
     });
   }
 
-  if ('open dialogPage with relative path', async () => {
-    await page.callMethod('closeDialog')
-    await page.waitFor(1000);
-    await page.callMethod('setLifeCycleNum', 0)
+  it ('open dialogPage with relative path', async () => {
     await page.callMethod('openDialogWithRelativePath');
     await page.waitFor(1000);
     if (isWeb) {
       await page.waitFor(2000);
     }
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(6)
-    await page.callMethod('setLifeCycleNum', 0)
+    expect(lifecycleNum).toBe(7)
+    await page.callMethod('closeDialogSimple');
+    await page.callMethod('setLifeCycleNum', 0);
+    
   })
+    
+  if (isApp) {
+    it('check dialogPage uni.setNavigationBarColor should be black', async () => {
+      await page.callMethod('openDialogCheckSetNavigationBarColor');
+      await page.waitFor('view');
+      await page.waitFor(1000);
+      lifecycleNum = await page.callMethod('getLifeCycleNum');
+      expect(lifecycleNum).toBe(2);
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: screenShotArea,
+      });
+      expect(image).toSaveImageSnapshot();
+      await page.callMethod('closeDialogSimple');
+      await page.callMethod('setLifeCycleNum', 0);
+    })
+  }
 
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', initLifeCycleNum)
