@@ -1,6 +1,6 @@
 <template>
 
-  <page-head :title="title"></page-head>
+  <page-head :title="data.title"></page-head>
 	<button class="button" type="primary" @click="connect">连接</button>
 	<button class="button" type="primary" @click="close">关闭</button>
 
@@ -11,9 +11,9 @@
 			<text style="width: 100%; text-align: center; margin-bottom: 5px;">
 			  显示简易操作日志(可滚动查看)
 			</text>
-			<button size="mini" @click="logList = []">清空日志</button>
+			<button size="mini" @click="data.logList = []">清空日志</button>
 			<view style="margin-top: 10px;">
-				<view v-for="(item, index) in logList" :key="index">
+				<view v-for="(item, index) in data.logList" :key="index">
 					<text style="margin-left: 20px; margin-right: 20px;">
 						{{ item }}
 					</text>
@@ -25,62 +25,73 @@
 	<!-- #endif -->
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				logList: [] as string[],
-				title: 'sse',
-				url: 'https://request.dcloud.net.cn/api/sse/connect',
-				eventSource: null as UniEventSource | null,
-				open: false,
-				receiveMessage: false
-			}
-		},
-		unmounted() {
-			if (this.eventSource != null) {
-				this.eventSource?.close()
-			}
-		},
-		methods: {
-			connect() {
-				console.log('connect start')
-				uni.showLoading({
-					title: "",
-					mask: true
-				})
-				this.eventSource?.close()
-				let headers : UTSJSONObject = new UTSJSONObject()
-				headers.set("header1", "value1")
-				headers.set("header2", "value3")
-				this.eventSource = uni.connectEventSource({
-					url: this.url,
-					header: headers
-				})
-				this.eventSource?.onMessage((ev) => {
-					const log = 'onMessage callback:' + '\n' + 'type: ' + ev.type + '\n' + 'data: ' + ev.data + '\n\n'
-					this.logList.push(log)
-					this.receiveMessage = true
-					uni.hideLoading()
-				})
-				this.eventSource?.onOpen((ev) => {
-					const log = 'onOpen callback: ' + ev.type + '\n\n'
-					this.logList.push(log)
-					this.open = true
-				})
-				this.eventSource?.onError((err) => {
-          const log = `onError callback: ${err} \n\n`
-					this.logList.push(log)
-					uni.hideLoading()
-				})
-			},
-			close() {
-				this.eventSource?.close()
-				const log = 'connect close' + '\n\n'
-				this.logList.push(log)
-			}
-		}
+<script setup lang="uts">
+	type DataType = {
+		logList: string[];
+		title: string;
+		url: string;
+		eventSource: UniEventSource | null;
+		open: boolean;
+		receiveMessage: boolean;
 	}
+
+	const data = reactive({
+		logList: [] as string[],
+		title: 'sse',
+		url: 'https://request.dcloud.net.cn/api/sse/connect',
+		eventSource: null,
+		open: false,
+		receiveMessage: false
+	} as DataType)
+
+	onUnmounted(() => {
+		if (data.eventSource != null) {
+			data.eventSource?.close()
+		}
+	})
+
+	const connect = () => {
+		console.log('connect start')
+		uni.showLoading({
+			title: "",
+			mask: true
+		})
+		data.eventSource?.close()
+		let headers : UTSJSONObject = new UTSJSONObject()
+		headers.set("header1", "value1")
+		headers.set("header2", "value3")
+		data.eventSource = uni.connectEventSource({
+			url: data.url,
+			header: headers
+		})
+		data.eventSource?.onMessage((ev) => {
+			const log = 'onMessage callback:' + '\n' + 'type: ' + ev.type + '\n' + 'data: ' + ev.data + '\n\n'
+			data.logList.push(log)
+			data.receiveMessage = true
+			uni.hideLoading()
+		})
+		data.eventSource?.onOpen((ev) => {
+			const log = 'onOpen callback: ' + ev.type + '\n\n'
+			data.logList.push(log)
+			data.open = true
+		})
+		data.eventSource?.onError((err) => {
+			const log = `onError callback: ${err} \n\n`
+			data.logList.push(log)
+			uni.hideLoading()
+		})
+	}
+
+	const close = () => {
+		data.eventSource?.close()
+		const log = 'connect close' + '\n\n'
+		data.logList.push(log)
+	}
+
+	defineExpose({
+    data,
+		connect
+	})
 </script>
 
 <style>
