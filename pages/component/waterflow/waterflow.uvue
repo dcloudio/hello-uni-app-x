@@ -39,7 +39,6 @@
     waterflowPadding: Array<number>;
     loadMore: boolean;
     isLoadMore: boolean;
-    waterflow: UniElement | null;
   }
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
@@ -73,9 +72,10 @@
     cross_axis_gap: 2,
     waterflowPadding: [10, 5, 10, 5],
     loadMore: true,
-    isLoadMore: true,
-    waterflow: null
+    isLoadMore: true
   } as DataType)
+
+  const waterflowRef = ref<UniWaterFlowElement | null>(null)
 
   onLoad(() => {
     //静态瀑布流数据
@@ -211,20 +211,22 @@
   const confirm_scroll_left_input = (value : number) => { data.scroll_left_input = value }
   const confirm_refresher_background_input = (value : string) => { data.refresher_background_input = value }
   const item_change_size_enum = (index : number) => { data.scrollIntoView = "item---" + index }
+
   //自动化测试专用
   const setScrollIntoView = (id : string) => { data.scrollIntoView = id }
 
   //自动化测试例专用
   const check_scroll_height = () : Boolean => {
-    var listElement = data.waterflow as UniElement
-    console.log("check_scroll_height--" + listElement.scrollHeight)
-    if (listElement.scrollHeight > 1400) {
-      return true
+    if (waterflowRef.value == null) {
+      console.log("check_scroll_height--waterflowRef is null")
+      return false
     }
-    return false
+    var listElement = waterflowRef.value as UniWaterFlowElement
+    console.log("check_scroll_height--" + listElement.scrollHeight)
+    return listElement.scrollHeight > 1400
   }
   const getScrollTop = () : number => {
-    var ret = data.waterflow?.scrollTop ?? 0
+    var ret = waterflowRef.value?.scrollTop ?? 0
     console.log(ret)
     return ret
   }
@@ -289,7 +291,7 @@
       @touchcancel="waterflow_touchcancel" @touchend="waterflow_touchend" @tap="waterflow_tap"
       @longpress="waterflow_longpress" @refresherpulling="waterflow_refresherpulling"
       @refresherrefresh="waterflow_refresherrefresh" @refresherrestore="waterflow_refresherrestore"
-      @refresherabort="waterflow_refresherabort" @scrolltoupper="waterflow_scrolltoupper" ref="waterflow"
+      @refresherabort="waterflow_refresherabort" @scrolltoupper="waterflow_scrolltoupper" ref="waterflowRef"
       @scrolltolower="waterflow_scrolltolower" @scroll="waterflow_scroll" @scrollend="waterflow_scrollend"
       style="width:100%; " id="waterflow" :padding="data.waterflowPadding">
 
