@@ -22,11 +22,11 @@ describe('web-clipboard', () => {
   });
   it('setClipboardData', async () => {
     await page.setData({
-      data: '123456'
+      data:{data: '123456'}
     })
     await page.callMethod('setClipboard')
     await page.waitFor(500);
-    console.log(await page.data('setClipboardTest'), 'setClipboardTest')
+    console.log(await page.data('data.setClipboardTest'), 'setClipboardTest')
     // bug：自动化测试时设置成功也进入了fail
     // expect(await page.data('setClipboardTest')).toBeTruthy()
     // 等待 toast 隐藏
@@ -41,7 +41,7 @@ describe('web-clipboard', () => {
       expect(1).toBe(1)
     }else{
       await page.callMethod('getClipboard')
-      expect(await page.data('getDataTest')).toBe('123456')
+      expect(await page.data('data.getDataTest')).toBe('123456')
     }
     // 等待 toast 隐藏
     await page.waitFor(3000);
