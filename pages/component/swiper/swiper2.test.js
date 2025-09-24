@@ -26,8 +26,8 @@ describe('swiper-touch-test', () => {
 
 
   it('滑动切换 swiper', async () => {
-    let x = await page.data('swipeX')
-    let y = await page.data('swipeY')
+    let x = await page.data('data.swipeX')
+    let y = await page.data('data.swipeY')
     // harmony onReady getBoundingClientRect 获取节点宽度不稳定，偶发错误
     if (isHarmony && x < 20) {
       x = 300
@@ -44,7 +44,7 @@ describe('swiper-touch-test', () => {
     })
 
     await page.waitFor(1000)
-    let val = await page.data('currentValChange')
+    let val = await page.data('data.currentValChange')
     expect(val).toEqual(1)
   })
 })
