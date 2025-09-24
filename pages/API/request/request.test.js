@@ -17,30 +17,30 @@ const methodMap = {
   "HEAD": "/api/http/method/head"
 }
 
-// 测试辅助函数
-async function setPageData(newData) {
-  return await page.setData({ data: newData });
-}
-
-async function request(page, method, header, data, url) {
-  if (url == null) {
-    url = methodMap[method]
-  }
-  await setPageData({
-    url: url,
-    method: method,
-    data: data,
-    header: header
-  })
-  res = await page.callMethod('jest_request')
-  await page.waitFor(2000);
-  res = await page.data('data.jest_result');
-  expect(res).toBe(true)
-}
-
 describe('ExtApi-Request', () => {
   let page;
   let res;
+
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
+  async function request(page, method, header, data, url) {
+    if (url == null) {
+      url = methodMap[method]
+    }
+    await setPageData({
+      url: url,
+      method: method,
+      data: data,
+      header: header
+    })
+    res = await page.callMethod('jest_request')
+    await page.waitFor(2000);
+    res = await page.data('data.jest_result');
+    expect(res).toBe(true)
+  }
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
