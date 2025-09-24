@@ -43,7 +43,7 @@ describe('getCurrentPages', () => {
     await page.waitFor(1000)
     await page.callMethod('_getCurrentPages')
     await page.waitFor(200)
-    const data = await page.data()
+    const data = await page.data('data')
     expect(data.checked).toBe(true)
   })
 
@@ -56,7 +56,7 @@ describe('getCurrentPages', () => {
 
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh1 = await page.data('currentPageStyle.enablePullDownRefresh')
+    const isEnablePullDownRefresh1 = await page.data('data.currentPageStyle.enablePullDownRefresh')
     expect(isEnablePullDownRefresh1).toBe(true)
 
     // setPageStyle
@@ -67,7 +67,7 @@ describe('getCurrentPages', () => {
 
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh2 = await page.data('currentPageStyle.enablePullDownRefresh')
+    const isEnablePullDownRefresh2 = await page.data('data.currentPageStyle.enablePullDownRefresh')
     expect(isEnablePullDownRefresh2).toBe(false)
 
     await page.callMethod('startPullDownRefresh')
@@ -130,7 +130,7 @@ describe('getCurrentPages', () => {
     }});
   })
   it('$page', async () => {
-    await page.setData({testing: true})
+    await page.setData({data:{testing: true}})
     const res = await page.callMethod('check$page')
     expect(res).toBe(true)
   })
