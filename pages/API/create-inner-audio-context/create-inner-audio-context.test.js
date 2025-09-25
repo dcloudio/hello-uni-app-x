@@ -30,11 +30,11 @@ describe('inner-audio', () => {
   it('onCanplay',async()=>{
     await page.waitFor(1000)
     await page.waitFor(async()=>{
-      return await page.data('isCanplay')
+      return await page.data('data.isCanplay')
     })
-    const isCanplay = await page.data('isCanplay')
+    const isCanplay = await page.data('data.isCanplay')
     if (!isHarmony) {
-      expect(await page.data('buffered')).toBeGreaterThan(0)
+      expect(await page.data('data.buffered')).toBeGreaterThan(0)
     } else {
       expect(isCanplay).toBe(true)
     }
@@ -49,8 +49,8 @@ describe('inner-audio', () => {
     await page.callMethod('onchangeValue',20)
     const waitTime = isWeb ? 5000:500
     await page.waitFor(waitTime)
-    expect(await page.data('onSeekingTest')).toBeTruthy();
-    expect(await page.data('currentTime')).toBe(20);
+    expect(await page.data('data.onSeekingTest')).toBeTruthy();
+    expect(await page.data('data.currentTime')).toBe(20);
     // expect(await page.data('onWaitingTest')).toBeTruthy();
     // expect(await page.data('onSeekedTest')).toBeTruthy();
     const image = await program.screenshot({fullPage: true})
@@ -61,8 +61,8 @@ describe('inner-audio', () => {
     await page.callMethod('play')
     const waitTime = isWeb ? 5000:3000
     await page.waitFor(waitTime)
-    expect(await page.data('isPlaying')).toBeTruthy()
-    expect(await page.data('duration')).toBeCloseTo(175.109, 0);
+    expect(await page.data('data.isPlaying')).toBeTruthy()
+    expect(await page.data('data.duration')).toBeCloseTo(175.109, 0);
     // expect(await page.data('currentTime')).toBeGreaterThan(0);
     // expect(await page.data('isPaused')).toBeFalsy();
   });
@@ -70,7 +70,7 @@ describe('inner-audio', () => {
   it('pause-onPause', async () => {
     await page.callMethod('pause')
     await page.waitFor(500);
-    expect(await page.data('isPlaying')).toBeFalsy()
+    expect(await page.data('data.isPlaying')).toBeFalsy()
     // expect(await page.data('isPaused')).toBeTruthy();
   });
 
@@ -81,7 +81,7 @@ describe('inner-audio', () => {
     await page.callMethod('stop')
     await page.callMethod('stop')
     await page.waitFor(1000);
-    expect(await page.data('isPlaying')).toBeFalsy()
+    expect(await page.data('data.isPlaying')).toBeFalsy()
     // expect(await page.data('isPaused')).toBeTruthy();
   });
 
@@ -103,6 +103,6 @@ describe('inner-audio', () => {
     await page.callMethod('setSrc','file:///android_asset/uni-autoTest/alert2s.mp3')
     await page.callMethod('play')
     await page.waitFor(3000);
-    expect(await page.data('isPlayEnd')).toBeTruthy();
+    expect(await page.data('data.isPlayEnd')).toBeTruthy();
   });
 });

@@ -51,7 +51,7 @@
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
   type Indicator = "number" | "default" | "none"
   type ItemType = {
     value : Indicator,
@@ -62,98 +62,102 @@
     src : string,
     error : boolean
   }
-  export default {
-    data() {
-      return {
-        imageList: [
-          { src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false },
-          { src: "/static/uni.png", error: false },
-          { src: "/static/test-image/logo.svg", error: false },
-          // #ifdef APP
-          { src: "/static/uni2.png", error: false },
-          // #endif
-        ] as ImageType[],
-        indicator: [{
-          value: "default",
-          name: "圆点"
-        }, {
-          value: "number",
-          name: "数字"
-        }, {
-          value: "none",
-          name: "不显示"
-        }] as ItemType[],
-        currentIndicator: "default" as Indicator,
-        // #ifdef WEB
-        isWeb: true,
-        // #endif
-        // #ifndef WEB
-        isWeb: false,
-        // #endif
-        // #ifdef APP-IOS
-        isIOS: true,
-        // #endif
-        // #ifndef APP-IOS
-        isIOS: false,
-        // #endif
-        isLongPress: true,
-        isLoop: true,
+
+  const imageList = ref([
+    { src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false },
+    { src: "/static/uni.png", error: false },
+    { src: "/static/test-image/logo.svg", error: false },
+    // #ifdef APP
+    { src: "/static/uni2.png", error: false },
+    // #endif
+  ] as ImageType[])
+
+  const indicator = ref([{
+    value: "default",
+    name: "圆点"
+  }, {
+    value: "number",
+    name: "数字"
+  }, {
+    value: "none",
+    name: "不显示"
+  }] as ItemType[])
+
+  const currentIndicator = ref("default" as Indicator)
+
+  // #ifdef WEB
+  const isWeb = ref(true)
+  // #endif
+  // #ifndef WEB
+  const isWeb = ref(false)
+  // #endif
+
+  // #ifdef APP-IOS
+  const isIOS = ref(true)
+  // #endif
+  // #ifndef APP-IOS
+  const isIOS = ref(false)
+  // #endif
+
+  const isLongPress = ref(true)
+  const isLoop = ref(true)
+
+  const previewImage = (index : number) => {
+    let list = [] as Array<string>
+    imageList.value.forEach((item : ImageType) => {
+      list.push(item.src)
+    })
+    uni.previewImage({
+      urls: list,
+      current: index,
+      indicator: currentIndicator.value,
+      loop: isLoop.value,
+      longPressActions: (isLongPress.value ? ({
+        itemList: ["按钮1", "按钮2", "按钮3"],
+        itemColor: "#ccc",
+        success: (e : LongPressActionsSuccessResult) => {
+          uni.showToast({
+            title: "用户选中了第" + (e.index + 1) + "张图片，并选中了第" + (e.tapIndex + 1) + "个选项",
+            position: "bottom"
+          })
+        },
+        fail: (e : LongPressActionsFailResult) => {
+          uni.showToast({
+            title: "用户关闭了action sheet",
+            position: "bottom"
+          })
+        }
+      } as LongPressActionsOptions) : null)
+    })
+  }
+
+  const chooseImage = () => {
+    uni.chooseImage({
+      sourceType: ['album'],
+      count: 1,
+      success: (e) => {
+        imageList.value = imageList.value.concat({ src: e.tempFilePaths[0], error: false } as ImageType)
+        // imageList.value = imageList.value.concat(e.tempFilePaths)
+      },
+      fail(_) {
       }
-    },
-    methods: {
-      previewImage(index : number) {
-        let list = [] as Array<string>
-        this.imageList.forEach((item : ImageType) => {
-          list.push(item.src)
-        })
-        uni.previewImage({
-          urls: list,
-          current: index,
-          indicator: this.currentIndicator,
-          loop: this.isLoop,
-          longPressActions: (this.isLongPress ? ({
-            itemList: ["按钮1", "按钮2", "按钮3"],
-            itemColor: "#ccc",
-            success: (e : LongPressActionsSuccessResult) => {
-              uni.showToast({
-                title: "用户选中了第" + (e.index + 1) + "张图片，并选中了第" + (e.tapIndex + 1) + "个选项",
-                position: "bottom"
-              })
-            },
-            fail: (e : LongPressActionsFailResult) => {
-              uni.showToast({
-                title: "用户关闭了action sheet",
-                position: "bottom"
-              })
-            }
-          } as LongPressActionsOptions) : null)
-        })
-      },
-      chooseImage() {
-        uni.chooseImage({
-          sourceType: ['album'],
-          count: 1,
-          success: (e) => {
-            this.imageList = this.imageList.concat({ src: e.tempFilePaths[0], error: false } as ImageType)
-            // this.imageList = this.imageList.concat(e.tempFilePaths)
-          },
-          fail(_) {
-          }
-        })
-      },
-      onIndicatorChanged(e : UniRadioGroupChangeEvent) {
-        this.currentIndicator = e.detail.value as Indicator
-      },
-      onCheckboxChange(_ : UniCheckboxGroupChangeEvent) {
-        this.isLoop = !this.isLoop
-      },
-      onLongPressCheckboxChange() {
-        this.isLongPress = !this.isLongPress
-      },
-      onImageLoadError(index : number, error : UniImageErrorEvent) {
-        this.imageList[index].error = true
-      }
-    }
+    })
+  }
+
+  const onIndicatorChanged = (e : UniRadioGroupChangeEvent) => {
+    currentIndicator.value = e.detail.value as Indicator
+  }
+
+  const onCheckboxChange = (_ : UniCheckboxGroupChangeEvent) => {
+    isLoop.value = !isLoop.value
+  }
+
+  const onLongPressCheckboxChange = () => {
+    isLongPress.value = !isLongPress.value
+  }
+
+  const onImageLoadError = (index : number, error : UniImageErrorEvent) => {
+    imageList.value[index].error = true
   }
 </script>
 

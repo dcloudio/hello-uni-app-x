@@ -48,7 +48,7 @@ describe('API-saveVideoToPhotosAlbum', () => {
     });
     expect(image).toSaveImageSnapshot();
 
-    expect(await page.data('success')).toBe(true);
+    expect(await page.data('testState.success')).toBe(true);
     await page.waitFor(2000);
   });
 });

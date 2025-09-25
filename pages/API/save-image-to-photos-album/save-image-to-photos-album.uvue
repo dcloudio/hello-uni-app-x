@@ -12,40 +12,46 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: "saveImageToPhotosAlbum",
-        // 自动化测试
-        success: false
-      }
-    },
-    methods: {
-      saveImage() {
-        uni.saveImageToPhotosAlbum({
-          filePath: "/static/uni.png",
-          success: (res) => {
-            console.log("saveImageToPhotosAlbum success", JSON.stringify(res));
-            uni.showToast({
-              position: "center",
-              icon: "none",
-              title: "图片保存成功，请到手机相册查看"
-            });
-            this.success = true;
-          },
-          fail: (err) => {
-            uni.showModal({
-              title: "保存图片到相册失败",
-              content: JSON.stringify(err),
-              showCancel: false
-            });
-            this.success = false;
-          }
-        })
-      }
-    }
+<script setup lang="uts">
+  const title = ref("saveImageToPhotosAlbum")
+
+  type TestStateType = {
+    success : boolean
   }
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const testState = reactive({
+    success: false
+  } as TestStateType)
+
+  const saveImage = () => {
+    uni.saveImageToPhotosAlbum({
+      filePath: "/static/uni.png",
+      success: (res) => {
+        console.log("saveImageToPhotosAlbum success", JSON.stringify(res));
+        uni.showToast({
+          position: "center",
+          icon: "none",
+          title: "图片保存成功，请到手机相册查看"
+        });
+        testState.success = true;
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "保存图片到相册失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+        testState.success = false;
+      }
+    })
+  }
+
+  defineExpose({
+    testState,
+    saveImage
+  })
+
 </script>
 
 <style>
