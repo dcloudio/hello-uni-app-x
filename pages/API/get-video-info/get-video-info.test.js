@@ -32,7 +32,7 @@ describe('API-getVideoInfo', () => {
     await page.callMethod('testGetVideoInfo');
     await page.waitFor(1000);
     if (isWeb) {
-      expect(await page.data('videoInfoForTest')).toEqual({
+      expect(await page.data('testState.videoInfoForTest')).toEqual({
         duration: 10,
         size: 211,
         width: 1280,
@@ -43,7 +43,7 @@ describe('API-getVideoInfo', () => {
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
     if (isAndroid && version > 5) {
-      var videoInfo = await page.data('videoInfoForTest')
+      var videoInfo = await page.data('testState.videoInfoForTest')
       expect(videoInfo.orientation).toEqual("up")
       expect(videoInfo.type).toEqual("video/mp4")
       expect(videoInfo.duration).toEqual(10)
