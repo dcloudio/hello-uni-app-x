@@ -151,8 +151,10 @@ describe('component-native-list-view', () => {
         await page.waitFor(600)
     }
     await page.setData({
+      data:{
         refresher_enabled_boolean: true,
         refresher_triggered_boolean: true
+      }
     })
     await page.waitFor(1000)
     expect(await page.data('data.refresherrefresh')).toBe(true)
