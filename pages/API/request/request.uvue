@@ -127,6 +127,7 @@
     jest_requestTask_result: boolean;
     jest_result: boolean;
     jest_result_data: string;
+    jest_complete: boolean;
   }
 
   const data = reactive({
@@ -178,6 +179,7 @@
     //自动化测试例专用
     jest_requestTask_result: false,
     jest_result: false,
+    jest_complete: false,
     jest_result_data: ""
   } as DataType)
 
@@ -643,12 +645,9 @@
       url: "http://www.kld20s.cn:88/Appfile/App/Tcrysta/kld/TcnAppUpgrade.json",
       method: "GET",
       timeout: null,
-      success: (res : RequestSuccess<string>) => {
-        data.jest_result = true;
-      },
-      fail: () => {
-        data.jest_result = false;
-      },
+      complete: () => {
+        data.jest_complete = true;
+      }
     });
   }
 
