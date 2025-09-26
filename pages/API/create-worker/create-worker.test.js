@@ -30,9 +30,9 @@ describe('Api-createWorker', () => {
     await page.callMethod('onWorkerMsg');
     await page.callMethod('sendMessage');
     await page.waitFor(async () => {
-      const taskResult = await page.data('taskResult')
+      const taskResult = await page.data('taskResult.value')
       return taskResult.length > 0
     });
-    expect(await page.data('taskResult')).toBe('2');
+    expect(await page.data('taskResult.value')).toBe('2');
   });
 });
