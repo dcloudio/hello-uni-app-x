@@ -97,7 +97,7 @@
         })
 
         this.providerList.forEach((value, index) => {
-          if (value != null && value.id == "system") {
+          if (value.id == "system") {
             this.currentSelectedProvider = index
           }
         })
@@ -105,8 +105,7 @@
       },
       providerChange(e : UniRadioGroupChangeEvent) {
         for (let i = 0; i < this.providerList.length; i++) {
-          const currentProvider = this.providerList[i]
-          if (currentProvider != null && currentProvider.id === e.detail.value) {
+          if (this.providerList[i].id === e.detail.value) {
             this.currentSelectedProvider = i;
             break;
           }
@@ -147,11 +146,6 @@
         })
       },
       onLocationChange() {
-        const currentProvider = this.providerList[this.currentSelectedProvider]
-        if (currentProvider == null) {
-          this.log += `currentSelectedProvider = ${this.currentSelectedProvider} is undefined\n\n`
-          return
-        }
         uni.offLocationChange(null)
         console.log("开启onLocationChange监听")
         if (this.logAble) {
@@ -160,7 +154,7 @@
         uni.onLocationChange((e) => {
           console.log("onLocationChange持续监听回调: ", e)
           if (this.logAble) {
-            this.log += "provider= " + currentProvider.id + '\n' + JSON.stringify(e) + '\n\n'
+            this.log += "provider= " + this.providerList[this.currentSelectedProvider].id + '\n' + JSON.stringify(e) + '\n\n'
           }
         })
       },
@@ -183,10 +177,12 @@
         }
         // #endif
         const currentProvider = this.providerList[this.currentSelectedProvider]
+        // #ifdef WEB
         if (currentProvider == null) {
           this.log += `currentSelectedProvider = ${this.currentSelectedProvider} is undefined\n\n`
           return
         }
+        // #endif
         uni.startLocationUpdate({
           provider: currentProvider.id,
           type: this.types[this.currentSelectedType].value,
@@ -221,10 +217,12 @@
         }
         // #endif
         const currentProvider = this.providerList[this.currentSelectedProvider]
+        // #ifdef WEB
         if (currentProvider == null) {
           this.log += `currentSelectedProvider = ${this.currentSelectedProvider} is undefined\n\n`
           return
         }
+        // #endif
         uni.startLocationUpdateBackground({
           provider: currentProvider.id,
           type: this.types[this.currentSelectedType].value,
