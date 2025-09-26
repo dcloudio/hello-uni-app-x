@@ -33,7 +33,7 @@ describe('dialog page', () => {
   });
 
   it('dialogPage should empty', async () => {
-		const dialogPagesNum = await page.data('dialogPagesNum')
+		const dialogPagesNum = await page.data('dialogPagesNum.value')
 		expect(dialogPagesNum).toBe(0)
 	})
 
@@ -59,6 +59,6 @@ describe('dialog page', () => {
 	}
 
 	afterAll(async () => {
-		await page.callMethod('setLifeCycleNum', originLifeCycleNum)
+		await page.callMethod('setLifeCycleNumFunc', originLifeCycleNum)
   });
 })

@@ -30,7 +30,7 @@
     </view>
   </view>
 </template>
-<script lang="uts">
+<script setup lang="uts">
   import {
     state,
     setLifeCycleNum
@@ -40,114 +40,133 @@
     latitude: string[]
     longitude: string[]
   }
-  export default {
-    data() {
-      return {
-        title: 'chooseLocation',
-        hasLocation: false,
-        location: {
-          latitude: [],
-          longitude: []
-        } as Location,
-        locationName: '',
-        locationAddress: '',
-        dialogPagesNum: -1,
-        hoverLocation: false,
-        hoverKeyword: false,
-        hoverPayload: false
-      }
-    },
-    onShow() {
-      console.log("Page Show");
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-    },
-    onHide() {
-      console.log("Page Hide");
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum - 1)
-    },
-    methods: {
-      chooseLocation: function () {
-        let chooseLocationOptions = {
-          success: (res) => {
-            console.log('chooseLocation success', res)
-            this.hasLocation = true
-            this.location = this.formatLocation(res.longitude, res.latitude)
-            this.locationName = res.name
-            this.locationAddress = res.address
-          }
-        } as ChooseLocationOptions
-        if (this.hoverLocation) {
-          chooseLocationOptions.latitude = 39.908823
-          chooseLocationOptions.longitude = 116.39747
-        }
-        if (this.hoverKeyword) {
-          chooseLocationOptions.keyword = '公园'
-        }
-        // #ifndef MP
-        if (this.hoverPayload) {
-          chooseLocationOptions.payload = {
-            token: 'xxx'
-          }
-        }
-        // #endif
-        uni.chooseLocation(chooseLocationOptions)
-        // 自动化测试
-        setTimeout(() => {
-          this.test()
-        }, 500)
-      },
-      formatLocation: function(longitude:number, latitude:number):Location {
-        const longitudeArr = longitude.toString().split('.')
-        const latitudeArr = latitude.toString().split('.')
-        if(longitudeArr.length>1){
-          longitudeArr[1] = longitudeArr[1].substring(0,2)
-        }
-        if(latitudeArr.length>1){
-          latitudeArr[1] = latitudeArr[1].substring(0,2)
-        }
-        return {
-          longitude: longitudeArr,
-          latitude: latitudeArr
-        }
-      },
-      clear: function () {
-        this.hasLocation = false
-      },
-      changeLocationBoolean(checked : boolean) {
-        this.hoverLocation = checked
-      },
-      changeKeywordBoolean(checked : boolean) {
-        this.hoverKeyword = checked
-      },
-      changePayloadBoolean(checked : boolean) {
-        this.hoverPayload = checked
-      },
-      // #ifdef APP-IOS
-      chooseLocationByPlugin(){
-        uni.chooseLocationPlugin()
-      },
-      // #endif
-      // 自动化测试
-      test() {
-        const pages = getCurrentPages()
-        const page = pages[pages.length - 1]
-        // #ifdef APP || WEB
-        const dialogPages = page.getDialogPages()
-        this.dialogPagesNum = dialogPages.length
-        // #endif
-      },
-      // 自动化测试
-      setLifeCycleNum(value : number) {
-        setLifeCycleNum(value)
-      },
-      // 自动化测试
-      getLifeCycleNum() : number {
-        return state.lifeCycleNum
-      },
+
+  type DialogPagesNum = {
+    value: number
+  }
+
+  const title = ref<string>('chooseLocation')
+  const hasLocation = ref<boolean>(false)
+  const location = ref<Location>({
+    latitude: [],
+    longitude: []
+  })
+  const locationName = ref<string>('')
+  const locationAddress = ref<string>('')
+  const dialogPagesNum = reactive({ value: -1 } as DialogPagesNum)
+  const hoverLocation = ref<boolean>(false)
+  const hoverKeyword = ref<boolean>(false)
+  const hoverPayload = ref<boolean>(false)
+
+  const formatLocation = (longitude: number, latitude: number): Location => {
+    const longitudeArr = longitude.toString().split('.')
+    const latitudeArr = latitude.toString().split('.')
+    if(longitudeArr.length > 1){
+      longitudeArr[1] = longitudeArr[1].substring(0,2)
+    }
+    if(latitudeArr.length > 1){
+      latitudeArr[1] = latitudeArr[1].substring(0,2)
+    }
+    return {
+      longitude: longitudeArr,
+      latitude: latitudeArr
     }
   }
+
+  const clear = () => {
+    hasLocation.value = false
+  }
+
+  const changeLocationBoolean = (checked: boolean) => {
+    hoverLocation.value = checked
+  }
+
+  const changeKeywordBoolean = (checked: boolean) => {
+    hoverKeyword.value = checked
+  }
+
+  const changePayloadBoolean = (checked: boolean) => {
+    hoverPayload.value = checked
+  }
+
+  // #ifdef APP-IOS
+  const chooseLocationByPlugin = () => {
+    uni.chooseLocationPlugin()
+  }
+  // #endif
+
+  // 自动化测试
+  const test = () => {
+    const pages = getCurrentPages()
+    const page = pages[pages.length - 1]
+    // #ifdef APP || WEB
+    const dialogPages = page.getDialogPages()
+    dialogPagesNum.value = dialogPages.length
+    // #endif
+  }
+
+  // 自动化测试
+  const setLifeCycleNumFunc = (value: number) => {
+    setLifeCycleNum(value)
+  }
+
+  // 自动化测试
+  const getLifeCycleNum = (): number => {
+    return state.lifeCycleNum
+  }
+
+  const chooseLocation = () => {
+    let chooseLocationOptions = {
+      success: (res) => {
+        console.log('chooseLocation success', res)
+        hasLocation.value = true
+        location.value = formatLocation(res.longitude, res.latitude)
+        locationName.value = res.name
+        locationAddress.value = res.address
+      }
+    } as ChooseLocationOptions
+    if (hoverLocation.value) {
+      chooseLocationOptions.latitude = 39.908823
+      chooseLocationOptions.longitude = 116.39747
+    }
+    if (hoverKeyword.value) {
+      chooseLocationOptions.keyword = '公园'
+    }
+    // #ifndef MP
+    if (hoverPayload.value) {
+      chooseLocationOptions.payload = {
+        token: 'xxx'
+      }
+    }
+    // #endif
+    uni.chooseLocation(chooseLocationOptions)
+    // 自动化测试
+    setTimeout(() => {
+      test()
+    }, 500)
+  }
+
+  onPageShow(() => {
+    console.log("Page Show");
+    // 自动化测试
+    setLifeCycleNumFunc(state.lifeCycleNum + 1)
+  })
+
+  onPageHide(() => {
+    console.log("Page Hide");
+    // 自动化测试
+    setLifeCycleNumFunc(state.lifeCycleNum - 1)
+  })
+
+  defineExpose({
+    setLifeCycleNumFunc,
+    getLifeCycleNum,
+    chooseLocation,
+    // #ifdef APP-IOS
+    chooseLocationByPlugin,
+    // #endif
+    dialogPagesNum
+  })
 </script>
 
 <style>

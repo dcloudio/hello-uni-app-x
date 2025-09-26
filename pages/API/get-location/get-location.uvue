@@ -56,175 +56,195 @@
   </scroll-view>
   <!-- #endif -->
 </template>
-<script lang="uts">
+<script setup lang="uts">
   type GetLocationType = 'wgs84' | 'gcj02'
   export type LocationItem = { id : string, name : string, provider ?: UniProvider }
   export type ItemType = { value : GetLocationType, name : GetLocationType }
+  export type JestData = {
+    jest_provider: string
+    jest_type: GetLocationType
+    jest_isAltitude: boolean
+    jest_isGeocode: boolean
+    jest_isHighAccuracy: boolean
+    jest_altitude: number
+    jest_longitude: number
+    jest_latitude: number
+    jest_address: string
+    jest_errCode: number
+    jest_complete: boolean
+  }
 
-  export default {
-    data() {
-      return {
-        title: 'get-location',
-        altitudeSelect: false,
-        isHighAccuracySelect: false,
-        geocodeSelect: false,
-        exeRet: '',
-        items: [
-          {
-            value: 'wgs84',
-            name: 'wgs84'
-          },
-          {
-            value: 'gcj02',
-            name: 'gcj02'
-          }
-        ] as ItemType[],
-        providerList: [] as LocationItem[],
-        current: 0,
-        currentProvider: 0,
-        jest_provider: '',
-        jest_type: 'wgs84' as GetLocationType,
-        jest_isAltitude: false,
-        jest_isGeocode: false,
-        jest_isHighAccuracy: false,
-        jest_altitude: -1000,
-        jest_longitude: 200,
-        jest_latitude: 100,
-        jest_address: '',
-        jest_errCode: 0,
-        jest_complete: false
+  const title = ref<string>('get-location')
+  const altitudeSelect = ref<boolean>(false)
+  const isHighAccuracySelect = ref<boolean>(false)
+  const geocodeSelect = ref<boolean>(false)
+  const exeRet = ref<string>('')
+  const items = ref<ItemType[]>([
+    {
+      value: 'wgs84',
+      name: 'wgs84'
+    },
+    {
+      value: 'gcj02',
+      name: 'gcj02'
+    }
+  ])
+  const providerList = ref<LocationItem[]>([])
+  const current = ref<number>(0)
+  const currentProvider = ref<number>(0)
+  const jestData = reactive<JestData>({
+    jest_provider: '',
+    jest_type: 'wgs84' as GetLocationType,
+    jest_isAltitude: false,
+    jest_isGeocode: false,
+    jest_isHighAccuracy: false,
+    jest_altitude: -1000,
+    jest_longitude: 200,
+    jest_latitude: 100,
+    jest_address: '',
+    jest_errCode: 0,
+    jest_complete: false
+  })
+
+  const getProvider = () => {
+    // #ifdef APP
+
+    let provider = uni.getProviderSync({
+      service: "location",
+    } as GetProviderSyncOptions)
+    console.log(provider)
+    provider.providerObjects.forEach((value : UniProvider) => {
+      var currentProvider = value
+      // if (value.id == 'system') {
+      //   currentProvider = value as UniLocationSystemProvider
+      // } else if (value.id == 'tencent') {
+      //   currentProvider = value as UniLocationTencentProvider
+      // }
+      providerList.value.push({
+        name: currentProvider.description,
+        id: currentProvider.id,
+        provider: currentProvider
+      } as LocationItem);
+    })
+
+    providerList.value.forEach((value, index) => {
+      if (value.id == "system") {
+        currentProvider.value = index
       }
-    },
-    onLoad: function () {
-      // #ifdef APP
-      this.getProvider()
-      // #endif
-    },
-    methods: {
-      getProvider() {
-        // #ifdef APP
+    })
+    // #endif
+  }
 
-        let provider = uni.getProviderSync({
-          service: "location",
-        } as GetProviderSyncOptions)
-        console.log(provider)
-        provider.providerObjects.forEach((value : UniProvider) => {
-          var currentProvider = value
-          // if (value.id == 'system') {
-          //   currentProvider = value as UniLocationSystemProvider
-          // } else if (value.id == 'tencent') {
-          //   currentProvider = value as UniLocationTencentProvider
-          // }
-          this.providerList.push({
-            name: currentProvider.description,
-            id: currentProvider.id,
-            provider: currentProvider
-          } as LocationItem);
-        })
+  const altitudeChange = (e : UniSwitchChangeEvent) => {
+    altitudeSelect.value = e.detail.value
+  }
 
-        this.providerList.forEach((value, index) => {
-          if (value.id == "system") {
-            this.currentProvider = index
-          }
-        })
-        // #endif
-      },
-      altitudeChange: function (e : UniSwitchChangeEvent) {
-        this.altitudeSelect = e.detail.value
-      },
-      geocodeChange: function (e : UniSwitchChangeEvent) {
-        this.geocodeSelect = e.detail.value
-      },
-      highAccuracySelectChange: function (e : UniSwitchChangeEvent) {
-        this.isHighAccuracySelect = e.detail.value
-      },
-      radioChange(e : UniRadioGroupChangeEvent) {
-        for (let i = 0; i < this.items.length; i++) {
-          if (this.items[i].value === e.detail.value) {
-            this.current = i;
-            break;
-          }
-        }
-      },
-      radioChangePV(e : UniRadioGroupChangeEvent) {
-        for (let i = 0; i < this.providerList.length; i++) {
-          if (this.providerList[i].id === e.detail.value) {
-            this.currentProvider = i;
-            break;
-          }
-        }
-        if (e.detail.value == "system") {
-          this.current = 0
-        } else if (e.detail.value == "tencent") {
-          this.current = 1
-        }
-      },
-      getLocationTap: function () {
-        // #ifdef APP
-        if (this.providerList.length == 0) {
-          uni.showToast({
-            title: '未获取到provider，请确定基座中包含location功能',
-            icon: "error"
-          })
-          console.log("未获取到provider，请确定基座中包含location功能")
-          return
-        }
-        // #endif
-        uni.showLoading({
-          title: '定位中'
-        })
-        uni.getLocation(({
-          // #ifdef APP
-          provider: this.providerList[this.currentProvider].id,
-          // #endif
-          type: this.items[this.current].value,
-          altitude: this.altitudeSelect,
-          isHighAccuracy: this.isHighAccuracySelect,
-          geocode: this.geocodeSelect,
-          success: (res : any) => {
-            uni.hideLoading()
-            this.exeRet = JSON.stringify(res)
-          },
-          fail: (res : any) => {
-            uni.hideLoading()
-            this.exeRet = JSON.stringify(res)
-          },
-          complete: (res : any) => {
-            uni.hideLoading()
-            this.exeRet = JSON.stringify(res)
-          }
-        }));
-      },
+  const geocodeChange = (e : UniSwitchChangeEvent) => {
+    geocodeSelect.value = e.detail.value
+  }
 
-      // 仅用于自动化测试
-      jestGetLocation() {
-        this.jest_complete = false
-        this.jest_errCode = 0
-        uni.getLocation(({
-          // #ifdef APP
-          provider: this.jest_provider,
-          // #endif
-          type: this.jest_type,
-          altitude: this.jest_isAltitude,
-          isHighAccuracy: this.jest_isHighAccuracy,
-          geocode: this.jest_isGeocode,
-          success: (res) => {
-            if (res.address != null) {
-              this.jest_address = res.address!
-            }
-            this.jest_longitude = res.longitude
-            this.jest_latitude = res.latitude
-            this.jest_altitude = res.altitude
-            this.jest_complete = true
-          },
-          fail: (err) => {
-            this.jest_errCode = err.errCode
-            this.jest_complete = true
-          }
-        }));
+  const highAccuracySelectChange = (e : UniSwitchChangeEvent) => {
+    isHighAccuracySelect.value = e.detail.value
+  }
+
+  const radioChange = (e : UniRadioGroupChangeEvent) => {
+    for (let i = 0; i < items.value.length; i++) {
+      if (items.value[i].value === e.detail.value) {
+        current.value = i;
+        break;
       }
     }
   }
+
+  const radioChangePV = (e : UniRadioGroupChangeEvent) => {
+    for (let i = 0; i < providerList.value.length; i++) {
+      if (providerList.value[i].id === e.detail.value) {
+        currentProvider.value = i;
+        break;
+      }
+    }
+    if (e.detail.value == "system") {
+      current.value = 0
+    } else if (e.detail.value == "tencent") {
+      current.value = 1
+    }
+  }
+
+  const getLocationTap = () => {
+    // #ifdef APP
+    if (providerList.value.length == 0) {
+      uni.showToast({
+        title: '未获取到provider，请确定基座中包含location功能',
+        icon: "error"
+      })
+      console.log("未获取到provider，请确定基座中包含location功能")
+      return
+    }
+    // #endif
+    uni.showLoading({
+      title: '定位中'
+    })
+    uni.getLocation(({
+      // #ifdef APP
+      provider: providerList.value[currentProvider.value].id,
+      // #endif
+      type: items.value[current.value].value,
+      altitude: altitudeSelect.value,
+      isHighAccuracy: isHighAccuracySelect.value,
+      geocode: geocodeSelect.value,
+      success: (res : any) => {
+        uni.hideLoading()
+        exeRet.value = JSON.stringify(res)
+      },
+      fail: (res : any) => {
+        uni.hideLoading()
+        exeRet.value = JSON.stringify(res)
+      },
+      complete: (res : any) => {
+        uni.hideLoading()
+        exeRet.value = JSON.stringify(res)
+      }
+    }));
+  }
+
+  // 仅用于自动化测试
+  const jestGetLocation = () => {
+    jestData.jest_complete = false
+    jestData.jest_errCode = 0
+    uni.getLocation(({
+      // #ifdef APP
+      provider: jestData.jest_provider,
+      // #endif
+      type: jestData.jest_type,
+      altitude: jestData.jest_isAltitude,
+      isHighAccuracy: jestData.jest_isHighAccuracy,
+      geocode: jestData.jest_isGeocode,
+      success: (res) => {
+        if (res.address != null) {
+          jestData.jest_address = res.address!
+        }
+        jestData.jest_longitude = res.longitude
+        jestData.jest_latitude = res.latitude
+        jestData.jest_altitude = res.altitude
+        jestData.jest_complete = true
+      },
+      fail: (err) => {
+        jestData.jest_errCode = err.errCode
+        jestData.jest_complete = true
+      }
+    }));
+  }
+
+  onLoad(() => {
+    // #ifdef APP
+    getProvider()
+    // #endif
+  })
+
+  defineExpose({
+    jestData,
+    jestGetLocation
+  })
 </script>
 
 <style>
