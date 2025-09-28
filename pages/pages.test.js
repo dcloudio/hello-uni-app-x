@@ -49,7 +49,6 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/rich-text/rich-text-complex',
   '/pages/component/progress/progress',
-  '/pages/component/loading/loading',
   // 单独测试例截图
   // '/pages/component/form/form',
   '/pages/component/button/button',
@@ -343,7 +342,8 @@ if (!isAppWebView) {
       // 动态内容
       // '/pages/component/waterflow/waterflow-fit-height',
       '/pages/API/share-with-system/share-with-system',
-      '/pages/template/test-uts-button/test-uts-button'
+      '/pages/template/test-uts-button/test-uts-button',
+      '/pages/component/loading/loading',
     )
   }
   pages.push(
