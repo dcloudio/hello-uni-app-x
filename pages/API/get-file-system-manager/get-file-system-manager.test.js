@@ -38,7 +38,7 @@ describe('ExtApi-FileManagerTest', () => {
     let isDone = await page.waitFor(async () => {
       return await page.data('data.done')
     })
-    await page.setPageData({
+    await setPageData({
       done: false
     })
     return isDone
