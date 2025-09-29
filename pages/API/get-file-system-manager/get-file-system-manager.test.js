@@ -850,7 +850,7 @@ describe('ExtApi-FileManagerTest', () => {
     if (isApp) {
       // 写入一个文件
       await setPageData({
-        statsRet: ''
+        statsRet: ['']
       })
       btnStatFileButton = await page.$('#btn-stat-file-sync')
       await btnStatFileButton.tap()
