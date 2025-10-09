@@ -258,14 +258,60 @@ describe('component-native-input', () => {
     }
   })
 
+  it('focus with value', async () => {
+    await setPageData({
+      focus: false,
+      cursorInputFocus: false,
+      cursorColorInputFocus: false,
+      selectionInputFocus: false,
+      inputMaxLengthFocus: false,
+    })
+    await page.waitFor(1000)
+
+    await setPageData({
+      firstInputFocus: true
+    })
+    await page.waitFor(1000)
+
+    await program.pageScrollTo(0)
+    await page.waitFor(1000)
+
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    const image1 = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44,
+      },
+    })
+    expect(image1).toSaveImageSnapshot()
+    // 两张截图，避免光标闪烁截不到
+    const image2 = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44,
+      },
+    })
+    expect(image2).toSaveImageSnapshot()
+    await setPageData({
+      firstInputFocus: false,
+    })
+    // if (isHarmony) {
+    //   await program.tap({ x: 100, y: 50 })
+    //   await page.waitFor(1000);
+    // }
+  })
+
+  it('both set modelValue and value', async () => {
+    const input2 = await page.$('#both-model-value');
+    expect(await input2.value()).toEqual("123")
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
-  })
-  it('both set modelValue and value', async () => {
-    const input2 = await page.$('#both-model-value');
-    expect(await input2.value()).toEqual("123")
   })
 });
