@@ -413,15 +413,15 @@
           <text id="tap-event-y">{{ tapEvent!.y }}</text>
         </view>
       </view>
-      <view v-if="clickEvent !== null">
+      <view v-if="clickEvent.value !== null">
         <text class="title1">click Event: </text>
         <view class="uni-list-cell">
           <text>x: </text>
-          <text id="click-event-x">{{ clickEvent!.x }}</text>
+          <text id="click-event-x">{{ clickEvent.value!.x }}</text>
         </view>
         <view class="uni-list-cell">
           <text>y: </text>
-          <text id="click-event-y">{{ clickEvent!.y }}</text>
+          <text id="click-event-y">{{ clickEvent.value!.y }}</text>
         </view>
       </view>
     </view>
@@ -429,51 +429,56 @@
   </scroll-view>
   <!-- #endif -->
 </template>
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        title: 'global-events',
-        touchStartEvent: null as TouchEvent | null,
-        touchCancelEvent: null as TouchEvent | null,
-        touchMoveEvent: null as TouchEvent | null,
-        longPressEvent: null as TouchEvent | null,
-        touchEndEvent: null as TouchEvent | null,
-        tapEvent: null as PointerEvent | null,
-        clickEvent: null as PointerEvent | null,
-      }
-    },
-    methods: {
-      onTouchStart(e : TouchEvent) {
-        this.touchStartEvent = e
-        console.log('onTouchStart', e)
-      },
-      onTouchCancel(e : TouchEvent) {
-        this.touchCancelEvent = e
-        console.log('onTouchCancel')
-      },
-      onTouchMove(e : TouchEvent) {
-        this.touchMoveEvent = e
-        console.log('onTouchMove', e)
-      },
-      onLongPress(e : TouchEvent) {
-        this.longPressEvent = e
-        console.log('onLongPress', e)
-      },
-      onTouchEnd(e : TouchEvent) {
-        this.touchEndEvent = e
-        console.log('onTouchEnd', e)
-      },
-      onTap(e : PointerEvent) {
-        this.tapEvent = e
-        console.log('onTap', e)
-      },
-      onClick(e : PointerEvent) {
-        this.clickEvent = e
-        console.log('onClick', e)
-      }
-    },
+<script setup lang="uts">
+  const title = ref('global-events')
+  const touchStartEvent = ref<TouchEvent | null>(null)
+  const touchCancelEvent = ref<TouchEvent | null>(null)
+  const touchMoveEvent = ref<TouchEvent | null>(null)
+  const longPressEvent = ref<TouchEvent | null>(null)
+  const touchEndEvent = ref<TouchEvent | null>(null)
+  const tapEvent = ref<PointerEvent | null>(null)
+  const clickEvent = reactive({
+    value: null as PointerEvent | null
+  })
+
+  const onTouchStart = (e : TouchEvent) => {
+    touchStartEvent.value = e
+    console.log('onTouchStart', e)
   }
+
+  const onTouchCancel = (e : TouchEvent) => {
+    touchCancelEvent.value = e
+    console.log('onTouchCancel')
+  }
+
+  const onTouchMove = (e : TouchEvent) => {
+    touchMoveEvent.value = e
+    console.log('onTouchMove', e)
+  }
+
+  const onLongPress = (e : TouchEvent) => {
+    longPressEvent.value = e
+    console.log('onLongPress', e)
+  }
+
+  const onTouchEnd = (e : TouchEvent) => {
+    touchEndEvent.value = e
+    console.log('onTouchEnd', e)
+  }
+
+  const onTap = (e : PointerEvent) => {
+    tapEvent.value = e
+    console.log('onTap', e)
+  }
+
+  const onClick = (e : PointerEvent) => {
+    clickEvent.value = e
+    console.log('onClick', e)
+  }
+
+  defineExpose({
+    clickEvent
+  })
 </script>
 
 <style>

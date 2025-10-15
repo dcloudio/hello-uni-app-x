@@ -4,7 +4,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-  
+
 const PAGE_PATH = '/pages/component/global-events/global-events'
 
 describe('event trigger', () => {
@@ -334,7 +334,7 @@ describe('event trigger', () => {
   if (isIos || isHarmony) {
     it('mock tap event', async () => {
       await page.setData({
-        clickEvent: null
+        clickEvent: { value: null }
       })
       tapParams.duration = 0
       await program.tap(tapParams)
