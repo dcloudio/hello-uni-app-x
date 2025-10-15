@@ -333,9 +333,8 @@ describe('event trigger', () => {
 
   if (isIos || isHarmony) {
     it('mock tap event', async () => {
-      await page.setData({
-        clickEvent: { value: null }
-      })
+      await page.callMethod('clearAllEvents')
+
       tapParams.duration = 0
       await program.tap(tapParams)
       await page.waitFor(200)
