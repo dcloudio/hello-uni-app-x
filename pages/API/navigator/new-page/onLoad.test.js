@@ -151,6 +151,17 @@ describe("onLoad", () => {
       failureThresholdType: "percent",
     });
   });
+  it("showActionSheet", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor("view");
+    await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
+    await page.waitFor(1000);
+    const image = await program.screenshot(deviceShotOptions);
+    expect(image).toSaveImageSnapshot({
+      failureThreshold: 0.05,
+      failureThresholdType: "percent",
+    });
+  });
   it('onLoad 参数 decode', async () => {
     page = await program.reLaunch(PAGE_PATH);
     await page.waitFor("view");
