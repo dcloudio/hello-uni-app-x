@@ -2,426 +2,640 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <page-head title="触摸方块测试相关事件"></page-head>
+    <page-head title="组件全局事件示例"></page-head>
     <view class="uni-padding-wrap uni-common-mt container">
-      <view class="target" id="touch-target" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
-        @touchmove="onTouchMove" @touchend="onTouchEnd"></view>
-      <view class="target" id="longpress-target" @tap="onTap" @click="onClick" @longpress="onLongPress"></view>
-      <view v-if="touchStartEvent !== null">
-        <text class="title1">touchStart Event: </text>
-        <text class="title2">touches: </text>
+      <view class="section">
+        <text class="section-title">触摸事件区域：touchstart/touchmove/touchend/touchcancel</text>
+        <text class="section-desc">在下方蓝色区域滑动查看触摸事件详情</text>
+        <view class="target touch-area" id="touch-target" @touchstart="onTouchStart" @touchcancel="onTouchCancel"
+          @touchmove="onTouchMove" @touchend="onTouchEnd">
+          <text class="target-text">在此区域滑动</text>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">点击/长按事件区域：tap/click/longpress</text>
+        <text class="section-desc">点击或长按下方绿色区域查看事件详情</text>
+        <view class="target click-area" id="longpress-target" @tap="onTap" @click="onClick" @longpress="onLongPress">
+          <text class="target-text">点击或长按</text>
+        </view>
+      </view>
+
+      <view class="section" v-if="touchStartEvent !== null || touchMoveEvent !== null || touchEndEvent !== null || touchCancelEvent !== null || tapEvent !== null || clickEvent.value !== null || longPressEvent !== null">
+        <view class="clear-btn-wrapper">
+          <button class="clear-btn" @click="clearAllEvents">清除所有事件</button>
+        </view>
+      </view>
+      <view v-if="touchStartEvent !== null" class="event-detail">
+        <text class="event-title">touchStart Event（触摸开始事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ touchStartEvent!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ touchStartEvent!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ touchStartEvent!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ touchStartEvent!.timeStamp }}</text>
+          </view>
+        </view>
+        <text class="touches-title">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchStartEvent!.touches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-start-touch-identifier">{{
-              touch.identifier
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-start-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-start-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-start-touch-client-x">{{ touch.clientX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-start-touch-client-y">{{ touch.clientY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-start-touch-screen-x">{{ touch.screenX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-start-touch-screen-y">{{ touch.screenY }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.touches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier (触摸点标识符):</text>
+                <text class="prop-value" id="touch-start-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="prop-value" id="touch-start-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="prop-value" id="touch-start-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
+                <text class="prop-value" id="touch-start-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
+                <text class="prop-value" id="touch-start-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="prop-value" id="touch-start-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="prop-value" id="touch-start-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
-        <text class="title2 uni-common-mt">changedTouches: </text>
+        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchStartEvent!.changedTouches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-start-changed-touch-identifier">{{
-              touch.identifier
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-start-changed-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-start-changed-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-start-changed-touch-client-x">{{
-              touch.clientX
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-start-changed-touch-client-y">{{
-              touch.clientY
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-start-changed-touch-screen-x">{{
-              touch.screenX
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-start-changed-touch-screen-y">{{
-              touch.screenY
-            }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier:</text>
+                <text class="prop-value" id="touch-start-changed-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX:</text>
+                <text class="prop-value" id="touch-start-changed-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY:</text>
+                <text class="prop-value" id="touch-start-changed-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX:</text>
+                <text class="prop-value" id="touch-start-changed-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY:</text>
+                <text class="prop-value" id="touch-start-changed-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX:</text>
+                <text class="prop-value" id="touch-start-changed-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY:</text>
+                <text class="prop-value" id="touch-start-changed-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
       </view>
-      <view v-if="touchCancelEvent !== null">
-        <text class="title1">touchCancel Event: </text>
-        <text class="title2">touches: </text>
+      <view v-if="touchCancelEvent !== null" class="event-detail">
+        <text class="event-title">touchCancel Event（触摸取消事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ touchCancelEvent!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ touchCancelEvent!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ touchCancelEvent!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ touchCancelEvent!.timeStamp }}</text>
+          </view>
+        </view>
+        <text class="touches-title">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchCancelEvent!.touches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-cancel-touch-identifier">{{
+          <view class="touch-item">
+            <text class="touch-index">event.touches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier (触摸点标识符):</text>
+                <text class="prop-value" id="touch-cancel-touch-identifier">{{
               touch.identifier
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-cancel-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-cancel-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-cancel-touch-client-x">{{ touch.clientX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-cancel-touch-client-y">{{ touch.clientY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-cancel-touch-screen-x">{{ touch.screenX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-cancel-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="prop-value" id="touch-cancel-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="prop-value" id="touch-cancel-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
+                <text class="prop-value" id="touch-cancel-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
+                <text class="prop-value" id="touch-cancel-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="prop-value" id="touch-cancel-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="prop-value" id="touch-cancel-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
-        <text class="title2 uni-common-mt">changedTouches: </text>
+        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchCancelEvent!.changedTouches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-cancel-changed-touch-identifier">{{
+          <view class="touch-item">
+            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-identifier">{{
               touch.identifier
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-cancel-changed-touch-page-x">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-page-x">{{
               touch.pageX
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-cancel-changed-touch-page-y">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-page-y">{{
               touch.pageY
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-cancel-changed-touch-client-x">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-client-x">{{
               touch.clientX
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-cancel-changed-touch-client-y">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-client-y">{{
               touch.clientY
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-cancel-changed-touch-screen-x">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-screen-x">{{
               touch.screenX
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-cancel-changed-touch-screen-y">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY:</text>
+                <text class="prop-value" id="touch-cancel-changed-touch-screen-y">{{
               touch.screenY
             }}</text>
+              </view>
+            </view>
           </view>
         </template>
       </view>
-      <view v-if="touchMoveEvent !== null">
-        <text class="title1">touchMove Event: </text>
-        <text class="title2">touches: </text>
+      <view v-if="touchMoveEvent !== null" class="event-detail">
+        <text class="event-title">touchMove Event（触摸移动事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ touchMoveEvent!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ touchMoveEvent!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ touchMoveEvent!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ touchMoveEvent!.timeStamp }}</text>
+          </view>
+        </view>
+        <text class="touches-title">event.touches (当前所有触摸点):</text>
         <template v-for="(touch, index) in touchMoveEvent!.touches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-move-touch-identifier">{{ touch.identifier }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-move-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-move-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-move-touch-client-x">{{ touch.clientX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-move-touch-client-y">{{ touch.clientY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-move-touch-screen-x">{{ touch.screenX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-move-touch-screen-y">{{ touch.screenY }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.touches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier (触摸点标识符):</text>
+                <text class="prop-value" id="touch-move-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="prop-value" id="touch-move-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="prop-value" id="touch-move-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
+                <text class="prop-value" id="touch-move-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
+                <text class="prop-value" id="touch-move-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="prop-value" id="touch-move-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="prop-value" id="touch-move-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
-        <text class="title2 uni-common-mt">changedTouches: </text>
+        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchMoveEvent!.changedTouches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-move-changed-touch-identifier">{{
-              touch.identifier
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-move-changed-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-move-changed-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-move-changed-touch-client-x">{{
-              touch.clientX
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-move-changed-touch-client-y">{{
-              touch.clientY
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-move-changed-touch-screen-x">{{
-              touch.screenX
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-move-changed-touch-screen-y">{{
-              touch.screenY
-            }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier:</text>
+                <text class="prop-value" id="touch-move-changed-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX:</text>
+                <text class="prop-value" id="touch-move-changed-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY:</text>
+                <text class="prop-value" id="touch-move-changed-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX:</text>
+                <text class="prop-value" id="touch-move-changed-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY:</text>
+                <text class="prop-value" id="touch-move-changed-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX:</text>
+                <text class="prop-value" id="touch-move-changed-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY:</text>
+                <text class="prop-value" id="touch-move-changed-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
       </view>
-      <view v-if="touchEndEvent !== null">
-        <text class="title1">touchEnd Event: </text>
-        <text class="title2">touches: </text>
+      <view v-if="touchEndEvent !== null" class="event-detail">
+        <text class="event-title">touchEnd Event（触摸结束事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ touchEndEvent!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ touchEndEvent!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ touchEndEvent!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ touchEndEvent!.timeStamp }}</text>
+          </view>
+        </view>
+        <text class="touches-title">event.touches (当前所有触摸点):</text>
         <template v-if="touchEndEvent!.touches.length > 0" v-for="(touch, index) in touchEndEvent!.touches"
           :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-end-touch-identifier">{{ touch.identifier }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-end-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-end-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-end-touch-client-x">{{ touch.clientX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-end-touch-client-y">{{ touch.clientY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-end-touch-screen-x">{{ touch.screenX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-end-touch-screen-y">{{ touch.screenY }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.touches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier (触摸点标识符):</text>
+                <text class="prop-value" id="touch-end-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="prop-value" id="touch-end-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="prop-value" id="touch-end-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
+                <text class="prop-value" id="touch-end-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
+                <text class="prop-value" id="touch-end-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="prop-value" id="touch-end-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="prop-value" id="touch-end-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
-        <text class="title2 uni-common-mt">changedTouches: </text>
+        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in touchEndEvent!.changedTouches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="touch-end-changed-touch-identifier">{{
-              touch.identifier
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="touch-end-changed-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="touch-end-changed-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="touch-end-changed-touch-client-x">{{
-              touch.clientX
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="touch-end-changed-touch-client-y">{{
-              touch.clientY
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="touch-end-changed-touch-screen-x">{{
-              touch.screenX
-            }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="touch-end-changed-touch-screen-y">{{
-              touch.screenY
-            }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier:</text>
+                <text class="prop-value" id="touch-end-changed-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX:</text>
+                <text class="prop-value" id="touch-end-changed-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY:</text>
+                <text class="prop-value" id="touch-end-changed-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX:</text>
+                <text class="prop-value" id="touch-end-changed-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY:</text>
+                <text class="prop-value" id="touch-end-changed-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX:</text>
+                <text class="prop-value" id="touch-end-changed-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY:</text>
+                <text class="prop-value" id="touch-end-changed-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
       </view>
-      <view v-if="longPressEvent !== null">
-        <text class="title1">longPress Event: </text>
-        <text class="title2">touches: </text>
+      <view v-if="longPressEvent !== null" class="event-detail">
+        <text class="event-title">longPress Event（长按事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ longPressEvent!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ longPressEvent!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ longPressEvent!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ longPressEvent!.timeStamp }}</text>
+          </view>
+        </view>
+        <text class="touches-title">event.touches (当前所有触摸点):</text>
         <template v-if="longPressEvent!.touches.length > 0" v-for="(touch, index) in longPressEvent!.touches"
           :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="long-press-touch-identifier">{{ touch.identifier }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="long-press-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="long-press-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="long-press-touch-client-x">{{ touch.clientX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="long-press-touch-client-y">{{ touch.clientY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="long-press-touch-screen-x">{{ touch.screenX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="long-press-touch-screen-y">{{ touch.screenY }}</text>
+          <view class="touch-item">
+            <text class="touch-index">event.touches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier (触摸点标识符):</text>
+                <text class="prop-value" id="long-press-touch-identifier">{{ touch.identifier }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX (相对于页面左边,含滚动):</text>
+                <text class="prop-value" id="long-press-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY (相对于页面顶部,含滚动):</text>
+                <text class="prop-value" id="long-press-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX (相对于可视区域左边):</text>
+                <text class="prop-value" id="long-press-touch-client-x">{{ touch.clientX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY (相对于可视区域顶部):</text>
+                <text class="prop-value" id="long-press-touch-client-y">{{ touch.clientY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX (相对于屏幕左边,不含滚动):</text>
+                <text class="prop-value" id="long-press-touch-screen-x">{{ touch.screenX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY (相对于屏幕顶部,不含滚动):</text>
+                <text class="prop-value" id="long-press-touch-screen-y">{{ touch.screenY }}</text>
+              </view>
+            </view>
           </view>
         </template>
-        <text class="title2 uni-common-mt">changedTouches: </text>
+        <text class="touches-title">event.changedTouches (变化的触摸点):</text>
         <template v-for="(touch, index) in longPressEvent!.changedTouches" :key="index">
-          <text class="title3">touch[{{ index }}]:</text>
-          <view class="uni-list-cell">
-            <text>identifier: </text>
-            <text id="long-press-changed-touch-identifier">{{
+          <view class="touch-item">
+            <text class="touch-index">event.changedTouches[{{ index }}]:</text>
+            <view class="touch-props">
+              <view class="prop-row">
+                <text class="prop-label">  .identifier:</text>
+                <text class="prop-value" id="long-press-changed-touch-identifier">{{
               touch.identifier
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageX: </text>
-            <text id="long-press-changed-touch-page-x">{{ touch.pageX }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>pageY: </text>
-            <text id="long-press-changed-touch-page-y">{{ touch.pageY }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientX: </text>
-            <text id="long-press-changed-touch-client-x">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageX:</text>
+                <text class="prop-value" id="long-press-changed-touch-page-x">{{ touch.pageX }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .pageY:</text>
+                <text class="prop-value" id="long-press-changed-touch-page-y">{{ touch.pageY }}</text>
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientX:</text>
+                <text class="prop-value" id="long-press-changed-touch-client-x">{{
               touch.clientX
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>clientY: </text>
-            <text id="long-press-changed-touch-client-y">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .clientY:</text>
+                <text class="prop-value" id="long-press-changed-touch-client-y">{{
               touch.clientY
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenX: </text>
-            <text id="long-press-changed-touch-screen-x">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenX:</text>
+                <text class="prop-value" id="long-press-changed-touch-screen-x">{{
               touch.screenX
             }}</text>
-          </view>
-          <view class="uni-list-cell">
-            <text>screenY: </text>
-            <text id="long-press-changed-touch-screen-y">{{
+              </view>
+              <view class="prop-row">
+                <text class="prop-label">  .screenY:</text>
+                <text class="prop-value" id="long-press-changed-touch-screen-y">{{
               touch.screenY
             }}</text>
+              </view>
+            </view>
           </view>
         </template>
       </view>
-      <view v-if="tapEvent !== null">
-        <text class="title1">tap Event: </text>
-        <view class="uni-list-cell">
-          <text>x: </text>
-          <text id="tap-event-x">{{ tapEvent!.x }}</text>
+      <view v-if="tapEvent !== null" class="event-detail">
+        <text class="event-title">tap Event（点击事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ tapEvent!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ tapEvent!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ tapEvent!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ tapEvent!.timeStamp }}</text>
+          </view>
         </view>
-        <view class="uni-list-cell">
-          <text>y: </text>
-          <text id="tap-event-y">{{ tapEvent!.y }}</text>
+        <view class="event-base-info">
+          <text class="info-title">PointerEvent 位置信息:</text>
+          <view class="info-row">
+            <text class="info-label">event.x (同clientX):</text>
+            <text class="info-value" id="tap-event-x">{{ tapEvent!.x }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.y (同clientY):</text>
+            <text class="info-value" id="tap-event-y">{{ tapEvent!.y }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.clientX (相对于可视区域左边):</text>
+            <text class="info-value">{{ tapEvent!.clientX }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.clientY (相对于可视区域顶部):</text>
+            <text class="info-value">{{ tapEvent!.clientY }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.pageX (相对于页面左边,含滚动):</text>
+            <text class="info-value">{{ tapEvent!.pageX }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.pageY (相对于页面顶部,含滚动):</text>
+            <text class="info-value">{{ tapEvent!.pageY }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.screenX (相对于屏幕左边,不含滚动):</text>
+            <text class="info-value">{{ tapEvent!.screenX }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.screenY (相对于屏幕顶部,不含滚动):</text>
+            <text class="info-value">{{ tapEvent!.screenY }}</text>
+          </view>
         </view>
       </view>
-      <view v-if="clickEvent.value !== null">
-        <text class="title1">click Event: </text>
-        <view class="uni-list-cell">
-          <text>x: </text>
-          <text id="click-event-x">{{ clickEvent.value!.x }}</text>
+      <view v-if="clickEvent.value !== null" class="event-detail">
+        <text class="event-title">click Event（点击事件）</text>
+        <view class="event-base-info">
+          <text class="info-title">UniEvent 基础属性:</text>
+          <view class="info-row">
+            <text class="info-label">event.type (事件类型):</text>
+            <text class="info-value">{{ clickEvent.value!.type }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.bubbles (是否冒泡):</text>
+            <text class="info-value">{{ clickEvent.value!.bubbles }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.cancelable (是否可取消):</text>
+            <text class="info-value">{{ clickEvent.value!.cancelable }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.timeStamp (时间戳):</text>
+            <text class="info-value">{{ clickEvent.value!.timeStamp }}</text>
+          </view>
         </view>
-        <view class="uni-list-cell">
-          <text>y: </text>
-          <text id="click-event-y">{{ clickEvent.value!.y }}</text>
+        <view class="event-base-info">
+          <text class="info-title">PointerEvent 位置信息:</text>
+          <view class="info-row">
+            <text class="info-label">event.x (同clientX):</text>
+            <text class="info-value" id="click-event-x">{{ clickEvent.value!.x }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.y (同clientY):</text>
+            <text class="info-value" id="click-event-y">{{ clickEvent.value!.y }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.clientX (相对于可视区域左边):</text>
+            <text class="info-value">{{ clickEvent.value!.clientX }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.clientY (相对于可视区域顶部):</text>
+            <text class="info-value">{{ clickEvent.value!.clientY }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.pageX (相对于页面左边,含滚动):</text>
+            <text class="info-value">{{ clickEvent.value!.pageX }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.pageY (相对于页面顶部,含滚动):</text>
+            <text class="info-value">{{ clickEvent.value!.pageY }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.screenX (相对于屏幕左边,不含滚动):</text>
+            <text class="info-value">{{ clickEvent.value!.screenX }}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">event.screenY (相对于屏幕顶部,不含滚动):</text>
+            <text class="info-value">{{ clickEvent.value!.screenY }}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -437,9 +651,13 @@
   const longPressEvent = ref<TouchEvent | null>(null)
   const touchEndEvent = ref<TouchEvent | null>(null)
   const tapEvent = ref<PointerEvent | null>(null)
+
+  type ClickEventType = {
+    value: PointerEvent | null
+  }
   const clickEvent = reactive({
-    value: null as PointerEvent | null
-  })
+    value: null
+  } as ClickEventType)
 
   const onTouchStart = (e : TouchEvent) => {
     touchStartEvent.value = e
@@ -476,6 +694,16 @@
     console.log('onClick', e)
   }
 
+  const clearAllEvents = () => {
+    touchStartEvent.value = null
+    touchCancelEvent.value = null
+    touchMoveEvent.value = null
+    longPressEvent.value = null
+    touchEndEvent.value = null
+    tapEvent.value = null
+    clickEvent.value = null
+  }
+
   defineExpose({
     clickEvent
   })
@@ -486,11 +714,156 @@
     padding-bottom: 10px;
   }
 
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
   .target {
-    margin: 20px 0 0 50px;
-    width: 200px;
-    height: 100px;
-    background-color: aqua;
+    width: 100%;
+    height: 200rpx;
+    border-radius: 10rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .touch-area {
+    background-color: #409eff;
+  }
+
+  .click-area {
+    background-color: #67c23a;
+  }
+
+  .target-text {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .clear-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .clear-btn {
+    width: 100%;
+    background-color: #f56c6c;
+    color: #fff;
+    padding: 12px 0;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .event-detail {
+    background-color: #f5f7fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .event-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #303133;
+    margin-bottom: 12px;
+  }
+
+  .event-base-info {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+
+  .info-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #606266;
+    margin-bottom: 8px;
+  }
+
+  .info-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .info-label {
+    font-size: 14px;
+    color: #909399;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+
+  .info-value {
+    font-size: 14px;
+    color: #303133;
+    font-weight: bold;
+    text-align: right;
+    flex: 1;
+  }
+
+  .touches-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #606266;
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+
+  .touch-item {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+
+  .touch-index {
+    font-size: 14px;
+    font-weight: bold;
+    color: #409eff;
+    margin-bottom: 8px;
+  }
+
+  .touch-props {
+    padding-left: 10px;
+  }
+
+  .prop-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 6px;
+  }
+
+  .prop-label {
+    font-size: 13px;
+    color: #909399;
+    flex: 1;
+  }
+
+  .prop-value {
+    font-size: 13px;
+    color: #303133;
+    font-weight: bold;
+    min-width: 60px;
+    text-align: right;
   }
 
   .title1 {
@@ -506,5 +879,11 @@
   .title3 {
     margin-top: 5px;
     font-size: 16px;
+  }
+
+  .uni-list-cell {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
   }
 </style>
