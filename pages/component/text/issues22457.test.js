@@ -13,6 +13,6 @@ describe('issues-22457', () => {
 
     let textWidth = await page.data('textWidth')
     // textWidth 应该大于 20
-    expect(textWidth).toBeGreaterThan(20)
+    expect(textWidth).toBeGreaterThan(30)
   })
 })
