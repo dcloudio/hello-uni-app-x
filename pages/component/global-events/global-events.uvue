@@ -697,6 +697,28 @@
   const tapEvent = ref<PointerEvent | null>(null)
   const clickEvent = ref<PointerEvent | null>(null)
 
+  type Rect = {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+  const longPressTargetRect = reactive<Rect>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  })
+  // 获取 #longpress-target 位置信息，供自动化测试使用
+  onReady(() => {
+    const longpressTarget = uni.getElementById('longpress-target')!
+    const rect = longpressTarget.getBoundingClientRect()
+    longPressTargetRect.x = rect.x
+    longPressTargetRect.y = rect.y
+    longPressTargetRect.width = rect.width
+    longPressTargetRect.height = rect.height
+  })
+
   const onTouchStart = (e : TouchEvent) => {
     touchStartEvent.value = e
     console.log('onTouchStart', e)
@@ -747,7 +769,8 @@
   }
 
   defineExpose({
-    clearAllEvents
+    clearAllEvents,
+    longPressTargetRect
   })
 </script>
 
