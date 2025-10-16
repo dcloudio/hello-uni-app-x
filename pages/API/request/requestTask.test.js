@@ -19,14 +19,6 @@ describe('ExtApi-RequestTask', () => {
   });
 
 
-  beforeEach(async () => {
-    await page.setData({
-      jest_result: false,
-      data: null,
-      header: null
-    })
-  });
-
   it('Check RequestTask related api', async () => {
     const onHeadersReceived_observe_1_btn = await page.$('#onHeadersReceived_observe_1')
     await onHeadersReceived_observe_1_btn.tap()
