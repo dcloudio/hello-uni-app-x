@@ -1,168 +1,318 @@
 <template>
-  <scroll-view style="flex: 1">
-    <view style="margin: 20px;">
-      <text style="font-weight: bold;">case1:</text>
-      <text>loading 默认大小样式; \n font-weight="normal"/"bold"; \n color="默认"/"red"/"blue"</text>
-      <view style="flex-direction: row; margin: 10px;">
-        <loading></loading>
-        <loading style="margin-left: 20px" font-weight="normal" color="red"></loading>
-        <loading style="margin-left: 20px" font-weight="bold" color="blue"></loading>
+  <scroll-view class="container">
+    <!-- 标题和说明 -->
+    <view class="header">
+      <text class="title">Loading样式测试</text>
+      <text class="subtitle">对比 class 和 style 两种实现方式</text>
+    </view>
+
+    <!-- 对比布局 -->
+    <view class="comparison-container">
+      <!-- Class实现部分 -->
+      <view class="implementation-section">
+        <text class="section-title">Class 实现</text>
+
+        <!-- 基础样式测试 -->
+        <view class="section">
+          <text class="section-subtitle">1. 基础样式测试</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">默认样式</text>
+              <loading />
+            </view>
+            <view class="item">
+              <text class="label">蓝色样式</text>
+              <loading class="loading-blue" />
+            </view>
+            <view class="item">
+              <text class="label">红色样式</text>
+              <loading class="loading-red" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 尺寸测试 -->
+        <view class="section">
+          <text class="section-subtitle">2. 尺寸测试</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">小尺寸 (24px)</text>
+              <loading class="loading-small" />
+            </view>
+            <view class="item">
+              <text class="label">中尺寸 (32px)</text>
+              <loading class="loading-medium" />
+            </view>
+            <view class="item">
+              <text class="label">大尺寸 (48px)</text>
+              <loading class="loading-large" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 动画效果测试 -->
+        <view class="section">
+          <text class="section-subtitle">3. 动画效果测试</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">默认动画</text>
+              <loading class="loading-animation-default" />
+            </view>
+            <view class="item">
+              <text class="label">ease动画</text>
+              <loading class="loading-animation-ease" />
+            </view>
+            <view class="item">
+              <text class="label">linear动画</text>
+              <loading class="loading-animation-linear" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 特殊样式组合 -->
+        <view class="section">
+          <text class="section-subtitle">4. 特殊样式组合</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">粗体红色</text>
+              <loading class="loading-bold-red" />
+            </view>
+            <view class="item">
+              <text class="label">蓝色ease动画</text>
+              <loading class="loading-blue-ease" />
+            </view>
+            <view class="item">
+              <text class="label">大尺寸linear</text>
+              <loading class="loading-large-linear" />
+            </view>
+          </view>
+        </view>
       </view>
 
-      <text style="font-weight: bold;">case2:</text>
-      <text>loading width=height=50; \n font-weight="normal"/"bold"; \n color="默认"/"red"/"blue"</text>
-      <view style="flex-direction: row; margin: 10px;">
-        <loading style="width: 50px; height: 50px;"></loading>
-        <loading style="margin-left: 20px; width: 50px; height: 50px;" font-weight="normal" color="red"></loading>
-        <loading style="margin-left: 20px; width: 50px; height: 50px;" font-weight="bold" color="blue"></loading>
-      </view>
-      <text style="font-weight: bold;">case3:</text>
-      <text>loading width=20px, height=50px; \n font-weight="normal"/"bold"; \n color="默认"/"red"/"blue"</text>
-      <view style="flex-direction: row; margin: 10px;">
-        <loading style="width: 20px; height: 50px;"></loading>
-        <loading style="margin-left: 20px; width: 20px; height: 50px;" font-weight="normal"
-          color="red"></loading>
-        <loading style="margin-left: 20px; width: 20px; height: 50px;" font-weight="bold"
-          color="blue"></loading>
-      </view>
+      <!-- Style实现部分 -->
+      <view class="implementation-section">
+        <text class="section-title">Style 实现</text>
 
-      <text style="font-weight: bold;">case4:</text>
-      <text>loading width=50px, height=20px; \n font-weight="normal"/"bold"; \n color="默认"/"red"/"blue"</text>
-      <view style="flex-direction: row; margin: 10px;">
-        <loading style="width: 50px; height: 20px;;"></loading>
-        <loading style="margin-left: 20px; width: 50px; height: 20px;" font-weight="normal"
-          color="red"></loading>
-        <loading style="margin-left: 20px; width: 50px; height: 20px;" font-weight="bold"
-          color="blue"></loading>
-      </view>
+        <!-- 基础样式测试 -->
+        <view class="section">
+          <text class="section-subtitle">1. 基础样式测试</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">默认样式</text>
+              <loading />
+            </view>
+            <view class="item">
+              <text class="label">蓝色样式</text>
+              <loading :style="{ color: 'blue' }" />
+            </view>
+            <view class="item">
+              <text class="label">红色样式</text>
+              <loading :style="{ color: 'red' }" />
+            </view>
+          </view>
+        </view>
 
-      <text style="font-weight: bold;">case5:</text>
-      <text>loading 带背景环</text>
-      <view style="flex-direction: row; margin: 10px;">
-        <!-- 使用Vue计算属性动态计算border -->
-        <view class="loading-container" :style="containerStyle(36)">
-          <view class="background-ring" :style="ringStyle(36, false)"></view>
-          <view class="loading-content">
-            <loading :style="loadingStyle(36)"></loading>
+        <!-- 尺寸测试 -->
+        <view class="section">
+          <text class="section-subtitle">2. 尺寸测试</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">小尺寸 (24px)</text>
+              <loading :style="{ width: '24px', height: '24px' }" />
+            </view>
+            <view class="item">
+              <text class="label">中尺寸 (32px)</text>
+              <loading :style="{ width: '32px', height: '32px' }" />
+            </view>
+            <view class="item">
+              <text class="label">大尺寸 (48px)</text>
+              <loading :style="{ width: '48px', height: '48px' }" />
+            </view>
           </view>
         </view>
-        <view class="loading-container" :style="containerStyle(36)" style="margin-left: 20px;">
-          <view class="background-ring" :style="ringStyle(36, false)"></view>
-          <view class="loading-content">
-            <loading :style="loadingStyle(36)" font-weight="normal" color="red"></loading>
+
+        <!-- 动画效果测试 -->
+        <view class="section">
+          <text class="section-subtitle">3. 动画效果测试</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">默认动画</text>
+              <loading />
+            </view>
+            <view class="item">
+              <text class="label">ease动画</text>
+              <loading :style="{ animationTimingFunction: 'ease' }" />
+            </view>
+            <view class="item">
+              <text class="label">linear动画</text>
+              <loading :style="{ animationTimingFunction: 'linear' }" />
+            </view>
           </view>
         </view>
-        <view class="loading-container" :style="containerStyle(36)" style="margin-left: 20px;">
-          <view class="background-ring" :style="ringStyle(36, true)"></view>
-          <view class="loading-content">
-            <loading :style="loadingStyle(36)" font-weight="bold" color="blue"></loading>
-          </view>
-        </view>
-      </view>
-      <text style="font-weight: bold;">case6:</text>
-      <text>loading 带背景环+背景颜色</text>
-      <view style="flex-direction: row; margin: 10px;">
-        <!-- 使用Vue计算属性动态计算居中位置和边框 -->
-        <view class="bg-container" style=" width: 80px; height: 80px;">
-          <view class="background-ring" :style="centeredRingStyle(80, 36, false)"></view>
-          <view class="loading-content" :style="centeredContentStyle(80, 36)">
-            <loading :style="loadingStyle(36)"></loading>
-          </view>
-        </view>
-        <view class="bg-container" style="margin-left: 20px; width: 80px; height: 80px;">
-          <view class="background-ring" :style="centeredRingStyle(80, 36, false)"></view>
-          <view class="loading-content" :style="centeredContentStyle(80, 36)">
-            <loading :style="loadingStyle(36)" font-weight="normal" color="red"></loading>
-          </view>
-        </view>
-        <view class="bg-container" style="margin-left: 20px; width: 80px; height: 80px;">
-          <view class="background-ring" :style="centeredRingStyle(80, 36, true)"></view>
-          <view class="loading-content" :style="centeredContentStyle(80, 36)">
-            <loading :style="loadingStyle(36)" font-weight="bold" color="blue"></loading>
+
+        <!-- 特殊样式组合 -->
+        <view class="section">
+          <text class="section-subtitle">4. 特殊样式组合</text>
+          <view class="row">
+            <view class="item">
+              <text class="label">粗体红色</text>
+              <loading :style="{ color: 'red', fontWeight: 'bold' }" />
+            </view>
+            <view class="item">
+              <text class="label">蓝色ease动画</text>
+              <loading :style="{ color: 'blue', animationTimingFunction: 'ease' }" />
+            </view>
+            <view class="item">
+              <text class="label">大尺寸linear</text>
+              <loading :style="{ width: '48px', height: '48px', animationTimingFunction: 'linear' }" />
+            </view>
           </view>
         </view>
       </view>
     </view>
+
+
   </scroll-view>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-
-      }
-    },
-    methods: {
-      // 容器样式计算
-      containerStyle(size : number) {
-        return {
-          width: size + 'px',
-          height: size + 'px'
-        }
-      },
-
-      // 背景环样式计算
-      ringStyle(size : number, isBold : boolean = false) {
-        const borderWidth = isBold ? size * 0.125 : size * 0.0625
-        return {
-          width: size + 'px',
-          height: size + 'px',
-          border: borderWidth + 'px solid #e0e0e0',
-          borderRadius: '50px'
-        }
-      },
-
-      // loading样式计算
-      loadingStyle(size : number) {
-        return {
-          width: size + 'px',
-          height: size + 'px'
-        }
-      },
-
-      // 居中背景环样式计算
-      centeredRingStyle(containerSize : number, loadingSize : number, isBold : boolean = false) {
-        const borderWidth = isBold ? loadingSize * 0.125 : loadingSize * 0.0625
-        const offset = (containerSize - loadingSize) / 2
-        return {
-          width: loadingSize + 'px',
-          height: loadingSize + 'px',
-          border: borderWidth + 'px solid #e0e0e0',
-          borderRadius: '50px',
-          top: offset + 'px',
-          left: offset + 'px'
-        }
-      },
-
-      // 居中内容样式计算
-      centeredContentStyle(containerSize : number, loadingSize : number) {
-        const offset = (containerSize - loadingSize) / 2
-        return {
-          top: offset + 'px',
-          left: offset + 'px'
-        }
-      }
-    }
+export default {
+  data() {
+    return {}
   }
+}
 </script>
 
 <style>
-  /* 基础样式类 - 使用Vue计算属性动态设置具体数值 */
-  .loading-container {
-    position: relative;
-  }
+.container {
+  flex: 1;
+  padding: 8px;
+  background-color: #f8f8f8;
+}
 
-  .bg-container {
-    position: relative;
-    background-color: white;
-  }
+.header {
+  margin-bottom: 30px;
+  align-items: center;
+}
 
-  .background-ring {
-    position: absolute;
-  }
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
 
-  .loading-content {
-    position: absolute;
-  }
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.comparison-container {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.implementation-section {
+  flex: 1;
+  margin: 0 10px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 16px;
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.section {
+  margin-bottom: 25px;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  border-left: 4px solid #007AFF;
+}
+
+.row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.item {
+  align-items: center;
+  margin: 2px;
+  min-width: 120px;
+}
+
+.label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Class实现的样式 */
+.loading-blue {
+  color: blue;
+}
+
+.loading-red {
+  color: red;
+}
+
+.loading-small {
+  width: 24px;
+  height: 24px;
+}
+
+.loading-medium {
+  width: 32px;
+  height: 32px;
+}
+
+.loading-large {
+  width: 48px;
+  height: 48px;
+}
+
+.loading-animation-ease {
+  animation-timing-function: ease;
+}
+
+.loading-animation-linear {
+  animation-timing-function: linear;
+}
+
+.loading-bold-red {
+  color: red;
+  font-weight: bold;
+}
+
+.loading-blue-ease {
+  color: blue;
+  animation-timing-function: ease;
+}
+
+.loading-large-linear {
+  width: 48px;
+  height: 48px;
+  animation-timing-function: linear;
+}
+
+
 </style>
