@@ -1,0 +1,62 @@
+<template>
+  <text>测试 text 组件动态改变 lineHeight、letterSpacing</text>
+  <view>
+    <text id="testText"
+      :style="`line-height: ${lineHeight_mix}; letter-spacing:${letterSpacing_mix}px;`">
+      uni-app 是一个使用 Vue.js
+      开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、鸿蒙Next、Web（响应式）、以及各种小程序（微信/支付宝/百度/抖音/飞书/QQ/快手/钉钉/淘宝/京东/小红书）、快应用、鸿蒙元服务等多个平台。</text>
+    <view style="flex-direction: row;">
+      <button @click="plusLineHeight">+行高</button>
+      <button @click="minusLineHeight">-行高</button>
+    </view>
+    <view style="flex-direction: row;">
+      <button @click="plusLetterSpacing">+字宽</button>
+      <button @click="minusLetterSpacing">-字宽</button>
+    </view>
+  </view>
+</template>
+
+<script setup>
+  const lineHeight_mix = ref(1.5)
+  const letterSpacing_mix = ref(1)
+
+  function plusLineHeight() {
+    lineHeight_mix.value += 0.2
+    console.log('getLineHeight: ', getLineHeight());
+  }
+  function minusLineHeight() {
+    lineHeight_mix.value -= 0.2
+  }
+  function plusLetterSpacing() {
+    letterSpacing_mix.value += 0.2
+    console.log('getLineHeight: ', getLetterSpacing());
+  }
+  function minusLetterSpacing() {
+    letterSpacing_mix.value -= 0.2
+  }
+
+  function getLineHeight() {
+    const testText = uni.getElementById('testText')
+    if (testText) {
+      return parseFloat(testText.style.getPropertyValue('line-height'))
+    }
+    return 0
+  }
+
+  function getLetterSpacing() {
+    const testText = uni.getElementById('testText')
+    if (testText) {
+      return parseFloat(testText.style.getPropertyValue('letter-spacing'))
+    }
+    return 0
+  }
+
+  defineExpose({
+    getLineHeight,
+    getLetterSpacing,
+    plusLineHeight,
+    minusLineHeight,
+    plusLetterSpacing,
+    minusLetterSpacing
+  })
+</script>
