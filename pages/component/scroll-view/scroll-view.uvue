@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view class="page-scroll-view">
+  <scroll-view class="page-scroll-view" :direction="data.scrollDirection">
   <!-- #endif -->
     <view>
       <page-head title="scroll-view,区域滚动视图"></page-head>
@@ -34,7 +34,7 @@
             <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
           </scroll-view>
         </view>
-
+        <boolean-data :defaultValue="false" title="是否禁用外层scroll-view滚动" @change="change_disabled_boolean"></boolean-data>
         <navigator url="/pages/component/scroll-view/scroll-view-props" hover-class="none">
           <button type="primary" class="button">
             非下拉刷新的属性示例
@@ -77,12 +77,15 @@
     oldScrollTop: number;
     scrollLeft: number;
     showScrollbar: boolean;
+    // 控制外层scroll-view的direction属性
+    scrollDirection: string;
     // 自动化测试
     isScrollTest: string;
     isScrolltolowerTest: string;
     isScrolltoupperTest: string;
     scrollDetailTest: UniScrollEventDetail | null;
     scrollEndDetailTest: UniScrollEventDetail | null;
+
   }
 
   const data = reactive({
@@ -90,6 +93,7 @@
     oldScrollTop: 0,
     scrollLeft: 120,
     showScrollbar: true,
+    scrollDirection: "vertical",
     // 自动化测试
     isScrollTest: '',
     isScrolltolowerTest: '',
@@ -186,6 +190,14 @@
     data,
     setVerticalScrollBy
   })
+
+  const change_disabled_boolean = (disabled: boolean) => {
+    if(disabled) {
+      data.scrollDirection = "none"
+    } else {
+      data.scrollDirection = "vertical"
+    }
+  }
 </script>
 
 <style>
