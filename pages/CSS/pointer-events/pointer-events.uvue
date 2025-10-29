@@ -26,40 +26,38 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        isTranstionWidthOrHeight: false,
-        widthOrHeight: null as UniElement | null,
-        widthProgress: null as UniElement | null,
-        progressWidth: 200,
-        pointerEvents1: 'auto',
-        pointerEvents2: 'auto',
-      }
-    },
-    onReady() {
-      this.widthOrHeight = uni.getElementById("widthOrHeight")
-      this.widthProgress = uni.getElementById("widthProgress")
-    },
-    methods: {
-      changeWidthOrHeight() {
-        this.widthOrHeight?.style?.setProperty("width", this.isTranstionWidthOrHeight
-          ? '200px'
-          : '300px')
-        this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
-      },
-      changeWidthProgress() {
-        this.progressWidth += 20
-        this.widthProgress?.style?.setProperty("width", this.progressWidth + 'px')
-      },
-      onChange1(e : UniSwitchChangeEvent) {
-        this.pointerEvents1 = e.detail.value ? 'auto' : 'none'
-      },
-      onChange2(e : UniSwitchChangeEvent) {
-        this.pointerEvents2 = e.detail.value ? 'auto' : 'none'
-      }
-    }
+<script setup lang="uts">
+
+  const isTranstionWidthOrHeight = ref(false)
+  const widthOrHeight = ref(null as UniElement | null)
+  const widthProgress = ref(null as UniElement | null)
+  const progressWidth = ref(200)
+  const pointerEvents1 = ref('auto')
+  const pointerEvents2 = ref('auto')
+
+  onReady(() => {
+    widthOrHeight.value = uni.getElementById("widthOrHeight")
+    widthProgress.value = uni.getElementById("widthProgress")
+  })
+
+  const changeWidthOrHeight = () => {
+    widthOrHeight.value?.style?.setProperty("width", isTranstionWidthOrHeight.value
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeight.value = !isTranstionWidthOrHeight.value
+  }
+
+  const changeWidthProgress = () => {
+    progressWidth.value += 20
+    widthProgress.value?.style?.setProperty("width", progressWidth.value + 'px')
+  }
+
+  const onChange1 = (e : UniSwitchChangeEvent) => {
+    pointerEvents1.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const onChange2 = (e : UniSwitchChangeEvent) => {
+    pointerEvents2.value = e.detail.value ? 'auto' : 'none'
   }
 </script>
 

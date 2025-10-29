@@ -5,27 +5,23 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				transform: 'scale(0.6) translate(-50%, -50%)',
-			}
-		},
-		onLoad() {
+<script setup lang="uts">
 
-		},
-		methods: {
-			open() {
-				if ('scale(0.6) translate(-50%, -50%)' == this.transform) {
-					this.transform = 'scale(1) translate(-50%, -50%)';
-				} else {
-					this.transform = 'scale(0.6) translate(-50%, -50%)';
-				}
-				uni.getElementById('v')?.style.setProperty('transform', this.transform)
-			}
+	const transform = ref('scale(0.6) translate(-50%, -50%)')
+
+	const open = () => {
+		if ('scale(0.6) translate(-50%, -50%)' == transform.value) {
+			transform.value = 'scale(1) translate(-50%, -50%)'
+		} else {
+			transform.value = 'scale(0.6) translate(-50%, -50%)'
 		}
+		uni.getElementById('v')?.style.setProperty('transform', transform.value)
 	}
+	
+	defineExpose({
+	  open
+	})
+	
 </script>
 
 <style>

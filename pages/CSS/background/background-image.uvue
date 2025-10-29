@@ -25,40 +25,46 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        backgroundSelect: true,
-        directionData: ['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'],
-        testStyle: "background:linear-gradient(to right, red, yellow)",
-        testClass: "bg-color"
-      }
-    },
-    methods: {
-      //供自动化测试使用
-      updateBackgroundSelect() {
-        this.backgroundSelect = !this.backgroundSelect
-      },
-      changeBgStyle() {
-        const isColor = this.testStyle == "background:blue"
-        if (isColor) {
-          this.setBackgroundImage()
-        } else {
-          this.setBackgroundColor()
-        }
-      },
-      setBackgroundColor() {
-        this.testStyle = "background:blue"
-      },
-      setBackgroundImage() {
-        this.testStyle = "background:linear-gradient(to right, red, yellow)"
-      },
-      changeBgClass() {
-        this.testClass = this.testClass == "bg-color" ? "bg-image" : "bg-color"
-      }
+<script setup lang="uts">
+
+  const backgroundSelect = ref(true)
+  const directionData = ref(['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'])
+  const testStyle = ref("background:linear-gradient(to right, red, yellow)")
+  const testClass = ref("bg-color")
+
+  //供自动化测试使用
+  const updateBackgroundSelect = () => {
+    backgroundSelect.value = !backgroundSelect.value
+  }
+
+  const setBackgroundColor = () => {
+    testStyle.value = "background:blue"
+  }
+
+  const setBackgroundImage = () => {
+    testStyle.value = "background:linear-gradient(to right, red, yellow)"
+  }
+
+  const changeBgStyle = () => {
+    const isColor = testStyle.value == "background:blue"
+    if (isColor) {
+      setBackgroundImage()
+    } else {
+      setBackgroundColor()
     }
   }
+
+  const changeBgClass = () => {
+    testClass.value = testClass.value == "bg-color" ? "bg-image" : "bg-color"
+  }
+
+  defineExpose({
+    updateBackgroundSelect,
+    setBackgroundColor,
+    setBackgroundImage,
+    changeBgClass
+  })
+
 </script>
 
 <style>

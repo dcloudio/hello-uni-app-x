@@ -42,21 +42,16 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data () {
-      return {
-        zIndex: 5,
-        // 自动化测试
-        autoTest: false
-      }
-    },
-    methods: {
-      changeZIndex (zIndex: number) {
-        this.zIndex = 20;
-        (this.$refs['view'] as UniElement).style.setProperty('z-index', zIndex);
-      }
-    }
+<script setup lang="uts">
+
+  const zIndex = ref(5)
+  // 自动化测试
+  const autoTest = ref(false)
+  const view = ref(null as UniElement | null)
+
+  const changeZIndex = (zIndexValue: number) => {
+    zIndex.value = 20
+    view.value?.style.setProperty('z-index', zIndexValue)
   }
 </script>
 

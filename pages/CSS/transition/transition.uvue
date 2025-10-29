@@ -127,267 +127,310 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        isTranstionWidthOrHeight: false,
-        isTranstionWidthAuto: false,
-        widthOrHeightAuto: null as UniElement | null,
-        widthOrHeight: null as UniElement | null,
-        widthProgress: null as UniElement | null,
-        isTranstionWidthOrHeightStyle: false,
-        widthOrHeightStyle: null as UniElement | null,
-        progressWidth: 200,
-        isTranstionChangeMargin: false,
-        styleMargin: null as UniElement | null,
-        isTransitionStylePadding: false,
-        stylePadding: null as UniElement | null,
-        isTransitionstyleBackground: false,
-        isTransitionstyleBackground2: false,
-        isTransitionstyleOpacity: false,
-        styleBackground: null as UniElement | null,
-        styleBackground2: null as UniElement | null,
-        styleOpacity: null as UniElement | null,
-        isTransitionStyleTransform: false,
-        styleTransform: null as UniElement | null,
-        isTransitionStyleTransformWithWidth: false,
-        styleTransformWithWidth: null as UniElement | null,
-        isTransitionstyleBorder: false,
-        styleBorder: null as UniElement | null,
-        isTransitionstylePosition: false,
-        stylePosition: null as UniElement | null,
-        isSetTransition: false,
-        isTransitionpropertystyleBackground: false,
-        propertyStyleBackground: null as UniElement | null,
-        isTransitionStyleTransformWithOrigin: false,
-        styleTransformWithOrigin: null as UniElement | null,
-        styleTransformTranslate: null as UniElement | null,
-        isTransformTranslate: false,
-        styleTransformTranslateScale: null as UniElement | null,
-        startX: 0,
-        moveX: 0,
-        oldX: 0,
-        changestyleTransitionDuration: 'background-color:brown;',
-        styleTransitionAll: null as UniElement | null,
-        isTransitionAll: false,
-        lineLeft: 0,
-        lineWidth: 200,
-        changeWidthInEnd: null as UniElement | null,
-        changeWidthInEndCount:0
-      }
-    },
-    onReady() {
-      this.widthOrHeight = uni.getElementById("widthOrHeight")
-      this.widthProgress = uni.getElementById("widthProgress")
-      this.widthOrHeightStyle = uni.getElementById("widthOrHeightStyle")
-      this.styleMargin = uni.getElementById("styleMargin")
-      this.stylePadding = uni.getElementById("stylePadding")
-      this.styleBackground = uni.getElementById("styleBackground")
-      this.styleBackground2 = uni.getElementById("styleBackground2")
-      this.styleOpacity = uni.getElementById("styleOpacity")
-      this.styleTransform = uni.getElementById("styleTransform")
-      this.styleBorder = uni.getElementById("styleBorder")
-      this.stylePosition = uni.getElementById("stylePosition")
-      this.propertyStyleBackground = uni.getElementById("propertyStyleBackground")
-      this.styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
-      this.styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
-      this.styleTransformTranslate = uni.getElementById("transformTranslate")
-      this.styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
-      this.styleTransitionAll = uni.getElementById("styleTransitionAll")
-      this.widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
-      this.changeWidthInEnd = uni.getElementById("changeWidthInEnd")
-    },
-    methods: {
-      changeWidthOrHeight() {
-        this.widthOrHeight?.style?.setProperty("width", this.isTranstionWidthOrHeight
-          ? '200px'
-          : '300px')
-        this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
-      },
-      changeWidthOrHeightAuto(){
-        this.widthOrHeightAuto?.style?.setProperty("width", this.isTranstionWidthAuto
-          ? '200px'
-          : 'auto')
-        this.isTranstionWidthAuto = !this.isTranstionWidthAuto
-      },
-      changeWidthProgress() {
-        this.progressWidth += 20
-        this.widthProgress?.style?.setProperty("width", this.progressWidth + 'px')
-      },
-      changeWidthOrHeightStyle() {
-        this.widthOrHeightStyle?.style?.setProperty("width", this.isTranstionWidthOrHeightStyle
-          ? '200px'
-          : '300px')
-        this.isTranstionWidthOrHeightStyle = !this.isTranstionWidthOrHeightStyle
-      },
-      changeMargin() {
-        this.styleMargin?.style?.setProperty("margin-top", this.isTranstionChangeMargin
-          ? '0px'
-          : '50px'
-        )
-        this.styleMargin?.style?.setProperty("margin-left", this.isTranstionChangeMargin
-          ? '0px'
-          : '50px'
-        )
-        this.isTranstionChangeMargin = !this.isTranstionChangeMargin
-      },
+<script setup lang="uts">
 
-      changePadding() {
-        this.stylePadding?.style?.setProperty("padding-top", this.isTransitionStylePadding
-          ? '0px'
-          : '50px')
-        this.stylePadding?.style?.setProperty("padding-left", this.isTransitionStylePadding
-          ? '0px'
-          : '50px')
-        this.isTransitionStylePadding = !this.isTransitionStylePadding
-      },
-      changeBackground() {
-        this.styleBackground?.style?.setProperty("background-color", this.isTransitionstyleBackground
-          ? 'brown'
-          : 'black'
-        )
-        this.styleBackground?.style?.setProperty("opacity", this.isTransitionstyleBackground
-          ? '1'
-          : '0.5'
-        )
-        this.isTransitionstyleBackground = !this.isTransitionstyleBackground
-      },
-      changeBackground2() {
-        this.styleBackground2?.style?.setProperty("background-color", this.isTransitionstyleBackground2
-          ? 'brown'
-          : 'rgba(0, 0, 0, 0.5)'
-        )
-        this.isTransitionstyleBackground2 = !this.isTransitionstyleBackground2
-      },
-      changeStyleOpacity() {
-        this.styleOpacity?.style?.setProperty("opacity", this.isTransitionstyleOpacity
-          ? '1'
-          : '0'
-        )
-        this.isTransitionstyleOpacity = !this.isTransitionstyleOpacity
-      },
-      propertyChangeBackground() {
-        if (!this.isSetTransition) {
-          this.propertyStyleBackground?.style?.setProperty("transition-property", "background-color")
-          this.propertyStyleBackground?.style?.setProperty("transition-duration", "1000ms")
-          this.isSetTransition = true
-        }
-        this.propertyStyleBackground?.style?.setProperty("background-color", this.isTransitionpropertystyleBackground
-          ? 'brown'
-          : 'black'
-        )
-        this.isTransitionpropertystyleBackground = !this.isTransitionpropertystyleBackground
-      },
-      changeTransform() {
-        this.styleTransform?.style?.setProperty("transform", this.isTransitionStyleTransform
-          ? 'rotate(0deg)'
-          : 'rotate(135deg)'
-        )
-        this.isTransitionStyleTransform = !this.isTransitionStyleTransform
-      },
-      changeTransformTranslate() {
-        const translate = this.isTransformTranslate ? `translate(0%,0%)` : `translate(100%,0%)`
-        this.styleTransformTranslate?.style?.setProperty('transform', translate)
-        this.isTransformTranslate = !this.isTransformTranslate
-      },
-      changeTransformWithWidth() {
-        this.styleTransformWithWidth?.style?.setProperty("transform", this.isTransitionStyleTransformWithWidth
-          ? 'rotate(0deg)'
-          : 'rotate(135deg)'
-        )
-        this.styleTransformWithWidth?.style?.setProperty("width", this.isTransitionStyleTransformWithWidth
-          ? '200px'
-          : '100px'
-        )
-        this.isTransitionStyleTransformWithWidth = !this.isTransitionStyleTransformWithWidth
-      },
-      changeTransformWithOrigin() {
-        this.styleTransformWithOrigin?.style?.setProperty("transform", this.isTransitionStyleTransformWithOrigin
-          ? 'scaleX(1)'
-          : 'scaleX(0)'
-        )
-        this.isTransitionStyleTransformWithOrigin = !this.isTransitionStyleTransformWithOrigin
-      },
-      changeBorder() {
-        this.styleBorder?.style?.setProperty("border-color", this.isTransitionstyleBorder
-          ? 'brown'
-          : 'yellow'
-        )
-        this.isTransitionstyleBorder = !this.isTransitionstyleBorder
-      },
-      changestylePosition() {
-        this.stylePosition?.style?.setProperty("left", this.isTransitionstylePosition
-          ? '0px'
-          : '100px'
-        )
-        this.isTransitionstylePosition = !this.isTransitionstylePosition
-      },
-      changestyleScale() {
-        let el = uni.getElementById("styleChangScale")
-        el?.style.setProperty("transition-duration", "0ms")
-        el?.style.setProperty("transform", "translate(10px,10px) scale(1)")
-        setTimeout(() => {
-          el?.style.setProperty("transition-duration", "200ms")
-          el?.style.setProperty("transform", "translate(10px,10px) scale(0.5)")
-        }, 200)
-      },
-      handleTouchStart(e : UniTouchEvent) {
-        this.startX = e.changedTouches[0].clientX
-      },
-      handleTouchMove(e : UniTouchEvent) {
-        console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY);
-        e.preventDefault()
-        e.stopPropagation()
-        const difX = e.changedTouches[0].clientX
-        this.moveX = difX - this.startX + this.oldX
-        this.styleTransformTranslateScale?.style?.setProperty('transition-duration', '0ms')
-        this.styleTransformTranslateScale?.style?.setProperty('transform', `translate(${this.moveX}px,0px) scale(0.5) rotate(90deg)`)
-      },
-      handleTouchEnd(_ : UniTouchEvent) {
-        this.oldX = this.moveX
-      },
-      doChangeTransitionDuration() {
-        console.log("doChangeTransitionDuration")
-        this.changestyleTransitionDuration
-          = this.changestyleTransitionDuration === 'background-color:brown;' ? 'transition-duration: 2000ms;background-color: blue;' : 'background-color:brown;'
-      },
-      changeTransitionAll() {
-        if (!this.isTransitionAll) {
-          // 设置为 all 时的效果
-          this.styleTransitionAll?.style?.setProperty("transition-property", "all")
-          this.styleTransitionAll?.style?.setProperty("width", "300px")
-          this.styleTransitionAll?.style?.setProperty("height", "300px")
-          this.styleTransitionAll?.style?.setProperty("background-color", "blue")
-          this.styleTransitionAll?.style?.setProperty("transform", "rotate(45deg)")
-        } else {
-          // 设置为 none 时的效果
-          this.styleTransitionAll?.style?.setProperty("transition-property", "none")
-          this.styleTransitionAll?.style?.setProperty("width", "200px")
-          this.styleTransitionAll?.style?.setProperty("height", "200px")
-          this.styleTransitionAll?.style?.setProperty("background-color", "brown")
-          this.styleTransitionAll?.style?.setProperty("transform", "rotate(0deg)")
-        }
-        this.isTransitionAll = !this.isTransitionAll
-      },
-      changeTransform61() {
-        if (this.lineLeft == 0) {
-          this.lineLeft = 70
-          this.lineWidth = 300
-        } else {
-          this.lineLeft = 0
-          this.lineWidth = 200
-        }
-      },
-      onChangeWidthEnd(event : UniEvent){
-          this.changeWidthInEnd?.style.setProperty("width","300px");
-          this.changeWidthInEndCount ++;
-      },
-      changeWidthInEndFun(){
-          this.changeWidthInEnd?.style.setProperty("width","300px");
-      },
-    },
+  const isTranstionWidthOrHeight = ref(false)
+  const isTranstionWidthAuto = ref(false)
+  const widthOrHeightAuto = ref(null as UniElement | null)
+  const widthOrHeight = ref(null as UniElement | null)
+  const widthProgress = ref(null as UniElement | null)
+  const isTranstionWidthOrHeightStyle = ref(false)
+  const widthOrHeightStyle = ref(null as UniElement | null)
+  const progressWidth = ref(200)
+  const isTranstionChangeMargin = ref(false)
+  const styleMargin = ref(null as UniElement | null)
+  const isTransitionStylePadding = ref(false)
+  const stylePadding = ref(null as UniElement | null)
+  const isTransitionstyleBackground = ref(false)
+  const isTransitionstyleBackground2 = ref(false)
+  const isTransitionstyleOpacity = ref(false)
+  const styleBackground = ref(null as UniElement | null)
+  const styleBackground2 = ref(null as UniElement | null)
+  const styleOpacity = ref(null as UniElement | null)
+  const isTransitionStyleTransform = ref(false)
+  const styleTransform = ref(null as UniElement | null)
+  const isTransitionStyleTransformWithWidth = ref(false)
+  const styleTransformWithWidth = ref(null as UniElement | null)
+  const isTransitionstyleBorder = ref(false)
+  const styleBorder = ref(null as UniElement | null)
+  const isTransitionstylePosition = ref(false)
+  const stylePosition = ref(null as UniElement | null)
+  const isSetTransition = ref(false)
+  const isTransitionpropertystyleBackground = ref(false)
+  const propertyStyleBackground = ref(null as UniElement | null)
+  const isTransitionStyleTransformWithOrigin = ref(false)
+  const styleTransformWithOrigin = ref(null as UniElement | null)
+  const styleTransformTranslate = ref(null as UniElement | null)
+  const isTransformTranslate = ref(false)
+  const styleTransformTranslateScale = ref(null as UniElement | null)
+  const startX = ref(0)
+  const moveX = ref(0)
+  const oldX = ref(0)
+  const changestyleTransitionDuration = ref('background-color:brown;')
+  const styleTransitionAll = ref(null as UniElement | null)
+  const isTransitionAll = ref(false)
+  const lineLeft = ref(0)
+  const lineWidth = ref(200)
+  const changeWidthInEnd = ref(null as UniElement | null)
+  const changeWidthInEndCount = ref(0)
+	// 测试例辅助函数
+	const getChangeWidthInEndCount = ():number => {
+	  return changeWidthInEndCount.value
+	}
+
+  onReady(() => {
+    widthOrHeight.value = uni.getElementById("widthOrHeight")
+    widthProgress.value = uni.getElementById("widthProgress")
+    widthOrHeightStyle.value = uni.getElementById("widthOrHeightStyle")
+    styleMargin.value = uni.getElementById("styleMargin")
+    stylePadding.value = uni.getElementById("stylePadding")
+    styleBackground.value = uni.getElementById("styleBackground")
+    styleBackground2.value = uni.getElementById("styleBackground2")
+    styleOpacity.value = uni.getElementById("styleOpacity")
+    styleTransform.value = uni.getElementById("styleTransform")
+    styleBorder.value = uni.getElementById("styleBorder")
+    stylePosition.value = uni.getElementById("stylePosition")
+    propertyStyleBackground.value = uni.getElementById("propertyStyleBackground")
+    styleTransformWithOrigin.value = uni.getElementById("styleTransformWithOrigin")
+    styleTransformWithWidth.value = uni.getElementById("styleTransformWithWidth")
+    styleTransformTranslate.value = uni.getElementById("transformTranslate")
+    styleTransformTranslateScale.value = uni.getElementById("styleTransformTranslateScale")
+    styleTransitionAll.value = uni.getElementById("styleTransitionAll")
+    widthOrHeightAuto.value = uni.getElementById("widthOrHeightAuto")
+    changeWidthInEnd.value = uni.getElementById("changeWidthInEnd")
+  })
+
+  const changeWidthOrHeight = () => {
+    widthOrHeight.value?.style?.setProperty("width", isTranstionWidthOrHeight.value
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeight.value = !isTranstionWidthOrHeight.value
   }
+
+  const changeWidthOrHeightAuto = () => {
+    widthOrHeightAuto.value?.style?.setProperty("width", isTranstionWidthAuto.value
+      ? '200px'
+      : 'auto')
+    isTranstionWidthAuto.value = !isTranstionWidthAuto.value
+  }
+
+  const changeWidthProgress = () => {
+    progressWidth.value += 20
+    widthProgress.value?.style?.setProperty("width", progressWidth.value + 'px')
+  }
+
+  const changeWidthOrHeightStyle = () => {
+    widthOrHeightStyle.value?.style?.setProperty("width", isTranstionWidthOrHeightStyle.value
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeightStyle.value = !isTranstionWidthOrHeightStyle.value
+  }
+
+  const changeMargin = () => {
+    styleMargin.value?.style?.setProperty("margin-top", isTranstionChangeMargin.value
+      ? '0px'
+      : '50px'
+    )
+    styleMargin.value?.style?.setProperty("margin-left", isTranstionChangeMargin.value
+      ? '0px'
+      : '50px'
+    )
+    isTranstionChangeMargin.value = !isTranstionChangeMargin.value
+  }
+
+  const changePadding = () => {
+    stylePadding.value?.style?.setProperty("padding-top", isTransitionStylePadding.value
+      ? '0px'
+      : '50px')
+    stylePadding.value?.style?.setProperty("padding-left", isTransitionStylePadding.value
+      ? '0px'
+      : '50px')
+    isTransitionStylePadding.value = !isTransitionStylePadding.value
+  }
+
+  const changeBackground = () => {
+    styleBackground.value?.style?.setProperty("background-color", isTransitionstyleBackground.value
+      ? 'brown'
+      : 'black'
+    )
+    styleBackground.value?.style?.setProperty("opacity", isTransitionstyleBackground.value
+      ? '1'
+      : '0.5'
+    )
+    isTransitionstyleBackground.value = !isTransitionstyleBackground.value
+  }
+
+  const changeBackground2 = () => {
+    styleBackground2.value?.style?.setProperty("background-color", isTransitionstyleBackground2.value
+      ? 'brown'
+      : 'rgba(0, 0, 0, 0.5)'
+    )
+    isTransitionstyleBackground2.value = !isTransitionstyleBackground2.value
+  }
+
+  const changeStyleOpacity = () => {
+    styleOpacity.value?.style?.setProperty("opacity", isTransitionstyleOpacity.value
+      ? '1'
+      : '0'
+    )
+    isTransitionstyleOpacity.value = !isTransitionstyleOpacity.value
+  }
+
+  const propertyChangeBackground = () => {
+    if (!isSetTransition.value) {
+      propertyStyleBackground.value?.style?.setProperty("transition-property", "background-color")
+      propertyStyleBackground.value?.style?.setProperty("transition-duration", "1000ms")
+      isSetTransition.value = true
+    }
+    propertyStyleBackground.value?.style?.setProperty("background-color", isTransitionpropertystyleBackground.value
+      ? 'brown'
+      : 'black'
+    )
+    isTransitionpropertystyleBackground.value = !isTransitionpropertystyleBackground.value
+  }
+
+  const changeTransform = () => {
+    styleTransform.value?.style?.setProperty("transform", isTransitionStyleTransform.value
+      ? 'rotate(0deg)'
+      : 'rotate(135deg)'
+    )
+    isTransitionStyleTransform.value = !isTransitionStyleTransform.value
+  }
+
+  const changeTransformTranslate = () => {
+    const translate = isTransformTranslate.value ? `translate(0%,0%)` : `translate(100%,0%)`
+    styleTransformTranslate.value?.style?.setProperty('transform', translate)
+    isTransformTranslate.value = !isTransformTranslate.value
+  }
+
+  const changeTransformWithWidth = () => {
+    styleTransformWithWidth.value?.style?.setProperty("transform", isTransitionStyleTransformWithWidth.value
+      ? 'rotate(0deg)'
+      : 'rotate(135deg)'
+    )
+    styleTransformWithWidth.value?.style?.setProperty("width", isTransitionStyleTransformWithWidth.value
+      ? '200px'
+      : '100px'
+    )
+    isTransitionStyleTransformWithWidth.value = !isTransitionStyleTransformWithWidth.value
+  }
+
+  const changeTransformWithOrigin = () => {
+    styleTransformWithOrigin.value?.style?.setProperty("transform", isTransitionStyleTransformWithOrigin.value
+      ? 'scaleX(1)'
+      : 'scaleX(0)'
+    )
+    isTransitionStyleTransformWithOrigin.value = !isTransitionStyleTransformWithOrigin.value
+  }
+
+  const changeBorder = () => {
+    styleBorder.value?.style?.setProperty("border-color", isTransitionstyleBorder.value
+      ? 'brown'
+      : 'yellow'
+    )
+    isTransitionstyleBorder.value = !isTransitionstyleBorder.value
+  }
+
+  const changestylePosition = () => {
+    stylePosition.value?.style?.setProperty("left", isTransitionstylePosition.value
+      ? '0px'
+      : '100px'
+    )
+    isTransitionstylePosition.value = !isTransitionstylePosition.value
+  }
+
+  const changestyleScale = () => {
+    const el = uni.getElementById("styleChangScale")
+    el?.style.setProperty("transition-duration", "0ms")
+    el?.style.setProperty("transform", "translate(10px,10px) scale(1)")
+    setTimeout(() => {
+      el?.style.setProperty("transition-duration", "200ms")
+      el?.style.setProperty("transform", "translate(10px,10px) scale(0.5)")
+    }, 200)
+  }
+
+  const handleTouchStart = (e : UniTouchEvent) => {
+    startX.value = e.changedTouches[0].clientX
+  }
+
+  const handleTouchMove = (e : UniTouchEvent) => {
+    console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY)
+    e.preventDefault()
+    e.stopPropagation()
+    const difX = e.changedTouches[0].clientX
+    moveX.value = difX - startX.value + oldX.value
+    styleTransformTranslateScale.value?.style?.setProperty('transition-duration', '0ms')
+    styleTransformTranslateScale.value?.style?.setProperty('transform', `translate(${moveX.value}px,0px) scale(0.5) rotate(90deg)`)
+  }
+
+  const handleTouchEnd = (_ : UniTouchEvent) => {
+    oldX.value = moveX.value
+  }
+
+  const doChangeTransitionDuration = () => {
+    console.log("doChangeTransitionDuration")
+    changestyleTransitionDuration.value
+      = changestyleTransitionDuration.value == 'background-color:brown;' ? 'transition-duration: 2000ms;background-color: blue;' : 'background-color:brown;'
+  }
+
+  const changeTransitionAll = () => {
+    if (!isTransitionAll.value) {
+      // 设置为 all 时的效果
+      styleTransitionAll.value?.style?.setProperty("transition-property", "all")
+      styleTransitionAll.value?.style?.setProperty("width", "300px")
+      styleTransitionAll.value?.style?.setProperty("height", "300px")
+      styleTransitionAll.value?.style?.setProperty("background-color", "blue")
+      styleTransitionAll.value?.style?.setProperty("transform", "rotate(45deg)")
+    } else {
+      // 设置为 none 时的效果
+      styleTransitionAll.value?.style?.setProperty("transition-property", "none")
+      styleTransitionAll.value?.style?.setProperty("width", "200px")
+      styleTransitionAll.value?.style?.setProperty("height", "200px")
+      styleTransitionAll.value?.style?.setProperty("background-color", "brown")
+      styleTransitionAll.value?.style?.setProperty("transform", "rotate(0deg)")
+    }
+    isTransitionAll.value = !isTransitionAll.value
+  }
+
+  const changeTransform61 = () => {
+    if (lineLeft.value == 0) {
+      lineLeft.value = 70
+      lineWidth.value = 300
+    } else {
+      lineLeft.value = 0
+      lineWidth.value = 200
+    }
+  }
+
+  const onChangeWidthEnd = (event : UniEvent) => {
+    changeWidthInEnd.value?.style.setProperty("width","300px")
+    changeWidthInEndCount.value++
+  }
+
+  const changeWidthInEndFun = () => {
+    changeWidthInEnd.value?.style.setProperty("width","300px")
+  }
+	
+	defineExpose({
+	  changeWidthOrHeight,
+	  changeWidthProgress,
+	  changeMargin,
+	  changePadding,
+	  changeBackground,
+	  changeBackground2,
+	  changeStyleOpacity,
+	  propertyChangeBackground,
+	  changeTransform,
+	  changeTransformTranslate,
+	  changeTransformWithWidth,
+	  changeTransformWithOrigin,
+	  changeBorder,
+	  changestylePosition,
+	  changeTransitionAll,
+	  changeWidthInEndFun,
+	  getChangeWidthInEndCount
+	})
+	
 </script>
 
 <style>

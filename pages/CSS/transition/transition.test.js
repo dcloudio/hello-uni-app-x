@@ -27,9 +27,8 @@ describe('/pages/CSS/transition/transition.uvue', () => {
     await page.callMethod('changeWidthInEndFun')
     // 等待动画完成
     await page.waitFor(2000)
-    var changeWidthInEndCount = await page.data('changeWidthInEndCount')
+		var changeWidthInEndCount = await page.callMethod('getChangeWidthInEndCount')
     expect(changeWidthInEndCount).toEqual(1)
-
     await page.waitFor(3000)
     const image = await program.screenshot({
       fullPage: true

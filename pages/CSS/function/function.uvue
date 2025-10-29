@@ -12,32 +12,30 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-        safeareaInsetTop: 0,
-        safeareaInsetLeft: 0,
-        safeareaInsetRight: 0,
-        safeareaInsetBottom: 0,
-			}
-		},
-		methods: {
+<script setup lang="uts">
 
-		},
-    onReady() {
-      this.safeareaInsetTop=this.$page.safeAreaInsets.top;
-      this.safeareaInsetLeft=this.$page.safeAreaInsets.left;
-      this.safeareaInsetRight=this.$page.safeAreaInsets.right;
-      this.safeareaInsetBottom=this.$page.safeAreaInsets.bottom;
-    },
-    onResize() {
-      this.safeareaInsetTop=this.$page.safeAreaInsets.top;
-      this.safeareaInsetLeft=this.$page.safeAreaInsets.left;
-      this.safeareaInsetRight=this.$page.safeAreaInsets.right;
-      this.safeareaInsetBottom=this.$page.safeAreaInsets.bottom;
-    }
-	}
+	const safeareaInsetTop = ref(0)
+	const safeareaInsetLeft = ref(0)
+	const safeareaInsetRight = ref(0)
+	const safeareaInsetBottom = ref(0)
+
+	const instance = getCurrentInstance()
+
+	onReady(() => {
+		const page = instance?.proxy?.$page
+		safeareaInsetTop.value = page?.safeAreaInsets.top ?? 0
+		safeareaInsetLeft.value = page?.safeAreaInsets.left ?? 0
+		safeareaInsetRight.value = page?.safeAreaInsets.right ?? 0
+		safeareaInsetBottom.value = page?.safeAreaInsets.bottom ?? 0
+	})
+
+	onResize((options) => {
+		const page = instance?.proxy?.$page
+		safeareaInsetTop.value = page?.safeAreaInsets.top ?? 0
+		safeareaInsetLeft.value = page?.safeAreaInsets.left ?? 0
+		safeareaInsetRight.value = page?.safeAreaInsets.right ?? 0
+		safeareaInsetBottom.value = page?.safeAreaInsets.bottom ?? 0
+	})
 </script>
 
 <style>

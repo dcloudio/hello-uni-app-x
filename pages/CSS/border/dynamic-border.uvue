@@ -25,30 +25,28 @@
   <!-- #endif -->
 </template>
 
-<script>
-  const defaultStyle = 'border:2px solid black;background :#57BE6A;'
-  export default {
+<script setup lang="uts">
 
-    data() {
-      return {
-        currentIndex: 0,
-        style: '' as string,
-      }
-    },
-    computed: {
-      isSelect() : boolean {
-        return this.style == defaultStyle
-      }
-    },
-    methods: {
-      changeIndex(index : number) {
-        this.currentIndex = index
-      },
-      setBorderBlank() {
-        this.style = this.style == '' ? defaultStyle : ''
-      }
-    }
+  const defaultStyle = 'border:2px solid black;background :#57BE6A;'
+
+  const currentIndex = ref(0)
+  const style = ref('' as string)
+
+  const isSelect = computed(() : boolean => {
+    return style.value == defaultStyle
+  })
+
+  const changeIndex = (index : number) => {
+    currentIndex.value = index
   }
+
+  const setBorderBlank = () => {
+    style.value = style.value == '' ? defaultStyle : ''
+  }
+	defineExpose({
+		changeIndex,
+		setBorderBlank
+	})
 </script>
 
 <style>

@@ -4,29 +4,24 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        count: 0
-      }
-    },
-    methods: {
-      changetransform() {
-        var element = this.$refs["transformView"] as UniElement | null
+<script setup lang="uts">
 
-        if (this.count == 0) {
-          element?.style.setProperty("transform-origin", "60px 60px")
-          element?.style.setProperty("transform", "scale(1)")
-        }
-        else if (this.count == 1) {
-          element?.style.setProperty("transform-origin", "100% 0%")
-          element?.style.setProperty("transform", "rotate(-20deg)")
-        }
+  const transformView = ref(null as UniElement | null)
+  const count = ref(0)
 
-        this.count++
-      }
+  const changetransform = () => {
+    const element = transformView.value
+
+    if (count.value == 0) {
+      element?.style.setProperty("transform-origin", "60px 60px")
+      element?.style.setProperty("transform", "scale(1)")
     }
+    else if (count.value == 1) {
+      element?.style.setProperty("transform-origin", "100% 0%")
+      element?.style.setProperty("transform", "rotate(-20deg)")
+    }
+
+    count.value++
   }
 </script>
 

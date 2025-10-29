@@ -1,33 +1,36 @@
 <template>
   <view>
-    <view :class="class"></view>
+    <view :class="classValue"></view>
     <button @click="start">start</button>
     <button @click="reset">reset</button>
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        class: 'box',
-      }
-    },
-    methods: {
-      start() {
-        this.class = 'box ani'
-      },
-      reset() {
-        this.class = 'box'
-      },
-      jest_start(){
-        this.start()
-      },
-      jest_reset(){
-        this.reset()
-      },
-    }
+<script setup lang="uts">
+ 
+  const classValue = ref('box')
+
+  const start = () => {
+    classValue.value = 'box ani'
   }
+
+  const reset = () => {
+    classValue.value = 'box'
+  }
+
+  const jest_start = () => {
+    start()
+  }
+
+  const jest_reset = () => {
+    reset()
+  }
+	
+	defineExpose({
+	  jest_start,
+	  jest_reset
+	})
+	
 </script>
 
 <style>
