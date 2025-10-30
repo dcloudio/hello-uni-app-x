@@ -1,184 +1,121 @@
 <template>
   <scroll-view class="container">
-    <!-- 标题和说明 -->
+    <!-- 标题 -->
     <view class="header">
-      <text class="title">Loading样式测试</text>
-      <text class="subtitle">对比 class 和 style 两种实现方式</text>
+      <text class="title">loading-x 样式测试页</text>
+      <text class="subtitle">class / style / 动态 style 对比</text>
     </view>
 
-    <!-- 对比布局 -->
-    <view class="comparison-container">
-      <!-- Class实现部分 -->
-      <view class="implementation-section">
-        <text class="section-title">Class 实现</text>
-
-        <!-- 基础样式测试 -->
-        <view class="section">
-          <text class="section-subtitle">1. 基础样式测试</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">默认样式</text>
-              <loading />
-            </view>
-            <view class="item">
-              <text class="label">蓝色样式</text>
-              <loading class="loading-blue" />
-            </view>
-            <view class="item">
-              <text class="label">红色样式</text>
-              <loading class="loading-red" />
-            </view>
-          </view>
+    <!-- 一、Class 实现 -->
+    <view class="section">
+      <text class="section-title">Class 实现</text>
+      <view class="row">
+        <view class="item">
+          <text class="label">100×100 / blue / medium</text>
+          <loading-x class="box size-100 bc-blue bw-medium" />
         </view>
-
-        <!-- 尺寸测试 -->
-        <view class="section">
-          <text class="section-subtitle">2. 尺寸测试</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">小尺寸 (24px)</text>
-              <loading class="loading-small" />
-            </view>
-            <view class="item">
-              <text class="label">中尺寸 (32px)</text>
-              <loading class="loading-medium" />
-            </view>
-            <view class="item">
-              <text class="label">大尺寸 (48px)</text>
-              <loading class="loading-large" />
-            </view>
-          </view>
+        <view class="item">
+          <text class="label">100×100 / red / thick</text>
+          <loading-x class="box size-100 bc-red bw-thick" />
         </view>
-
-        <!-- 动画效果测试 -->
-        <view class="section">
-          <text class="section-subtitle">3. 动画效果测试</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">默认动画</text>
-              <loading class="loading-animation-default" />
-            </view>
-            <view class="item">
-              <text class="label">ease动画</text>
-              <loading class="loading-animation-ease" />
-            </view>
-            <view class="item">
-              <text class="label">linear动画</text>
-              <loading class="loading-animation-linear" />
-            </view>
-          </view>
+        <view class="item">
+          <text class="label">80×80 / green / medium</text>
+          <loading-x class="box size-80 bc-green bw-medium" />
         </view>
-
-        <!-- 特殊样式组合 -->
-        <view class="section">
-          <text class="section-subtitle">4. 特殊样式组合</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">粗体红色</text>
-              <loading class="loading-bold-red" />
-            </view>
-            <view class="item">
-              <text class="label">蓝色ease动画</text>
-              <loading class="loading-blue-ease" />
-            </view>
-            <view class="item">
-              <text class="label">大尺寸linear</text>
-              <loading class="loading-large-linear" />
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- Style实现部分 -->
-      <view class="implementation-section">
-        <text class="section-title">Style 实现</text>
-
-        <!-- 基础样式测试 -->
-        <view class="section">
-          <text class="section-subtitle">1. 基础样式测试</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">默认样式</text>
-              <loading />
-            </view>
-            <view class="item">
-              <text class="label">蓝色样式</text>
-              <loading :style="{ color: 'blue' }" />
-            </view>
-            <view class="item">
-              <text class="label">红色样式</text>
-              <loading :style="{ color: 'red' }" />
-            </view>
-          </view>
-        </view>
-
-        <!-- 尺寸测试 -->
-        <view class="section">
-          <text class="section-subtitle">2. 尺寸测试</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">小尺寸 (24px)</text>
-              <loading :style="{ width: '24px', height: '24px' }" />
-            </view>
-            <view class="item">
-              <text class="label">中尺寸 (32px)</text>
-              <loading :style="{ width: '32px', height: '32px' }" />
-            </view>
-            <view class="item">
-              <text class="label">大尺寸 (48px)</text>
-              <loading :style="{ width: '48px', height: '48px' }" />
-            </view>
-          </view>
-        </view>
-
-        <!-- 动画效果测试 -->
-        <view class="section">
-          <text class="section-subtitle">3. 动画效果测试</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">默认动画</text>
-              <loading />
-            </view>
-            <view class="item">
-              <text class="label">ease动画</text>
-              <loading :style="{ animationTimingFunction: 'ease' }" />
-            </view>
-            <view class="item">
-              <text class="label">linear动画</text>
-              <loading :style="{ animationTimingFunction: 'linear' }" />
-            </view>
-          </view>
-        </view>
-
-        <!-- 特殊样式组合 -->
-        <view class="section">
-          <text class="section-subtitle">4. 特殊样式组合</text>
-          <view class="row">
-            <view class="item">
-              <text class="label">粗体红色</text>
-              <loading :style="{ color: 'red', fontWeight: 'bold' }" />
-            </view>
-            <view class="item">
-              <text class="label">蓝色ease动画</text>
-              <loading :style="{ color: 'blue', animationTimingFunction: 'ease' }" />
-            </view>
-            <view class="item">
-              <text class="label">大尺寸linear</text>
-              <loading :style="{ width: '48px', height: '48px', animationTimingFunction: 'linear' }" />
-            </view>
-          </view>
+        <view class="item">
+          <text class="label">140×140 / yellow / thick</text>
+          <loading-x class="box size-140 bc-yellow bw-thick" />
         </view>
       </view>
     </view>
 
+    <!-- 二、Style 实现 -->
+    <view class="section">
+      <text class="section-title">Style 实现</text>
+      <view class="row">
+        <view class="item">
+          <text class="label">80×80 / red / thick</text>
+          <loading-x
+            class="box"
+            :style="{ width:'80px', height:'80px', borderColor:'red', borderWidth:'thick' }"
+          />
+        </view>
+        <view class="item">
+          <text class="label">120×120 / green / medium</text>
+          <loading-x
+            class="box"
+            :style="{ width:'120px', height:'120px', borderColor:'green', borderWidth:'medium' }"
+          />
+        </view>
+      </view>
+    </view>
 
+    <!-- 三、动态 style 控制 -->
+    <view class="section">
+      <text class="section-title">动态 style</text>
+      <view class="controls">
+        <button @click="decreaseSize">-10px</button>
+        <button @click="increaseSize">+10px</button>
+        <button @click="toggleBorderWidth">border: {{ borderWidthKw }}</button>
+        <button @click="nextColor">color: {{ borderColor }}</button>
+        <button @click="reset">reset</button>
+      </view>
+
+      <view class="row">
+        <view class="item">
+          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / {{ borderWidthKw }}</text>
+          <loading-x class="box" :style="dynamicStyle" />
+        </view>
+      </view>
+    </view>
   </scroll-view>
 </template>
 
 <script>
 export default {
   data() {
-    return {}
+    return {
+      widthPx: 100,
+      heightPx: 100,
+      borderColor: 'blue',
+      borderWidthKw: 'medium',
+      colors: ['blue', 'red', 'green', 'yellow'],
+      colorIndex: 0
+    }
+  },
+  computed: {
+    dynamicStyle() {
+      return {
+        width: this.widthPx + 'px',
+        height: this.heightPx + 'px',
+        borderColor: this.borderColor,
+        borderWidth: this.borderWidthKw
+      }
+    }
+  },
+  methods: {
+    increaseSize() {
+      this.widthPx += 10
+      this.heightPx += 10
+    },
+    decreaseSize() {
+      this.widthPx = Math.max(20, this.widthPx - 10)
+      this.heightPx = Math.max(20, this.heightPx - 10)
+    },
+    toggleBorderWidth() {
+      this.borderWidthKw = this.borderWidthKw === 'medium' ? 'thick' : 'medium'
+    },
+    nextColor() {
+      this.colorIndex = (this.colorIndex + 1) % this.colors.length
+      this.borderColor = this.colors[this.colorIndex]
+    },
+    reset() {
+      this.widthPx = 100
+      this.heightPx = 100
+      this.borderColor = 'blue'
+      this.borderWidthKw = 'medium'
+      this.colorIndex = 0
+    }
   }
 }
 </script>
@@ -191,12 +128,12 @@ export default {
 }
 
 .header {
-  margin-bottom: 30px;
+  margin-bottom: 16px;
   align-items: center;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
   color: #333;
   text-align: center;
@@ -205,46 +142,27 @@ export default {
 .subtitle {
   font-size: 14px;
   color: #666;
-  margin-top: 8px;
+  margin-top: 6px;
   text-align: center;
 }
 
-.comparison-container {
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.implementation-section {
-  flex: 1;
-  margin: 0 10px;
-  background-color: white;
-  border-radius: 12px;
-  padding: 8px;
+.section {
+  margin-bottom: 18px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .section-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #444;
-  margin-bottom: 16px;
-  text-align: center;
-  background-color: #f0f0f0;
-  padding: 8px;
-  border-radius: 6px;
-}
-
-.section {
-  margin-bottom: 25px;
-}
-
-.section-subtitle {
   font-size: 16px;
   font-weight: bold;
   color: #444;
-  margin-bottom: 12px;
-  padding-left: 8px;
-  border-left: 4px solid #007AFF;
+  margin-bottom: 10px;
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 6px;
+  border-radius: 6px;
 }
 
 .row {
@@ -255,64 +173,35 @@ export default {
 
 .item {
   align-items: center;
-  margin: 2px;
-  min-width: 120px;
+  margin: 8px 4px;
+  min-width: 140px;
 }
 
 .label {
-  font-size: 14px;
+  font-size: 12px;
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   text-align: center;
 }
 
-/* Class实现的样式 */
-.loading-blue {
-  color: blue;
+/* 基础边框容器 */
+.box {
+  border-style: solid;
+  border-radius: 6px;
 }
 
-.loading-red {
-  color: red;
-}
+/* 尺寸类 */
+.size-80 { width: 80px; height: 80px; }
+.size-100 { width: 100px; height: 100px; }
+.size-140 { width: 140px; height: 140px; }
 
-.loading-small {
-  width: 24px;
-  height: 24px;
-}
+/* 边框颜色类 */
+.bc-blue { border-color: blue; }
+.bc-red { border-color: red; }
+.bc-green { border-color: green; }
+.bc-yellow { border-color: yellow; }
 
-.loading-medium {
-  width: 32px;
-  height: 32px;
-}
-
-.loading-large {
-  width: 48px;
-  height: 48px;
-}
-
-.loading-animation-ease {
-  animation-timing-function: ease;
-}
-
-.loading-animation-linear {
-  animation-timing-function: linear;
-}
-
-.loading-bold-red {
-  color: red;
-  font-weight: bold;
-}
-
-.loading-blue-ease {
-  color: blue;
-  animation-timing-function: ease;
-}
-
-.loading-large-linear {
-  width: 48px;
-  height: 48px;
-  animation-timing-function: linear;
-}
-
-
+/* 边框宽度类（关键字） */
+.bw-medium { border-width: medium; }
+.bw-thick { border-width: thick; }
 </style>
