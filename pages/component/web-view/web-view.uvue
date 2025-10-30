@@ -1,7 +1,8 @@
 <template>
   <view class="uni-flex-item">
-    <web-view id="web-view" class="uni-flex-item" :style="{ 'pointer-events': pointerEvents }" :src="src"
-      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess" :bounces="bounces" @message="message" @error="error" @loading="loading"
+    <web-view id="web-view" class="uni-flex-item" :style="webViewStyle" :src="src"
+      :webview-styles="webview_styles" :horizontalScrollBarAccess="horizontalScrollBarAccess" :verticalScrollBarAccess="verticalScrollBarAccess"
+      :bounces="bounces" :disable-user-select-menu="disableUserSelectMenu" @message="message" @error="error" @loading="loading"
       @load="load" @download="download" @contentheightchange="contentheightchange" @touchstart="touchstart" @tap="tap">
     </web-view>
     <!-- #ifdef APP -->
@@ -26,6 +27,8 @@
       </view>
       <view class="uni-row uni-btn-v">
         <button class="uni-flex-item" type="primary" @click="loadData">加载页面内容</button>
+        <!-- 用于演示大尺寸平板中能用窄屏展示响应式内容 -->
+        <button id="half-screen-toggle" class="margin-left-5 uni-flex-item" type="primary" @click="setHalfScreen">宽窄屏切换</button>
       </view>
       <view class="uni-btn-v">
         <navigator url="/pages/component/web-view/web-view-scroll">
@@ -47,6 +50,10 @@
         <view class="uni-row uni-flex-item align-items-center">
           <text>开启bounces</text>
           <switch :checked="true" @change="changeBounces"></switch>
+          <!-- #ifdef APP-ANDROID || APP-IOS-->
+          <text>禁用选择菜单</text>
+          <switch :checked="false" @change="changeDisableUserSelectMenu"></switch>
+          <!-- #endif -->
         </view>
       </view>
       <!-- #endif -->
@@ -79,11 +86,13 @@
             color: '#FF3333'
           }
         },
+        halfWindowMode:false,
         webviewContext: null as WebviewContext | null,
         loadError: false,
         horizontalScrollBarAccess: true,
         verticalScrollBarAccess: true,
         bounces: true,
+        disableUserSelectMenu: false,
         canGoBack: false,
         canGoForward: false,
         // 自动化测试
@@ -93,8 +102,20 @@
         eventError: null as UTSJSONObject | null,
         eventContentHeightChange: null as UTSJSONObject | null,
         pointerEvents: 'auto',
-        isTouchEnable: false
+        isTouchEnable: false,
+        loadingCount: 0
       }
+    },
+    computed:{
+      fullScreen(){
+        return !this.halfWindowMode
+      },
+      webViewStyle(){
+        return {
+          width: this.halfWindowMode?'50%':'100%',
+          'pointer-events': this.pointerEvents
+        }
+      },
     },
     onReady() {
       // #ifdef APP
@@ -110,6 +131,9 @@
       webviewElement = null;
     },
     methods: {
+      setHalfScreen(){
+        this.halfWindowMode = !this.halfWindowMode
+      },
       getPackageName() : string {
         let packageName : string = ""
 
@@ -133,6 +157,7 @@
         webviewElement?.forward();
       },
       reload() {
+        this.loadingCount = 0
         webviewElement?.reload();
       },
       stop() {
@@ -179,6 +204,7 @@
         }
       },
       loading(event : UniWebViewLoadingEvent) {
+        this.loadingCount ++
         console.log(JSON.stringify(event.detail));
         if (this.autoTest) {
           this.eventLoading = {
@@ -234,6 +260,9 @@
       changeBounces(event : UniSwitchChangeEvent) {
         this.bounces = event.detail.value;
       },
+      changeDisableUserSelectMenu(event : UniSwitchChangeEvent) {
+        this.disableUserSelectMenu = event.detail.value;
+      },
       // 自动化测试
       touchstart(event : UniTouchEvent) {
         if (this.autoTest) {
@@ -253,6 +282,10 @@
         // #ifdef WEB
         return true
         // #endif
+      },
+      checkLoadingCount() {
+        this.loadingCount = 0
+        webviewElement?.reload();
       }
     }
   }

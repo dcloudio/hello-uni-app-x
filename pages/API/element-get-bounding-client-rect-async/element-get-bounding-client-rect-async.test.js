@@ -26,9 +26,6 @@ async function invokeGetBoundingClientRect(page, methodName, dataName) {
 
   const rectInfo = data[dataName]
 
-  console.log('width', width);
-  console.log('rectInfo', rectInfo);
-
   expect(Math.round(rectInfo.x)).toBe(RECT_X)
   expect(Math.round(rectInfo.y) > 90).toBe(true)
   expect(width - 15 * 2 - Math.round(rectInfo.width) >= 0).toBe(true)

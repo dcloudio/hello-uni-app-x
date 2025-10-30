@@ -16,8 +16,7 @@ describe('component-native-list-view', () => {
   beforeAll(async () => {
     //打开list-view测试页
     page = await program.reLaunch('/pages/component/list-view/list-view')
-    await page.waitFor('view')
-    await page.waitFor(1000)
+    await page.waitFor(600)
   })
 
   //检测竖向scrolltop属性赋值
@@ -101,7 +100,7 @@ describe('component-native-list-view', () => {
   it('Event scrollend-滚动结束时触发',async()=>{
     // 仅App端支持,向上滑动页面
     await program.swipe({
-      startPoint: { x: 100, y: 300 },
+      startPoint: { x: 100, y: 200 },
       endPoint: { x: 100, y: 100 },
       duration: 100
     })

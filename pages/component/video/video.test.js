@@ -9,8 +9,8 @@ const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-video', () => {
-  if (isWeb || isAppWebView) {
-    // TODO: web 端暂不支持测试
+  // TODO: web 端暂不支持测试 harmony 模拟器异常
+  if (isWeb || isAppWebView || (isHarmony && platformInfo.includes('模拟器'))) {
     it('web', async () => {
       expect(1).toBe(1)
     })
@@ -234,6 +234,16 @@ describe('component-native-video', () => {
         });
       }
       await page.callMethod('exitFullScreen');
+      await page.waitFor(1000);
+      await page.callMethod('requestVerticalFullScreen');
+      await page.waitFor(1000);
+      expect(await page.data('eventFullscreenchange')).toEqual({
+        tagName: 'VIDEO',
+        type: 'fullscreenchange',
+        fullScreen: true,
+        direction: 'vertical'
+      });
+      await page.callMethod('exitFullScreen');
     });
 
     it('test event ended timeupdate', async () => {
@@ -299,6 +309,21 @@ describe('component-native-video', () => {
         });
         await page.waitFor(100);
         expect(await page.callMethod('hasSubComponent')).toBe(true);
+        await page.callMethod('requestFullScreen');
+        await page.waitFor(2000);
+        const image = await program.screenshot({ deviceShot: true });
+        expect(image).toSaveImageSnapshot();
+        await page.callMethod('exitFullScreen');
+        await page.waitFor(2000);
+        await page.callMethod('requestVerticalFullScreen');
+        await page.waitFor(2000);
+        const image2 = await program.screenshot({ deviceShot: true });
+        expect(image2).toSaveImageSnapshot();
+        await page.callMethod('exitFullScreen');
+        await page.setData({
+          subCompEnable: false,
+          subCompShow: false
+        });
       });
     }
 
@@ -319,6 +344,22 @@ describe('component-native-video', () => {
       expect(image).toSaveImageSnapshot();
     });
   }
+
+  it('test dialog video', async () => {
+    if (isAppWebView || isMP || isWeb) {
+      expect(1).toBe(1)
+      return
+    }
+    await page.callMethod('openDialogPageVideo')
+    // TODO 先测试 closeThisPage 一次
+    await program.tap({ x: 154, y: 577 }) // closeThisPage
+    await page.callMethod('openDialogPageVideo')
+    await program.tap({ x: 154, y: 492 }) // requestFullScreen
+    await page.waitFor(2000);
+    const image = await program.screenshot({ deviceShot: true });
+    expect(image).toSaveImageSnapshot();
+    await page.callMethod('closeDialogPageVideo')
+  });
 
   it('test format', async () => {
     page = await program.navigateTo('/pages/component/video/video-format');

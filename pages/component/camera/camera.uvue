@@ -1,6 +1,6 @@
 <template>
 	<view style="flex: 1;">
-		<camera style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition"
+		<camera style="width: 100%; height: 300px;" :resolution="'medium'" :device-position="devicePosition" photo-resolution="high"
 			:flash="flash" :frame-size="frameSize" @stop="handleStop" @error="handleError" @initdone="handleInitDone">
 		</camera>
 
@@ -227,12 +227,7 @@
 			},
 			getTimeout() : number {
 				let value = parseInt(this.timeoutStr)
-				// #ifdef APP-ANDROID
-				if (value == NaN) {
-				// #endif
-				// #ifndef APP-ANDROID
-				if (value !== value) {
-				// #endif
+				if (Number.isNaN(value)) {
 					return 30
 				} else {
 					if (value < 1) {

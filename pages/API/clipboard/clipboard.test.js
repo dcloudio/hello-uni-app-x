@@ -14,11 +14,16 @@ describe('web-clipboard', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/clipboard/clipboard')
     await page.waitFor('view');
+  });
+
+  it('screenshot', async () => {
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
+  it('setClipboardData', async () => {
     await page.setData({
       data: '123456'
     })
-  });
-  it('setClipboardData', async () => {
     await page.callMethod('setClipboard')
     await page.waitFor(500);
     console.log(await page.data('setClipboardTest'), 'setClipboardTest')
@@ -39,6 +44,10 @@ describe('web-clipboard', () => {
       expect(await page.data('getDataTest')).toBe('123456')
     }
     // 等待 toast 隐藏
-    await page.waitFor(2000);
+    await page.waitFor(3000);
+    if(isAndroid) {
+      // Android平台规避部分设备左下角弹框影响其他测试例
+      await page.waitFor(3000);
+    }
   });
 });

@@ -14,6 +14,9 @@ describe('API-compressImage', () => {
   it('test compressImage', async () => {
     const page = await program.reLaunch('/pages/API/compress-image/compress-image');
     await page.waitFor('view');
+    await page.setData({
+      compressedWidth: 100
+    })
     await page.callMethod('testCompressImage');
     await page.waitFor(1000);
     expect(await page.data('imageInfoForTest')).toEqual({

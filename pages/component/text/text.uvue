@@ -17,6 +17,11 @@
         <button class="uni-btn" type="primary" @click="textProps">
           更多属性示例
         </button>
+        <!-- #ifdef APP-ANDROID -->
+        <button class="uni-btn" type="primary" @click="textLayout">
+          文本测量
+        </button>
+        <!-- #endif -->
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -24,53 +29,54 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'text',
-        texts: [
-          'HBuilderX，轻巧、极速，极客编辑器',
-          'uni-app x，终极跨平台方案',
-          'uniCloud，js serverless云服务',
-          'uts，大一统语言',
-          'uniMPSdk，让你的App具备小程序能力',
-          'uni-admin，开源、现成的全端管理后台',
-          'uni-id，开源、全端的账户中心',
-          'uni-pay，开源、云端一体、全平台的支付',
-          'uni-ai，聚合ai能力',
-          'uni-cms，开源、云端一体、全平台的内容管理平台',
-          'uni-im，开源、云端一体、全平台的im即时消息',
-          'uni统计，开源、完善、全平台的统计报表',
-          '......'
-        ] as string[],
-        text: '',
-        canAdd: true,
-        canRemove: false,
-        extraLine: [] as string[]
-      }
-    },
-    methods: {
-      add: function () {
-        this.extraLine.push(this.texts[this.extraLine.length % 12]);
-        this.text = this.extraLine.join('\n');
-        this.canAdd = this.extraLine.length < 12;
-        this.canRemove = this.extraLine.length > 0;
-      },
-      remove: function () {
-        if (this.extraLine.length > 0) {
-          this.extraLine.pop();
-          this.text = this.extraLine.join('\n');
-          this.canAdd = this.extraLine.length < 12;
-          this.canRemove = this.extraLine.length > 0;
-        }
-      },
-      textProps: function () {
-        uni.navigateTo({
-          url: '/pages/component/text/text-props'
-        })
-      }
+<script setup lang="uts">
+  const title = ref('text')
+  const texts = ref([
+    'HBuilderX，轻巧、极速，极客编辑器',
+    'uni-app x，终极跨平台方案',
+    'uniCloud，js serverless云服务',
+    'uts，大一统语言',
+    'uniMPSdk，让你的App具备小程序能力',
+    'uni-admin，开源、现成的全端管理后台',
+    'uni-id，开源、全端的账户中心',
+    'uni-pay，开源、云端一体、全平台的支付',
+    'uni-ai，聚合ai能力',
+    'uni-cms，开源、云端一体、全平台的内容管理平台',
+    'uni-im，开源、云端一体、全平台的im即时消息',
+    'uni统计，开源、完善、全平台的统计报表',
+    '......'
+  ] as string[])
+  const text = ref('')
+  const canAdd = ref(true)
+  const canRemove = ref(false)
+  const extraLine = ref([] as string[])
+  
+  const add = () => {
+    extraLine.value.push(texts.value[extraLine.value.length % 12])
+    text.value = extraLine.value.join('\n')
+    canAdd.value = extraLine.value.length < 12
+    canRemove.value = extraLine.value.length > 0
+  }
+  
+  const remove = () => {
+    if (extraLine.value.length > 0) {
+      extraLine.value.pop()
+      text.value = extraLine.value.join('\n')
+      canAdd.value = extraLine.value.length < 12
+      canRemove.value = extraLine.value.length > 0
     }
+  }
+  
+  const textProps = () => {
+    uni.navigateTo({
+      url: '/pages/component/text/text-props'
+    })
+  }
+  
+  const textLayout = () => {
+    uni.navigateTo({
+      url: '/pages/component/text/text-layout'
+    })
   }
 </script>
 

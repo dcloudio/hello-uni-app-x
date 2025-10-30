@@ -6,7 +6,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('API-saveVideoToPhotosAlbum', () => {
-  if (isIOS || isWeb || isMP) {
+  if (isIOS || isWeb || isMP || isWeb) {
     it('pass', async () => {
       expect(1).toBe(1);
     });

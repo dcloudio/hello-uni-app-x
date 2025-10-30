@@ -7,7 +7,18 @@ const valueTypeDefaultMap = new Map([
   ['Array', '[1, "hello", true, { "key": "value" }]']
 ])
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIos = platformInfo.startsWith('ios')
+
 describe('Storage管理器页面-多类型新增', () => {
+  if (isIos) {
+  	it('skip not support', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page
   beforeAll(async () => {
     page = await program.navigateTo('/pages/API/storage/storagemanage')
@@ -45,7 +56,7 @@ describe('Storage管理器页面-多类型新增', () => {
     // 验证新增成功
     const list = await page.callMethod('getStorageList')
     expect(list.length).toBe(1)
-    if (!platformInfo.startsWith('mp')) {
+    if (!isMP) {
       expect(list[0].key).toBe('test_string')
       expect(list[0].value).toBe('hello world')
     }
@@ -69,7 +80,7 @@ describe('Storage管理器页面-多类型新增', () => {
     // 验证修改成功
     const list = await page.callMethod('getStorageList')
     // 微信小程序端，基础库3.5.8以上版本，获取 value是[object HTMLElement] 暂时跳过
-    if (!platformInfo.startsWith('mp')) {
+    if (!isMP) {
       expect(list[0].key).toBe('test_string_edited')
       expect(list[0].value).toBe('hello world edited')
     }
@@ -105,7 +116,7 @@ describe('Storage管理器页面-多类型新增', () => {
       // 验证默认值是否正确
       const editValue = await page.data('editValue')
       const editValueType = await page.data('editValueType')
-      if (platformInfo.startsWith('web') && editValueType._value != 'String') {
+      if (isWeb && editValueType._value != 'String') {
         // 获取 ref 的 value 属性
         expect(editValue._value).toBe(valueTypeDefaultMap.get(editValueType._value))
       }
@@ -141,7 +152,7 @@ describe('Storage管理器页面-多类型新增', () => {
     }
     // 验证所有类型都添加成功
     const list = await page.callMethod('getStorageList')
-    if (!platformInfo.startsWith('mp')) {
+    if (!isMP) {
       expect(list.length).toBe(types.length)
     }
   })

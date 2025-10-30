@@ -1,42 +1,34 @@
-<script lang="uts">
-  import { state } from '@/store/index.uts'
-  export default {
-    emits: ['change'],
-    props: {
-      title: {
-        type: String,
-        default: ''
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      },
-      defaultValue: {
-        type: Boolean,
-        default: false
-      }
-    },
-    computed: {
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      }
-    },
-    data() {
-      return {
-        _checked: false
-      }
-    },
-    created() {
-      this._checked = this.defaultValue
-    },
-    methods: {
-      // @ts-ignore
-      _change(e : UniSwitchChangeEvent) {
-        this._checked = e.detail.value;
-        this.$emit('change', this._checked)
-      }
-    }
+<script setup lang="uts">
+import { state } from '@/store/index.uts'
+
+const emit = defineEmits(['change'])
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
+  defaultValue: {
+    type: Boolean,
+    default: false
   }
+})
+
+const isDarkMode = computed(() => state.isDarkMode)
+const _checked = ref(false)
+
+onMounted(() => {
+  _checked.value = props.defaultValue
+})
+
+// @ts-ignore
+function _change(e : UniSwitchChangeEvent) {
+  _checked.value = e.detail.value;
+  emit('change', _checked.value)
+}
 </script>
 
 <template>

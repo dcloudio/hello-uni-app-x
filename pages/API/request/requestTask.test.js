@@ -19,14 +19,6 @@ describe('ExtApi-RequestTask', () => {
   });
 
 
-  beforeEach(async () => {
-    await page.setData({
-      jest_result: false,
-      data: null,
-      header: null
-    })
-  });
-
   it('Check RequestTask related api', async () => {
     const onHeadersReceived_observe_1_btn = await page.$('#onHeadersReceived_observe_1')
     await onHeadersReceived_observe_1_btn.tap()
@@ -46,7 +38,7 @@ describe('ExtApi-RequestTask', () => {
     await checkRequestTask_btn.tap()
 
 
-    await page.waitFor(5000);
+    await page.waitFor(8000);
     let jest_requestTask_result = await page.data('jest_requestTask_result')
     if (jest_requestTask_result) {
       let res = await page.data('res')
@@ -59,7 +51,7 @@ describe('ExtApi-RequestTask', () => {
 
       await checkRequestTask_btn.tap()
 
-      await page.waitFor(5000);
+      await page.waitFor(8000);
       jest_requestTask_result = await page.data('jest_requestTask_result')
       if (jest_requestTask_result) {
         res = await page.data('res')
@@ -74,7 +66,7 @@ describe('ExtApi-RequestTask', () => {
 
       await checkRequestTask_btn.tap()
 
-      await page.waitFor(5000);
+      await page.waitFor(8000);
       jest_requestTask_result = await page.data('jest_requestTask_result')
       if (jest_requestTask_result) {
         res = await page.data('res')

@@ -3,6 +3,7 @@ const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('API-getVideoInfo', () => {
   if (isWeb || isMP || isIOS) {
@@ -16,8 +17,16 @@ describe('API-getVideoInfo', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/get-video-info/get-video-info');
-    await page.waitFor(500);
+    await page.waitFor('view');
+    await page.waitFor(2000);
   });
+
+  if (!isAppWebView) {
+    it('screenshot', async () => {
+      const image = await program.screenshot({ fullPage: true });
+      expect(image).toSaveImageSnapshot();
+    });
+  }
 
   it('test getVideoInfo', async () => {
     await page.callMethod('testGetVideoInfo');

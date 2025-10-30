@@ -36,7 +36,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
           // 静默更新，只有wgt有
           if (uniUpgradeCenterResult.is_silently) {
             uni.downloadFile({
-              url,
+              url: uniUpgradeCenterResult.url,
               success: res => {
                 if (res.statusCode == 200) {
                   // 下载好直接安装，下次启动生效
@@ -124,7 +124,7 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 	let confirmText = '立即下载更新'
 	// #endif
 
-    return uni.showModal({
+	uni.showModal({
       title,
       content: contents,
       showCancel: !is_mandatory,

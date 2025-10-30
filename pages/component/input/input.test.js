@@ -1,10 +1,20 @@
+jest.setTimeout(50000)
+
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isIOS = platformInfo.startsWith('ios')
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+
 describe('component-native-input', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isIOS = platformInfo.startsWith('ios')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
+  if (isAppWebView) {
+  	it('app 与 web 存在差异, webview 不进行截图', () => {
+      expect(1).toBe(1)
+    })
+  	return
+  }
 
   let page;
   beforeAll(async () => {
@@ -12,12 +22,6 @@ describe('component-native-input', () => {
     await page.waitFor('view');
   });
 
-  // it("beforeAllTestScreenshot", async () => {
-  //   const image = await program.screenshot({
-  //     fullPage: true
-  //   })
-  //   expect(image).toSaveImageSnapshot()
-  // })
   // 测试焦点及键盘弹起
   if(!isMP) {
     it('focus', async () => {
@@ -43,6 +47,36 @@ describe('component-native-input', () => {
       // await page.waitFor(1000)
       // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
       // await page.waitFor(1000)
+    });
+  }
+  // web ios 自动化测试时无法触发事件，手动测试可以
+  if (isHarmony || isAndroid) {
+    it("focus and blur event", async () => {
+      if (isHarmony) {
+        await program.tap({ x: 100, y: 50 })
+        await page.waitFor(1000);
+      }
+      page.setData({
+        triggerFocus: false,
+        triggerBlur: false,
+      })
+      let pageData = await page.data()
+      expect(pageData.triggerFocus).toBe(false)
+      expect(pageData.triggerBlur).toBe(false)
+      await page.callMethod('triggerFocusOrBlur')
+      await page.waitFor(500)
+      pageData = await page.data()
+      expect(pageData.triggerFocus).toBe(true)
+      expect(pageData.triggerBlur).toBe(false)
+      await page.callMethod('triggerFocusOrBlur')
+      await page.waitFor(500)
+      pageData = await page.data()
+      expect(pageData.triggerFocus).toBe(false)
+      expect(pageData.triggerBlur).toBe(true)
+      if (isHarmony) {
+        await program.tap({ x: 100, y: 50 })
+        await page.waitFor(1000);
+      }
     });
   }
 
@@ -207,7 +241,7 @@ describe('component-native-input', () => {
     }
     // TODO: harmony 页面隐藏时需要隐藏键盘
     if (isHarmony) {
-      await program.tap({ x: 100, y: 200 })
+      await program.tap({ x: 100, y: 50 })
       await page.waitFor(1000);
     }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
@@ -220,13 +254,16 @@ describe('component-native-input', () => {
     await page.waitFor(2000);
 
     const keyboardHeight = await page.data('keyboardHeight');
-    console.log("keyboardHeight :", keyboardHeight);
     expect(keyboardHeight).toBeGreaterThan(25)
     //reset
     await page.setData({
       focusedForKeyboardHeightChangeTest: false,
       keyboardHeight: 0
     })
+    if (isHarmony) {
+      await program.tap({ x: 100, y: 50 })
+      await page.waitFor(1000);
+    }
   })
 
   it("afterAllTestScreenshot", async () => {

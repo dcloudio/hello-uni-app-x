@@ -4,63 +4,61 @@
   </view>
 </template>
 
-<script lang="uts">
+<script lang="uts" setup>
 	import { NativeTimePicker } from "@/uni_modules/native-time-picker";
 
+  // 定义 props
+  const props = defineProps({
+    "hour": {
+      type: Number,
+      default: 0
+    },
+    "minute": {
+      type: Number,
+      default: 0
+    }
+  });
 
-	export default {
+  // 定义 emits
+  const emit = defineEmits(['load', 'changed']);
 
-		data() {
-			return {
-				picker: null as NativeTimePicker | null,
-				hourValue: 0 as number,
-				minuteValue: 0 as number
-			}
-		},
-		props: {
-			"hour": {
-				type: Number,
-				default: 0
-			},
-			"minute": {
-				type: Number,
-				default: 0
-			}
-		},
-		watch: {
-			"hour": {
-				handler(newValue : number, oldValue : number) {
-					if (newValue < 23 && newValue >= 0) {
-						this.hourValue = newValue
-						this.picker?.setHour(this.hourValue)
-					}
-				},
-				immediate: true
-			},
-			"minute": {
-				handler(newValue : number, oldValue : number) {
-					if (newValue < 59 && newValue >= 0) {
-						this.minuteValue = newValue
-						this.picker?.setMinute(this.minuteValue)
-					}
+  // 响应式状态
+  const picker = ref<NativeTimePicker | null>(null);
+  const hourValue = ref(props.hour);
+  const minuteValue = ref(props.minute);
 
-				},
-				immediate: true
-			},
-		},
-		methods: {
-			onviewinit(e : UniNativeViewInitEvent) {
-				this.picker = new NativeTimePicker(e.detail.element, this.hourValue, this.minuteValue);
-				this.$emit("load")
-			},
-			ontimechanged(e : UniNativeViewEvent) {
-				this.$emit("changed", e)
-			}
-		},
-		unmounted() {
 
-		}
-	}
+  // 监听 hour prop 的变化
+  watch(():number => props.hour, (newValue: number) => {
+    if (newValue < 23 && newValue >= 0) {
+      hourValue.value = newValue;
+      picker.value?.setHour(hourValue.value);
+    }
+  }, {
+    immediate: true
+  });
+  // 监听 minute prop 的变化
+  watch(():number => props.minute, (newValue: number) => {
+    if (newValue < 59 && newValue >= 0) {
+      minuteValue.value = newValue;
+      picker.value?.setMinute(minuteValue.value);
+    }
+  }, {
+    immediate: true
+  });
+
+
+
+  // 方法
+  function onviewinit(e: UniNativeViewInitEvent) {
+    picker.value = new NativeTimePicker(e.detail.element, hourValue.value, minuteValue.value);
+    emit("load");
+  }
+
+  function ontimechanged(e: UniNativeViewEvent) {
+    emit("changed", e);
+  }
+
 </script>
 
 <style>
