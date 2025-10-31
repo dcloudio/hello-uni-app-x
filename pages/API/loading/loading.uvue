@@ -1,120 +1,209 @@
 <template>
-  <view>
-    <page-head :title="data.title"></page-head>
-    <view class="uni-list">
-      <view class="uni-list-cell uni-list-cell-pd">
-        <view class="uni-list-cell-db">是否显示透明蒙层-屏蔽点击事件</view>
-        <switch :checked="data.maskSelect" @change="maskChange" />
-      </view>
-      <view class="uni-padding-wrap">
-        <view class="uni-title uni-common-mt">
-          <text class="uni-title-text"> 设置标题 </text>
-        </view>
-      </view>
-      <view class="uni-list uni-common-pl">
-        <radio-group @change="radioChange">
-          <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items" :key="item.value"
-            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
-            :checked="index === data.current">
-            {{ item.name }}
-          </radio>
-        </radio-group>
-      </view>
-    </view>
-    <view class="uni-padding-wrap">
-      <view class="uni-btn-v">
-        <button class="uni-btn-v" type="primary" @click="showLoading">显示 loading 提示框</button>
-        <button class="uni-btn-v" @click="hideLoading">隐藏 loading 提示框</button>
-        <text>为方便演示，loading弹出3秒后自动关闭</text>
-      </view>
-    </view>
-  </view>
+	<view>
+		<page-head :title="data.title"></page-head>
+		<view class="uni-list">
+			<view class="uni-padding-wrap">
+				<view class="uni-title uni-common-mt">
+					<text class="uni-title-text"> 设置标题 </text>
+				</view>
+			</view>
+			<view class="uni-list uni-common-pl">
+				<radio-group @change="radioChange">
+					<radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items"
+						:key="item.value" :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''"
+						:value="item.value" :checked="index === data.current">
+						{{ item.name }}
+					</radio>
+				</radio-group>
+			</view>
+		</view>
+		<view class="uni-padding-wrap">
+			<view class="uni-btn-v">
+				<button class="uni-btn-v" type="primary" @click="showLoading">显示 loading 提示框</button>
+				<button class="uni-btn-v" @click="hideLoading">隐藏 loading 提示框</button>
+				<text>为方便演示，loading弹出3秒后自动关闭</text>
+			</view>
+		</view>
+		<view class="uni-padding-wrap">
+			<text>{{data.callbackText}}</text>
+			<view class="uni-btn-v">
+				<button class="uni-btn-v" type="primary" @click="closeSomeLoading">关闭指定loading</button>
+				<button class="uni-btn-v" type="primary" @click="noParamLoading">无参数测试</button>
+			</view>
+		</view>
+	</view>
 </template>
 <script setup lang="uts">
-  type ItemType = {
-    value : string
-    name : string
-  }
+	type ItemType = {
+		value : string
+		name : string
+	}
 
-  type DataType = {
-    title: string;
-    items: ItemType[];
-    current: number;
-    maskSelect: boolean;
-    titleSelect: string;
-  }
+	type DataType = {
+		title : string;
+		items : ItemType[];
+		current : number;
+		callbackText : string[];
+		titleSelect : string;
+	}
 
-  const data = reactive({
-    title: 'loading',
-    items: [
-      {
-        value: 'null',
-        name: '无标题',
-      },
-      {
-        value: '三秒后自动关闭',
-        name: '普通标题',
-      },
-      {
-        value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
-        name: '长标题',
-      },
-    ],
-    current: 0,
-    maskSelect: false,
-    titleSelect: "null"
-  } as DataType)
+	const data = reactive({
+		title: 'loading',
+		items: [
+			{
+				value: 'null',
+				name: '无标题',
+			},
+			{
+				value: '三秒后自动关闭',
+				name: '普通标题',
+			},
+			{
+				value: '超长文本内容，测试超出范围-超长文本内容，测试超出范围-三秒后自动关闭',
+				name: '长标题',
+			},
+		],
+		callbackText: [] as Array<string>,
+		current: 0,
+		titleSelect: "null"
+	} as DataType)
 
-  const jest_getWindowInfo = (): GetWindowInfoResult => {
-    return uni.getWindowInfo();
-  }
+	const jest_getWindowInfo = () : GetWindowInfoResult => {
+		return uni.getWindowInfo();
+	}
 
-  const radioChange = (e: UniRadioGroupChangeEvent) => {
-    const selected = data.items.find((item): boolean => {
-      return item.value == e.detail.value
-    })
-    if (selected != null) {
-      data.titleSelect = selected.value
-    }
-  }
+	const radioChange = (e : UniRadioGroupChangeEvent) => {
+		const selected = data.items.find((item) : boolean => {
+			return item.value == e.detail.value
+		})
+		if (selected != null) {
+			data.titleSelect = selected.value
+		}
+	}
 
-  const maskChange = (e: UniSwitchChangeEvent) => {
-    data.maskSelect = e.detail.value
-  }
+	const hideLoading = () => {
+		uni.hideLoading();
+	}
+	const noParamLoading = () => {
+		uni.showModal({
+			title: '123232131'
+		})
+		setTimeout(function () {
+			uni.hideModal({})
+		}, 2000)
+		uni.showLoading()
+		uni.showLoading({
+			success: function (showRet : ShowLoadingSuccess) {
+				data.callbackText.push("noParamLoading 1 success")
+			}
+		})
+		uni.showLoading({
+			complete: function (showRet : any) {
+				data.callbackText.push("noParamLoading 2 complete")
+			}
+		})
+		setTimeout(function () {
+			uni.hideLoading({
+				success: function (ret : HideLoadingSuccess) {
+					data.callbackText.push("hide loading success")
+				}
+			})
+		}, 2000)
+	}
+	/**
+	 * 关闭指定loading
+	 */
+	const closeSomeLoading = () => {
+		const loading1 = uni.showLoading({
+			title: "第一个loading",
+			success: function (res : ShowLoadingSuccess) {
+				data.callbackText.push("showLoading 1 success")
+				console.log("showLoading 1 success", res)
+			},
+			fail: function (res : ShowLoadingFail) {
+				data.callbackText.push("showLoading 1 fail")
+				console.log("showLoading 1 fail", res)
+			},
+			complete: function (res : any) {
+				data.callbackText.push("showLoading 1 complete")
+				console.log("showLoading 1 complete", res)
+			},
+		})
+		const loading2 = uni.showLoading({
+			title: "第二个loading",
+			success: function (res : ShowLoadingSuccess) {
+				data.callbackText.push("showLoading 2 success")
+				console.log("showLoading 2 success", res)
+			},
+			fail: function (res : ShowLoadingFail) {
+				data.callbackText.push("showLoading 2 fail")
+				console.log("showLoading 2 fail", res)
+			},
+			complete: function (res : any) {
+				data.callbackText.push("showLoading 2 complete")
+				console.log("showLoading 2 complete", res)
+			},
+		})
+		setTimeout(function () {
+			uni.hideLoading({
+				loadingPage: loading2,
+				success: function (res : HideLoadingSuccess) {
+					data.callbackText.push("hideLoading 2 success")
+					console.log("hideLoading 2 success", res)
+				},
+				fail: function (res : HideLoadingFail) {
+					data.callbackText.push("hideLoading 2 fail")
+					console.log("hideLoading 2 fail", res)
+				},
+				complete: function (res : any) {
+					data.callbackText.push("hideLoading 2 complete")
+					console.log("hideLoading 2 complete", res)
+				},
+			})
+		}, 1000)
+		setTimeout(function () {
+			uni.hideLoading({
+				loadingPage: loading1,
+				success: function (res : HideLoadingSuccess) {
+					data.callbackText.push("hideLoading 1 success")
+					console.log("hideLoading 1 success", res)
+				},
+				fail: function (res : HideLoadingFail) {
+					data.callbackText.push("hideLoading 1 fail")
+					console.log("hideLoading 1 fail", res)
+				},
+				complete: function (res : any) {
+					data.callbackText.push("hideLoading 1 complete")
+					console.log("hideLoading 1 complete", res)
+				},
+			})
+		}, 3000)
+	}
+	const showLoading = () => {
+		console.log(data.titleSelect)
+		if (data.titleSelect == "null") {
+			uni.showLoading({
+				title: "",
+			});
+		} else {
+			uni.showLoading({
+				title: data.titleSelect,
+			});
+		}
+		setTimeout(() => {
+			hideLoading();
+		}, 3000);
+	}
 
-  const hideLoading = () => {
-    uni.hideLoading();
-  }
+	onLoad(() => {
+		// uni.showLoading()
+		setTimeout(() => {
+			uni.hideLoading()
+		}, 2000);
+	})
 
-  const showLoading = () => {
-    console.log(data.titleSelect)
-    if (data.titleSelect == "null") {
-      uni.showLoading({
-        title: "",
-        mask: data.maskSelect
-      });
-    } else {
-      uni.showLoading({
-        title: data.titleSelect,
-        mask: data.maskSelect
-      });
-    }
-    setTimeout(() => {
-      hideLoading();
-    }, 3000);
-  }
-
-  onLoad(() => {
-    uni.showLoading({
-      title: 'onLoad 调用示例,2秒后消失'
-    })
-    setTimeout(() => {
-      uni.hideLoading()
-    }, 2000);
-  })
-
-  defineExpose({
-    showLoading,
-    hideLoading
-  })
+	defineExpose({
+		showLoading,
+		hideLoading
+	})
 </script>
