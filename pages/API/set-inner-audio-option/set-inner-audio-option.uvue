@@ -8,9 +8,29 @@
       <radio value="1" :checked="true">是</radio>
       <radio value="0" style="margin-left: 16px">否</radio>
     </radio-group>
+
+    <text style="margin-left: 8px">是否允许扬声器播放</text>
+    <radio-group class="uni-flex" style="margin:8px" @change="speakOnChanged">
+      <radio value="1" :checked="true">是</radio>
+      <radio value="0" style="margin-left: 16px">否</radio>
+    </radio-group>
+
+    <text style="margin-left: 8px">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
+    <radio-group class="uni-flex" style="margin:8px" @change="obeyMuteSwitchChanged">
+      <radio value="1" :checked="true">是</radio>
+      <radio value="0" style="margin-left: 16px">否</radio>
+    </radio-group>
+
+
     <view style="padding: 8px 8px;">
       <button @click="playBackgroundMusic" type="primary">播放背景音频</button>
-      <button @click="playInnerMusic" style="margin-top: 8px">播放音频</button>
+      <button @click="pauseBackgroundMusic" type="primary">暂停背景音频</button>
+      <button @click="stopBackgroundMusic" type="primary">停止背景音频</button>
+
+
+      <button @click="playInnerMusic" type="primary">播放音频</button>
+      <button @click="pauseInnerMusic" type="primary">暂停音频</button>
+      <button @click="stopInnerMusic" type="primary">停止音频</button>
     </view>
     <view style="padding: 16px 8px;">
       <view class="uni-row">
@@ -31,7 +51,10 @@
       return {
         backgroundManager: null as BackgroundAudioManager | null,
         innerAudio: null as InnerAudioContext | null,
-        isBackgroundAudioPaused: false
+        isBackgroundAudioPaused: false,
+        mixWithOther: true,
+        speakerOn: true,
+        obeyMuteSwitch: true
       }
     },
     onUnload() {
@@ -53,6 +76,12 @@
         this.backgroundManager!.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
         this.backgroundManager!.play()
       },
+      pauseBackgroundMusic() {
+        this.backgroundManager?.pause()
+      },
+      stopBackgroundMusic() {
+        this.backgroundManager?.stop()
+      },
       playInnerMusic() {
         if (this.innerAudio == null)
           this.innerAudio = uni.createInnerAudioContext()
@@ -62,9 +91,34 @@
         this.innerAudio!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
         this.innerAudio!.play()
       },
+      pauseInnerMusic() {
+        this.innerAudio?.pause()
+      },
+      stopInnerMusic() {
+        this.innerAudio?.stop()
+      },
       onMixChanged(event : UniRadioGroupChangeEvent) {
+        this.mixWithOther = event.detail.value == "1"
         uni.setInnerAudioOption({
-          mixWithOther: event.detail.value == "1"
+          mixWithOther: this.mixWithOther,
+          speakerOn: this.speakerOn,
+          obeyMuteSwitch: this.obeyMuteSwitch
+        })
+      },
+      speakOnChanged(event : UniRadioGroupChangeEvent) {
+        this.speakerOn = event.detail.value == "1"
+        uni.setInnerAudioOption({
+          mixWithOther: this.mixWithOther,
+          speakerOn: this.speakerOn,
+          obeyMuteSwitch: this.obeyMuteSwitch
+        })
+      },
+      obeyMuteSwitchChanged(event : UniRadioGroupChangeEvent) {
+        this.obeyMuteSwitch = event.detail.value == "1"
+        uni.setInnerAudioOption({
+          mixWithOther: this.mixWithOther,
+          speakerOn: this.speakerOn,
+          obeyMuteSwitch: this.obeyMuteSwitch
         })
       },
       testInnerAudioOption() {
