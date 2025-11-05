@@ -101,9 +101,22 @@
       stopInnerMusic() {
         this.innerAudio?.stop()
       },
-      handleRadioChange(event: UniRadioGroupChangeEvent, propertyName: 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
+      handleRadioChange(event : UniRadioGroupChangeEvent, propertyName : 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
         const value = event.detail.value == "1"
-        this[propertyName] = value
+
+        // 使用 switch 语句，意图更明确
+        switch (propertyName) {
+          case 'mixWithOther':
+            this.mixWithOther = value;
+            break;
+          case 'speakerOn':
+            this.speakerOn = value;
+            break;
+          case 'obeyMuteSwitch':
+            this.obeyMuteSwitch = value;
+            break;
+        }
+
         uni.setInnerAudioOption({
           mixWithOther: this.mixWithOther,
           speakerOn: this.speakerOn,
