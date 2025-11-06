@@ -71,7 +71,7 @@
     main_axis_gap: 2,
     cross_axis_gap: 2,
     waterflowPadding: [10, 5, 10, 5],
-    loadMore: true,
+    loadMore: false,
     isLoadMore: true
   } as DataType)
 
@@ -267,6 +267,29 @@
     data.cross_axis_gap = 6
   }
 
+  const load_more_click = () => {
+    if (!data.isLoadMore) return; // 已无更多
+    if (data.loadMore) return; // 正在加载中，忽略重复点击
+    data.loadMore = true
+    console.log("加载更多：开始加载")
+    setTimeout(() => {
+
+      const start = data.scrollData.length
+      for (let i = 0; i < 5; i++) {
+        data.scrollData.push({
+          height: 90 + Math.floor(Math.random() * 120),
+          text: `item---${start + i}`
+        } as flowItemData)
+      }
+      data.loadMore = false
+      // 示例：当项数超过 30 时不再显示加载更多
+      if (data.scrollData.length >= 30) {
+        data.isLoadMore = false
+      }
+      console.log("加载更多：完成，当前总数：" + data.scrollData.length)
+    }, 800) // 模拟网络延迟
+  }
+
   defineExpose({
     data,
     confirm_scroll_top_input,
@@ -305,7 +328,7 @@
       <flow-item slot="refresher" id="refresher" type=2 class="refresh-box">
         <text class="tip-text">{{data.text[data.state]}}</text>
       </flow-item>
-      <flow-item v-show="data.isLoadMore" slot="load-more" id="loadmore" type=6 class="load-more-box">
+      <flow-item v-show="data.isLoadMore" slot="load-more" id="loadmore" type=6 class="load-more-box" @click="load_more_click">
         <text>加载更多</text>
       </flow-item>
     </waterflow>
