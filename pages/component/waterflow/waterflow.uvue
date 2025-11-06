@@ -37,8 +37,8 @@
     main_axis_gap: number;
     cross_axis_gap: number;
     waterflowPadding: Array<number>;
-    loadMore: boolean;
-    isLoadMore: boolean;
+    isLoadingMore: boolean;
+    hasMore: boolean;
   }
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
@@ -71,8 +71,8 @@
     main_axis_gap: 2,
     cross_axis_gap: 2,
     waterflowPadding: [10, 5, 10, 5],
-    loadMore: false,
-    isLoadMore: true
+    isLoadingMore: false,
+    hasMore: true
   } as DataType)
 
   const waterflowRef = ref<UniWaterFlowElement | null>(null)
@@ -238,7 +238,7 @@
     }
   }
   const change_load_more_boolean = (checked : boolean) => {
-    data.isLoadMore = checked
+    data.hasMore = checked
   }
   const handleChangeCrossAxisCount = (value : number) => {
     if (value < 1) {
@@ -267,23 +267,26 @@
     data.cross_axis_gap = 6
   }
 
+  const PAGE_SIZE = 5;
+  const NETWORK_DELAY = 800;
+
   const load_more_click = () => {
-    if (!data.isLoadMore) return; // 已无更多
-    if (data.loadMore) return; // 正在加载中，忽略重复点击
-    data.loadMore = true
+    if (!data.hasMore) return; // 已无更多
+    if (data.isLoadingMore) return; // 正在加载中，忽略重复点击
+    data.isLoadingMore = true
     console.log("加载更多：开始加载")
     setTimeout(() => {
 
       const start = data.scrollData.length
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < PAGE_SIZE; i++) {
         data.scrollData.push({
           height: 90 + Math.floor(Math.random() * 120),
           text: `item---${start + i}`
         } as flowItemData)
       }
-      data.loadMore = false
+      data.isLoadingMore = false
       console.log("加载更多：完成，当前总数：" + data.scrollData.length)
-    }, 800) // 模拟网络延迟
+    }, NETWORK_DELAY) // 模拟网络延迟
   }
 
   defineExpose({
@@ -324,7 +327,7 @@
       <flow-item slot="refresher" id="refresher" type=2 class="refresh-box">
         <text class="tip-text">{{data.text[data.state]}}</text>
       </flow-item>
-      <flow-item v-show="data.isLoadMore" slot="load-more" id="loadmore" type=6 class="load-more-box" @click="load_more_click">
+      <flow-item v-show="data.hasMore" slot="load-more" id="loadmore" type=6 class="load-more-box" @click="load_more_click">
         <text>加载更多</text>
       </flow-item>
     </waterflow>
