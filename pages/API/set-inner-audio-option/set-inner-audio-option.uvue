@@ -3,34 +3,35 @@
   <scroll-view style="flex:1">
   <!-- #endif -->
     <page-head title="setInnerAudioOption"></page-head>
-    <text :style="styles.labelText">是否允许与其他音频同时播放</text>
-    <radio-group class="uni-flex" :style="styles.radioGroup" @change="handleRadioChange($event, 'mixWithOther')">
+    <text class="labelText">是否允许与其他音频同时播放</text>
+    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'mixWithOther')">
       <radio value="1" :checked="true">是</radio>
-      <radio value="0" :style="styles.radioItem">否</radio>
+      <radio value="0" class="radioItem">否</radio>
     </radio-group>
 
-    <text :style="styles.labelText">是否允许扬声器播放</text>
-    <radio-group class="uni-flex" :style="styles.radioGroup" @change="handleRadioChange($event, 'speakerOn')">
+    <text class="labelText">是否允许扬声器播放</text>
+    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'speakerOn')">
       <radio value="1" :checked="true">是</radio>
-      <radio value="0" :style="styles.radioItem">否</radio>
+      <radio value="0" class="radioItem">否</radio>
     </radio-group>
 
-    <text :style="styles.labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
-    <radio-group class="uni-flex" :style="styles.radioGroup" @change="handleRadioChange($event, 'obeyMuteSwitch')">
+<!-- #ifdef APP-IOS -->
+    <text class="labelText">（仅在 iOS 生效）是否遵循静音开关，设置为 false 之后，即使是在静音模式下，也能播放声音</text>
+    <radio-group class="uni-flex radioGroup" @change="(event:UniRadioGroupChangeEvent)=>handleRadioChange(event, 'obeyMuteSwitch')">
       <radio value="1" :checked="true">是</radio>
-      <radio value="0" :style="styles.radioItem">否</radio>
+      <radio value="0" class="radioItem">否</radio>
     </radio-group>
+<!-- #endif -->
+
+    <view class="buttonContainer">
+      <button @click="playBackgroundMusic" type="primary" class="radioGroup">播放背景音频</button>
+      <button @click="pauseBackgroundMusic" type="primary" class="radioGroup">暂停背景音频</button>
+      <button @click="stopBackgroundMusic" type="primary" class="radioGroup">停止背景音频</button>
 
 
-    <view :style="styles.buttonContainer">
-      <button @click="playBackgroundMusic" type="primary">播放背景音频</button>
-      <button @click="pauseBackgroundMusic" type="primary">暂停背景音频</button>
-      <button @click="stopBackgroundMusic" type="primary">停止背景音频</button>
-
-
-      <button @click="playInnerMusic" type="primary">播放音频</button>
-      <button @click="pauseInnerMusic" type="primary">暂停音频</button>
-      <button @click="stopInnerMusic" type="primary">停止音频</button>
+      <button @click="playInnerMusic" type="primary" class="radioGroup">播放音频</button>
+      <button @click="pauseInnerMusic" type="primary" class="radioGroup">暂停音频</button>
+      <button @click="stopInnerMusic" type="primary" class="radioGroup">停止音频</button>
     </view>
     <view style="padding: 16px 8px;">
       <text>1. uni.setInnerAudioOption需要与uni.createInnerAudioContext搭配才会生效 \n </text>
@@ -55,10 +56,10 @@
         obeyMuteSwitch: true,
         styles: {
           labelText: 'margin-left: 8px',
-          radioGroup: 'margin: 8px',
-          radioItem: 'margin-left: 16px',
-          buttonContainer: 'padding: 8px 8px;'
-        }
+          radioGroup: '',
+          radioItem: '',
+          buttonContainer: ''
+        } as UTSJSONObject
       }
     },
     onUnload() {
@@ -133,5 +134,16 @@
 </script>
 
 <style>
-
+.labelText {
+  margin-left: 8px
+}
+.radioGroup {
+  margin: 8px
+}
+.radioItem {
+  margin-left: 16px
+}
+.buttonContainer {
+  padding: 8px 8px;
+}
 </style>
