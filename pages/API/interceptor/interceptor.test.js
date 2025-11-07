@@ -104,5 +104,10 @@ describe('interceptor', () => {
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe('pages/tabBar/component')
   })
-
+  it('preventNavigateTo', async () => {
+    await page.callMethod('preventNavigateTo')
+    await page.waitFor(500)
+    const currentPage = await program.currentPage()
+    expect(currentPage.path).toBe('pages/API/interceptor/interceptor')
+  })
 })
