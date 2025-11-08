@@ -7,15 +7,18 @@
 </template>
 
 <script setup lang="uts">
+const currentPage = getCurrentInstance()?.proxy?.$page
 
 function onChanged(e : UniNativeViewEvent) {
   console.log("onchanged-----", e.detail)
 }
 
 function sure() {
-  uni.closeDialogPage({
-    dialogPage: getCurrentInstance()!.proxy!.$page
-  })
+  if (currentPage != null) {
+    uni.closeDialogPage({
+      dialogPage: currentPage
+    })
+  }
 }
 </script>
 

@@ -43,7 +43,6 @@
 </template>
 
 <script setup lang="uts">
-	import { ref, getCurrentInstance } from 'vue'
 	import { objectAssign } from "../../js_sdk/js_sdk"
 
 	const myOptions = ref({
@@ -59,6 +58,7 @@
 	const adpid = ref("") // 广告id
 	const return_url = ref("") // 支付成功后点击查看订单跳转的订单详情页面地址
 	const main_color = ref("") // 支付成功页面的主色调
+	const payRef = ref<UniPayComponentPublicInstance | null>(null)
 
 	// 监听 - 支付组件加载完毕事件
 	function onMounted(insideData_ : UTSJSONObject) {
@@ -68,8 +68,9 @@
 	// 发起支付
 	function createOrder(data : UTSJSONObject) {
 		myOptions.value = objectAssign(myOptions.value, data);
-		const payInstance = getCurrentInstance()!.proxy!.$refs["payRef"] as UniPayComponentPublicInstance;
-		payInstance.createOrder(myOptions.value);
+		if (payRef.value != null) {
+			payRef.value!.createOrder(myOptions.value);
+		}
 	}
 	// 根据provider发起支付
 	function createOrderByProvider(provider : string) {
@@ -135,12 +136,7 @@
 		}
 		console.log('myOptions: ', myOptions.value)
 	})
-	// 监听 - 页面【首次渲染完成时】执行。注意如果渲染速度快，会在页面进入动画完成前触发
-	onReady(() => { })
-	// 监听 - 页面每次【显示时】执行(如：前进和返回) (页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面)
-	onShow(() => { })
-	// 监听 - 页面每次【隐藏时】执行(如：返回)
-	onHide(() => { })
+
 </script>
 <style lang="scss" scoped>
 	.uni-pay{

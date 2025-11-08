@@ -2,8 +2,8 @@
   <view class="tabs">
     <view ref="tabview" class="tab-view">
       <!-- 注意tab的逻辑是：第一次使用v-if创建，创建之后不再使用v-if，而是设置visibility来隐藏和显示。不能设置tab的v-if为false，因为销毁再创建影响性能 -->
-      <tab1 ref="tab1" class="tab-page" v-if="tabList[0].init" :style="{visibility:(selectedIndex==0?'visible':'hidden')}"></tab1>
-      <tab2 ref="tab2" class="tab-page" v-if="tabList[1].init" :style="{visibility:(selectedIndex==1?'visible':'hidden')}"></tab2>
+      <tab1 ref="tab1Ref" class="tab-page" v-if="tabList[0].init" :style="{visibility:(selectedIndex==0?'visible':'hidden')}"></tab1>
+      <tab2 ref="tab2Ref" class="tab-page" v-if="tabList[1].init" :style="{visibility:(selectedIndex==1?'visible':'hidden')}"></tab2>
     </view>
     <view ref="tabbar" class="tab-bar">
       <view class="tab-item" @click="onTabClick(0)">
@@ -47,6 +47,11 @@ type TabItem = {
   preload : boolean,
 }
 
+// Template refs
+const tabview = ref<UniElement | null>(null)
+const tab1Ref = ref<ComponentPublicInstance | null>(null)
+const tab2Ref = ref<ComponentPublicInstance | null>(null)
+
 // Data
 const tabList = ref([
   {
@@ -75,10 +80,12 @@ function setSelectedIndex(index : number) {
 }
 
 function onTabClick(index : number) {
-  const instance = getCurrentInstance()!
   if (selectedIndex.value == index && index == 0 && displayArrow.value == true) {
     displayArrow.value = false;
-    (instance.proxy!.$refs["tab1"]! as ComponentPublicInstance).$callMethod('scrollTop', 0)
+    const tab1Instance = tab1Ref.value
+    if (tab1Instance != null) {
+      tab1Instance.$callMethod('scrollTop', 0)
+    }
   }
   else if (index !=0){
     displayArrow.value = false
@@ -108,9 +115,12 @@ onLoad(() => {
 })
 
 onReady(() => {
-  (getCurrentInstance()!.proxy!.$refs["tabview"] as UniElement).getBoundingClientRectAsync()!.then((res : DOMRect) => {
-    tabViewHeight.value = res.height
-  })
+  const tabviewElement = tabview.value
+  if (tabviewElement != null) {
+    tabviewElement.getBoundingClientRectAsync()!.then((res : DOMRect) => {
+      tabViewHeight.value = res.height
+    })
+  }
 })
 
 onUnload(() => {

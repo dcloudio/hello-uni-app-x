@@ -323,8 +323,8 @@
   // #endif
 
   // #ifdef WEB
-  watch(() => $route, (newRoute) => {
-    if (newRoute.matched.length) {
+  watch(() => (getCurrentInstance()?.proxy as any)?.$route, (newRoute) => {
+    if (newRoute && newRoute.matched.length) {
       let path = newRoute.path.split('/')[3]
       for (const item of list.value) {
         if (Array.isArray(item.pages)) {

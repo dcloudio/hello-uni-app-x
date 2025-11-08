@@ -8,7 +8,8 @@
 </template>
 
 <script setup lang="uts">
-  
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import {
     state,
     setLifeCycleNum
@@ -17,9 +18,11 @@
   const title = ref('dialog 1-1')
 
   function closeThisDialog() {
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page,
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+      })
+    }
   }
 
   onReady(() => {

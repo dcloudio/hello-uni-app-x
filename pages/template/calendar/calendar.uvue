@@ -6,8 +6,8 @@
       <view class="date">
         <text class="date-text">{{ current_month }}</text>
       </view>
-      <view ref="draw-header" class="calendar-header"></view>
-      <view ref="draw-weeks" class="calendar-week" @click="select"></view>
+      <view ref="drawHeaderRef" class="calendar-header"></view>
+      <view ref="drawWeeksRef" class="calendar-week" @click="select"></view>
       <view class="btn-group">
         <button size="mini" @click="preDate">上个月</button>
         <button size="mini" @click="gotoToday">回到今天</button>
@@ -29,6 +29,10 @@
     height : number;
     data : DateType
   }
+
+  // Template refs
+  const drawHeaderRef = ref<UniElement | null>(null)
+  const drawWeeksRef = ref<UniElement | null>(null)
 
   const weeks = ref<Array<Array<DateType>>>([])
   const $coords = ref<Array<CoordsType>>([])
@@ -62,7 +66,8 @@
 
   // 绘制日历顶部信息
   function drawHeader() {
-    const refs = getCurrentInstance()!.proxy!.$refs['draw-header'] as UniElement
+    const refs = drawHeaderRef.value
+    if (refs == null) return
     let ctx = refs.getDrawableContext()
     if (ctx == null) return
     // 渲染之前如果有内容，需要清空
@@ -94,7 +99,8 @@
   // 绘制日历主体
   function drawWeek(weeks : Array<Array<DateType>>, time : string) {
     const start_time = Date.now()
-    const refs = getCurrentInstance()!.proxy!.$refs['draw-weeks'] as UniElement
+    const refs = drawWeeksRef.value
+    if (refs == null) return
     let ctx = refs.getDrawableContext()
     if (ctx == null) return
     const dom = refs.getBoundingClientRect()
@@ -177,10 +183,12 @@
 
   function init() {
     const calendar = $calendar.value
-    const refs = getCurrentInstance()!.proxy!.$refs['draw-weeks'] as UniElement
-    let ctx = refs.getDrawableContext()
-    if (ctx != null) {
-      ctx.reset()
+    const refs = drawWeeksRef.value
+    if (refs != null) {
+      let ctx = refs.getDrawableContext()
+      if (ctx != null) {
+        ctx.reset()
+      }
     }
 
     // timeData.value = calendar.getDateInfo()
@@ -225,7 +233,8 @@
 
   // 触发整个日历的点击事件，需要计算点击位置
   function select(event : UniPointerEvent) {
-    const refs = getCurrentInstance()!.proxy!.$refs['draw-weeks'] as UniElement
+    const refs = drawWeeksRef.value
+    if (refs == null) return
     const rect = refs.getBoundingClientRect();
     const dom_x = rect.left; // 元素左上角相对于视口的 X 坐标
     const dom_y = rect.top; // 元素左上角相对于视口的 Y 坐标
@@ -306,8 +315,10 @@
     init()
 
     // 仅自动化测试
-    const header = getCurrentInstance()!.proxy!.$refs['draw-header'] as UniElement
-    testWidth.value = header.getBoundingClientRect().width;
+    const header = drawHeaderRef.value
+    if (header != null) {
+      testWidth.value = header.getBoundingClientRect().width;
+    }
   })
 </script>
 

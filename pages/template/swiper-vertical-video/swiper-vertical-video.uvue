@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <view ref="back" @click="back" class="nav-back">
+    <view ref="backButton" @click="back" class="nav-back">
       <image class="back-img" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
     </view>
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
@@ -34,6 +34,9 @@ let page : number = 0,
 
 import { state, setNetless } from '@/store/index.uts'
 
+// Template ref
+const backButton = ref<UniElement | null>(null)
+
 const $videoContextMap = ref(new Map<string, VideoContext>())
 const list = ref([] as ListItem[])
 const visibleList = ref([] as ListItem[])// 提高性能 可见的只有3个
@@ -46,7 +49,7 @@ function getVideoContext(idx : number) : VideoContext {
   const videoContextMap = $videoContextMap.value
   let videoContext : VideoContext | null = videoContextMap.get('video-' + idx)
   if (videoContext == null) {
-    videoContext = uni.createVideoContext('video-' + idx, getCurrentInstance()!.proxy!) as VideoContext
+    videoContext = uni.createVideoContext('video-' + idx) as VideoContext
     videoContextMap.set('video-' + idx, videoContext)
   }
   return videoContext
@@ -214,8 +217,10 @@ onReady(() => {
   //  非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
   doPlay(0);
   //App端适配不同状态栏高度
-  let backElement = getCurrentInstance()!.proxy!.$refs['back'] as UniElement;
-  backElement.style.setProperty('top', uni.getWindowInfo().statusBarHeight+'px');
+  const backElement = backButton.value
+  if (backElement != null) {
+    backElement.style.setProperty('top', uni.getWindowInfo().statusBarHeight+'px');
+  }
   // #endif
 })
 

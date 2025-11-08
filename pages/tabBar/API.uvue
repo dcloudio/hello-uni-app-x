@@ -62,6 +62,10 @@
   const menuData = generateMenu('pages/API')
   import { state } from '@/store/index.uts'
 
+  // Template refs
+  const pop = ref<UniElement | null>(null)
+  const category = ref<ComponentPublicInstance[] | null>(null)
+
   const menu = ref(menuData as MenuItem[])
   const arrowRightIcon = ref('/static/icons/arrow-right.png')
 
@@ -86,7 +90,10 @@
   })
 
   function showPop() {
-    (getCurrentInstance()!.proxy!.$refs["pop"] as UniElement).style.setProperty("display", "flex")
+    const popElement = pop.value
+    if (popElement != null) {
+      popElement.style.setProperty("display", "flex")
+    }
   }
 
   function goPage(url : string) {
@@ -102,7 +109,10 @@
   }
 
   function hidePop() {
-    (getCurrentInstance()!.proxy!.$refs["pop"] as UniElement).style.setProperty("display", "none")
+    const popElement = pop.value
+    if (popElement != null) {
+      popElement.style.setProperty("display", "none")
+    }
   }
 
   function stopClickPop(e : PointerEvent) {
@@ -124,12 +134,16 @@
   // #endif
 
   // #ifdef WEB
+  // Note: This watch is for web platform routing, keeping minimal getInstance usage for $route and $nextTick
   watch(() => (getCurrentInstance()!.proxy! as any).$route, (newRoute: any) => {
     if (newRoute.matched.length) {
       const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
       if (activeCategoryIndex > -1) {
         (getCurrentInstance()!.proxy! as any).$nextTick(() => {
-          ((getCurrentInstance()!.proxy!.$refs['category'] as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
+          const categoryRefs = category.value
+          if (categoryRefs != null && categoryRefs[activeCategoryIndex] != null) {
+            categoryRefs[activeCategoryIndex].$callMethod('openCollapse', true)
+          }
         })
       }
     }

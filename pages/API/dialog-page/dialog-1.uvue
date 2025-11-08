@@ -30,7 +30,8 @@
 </template>
 
 <script setup lang="uts">
-  
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import {
     state,
     setLifeCycleNum
@@ -86,28 +87,31 @@
   }
 
   function closeThisDialog() {
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page,
-      success(res) {
-        console.log('closeThisDialog success', res)
-        // 自动化测试
-        setLifeCycleNum(state.lifeCycleNum + 1)
-      },
-      fail(err) {
-        console.log('closeThisDialog fail', err)
-        // 自动化测试
-        setLifeCycleNum(state.lifeCycleNum - 4)
-      },
-      complete(res) {
-        console.log('closeThisDialog complete', res)
-        // 自动化测试
-        setLifeCycleNum(state.lifeCycleNum + 1)
-      }
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 4)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+      })
+    }
   }
 
   function checkGetParentPage() : boolean {
-    const parentPage = getCurrentInstance()!.proxy!.$page.getParentPage()
+    if (currentPage == null) return false
+    const parentPage = currentPage.getParentPage()
     console.log('checkGetParentPage', parentPage)
     const res = parentPage != null
     uni.showToast(res ? {
@@ -120,14 +124,14 @@
   }
 
   function checkGetElementById() : boolean {
-    const page = getCurrentInstance()!.proxy!.$page
-    const element = page.getElementById('dialog1-go-next-page')
+    if (currentPage == null) return false
+    const element = currentPage.getElementById('dialog1-go-next-page')
     let res = element != null
     // #ifndef APP-ANDROID
     if (res) {
       const elPage = element!.getPage()
       console.log('elPage', elPage)
-      res = elPage === page
+      res = elPage === currentPage
     }
     // #endif
     console.log('check getElementById', res)
@@ -137,9 +141,11 @@
 
   function toggleBackgroundColor() {
     backgroundColorContent.value = backgroundColorContent.value == 'transparent' ? 'rgb(0, 122, 255)' : 'transparent'
-    getCurrentInstance()!.proxy!.$page.setPageStyle({
-      backgroundColorContent: backgroundColorContent.value
-    })
+    if (currentPage != null) {
+      currentPage.setPageStyle({
+        backgroundColorContent: backgroundColorContent.value
+      })
+    }
   }
 
   function back() {

@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="uts">
-  
+  const currentPage = getCurrentInstance()?.proxy?.$page
 
   const title = ref('dialogPage Video')
   const backgroundColorContent = ref('transparent')
@@ -31,9 +31,11 @@
   }
 
   function closeThisPage() {
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
   }
 
   onBackPress(() => {

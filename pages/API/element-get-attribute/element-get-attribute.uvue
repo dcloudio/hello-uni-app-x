@@ -83,8 +83,8 @@
     height : number,
   }
 
-  const boxTarget = ref<null | UniElement>(null)
-  const scrollViewTarget = ref<null | UniElement>(null)
+  const box = ref<UniElement | null>(null)
+  const scrollView = ref<UniElement | null>(null)
   const attrId = ref("")
   const attrStyle = ref("")
   const propertyValue = ref("")
@@ -117,35 +117,44 @@
   }
 
   function getAttributeId() {
-    attrId.value = boxTarget.value!.getAttribute('id') ?? ""
+    if (box.value != null) {
+      attrId.value = box.value!.getAttribute('id') ?? ""
+    }
   }
 
   function setStyle() {
-    boxTarget.value!.style.setProperty("background-color", "#FFF000")
+    if (box.value != null) {
+      box.value!.style.setProperty("background-color", "#FFF000")
+    }
   }
 
   function getPropertyValue() {
-    propertyValue.value = boxTarget.value!.style.getPropertyValue("background-color")
+    if (box.value != null) {
+      propertyValue.value = box.value!.style.getPropertyValue("background-color")
+    }
   }
 
   function getAttributeStyle() {
-    attrStyle.value = boxTarget.value!.getAttribute('style')?? ""
+    if (box.value != null) {
+      attrStyle.value = box.value!.getAttribute('style')?? ""
+    }
   }
 
   function scrollTo() {
-    // #ifdef MP-WEIXIN
-    scrollViewTarget.value!.scrollTo({
-      left: 200
-    })
-    // #endif
-    // #ifndef MP-WEIXIN
-    scrollViewTarget.value!.scrollTo(200,0)
-    // #endif
+    if (scrollView.value != null) {
+      // #ifdef MP-WEIXIN
+      scrollView.value!.scrollTo({
+        left: 200
+      })
+      // #endif
+      // #ifndef MP-WEIXIN
+      scrollView.value!.scrollTo(200,0)
+      // #endif
+    }
   }
 
   onReady(() => {
-    boxTarget.value = getCurrentInstance()!.proxy!.$refs['box'] as UniElement
-    scrollViewTarget.value = getCurrentInstance()!.proxy!.$refs['scrollView'] as UniElement;
+    // Refs are already assigned via template
   })
 </script>
 <style>

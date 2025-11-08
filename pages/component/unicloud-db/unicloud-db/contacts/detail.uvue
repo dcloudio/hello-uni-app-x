@@ -38,7 +38,7 @@
   const collection = ref('')
   const where = ref('')
   const whereID = ref('')
-  const uniCloudElement = ref(null as UniCloudDBElement | null)
+  const udbRef = ref<UniCloudDBElement | null>(null)
 
   function displayGender(value : number | null) : string {
     const str = value ?? -1
@@ -47,7 +47,9 @@
     })!.text;
   }
   function onDataChange(event : string) {
-    uniCloudElement.value!.loadData()
+    if (udbRef.value != null) {
+      udbRef.value!.loadData()
+    }
   }
   function gotoUpdatePage(id : string | null) {
     // TODO 后续通过 EventChannel 实现
@@ -69,9 +71,6 @@
   onUnload(() => {
     // TODO 后续通过 EventChannel 实现
     uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
-  })
-  onReady(() => {
-    uniCloudElement.value = getCurrentInstance()!.proxy!.$refs['udb'] as UniCloudDBElement
   })
 </script>
 

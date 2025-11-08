@@ -32,17 +32,18 @@
   const stickyTop = ref(0)
   const stickyTran = ref(0)
   const scrollTop = ref(0)
-  const stickyNode = ref(null as UniElement | null)
+  const sticky = ref<UniElement | null>(null)
+  const scroll = ref<UniElement | null>(null)
 
   function onScroll(e : ScrollEvent) {
     if (e.detail.scrollTop > stickyTop.value) {
       let stickyTran_ = e.detail.scrollTop - stickyTop.value;
       if (stickyTran_ != stickyTran.value) {
-        stickyNode.value?.style?.setProperty('transform', 'translateY(' + stickyTran_ + 'px)');
+        sticky.value?.style?.setProperty('transform', 'translateY(' + stickyTran_ + 'px)');
       }
       stickyTran.value = stickyTran_;
     } else {
-      stickyNode.value?.style?.setProperty('transform', '');
+      sticky.value?.style?.setProperty('transform', '');
       stickyTran.value = 0;
     }
   }
@@ -60,14 +61,12 @@
     })
   }
   async function calcStickyTop() {
-    stickyNode.value = getCurrentInstance()!.proxy!.$refs['sticky'] as UniElement;
-    // let rect = stickyNode.value?.getBoundingClientRect();
-    // stickyTop.value = rect?.top;
-    //stickyTop.value = stickyNode.value?.getBoundingClientRect()?.top;
-    const stickyRect = await (getCurrentInstance()!.proxy!.$refs['sticky'] as UniElement).getBoundingClientRectAsync()!;
-    const scrollRect = await (getCurrentInstance()!.proxy!.$refs['scroll'] as UniElement).getBoundingClientRectAsync()!;
-    stickyTop.value = stickyRect.top - scrollRect.top;
-    console.log(stickyRect, scrollRect);
+    if (sticky.value != null && scroll.value != null) {
+      const stickyRect = await sticky.value!.getBoundingClientRectAsync()!;
+      const scrollRect = await scroll.value!.getBoundingClientRectAsync()!;
+      stickyTop.value = stickyRect.top - scrollRect.top;
+      console.log(stickyRect, scrollRect);
+    }
   }
 
   onLoad(() => {

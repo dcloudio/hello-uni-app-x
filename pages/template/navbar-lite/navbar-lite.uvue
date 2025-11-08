@@ -45,7 +45,8 @@
 </template>
 
 <script setup lang="uts">
-  
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import { state, setLifeCycleNum as setLifeCycleNumStore } from '@/store/index.uts'
 
   const title = ref('Hello uni-app')
@@ -114,8 +115,8 @@
   function onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
     let height = e.detail.height;
     // #ifdef APP-IOS
-    if(height>0){  //iOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
-      height -= getCurrentInstance()!.proxy!.$page.safeAreaInsets.bottom;
+    if(height>0 && currentPage != null){  //iOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
+      height -= currentPage.safeAreaInsets.bottom;
     }
     // #endif
     inputBottom.value = `${height}px`;

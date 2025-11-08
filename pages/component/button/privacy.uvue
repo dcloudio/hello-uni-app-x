@@ -36,21 +36,28 @@
   import { openSchema } from '@/uni_modules/uts-openSchema'
   // #endif
 
+  // Get page instance at component initialization
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   const number = ref(0)
   const hrefLicense = ref('https://dcloud.io/license/DCloud.html')
   const hrefPrivacy = ref('https://dcloud.io/license/hello-uni-app-x.html')
 
   function agree() {
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
   }
 
   function reject() {
     uni.resetPrivacyAuthorization()
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
+    }
   }
 
   function hrefClick(href : string) {
@@ -64,7 +71,7 @@
     // #endif
   }
 
-  onLoad(() => {
+  onLoad((_) => {
     number.value = uni.onPrivacyAuthorizationChange((callback) => {
       uni.showToast({
         title: 'isPrivacyAgree:' + !callback.needAuthorization

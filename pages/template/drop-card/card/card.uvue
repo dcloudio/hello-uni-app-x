@@ -1,17 +1,22 @@
 <template>
   <view class="card" ref="card" @touchstart="touchstart($event as TouchEvent)"
     @touchmove="touchmove($event as TouchEvent)" @touchend="touchend" @touchcancel="touchend">
-    <image class="card-img" ref="card-img" :src="img"></image>
+    <image class="card-img" ref="cardImg" :src="img"></image>
     <view class="state">
-      <image class="state-icon like" ref="state-icon-like" src="/static/template/drop-card/like.png" mode="widthFix">
+      <image class="state-icon like" ref="stateIconLike" src="/static/template/drop-card/like.png" mode="widthFix">
       </image>
-      <image class="state-icon dislike" ref="state-icon-dislike" src="/static/template/drop-card/dislike.png"
+      <image class="state-icon dislike" ref="stateIconDislike" src="/static/template/drop-card/dislike.png"
         mode="widthFix"></image>
       <!-- cardIndex:{{cardIndex}} -->
     </view>
   </view>
 </template>
 <script setup lang="uts">
+// Template refs
+const card = ref<UniElement | null>(null)
+const cardImg = ref<UniElement | null>(null)
+const stateIconLike = ref<UniElement | null>(null)
+const stateIconDislike = ref<UniElement | null>(null)
 
 // Props
 const props = defineProps({
@@ -54,14 +59,28 @@ const dislikeOpacity = computed(() : number => {
 
 // Methods
 function setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-  const instance = getCurrentInstance()!
   const elementMap = $elementMap.value as Map<string, UniElement>
   let element : UniElement | null = elementMap.get(refName)
   if (element == null) {
-    element = instance.proxy!.$refs[refName] as UniElement
-    elementMap.set(refName, element)
+    // Map ref name to corresponding ref variable
+    if (refName == 'card') {
+      element = card.value
+    } else if (refName == 'card-img') {
+      element = cardImg.value
+    } else if (refName == 'state-icon-like') {
+      element = stateIconLike.value
+    } else if (refName == 'state-icon-dislike') {
+      element = stateIconDislike.value
+    }
+
+    if (element != null) {
+      elementMap.set(refName, element)
+    }
   }
-  element.style.setProperty(propertyName, propertyStyle)
+
+  if (element != null) {
+    element.style.setProperty(propertyName, propertyStyle)
+  }
 }
 
 function initCardStyle() {

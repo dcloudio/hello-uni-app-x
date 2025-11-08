@@ -13,12 +13,11 @@
 
 <script setup lang="uts">
 
-
 const listViewStyle = ref("flex:1; width: 100%; heigth: 100%")
 const dataList = ref(10)
 const intoview = ref("")
 const scrolltop = ref(0)
-const listViewElement = ref(null as UniElement | null)
+const listview = ref<UniElement | null>(null)
 
 function changeSize() {
   if (listViewStyle.value == "flex:1; width: 100%; heigth: 100%") {
@@ -39,14 +38,13 @@ function setScrollTop(value: number) {
 }
 
 function getScrollTop() : number {
-  var ret = listViewElement.value?.scrollTop ?? -1
+  var ret = listview.value?.scrollTop ?? -1
   console.log(ret)
   return ret
 }
 
 onReady(() => {
-  // 组件ready时，获取组件实例
-  listViewElement.value = getCurrentInstance()!.proxy!.$refs["listview"] as UniElement
+  // Component is ready, ref is already assigned
 })
 </script>
 

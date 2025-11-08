@@ -38,14 +38,15 @@
 
   const collection = ref(COLLECTION_NAME)
   const genderList = ref(GenderList as GenderType[])
-  const uniCloudElement = ref(null as UniCloudDBElement | null)
+  const udbRef = ref<UniCloudDBElement | null>(null)
 
   function onFormSubmit(e : UniFormSubmitEvent) {
     const formData = e.detail.value
     const genderString = formData['gender'] as string
     formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
     console.log('formData', formData)
-    uniCloudElement.value!.add(formData, {
+    if (udbRef.value != null) {
+      udbRef.value!.add(formData, {
       showToast: false,
       needLoading: true,
       loadingTitle: "正在保存...",
@@ -56,19 +57,16 @@
           uni.navigateBack()
         }, 500)
       },
-      fail: (err : any | null) => {
-        const error = err as UniCloudError
-        uni.showModal({
-          content: error.errMsg,
-          showCancel: false
-        })
-      }
-    })
+        fail: (err : any | null) => {
+          const error = err as UniCloudError
+          uni.showModal({
+            content: error.errMsg,
+            showCancel: false
+          })
+        }
+      })
+    }
   }
-
-  onReady(() => {
-    uniCloudElement.value = getCurrentInstance()!.proxy!.$refs['udb'] as UniCloudDBElement
-  })
 </script>
 
 <style>

@@ -8,21 +8,22 @@
       </view>
 
       <text class="title">使用浏览器内置的 button 标签(浏览器内置标签和 uni-app 重名的情况)</text>
-      <view ref="html-element-area"></view>
+      <view ref="htmlElementArea"></view>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
-  
 
   const title = ref('浏览器 element')
+  const htmlElementArea = ref<HTMLElement | null>(null)
 
   onReady(() => {
-    const element = getCurrentInstance()!.proxy!.$refs['html-element-area'] as HTMLElement;
-    const buttonElement = document.createElement('button') as HTMLButtonElement;
-    buttonElement.innerText = 'browser button';
-    element.appendChild(buttonElement);
+    if (htmlElementArea.value != null) {
+      const buttonElement = document.createElement('button') as HTMLButtonElement;
+      buttonElement.innerText = 'browser button';
+      htmlElementArea.value!.appendChild(buttonElement);
+    }
   })
 </script>
 

@@ -5,7 +5,7 @@
     <view class="page" id="page">
       <page-head :title="title"></page-head>
       <button class="btn btn-get-all-node-info" @click="getBoundingClientRectAsync">getBoundingClientRectAsync</button>
-      <view id="rect-test" ref="rect-test" class="rect-test"></view>
+      <view id="rect-test" ref="rectTest" class="rect-test"></view>
       <view class="rect-info" v-if="rectInfo">
         <view class="node-info-item">
           <text class="node-info-item-k">x: </text>
@@ -61,6 +61,7 @@
   }
 
   const title = ref('getBoundingClientRectAsync')
+  const rectTest = ref<UniElement | null>(null)
   const rectInfo = ref({
     x: 0,
     y: 0,
@@ -73,18 +74,20 @@
   } as DomRectType)
 
   function getBoundingClientRectAsync() {
-    (getCurrentInstance()!.proxy!.$refs["rect-test"] as UniElement).getBoundingClientRectAsync()!.then((rect : DOMRect) => {
-      rectInfo.value = {
-        x: rect.x,
-        y: rect.y,
-        width: rect.width,
-        height: rect.height,
-        left: rect.left,
-        top: rect.top,
-        right: rect.right,
-        bottom: rect.bottom,
-      } as DomRectType;;
-    })
+    if (rectTest.value != null) {
+      rectTest.value!.getBoundingClientRectAsync()!.then((rect : DOMRect) => {
+        rectInfo.value = {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom,
+        } as DomRectType;;
+      })
+    }
   }
 </script>
 

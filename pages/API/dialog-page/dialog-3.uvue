@@ -42,7 +42,8 @@
 </template>
 
 <script setup lang="uts">
-  
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import { PageStyleItem, PageStyleArray } from './page-style.uts';
 
   type CloseAnimationType =
@@ -72,11 +73,15 @@
   ]
 
   function getPageStyle() {
-    currentPageStyle.value = getCurrentInstance()!.proxy!.$page.getPageStyle()
+    if (currentPage != null) {
+      currentPageStyle.value = currentPage.getPageStyle()
+    }
   }
 
   function setPageStyle(style : UTSJSONObject) {
-    getCurrentInstance()!.proxy!.$page.setPageStyle(style);
+    if (currentPage != null) {
+      currentPage.setPageStyle(style);
+    }
   }
 
   onLoad((_ : OnLoadOptions) => {
@@ -107,19 +112,21 @@
   }
 
   function closeThisDialog() {
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page,
-      animationType: closeAnimationType.value,
-      success(res) {
-        console.log('closeDialog success', res)
-      },
-      fail(err) {
-        console.log('closeDialog fail', err)
-      },
-      complete(res) {
-        console.log('closeDialog complete', res)
-      }
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        animationType: closeAnimationType.value,
+        success(res) {
+          console.log('closeDialog success', res)
+        },
+        fail(err) {
+          console.log('closeDialog fail', err)
+        },
+        complete(res) {
+          console.log('closeDialog complete', res)
+        }
+      })
+    }
   }
 </script>
 

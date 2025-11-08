@@ -13,7 +13,8 @@
 </template>
 
 <script setup lang="uts">
-  
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import {
     state,
     setLifeCycleNum
@@ -97,24 +98,26 @@
   }
 
   function closeThisDialog() {
-    uni.closeDialogPage({
-      dialogPage: getCurrentInstance()!.proxy!.$page,
-      success(res) {
-        console.log('closeThisDialog success', res)
-        // 自动化测试
-        setLifeCycleNum(state.lifeCycleNum + 1)
-      },
-      fail(err) {
-        console.log('closeThisDialog fail', err)
-        // 自动化测试
-        setLifeCycleNum(state.lifeCycleNum - 4)
-      },
-      complete(res) {
-        console.log('closeThisDialog complete', res)
-        // 自动化测试
-        setLifeCycleNum(state.lifeCycleNum + 1)
-      }
-    })
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum - 4)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+          // 自动化测试
+          setLifeCycleNum(state.lifeCycleNum + 1)
+        }
+      })
+    }
   }
 
   function back() {

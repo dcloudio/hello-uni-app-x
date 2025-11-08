@@ -6,16 +6,14 @@
 </template>
 
 <script setup lang="uts">
-  
   import MyPickerView from './picker-view.uvue'
 
   const visible = ref(false)
-  const pickerViewRef = ref(null)
+  const pickerViewRef = ref<ComponentPublicInstance | null>(null)
 
   function setValue() {
-    const instance = getCurrentInstance()!.proxy!.$refs['pickerViewRef']
-    if (instance != null) {
-      (instance as ComponentPublicInstance).$callMethod('setValue')
+    if (pickerViewRef.value != null) {
+      pickerViewRef.value!.$callMethod('setValue')
     }
   }
 

@@ -27,15 +27,19 @@
   import { COLLECTION_NAME, UNICLOUD_DB_CONTACTS_ADD, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
 
   const collection = ref(COLLECTION_NAME)
-  const uniCloudElement = ref(null as UniCloudDBElement | null)
+  const udbRef = ref<UniCloudDBElement | null>(null)
 
   function loadMore() {
-    uniCloudElement.value!.loadMore()
+    if (udbRef.value != null) {
+      udbRef.value!.loadMore()
+    }
   }
   function onDataChange(event : string) {
-    uniCloudElement.value!.loadData({
-      clear: true
-    })
+    if (udbRef.value != null) {
+      udbRef.value!.loadData({
+        clear: true
+      })
+    }
   }
   function gotoAddPage() {
     // TODO 后续通过 EventChannel 实现
@@ -55,8 +59,9 @@
   onReady(() => {
     // TODO 后续通过 EventChannel 实现
     uni.$on(UNICLOUD_DB_CONTACTS_DELETE, onDataChange);
-    uniCloudElement.value = getCurrentInstance()!.proxy!.$refs['udb'] as UniCloudDBElement
-    uniCloudElement.value!.loadData()
+    if (udbRef.value != null) {
+      udbRef.value!.loadData()
+    }
   })
   onUnload(() => {
     // TODO 后续通过 EventChannel 实现
@@ -70,12 +75,14 @@
     uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
   })
   onPullDownRefresh(() => {
-    uniCloudElement.value!.loadData({
-      clear: true,
-      success: (_ : UniCloudDBGetResult) => {
-        uni.stopPullDownRefresh()
-      }
-    })
+    if (udbRef.value != null) {
+      udbRef.value!.loadData({
+        clear: true,
+        success: (_ : UniCloudDBGetResult) => {
+          uni.stopPullDownRefresh()
+        }
+      })
+    }
   })
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <view :ref="elId" class="block" :style="{width:size+'px',height:size+'px'}"></view>
+  <view ref="elRef" class="block" :style="{width:size+'px',height:size+'px'}"></view>
   <!-- #endif -->
   <!-- #ifdef WEB -->
   <svg :width="size" :height="size" viewBox="25 25 50 50" :style="{width:size+'px',height:size+'px'}" class="uni-load__img uni-load__img--android-H5">
@@ -9,7 +9,6 @@
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  import { ref, computed } from 'vue'
   import { easeInOutCubic } from './util'
 
   const props = withDefaults(defineProps<{
@@ -22,10 +21,8 @@
     color: '#666'
   })
 
-  let elIdCounter = 0
-  elIdCounter += 1
-  const elId = `Uni_Load_Circle_${elIdCounter}`
   const timer = ref(0)
+  const elRef = ref<UniElement | null>(null)
 
   const iconsSize = computed(() : number => {
     return (props.size / 10) + 1
@@ -94,9 +91,10 @@
   }
 
   function init() {
-    const refs = (getCurrentInstance()!.proxy!.$refs[elId]) as UniElement
-    let ctx = refs.getDrawableContext()!
-    build_circular(ctx)
+    if (elRef.value != null) {
+      let ctx = elRef.value!.getDrawableContext()!
+      build_circular(ctx)
+    }
   }
 
   onMounted(() => {

@@ -2,7 +2,7 @@
   <view class="swiper-list">
     <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
       <view class="flex-row">
-        <text ref="swipertab" space="nbsp" class="swiper-tabs-item"
+        <text :ref="setSwiperTabRef" space="nbsp" class="swiper-tabs-item"
           :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
           @click="onTabClick(index)">
           {{item.title}}
@@ -60,16 +60,25 @@
 
   const swiperList = ref([] as SwiperViewItem[])
   const swiperIndex = ref(0)
-  const tabScrollView = ref(null as null | UniElement)
-  const indicatorNode = ref(null as null | UniElement)
+  const tabScroll = ref<UniElement | null>(null)
+  const indicator = ref<UniElement | null>(null)
+  const swiper = ref<UniElement | null>(null)
   const animationFinishIndex = ref(0)
   const swiperWidth = ref(0)
   const swiperTabsRect = ref([] as SwiperTabsItem[])
+  const swiperTabRefs = ref<UniElement[]>([])
   const sliderValue = ref(50)
   const sliderBlockSize = ref(20)
   const sliderBackgroundColor = ref("#000000")
   const sliderActiveColor = ref("#FFCC33")
   const sliderBlockColor = ref("#8A6DE9")
+
+  // Function to set tab refs in v-for
+  function setSwiperTabRef(el : UniElement | null) {
+    if (el != null) {
+      swiperTabRefs.value.push(el)
+    }
+  }
 
   /**
    * 更新页签指示线的位置和宽度.
@@ -79,6 +88,12 @@
    * @param {number} percentage - 偏移百分比，应介于 0 和 1 之间，用于计算在移动过程中的线性值.
    */
   function updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
+    // Check if indices are valid
+    if (current_index < 0 || current_index >= swiperTabsRect.value.length ||
+        move_to_index < 0 || move_to_index >= swiperTabsRect.value.length) {
+      return
+    }
+
     const current_size = swiperTabsRect.value[current_index]
     const move_to_size = swiperTabsRect.value[move_to_index]
 
@@ -89,25 +104,29 @@
     // 通过 transform 更新指示线，避免重排版
     // #ifdef APP
     const x = indicator_line_x + indicator_line_w / 2
-    indicatorNode.value?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
+    indicator.value?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
     // #endif
     // #ifdef WEB || MP
     // TODO chrome windows系统 transform scaleX渲染bug
     const x = indicator_line_x
-    indicatorNode.value?.style?.setProperty('width', `${indicator_line_w}px`)
-    indicatorNode.value?.style?.setProperty('transform', `translateX(${x}px)`)
+    indicator.value?.style?.setProperty('width', `${indicator_line_w}px`)
+    indicator.value?.style?.setProperty('transform', `translateX(${x}px)`)
     // #endif
 
     // 滚动到水平中心位置
     const scroll_x = x - swiperWidth.value / 2
     // app 平台后续支持 scrollTo()
     // #ifndef MP-WEIXIN
-    tabScrollView.value!.scrollLeft = scroll_x
+    if (tabScroll.value != null) {
+      tabScroll.value!.scrollLeft = scroll_x
+    }
     // #endif
     // #ifdef MP-WEIXIN
-    tabScrollView.value!.scrollTo({
-      left: scroll_x
-    })
+    if (tabScroll.value != null) {
+      tabScroll.value!.scrollTo({
+        left: scroll_x
+      })
+    }
     // #endif
   }
 
@@ -180,7 +199,7 @@
    */
   async function cacheTabItemsSize() {
     swiperTabsRect.value.length = 0;
-    const tabs = getCurrentInstance()!.proxy!.$refs["swipertab"] as UniElement[]
+    const tabs = swiperTabRefs.value
     for (let i = 0; i < tabs.length; i++) {
       const element = tabs[i];
       // #ifdef MP
@@ -199,6 +218,11 @@
     }
   }
 
+  onBeforeUpdate(() => {
+    // Clear refs array before update to prevent duplicates
+    swiperTabRefs.value = []
+  })
+
   onLoad(() => {
     // 初始化 5 个页签，宽度依次递增，用于演示在滑动 swiper 过程中指示线宽度的线性变化
     for (let i = 0; i < 3; i++) {
@@ -209,14 +233,16 @@
     }
   })
   onReady(() => {
-    tabScrollView.value = getCurrentInstance()!.proxy!.$refs['tabScroll'] as UniElement;
-    indicatorNode.value = getCurrentInstance()!.proxy!.$refs['indicator'] as UniElement;
-    (getCurrentInstance()!.proxy!.$refs["swiper"] as UniElement).getBoundingClientRectAsync()!.then((res : DOMRect) : Promise<void> => {
-      swiperWidth.value = res.width
-      return cacheTabItemsSize()
-    }).then(() => {
-      updateTabIndicator(swiperIndex.value, swiperIndex.value, 1)
-    });
+    if (swiper.value != null) {
+      swiper.value!.getBoundingClientRectAsync()!.then((res : DOMRect) : Promise<void> => {
+        swiperWidth.value = res.width
+        return cacheTabItemsSize()
+      }).then(() => {
+        if (swiperTabsRect.value.length > 0) {
+          updateTabIndicator(swiperIndex.value, swiperIndex.value, 1)
+        }
+      });
+    }
   })
 </script>
 
