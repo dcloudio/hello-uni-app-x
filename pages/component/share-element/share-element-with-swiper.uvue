@@ -17,7 +17,9 @@
   </button>
 
 </template>
-<script>
+<script setup lang="uts">
+  
+
   type ShareElementOpenAnimationType =
     'auto' |
     'none' |
@@ -42,47 +44,41 @@
     'to'
 
   import { ItemType } from '@/components/enum-data/enum-data-types'
-  export default {
-    data() {
-      return {
-        transitionOnGesture: true,
-        shuttleOnPopType: 'to' as ShuttleOnType,
-        shuttleOnPushType: 'to' as ShuttleOnType,
-        shuttleOnTypeList: [
-          'from',
-          'to'
-        ],
-        openAnimationType: 'slide-in-right' as ShareElementOpenAnimationType,
-        openAnimationTypeList: [
-          'auto',
-          'none',
-          'slide-in-right',
-          'slide-in-left',
-          'slide-in-top',
-          'slide-in-bottom',
-          'fade-in',
-          'pop-in',
-          'zoom-out',
-          'zoom-fade-out'
-        ],
-        easingFunctionType: 'ease' as ShareElementEasingFunctionType,
-        easingFunctionTypeList: [
-          'ease',
-          'ease-in',
-          'ease-out',
-          'ease-in-out',
-          'linear'
-        ]
-      }
-    },
-    methods: {
-      openPage() {
-        uni.navigateTo({
-          animationType: this.openAnimationType,
-          url: "/pages/component/share-element/share-element-to?shuttleOnPush=" + this.shuttleOnPushType + "&transitionOnGesture=" + this.transitionOnGesture
-        })
-      }
-    }
+
+  const transitionOnGesture = ref(true)
+  const shuttleOnPopType = ref('to' as ShuttleOnType)
+  const shuttleOnPushType = ref('to' as ShuttleOnType)
+  const shuttleOnTypeList = ref([
+    'from',
+    'to'
+  ])
+  const openAnimationType = ref('slide-in-right' as ShareElementOpenAnimationType)
+  const openAnimationTypeList = ref([
+    'auto',
+    'none',
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'pop-in',
+    'zoom-out',
+    'zoom-fade-out'
+  ])
+  const easingFunctionType = ref('ease' as ShareElementEasingFunctionType)
+  const easingFunctionTypeList = ref([
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'linear'
+  ])
+
+  function openPage() {
+    uni.navigateTo({
+      animationType: openAnimationType.value,
+      url: "/pages/component/share-element/share-element-to?shuttleOnPush=" + shuttleOnPushType.value + "&transitionOnGesture=" + transitionOnGesture.value
+    })
   }
 </script>
 

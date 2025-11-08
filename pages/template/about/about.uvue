@@ -40,42 +40,37 @@
   </scroll-view>
 </template>
 
-<script lang="uts">
+<script setup lang="uts">
+
 // #ifdef APP
 import { openSchema } from '@/uni_modules/uts-openSchema'
 // #endif
 import { state } from '@/store/index.uts'
-export default {
-  data() {
-    return {
-      version: '',
-      arrowRightIcon: '/static/icons/arrow-right.png'
+
+const version = ref('')
+const arrowRightIcon = ref('/static/icons/arrow-right.png')
+
+const isDarkMode = computed((): boolean => {
+  return state.isDarkMode
+})
+
+function openUrl(url:string) {
+  // #ifdef APP
+  openSchema(url)
+  // #endif
+  // #ifdef MP-WEIXIN
+  wx.setClipboardData({
+    data: url,
+    success: () => {
+      wx.showToast({ title: '链接已复制到剪贴板' });
     }
-  },
-  onLoad() {
-    this.version = uni.getAppBaseInfo().appVersion??''
-  },
-  computed: {
-    isDarkMode() : boolean {
-      return state.isDarkMode
-    },
-  },
-  methods: {
-    openUrl(url:string) {
-      // #ifdef APP
-      openSchema(url)
-      // #endif
-      // #ifdef MP-WEIXIN
-      wx.setClipboardData({
-        data: url,
-        success: () => {
-          wx.showToast({ title: '链接已复制到剪贴板' });
-        }
-      })
-      // #endif
-    }
-  }
+  })
+  // #endif
 }
+
+onLoad(() => {
+  version.value = uni.getAppBaseInfo().appVersion??''
+})
 </script>
 
 <style>

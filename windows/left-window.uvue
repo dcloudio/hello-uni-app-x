@@ -8,106 +8,97 @@
   </view>
 </template>
 
-<script lang="uts">
+<script setup lang="uts">
+  import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import componentPage from '@/pages/tabBar/component.uvue'
   import API from '@/pages/tabBar/API.uvue'
   import CSS from '@/pages/tabBar/CSS.uvue'
   import templatePage from '@/pages/tabBar/template.uvue'
   import { state, setMatchLeftWindow, setActive, setLeftWinActive } from '@/store/index.uts'
-  let isPcObserver
-  export default {
-    data() {
-      return {
-        nav: [
-          'component',
-          'API',
-          'CSS',
-          'template'
-        ],
-        isPC: false
-      }
-    },
-    components: {
-      componentPage,
-      API,
-      CSS,
-      templatePage
-    },
-    computed: {
-      active() : string {
-        return state.active
-      },
-      hasLeftWin() : boolean {
-        return !state.noMatchLeftWindow
-      },
-      leftWinActive() : string {
-        return state.leftWinActive.split('/')[3]
-      },
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      }
-    },
-    mounted() {
-      isPcObserver = uni.createMediaQueryObserver(this)
-      isPcObserver.observe({
-        minWidth: 768
-      }, matched => {
-        this.isPC = matched
-      })
-      this.handlerRoute((this as any).$route)
-    },
-    unmounted() {
-      isPcObserver.disconnect()
-    },
-    watch: {
-      isPC: {
-        immediate: true,
-        handler(newMatches : boolean) {
-          setMatchLeftWindow(newMatches)
-        }
-      },
-      $route(newRoute) {
-        this.handlerRoute(newRoute)
-      }
-    },
-    methods: {
-      handlerRoute(newRoute) {
-        if (this.isPC) {
-          if (!newRoute.matched.length) {
-            uni.redirectTo({
-              url: '/pages/error/404'
-            })
-          } else {
-            // 检查是否为首页
-            let isHome = newRoute.path === '/' && newRoute.meta?.route === 'pages/tabBar/component'
-            if (isHome) {
-              // 自动跳转到第一个子页面
-              const defaultPage = '/pages/component/view/view'
-              setLeftWinActive(defaultPage)
-              setActive('componentPage')
-              uni.redirectTo({ url: defaultPage })
-              return
-            }
 
-            setLeftWinActive(newRoute.path)
-            let active = newRoute.path.split('/')[2]
-            if (!active && newRoute.meta?.route) {
-              active = newRoute.meta.route.split('/')[2]
-            }
-            if (this.nav.includes(active)) {
-              if (active === 'component') {
-                active = 'componentPage'
-              }
-              if (active === 'template') {
-                active = 'templatePage'
-              }
-              setActive(active)
-            }
+  let isPcObserver
+
+  const nav = ref([
+    'component',
+    'API',
+    'CSS',
+    'template'
+  ])
+  const isPC = ref(false)
+
+  const active = computed((): string => {
+    return state.active
+  })
+
+  const hasLeftWin = computed((): boolean => {
+    return !state.noMatchLeftWindow
+  })
+
+  const leftWinActive = computed((): string => {
+    return state.leftWinActive.split('/')[3]
+  })
+
+  const isDarkMode = computed((): boolean => {
+    return state.isDarkMode
+  })
+
+  function handlerRoute(newRoute: any) {
+    if (isPC.value) {
+      if (!newRoute.matched.length) {
+        uni.redirectTo({
+          url: '/pages/error/404'
+        })
+      } else {
+        // 检查是否为首页
+        let isHome = newRoute.path === '/' && newRoute.meta?.route === 'pages/tabBar/component'
+        if (isHome) {
+          // 自动跳转到第一个子页面
+          const defaultPage = '/pages/component/view/view'
+          setLeftWinActive(defaultPage)
+          setActive('componentPage')
+          uni.redirectTo({ url: defaultPage })
+          return
+        }
+
+        setLeftWinActive(newRoute.path)
+        let activeValue = newRoute.path.split('/')[2]
+        if (!activeValue && newRoute.meta?.route) {
+          activeValue = newRoute.meta.route.split('/')[2]
+        }
+        if (nav.value.includes(activeValue)) {
+          if (activeValue === 'component') {
+            activeValue = 'componentPage'
           }
+          if (activeValue === 'template') {
+            activeValue = 'templatePage'
+          }
+          setActive(activeValue)
         }
       }
     }
   }
+
+  watch(isPC, (newMatches: boolean) => {
+    setMatchLeftWindow(newMatches)
+  }, { immediate: true })
+
+  watch(() => (getCurrentInstance()!.proxy! as any).$route, (newRoute: any) => {
+    handlerRoute(newRoute)
+  })
+
+  onMounted(() => {
+    isPcObserver = uni.createMediaQueryObserver(getCurrentInstance()!.proxy!)
+    isPcObserver.observe({
+      minWidth: 768
+    }, matched => {
+      isPC.value = matched
+    })
+    handlerRoute((getCurrentInstance()!.proxy! as any).$route)
+  })
+
+  onUnmounted(() => {
+    isPcObserver.disconnect()
+  })
 </script>
 
 <style>

@@ -4,14 +4,12 @@
 		<template v-if="loading">
 			<slot></slot>
 			<template v-if="$slots['default'] == null">
-        <loading style="width: 16px; height: 16px;" :color="color"></loading>
-				<!-- <LoadingCircle :speed="16" :size="loadWidth" :color="color"></LoadingCircle> -->
+				<LoadingCircle :speed="16" :size="loadWidth" :color="color"></LoadingCircle>
 				<text v-if="text" class="inline-text" :style=" { color: color }">{{text}}</text>
 			</template>
 			<template v-else>
 				<view class="uni-loading-mask" :style="{backgroundColor:background}">
-					<!-- <LoadingCircle :speed="16" :size="loadWidth" :color="color"></LoadingCircle> -->
-          <loading style="width: 16px; height: 16px;" :color="color"></loading>
+					<LoadingCircle :speed="16" :size="loadWidth" :color="color"></LoadingCircle>
 					<text v-if="text" class="block-text" :style=" { color: color }">{{text}}</text>
 				</view>
 			</template>
@@ -22,7 +20,8 @@
 		</template>
 	</view>
 </template>
-<script>
+<script setup lang="uts">
+	import { computed } from 'vue'
 	import LoadingCircle from './loading-circle.uvue'
   // TODO 性能问题，其他类型暂时不对外开放
 	// import Icon from './icon.uvue'
@@ -46,57 +45,35 @@
 	 * @property {String} iconType 自定义图标类型，参考 uni-icons ，当前版本暂不支持
 	 */
 
-	export default {
-		name: "uni-loading",
-		components: { LoadingCircle },
-		props: {
-			loading: {
-				type: Boolean,
-				default: true,
-			},
-			type: {
-				type: String,
-				default: ''
-			},
-			iconType: {
-				type: String,
-				default: 'gear-filled'
-			},
-			size: {
-				type: Number,
-				default: 0
-			},
-			text: {
-				type: String,
-				default: ''
-			},
-			background: {
-				type: String,
-				default: 'rgba(255,255,255,0.6)'
-			},
-			color: {
-				type: String,
-				default: '#333'
-			}
-		},
-		data() {
-			return {};
-		},
-		computed: {
-			loadWidth() : number {
-				let width = this.size
-				if (width == 0) {
-					return 20
-				}
-				return width
-			},
-			styles() : string {
-				return `width:${this.loadWidth}px;height:${this.loadWidth}px;`
-			}
-		},
-		created() {},
-		methods: {}
-	}
+	const props = withDefaults(defineProps<{
+		loading?: boolean
+		type?: string
+		iconType?: string
+		size?: number
+		text?: string
+		background?: string
+		color?: string
+	}>(), {
+		loading: true,
+		type: '',
+		iconType: 'gear-filled',
+		size: 0,
+		text: '',
+		background: 'rgba(255,255,255,0.6)',
+		color: '#333'
+	})
+
+	const loadWidth = computed(() : number => {
+		let width = props.size
+		if (width == 0) {
+			return 20
+		}
+		return width
+	})
+
+	const styles = computed(() : string => {
+		return `width:${loadWidth.value}px;height:${loadWidth.value}px;`
+	})
 </script>
 
 <style scoped>

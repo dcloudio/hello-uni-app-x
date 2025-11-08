@@ -151,83 +151,87 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        decodeStr: '&lt; &gt; &amp; &apos;',
-        title: 'text-props',
-        multiLineText:
-          'HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言',
-        singleLineText: 'uni-app x，终极跨平台方案',
-        // 自动化测试
-        autoTest: false,
-        nestedText: '三级节点文本',
-        emptyText: '空文本',
-        heightText: '设置高度文本',
-        isNestedText1TapTriggered: false,
-        isNestedText2TapTriggered: false
-      }
-    },
-    methods: {
-      nestedText1Tap() {
-        uni.showModal({
-          title: '点击了',
-          content: '一级节点黑色',
-          showCancel: false
-        });
-      },
-      nestedText2Tap(e : UniPointerEvent) {
-        e.stopPropagation();
-        uni.showModal({
-          title: '点击了',
-          content: '二级节点红色且背景色黄色',
-          showCancel: false
-        });
-      },
-      nestedText3Tap(e : UniPointerEvent) {
-        e.stopPropagation();
-        uni.showModal({
-          title: '点击了',
-          content: 'App三级节点不继承二级的颜色',
-          showCancel: false
-        });
-      },
-      iconTap() {
-        uni.showModal({
-          title: '点击了',
-          content: '字体图标1',
-          showCancel: false
-        });
-      },
-      iconTap2() {
-        uni.showModal({
-          title: '点击了',
-          content: '字体图标2',
-          showCancel: false
-        });
-      },
-      // 自动化测试
-      setNestedText() {
-        this.nestedText = "修改三级节点文本";
-      },
-      setEmptyText() {
-        this.emptyText = "";
-      },
-      setHeightText() {
-        this.heightText = "修改设置高度文本";
-      },
-      getBoundingClientRectForTest() : DOMRect | null {
-        return uni.getElementById('nested-text2')?.getBoundingClientRect();
-      },
-      nestedText1TapForTest() {
-        this.isNestedText1TapTriggered = true;
-      },
-      nestedText2TapForTest() {
-        this.isNestedText2TapTriggered = true;
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+const decodeStr = ref('&lt; &gt; &amp; &apos;')
+const title = ref('text-props')
+const multiLineText = ref('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言')
+const singleLineText = ref('uni-app x，终极跨平台方案')
+// 自动化测试
+const autoTest = ref(false)
+const nestedText = ref('三级节点文本')
+const emptyText = ref('空文本')
+const heightText = ref('设置高度文本')
+const isNestedText1TapTriggered = ref(false)
+const isNestedText2TapTriggered = ref(false)
+
+function nestedText1Tap() {
+  uni.showModal({
+    title: '点击了',
+    content: '一级节点黑色',
+    showCancel: false
+  });
+}
+
+function nestedText2Tap(e : UniPointerEvent) {
+  e.stopPropagation();
+  uni.showModal({
+    title: '点击了',
+    content: '二级节点红色且背景色黄色',
+    showCancel: false
+  });
+}
+
+function nestedText3Tap(e : UniPointerEvent) {
+  e.stopPropagation();
+  uni.showModal({
+    title: '点击了',
+    content: 'App三级节点不继承二级的颜色',
+    showCancel: false
+  });
+}
+
+function iconTap() {
+  uni.showModal({
+    title: '点击了',
+    content: '字体图标1',
+    showCancel: false
+  });
+}
+
+function iconTap2() {
+  uni.showModal({
+    title: '点击了',
+    content: '字体图标2',
+    showCancel: false
+  });
+}
+
+// 自动化测试
+function setNestedText() {
+  nestedText.value = "修改三级节点文本";
+}
+
+function setEmptyText() {
+  emptyText.value = "";
+}
+
+function setHeightText() {
+  heightText.value = "修改设置高度文本";
+}
+
+function getBoundingClientRectForTest() : DOMRect | null {
+  return uni.getElementById('nested-text2')?.getBoundingClientRect();
+}
+
+function nestedText1TapForTest() {
+  isNestedText1TapTriggered.value = true;
+}
+
+function nestedText2TapForTest() {
+  isNestedText2TapTriggered.value = true;
+}
 </script>
 
 <style>

@@ -5,33 +5,26 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  
   import MyPickerView from './picker-view.uvue'
-  export default {
-    data() {
-      return {
-        visible: false,
-        pickerViewRef: null
-      }
-    },
-    components: {
-      MyPickerView
-    },
-    methods: {
-      setValue() {
-        const instance = this.$refs['pickerViewRef']
-        if (instance != null) {
-          (instance as ComponentPublicInstance).$callMethod('setValue')
-        }
-      },
-      toggle() {
-        this.visible = !this.visible
-        if (this.visible) {
-          nextTick(() => {
-            this.setValue()
-          })
-        }
-      }
+
+  const visible = ref(false)
+  const pickerViewRef = ref(null)
+
+  function setValue() {
+    const instance = getCurrentInstance()!.proxy!.$refs['pickerViewRef']
+    if (instance != null) {
+      (instance as ComponentPublicInstance).$callMethod('setValue')
+    }
+  }
+
+  function toggle() {
+    visible.value = !visible.value
+    if (visible.value) {
+      nextTick(() => {
+        setValue()
+      })
     }
   }
 </script>

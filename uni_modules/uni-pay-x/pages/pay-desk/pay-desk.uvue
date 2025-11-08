@@ -42,118 +42,105 @@
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
+	import { ref, getCurrentInstance } from 'vue'
 	import { objectAssign } from "../../js_sdk/js_sdk"
-	export default {
-		data() {
-			return {
-				myOptions: {
-					total_fee: "",
-				} as UTSJSONObject,
-				insideData: {
-					currentProviders: [] as Array<string>,
-					images: {
-						alipay: "",
-						wxpay: ""
-					} as UTSJSONObject
-				} as UTSJSONObject, // uni-pay组件mounted事件获得的数据
-				adpid: "", // 广告id
-				return_url: "", // 支付成功后点击查看订单跳转的订单详情页面地址
-				main_color: "", // 支付成功页面的主色调
-			}
-		},
-		// 监听 - 页面每次【加载时】执行(如：前进)
-		onLoad(options) {
-			let optionsStr = options['options'] as string | null;
-			if (optionsStr != null && optionsStr != "") {
-				let newOptions = JSON.parse(decodeURI(optionsStr)!) as UTSJSONObject;
-				this.myOptions = newOptions as UTSJSONObject;
-			}
-			console.log('myOptions: ', this.myOptions)
-		},
-		// 监听 - 页面【首次渲染完成时】执行。注意如果渲染速度快，会在页面进入动画完成前触发
-		onReady() { },
-		// 监听 - 页面每次【显示时】执行(如：前进和返回) (页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面)
-		onShow() { },
-		// 监听 - 页面每次【隐藏时】执行(如：返回)
-		onHide() { },
-		// 函数
-		methods: {
-			// 监听 - 支付组件加载完毕事件
-			onMounted(insideData : UTSJSONObject) {
-				this.insideData['currentProviders'] = insideData.getArray('currentProviders') as Array<string>;
-				this.insideData['images'] = insideData.getJSON('images') as UTSJSONObject;
-			},
-			// 发起支付
-			createOrder(data : UTSJSONObject) {
-				this.myOptions = objectAssign(this.myOptions, data);
-				const payInstance = this.$refs["payRef"] as UniPayComponentPublicInstance;
-				payInstance.createOrder(this.myOptions);
-			},
-			// 根据provider发起支付
-			createOrderByProvider(provider : string) {
-				this.createOrder({
-					provider
-				})
-			},
-			// 监听事件 - 支付成功
-			onSuccess(res : UTSJSONObject) {
-				let out_trade_no = res['out_trade_no'] as string;
-				let pay_order = res.getJSON('pay_order') as UTSJSONObject;
-				let order_no = pay_order['order_no'] as string;
-				//let pay_date = pay_order['pay_date'] as string;
-				let total_fee = pay_order.getNumber('total_fee');
-				if (total_fee == null) {
-					total_fee = 0;
-				}
-				let return_url = this.return_url as string;
-				let adpid = this.adpid as string;
-				let main_color = this.main_color as string;
 
-				console.log('success: ', res);
-				let user_order_success = res.getBoolean('user_order_success');
-				if (user_order_success != null && user_order_success != true) {
-					// 代表用户已付款，且你自己写的回调成功并正确执行了
-					uni.redirectTo({
-						url: `/uni_modules/uni-pay-x/pages/success/success?out_trade_no=${out_trade_no}&order_no=${order_no}&total_fee=${total_fee}&adpid=${adpid}&return_url=${return_url}&main_color=${main_color}`
-					});
-				} else {
-					// 代表用户已付款，但你自己写的回调执行失败（通常是因为你的回调代码有问题）
+	const myOptions = ref({
+		total_fee: "",
+	} as UTSJSONObject)
+	const insideData = ref({
+		currentProviders: [] as Array<string>,
+		images: {
+			alipay: "",
+			wxpay: ""
+		} as UTSJSONObject
+	} as UTSJSONObject) // uni-pay组件mounted事件获得的数据
+	const adpid = ref("") // 广告id
+	const return_url = ref("") // 支付成功后点击查看订单跳转的订单详情页面地址
+	const main_color = ref("") // 支付成功页面的主色调
 
-				}
-			},
-			// 监听事件 - 支付失败
-			onFail(err : RequestPaymentFail) {
-				console.log('fail: ', err)
+	// 监听 - 支付组件加载完毕事件
+	function onMounted(insideData_ : UTSJSONObject) {
+		insideData.value['currentProviders'] = insideData_.getArray('currentProviders') as Array<string>;
+		insideData.value['images'] = insideData_.getJSON('images') as UTSJSONObject;
+	}
+	// 发起支付
+	function createOrder(data : UTSJSONObject) {
+		myOptions.value = objectAssign(myOptions.value, data);
+		const payInstance = getCurrentInstance()!.proxy!.$refs["payRef"] as UniPayComponentPublicInstance;
+		payInstance.createOrder(myOptions.value);
+	}
+	// 根据provider发起支付
+	function createOrderByProvider(provider : string) {
+		createOrder({
+			provider
+		})
+	}
+	// 监听事件 - 支付成功
+	function onSuccess(res : UTSJSONObject) {
+		let out_trade_no = res['out_trade_no'] as string;
+		let pay_order = res.getJSON('pay_order') as UTSJSONObject;
+		let order_no = pay_order['order_no'] as string;
+		//let pay_date = pay_order['pay_date'] as string;
+		let total_fee = pay_order.getNumber('total_fee');
+		if (total_fee == null) {
+			total_fee = 0;
+		}
+		let return_url_ = return_url.value as string;
+		let adpid_ = adpid.value as string;
+		let main_color_ = main_color.value as string;
 
-			},
-			// 监听事件 - 取消支付
-			onCancel(err : RequestPaymentFail) {
-				console.log('cancel: ', err)
-
-			},
-			amountFormat(totalFee : number | null) :string{
-				if (totalFee == null) {
-					return "0";
-				} else {
-					return (totalFee / 100).toFixed(2)
-				}
-			},
-			// 检测provider
-			checkProvider(provider : string) : boolean {
-				let currentProviders = this.insideData.getArray<string>('currentProviders');
-				return currentProviders != null && currentProviders.indexOf(provider) > -1 ? true : false;
-			}
-		},
-		// 监听器
-		watch: {
-
-		},
-		// 计算属性
-		computed: {
+		console.log('success: ', res);
+		let user_order_success = res.getBoolean('user_order_success');
+		if (user_order_success != null && user_order_success != true) {
+			// 代表用户已付款，且你自己写的回调成功并正确执行了
+			uni.redirectTo({
+				url: `/uni_modules/uni-pay-x/pages/success/success?out_trade_no=${out_trade_no}&order_no=${order_no}&total_fee=${total_fee}&adpid=${adpid_}&return_url=${return_url_}&main_color=${main_color_}`
+			});
+		} else {
+			// 代表用户已付款，但你自己写的回调执行失败（通常是因为你的回调代码有问题）
 
 		}
 	}
+	// 监听事件 - 支付失败
+	function onFail(err : RequestPaymentFail) {
+		console.log('fail: ', err)
+
+	}
+	// 监听事件 - 取消支付
+	function onCancel(err : RequestPaymentFail) {
+		console.log('cancel: ', err)
+
+	}
+	function amountFormat(totalFee : number | null) :string{
+		if (totalFee == null) {
+			return "0";
+		} else {
+			return (totalFee / 100).toFixed(2)
+		}
+	}
+	// 检测provider
+	function checkProvider(provider : string) : boolean {
+		let currentProviders = insideData.value.getArray<string>('currentProviders');
+		return currentProviders != null && currentProviders.indexOf(provider) > -1 ? true : false;
+	}
+
+	// 监听 - 页面每次【加载时】执行(如：前进)
+	onLoad((options) => {
+		let optionsStr = options['options'] as string | null;
+		if (optionsStr != null && optionsStr != "") {
+			let newOptions = JSON.parse(decodeURI(optionsStr)!) as UTSJSONObject;
+			myOptions.value = newOptions as UTSJSONObject;
+		}
+		console.log('myOptions: ', myOptions.value)
+	})
+	// 监听 - 页面【首次渲染完成时】执行。注意如果渲染速度快，会在页面进入动画完成前触发
+	onReady(() => { })
+	// 监听 - 页面每次【显示时】执行(如：前进和返回) (页面每次出现在屏幕上都触发，包括从下级页面点返回露出当前页面)
+	onShow(() => { })
+	// 监听 - 页面每次【隐藏时】执行(如：返回)
+	onHide(() => { })
 </script>
 <style lang="scss" scoped>
 	.uni-pay{

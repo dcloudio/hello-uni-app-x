@@ -2,29 +2,26 @@
   <web-view :src="src" :update-title="updateTitle"></web-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        src: '',
-        updateTitle: true
-      }
-    },
-    onLoad(options : OnLoadOptions) {
-      if (typeof options['url'] === 'string' && options['url']!.length > 0) {
-        const src = decodeURIComponent(options['url'] as string)
-        if (src != null) {
-          this.src = src
-        }
-      }
-      if (typeof options['title'] === 'string' && options['title']!.length > 0) {
-        this.updateTitle = false;
-        uni.setNavigationBarTitle({
-          title: options['title']!
-        });
-      }
+<script setup lang="uts">
+
+
+const src = ref('')
+const updateTitle = ref(true)
+
+function onLoad(options : OnLoadOptions) {
+  if (typeof options['url'] === 'string' && options['url']!.length > 0) {
+    const srcValue = decodeURIComponent(options['url'] as string)
+    if (srcValue != null) {
+      src.value = srcValue
     }
   }
+  if (typeof options['title'] === 'string' && options['title']!.length > 0) {
+    updateTitle.value = false;
+    uni.setNavigationBarTitle({
+      title: options['title']!
+    });
+  }
+}
 </script>
 
 <style>

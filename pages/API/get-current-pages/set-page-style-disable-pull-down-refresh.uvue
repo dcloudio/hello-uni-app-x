@@ -14,58 +14,55 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  
+
   class Page {
     constructor(public route : string) {
     }
   }
 
-  export default {
-    data() {
-      return {
-        checked: false,
-        pages: [] as Page[],
-        currentPageStyle: {} as UTSJSONObject,
-        // TODO
-        enablePullDownRefreshStatus: true
-      }
-    },
-    computed: {
-      pageStyleText() : string {
-        return JSON.stringify(this.currentPageStyle)
-      }
-    },
-    onLoad() {
-      const pages = getCurrentPages();
-      const currentPage = pages[pages.length - 1];
-      this.currentPageStyle = currentPage.getPageStyle();
-      this.enablePullDownRefreshStatus = this.currentPageStyle["enablePullDownRefresh"] as boolean
-    },
-    onPullDownRefresh() {
-      setTimeout(() => {
-        uni.stopPullDownRefresh()
-      }, 3000)
-    },
-    methods: {
-      getPageStyle() {
-        const pages = getCurrentPages();
-        const currentPage = pages[pages.length - 1];
-        this.currentPageStyle = currentPage.getPageStyle();
-      },
-      setPageStyle(enable : boolean) {
-        // 目前仅支持 enablePullDownRefresh
-        const pages = getCurrentPages();
-        const currentPage = pages[pages.length - 1];
-        currentPage.setPageStyle({
-          enablePullDownRefresh: enable
-        });
-        this.enablePullDownRefreshStatus = enable
-      },
-      startPullDownRefresh() {
-        uni.startPullDownRefresh()
-      }
-    },
+  const checked = ref(false)
+  const pages = ref([] as Page[])
+  const currentPageStyle = ref({} as UTSJSONObject)
+  const enablePullDownRefreshStatus = ref(true)
+
+  const pageStyleText = computed(() : string => {
+    return JSON.stringify(currentPageStyle.value)
+  })
+
+  function getPageStyle() {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    currentPageStyle.value = currentPage.getPageStyle();
   }
+
+  function setPageStyle(enable : boolean) {
+    // 目前仅支持 enablePullDownRefresh
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    currentPage.setPageStyle({
+      enablePullDownRefresh: enable
+    });
+    enablePullDownRefreshStatus.value = enable
+  }
+
+  function startPullDownRefresh() {
+    uni.startPullDownRefresh()
+  }
+
+  onLoad(() => {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    currentPageStyle.value = currentPage.getPageStyle();
+    enablePullDownRefreshStatus.value = currentPageStyle.value["enablePullDownRefresh"] as boolean
+  })
+
+  onPullDownRefresh(() => {
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    }, 3000)
+  })
 </script>
 
 

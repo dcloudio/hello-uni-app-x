@@ -2,18 +2,18 @@
 	<web-view :src="url"></web-view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				url: '' as string | null
-			}
-		},
-		onLoad(options) {
-			let url = options["url"] as string | null;
-			if (url != null) {
-				this.url = decodeURIComponent(url);
+<script setup lang="uts">
+	import { ref } from 'vue'
+
+	const url = ref('')
+
+	onLoad((options) => {
+		let urlParam = options["url"] as string | null;
+		if (urlParam != null) {
+			let decodedUrl = decodeURIComponent(urlParam);
+			if (decodedUrl != null) {
+				url.value = decodedUrl;
 			}
 		}
-	}
+	})
 </script>

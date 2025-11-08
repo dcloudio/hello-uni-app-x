@@ -44,89 +44,93 @@
   </view>
 </template>
 
-<script>
-  import { state, setLifeCycleNum } from '@/store/index.uts'
-  export default {
-    data() {
-      return {
-        title: 'Hello uni-app',
-        isLeft: false,
-        navigationBarTextColor: '#000',
-        indexView: 0,
-        inputBottom: '0px'
-      }
-    },
-    methods: {
-      onClick() {
-        this.isLeft = !this.isLeft
-      },
-      setNavigationBarColor1() {
-        uni.setNavigationBarColor({
-          frontColor: '#ffffff',
-          backgroundColor: '#0000',
-          success: () => {
-            this.navigationBarTextColor = '#fff'
-            console.log('setNavigationBarColor success')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          },
-          fail: () => {
-            console.log('setNavigationBarColor fail')
-            this.setLifeCycleNum(state.lifeCycleNum - 1)
-          },
-          complete: () => {
-            console.log('setNavigationBarColor complete')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          }
-        })
-      },
-      setNavigationBarColor2() {
-        uni.setNavigationBarColor({
-          frontColor: '#000000',
-          backgroundColor: '#0000',
-          success: () => {
-            this.navigationBarTextColor = '#000'
-            console.log('setNavigationBarColor success')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          },
-          fail: () => {
-            console.log('setNavigationBarColor fail')
-            this.setLifeCycleNum(state.lifeCycleNum - 1)
-          },
-          complete: () => {
-            console.log('setNavigationBarColor complete')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          }
-        })
-      },
-      ChangeView(e:UniRadioGroupChangeEvent){
-        this.indexView = parseInt(e.detail.value)
-      },
-      onInputBlur(_:UniInputBlurEvent) {
-        this.inputBottom = '0px';
-      },
-      onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
-        let height = e.detail.height;
-        // #ifdef APP-IOS
-        if(height>0){  //iOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
-          height -= this.$page.safeAreaInsets.bottom;
-        }
-        // #endif
-        this.inputBottom = `${height}px`;
-      },
-      // 自动化测试
-      getLifeCycleNum() : number {
-        return state.lifeCycleNum
-      },
-      // 自动化测试
-      setLifeCycleNum(num : number) {
-        setLifeCycleNum(num)
-      }
-    },
-    onReady() {
-    },
-    onResize() {
-    }
+<script setup lang="uts">
+  
+  import { state, setLifeCycleNum as setLifeCycleNumStore } from '@/store/index.uts'
+
+  const title = ref('Hello uni-app')
+  const isLeft = ref(false)
+  const navigationBarTextColor = ref('#000')
+  const indexView = ref(0)
+  const inputBottom = ref('0px')
+
+  function onClick() {
+    isLeft.value = !isLeft.value
   }
+
+  // 自动化测试
+  function setLifeCycleNum(num : number) {
+    setLifeCycleNumStore(num)
+  }
+
+  function setNavigationBarColor1() {
+    uni.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#0000',
+      success: () => {
+        navigationBarTextColor.value = '#fff'
+        console.log('setNavigationBarColor success')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function setNavigationBarColor2() {
+    uni.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#0000',
+      success: () => {
+        navigationBarTextColor.value = '#000'
+        console.log('setNavigationBarColor success')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function ChangeView(e:UniRadioGroupChangeEvent){
+    indexView.value = parseInt(e.detail.value)
+  }
+
+  function onInputBlur(event:UniInputBlurEvent) {
+    inputBottom.value = '0px';
+  }
+
+  function onInputKeyboardChange(e:UniInputKeyboardHeightChangeEvent) {
+    let height = e.detail.height;
+    // #ifdef APP-IOS
+    if(height>0){  //iOS平台软键盘的高度已经包含了安全区域高度，这里需要减掉
+      height -= getCurrentInstance()!.proxy!.$page.safeAreaInsets.bottom;
+    }
+    // #endif
+    inputBottom.value = `${height}px`;
+  }
+
+  // 自动化测试
+  function getLifeCycleNum() : number {
+    return state.lifeCycleNum
+  }
+
+  onReady(() => {
+  })
+
+  onResize(() => {
+  })
 </script>
 
 <style>

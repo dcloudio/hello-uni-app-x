@@ -13,25 +13,22 @@
   </scroll-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'image-large',
-        src: 'https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/img/building.jpg',
-        width: 0,
-        height: 0,
-        memory: 0
-      }
-    },
-    methods: {
-      load(event : ImageLoadEvent) {
-        this.width = event.detail.width;
-        this.height = event.detail.height;
-        this.memory = Math.round(this.width * this.height * 4 / 1024 / 1024 * 100) / 100;
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+// Data
+const title = ref('image-large')
+const src = ref('https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/img/building.jpg')
+const width = ref(0)
+const height = ref(0)
+const memory = ref(0)
+
+// Methods
+function load(event : ImageLoadEvent) {
+  width.value = event.detail.width
+  height.value = event.detail.height
+  memory.value = Math.round(width.value * height.value * 4 / 1024 / 1024 * 100) / 100
+}
 </script>
 
 <style>

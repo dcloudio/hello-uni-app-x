@@ -14,48 +14,43 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: '服务端通知通道',
-        messages: [] as string[]
-      }
-    },
-    methods: {
-      async receiveMessage() {
-        this.messages.splice(0, this.messages.length)
-        const sseChannel = new uniCloud.SSEChannel()
-        sseChannel.on('message', (message?: any | null) => {
-          if(typeof message === 'string') {
-            this.messages.push(message)
-          }
-        })
-        sseChannel.on('end', (message?: any | null) => {
-          if(typeof message === 'string') {
-            this.messages.push(message)
-          }
-        })
-        sseChannel.on('open', () => {
-          console.log('sseChannel open')
-        })
-        sseChannel.on('close', () => {
-          console.log('sseChannel close')
-        })
-        sseChannel.on('error', (error: UniCloudError) => {
-          console.log('sseChannel error: ' + error.message)
-        })
-        await sseChannel.open()
-        const res = await uniCloud.callFunction({
-          name: 'sse',
-          data: {
-            sseChannel
-          }
-        } as UniCloudCallFunctionOptions)
-        console.log(res)
-      }
+<script setup lang="uts">
+
+
+const title = ref('服务端通知通道')
+const messages = ref([] as string[])
+
+async function receiveMessage() {
+  messages.value.splice(0, messages.value.length)
+  const sseChannel = new uniCloud.SSEChannel()
+  sseChannel.on('message', (message?: any | null) => {
+    if(typeof message === 'string') {
+      messages.value.push(message)
     }
-  }
+  })
+  sseChannel.on('end', (message?: any | null) => {
+    if(typeof message === 'string') {
+      messages.value.push(message)
+    }
+  })
+  sseChannel.on('open', () => {
+    console.log('sseChannel open')
+  })
+  sseChannel.on('close', () => {
+    console.log('sseChannel close')
+  })
+  sseChannel.on('error', (error: UniCloudError) => {
+    console.log('sseChannel error: ' + error.message)
+  })
+  await sseChannel.open()
+  const res = await uniCloud.callFunction({
+    name: 'sse',
+    data: {
+      sseChannel
+    }
+  } as UniCloudCallFunctionOptions)
+  console.log(res)
+}
 </script>
 
 <style>

@@ -11,75 +11,74 @@
   </scroll-view>
   <!-- #endif -->
 </template>
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        data: [] as Array<number>,
-        loadMoreText: "加载中...",
-        showLoadMore: false,
-        max: 0,
-        pulldownRefreshTriggered: false,
-        startPullDownRefreshStaus: false,
-        stopPullDownRefreshStatus: false
+<script setup lang="uts">
+  
+
+  const data = ref([] as Array<number>)
+  const loadMoreText = ref("加载中...")
+  const showLoadMore = ref(false)
+  const max = ref(0)
+  const pulldownRefreshTriggered = ref(false)
+  const startPullDownRefreshStaus = ref(false)
+  const stopPullDownRefreshStatus = ref(false)
+
+  function initData() {
+    setTimeout(() => {
+      max.value = 0;
+      data.value = [];
+      let dataArr : Array<number> = [];
+      max.value += 20;
+      for (let i : number = max.value - 19; i < max.value + 1; i++) {
+        dataArr.push(i)
       }
-    },
-    onReady() {
+      data.value = data.value.concat(dataArr);
       let status = false
-      uni.startPullDownRefresh({
-        success() {
-          status = true
-        },
-        fail() {
-          status = false
-        },
-        complete: () => {
-          this.startPullDownRefreshStaus = status
-        }
-      });
-      this.initData();
-    },
-    onReachBottom() {
-      console.log("onReachBottom");
-      if (this.max > 40) {
-        this.loadMoreText = "没有更多数据了!"
-        return;
-      }
-      this.showLoadMore = true;
-      setTimeout(() => {
-        this.setListData();
-      }, 300);
-    },
-    onPullDownRefresh() {
-      console.log('onPullDownRefresh');
-      this.pulldownRefreshTriggered = true
-      this.initData();
-    },
-    methods: {
-      initData() {
-        setTimeout(() => {
-          this.max = 0;
-          this.data = [];
-          let data : Array<number> = [];
-          this.max += 20;
-          for (let i : number = this.max - 19; i < this.max + 1; i++) {
-            data.push(i)
-          }
-          this.data = this.data.concat(data);
-          let status = false
-          uni.stopPullDownRefresh();
-        }, 1000);
-      },
-      setListData() {
-        let data : Array<number> = [];
-        this.max += 10;
-        for (let i : number = this.max - 9; i < this.max + 1; i++) {
-          data.push(i)
-        }
-        this.data = this.data.concat(data);
-      }
-    }
+      uni.stopPullDownRefresh();
+    }, 1000);
   }
+
+  function setListData() {
+    let dataArr : Array<number> = [];
+    max.value += 10;
+    for (let i : number = max.value - 9; i < max.value + 1; i++) {
+      dataArr.push(i)
+    }
+    data.value = data.value.concat(dataArr);
+  }
+
+  onReady(() => {
+    let status = false
+    uni.startPullDownRefresh({
+      success() {
+        status = true
+      },
+      fail() {
+        status = false
+      },
+      complete: () => {
+        startPullDownRefreshStaus.value = status
+      }
+    });
+    initData();
+  })
+
+  onReachBottom(() => {
+    console.log("onReachBottom");
+    if (max.value > 40) {
+      loadMoreText.value = "没有更多数据了!"
+      return;
+    }
+    showLoadMore.value = true;
+    setTimeout(() => {
+      setListData();
+    }, 300);
+  })
+
+  onPullDownRefresh(() => {
+    console.log('onPullDownRefresh');
+    pulldownRefreshTriggered.value = true
+    initData();
+  })
 </script>
 
 <style>

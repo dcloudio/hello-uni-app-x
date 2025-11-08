@@ -36,133 +36,129 @@
   </scroll-view>
 </template>
 
-<script>
+<script setup lang="uts">
   import { onWorkerError, createWorkers, sendWorkerMessage, onWorkerMessage, destroyWorker, UTSWorkerAddListenerOptions, UTSWorkerReceiveEventCallback, UTSWorkerSendWorkerMessageOptions, UTSWorkerErrorOptions } from "@/uni_modules/uts-worker";
-  export default {
-    onUnload() {
-      this.destory();
-    },
-    data() {
-      return {
-        created_boolean: false,
-        workerStatus: 'none', // none, created, destroyed
-        isListening: false,
-        logs: [] as Array<UTSJSONObject>,
-        inputValue: '1', // 默认值为1
-        taskResult: ''
-      }
-    },
-    computed: {
-			statusText(): string {
-				switch(this.workerStatus) {
-          case 'none': return '未创建';
-          case 'created': return '已创建';
-          case 'destroyed': return '已销毁';
-          default: return '未知';
-        }
-      }
-    },
-    methods: {
-      // 添加日志方法
-			addLog(message: string, type: string = 'info') {
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-        const logItem = {
-          message: `[${timeStr}] ${message}`,
-          type: type,
-          time: timeStr
-        } as UTSJSONObject;
-        this.logs.unshift(logItem);
-        // 限制日志数量
-        if (this.logs.length > 50) {
-          this.logs = this.logs.slice(0, 50);
-        }
-      },
 
-      // 创建Worker
-      create() {
-        createWorkers();
-        this.workerStatus = 'created';
-        this.addLog('Worker创建成功', 'success');
-        this.created_boolean = true;
-        // #ifndef APP-IOS
-        // 添加消息监听
-        onWorkerMessage({
-          success: (res) => {
-            const result = res.result;
-            const resultData = result['data'] as string;
-            this.taskResult = resultData as string;
-            this.inputValue = this.taskResult
-            this.addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
-          }
-        });
+  const created_boolean = ref(false)
+  const workerStatus = ref('none') // none, created, destroyed
+  const isListening = ref(false)
+  const logs = ref([] as Array<UTSJSONObject>)
+  const inputValue = ref('1') // 默认值为1
+  const taskResult = ref('')
 
-        // 添加错误监听
-        onWorkerError({
-          success: (error) => {
-            this.addLog(`Worker错误: ${error.message}`, 'error');
-            console.log("Worker错误:", error);
-          }
-        } as UTSWorkerErrorOptions);
-        // #endif
-      },
+  const statusText = computed((): string => {
+    switch(workerStatus.value) {
+      case 'none': return '未创建';
+      case 'created': return '已创建';
+      case 'destroyed': return '已销毁';
+      default: return '未知';
+    }
+  })
 
-      // 向workerTask发送消息
-      sendMessage() {
-        // 检查输入值
-        if (this.inputValue == '') {
-          this.addLog('请输入有效的数字', 'warning');
-          return;
-        }
-        // #ifdef APP-IOS
-        // 添加消息监听
-        onWorkerMessage({
-          success: (res) => {
-            const result = res.result;
-            const resultData = result['data'] as string;
-            this.taskResult = resultData as string;
-            this.inputValue = this.taskResult
-            this.addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
-          }
-        });
-
-        // 添加错误监听
-        onWorkerError({
-          success: (error) => {
-            this.addLog(`Worker错误: ${error.message}`, 'error');
-            console.log("Worker错误:", error);
-          }
-        } as UTSWorkerErrorOptions);
-        // #endif
-
-        const options = {
-          data: this.inputValue,
-          needReply: true
-        } as UTSWorkerSendWorkerMessageOptions;
-
-        sendWorkerMessage(options);
-        this.addLog(`发送值到WorkerTask: ${this.inputValue}`, 'send');
-      },
-
-      // 销毁Worker
-      destory() {
-        destroyWorker();
-        this.workerStatus = 'destroyed';
-        this.isListening = false;
-        this.addLog('Worker已销毁', 'warning');
-        this.created_boolean = false;
-      },
-
-      // 清空日志
-      clearLogs() {
-        this.logs = [];
-      },
-
-      test_resetInputValue() {
-        this.inputValue = '1'
-      },
+  // 添加日志方法
+  function addLog(message: string, type: string = 'info') {
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    const logItem = {
+      message: `[${timeStr}] ${message}`,
+      type: type,
+      time: timeStr
+    } as UTSJSONObject;
+    logs.value.unshift(logItem);
+    // 限制日志数量
+    if (logs.value.length > 50) {
+      logs.value = logs.value.slice(0, 50);
     }
   }
+
+  // 创建Worker
+  function create() {
+    createWorkers();
+    workerStatus.value = 'created';
+    addLog('Worker创建成功', 'success');
+    created_boolean.value = true;
+    // #ifndef APP-IOS
+    // 添加消息监听
+    onWorkerMessage({
+      success: (res : any) => {
+        const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
+        const resultData = result.getString('data');
+        taskResult.value = resultData as string;
+        inputValue.value = taskResult.value
+        addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
+      }
+    });
+
+    // 添加错误监听
+    onWorkerError({
+      success: (error : any) => {
+        const errorMsg = (error as UTSJSONObject).getString('message');
+        addLog(`Worker错误: ${errorMsg}`, 'error');
+        console.log("Worker错误:", error);
+      }
+    } as UTSWorkerErrorOptions);
+    // #endif
+  }
+
+  // 向workerTask发送消息
+  function sendMessage() {
+    // 检查输入值
+    if (inputValue.value == '') {
+      addLog('请输入有效的数字', 'warning');
+      return;
+    }
+    // #ifdef APP-IOS
+    // 添加消息监听
+    onWorkerMessage({
+      success: (res : any) => {
+        const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
+        const resultData = result.getString('data');
+        taskResult.value = resultData as string;
+        inputValue.value = taskResult.value
+        addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
+      }
+    });
+
+    // 添加错误监听
+    onWorkerError({
+      success: (error : any) => {
+        const errorMsg = (error as UTSJSONObject).getString('message');
+        addLog(`Worker错误: ${errorMsg}`, 'error');
+        console.log("Worker错误:", error);
+      }
+    } as UTSWorkerErrorOptions);
+    // #endif
+
+    const options = {
+      data: inputValue.value,
+      needReply: true
+    } as UTSWorkerSendWorkerMessageOptions;
+
+    sendWorkerMessage(options);
+    addLog(`发送值到WorkerTask: ${inputValue.value}`, 'send');
+  }
+
+  // 销毁Worker
+  function destory() {
+    destroyWorker();
+    workerStatus.value = 'destroyed';
+    isListening.value = false;
+    addLog('Worker已销毁', 'warning');
+    created_boolean.value = false;
+  }
+
+  // 清空日志
+  function clearLogs() {
+    logs.value = [];
+  }
+
+  function test_resetInputValue() {
+    inputValue.value = '1'
+  }
+
+  onUnload(() => {
+    destory();
+  })
 </script>
 
 <style>

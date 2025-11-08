@@ -18,41 +18,35 @@
 	</scroll-view>
 </template>
 
-<script>
+<script setup lang="uts">
 
-	type ItemGroup = {
-		title : string
-	}
-  export default {
-    data() {
-        return {
-          groupItems: [] as ItemGroup[],
-          contentVisible: false
-        }
-    },
-    methods: {
-      switchDisplay() {
-      	if (this.contentVisible) {
-      		this.contentVisible = false
-      	} else {
-      		this.contentVisible = true
-      	}
 
-      	if (this.contentVisible) {
-      		setTimeout(() => {
-      			this.groupItems = [{
-      				title: 'sticky-header'
-      			}] as ItemGroup[]
-      		}, 200)
-      	} else {
-      		setTimeout(() => { // 面板隐藏，释放内存
-      			this.groupItems = []
-      		}, 200)
-      	}
-      }
-    }
+type ItemGroup = {
+	title : string
+}
+
+const groupItems = ref([] as ItemGroup[])
+const contentVisible = ref(false)
+
+function switchDisplay() {
+  if (contentVisible.value) {
+    contentVisible.value = false
+  } else {
+    contentVisible.value = true
   }
 
+  if (contentVisible.value) {
+    setTimeout(() => {
+      groupItems.value = [{
+        title: 'sticky-header'
+      }] as ItemGroup[]
+    }, 200)
+  } else {
+    setTimeout(() => { // 面板隐藏，释放内存
+      groupItems.value = []
+    }, 200)
+  }
+}
 </script>
 
 <style lang="scss">

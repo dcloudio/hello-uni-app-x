@@ -27,30 +27,27 @@
   </view>
 </template>
 
-<script>
-  type CameraScanCodeResult = {
-    type : string | null;
-    result : string | null;
-  }
-  export default {
-    data() {
-      return {
-        result: null as CameraScanCodeResult | null,
-      }
-    },
-    methods: {
-      navigateBack() {
-        uni.navigateBack()
-      },
-      handleScanCode(ev : UniCameraScanCodeEvent) {
-        const deatil = ev.detail;
-        this.result = {
-          type: deatil.type,
-          result: deatil.result
-        } as CameraScanCodeResult
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+type CameraScanCodeResult = {
+  type : string | null;
+  result : string | null;
+}
+
+const result = ref(null as CameraScanCodeResult | null)
+
+function navigateBack() {
+  uni.navigateBack()
+}
+
+function handleScanCode(ev : UniCameraScanCodeEvent) {
+  const deatil = ev.detail;
+  result.value = {
+    type: deatil.type,
+    result: deatil.result
+  } as CameraScanCodeResult
+}
 </script>
 
 <style>

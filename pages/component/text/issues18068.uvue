@@ -9,26 +9,20 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				text1Height : 0,
-				text2Height : 0
-			}
-		},
-		onReady() {
-			const testText1Ele = uni.getElementById("testText1") as UniElement
-			const testText2Ele = uni.getElementById("testText2") as UniElement
-			setTimeout(() => {
-        this.text1Height = testText1Ele.getBoundingClientRect().height;
-        this.text2Height = testText2Ele.getBoundingClientRect().height;
-			}, 1000)
-		},
-		methods: {
+<script setup lang="uts">
 
-		}
-	}
+
+const text1Height = ref(0)
+const text2Height = ref(0)
+
+onReady(() => {
+  const testText1Ele = uni.getElementById("testText1") as UniElement
+  const testText2Ele = uni.getElementById("testText2") as UniElement
+  setTimeout(() => {
+    text1Height.value = testText1Ele.getBoundingClientRect().height;
+    text2Height.value = testText2Ele.getBoundingClientRect().height;
+  }, 1000)
+})
 </script>
 
 <style>

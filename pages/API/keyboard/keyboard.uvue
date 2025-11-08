@@ -11,33 +11,30 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				inputValue: '',
-        isFocus: false,
-				keyboardHeight: 0,
-				keyboardStatus: '未显示'
-			}
-		},
-		onLoad() {
-			// 监听键盘高度变化
-			uni.onKeyboardHeightChange(res => {
-				this.keyboardHeight = res.height;
-				this.keyboardStatus = res.height > 0 ? '显示中' : '已隐藏';
-			});
-		},
-		onUnload() {
-			// 页面卸载时移除监听
-			uni.offKeyboardHeightChange();
-		},
-		methods: {
-			hideKeyboard() {
-				uni.hideKeyboard();
-			}
-		}
-	}
+<script setup lang="uts">
+
+
+const inputValue = ref('')
+const isFocus = ref(false)
+const keyboardHeight = ref(0)
+const keyboardStatus = ref('未显示')
+
+function hideKeyboard() {
+  uni.hideKeyboard();
+}
+
+onLoad(() => {
+  // 监听键盘高度变化
+  uni.onKeyboardHeightChange(res => {
+    keyboardHeight.value = res.height;
+    keyboardStatus.value = res.height > 0 ? '显示中' : '已隐藏';
+  });
+})
+
+onUnload(() => {
+  // 页面卸载时移除监听
+  uni.offKeyboardHeightChange();
+})
 </script>
 
 <style>

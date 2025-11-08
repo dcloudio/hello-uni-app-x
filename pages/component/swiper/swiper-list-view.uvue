@@ -19,28 +19,26 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        swiperCurrentIndex: 0,
-        currentVal: 0,
-        scrollTop: 0,
-        refresherTriggeredArray: [false, false, false] as Array<boolean>,
-      }
-    },
-    methods: {
-      swiperChange(e : SwiperChangeEvent) {
-        this.swiperCurrentIndex = e.detail.current
-      },
-      onRefresherrefresh() {
-        this.refresherTriggeredArray[this.swiperCurrentIndex] = true;
-        setTimeout(() => {
-          this.refresherTriggeredArray[this.swiperCurrentIndex] = false;
-        }, 100)
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+// Data
+const swiperCurrentIndex = ref(0)
+const currentVal = ref(0)
+const scrollTop = ref(0)
+const refresherTriggeredArray = ref([false, false, false] as Array<boolean>)
+
+// Methods
+function swiperChange(e : SwiperChangeEvent) {
+  swiperCurrentIndex.value = e.detail.current
+}
+
+function onRefresherrefresh() {
+  refresherTriggeredArray.value[swiperCurrentIndex.value] = true
+  setTimeout(() => {
+    refresherTriggeredArray.value[swiperCurrentIndex.value] = false
+  }, 100)
+}
 </script>
 
 <style>

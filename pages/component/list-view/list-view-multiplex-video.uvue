@@ -13,29 +13,25 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        item_count: 10,
-        src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
-        isTesting: false
-      }
-    },
-    methods: {
-      onPause(e : UniEvent) {
-        console.log(JSON.stringify(e));
-      },
-      onScrollTolower(_ : ScrollToLowerEvent) {
-        setTimeout(() => {
-          if (this.isTesting && this.item_count >= 10) {
-            return
-          }
-          this.item_count += 10
-        }, 300)
-      },
+<script setup lang="uts">
+
+
+const item_count = ref(10)
+const src = ref('https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4')
+const isTesting = ref(false)
+
+function onPause(e : UniEvent) {
+  console.log(JSON.stringify(e));
+}
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    if (isTesting.value && item_count.value >= 10) {
+      return
     }
-  }
+    item_count.value += 10
+  }, 300)
+}
 </script>
 
 <style>

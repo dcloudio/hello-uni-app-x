@@ -8,20 +8,19 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        enterOptionsString: '',
-        testResult: false
-      }
-    },
-    onReady() {
-      const app = getApp()
-      const appOnShow = app.globalData.onShowOption
-      const onShowOption = uni.getEnterOptionsSync()
-      this.enterOptionsString = JSON.stringify(onShowOption, null, 2)
-      this.testResult = (onShowOption.path == appOnShow.path && onShowOption.appScheme == appOnShow.appScheme && onShowOption.appLink == appOnShow.appLink)
-    }
-  }
+<script setup lang="uts">
+
+
+// Data
+const enterOptionsString = ref('')
+const testResult = ref(false)
+
+// Lifecycle
+onReady(() => {
+  const app = getApp()
+  const appOnShow = app.globalData.onShowOption
+  const onShowOption = uni.getEnterOptionsSync()
+  enterOptionsString.value = JSON.stringify(onShowOption, null, 2)
+  testResult.value = (onShowOption.path == appOnShow.path && onShowOption.appScheme == appOnShow.appScheme && onShowOption.appLink == appOnShow.appLink)
+})
 </script>

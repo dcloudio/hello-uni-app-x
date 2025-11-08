@@ -13,52 +13,47 @@
   </view>
 </template>
 
-<script>
-  import refreshBox from './refresh-box/refresh-box.uvue';
-  export default {
-    components: { refreshBox },
-    data() {
-      return {
-        listCount : 20,
-        refresherTriggered: false,
-        pullingDistance: 0,
-        resetting: false,
-        triggered: false
-      }
-    },
-    computed: {
-      state() : number {
-        if (this.resetting) {
-          return 3;
-        }
-        if (this.refresherTriggered) {
-          return 2
-        }
-        if (this.pullingDistance > 45) {
-          return 1
-        } else {
-          return 0;
-        }
-      }
-    },
-    methods: {
-      onRefresherpulling(e : RefresherEvent) {
-        this.pullingDistance = e.detail.dy;
-        this.triggered = true;
-      },
-      onRefresherrefresh() {
-        this.refresherTriggered = true
-        setTimeout(() => {
-          this.refresherTriggered = false
-          this.resetting = true;
-        }, 1500)
-      },
-      onRefreshrestore() {
-        this.pullingDistance = 0
-        this.resetting = false;
-      }
-    }
+<script setup lang="uts">
+
+import refreshBox from './refresh-box/refresh-box.uvue';
+
+const listCount = ref(20)
+const refresherTriggered = ref(false)
+const pullingDistance = ref(0)
+const resetting = ref(false)
+const triggered = ref(false)
+
+const state = computed(() : number => {
+  if (resetting.value) {
+    return 3;
   }
+  if (refresherTriggered.value) {
+    return 2
+  }
+  if (pullingDistance.value > 45) {
+    return 1
+  } else {
+    return 0;
+  }
+})
+
+function onRefresherpulling(e : RefresherEvent) {
+  pullingDistance.value = e.detail.dy;
+  triggered.value = true;
+}
+
+function onRefresherrefresh() {
+  refresherTriggered.value = true
+  setTimeout(() => {
+    refresherTriggered.value = false
+    resetting.value = true;
+  }, 1500)
+}
+
+function onRefreshrestore() {
+  pullingDistance.value = 0
+  resetting.value = false;
+}
 </script>
 
 <style>

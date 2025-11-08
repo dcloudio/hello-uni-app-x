@@ -14,32 +14,29 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        item_count: 20,
-        listViewElement: null as UniListViewElement | null,
-        isTesting: false
-      }
-    },
-    onReady() {
-      this.listViewElement = uni.getElementById<UniListViewElement>('listview')
-    },
-    methods: {
-      onScrollTolower(_ : ScrollToLowerEvent) {
-        setTimeout(() => {
-          if (this.isTesting && this.item_count > 20) {
-            return
-          }
-          this.item_count += 20
-        }, 300)
-      },
-      itemClick(index : number) {
-        console.log("itemTextClick---" + index)
-      }
+<script setup lang="uts">
+
+
+const item_count = ref(20)
+const listViewElement = ref(null as UniListViewElement | null)
+const isTesting = ref(false)
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    if (isTesting.value && item_count.value > 20) {
+      return
     }
-  }
+    item_count.value += 20
+  }, 300)
+}
+
+function itemClick(index : number) {
+  console.log("itemTextClick---" + index)
+}
+
+onReady(() => {
+  listViewElement.value = uni.getElementById<UniListViewElement>('listview')
+})
 </script>
 
 <style>

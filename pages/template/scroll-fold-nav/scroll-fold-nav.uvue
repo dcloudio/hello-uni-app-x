@@ -30,69 +30,72 @@
   </scroll-view>
 </template>
 
-<script>
-  //导航栏高度
-  const NAVIBARHEIGHT = 88;
-  //搜索栏高度
-  const SEARCHBARHEIGHT = 40;
-  //返回键按钮宽度
-  const BACKWIDTH = 32;
-  export default {
-    data() {
-      return {
-        statusBarHeight: 0,
-        nviBarHeight: 0,
-        naviElement: null as UniElement | null,
-        titleElement: null as UniElement | null,
-        searchElement: null as UniElement | null,
-        seatElement: null as UniElement | null
-      }
-    },
-    onLoad() {
-      // #ifdef APP || MP
-        this.statusBarHeight = uni.getWindowInfo().statusBarHeight;
-      // #endif
+<script setup lang="uts">
 
-      this.nviBarHeight = NAVIBARHEIGHT + this.statusBarHeight;
-    },
-    onReady() {
-      this.naviElement = this.$refs['navigatorbar'] as UniElement;
-      this.searchElement = this.$refs['searchbar'] as UniElement;
-      this.titleElement = this.$refs['title'] as UniElement;
-      this.seatElement = this.$refs['seatbar'] as UniElement;
-      this.setStyle();
-    },
-    onResize(_ : OnResizeOptions) {
-      // #ifdef APP-ANDROID
-      // 监听多窗口模式
-      this.statusBarHeight = uni.getWindowInfo().statusBarHeight;
-      this.nviBarHeight = NAVIBARHEIGHT + this.statusBarHeight;
-      this.setStyle();
-      // #endif
-    },
-    methods: {
-      onScroll(e : ScrollEvent) {
-        let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
-        this.naviElement?.style?.setProperty('height', (this.nviBarHeight -offset)+'px');
-        this.titleElement?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
-        this.searchElement?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
-      },
-      back() {
-        uni.navigateBack();
-      },
-      search() {
-        uni.showToast({
-          title: '暂不支持',
-          icon: 'none'
-        });
-      },
-      setStyle() {
-        this.naviElement?.style?.setProperty('padding-top', this.statusBarHeight + 'px');
-        this.naviElement?.style?.setProperty('height', (NAVIBARHEIGHT + this.statusBarHeight) + 'px');
-        this.seatElement?.style?.setProperty('height', (NAVIBARHEIGHT + this.statusBarHeight) + 'px');
-      }
-    }
-  }
+
+//导航栏高度
+const NAVIBARHEIGHT = 88;
+//搜索栏高度
+const SEARCHBARHEIGHT = 40;
+//返回键按钮宽度
+const BACKWIDTH = 32;
+
+const statusBarHeight = ref(0)
+const nviBarHeight = ref(0)
+const naviElement = ref(null as UniElement | null)
+const titleElement = ref(null as UniElement | null)
+const searchElement = ref(null as UniElement | null)
+const seatElement = ref(null as UniElement | null)
+
+function onScroll(e : ScrollEvent) {
+  let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
+  naviElement.value?.style?.setProperty('height', (nviBarHeight.value -offset)+'px');
+  titleElement.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
+  searchElement.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
+}
+
+function back() {
+  uni.navigateBack();
+}
+
+function search() {
+  uni.showToast({
+    title: '暂不支持',
+    icon: 'none'
+  });
+}
+
+function setStyle() {
+  naviElement.value?.style?.setProperty('padding-top', statusBarHeight.value + 'px');
+  naviElement.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
+  seatElement.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
+}
+
+onLoad(() => {
+  // #ifdef APP || MP
+    statusBarHeight.value = uni.getWindowInfo().statusBarHeight;
+  // #endif
+
+  nviBarHeight.value = NAVIBARHEIGHT + statusBarHeight.value;
+})
+
+onReady(() => {
+  const instance = getCurrentInstance()!.proxy!
+  naviElement.value = instance.$refs['navigatorbar'] as UniElement;
+  searchElement.value = instance.$refs['searchbar'] as UniElement;
+  titleElement.value = instance.$refs['title'] as UniElement;
+  seatElement.value = instance.$refs['seatbar'] as UniElement;
+  setStyle();
+})
+
+onResize((event : OnResizeOptions) => {
+  // #ifdef APP-ANDROID
+  // 监听多窗口模式
+  statusBarHeight.value = uni.getWindowInfo().statusBarHeight;
+  nviBarHeight.value = NAVIBARHEIGHT + statusBarHeight.value;
+  setStyle();
+  // #endif
+})
 </script>
 
 <style>

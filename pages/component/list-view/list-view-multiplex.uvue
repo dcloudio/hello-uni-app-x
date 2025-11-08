@@ -21,50 +21,51 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        item_count: 20,
-        list_show: true,
-        listViewElement: null as UniListViewElement | null,
-        displayArrow: false
-      }
-    },
-    onReady() {
-      this.listViewElement = uni.getElementById<UniListViewElement>('listview')
-    },
-    methods: {
-      onScrollTolower(_ : ScrollToLowerEvent) {
-        setTimeout(() => {
-          this.item_count += 20
-        }, 300)
-      },
-      //用于自动化测试
-      listViewScrollByY(y : number) {
-        this.listViewElement?.scrollBy(0, y)
-      },
-      itemClick(index : number) {
-        console.log("itemTextClick---" + index)
-      },
-      delayShow() {
-        this.list_show = !this.list_show
-        this.item_count += 20
-        //延时显示list-view 测试list-item延时显示bug
-        setTimeout(() => {
-          this.list_show = !this.list_show
-        }, 400)
-      },
-      switchItemContent() {
-        this.displayArrow = !this.displayArrow
-        this.modifyItemPadding(1)
-      },
-      modifyItemPadding(index: number) {
-        var element = uni.getElementById("item_"+index)
-        element?.style.setProperty("padding", "0px")
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+const item_count = ref(20)
+const list_show = ref(true)
+const listViewElement = ref(null as UniListViewElement | null)
+const displayArrow = ref(false)
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    item_count.value += 20
+  }, 300)
+}
+
+//用于自动化测试
+function listViewScrollByY(y : number) {
+  listViewElement.value?.scrollBy(0, y)
+}
+
+function itemClick(index : number) {
+  console.log("itemTextClick---" + index)
+}
+
+function delayShow() {
+  list_show.value = !list_show.value
+  item_count.value += 20
+  //延时显示list-view 测试list-item延时显示bug
+  setTimeout(() => {
+    list_show.value = !list_show.value
+  }, 400)
+}
+
+function modifyItemPadding(index: number) {
+  var element = uni.getElementById("item_"+index)
+  element?.style.setProperty("padding", "0px")
+}
+
+function switchItemContent() {
+  displayArrow.value = !displayArrow.value
+  modifyItemPadding(1)
+}
+
+onReady(() => {
+  listViewElement.value = uni.getElementById<UniListViewElement>('listview')
+})
 </script>
 
 <style>

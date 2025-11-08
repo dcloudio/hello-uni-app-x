@@ -27,39 +27,38 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        bgTextStyle: 'dark',
-        scrollTop: '0px',
-        bgColor: '#ff0000',
-        bgColorTop: '#00ff00',
-        bgColorBottom: '#0000ff',
-        nbTitle: '标题',
-        nbLoading: false,
-        nbFrontColor: '#ffffff',
-        nbBackgroundColor: '#00aaff',
-        // 自动化测试
-        scrollType:null,
-        scrolldoneType:null,
-      }
-    },
-    onLoad() {
-      setTimeout(()=>{
-        this.nbLoading = true
-      },2000)
-    },
-    methods: {
-      scrollTo(){
-        this.scrollTop = '300px'
-      },
-      scroll(e){
-        this.scrollType=e.type
-      },
-      scrolldone(e){
-        this.scrolldoneType=e.type
-      }
-    }
-  }
+<script setup lang="uts">
+
+// Data
+const bgTextStyle = ref('dark')
+const scrollTop = ref('0px')
+const bgColor = ref('#ff0000')
+const bgColorTop = ref('#00ff00')
+const bgColorBottom = ref('#0000ff')
+const nbTitle = ref('标题')
+const nbLoading = ref(false)
+const nbFrontColor = ref('#ffffff')
+const nbBackgroundColor = ref('#00aaff')
+const scrollType = ref(null as string | null)
+const scrolldoneType = ref(null as string | null)
+
+// Methods
+function scrollTo() {
+  scrollTop.value = '300px'
+}
+
+function scroll(e : any) {
+  scrollType.value = e.type
+}
+
+function scrolldone(e : any) {
+  scrolldoneType.value = e.type
+}
+
+// Lifecycle
+onLoad(() => {
+  setTimeout(() => {
+    nbLoading.value = true
+  }, 2000)
+})
 </script>

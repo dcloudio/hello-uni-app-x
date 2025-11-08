@@ -11,46 +11,41 @@
   <text>{{text3}}</text>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        text1: "",
-        text2: "",
-        text3: "test-text-node",
-        viewCount: 0,
-        selectCount: 0,
-        selectAllCount: 0,
-        show: false,
-        testCounter: 0
-      }
-    },
-    mounted() {
-      uni.createSelectorQuery().in(this).select('.selector-query-view').boundingClientRect().exec((ret) => {
-        this.text1 = JSON.stringify(ret, null, 2)
-        if (ret.length == 1) {
-          this.selectCount = ret.length
-        }
-        this.testCounter++
-        this._dispatchEvent()
-      })
-      uni.createSelectorQuery().in(this).selectAll('.selector-query-view').boundingClientRect().exec((ret) => {
-        this.text2 = JSON.stringify(ret, null, 2)
-        if (ret.length == 1) {
-          this.selectAllCount = (ret[0] as NodeInfo[]).length
-        }
-        this.testCounter++
-        this._dispatchEvent()
-      })
-    },
-    methods: {
-      _dispatchEvent() {
-        if (this.testCounter == 2) {
-          uni.$emit('childReady')
-        }
-      }
+<script setup lang="uts">
+
+  const text1 = ref("")
+  const text2 = ref("")
+  const text3 = ref("test-text-node")
+  const viewCount = ref(0)
+  const selectCount = ref(0)
+  const selectAllCount = ref(0)
+  const show = ref(false)
+  const testCounter = ref(0)
+
+  function _dispatchEvent() {
+    if (testCounter.value == 2) {
+      uni.$emit('childReady')
     }
   }
+
+  onMounted(() => {
+    uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).select('.selector-query-view').boundingClientRect().exec((ret) => {
+      text1.value = JSON.stringify(ret, null, 2)
+      if (ret.length == 1) {
+        selectCount.value = ret.length
+      }
+      testCounter.value++
+      _dispatchEvent()
+    })
+    uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).selectAll('.selector-query-view').boundingClientRect().exec((ret) => {
+      text2.value = JSON.stringify(ret, null, 2)
+      if (ret.length == 1) {
+        selectAllCount.value = (ret[0] as NodeInfo[]).length
+      }
+      testCounter.value++
+      _dispatchEvent()
+    })
+  })
 </script>
 
 <style>

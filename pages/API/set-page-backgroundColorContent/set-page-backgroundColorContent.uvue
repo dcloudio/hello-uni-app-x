@@ -4,26 +4,23 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        isChange: false,
-        currentBackgroundColorContent: "" as any | null
-      }
-    },
-    methods: {
-      changeColor() {
-        let pages = getCurrentPages()
-        let page = pages[pages.length - 1]
-        page.setPageStyle({ "backgroundColorContent": this.isChange ? "" : "red" })
-        this.isChange = !this.isChange
+<script setup lang="uts">
 
-        let pageJson = page.getPageStyle()
-        this.currentBackgroundColorContent = pageJson["backgroundColorContent"]
-      }
-    }
-  }
+
+// Data
+const isChange = ref(false)
+const currentBackgroundColorContent = ref("" as any | null)
+
+// Methods
+function changeColor() {
+  let pages = getCurrentPages()
+  let page = pages[pages.length - 1]
+  page.setPageStyle({ "backgroundColorContent": isChange.value ? "" : "red" })
+  isChange.value = !isChange.value
+
+  let pageJson = page.getPageStyle()
+  currentBackgroundColorContent.value = pageJson["backgroundColorContent"]
+}
 </script>
 
 <style>

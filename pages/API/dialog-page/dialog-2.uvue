@@ -12,109 +12,113 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  
   import {
     state,
     setLifeCycleNum
   } from '@/store/index.uts'
 
-  export default {
-    data() {
-      return {
-        title: 'dialog 2',
+  const title = ref('dialog 2')
+
+  onLoad((options : OnLoadOptions) => {
+    console.log('dialog 2 onLoad', options)
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onShow(() => {
+    console.log('dialog 2 onShow')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onReady(() => {
+    console.log('dialog 2 onReady')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onHide(() => {
+    console.log('dialog 2 onHide')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 1)
+  })
+
+  onUnload(() => {
+    console.log('dialog 2 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
+
+  onBackPress((options : OnBackPressOptions) : boolean | null => {
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+    return false
+  })
+
+  function goNextPage() {
+    uni.navigateTo({ url: '/pages/API/dialog-page/next-page' })
+  }
+
+  function openDialog1() {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-1?name=dialog1',
+      success(res) {
+        console.log('openDialog1 success', res)
+      },
+      fail(err) {
+        console.log('openDialog1 fail', err)
+      },
+      complete(res) {
+        console.log('openDialog1 complete', res)
       }
-    },
-    onLoad(options : OnLoadOptions) {
-      console.log('dialog 2 onLoad', options)
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-    },
-    onShow() {
-      console.log('dialog 2 onShow')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-    },
-    onReady() {
-      console.log('dialog 2 onReady')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-    },
-    onHide() {
-      console.log('dialog 2 onHide')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum - 1)
-    },
-    onUnload() {
-      console.log('dialog 2 onUnload')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum - 5)
-    },
-    onBackPress(options : OnBackPressOptions) : boolean | null {
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-      return false
-    },
-    methods: {
-      goNextPage() {
-        uni.navigateTo({ url: '/pages/API/dialog-page/next-page' })
+    })
+  }
+
+  function closeDialog() {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
       },
-      openDialog1() {
-        uni.openDialogPage({
-          url: '/pages/API/dialog-page/dialog-1?name=dialog1',
-          success(res) {
-            console.log('openDialog1 success', res)
-          },
-          fail(err) {
-            console.log('openDialog1 fail', err)
-          },
-          complete(res) {
-            console.log('openDialog1 complete', res)
-          }
-        })
+      fail(err) {
+        console.log('closeDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
       },
-      closeDialog() {
-        uni.closeDialogPage({
-          success(res) {
-            console.log('closeDialog success', res)
-            // 自动化测试
-            setLifeCycleNum(state.lifeCycleNum + 1)
-          },
-          fail(err) {
-            console.log('closeDialog fail', err)
-            // 自动化测试
-            setLifeCycleNum(state.lifeCycleNum - 4)
-          },
-          complete(res) {
-            console.log('closeDialog complete', res)
-            // 自动化测试
-            setLifeCycleNum(state.lifeCycleNum + 1)
-          }
-        })
-      },
-      closeThisDialog() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          success(res) {
-            console.log('closeThisDialog success', res)
-            // 自动化测试
-            setLifeCycleNum(state.lifeCycleNum + 1)
-          },
-          fail(err) {
-            console.log('closeThisDialog fail', err)
-            // 自动化测试
-            setLifeCycleNum(state.lifeCycleNum - 4)
-          },
-          complete(res) {
-            console.log('closeThisDialog complete', res)
-            // 自动化测试
-            setLifeCycleNum(state.lifeCycleNum + 1)
-          }
-        })
-      },
-      back() {
-        uni.navigateBack()
+      complete(res) {
+        console.log('closeDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
       }
-    }
+    })
+  }
+
+  function closeThisDialog() {
+    uni.closeDialogPage({
+      dialogPage: getCurrentInstance()!.proxy!.$page,
+      success(res) {
+        console.log('closeThisDialog success', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('closeThisDialog fail', err)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum - 4)
+      },
+      complete(res) {
+        console.log('closeThisDialog complete', res)
+        // 自动化测试
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  function back() {
+    uni.navigateBack()
   }
 </script>
 

@@ -36,57 +36,55 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        $elementMap: new Map<string, UniElement>()
-      }
-    },
-    methods: {
-      onScroll(e : ScrollEvent) {
-        const {scrollTop} = e.detail
-        let y : number = scrollTop - 110
-        let s : number = (100 - scrollTop/3)/100
-        if(y < 0){
-          y = 0
-        }
-        if(s < 0.7){
-          s = 0.7
-        }
-        let x : number = (1 - s) * -100
-        this.setElementStyle("user-info", "transform", `translate(${x}px, ${y + (s-1)* -50}px) scale(${s})`)
-        this.setElementStyle("head-img-box-2", "transform", `translateY(${y}px)`)
-      },
-      onRefresherpulling(e : RefresherEvent) {
-        // console.log('onRefresherpulling',e.detail.dy)
-        let pullingDistance : number = e.detail.dy
-        this.setElementStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
-        this.setElementStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
-      },
-      // 工具方法，用于快速设置 Element 的 style
-      setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let element : UniElement | null = (this.$data['$elementMap'] as Map<string, UniElement>).get(refName)
-        if (element == null) {
-          element = this.$refs[refName] as UniElement;
-          (this.$data['$elementMap'] as Map<string, UniElement>).set(refName, element)
-        }
-        element.style.setProperty(propertyName, propertyStyle);
-      },
-      back() {
-        uni.navigateBack({
-          success(result) {
-            console.log('navigateBack success', result.errMsg)
-          },
-          fail(error) {
-            console.log('navigateBack fail', error.errMsg)
-          },
-          complete(result) {
-            console.log('navigateBack complete', result.errMsg)
-          }
-        })
-      }
+<script setup lang="uts">
+  
+
+  const $elementMap = ref(new Map<string, UniElement>())
+
+  // 工具方法，用于快速设置 Element 的 style
+  function setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
+    let element : UniElement | null = $elementMap.value.get(refName)
+    if (element == null) {
+      element = getCurrentInstance()!.proxy!.$refs[refName] as UniElement;
+      $elementMap.value.set(refName, element)
     }
+    element.style.setProperty(propertyName, propertyStyle);
+  }
+
+  function onScroll(e : ScrollEvent) {
+    const {scrollTop} = e.detail
+    let y : number = scrollTop - 110
+    let s : number = (100 - scrollTop/3)/100
+    if(y < 0){
+      y = 0
+    }
+    if(s < 0.7){
+      s = 0.7
+    }
+    let x : number = (1 - s) * -100
+    setElementStyle("user-info", "transform", `translate(${x}px, ${y + (s-1)* -50}px) scale(${s})`)
+    setElementStyle("head-img-box-2", "transform", `translateY(${y}px)`)
+  }
+
+  function onRefresherpulling(e : RefresherEvent) {
+    // console.log('onRefresherpulling',e.detail.dy)
+    let pullingDistance : number = e.detail.dy
+    setElementStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
+    setElementStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
+  }
+
+  function back() {
+    uni.navigateBack({
+      success(result) {
+        console.log('navigateBack success', result.errMsg)
+      },
+      fail(error) {
+        console.log('navigateBack fail', error.errMsg)
+      },
+      complete(result) {
+        console.log('navigateBack complete', result.errMsg)
+      }
+    })
   }
 </script>
 

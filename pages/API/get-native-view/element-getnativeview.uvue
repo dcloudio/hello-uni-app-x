@@ -11,75 +11,71 @@
   </view>
 </template>
 
-<script>
-  import { checkWebViewNativeView, checkInputNativeView, checkTextareaNativeView, checkViewNativeView } from '@/uni_modules/uts-get-native-view';
-  export default {
-    data() {
-      return {
+<script setup lang="uts">
+  import { checkWebViewNativeView as checkWebView, checkInputNativeView as checkInput, checkTextareaNativeView as checkTextarea, checkViewNativeView as checkView } from '@/uni_modules/uts-get-native-view';
 
-      }
-    },
-    methods: {
-      checkViewNativeView() : boolean {
-        var viewName = "ViewGroup"
-        // #ifdef APP-IOS
-        viewName = "UIView"
-        // #endif
-        const msg = "检测view组件对应原生" + viewName
-        if (checkViewNativeView("view")) {
-          this.showTip(msg + "成功")
-          return true
-        }
-        this.showTip(msg + "失败")
-        return false
-      },
-      checkInputNativeView() : boolean {
-        var viewName = "AppCompatEditText"
-        // #ifdef APP-IOS
-        viewName = "UITextField"
-        // #endif
-        const msg = "检测input组件对应原生" + viewName
-        if (checkInputNativeView("input")) {
-          this.showTip(msg + "成功")
-          return true
-        }
-        this.showTip(msg + "失败")
-        return false
-      },
-      checkTextareaNativeView() : boolean {
-        var viewName = "AppCompatEditText"
-        // #ifdef APP-IOS
-        viewName = "UITextView"
-        // #endif
-        const msg = "检测textarea组件对应原生" + viewName
-        if (checkTextareaNativeView("textarea")) {
-          this.showTip(msg + "成功")
-          return true
-        }
-        this.showTip(msg + "失败")
-        return false
-      },
-      checkWebViewNativeView() : boolean {
-        var viewName = "WebView"
-        // #ifdef APP-IOS
-        viewName = "WKWebView"
-        // #endif
-        const msg = "检测webview组件对应原生" + viewName
-        if (checkWebViewNativeView("webview")) {
-          this.showTip(msg + "成功")
-          return true
-        }
-        this.showTip(msg + "失败")
-        return false
-      },
-      showTip(title : string) {
-        console.log("title===" + title)
-        uni.showToast({
-          title: title,
-          icon: "none"
-        })
-      }
+  function showTip(title : string) {
+    console.log("title===" + title)
+    uni.showToast({
+      title: title,
+      icon: "none"
+    })
+  }
+
+  function checkViewNativeView() : boolean {
+    var viewName = "ViewGroup"
+    // #ifdef APP-IOS
+    viewName = "UIView"
+    // #endif
+    const msg = "检测view组件对应原生" + viewName
+    if (checkView("view")) {
+      showTip(msg + "成功")
+      return true
     }
+    showTip(msg + "失败")
+    return false
+  }
+
+  function checkInputNativeView() : boolean {
+    var viewName = "AppCompatEditText"
+    // #ifdef APP-IOS
+    viewName = "UITextField"
+    // #endif
+    const msg = "检测input组件对应原生" + viewName
+    if (checkInput("input")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
+  }
+
+  function checkTextareaNativeView() : boolean {
+    var viewName = "AppCompatEditText"
+    // #ifdef APP-IOS
+    viewName = "UITextView"
+    // #endif
+    const msg = "检测textarea组件对应原生" + viewName
+    if (checkTextarea("textarea")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
+  }
+
+  function checkWebViewNativeView() : boolean {
+    var viewName = "WebView"
+    // #ifdef APP-IOS
+    viewName = "WKWebView"
+    // #endif
+    const msg = "检测webview组件对应原生" + viewName
+    if (checkWebView("webview")) {
+      showTip(msg + "成功")
+      return true
+    }
+    showTip(msg + "失败")
+    return false
   }
 </script>
 

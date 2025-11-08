@@ -21,37 +21,27 @@
 
 </template>
 
-<script>
+<script setup lang="uts">
 
 
-	export type ListType={
-		id:number,
-		content:string
-	}
+export type ListType={
+  id:number,
+  content:string
+}
 
+const list = ref([
+  {id:1,content:"第一个"},
+  {id:2,content:"第二个"},
+] as ListType[])
 
-	export default {
-		data() {
-			return {
-				list:[
-					{id:1,content:"第一个"},
-					{id:2,content:"第二个"},
-				] as ListType[]
-			}
-		},
+const current = computed(():number => {
+  return 1
+})
 
-		computed:{
-			current():number{
-				return 1
-			}
-		},
-    methods: {
-      //自动化测试例专用
-      jest_getWindowInfo() : GetWindowInfoResult {
-        return uni.getWindowInfo();
-      }
-    }
-	}
+//自动化测试例专用
+function jest_getWindowInfo() : GetWindowInfoResult {
+  return uni.getWindowInfo();
+}
 </script>
 
 <style>

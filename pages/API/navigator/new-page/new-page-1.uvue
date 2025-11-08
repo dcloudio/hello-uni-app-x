@@ -12,42 +12,38 @@
   </view>
 </template>
 
-<script lang="uts">
+<script setup lang="uts">
+  
   import { state } from '@/store/index.uts'
 
-  export default {
-    data() {
-      return {
-        data: '',
-        checked: false
-      }
-    },
-    onLoad(options : OnLoadOptions) {
-      if (options['data'] != null) {
-        this.data = options['data']!
-      }
-    },
-    methods: {
-      // 自动化测试
-      getLifeCycleNum() : number {
-        return state.lifeCycleNum
-      },
-      navigateBackWithDelta2() {
-        uni.navigateBack({
-          delta: 2,
-          success() {
-            console.log('回退上上层页面成功')
-          },
-          fail(error) {
-            console.warn(`回退上上层页面失败: ${error.errMsg}`)
-          },
-        })
-      },
-      navigateToOnLoadWithType(type : string) {
-        uni.navigateTo({
-          url: `/pages/API/navigator/new-page/onLoad?type=${type}`,
-        })
-      }
-    },
+  const data = ref('')
+  const checked = ref(false)
+
+  function getLifeCycleNum() : number {
+    return state.lifeCycleNum
   }
+
+  function navigateBackWithDelta2() {
+    uni.navigateBack({
+      delta: 2,
+      success() {
+        console.log('回退上上层页面成功')
+      },
+      fail(error) {
+        console.warn(`回退上上层页面失败: ${error.errMsg}`)
+      },
+    })
+  }
+
+  function navigateToOnLoadWithType(type : string) {
+    uni.navigateTo({
+      url: `/pages/API/navigator/new-page/onLoad?type=${type}`,
+    })
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    if (options['data'] != null) {
+      data.value = options['data']!
+    }
+  })
 </script>

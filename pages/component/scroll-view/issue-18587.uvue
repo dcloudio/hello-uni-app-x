@@ -7,27 +7,24 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        scrollEndTriggeredTimes: 0
-      }
-    },
-    onLoad() {
+<script setup lang="uts">
+  
 
-    },
-    methods: {
-      scrollTo(scrollTop: number) {
-        const scroll = uni.getElementById('scroll') as UniScrollViewElement
-        scroll.scrollTop = scrollTop
-      },
-      onScrollEnd() {
-        console.log('scrollEnd触发了')
-        this.scrollEndTriggeredTimes++
-      }
-    }
+  const scrollEndTriggeredTimes = ref(0)
+
+  function scrollTo(scrollTopValue: number) {
+    const scroll = uni.getElementById('scroll') as UniScrollViewElement
+    scroll.scrollTop = scrollTopValue
   }
+
+  function onScrollEnd() {
+    console.log('scrollEnd触发了')
+    scrollEndTriggeredTimes.value++
+  }
+
+  onLoad(() => {
+
+  })
 </script>
 
 <style>

@@ -6,36 +6,31 @@
   </scroll-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        count: 0,
-        ret: true
-      }
-    },
-    onLoad() {
+<script setup lang="uts">
 
-    },
-    methods: {
-      onScroll() {
-        this.count++
-        console.log("scroll: ", this.count)
-        uni.createSelectorQuery()
-          .in(this)
-          .selectAll('content-item')
-          .boundingClientRect()
-          .exec((result) => {
-            this.count--
-          })
-        console.log("scroll: ", this.count)
+  const count = ref(0)
+  const ret = ref(true)
 
-        if (this.count > 0) {
-          this.ret = false
-        }
-      }
+  function onScroll() {
+    count.value++
+    console.log("scroll: ", count.value)
+    uni.createSelectorQuery()
+      .in(getCurrentInstance()!.proxy!)
+      .selectAll('content-item')
+      .boundingClientRect()
+      .exec((result) => {
+        count.value--
+      })
+    console.log("scroll: ", count.value)
+
+    if (count.value > 0) {
+      ret.value = false
     }
   }
+
+  onLoad(() => {
+
+  })
 </script>
 
 <style>

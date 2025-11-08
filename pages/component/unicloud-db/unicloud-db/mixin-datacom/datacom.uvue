@@ -19,48 +19,58 @@
   </view>
 </template>
 
-<script lang="uts">
-  export default {
-    mixins: [uniCloud.mixinDatacom],
-    data() {
-      return {
-      }
-    },
-    created() {
-      this.load()
-    },
-    methods: {
-      load() {
-        if (this.mixinDatacomLoading == true) {
-          return
-        }
-        this.mixinDatacomLoading = true
+<script setup lang="uts">
 
-        this.mixinDatacomGet(null).then((res : UniCloudDBGetResult) => {
-          const data = res.data
-          // const count = res.count
-          this.mixinDatacomResData = data
-        }).catch((err : any | null) => {
-          this.mixinDatacomError = err as UniCloudError
-        }).finally(() => {
-          this.mixinDatacomLoading = false
-        })
-      },
-      // 当组件属性发生变化时
-      onMixinDatacomPropsChange(needReset : boolean, changed : Array<string>) {
-        console.log(needReset, changed);
-        // needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
-        // changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
-        // if (needReset) {
-        //   // 清空已加载的数据
-        //   this.mixinDatacomResData = []
+  // Data
+  const mixinDatacomLoading = ref(false)
+  const mixinDatacomError = ref<UniCloudError | null>(null)
+  const mixinDatacomResData : Ref<UTSArray<UTSJSONObject>> = ref([])
 
-        //   // 重置分页数据，如果没有分页不需要处理
-        //   this.mixinDatacomPage.size = this.pageSize // 重置分页大小
-        //   this.mixinDatacomPage.current = 0 // 重置当前分页
-        //   this.mixinDatacomPage.count = 0 // 重置数据总数
-        // }
-      }
-    }
+  // Functions
+  function mixinDatacomGet(options : any | null) : Promise<UniCloudDBGetResult> {
+    // This function would need to be implemented based on the mixin's logic
+    // For now, returning a mock promise
+    return new Promise((resolve, reject) => {
+      // Implementation would go here
+      reject(new Error('mixinDatacomGet needs implementation'))
+    })
   }
+
+  function load() {
+    if (mixinDatacomLoading.value == true) {
+      return
+    }
+    mixinDatacomLoading.value = true
+
+    mixinDatacomGet(null).then((res : UniCloudDBGetResult) => {
+      const data = res.data
+      // const count = res.count
+      mixinDatacomResData.value = data
+    }).catch((err : any | null) => {
+      mixinDatacomError.value = err as UniCloudError
+    }).finally(() => {
+      mixinDatacomLoading.value = false
+    })
+  }
+
+  // 当组件属性发生变化时
+  function onMixinDatacomPropsChange(needReset : boolean, changed : Array<string>) {
+    console.log(needReset, changed);
+    // needReset=true 需要重置已加载数据和分页信息，例如 collection，orderby
+    // changed，变化的属性名，类型为 Array，例如 ['collection', 'orderby']
+    // if (needReset) {
+    //   // 清空已加载的数据
+    //   mixinDatacomResData.value = []
+
+    //   // 重置分页数据，如果没有分页不需要处理
+    //   this.mixinDatacomPage.size = this.pageSize // 重置分页大小
+    //   this.mixinDatacomPage.current = 0 // 重置当前分页
+    //   this.mixinDatacomPage.count = 0 // 重置数据总数
+    // }
+  }
+
+  // Lifecycle hooks
+  onMounted(() => {
+    load()
+  })
 </script>

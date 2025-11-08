@@ -10,30 +10,26 @@
   </list-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        longpressItem: false,
-        longpressText: false,
-        isStopPropagation: false,
-        scrollTop: 0
-      };
-    },
-    methods: {
-      longpress_item(_e : UniTouchEvent) {
-        console.log("longpress listItem")
-        this.longpressItem = true
-      },
-      longpress_text(e : UniTouchEvent) {
-        console.log("longpress text")
-        this.longpressText = true
-        if (this.isStopPropagation) {
-          e.stopPropagation()
-        }
-      }
-    },
-  };
+<script setup lang="uts">
+  
+
+  const longpressItem = ref(false)
+  const longpressText = ref(false)
+  const isStopPropagation = ref(false)
+  const scrollTop = ref(0)
+
+  function longpress_item(_e : UniTouchEvent) {
+    console.log("longpress listItem")
+    longpressItem.value = true
+  }
+
+  function longpress_text(e : UniTouchEvent) {
+    console.log("longpress text")
+    longpressText.value = true
+    if (isStopPropagation.value) {
+      e.stopPropagation()
+    }
+  }
 </script>
 
 <style>

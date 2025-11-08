@@ -10,63 +10,59 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        times: 0,
-        element: null as UniElement | null,
-        isStart: false,
-        buttonValue: "开启图片旋转",
-        onTransitionEndTriggr: false,
-        isShow: false
-      }
-    },
-    onReady() {
-      // onReady中动态修改isShow是为了验证在安卓手机上子线程中创建节点可能会崩溃的问题，不具备代码参考性。
-      // #ifdef APP-ANDROID
-      var that = this
-      class ThreadRunnable extends Runnable {
-        override run() {
-          that.isShow = true
-        }
-      }
-      new Thread(new ThreadRunnable()).start()
-      // #endif
-      // #ifndef APP-ANDROID
-      this.isShow = true
-      // #endif
-    },
-    methods: {
-      switchBtn() {
-        if (!this.isStart) {
-          if (this.element == null) {
-            this.element = uni.getElementById('transition-transform')
-          }
-          this.buttonValue = "关闭图片旋转"
-          this.times = this.times + 1
-          this.element!.style.setProperty('transition-duration', '2000ms')
-          this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
-          this.isStart = true
-        } else {
-          this.isStart = false
-          this.times = 0
-          this.onTransitionEndTriggr = false
-          this.buttonValue = "开启图片旋转"
-          this.element!.style.setProperty('transition-duration', '0ms')
-          this.element!.style.setProperty('transform', 'rotate(0deg)')
-        }
-      },
-      onEnd() {
-        console.log('transform transitionend')
-        if (this.isStart) {
-          this.times = this.times + 1
-          this.element!.style.setProperty('transform', 'rotate(' + this.times * 360 + 'deg)')
-          this.onTransitionEndTriggr = true
-        }
-      }
+<script setup lang="uts">
+
+
+const times = ref(0)
+const element = ref(null as UniElement | null)
+const isStart = ref(false)
+const buttonValue = ref("开启图片旋转")
+const onTransitionEndTriggr = ref(false)
+const isShow = ref(false)
+
+function switchBtn() {
+  if (!isStart.value) {
+    if (element.value == null) {
+      element.value = uni.getElementById('transition-transform')
+    }
+    buttonValue.value = "关闭图片旋转"
+    times.value = times.value + 1
+    element.value!.style.setProperty('transition-duration', '2000ms')
+    element.value!.style.setProperty('transform', 'rotate(' + times.value * 360 + 'deg)')
+    isStart.value = true
+  } else {
+    isStart.value = false
+    times.value = 0
+    onTransitionEndTriggr.value = false
+    buttonValue.value = "开启图片旋转"
+    element.value!.style.setProperty('transition-duration', '0ms')
+    element.value!.style.setProperty('transform', 'rotate(0deg)')
+  }
+}
+
+function onEnd() {
+  console.log('transform transitionend')
+  if (isStart.value) {
+    times.value = times.value + 1
+    element.value!.style.setProperty('transform', 'rotate(' + times.value * 360 + 'deg)')
+    onTransitionEndTriggr.value = true
+  }
+}
+
+onReady(() => {
+  // onReady中动态修改isShow是为了验证在安卓手机上子线程中创建节点可能会崩溃的问题，不具备代码参考性。
+  // #ifdef APP-ANDROID
+  class ThreadRunnable extends Runnable {
+    override run() {
+      isShow.value = true
     }
   }
+  new Thread(new ThreadRunnable()).start()
+  // #endif
+  // #ifndef APP-ANDROID
+  isShow.value = true
+  // #endif
+})
 </script>
 
 <style>

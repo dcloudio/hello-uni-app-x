@@ -25,109 +25,115 @@
   </view>
 </template>
 
-<script>
-  const db = uniCloud.databaseForJQL()
+<script setup lang="uts">
 
-  export default {
-    data() {
-      return {
-        collection: 'unicloud-db-test',
-        collectionList: [
-          db.collection('book').where('name == "水浒传"').getTemp(),
-        ] as UTSJSONObject[],
-        uniCloudElement: null as UniCloudDBElement | null,
-        isTesting: false,
-        addResult: {},
-        updateResult: {},
-        removeResult: {}
-      }
-    },
-    onReady() {
-      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
-      this.get();
-    },
-    onPullDownRefresh() {
-      this.uniCloudElement!.loadData({
-        clear: true,
-        success: (_ : UniCloudDBGetResult) => {
-          uni.stopPullDownRefresh()
-        }
-      })
-    },
-    methods: {
-      loadMore() {
-        this.uniCloudElement!.loadMore()
-      },
-      get() {
-        this.uniCloudElement!.loadData({
-          clear: true
-        })
-      },
-      add() {
-        const value = {
-          title: "title-" + Date.now(),
-          comment: "comment" + Date.now()
-        };
-        this.uniCloudElement!.add(value, {
-          showToast: false,
-          success: (res : UniCloudDBAddResult) => {
-            this.addResult = {
-              id: res.id
-            };
-            this.get();
-          },
-          fail: (err : any | null) => {
-            this.showError(err)
-          }
-        })
-      },
-      update(id : string) {
-        const value = {
-          title: "title-" + Date.now(),
-          comment: "comment" + Date.now()
-        };
-        this.uniCloudElement!.update(id, value, {
-          showToast: false,
-          needLoading: true,
-          needConfirm: false,
-          loadingTitle: "正在更新...",
-          success: (res : UniCloudDBUpdateResult) => {
-            this.updateResult = {
-              updated: res.updated
-            }
-          },
-          fail: (err : any | null) => {
-            this.showError(err)
-          }
-        })
-      },
-      remove(id : string) {
-        this.uniCloudElement!.remove(id, {
-          showToast: false,
-          needConfirm: false,
-          needLoading: false,
-          success: (res : UniCloudDBRemoveResult) => {
-            this.removeResult = {
-              deleted: res.deleted
-            }
-          },
-          fail: (err : any | null) => {
-            this.showError(err)
-          }
-        })
-      },
-      onQueryLoad(data : Array<UTSJSONObject>, ended : boolean, pagination : UTSJSONObject) {
-        console.log(data, ended, pagination);
-      },
-      showError(err : any | null) {
-        const error = err as UniCloudError
-        uni.showModal({
-          content: error.errMsg,
-          showCancel: false
-        })
-      }
-    }
+const db = uniCloud.databaseForJQL()
+
+// Data
+const collection = ref('unicloud-db-test')
+const collectionList = ref([
+  db.collection('book').where('name == "水浒传"').getTemp(),
+] as UTSJSONObject[])
+const uniCloudElement = ref(null as UniCloudDBElement | null)
+const isTesting = ref(false)
+const addResult = ref({})
+const updateResult = ref({})
+const removeResult = ref({})
+
+// Methods
+function loadMore() {
+  uniCloudElement.value!.loadMore()
+}
+
+function get() {
+  uniCloudElement.value!.loadData({
+    clear: true
+  })
+}
+
+function add() {
+  const value = {
+    title: "title-" + Date.now(),
+    comment: "comment" + Date.now()
   }
+  uniCloudElement.value!.add(value, {
+    showToast: false,
+    success: (res : UniCloudDBAddResult) => {
+      addResult.value = {
+        id: res.id
+      }
+      get()
+    },
+    fail: (err : any | null) => {
+      showError(err)
+    }
+  })
+}
+
+function update(id : string) {
+  const value = {
+    title: "title-" + Date.now(),
+    comment: "comment" + Date.now()
+  }
+  uniCloudElement.value!.update(id, value, {
+    showToast: false,
+    needLoading: true,
+    needConfirm: false,
+    loadingTitle: "正在更新...",
+    success: (res : UniCloudDBUpdateResult) => {
+      updateResult.value = {
+        updated: res.updated
+      }
+    },
+    fail: (err : any | null) => {
+      showError(err)
+    }
+  })
+}
+
+function remove(id : string) {
+  uniCloudElement.value!.remove(id, {
+    showToast: false,
+    needConfirm: false,
+    needLoading: false,
+    success: (res : UniCloudDBRemoveResult) => {
+      removeResult.value = {
+        deleted: res.deleted
+      }
+    },
+    fail: (err : any | null) => {
+      showError(err)
+    }
+  })
+}
+
+function onQueryLoad(data : Array<UTSJSONObject>, ended : boolean, pagination : UTSJSONObject) {
+  console.log(data, ended, pagination)
+}
+
+function showError(err : any | null) {
+  const error = err as UniCloudError
+  uni.showModal({
+    content: error.errMsg,
+    showCancel: false
+  })
+}
+
+// Lifecycle
+onReady(() => {
+  const instance = getCurrentInstance()!
+  uniCloudElement.value = instance.proxy!.$refs['udb'] as UniCloudDBElement
+  get()
+})
+
+onPullDownRefresh(() => {
+  uniCloudElement.value!.loadData({
+    clear: true,
+    success: (_ : UniCloudDBGetResult) => {
+      uni.stopPullDownRefresh()
+    }
+  })
+})
 </script>
 
 <style>

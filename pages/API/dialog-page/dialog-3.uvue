@@ -41,8 +41,10 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  
   import { PageStyleItem, PageStyleArray } from './page-style.uts';
+
   type CloseAnimationType =
     'auto' |
     'none' |
@@ -54,70 +56,70 @@
     'zoom-in' |
     'zoom-fade-in'
 
-  export default {
-    data() {
-      return {
-        title: 'dialog 3',
-        PageStyleArray: PageStyleArray as PageStyleItem[],
-        currentPageStyle: {} as UTSJSONObject,
-        closeAnimationType: 'auto' as CloseAnimationType,
-        closeAnimationTypeList: [
-          'auto',
-          'none',
-          'slide-out-right',
-          'slide-out-left',
-          'slide-out-top',
-          'slide-out-bottom',
-          'fade-out',
-          'zoom-in',
-          'zoom-fade-in'
-        ]
+  const title = ref('dialog 3')
+  const currentPageStyle = ref({} as UTSJSONObject)
+  const closeAnimationType = ref('auto' as CloseAnimationType)
+  const closeAnimationTypeList = [
+    'auto',
+    'none',
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in'
+  ]
+
+  function getPageStyle() {
+    currentPageStyle.value = getCurrentInstance()!.proxy!.$page.getPageStyle()
+  }
+
+  function setPageStyle(style : UTSJSONObject) {
+    getCurrentInstance()!.proxy!.$page.setPageStyle(style);
+  }
+
+  onLoad((_ : OnLoadOptions) => {
+    getPageStyle()
+  })
+
+  function setStyleValue(key : string, value : any) {
+    const style = {}
+    style[key] = value
+    setPageStyle(style)
+    getPageStyle()
+  }
+
+  function radioChange(key : string, e : RadioGroupChangeEvent) {
+    setStyleValue(key, e.detail.value);
+  }
+
+  function sliderChange(key : string, e : UniSliderChangeEvent) {
+    setStyleValue(key, e.detail.value);
+  }
+
+  function switchChange(key : string, e : UniSwitchChangeEvent) {
+    setStyleValue(key, e.detail.value);
+  }
+
+  function handleChooseAnimationType(e : RadioGroupChangeEvent){
+    closeAnimationType.value = e.detail.value as CloseAnimationType
+  }
+
+  function closeThisDialog() {
+    uni.closeDialogPage({
+      dialogPage: getCurrentInstance()!.proxy!.$page,
+      animationType: closeAnimationType.value,
+      success(res) {
+        console.log('closeDialog success', res)
+      },
+      fail(err) {
+        console.log('closeDialog fail', err)
+      },
+      complete(res) {
+        console.log('closeDialog complete', res)
       }
-    },
-    onLoad(_ : OnLoadOptions) {
-      this.getPageStyle()
-    },
-    methods: {
-      getPageStyle() {
-        this.currentPageStyle = this.$page.getPageStyle()
-      },
-      radioChange(key : string, e : RadioGroupChangeEvent) {
-        this.setStyleValue(key, e.detail.value);
-      },
-      sliderChange(key : string, e : UniSliderChangeEvent) {
-        this.setStyleValue(key, e.detail.value);
-      },
-      switchChange(key : string, e : UniSwitchChangeEvent) {
-        this.setStyleValue(key, e.detail.value);
-      },
-      setStyleValue(key : string, value : any) {
-        const style = {}
-        style[key] = value
-        this.setPageStyle(style)
-        this.getPageStyle()
-      },
-      setPageStyle(style : UTSJSONObject) {
-        this.$page.setPageStyle(style);
-      },
-      handleChooseAnimationType(e : RadioGroupChangeEvent){
-        this.closeAnimationType = e.detail.value as CloseAnimationType
-      },
-      closeThisDialog() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          animationType: this.closeAnimationType,
-          success(res) {
-            console.log('closeDialog success', res)
-          },
-          fail(err) {
-            console.log('closeDialog fail', err)
-          },
-          complete(res) {
-            console.log('closeDialog complete', res)
-          }
-        })
-      }
-    }
+    })
   }
 </script>
 

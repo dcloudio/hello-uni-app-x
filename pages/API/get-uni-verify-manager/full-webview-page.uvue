@@ -16,36 +16,33 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        url: '',
-        title: '',
-        animationType: 'slide-out-bottom',
-        backIcon: '\ue601'
+<script setup lang="uts">
+  
+
+  const url = ref('')
+  const title = ref('')
+  const animationType = ref('slide-out-bottom')
+  const backIcon = ref('\ue601')
+
+  function onBack() {
+    const instance = getCurrentInstance()!
+    uni.closeDialogPage({
+      dialogPage: instance.proxy!.$page,
+      animationType: animationType.value,
+      success(res) {
+        console.log('closeThisDialog success', res)
+      },
+      fail(err) {
+        console.log('closeThisDialog fail', err)
       }
-    },
-    onLoad(options : OnLoadOptions) {
-      this.url = options["url"] as string;
-      this.title = options["title"] as string;
-      this.animationType = options["animationType"] as string;
-    },
-    methods: {
-      onBack() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          animationType: this.animationType,
-          success(res) {
-            console.log('closeThisDialog success', res)
-          },
-          fail(err) {
-            console.log('closeThisDialog fail', err)
-          }
-        })
-      }
-    }
+    })
   }
+
+  onLoad((options : OnLoadOptions) => {
+    url.value = options["url"] as string;
+    title.value = options["title"] as string;
+    animationType.value = options["animationType"] as string;
+  })
 </script>
 
 <style>

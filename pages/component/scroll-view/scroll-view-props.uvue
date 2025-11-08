@@ -82,132 +82,142 @@
   <!-- </view> -->
 </template>
 
-<script>
-  type Item = {
-    id : string,
-    label : string,
-  }
-  export default {
-    data() {
-      return {
-        items: [] as Item[],
-        scrollX: false,
-        scrollY: true,
-        bounces: false,
-        scrollTop: 0,
-        scrollLeft: 0,
-        scrollChangeTop: 0,
-        scrollIntoView: "",
-        enableBackToTop: false,
-        scrollWithAnimation: false,
-        showScrollbar: true,
-        upperThreshold: 50,
-        lowerThreshold: 50,
-      }
-    },
+<script setup lang="uts">
 
-    onLoad() {
-      for (let i = 0; i < 10; i++) {
-        const item = {
-          id: "item" + i,
-          label: "item" + i,
-        } as Item;
-        this.items.push(item);
-      }
-    },
-    methods: {
-      handleChangeScrollLeft(e : UniSliderChangeEvent) {
-        this.scrollLeft = e.detail.value;
-      },
-      handleChangeScrollTop(e : UniSliderChangeEvent) {
-        this.scrollTop = e.detail.value;
-      },
-      changeDirectionX() {
-        this.scrollX = !this.scrollX;
-        if (this.scrollX) {
-          this.scrollY = false
-        }
-        this.scrollTop = 0;
-        this.scrollLeft = 0;
-      },
-      changeDirectionY() {
-        this.scrollY = !this.scrollY;
-        if (this.scrollY) {
-          this.scrollX = false
-        }
-        this.scrollTop = 0;
-        this.scrollLeft = 0;
-      },
-      handleScrollIntoView() {
-        if (this.scrollX) {
-          this.scrollIntoView = "horizontal_item3";
-        } else {
-          this.scrollIntoView = "item3";
-        }
-        //重置状态，由于响应式的原因，设置的值与当前值相同，会导致再次设置无效果。
-        setTimeout(() => {
-          this.scrollIntoView = "";
-        }, 0);
-      },
-      handleUpperThresholdInput(e : InputEvent) {
-        const value = e.detail.value;
-        if (value == "") {
-          this.upperThreshold = 50;
-        } else {
-          this.upperThreshold = parseInt(e.detail.value);
-        }
-      },
-      handleLowerThresholdInput(e : InputEvent) {
-        const value = e.detail.value;
-        if (value == "") {
-          this.lowerThreshold = 50;
-        } else {
-          this.lowerThreshold = parseInt(e.detail.value);
-        }
-      },
-      //事件监听
-      scrolltoupper() {
-        console.log("滚动到顶部");
-      },
-      scrolltolower() {
-        console.log("滚动到底部");
-      },
-      scroll(e : ScrollEvent) {
-        this.scrollChangeTop = e.detail.scrollTop
-        console.log("scroll-top : " + e.detail.scrollTop + " scroll-left : " + e.detail.scrollLeft);
-      },
-      scrollend() {
-        console.log("滚动停止");
-      },
-      onTouchMove() {
-        console.log("TouchMove");
-      },
-      //自动化测试专用
-      checkScrollHeight() : Boolean {
-        var element = this.$refs["scrollViewY"]
-        if (element != null) {
-          var scrollHeight = (element as UniElement).scrollHeight
-          console.log("checkScrollHeight" + scrollHeight)
-          if (scrollHeight > 1900) {
-            return true
-          }
-        }
-        return false
-      },
-      //自动化测试专用
-      checkScrollWidth() : Boolean {
-        var element = this.$refs["scrollViewX"]
-        if (element != null) {
-          var scrollWidth = (element as UniElement).scrollWidth
-          console.log("checkScrollWidth---" + scrollWidth)
-          if (scrollWidth > 1900) {
-            return true
-          }
-        }
-        return false
-      }
+
+type Item = {
+  id : string,
+  label : string,
+}
+
+// Data
+const items = ref([] as Item[])
+const scrollX = ref(false)
+const scrollY = ref(true)
+const bounces = ref(false)
+const scrollTop = ref(0)
+const scrollLeft = ref(0)
+const scrollChangeTop = ref(0)
+const scrollIntoView = ref("")
+const enableBackToTop = ref(false)
+const scrollWithAnimation = ref(false)
+const showScrollbar = ref(true)
+const upperThreshold = ref(50)
+const lowerThreshold = ref(50)
+
+// Methods
+function handleChangeScrollLeft(e : UniSliderChangeEvent) {
+  scrollLeft.value = e.detail.value
+}
+
+function handleChangeScrollTop(e : UniSliderChangeEvent) {
+  scrollTop.value = e.detail.value
+}
+
+function changeDirectionX() {
+  scrollX.value = !scrollX.value
+  if (scrollX.value) {
+    scrollY.value = false
+  }
+  scrollTop.value = 0
+  scrollLeft.value = 0
+}
+
+function changeDirectionY() {
+  scrollY.value = !scrollY.value
+  if (scrollY.value) {
+    scrollX.value = false
+  }
+  scrollTop.value = 0
+  scrollLeft.value = 0
+}
+
+function handleScrollIntoView() {
+  if (scrollX.value) {
+    scrollIntoView.value = "horizontal_item3"
+  } else {
+    scrollIntoView.value = "item3"
+  }
+  setTimeout(() => {
+    scrollIntoView.value = ""
+  }, 0)
+}
+
+function handleUpperThresholdInput(e : InputEvent) {
+  const value = e.detail.value
+  if (value == "") {
+    upperThreshold.value = 50
+  } else {
+    upperThreshold.value = parseInt(e.detail.value)
+  }
+}
+
+function handleLowerThresholdInput(e : InputEvent) {
+  const value = e.detail.value
+  if (value == "") {
+    lowerThreshold.value = 50
+  } else {
+    lowerThreshold.value = parseInt(e.detail.value)
+  }
+}
+
+function scrolltoupper() {
+  console.log("滚动到顶部")
+}
+
+function scrolltolower() {
+  console.log("滚动到底部")
+}
+
+function scroll(e : ScrollEvent) {
+  scrollChangeTop.value = e.detail.scrollTop
+  console.log("scroll-top : " + e.detail.scrollTop + " scroll-left : " + e.detail.scrollLeft)
+}
+
+function scrollend() {
+  console.log("滚动停止")
+}
+
+function onTouchMove() {
+  console.log("TouchMove")
+}
+
+function checkScrollHeight() : Boolean {
+  const instance = getCurrentInstance()!
+  var element = instance.proxy!.$refs["scrollViewY"]
+  if (element != null) {
+    var scrollHeight = (element as UniElement).scrollHeight
+    console.log("checkScrollHeight" + scrollHeight)
+    if (scrollHeight > 1900) {
+      return true
     }
   }
+  return false
+}
+
+function checkScrollWidth() : Boolean {
+  const instance = getCurrentInstance()!
+  var element = instance.proxy!.$refs["scrollViewX"]
+  if (element != null) {
+    var scrollWidth = (element as UniElement).scrollWidth
+    console.log("checkScrollWidth---" + scrollWidth)
+    if (scrollWidth > 1900) {
+      return true
+    }
+  }
+  return false
+}
+
+// Lifecycle
+onLoad((options : OnLoadOptions) => {
+  for (let i = 0; i < 10; i++) {
+    const item = {
+      id: "item" + i,
+      label: "item" + i,
+    } as Item
+    items.value.push(item)
+  }
+})
 </script>
 
 <style>

@@ -6,32 +6,30 @@
   </list-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        scrollTop: 0
-      }
-    },
-    onLoad() {
+<script setup lang="uts">
 
-    },
-    onReady() {
-    },
-    methods: {
-      toNextPage() {
-        uni.navigateTo({
-          url: '/pages/component/list-view/list-view'
-        })
-      },
-      getScrollTop() {
-        return (this.$refs['list'] as UniListViewElement).scrollTop
-      },
-      setScrollTop(top: number) {
-        (this.$refs['list'] as UniListViewElement).scrollTop = top
-      }
-    }
-  }
+const scrollTop = ref(0)
+
+function toNextPage() {
+  uni.navigateTo({
+    url: '/pages/component/list-view/list-view'
+  })
+}
+
+function getScrollTop() {
+  return (getCurrentInstance()!.proxy!.$refs['list'] as UniListViewElement).scrollTop
+}
+
+function setScrollTop(top: number) {
+  (getCurrentInstance()!.proxy!.$refs['list'] as UniListViewElement).scrollTop = top
+}
+
+onLoad(() => {
+
+})
+
+onReady(() => {
+})
 </script>
 
 <style>

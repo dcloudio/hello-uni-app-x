@@ -18,156 +18,152 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        uniVerifyManager: null as UniVerifyManager | null,
-        phone: '',
-        slogan: '',
-        privacyName: '',
-        privacyUrl: '',
-        closeIcon: '\uE650',
-        isLoading: false //是否正在登录中
+<script setup lang="uts">
+  
+
+  const uniVerifyManager = ref(null as UniVerifyManager | null)
+  const phone = ref('')
+  const slogan = ref('')
+  const privacyName = ref('')
+  const privacyUrl = ref('')
+  const closeIcon = ref('\uE650')
+  const isLoading = ref(false)
+
+  function closePage() {
+    const instance = getCurrentInstance()!
+    uni.closeDialogPage({
+      dialogPage: instance.proxy!.$page,
+      animationType: 'slide-out-bottom',
+      success(res) {
+        console.log('closeThisDialog success', res)
+      },
+      fail(err) {
+        console.log('closeThisDialog fail', err)
       }
-    },
-    onLoad(options : OnLoadOptions) {
-      this.uniVerifyManager = uni.getUniVerifyManager();
-      this.phone = options['phone'] as string;
-      this.slogan = options['slogan'] as string;
-      this.privacyName = options['name'] as string;
-      this.privacyUrl = options['link'] as string;
-    },
-    methods: {
-      closePage() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          animationType: 'slide-out-bottom',
-          success(res) {
-            console.log('closeThisDialog success', res)
-          },
-          fail(err) {
-            console.log('closeThisDialog fail', err)
-          }
-        })
-      },
-      openLink() {
-        let url = '/pages/API/get-uni-verify-manager/full-webview-page?url=' + this.privacyUrl + '&title=' + this.privacyName + '&animationType=slide-out-bottom';
-        uni.openDialogPage({
-          url: url,
-          animationType: 'slide-in-bottom',
-          success(res) {
-            console.log("打开隐私协议");
-          },
-          fail(err) {
-            console.log(err);
-          }
-        })
+    })
+  }
 
+  function openLink() {
+    let url = '/pages/API/get-uni-verify-manager/full-webview-page?url=' + privacyUrl.value + '&title=' + privacyName.value + '&animationType=slide-out-bottom';
+    uni.openDialogPage({
+      url: url,
+      animationType: 'slide-in-bottom',
+      success(res) {
+        console.log("打开隐私协议");
       },
-      loginIn() {
-        if (this.isLoading) {
-          uni.showToast({
-            title: "正在登录中，请稍后",
-            position: "bottom",
-            duration: 2000
-          })
-          return;
-        }else{
-          this.isLoading = true;
-        }
-        const numberTextElement = this.$page.getElementById('number-text');
-        const sloganTextElement = this.$page.getElementById('slogan-text');
-        const loginButtonElement = this.$page.getElementById('login-button');
-        const privacyCheckBoxElement = this.$page.getElementById('privacy-checkbox');
-        const privacyTextElement = this.$page.getElementById('privacy-text');
-        if (numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null) {
-          this.uniVerifyManager?.customLogin({
-            numberTextElement: numberTextElement,
-            sloganTextElement: sloganTextElement,
-            loginButtonElement: loginButtonElement,
-            privacyCheckBoxElement: privacyCheckBoxElement,
-            privacyTextElement: privacyTextElement,
-            success: (res) => {
-              console.log(res);
-              this.takePhoneNumber(res.accessToken, res.openId);
-            },
-            fail: (error) => {
-              if (error.errCode == 40001) {
-                uni.showToast({
-                  title: "请同意服务条款",
-                  position: "bottom",
-                  duration: 2000
-                })
-              } else if (error.errCode == 40002) {
-                uni.showToast({
-                  title: "授权页不符合规范",
-                  position: "bottom",
-                  duration: 2000
-                })
-              } else {
-                const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
-                uni.showToast({
-                  title: errorMsg,
-                  position: "bottom",
-                  duration: 2000
-                })
-              }
-            },
-            complete: () =>{
-              this.isLoading = false;
-            }
-          })
-        } else {
-          uni.showToast({
-            title: "未获取到页面元素",
-            position: "bottom",
-            duration: 2000
-          })
-          this.isLoading = false;
-        }
+      fail(err) {
+        console.log(err);
+      }
+    })
+  }
 
-      },
-      takePhoneNumber(token : string, openId : string) {
-        //云函数取号
-        uniCloud.callFunction({
-          name: 'univerify',
-          data: {
-            access_token: token, // 客户端一键登录接口返回的access_token
-            openid: openId // 客户端一键登录接口返回的openid
-          }
-        }).then(res => {
-          // 关闭登录页
-          this.closePage();
-          setTimeout(() => {
-            uni.showModal({
-              title: '取号成功',
-              content: res.result.getJSON("res")?.getString("phoneNumber"),
-              showCancel: false
-            });
-          }, 100);
-        }).catch(err => {
-          console.error(JSON.stringify(err));
-          // 关闭登录页
-          this.closePage();
-          setTimeout(() => {
-            uni.showModal({
-              title: '取号失败',
-              content: (err as Error).message,
-              showCancel: false
-            });
-          }, 100);
+  function takePhoneNumber(token : string, openId : string) {
+    uniCloud.callFunction({
+      name: 'univerify',
+      data: {
+        access_token: token,
+        openid: openId
+      }
+    }).then(res => {
+      closePage();
+      setTimeout(() => {
+        uni.showModal({
+          title: '取号成功',
+          content: res.result.getJSON("res")?.getString("phoneNumber"),
+          showCancel: false
         });
-      },
-      otherLogin() {
-        //此处可实现其他登录方式
-        uni.showToast({
-          title: "使用其他方式登录",
-          position: "bottom"
-        })
-      }
+      }, 100);
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+      closePage();
+      setTimeout(() => {
+        uni.showModal({
+          title: '取号失败',
+          content: (err as Error).message,
+          showCancel: false
+        });
+      }, 100);
+    });
+  }
+
+  function loginIn() {
+    if (isLoading.value) {
+      uni.showToast({
+        title: "正在登录中，请稍后",
+        position: "bottom",
+        duration: 2000
+      })
+      return;
+    }else{
+      isLoading.value = true;
+    }
+    const instance = getCurrentInstance()!
+    const numberTextElement = instance.proxy!.$page.getElementById('number-text');
+    const sloganTextElement = instance.proxy!.$page.getElementById('slogan-text');
+    const loginButtonElement = instance.proxy!.$page.getElementById('login-button');
+    const privacyCheckBoxElement = instance.proxy!.$page.getElementById('privacy-checkbox');
+    const privacyTextElement = instance.proxy!.$page.getElementById('privacy-text');
+    if (numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null) {
+      uniVerifyManager.value?.customLogin({
+        numberTextElement: numberTextElement,
+        sloganTextElement: sloganTextElement,
+        loginButtonElement: loginButtonElement,
+        privacyCheckBoxElement: privacyCheckBoxElement,
+        privacyTextElement: privacyTextElement,
+        success: (res) => {
+          console.log(res);
+          takePhoneNumber(res.accessToken, res.openId);
+        },
+        fail: (error) => {
+          if (error.errCode == 40001) {
+            uni.showToast({
+              title: "请同意服务条款",
+              position: "bottom",
+              duration: 2000
+            })
+          } else if (error.errCode == 40002) {
+            uni.showToast({
+              title: "授权页不符合规范",
+              position: "bottom",
+              duration: 2000
+            })
+          } else {
+            const errorMsg = JSON.parseObject(error.cause?.cause?.message ?? "")?.getString("errorDesc") ?? error.errMsg;
+            uni.showToast({
+              title: errorMsg,
+              position: "bottom",
+              duration: 2000
+            })
+          }
+        },
+        complete: () =>{
+          isLoading.value = false;
+        }
+      })
+    } else {
+      uni.showToast({
+        title: "未获取到页面元素",
+        position: "bottom",
+        duration: 2000
+      })
+      isLoading.value = false;
     }
   }
+
+  function otherLogin() {
+    uni.showToast({
+      title: "使用其他方式登录",
+      position: "bottom"
+    })
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    uniVerifyManager.value = uni.getUniVerifyManager();
+    phone.value = options['phone'] as string;
+    slogan.value = options['slogan'] as string;
+    privacyName.value = options['name'] as string;
+    privacyUrl.value = options['link'] as string;
+  })
 </script>
 
 <style>

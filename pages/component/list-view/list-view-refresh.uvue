@@ -11,96 +11,97 @@
   </list-view>
 </template>
 
-<script>
-  type RefresherEventTest = {
-    type : string;
-    target : UniElement | null;
-    currentTarget : UniElement | null;
-    dy : number;
+<script setup lang="uts">
+
+
+type RefresherEventTest = {
+  type : string;
+  target : UniElement | null;
+  currentTarget : UniElement | null;
+  dy : number;
+}
+
+// Data
+const item_count = ref(20)
+const list_show = ref(false)
+const refresherTriggered = ref(true)
+const refresherrefreshTest = ref("")
+const onRefresherabortTest = ref("")
+const onRefresherrestoreTest = ref("")
+const onRefresherpullingTest = ref("")
+
+// Methods
+function checkEventTest(e : RefresherEventTest, eventName : String) {
+  const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement && e.dy > 0
+  const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`
+  switch (eventName) {
+    case 'refresherrefresh':
+      refresherrefreshTest.value = result
+      break
+    case 'refresherpulling':
+      onRefresherpullingTest.value = result
+      break
+    case 'refresherrestore':
+      onRefresherrestoreTest.value = result
+      break
+    case 'refresherabort':
+      onRefresherabortTest.value = result
+      break
+    default:
+      break
   }
-  export default {
-    data() {
-      return {
-        item_count: 20,
-        list_show: false,
-        refresherTriggered: true,
-        // 自动化测试使用
-        refresherrefreshTest: "",
-        onRefresherabortTest: "",
-        onRefresherrestoreTest: "",
-        onRefresherpullingTest: ""
-      }
-    },
-    onLoad() {
-      //延迟显示list-view
-      setTimeout(() => {
-        this.list_show = true;
-      }, 500)
-    },
-    methods: {
-      onRefresherrefresh(e : UniRefresherEvent) {
-        console.log('refresherrefresh-----下拉刷新被触发', e.detail.dy);
-        this.refresherTriggered = true;
-        this.checkEventTest({
-          type: e.type,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          dy: e.detail.dy,
-        } as RefresherEventTest, 'refresherrefresh')
-        setTimeout(() => {
-          this.refresherTriggered = false;
-        }, 1000)
-      },
-      onRefresherabort(e : UniRefresherEvent) {
-        console.log("onRefresherabort------下拉刷新被中止", e.detail)
-        this.checkEventTest({
-          type: e.type,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          dy: e.detail.dy,
-        } as RefresherEventTest, 'refresherabort')
-      },
-      onRefresherrestore(e : UniRefresherEvent) {
-        console.log("onRefresherrestore------下拉刷新被复位", e.detail.dy)
-        this.checkEventTest({
-          type: e.type,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          dy: e.detail.dy,
-        } as RefresherEventTest, 'refresherrestore')
-      },
-      onRefresherpulling(e : UniRefresherEvent) {
-        console.log("onRefresherpulling------拉刷新控件被下拉-dy=" + e.detail.dy)
-        this.checkEventTest({
-          type: e.type,
-          target: e.target,
-          currentTarget: e.currentTarget,
-          dy: e.detail.dy,
-        } as RefresherEventTest, 'refresherpulling')
-      },
-      // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
-      checkEventTest(e : RefresherEventTest, eventName : String) {
-        const isPass = e.type === eventName && e.target instanceof UniElement && e.currentTarget instanceof UniElement && e.dy > 0;
-        const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
-        switch (eventName) {
-          case 'refresherrefresh':
-            this.refresherrefreshTest = result
-            break;
-          case 'refresherpulling':
-            this.onRefresherpullingTest = result
-            break;
-          case 'refresherrestore':
-            this.onRefresherrestoreTest = result
-            break;
-          case 'refresherabort':
-            this.onRefresherabortTest = result
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  }
+}
+
+function onRefresherrefresh(e : UniRefresherEvent) {
+  console.log('refresherrefresh-----下拉刷新被触发', e.detail.dy)
+  refresherTriggered.value = true
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherrefresh')
+  setTimeout(() => {
+    refresherTriggered.value = false
+  }, 1000)
+}
+
+function onRefresherabort(e : UniRefresherEvent) {
+  console.log("onRefresherabort------下拉刷新被中止", e.detail)
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherabort')
+}
+
+function onRefresherrestore(e : UniRefresherEvent) {
+  console.log("onRefresherrestore------下拉刷新被复位", e.detail.dy)
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherrestore')
+}
+
+function onRefresherpulling(e : UniRefresherEvent) {
+  console.log("onRefresherpulling------拉刷新控件被下拉-dy=" + e.detail.dy)
+  checkEventTest({
+    type: e.type,
+    target: e.target,
+    currentTarget: e.currentTarget,
+    dy: e.detail.dy,
+  } as RefresherEventTest, 'refresherpulling')
+}
+
+// Lifecycle
+onLoad(() => {
+  setTimeout(() => {
+    list_show.value = true
+  }, 500)
+})
 </script>
 <style>
   .item {

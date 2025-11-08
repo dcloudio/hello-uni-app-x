@@ -7,31 +7,25 @@
   <text style="margin:0px auto;">点击上面view触发点击事件</text>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        clickTriger: false,
-        longClickTriger: false
-      }
-    },
-    methods: {
-      onclick(event : UniPointerEvent) {
-        this.clickTriger = true
-        uni.showToast({
-          title: "触发了点击事件"
-        })
-      },
+<script setup lang="uts">
 
-      onLongPress(event : UniTouchEvent) {
-        this.longClickTriger = true
-        uni.showToast({
-          title: "触发了长按事件"
-        })
-      }
 
-    }
-  }
+const clickTriger = ref(false)
+const longClickTriger = ref(false)
+
+function onclick(event : UniPointerEvent) {
+  clickTriger.value = true
+  uni.showToast({
+    title: "触发了点击事件"
+  })
+}
+
+function onLongPress(event : UniTouchEvent) {
+  longClickTriger.value = true
+  uni.showToast({
+    title: "触发了长按事件"
+  })
+}
 </script>
 
 <style>

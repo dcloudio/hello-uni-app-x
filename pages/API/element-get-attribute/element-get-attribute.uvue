@@ -68,8 +68,10 @@
   </scroll-view>
   <!-- #endif -->
 </template>
-<script lang="uts">
+<script setup lang="uts">
+  
   import child from './child.uvue'
+
   type DomRectType = {
     x : number,
     y : number,
@@ -80,74 +82,71 @@
     width : number,
     height : number,
   }
-  export default {
-    components: {
-      child
-    },
-    data() {
-      return {
-        boxTarget: null as null | UniElement,
-        scrollViewTarget: null as null | UniElement,
-        attrId: "",
-        attrStyle:"",
-        propertyValue:"",
-        rectInfo: {
-          x: 0,
-          y: 0,
-          width: 0,
-          height: 0,
-          left: 0,
-          top: 0,
-          right: 0,
-          bottom: 0,
-        } as DomRectType,
-      }
-    },
-    onReady() {
-      this.boxTarget = this.$refs['box'] as UniElement
-      this.scrollViewTarget = this.$refs['scrollView'] as UniElement;
-    },
-    methods: {
-      getBoundingClientRectAsyncChild(){
-        const childEl = uni.getElementById('child')!
-        childEl.getBoundingClientRectAsync()!.then((rect : DOMRect) => {
-          console.log('rect: ',rect);
-          this.rectInfo = {
-            x: rect.x,
-            y: rect.y,
-            width: rect.width,
-            height: rect.height,
-            left: rect.left,
-            top: rect.top,
-            right: rect.right,
-            bottom: rect.bottom,
-          } as DomRectType;;
-        })
-      },
-      getAttributeId() {
-        this.attrId = this.boxTarget!.getAttribute('id') ?? ""
-      },
-      setStyle() {
-        this.boxTarget!.style.setProperty("background-color", "#FFF000")
-      },
-      getPropertyValue() {
-        this.propertyValue = this.boxTarget!.style.getPropertyValue("background-color")
-      },
-      getAttributeStyle() {
-        this.attrStyle = this.boxTarget!.getAttribute('style')?? ""
-      },
-      scrollTo() {
-        // #ifdef MP-WEIXIN
-        this.scrollViewTarget!.scrollTo({
-          left: 200
-        })
-        // #endif
-        // #ifndef MP-WEIXIN
-        this.scrollViewTarget!.scrollTo(200,0)
-        // #endif
-      }
-    }
+
+  const boxTarget = ref<null | UniElement>(null)
+  const scrollViewTarget = ref<null | UniElement>(null)
+  const attrId = ref("")
+  const attrStyle = ref("")
+  const propertyValue = ref("")
+  const rectInfo = ref<DomRectType>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+  } as DomRectType)
+
+  function getBoundingClientRectAsyncChild(){
+    const childEl = uni.getElementById('child')!
+    childEl.getBoundingClientRectAsync()!.then((rect : DOMRect) => {
+      console.log('rect: ',rect);
+      rectInfo.value = {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height,
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+      } as DomRectType;;
+    })
   }
+
+  function getAttributeId() {
+    attrId.value = boxTarget.value!.getAttribute('id') ?? ""
+  }
+
+  function setStyle() {
+    boxTarget.value!.style.setProperty("background-color", "#FFF000")
+  }
+
+  function getPropertyValue() {
+    propertyValue.value = boxTarget.value!.style.getPropertyValue("background-color")
+  }
+
+  function getAttributeStyle() {
+    attrStyle.value = boxTarget.value!.getAttribute('style')?? ""
+  }
+
+  function scrollTo() {
+    // #ifdef MP-WEIXIN
+    scrollViewTarget.value!.scrollTo({
+      left: 200
+    })
+    // #endif
+    // #ifndef MP-WEIXIN
+    scrollViewTarget.value!.scrollTo(200,0)
+    // #endif
+  }
+
+  onReady(() => {
+    boxTarget.value = getCurrentInstance()!.proxy!.$refs['box'] as UniElement
+    scrollViewTarget.value = getCurrentInstance()!.proxy!.$refs['scrollView'] as UniElement;
+  })
 </script>
 <style>
   .scroll-view_H {

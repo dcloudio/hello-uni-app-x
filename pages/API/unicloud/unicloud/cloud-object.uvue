@@ -34,131 +34,134 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: '请求云对象',
-        todoTitle: '学习编程',
-        todoContent: '熟悉uts语法',
-        returnTodoTitle: '',
-        returnTodoContent: '',
-        genericDemoReturnTodoTitle: '',
-        genericDemoReturnTodoContent: '',
-        failErrCode: '',
-        failErrSubject: '',
-        failErrDetailTips: '',
-        failNumberErrCode: 0,
-        successErrCode: -1,
-        isUniTest: false
-      }
-    },
-    methods: {
-      notify(content : string, title : string) {
-        if (!this.isUniTest) {
-          uni.showModal({
-            title,
-            content,
-            showCancel: false
-          })
-        } else {
-          console.log(title, content)
-        }
-      },
-      async addTodo() : Promise<void> {
-        const todo = uniCloud.importObject('todo', {
-          customUI: this.isUniTest
-        })
-        const title = this.todoTitle
-        const content = this.todoContent
-        await todo.add<UTSJSONObject>(title, content).then((res : UTSJSONObject) => {
-          this.returnTodoTitle = res['title'] as string
-          this.returnTodoContent = res['content'] as string
-          this.notify(res['showMessage'] as string, '提示')
-        }).catch((err : any | null) => {
-          console.log(err)
-          const error = err as UniCloudError
-          console.error(error)
-        })
-      },
-      async addTodoWithGeneric() : Promise<void> {
-        type AddTodoResult = {
-          title : string,
-          content : string,
-          showMessage : string
-        }
-        const todo = uniCloud.importObject('todo', {
-          customUI: this.isUniTest
-        })
-        const title = this.todoTitle
-        const content = this.todoContent
-        await todo.add<AddTodoResult>(title, content).then((res : AddTodoResult) => {
-          this.genericDemoReturnTodoTitle = res.title
-          this.genericDemoReturnTodoContent = res.content
-          this.notify(res.showMessage, '提示')
-        }).catch((err : any | null) => {
-          console.log(err)
-          const error = err as UniCloudError
-          console.error(error)
-        })
-      },
-      async randomFail() : Promise<void> {
-        const todoObj = uniCloud.importObject('todo', {
-          errorOptions: {
-            retry: true
-          }
-        })
-        await todoObj.randomFail().then((res : UTSJSONObject) => {
-          this.notify(res['showMessage'] as string, '提示')
-        }).catch((err : any | null) => {
-          const error = err as UniCloudError
-          console.error(error)
-        })
-      },
-      async fail() : Promise<void> {
-        const todo = uniCloud.importObject('todo', {
-          customUI: this.isUniTest
-        })
-        await todo.fail().then((res : UTSJSONObject) => {
-          this.notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
-          console.log('todo.fail: ', res);
-        }).catch((err : any | null) => {
-          const error = err as UniCloudError
-          this.failErrCode = error.errCode as string
-          this.failErrSubject = error.errSubject as string
-          const detail = error.detail
-          if (detail != null && detail['tips'] != null) {
-            this.failErrDetailTips = detail['tips'] as string
-          }
-          console.error(error)
-        })
-      },
-      async failWithNumberErrCode() : Promise<void> {
-        const todo = uniCloud.importObject('todo', {
-          customUI: this.isUniTest
-        })
-        await todo.failWithNumberErrCode().then((res : UTSJSONObject) => {
-          this.notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
-          console.log('todo.fail: ', res);
-        }).catch((err : any | null) => {
-          const error = err as UniCloudError
-          this.failNumberErrCode = error.errCode as number
-          console.error(error)
-        })
-      },
-      async success() : Promise<void> {
-        const todo = uniCloud.importObject('todo', {
-          customUI: this.isUniTest
-        })
-        await todo.success().then((res : UTSJSONObject) => {
-          this.successErrCode = res['errCode'] as number
-          this.notify(res['showMessage'] as string, '提示')
-        }).catch((err : any | null) => {
-          const error = err as UniCloudError
-          console.error(error)
-        })
-      }
+<script setup lang="uts">
+  
+
+  // Data
+  const title = ref('请求云对象')
+  const todoTitle = ref('学习编程')
+  const todoContent = ref('熟悉uts语法')
+  const returnTodoTitle = ref('')
+  const returnTodoContent = ref('')
+  const genericDemoReturnTodoTitle = ref('')
+  const genericDemoReturnTodoContent = ref('')
+  const failErrCode = ref('')
+  const failErrSubject = ref('')
+  const failErrDetailTips = ref('')
+  const failNumberErrCode = ref(0)
+  const successErrCode = ref(-1)
+  const isUniTest = ref(false)
+
+  // Functions
+  function notify(content : string, title : string) {
+    if (!isUniTest.value) {
+      uni.showModal({
+        title,
+        content,
+        showCancel: false
+      })
+    } else {
+      console.log(title, content)
     }
+  }
+
+  async function addTodo() : Promise<void> {
+    const todo = uniCloud.importObject('todo', {
+      customUI: isUniTest.value
+    })
+    const title = todoTitle.value
+    const content = todoContent.value
+    await todo.add<UTSJSONObject>(title, content).then((res : UTSJSONObject) => {
+      returnTodoTitle.value = res['title'] as string
+      returnTodoContent.value = res['content'] as string
+      notify(res['showMessage'] as string, '提示')
+    }).catch((err : any | null) => {
+      console.log(err)
+      const error = err as UniCloudError
+      console.error(error)
+    })
+  }
+
+  async function addTodoWithGeneric() : Promise<void> {
+    type AddTodoResult = {
+      title : string,
+      content : string,
+      showMessage : string
+    }
+    const todo = uniCloud.importObject('todo', {
+      customUI: isUniTest.value
+    })
+    const title = todoTitle.value
+    const content = todoContent.value
+    await todo.add<AddTodoResult>(title, content).then((res : AddTodoResult) => {
+      genericDemoReturnTodoTitle.value = res.title
+      genericDemoReturnTodoContent.value = res.content
+      notify(res.showMessage, '提示')
+    }).catch((err : any | null) => {
+      console.log(err)
+      const error = err as UniCloudError
+      console.error(error)
+    })
+  }
+
+  async function randomFail() : Promise<void> {
+    const todoObj = uniCloud.importObject('todo', {
+      errorOptions: {
+        retry: true
+      }
+    })
+    await todoObj.randomFail().then((res : UTSJSONObject) => {
+      notify(res['showMessage'] as string, '提示')
+    }).catch((err : any | null) => {
+      const error = err as UniCloudError
+      console.error(error)
+    })
+  }
+
+  async function fail() : Promise<void> {
+    const todo = uniCloud.importObject('todo', {
+      customUI: isUniTest.value
+    })
+    await todo.fail().then((res : UTSJSONObject) => {
+      notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
+      console.log('todo.fail: ', res);
+    }).catch((err : any | null) => {
+      const error = err as UniCloudError
+      failErrCode.value = error.errCode as string
+      failErrSubject.value = error.errSubject as string
+      const detail = error.detail
+      if (detail != null && detail['tips'] != null) {
+        failErrDetailTips.value = detail['tips'] as string
+      }
+      console.error(error)
+    })
+  }
+
+  async function failWithNumberErrCode() : Promise<void> {
+    const todo = uniCloud.importObject('todo', {
+      customUI: isUniTest.value
+    })
+    await todo.failWithNumberErrCode().then((res : UTSJSONObject) => {
+      notify('todo.fail应调用失败，此处错误的触发了成功回调', '错误')
+      console.log('todo.fail: ', res);
+    }).catch((err : any | null) => {
+      const error = err as UniCloudError
+      failNumberErrCode.value = error.errCode as number
+      console.error(error)
+    })
+  }
+
+  async function success() : Promise<void> {
+    const todo = uniCloud.importObject('todo', {
+      customUI: isUniTest.value
+    })
+    await todo.success().then((res : UTSJSONObject) => {
+      successErrCode.value = res['errCode'] as number
+      notify(res['showMessage'] as string, '提示')
+    }).catch((err : any | null) => {
+      const error = err as UniCloudError
+      console.error(error)
+    })
   }
 </script>
 
