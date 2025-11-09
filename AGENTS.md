@@ -18,6 +18,7 @@ uni-app x必须使用uts编程语言，这是一种类似TS的语言，但又有
 - 不能使用类型隐式转换。 尤其是条件语句(if、while、do-while、三元运算符、for 循环的条件部分)必须使用布尔类型作为条件。 当判断变量a是否为空时，不能写成 `if (a)`，或`if (!a)` 要写成 `if (a!=null)`
 - 可为null和不可为null的类型需要严格区分，使用 `|null` 或 `?` 来定义可为空。
 - 可为null的数据类型在使用其属性或方法时，需要判断不为null，或者使用`?。`安全调用。 谨慎使用 `!。` 断言。
+- 需要严格遵循变量和方法的先定义后使用的要求，注意代码顺序，不然编译会报错找不到变量和方法。
 - any类型的变量在使用其属性或方法时，需要as为正确的相容类型。
 - 不支持object类型，使用UTSJSONObject类型替代。
 - 不支持undefined，变量使用前必须赋值。
@@ -91,3 +92,6 @@ console.log((getCurrentInstance()!.proxy! as BasePage).$nativePage!.getDomJson()
 * app-Android平台：`C:\hbuilderx\hx_dev\cli.exe logcat app-android --project hello uni-app x`
 * web平台：`C:\hbuilderx\hx_dev\cli.exe logcat web --browser Chrome --project hello uni-app x`
 
+- 对于报错到kt文件中的错误，需要溯源回到原始uvue文件中修改，规则是把前面的 `/unpackage/cache/.app-android/src`去掉，把末尾的`.kt`改成`.uvue`
+举例，报错文件为:`/unpackage/cache/.app-android/src/pages/API/choose-media/fullscreen-video.kt`，
+实际需要修复的文件为:`/pages/API/choose-media/fullscreen-video.uvue`
