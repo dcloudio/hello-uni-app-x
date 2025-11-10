@@ -379,7 +379,7 @@ onLoad((options) => {
   console.log('page loaded', options)
 })
 
-onShow(() => {
+onPageShow(() => {
   refreshData()
 })
 
