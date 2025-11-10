@@ -34,13 +34,20 @@
 
   const sendableWorker = new UTSSendableWorkerImpl()
 
+  type DataType = {
+    myBufLength: number,
+    sendableNumber: number,
+  }
+
   const created_boolean = ref(false)
   const workerStatus = ref('none') // none, created, destroyed
   const isListening = ref(false)
   const logs = ref([] as Array<UTSJSONObject>)
   const myBuf = ref(new ArrayBuffer(8))
-  const myBufLength = ref(-1)
-  const sendableNumber = ref(0)
+  const data = reactive({
+    myBufLength: -1,
+    sendableNumber: 0,
+  } as DataType)
 
   onUnload(() => {
     destory();
@@ -83,7 +90,7 @@
         const result = res.result;
         // #ifdef APP-HARMONY
         // 这里经过 worker 修改后，result.a 应该是 666
-        sendableNumber.value = result.a
+        data.sendableNumber = result.a
         // #endif
         addLog(`收到WorkerTask返回: ${JSON.stringify(result)}`, 'receive');
       }
@@ -92,17 +99,24 @@
 
   // 向workerTask发送消息
   function sendMessage() {
-    myBufLength.value = myBuf.value.byteLength
-    addLog(`buf.byteLength in main BEFORE transfer to worker: ${myBufLength.value}`, 'send');
+    data.myBufLength = myBuf.value.byteLength
+    addLog(`buf.byteLength in main BEFORE transfer to worker: ${data.myBufLength}`, 'send');
     sendableWorker.sendMessage({
       message: '这里是主线程发送的 message',
       harmonySendable: true,
       transfer: [myBuf.value]
     })
     // NOTE: HarmonyOS 长度不变，web 长度变为 0
-    myBufLength.value = myBuf.value.byteLength
-    addLog(`buf.byteLength in main AFTER transfer to worker: ${myBufLength.value}`, 'send');
+    data.myBufLength = myBuf.value.byteLength
+    addLog(`buf.byteLength in main AFTER transfer to worker: ${data.myBufLength}`, 'send');
   }
+
+  defineExpose({
+    data,
+    create,
+    sendMessage,
+    destory
+  })
 
   // 销毁Worker
   function destory() {

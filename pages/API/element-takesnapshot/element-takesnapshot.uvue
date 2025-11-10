@@ -7,7 +7,7 @@
     <button class="uni-btn btn-TakeSnapshot" type="primary" @tap="takeSnapshotClick">
       点击截图并替换显示下方图片
     </button>
-    <image style="margin-left:auto;margin-right:auto;margin-top:20px;width:90%;" :src="snapImage" :mode="mode"
+    <image style="margin-left:auto;margin-right:auto;margin-top:20px;width:90%;" :src="data.snapImage" :mode="mode"
       @longpress="saveToAlbum"></image>
   </view>
 </template>
@@ -15,17 +15,23 @@
 <script setup lang="uts">
   
 
+  type DataType = {
+    snapImage: string,
+    completeTriggered: boolean,
+  }
+
   const mode = ref("center")//aspectFit
-  const snapImage = ref("/static/uni.png")
-  // for testing
-  const completeTriggered = ref(false)
+  const data = reactive({
+    snapImage: "/static/uni.png",
+    completeTriggered: false,
+  } as DataType)
 
   function takeSnapshotClick() {
     const view = uni.getElementById('snapshot-content')!
     view.takeSnapshot({
       success: (res) => {
         console.log('takeSnapshot success', res.tempFilePath)
-        snapImage.value = res.tempFilePath
+        data.snapImage = res.tempFilePath
         mode.value = 'widthFix'
         uni.showToast({
           title: '截图成功，路径：' + res.tempFilePath,
@@ -40,7 +46,7 @@
         })
       },
       complete: (res) => {
-        completeTriggered.value = true
+        data.completeTriggered = true
         console.log('takeSnapshot complete', res)
       }
     })
@@ -76,4 +82,9 @@
       complete: () => { }
     });
   }
+
+  defineExpose({
+    data,
+    takeSnapshotClick
+  })
 </script>

@@ -5,9 +5,7 @@ describe('unicloud-call-function', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
-    await page.setData({
-      isUniTest: true
-    })
+    await page.setData({ data: { isUniTest: true } })
   })
 
   it('UniCloudError', async () => {
@@ -17,11 +15,9 @@ describe('unicloud-call-function', () => {
 
   it('callFunction', async () => {
     await page.callMethod('callFunction')
-    const {
-      callFunctionResult,
-      callFunctionError,
-      callFunctionResult_Detail_functionName
-    } = await page.data()
+    const callFunctionResult = await page.data('data.callFunctionResult')
+    const callFunctionError = await page.data('data.callFunctionError')
+    const callFunctionResult_Detail_functionName = await page.data('data.callFunctionResult_Detail_functionName')
     console.error(callFunctionResult)
     console.error(callFunctionError)
     expect(callFunctionResult['showMessage']).toBe("Hello uniCloud function")
@@ -32,9 +28,7 @@ describe('unicloud-call-function', () => {
 
   it('callFunctionWithGeneric', async () => {
     await page.callMethod('callFunctionWithGeneric')
-    const {
-      genericDemoShowMessage,
-    } = await page.data()
+    const genericDemoShowMessage = await page.data('data.genericDemoShowMessage')
     expect(genericDemoShowMessage).toBe("Hello uniCloud function")
   })
 })

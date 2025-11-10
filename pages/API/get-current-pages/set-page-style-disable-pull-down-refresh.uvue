@@ -5,11 +5,11 @@
     <button class="btn btn-set-page-style-1" type="default" @click="setPageStyle(true)">setPageStyle(true)</button>
     <button class="btn btn-set-page-style-0" type="default" @click="setPageStyle(false)">setPageStyle(false)</button>
     <text class="page-style">当前 PageStyle</text>
-    <text class="page-style-value">{{pageStyleText}}</text>
-    <text class="status">状态：</text>
-    <view class="status-list">
-      <text>enablePullDownRefresh: {{enablePullDownRefreshStatus}}</text>
-    </view>
+      <text class="page-style-value">{{pageStyleText}}</text>
+      <text class="status">状态：</text>
+      <view class="status-list">
+        <text>enablePullDownRefresh: {{data.enablePullDownRefreshStatus}}</text>
+      </view>
     <text class="tips">当前版本仅支持设置属性 enablePullDownRefresh</text>
   </view>
 </template>
@@ -22,19 +22,26 @@
     }
   }
 
+  type DataType = {
+    currentPageStyle: UTSJSONObject,
+    enablePullDownRefreshStatus: boolean,
+  }
+
   const checked = ref(false)
   const pages = ref([] as Page[])
-  const currentPageStyle = ref({} as UTSJSONObject)
-  const enablePullDownRefreshStatus = ref(true)
+  const data = reactive({
+    currentPageStyle: {} as UTSJSONObject,
+    enablePullDownRefreshStatus: true,
+  } as DataType)
 
   const pageStyleText = computed(() : string => {
-    return JSON.stringify(currentPageStyle.value)
+    return JSON.stringify(data.currentPageStyle)
   })
 
   function getPageStyle() {
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
-    currentPageStyle.value = currentPage.getPageStyle();
+    data.currentPageStyle = currentPage.getPageStyle();
   }
 
   function setPageStyle(enable : boolean) {
@@ -44,7 +51,7 @@
     currentPage.setPageStyle({
       enablePullDownRefresh: enable
     });
-    enablePullDownRefreshStatus.value = enable
+    data.enablePullDownRefreshStatus = enable
   }
 
   function startPullDownRefresh() {
@@ -54,8 +61,15 @@
   onLoad(() => {
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
-    currentPageStyle.value = currentPage.getPageStyle();
-    enablePullDownRefreshStatus.value = currentPageStyle.value["enablePullDownRefresh"] as boolean
+    data.currentPageStyle = currentPage.getPageStyle();
+    data.enablePullDownRefreshStatus = data.currentPageStyle["enablePullDownRefresh"] as boolean
+  })
+
+  defineExpose({
+    data,
+    getPageStyle,
+    setPageStyle,
+    startPullDownRefresh
   })
 
   onPullDownRefresh(() => {

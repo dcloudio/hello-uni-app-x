@@ -10,12 +10,12 @@ describe('transition event', () => {
     it('transitionend', async () => {
         await page.callMethod('switchBtn')
         await page.waitFor(3000)
-        expect(await page.data("onTransitionEndTriggr")).toBe(true)
+        expect(await page.data("data.onTransitionEndTriggr")).toBe(true)
         await page.callMethod('switchBtn')
         await page.waitFor(200)
-        expect(await page.data("onTransitionEndTriggr")).toBe(false)
+        expect(await page.data("data.onTransitionEndTriggr")).toBe(false)
         await page.callMethod('switchBtn')
         await page.waitFor(3000)
-        expect(await page.data("onTransitionEndTriggr")).toBe(true)
+        expect(await page.data("data.onTransitionEndTriggr")).toBe(true)
     });
 });

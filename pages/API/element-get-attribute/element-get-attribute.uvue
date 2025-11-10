@@ -4,11 +4,11 @@
   <!-- #endif -->
     <view style="padding: 15px;">
       <view id="box" ref="box">
-        <text class="uni-title-text">元素的id：{{ attrId }}</text>
+        <text class="uni-title-text">元素的id：{{ data.attrId }}</text>
         <!-- #ifndef APP -->
-        <text class="uni-title-text">元素的style：{{ attrStyle }}</text>
+        <text class="uni-title-text">元素的style：{{ data.attrStyle }}</text>
         <!-- #endif -->
-        <text class="uni-title-text">元素的背景色样式值：{{ propertyValue }}</text>
+        <text class="uni-title-text">元素的背景色样式值：{{ data.propertyValue }}</text>
         <text class="uni-subtitle-text">小程序端：getAttribute 获取元素的属性值，目前仅支持id、style</text>
         <text class="uni-subtitle-text">App端：getAttribute 不支持获取 class、style 属性</text>
       </view>
@@ -21,38 +21,38 @@
 
       <child id="child" ref="child"></child>
       <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
-      <view class="rect-info" v-if="rectInfo">
+      <view class="rect-info" v-if="data.rectInfo">
         <view class="node-info-item">
           <text class="node-info-item-k">x: </text>
-          <text class="node-info-item-v">{{rectInfo.x}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.x}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">y: </text>
-          <text class="node-info-item-v">{{rectInfo.y}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.y}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">width: </text>
-          <text class="node-info-item-v">{{rectInfo.width}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.width}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">height: </text>
-          <text class="node-info-item-v">{{rectInfo.height}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.height}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">left: </text>
-          <text class="node-info-item-v">{{rectInfo.left}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.left}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">top: </text>
-          <text class="node-info-item-v">{{rectInfo.top}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.top}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">right: </text>
-          <text class="node-info-item-v">{{rectInfo.right}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.right}}</text>
         </view>
         <view class="node-info-item">
           <text class="node-info-item-k">bottom: </text>
-          <text class="node-info-item-v">{{rectInfo.bottom}}</text>
+          <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
       <scroll-view ref="scrollView" class="scroll-view_H" direction="horizontal">
@@ -69,7 +69,7 @@
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  
+
   import child from './child.uvue'
 
   type DomRectType = {
@@ -83,27 +83,36 @@
     height : number,
   }
 
+  type DataType = {
+    attrId: string,
+    attrStyle: string,
+    propertyValue: string,
+    rectInfo: DomRectType,
+  }
+
   const box = ref<UniElement | null>(null)
   const scrollView = ref<UniElement | null>(null)
-  const attrId = ref("")
-  const attrStyle = ref("")
-  const propertyValue = ref("")
-  const rectInfo = ref<DomRectType>({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-  } as DomRectType)
+  const data = reactive({
+    attrId: "",
+    attrStyle: "",
+    propertyValue: "",
+    rectInfo: {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+    },
+  } as DataType)
 
   function getBoundingClientRectAsyncChild(){
     const childEl = uni.getElementById('child')!
     childEl.getBoundingClientRectAsync()!.then((rect : DOMRect) => {
       console.log('rect: ',rect);
-      rectInfo.value = {
+      data.rectInfo = {
         x: rect.x,
         y: rect.y,
         width: rect.width,
@@ -112,13 +121,13 @@
         top: rect.top,
         right: rect.right,
         bottom: rect.bottom,
-      } as DomRectType;;
+      } as DomRectType
     })
   }
 
   function getAttributeId() {
     if (box.value != null) {
-      attrId.value = box.value!.getAttribute('id') ?? ""
+      data.attrId = box.value!.getAttribute('id') ?? ""
     }
   }
 
@@ -130,13 +139,13 @@
 
   function getPropertyValue() {
     if (box.value != null) {
-      propertyValue.value = box.value!.style.getPropertyValue("background-color")
+      data.propertyValue = box.value!.style.getPropertyValue("background-color")
     }
   }
 
   function getAttributeStyle() {
     if (box.value != null) {
-      attrStyle.value = box.value!.getAttribute('style')?? ""
+      data.attrStyle = box.value!.getAttribute('style')?? ""
     }
   }
 
@@ -156,6 +165,17 @@
   onReady(() => {
     // Refs are already assigned via template
   })
+
+  defineExpose({
+    data,
+    getAttributeId,
+    setStyle,
+    getAttributeStyle,
+    getPropertyValue,
+    getBoundingClientRectAsyncChild,
+    scrollTo
+  })
+
 </script>
 <style>
   .scroll-view_H {

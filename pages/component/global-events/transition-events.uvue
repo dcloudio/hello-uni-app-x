@@ -12,12 +12,17 @@
 
 <script setup lang="uts">
 
+type DataType = {
+  onTransitionEndTriggr: boolean,
+}
 
 const times = ref(0)
 const element = ref(null as UniElement | null)
 const isStart = ref(false)
 const buttonValue = ref("开启图片旋转")
-const onTransitionEndTriggr = ref(false)
+const data = reactive({
+  onTransitionEndTriggr: false,
+} as DataType)
 const isShow = ref(false)
 
 function switchBtn() {
@@ -33,7 +38,7 @@ function switchBtn() {
   } else {
     isStart.value = false
     times.value = 0
-    onTransitionEndTriggr.value = false
+    data.onTransitionEndTriggr = false
     buttonValue.value = "开启图片旋转"
     element.value!.style.setProperty('transition-duration', '0ms')
     element.value!.style.setProperty('transform', 'rotate(0deg)')
@@ -45,7 +50,7 @@ function onEnd() {
   if (isStart.value) {
     times.value = times.value + 1
     element.value!.style.setProperty('transform', 'rotate(' + times.value * 360 + 'deg)')
-    onTransitionEndTriggr.value = true
+    data.onTransitionEndTriggr = true
   }
 }
 
@@ -62,6 +67,11 @@ onReady(() => {
   // #ifndef APP-ANDROID
   isShow.value = true
   // #endif
+})
+
+defineExpose({
+  data,
+  switchBtn
 })
 </script>
 

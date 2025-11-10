@@ -97,7 +97,13 @@ const scrollY = ref(true)
 const bounces = ref(false)
 const scrollTop = ref(0)
 const scrollLeft = ref(0)
-const scrollChangeTop = ref(0)
+type DataType = {
+  scrollChangeTop: number,
+}
+
+const data = reactive({
+  scrollChangeTop: 0,
+} as DataType)
 const scrollIntoView = ref("")
 const enableBackToTop = ref(false)
 const scrollWithAnimation = ref(false)
@@ -170,7 +176,7 @@ function scrolltolower() {
 }
 
 function scroll(e : ScrollEvent) {
-  scrollChangeTop.value = e.detail.scrollTop
+  data.scrollChangeTop = e.detail.scrollTop
   console.log("scroll-top : " + e.detail.scrollTop + " scroll-left : " + e.detail.scrollLeft)
 }
 
@@ -217,6 +223,12 @@ onLoad((options : OnLoadOptions) => {
     } as Item
     items.value.push(item)
   }
+})
+
+defineExpose({
+  data,
+  checkScrollHeight,
+  checkScrollWidth
 })
 </script>
 

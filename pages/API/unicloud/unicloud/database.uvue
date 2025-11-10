@@ -26,27 +26,42 @@
 <script setup lang="uts">
   
 
+  type DataType = {
+    addId: string,
+    batchAddIds: Array<string>,
+    batchAddinserted: number,
+    updateUpdated: number,
+    getData: Array<UTSJSONObject>,
+    getWithCommandData: Array<UTSJSONObject>,
+    removeDeleted: number,
+    lookupData: Array<UTSJSONObject>,
+    multiSendSuccessCount: number,
+    isUniTest: boolean,
+  }
+
   // Data
   const title = ref('ClientDB')
-  const addId = ref('')
-  const batchAddIds = ref<Array<string>>([])
-  const batchAddinserted = ref(0)
-  const updateUpdated = ref(0)
-  const getData = ref<Array<UTSJSONObject>>([])
-  const getWithCommandData = ref<Array<UTSJSONObject>>([])
-  const removeDeleted = ref(0)
-  const lookupData = ref<Array<UTSJSONObject>>([])
-  const multiSendSuccessCount = ref(0)
-  const isUniTest = ref(false)
+  const data = reactive({
+    addId: '',
+    batchAddIds: [] as Array<string>,
+    batchAddinserted: 0,
+    updateUpdated: 0,
+    getData: [] as Array<UTSJSONObject>,
+    getWithCommandData: [] as Array<UTSJSONObject>,
+    removeDeleted: 0,
+    lookupData: [] as Array<UTSJSONObject>,
+    multiSendSuccessCount: 0,
+    isUniTest: false,
+  } as DataType)
 
   // Computed
   const dataTag = computed<string>(() => {
-    return isUniTest.value ? 'default-tag' + Date.now() : 'default-tag'
+    return data.isUniTest ? 'default-tag' + Date.now() : 'default-tag'
   })
 
   // Functions
   function notify(content : string, title : string) {
-    if (!isUniTest.value) {
+    if (!data.isUniTest) {
       uni.showModal({
         title,
         content,
@@ -71,7 +86,7 @@
       .then(res => {
         uni.hideLoading()
         console.log(res)
-        addId.value = res.id
+        data.addId = res.id
         notify(`新增成功，id: ${res.id}`, '提示')
       })
       .catch((err : any | null) => {
@@ -98,8 +113,8 @@
         uni.hideLoading()
         console.log(res)
         console.log('JSON.stringify(res.inserted)', JSON.stringify(res.inserted))
-        batchAddIds.value = res.ids
-        batchAddinserted.value = res.inserted
+        data.batchAddIds = res.ids
+        data.batchAddinserted = res.inserted
         notify(`新增成功条数${res.inserted}, id列表: ${res.ids.join(',')}`, '提示')
       })
       .catch((err : any | null) => {
@@ -126,7 +141,7 @@
       .then(res => {
         uni.hideLoading()
         console.log(res)
-        getData.value = res.data
+        data.getData = res.data
         notify(`获取成功，取到了${res.data.length}条数据`, '提示')
       })
       .catch((err : any | null) => {
@@ -154,7 +169,7 @@
       .then(res => {
         uni.hideLoading()
         console.log(res)
-        getWithCommandData.value = res.data
+        data.getWithCommandData = res.data
         notify(`获取成功，取到了${res.data.length}条数据`, '提示')
       })
       .catch((err : any | null) => {
@@ -179,7 +194,7 @@
       .then(res => {
         uni.hideLoading()
         console.log(res)
-        updateUpdated.value = res.updated
+        data.updateUpdated = res.updated
         notify(`更新成功，更新了${res.updated}条数据`, '提示')
       })
       .catch((err : any | null) => {
@@ -202,7 +217,7 @@
       .then(res => {
         uni.hideLoading()
         console.log(res)
-        removeDeleted.value = res.deleted
+        data.removeDeleted = res.deleted
         notify(`删除成功，删掉了${res.deleted}条数据`, '提示')
       })
       .catch((err : any | null) => {
@@ -279,7 +294,7 @@
       .then(res => {
         uni.hideLoading()
         console.log(res)
-        lookupData.value = res.data
+        data.lookupData = res.data
         notify(`联表查询成功，取到了${res.data.length}条数据`, '提示')
       })
       .catch((err : any | null) => {
@@ -312,7 +327,7 @@
             console.error(`第${i}个请求查询失败，错误信息：${item.data!.length}`)
           }
         }
-        multiSendSuccessCount.value = successCount
+        data.multiSendSuccessCount = successCount
         notify(`合并查询成功，成功查询的语句条数为：${successCount}`, '提示')
       })
       .catch<void>((err : any | null) => {
@@ -322,6 +337,19 @@
         notify(error.errMsg, '错误')
       })
   }
+
+  defineExpose({
+    data,
+    dbAdd,
+    dbBatchAdd,
+    dbGet,
+    dbGetWithCommand,
+    dbUpdate,
+    dbRemove,
+    dbLookupInit,
+    dbLookup,
+    dbMultiSend
+  })
 </script>
 
 <style>

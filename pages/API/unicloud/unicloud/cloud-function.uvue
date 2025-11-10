@@ -24,15 +24,25 @@
 <script setup lang="uts">
 
 
+type DataType = {
+  callFunctionResult: UTSJSONObject,
+  callFunctionResult_Detail_functionName: string,
+  callFunctionError: UTSJSONObject,
+  genericDemoShowMessage: string,
+  isUniTest: boolean,
+}
+
 const title = ref('请求云函数')
-const callFunctionResult = ref({})
-const callFunctionResult_Detail_functionName = ref('')
-const callFunctionError = ref({})
-const genericDemoShowMessage = ref('')
-const isUniTest = ref(false)
+const data = reactive({
+  callFunctionResult: {} as UTSJSONObject,
+  callFunctionResult_Detail_functionName: '',
+  callFunctionError: {} as UTSJSONObject,
+  genericDemoShowMessage: '',
+  isUniTest: false,
+} as DataType)
 
 function notify(content : string, title : string) {
-  if (!isUniTest.value) {
+  if (!data.isUniTest) {
     uni.showModal({
       title,
       content,
@@ -59,14 +69,14 @@ async function callFunctionWithGeneric(): Promise<void> {
   }).then(res => {
     const result = res.result
     uni.hideLoading()
-    genericDemoShowMessage.value = result.showMessage
+    data.genericDemoShowMessage = result.showMessage
     notify(result.showMessage, '提示')
   }).catch((err : any | null) => {
     const error = err as UniCloudError
-    callFunctionError.value = {
+    data.callFunctionError = {
       errCode: error.errCode,
       errMsg: error.errMsg
-    }
+    } as UTSJSONObject
     uni.hideLoading()
     notify(error.errMsg, '错误')
   })
@@ -84,10 +94,10 @@ async function callFunction(): Promise<void> {
     }
   }).then(res => {
     const result = res.result
-    callFunctionResult.value = result
+    data.callFunctionResult = result
     const detail = result.get('detail') as UTSJSONObject
-    callFunctionResult_Detail_functionName.value = detail.get('functionName') as string
-    console.log('callFunctionResult_Detail_functionName: ' + callFunctionResult_Detail_functionName.value)
+    data.callFunctionResult_Detail_functionName = detail.get('functionName') as string
+    console.log('callFunctionResult_Detail_functionName: ' + data.callFunctionResult_Detail_functionName)
     console.log(JSON.stringify(result))
     uni.hideLoading()
     notify(result['showMessage'] as string, '提示')
@@ -95,10 +105,10 @@ async function callFunction(): Promise<void> {
     uni.hideLoading()
     if(err instanceof UniCloudError) {
       const error = err as UniCloudError
-      callFunctionError.value = {
+      data.callFunctionError = {
         errCode: error.errCode,
         errMsg: error.errMsg
-      }
+      } as UTSJSONObject
       notify(error.errMsg, '错误')
     } else {
       console.error(err)
@@ -121,10 +131,10 @@ function callEncryptionFunction() {
     uni.hideLoading()
     if(err instanceof UniCloudError) {
       const error = err as UniCloudError
-      callFunctionError.value = {
+      data.callFunctionError = {
         errCode: error.errCode,
         errMsg: error.errMsg
-      }
+      } as UTSJSONObject
       notify(error.errMsg, '错误')
     } else {
       console.error(err)
@@ -146,10 +156,10 @@ function callVerifyFunction() {
     uni.hideLoading()
     if(err instanceof UniCloudError) {
       const error = err as UniCloudError
-      callFunctionError.value = {
+      data.callFunctionError = {
         errCode: error.errCode,
         errMsg: error.errMsg
-      }
+      } as UTSJSONObject
       notify(error.errMsg, '错误')
     } else {
       console.error(err)
@@ -165,9 +175,16 @@ onLoad((options : OnLoadOptions) => {
 })
 
 onUnload(() => {
-  if (isUniTest.value) {
+  if (data.isUniTest) {
     uni.hideToast()
   }
+})
+
+defineExpose({
+  data,
+  callFunction,
+  callFunctionWithGeneric,
+  jest_UniCloudError
 })
 </script>
 

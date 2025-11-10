@@ -6,7 +6,7 @@
       <page-head :title="title"></page-head>
       <button @click="receiveMessage">接收服务端通知</button>
       <view>
-        <view v-for="item in messages">{{item}}</view>
+        <view v-for="item in data.messages">{{item}}</view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -16,21 +16,26 @@
 
 <script setup lang="uts">
 
+type DataType = {
+  messages: Array<string>,
+}
 
 const title = ref('服务端通知通道')
-const messages = ref([] as string[])
+const data = reactive({
+  messages: [] as Array<string>,
+} as DataType)
 
 async function receiveMessage() {
-  messages.value.splice(0, messages.value.length)
+  data.messages.splice(0, data.messages.length)
   const sseChannel = new uniCloud.SSEChannel()
   sseChannel.on('message', (message?: any | null) => {
     if(typeof message === 'string') {
-      messages.value.push(message)
+      data.messages.push(message)
     }
   })
   sseChannel.on('end', (message?: any | null) => {
     if(typeof message === 'string') {
-      messages.value.push(message)
+      data.messages.push(message)
     }
   })
   sseChannel.on('open', () => {
@@ -51,6 +56,11 @@ async function receiveMessage() {
   } as UniCloudCallFunctionOptions)
   console.log(res)
 }
+
+defineExpose({
+  data,
+  receiveMessage
+})
 </script>
 
 <style>

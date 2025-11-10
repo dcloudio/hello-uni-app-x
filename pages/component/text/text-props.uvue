@@ -122,22 +122,22 @@
         </view>
         <!-- #endif -->
 
-        <view v-if="autoTest">
+        <view v-if="data.autoTest">
           <view class="uni-row">
             <text id="empty-text"></text>
           </view>
           <view class="uni-row">
-            <text id="empty-text2">{{emptyText}}</text>
+            <text id="empty-text2">{{data.emptyText}}</text>
           </view>
           <view class="uni-row">
-            <text id="empty-text3" style="width: 100px;height: 100px;">{{emptyText}}</text>
+            <text id="empty-text3" style="width: 100px;height: 100px;">{{data.emptyText}}</text>
           </view>
           <text>一级节点文本
             <text>二级节点文本
-              <text id="nested-text">{{nestedText}}</text>
+              <text id="nested-text">{{data.nestedText}}</text>
             </text>
           </text>
-          <text id="height-text" style="height: 50px;">{{heightText}}</text>
+          <text id="height-text" style="height: 50px;">{{data.heightText}}</text>
           <text style="position: fixed;" id="nested-text2" @tap="nestedText1TapForTest">1
             <text @tap="nestedText2TapForTest">2
               <text>3</text>
@@ -158,13 +158,24 @@ const decodeStr = ref('&lt; &gt; &amp; &apos;')
 const title = ref('text-props')
 const multiLineText = ref('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言；HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言')
 const singleLineText = ref('uni-app x，终极跨平台方案')
+type DataType = {
+  autoTest: boolean,
+  nestedText: string,
+  emptyText: string,
+  heightText: string,
+  isNestedText1TapTriggered: boolean,
+  isNestedText2TapTriggered: boolean,
+}
+
 // 自动化测试
-const autoTest = ref(false)
-const nestedText = ref('三级节点文本')
-const emptyText = ref('空文本')
-const heightText = ref('设置高度文本')
-const isNestedText1TapTriggered = ref(false)
-const isNestedText2TapTriggered = ref(false)
+const data = reactive({
+  autoTest: false,
+  nestedText: '三级节点文本',
+  emptyText: '空文本',
+  heightText: '设置高度文本',
+  isNestedText1TapTriggered: false,
+  isNestedText2TapTriggered: false,
+} as DataType)
 
 function nestedText1Tap() {
   uni.showModal({
@@ -210,15 +221,15 @@ function iconTap2() {
 
 // 自动化测试
 function setNestedText() {
-  nestedText.value = "修改三级节点文本";
+  data.nestedText = "修改三级节点文本";
 }
 
 function setEmptyText() {
-  emptyText.value = "";
+  data.emptyText = "";
 }
 
 function setHeightText() {
-  heightText.value = "修改设置高度文本";
+  data.heightText = "修改设置高度文本";
 }
 
 function getBoundingClientRectForTest() : DOMRect | null {
@@ -226,12 +237,22 @@ function getBoundingClientRectForTest() : DOMRect | null {
 }
 
 function nestedText1TapForTest() {
-  isNestedText1TapTriggered.value = true;
+  data.isNestedText1TapTriggered = true;
 }
 
 function nestedText2TapForTest() {
-  isNestedText2TapTriggered.value = true;
+  data.isNestedText2TapTriggered = true;
 }
+
+defineExpose({
+  data,
+  setNestedText,
+  setEmptyText,
+  setHeightText,
+  getBoundingClientRectForTest,
+  nestedText1TapForTest,
+  nestedText2TapForTest
+})
 </script>
 
 <style>
