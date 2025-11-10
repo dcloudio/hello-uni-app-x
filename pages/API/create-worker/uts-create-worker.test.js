@@ -34,8 +34,9 @@ describe('Api-uts-createWorker', () => {
     await page.waitFor(500);
     await page.waitFor(async () => {
       const taskResult = await page.data('taskResult')
-      return taskResult.length > 0
+      return taskResult._value.length > 0
     });
-    expect(await page.data('taskResult')).toBe('2');
+    const taskResult = await page.data('taskResult')
+    expect(taskResult._value).toBe('2');
   });
 });

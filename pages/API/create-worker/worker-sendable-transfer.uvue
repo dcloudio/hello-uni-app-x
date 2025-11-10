@@ -28,99 +28,110 @@
   </scroll-view>
 </template>
 
-<script>
+<script setup lang="uts">
   import { UTSWorkerAddListenerOptions, UTSWorkerReceiveEventCallback, UTSWorkerSendWorkerMessageOptions, UTSSendableWorkerImpl } from "@/uni_modules/uts-worker-sendable-transfer";
+
   const sendableWorker = new UTSSendableWorkerImpl()
-  export default {
-    onUnload() {
-      this.destory();
-    },
-    data() {
-      return {
-        created_boolean: false,
-        workerStatus: 'none', // none, created, destroyed
-        isListening: false,
-        logs: [] as Array<UTSJSONObject>,
-        myBuf: new ArrayBuffer(8),
-        myBufLength: -1,
-        sendableNumber: 0
-      }
-    },
-    computed: {
-      statusText() : string {
-        switch (this.workerStatus) {
-          case 'none': return '未创建';
-          case 'created': return '已创建';
-          case 'destroyed': return '已销毁';
-          default: return '未知';
-        }
-      }
-    },
-    methods: {
-      // 添加日志方法
-      addLog(message : string, type : string = 'info') {
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-        const logItem = {
-          message: `[${timeStr}] ${message}`,
-          type: type,
-          time: timeStr
-        } as UTSJSONObject;
-        this.logs.unshift(logItem);
-        // 限制日志数量
-        if (this.logs.length > 50) {
-          this.logs = this.logs.slice(0, 50);
-        }
-      },
 
-      // 创建Worker
-      create() {
-        sendableWorker.create()
-        this.workerStatus = 'created';
-        this.addLog('Worker创建成功', 'success');
-        this.created_boolean = true;
-        // 添加消息监听
-        sendableWorker.onMessage({
-          success: (res) => {
-            const result = res.result;
-            // #ifdef APP-HARMONY
-            // 这里经过 worker 修改后，result.a 应该是 666
-            this.sendableNumber = result.a
-            // #endif
-            this.addLog(`收到WorkerTask返回: ${JSON.stringify(result)}`, 'receive');
-          }
-        });
-      },
+  const created_boolean = ref(false)
+  const workerStatus = ref('none') // none, created, destroyed
+  const isListening = ref(false)
+  const logs = ref<Array<UTSJSONObject>>([])
+  const myBuf = ref(new ArrayBuffer(8))
+  const myBufLength = ref(-1)
+  const sendableNumber = ref(0)
 
-      // 向workerTask发送消息
-      sendMessage() {
-        this.myBufLength = this.myBuf.byteLength
-        this.addLog(`buf.byteLength in main BEFORE transfer to worker: ${this.myBufLength}`, 'send');
-        sendableWorker.sendMessage({
-          message: '这里是主线程发送的 message',
-          harmonySendable: true,
-          transfer: [this.myBuf]
-        })
-        // NOTE: HarmonyOS 长度不变，web 长度变为 0
-        this.myBufLength = this.myBuf.byteLength
-        this.addLog(`buf.byteLength in main AFTER transfer to worker: ${this.myBufLength}`, 'send');
-      },
+  const statusText = computed((): string => {
+    switch (workerStatus.value) {
+      case 'none': return '未创建';
+      case 'created': return '已创建';
+      case 'destroyed': return '已销毁';
+      default: return '未知';
+    }
+  })
 
-      // 销毁Worker
-      destory() {
-        sendableWorker.destroy()
-        this.workerStatus = 'destroyed';
-        this.isListening = false;
-        this.addLog('Worker已销毁', 'warning');
-        this.created_boolean = false;
-      },
-
-      // 清空日志
-      clearLogs() {
-        this.logs = [];
-      },
+  // 添加日志方法
+  function addLog(message: string, type: string = 'info') {
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    const logItem = {
+      message: `[${timeStr}] ${message}`,
+      type: type,
+      time: timeStr
+    } as UTSJSONObject;
+    logs.value.unshift(logItem);
+    // 限制日志数量
+    if (logs.value.length > 50) {
+      logs.value = logs.value.slice(0, 50);
     }
   }
+
+  // 创建Worker
+  function create() {
+    sendableWorker.create()
+    workerStatus.value = 'created';
+    addLog('Worker创建成功', 'success');
+    created_boolean.value = true;
+    // 添加消息监听
+    sendableWorker.onMessage({
+      success: (res) => {
+        const result = res.result;
+        // #ifdef APP-HARMONY
+        // 这里经过 worker 修改后，result.a 应该是 666
+        sendableNumber.value = result.a
+        // #endif
+        addLog(`收到WorkerTask返回: ${JSON.stringify(result)}`, 'receive');
+      }
+    });
+  }
+
+  // 向workerTask发送消息
+  function sendMessage() {
+    myBufLength.value = myBuf.value.byteLength
+    addLog(`buf.byteLength in main BEFORE transfer to worker: ${myBufLength.value}`, 'send');
+    sendableWorker.sendMessage({
+      message: '这里是主线程发送的 message',
+      harmonySendable: true,
+      transfer: [myBuf.value]
+    })
+    // NOTE: HarmonyOS 长度不变，web 长度变为 0
+    myBufLength.value = myBuf.value.byteLength
+    addLog(`buf.byteLength in main AFTER transfer to worker: ${myBufLength.value}`, 'send');
+  }
+
+  // 销毁Worker
+  function destory() {
+    sendableWorker.destroy()
+    workerStatus.value = 'destroyed';
+    isListening.value = false;
+    addLog('Worker已销毁', 'warning');
+    created_boolean.value = false;
+  }
+
+  // 清空日志
+  function clearLogs() {
+    logs.value = [];
+  }
+
+  onUnload(() => {
+    destory();
+  })
+
+  defineExpose({
+    created_boolean,
+    workerStatus,
+    isListening,
+    logs,
+    myBuf,
+    myBufLength,
+    sendableNumber,
+    statusText,
+    addLog,
+    create,
+    sendMessage,
+    destory,
+    clearLogs
+  })
 </script>
 
 <style>
