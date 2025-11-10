@@ -47,7 +47,13 @@
     disabled: false,
     is_today: false
   } as DateType)
-  const testWidth = ref(0)
+  type DataType = {
+    testWidth: number,
+  }
+
+  const data = reactive({
+    testWidth: 0,
+  } as DataType)
 
   // 获取月份
   const current_month = computed((): string => {
@@ -317,8 +323,12 @@
     // 仅自动化测试
     const header = drawHeaderRef.value
     if (header != null) {
-      testWidth.value = header.getBoundingClientRect().width;
+      data.testWidth = header.getBoundingClientRect().width;
     }
+  })
+
+  defineExpose({
+    data
   })
 </script>
 

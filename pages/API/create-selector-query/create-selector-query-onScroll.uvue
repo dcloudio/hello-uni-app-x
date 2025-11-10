@@ -8,8 +8,14 @@
 
 <script setup lang="uts">
 
+  type DataType = {
+    ret: boolean,
+  }
+
   const count = ref(0)
-  const ret = ref(true)
+  const data = reactive({
+    ret: true,
+  } as DataType)
 
   function onScroll() {
     count.value++
@@ -24,12 +30,16 @@
     console.log("scroll: ", count.value)
 
     if (count.value > 0) {
-      ret.value = false
+      data.ret = false
     }
   }
 
   onLoad(() => {
 
+  })
+
+  defineExpose({
+    data
   })
 </script>
 

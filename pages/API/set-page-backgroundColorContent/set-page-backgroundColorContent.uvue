@@ -9,7 +9,14 @@
 
 // Data
 const isChange = ref(false)
-const currentBackgroundColorContent = ref("" as any | null)
+
+type DataType = {
+  currentBackgroundColorContent: string | null,
+}
+
+const data = reactive({
+  currentBackgroundColorContent: null as string | null,
+} as DataType)
 
 // Methods
 function changeColor() {
@@ -19,8 +26,13 @@ function changeColor() {
   isChange.value = !isChange.value
 
   let pageJson = page.getPageStyle()
-  currentBackgroundColorContent.value = pageJson["backgroundColorContent"]
+  data.currentBackgroundColorContent = pageJson["backgroundColorContent"] as string | null
 }
+
+defineExpose({
+  data,
+  changeColor
+})
 </script>
 
 <style>

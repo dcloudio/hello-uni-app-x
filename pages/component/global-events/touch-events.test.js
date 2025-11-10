@@ -28,7 +28,8 @@ describe('touch-events-test', () => {
   });
 
   it('touchStart-tagName-touchCount', async () => {
-    let iconRect = await page.data('iconRect')
+    const pageData = await page.data('data')
+    let iconRect = pageData.iconRect
     let x = iconRect.x + iconRect.width / 2.0
     let y = iconRect.y + iconRect.height / 2.0
 
@@ -40,8 +41,8 @@ describe('touch-events-test', () => {
     })
 
     await page.waitFor(1500);
-    const touchTargets = await page.data('touchTargets')
-    const touchTargetsCount = await page.data('touchTargetsCount')
+    const touchTargets = await page.data('data.touchTargets')
+    const touchTargetsCount = await page.data('data.touchTargetsCount')
 
     console.log('touchTargets', touchTargets)
     console.log('touchTargetsCount', touchTargetsCount)

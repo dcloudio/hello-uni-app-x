@@ -68,7 +68,7 @@ describe('nodes-info', () => {
     // 小程序端启用了虚拟host，无法获取到子组件
     it('get-node-info-child', async () => {
       const child = await page.$('.node-child')
-      const childData = await child.data()
+      const childData = await child.data('data')
       console.log('get-node-info-child.childData.top', childData.top);
       expect(childData.top > 100).toBe(true)
     })

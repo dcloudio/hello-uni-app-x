@@ -6,15 +6,25 @@
 
 <script setup lang="uts">
 
-  const top = ref(0)
+  type DataType = {
+    top: number,
+  }
+
+  const data = reactive({
+    top: 0,
+  } as DataType)
 
   onMounted(() => {
     uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).select('.selector-query-child-view').boundingClientRect().exec((ret) => {
       if (ret.length == 1) {
         const nodeInfo = ret[0] as NodeInfo;
-        top.value = nodeInfo.top!
+        data.top = nodeInfo.top!
       }
     })
+  })
+
+  defineExpose({
+    data
   })
 </script>
 

@@ -21,13 +21,22 @@
 <script setup lang="uts">
 
 
-const iconRect = ref(null as DOMRect | null)
-const viewEleRect = ref(null as DOMRect | null)
+type DataType = {
+  iconRect: DOMRect | null,
+  viewEleRect: DOMRect | null,
+  ret1: boolean,
+  ret2: boolean,
+}
+
 const touchstartValue = ref([] as string[])
 const touchmoveValue = ref([] as string[])
 const touchendValue = ref([] as string[])
-const ret1 = ref(false)
-const ret2 = ref(false)
+const data = reactive({
+  iconRect: null as DOMRect | null,
+  viewEleRect: null as DOMRect | null,
+  ret1: false,
+  ret2: false,
+} as DataType)
 
 function clearValue() {
   touchstartValue.value = []
@@ -47,7 +56,7 @@ function isPassTest1() {
     touchMove == "view1-3view1-2view1" &&
     touchEnd == "view1-3view1-2view1"
   console.log('isPassTest1', result)
-  ret1.value = result
+  data.ret1 = result
   clearValue()
 }
 
@@ -63,7 +72,7 @@ function isPassTest2() {
     touchMove == "view2" &&
     touchEnd == "view2-3view2-2view2"
   console.log('isPassTest2', result)
-  ret2.value = result
+  data.ret2 = result
   clearValue()
 }
 
@@ -93,16 +102,26 @@ function onTouchEnd(e : TouchEvent) {
 onReady(() => {
   // #ifdef APP-IOS || APP-HARMONY
   let iconEle = uni.getElementById("view1-3")
-  iconRect.value = iconEle?.getBoundingClientRect()
+  data.iconRect = iconEle?.getBoundingClientRect() ?? null
   // 加上导航栏及状态栏高度
-  iconRect.value.y += uni.getSystemInfoSync().safeArea.top + 44
+  if (data.iconRect != null) {
+    data.iconRect.y += uni.getSystemInfoSync().safeArea.top + 44
+  }
 
   let viewEle = uni.getElementById("view2-3")
-  viewEleRect.value = viewEle?.getBoundingClientRect()
+  data.viewEleRect = viewEle?.getBoundingClientRect() ?? null
   // 加上导航栏及状态栏高度
-  viewEleRect.value.y += uni.getSystemInfoSync().safeArea.top + 44
+  if (data.viewEleRect != null) {
+    data.viewEleRect.y += uni.getSystemInfoSync().safeArea.top + 44
+  }
 
   // #endif
+})
+
+defineExpose({
+  data,
+  isPassTest1,
+  isPassTest2
 })
 </script>
 

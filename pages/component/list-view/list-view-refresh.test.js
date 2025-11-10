@@ -26,16 +26,16 @@ describe('component-native-list-view-refresh', () => {
 
   it('check_list_view_refresh', async () => {
     await page.waitFor(async () => {
-      return await page.data('refresherTriggered') === false;
+      return await page.data('data.refresherTriggered') === false;
     });
     //等待下拉刷新结束
     await page.waitFor(500)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
-    expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
-    expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
+    expect(await page.data('data.onRefresherpullingTest')).toBe('refresherpulling:Success')
+    expect(await page.data('data.refresherrefreshTest')).toBe('refresherrefresh:Success')
     await page.waitFor(1000);
-    expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
+    expect(await page.data('data.onRefresherrestoreTest')).toBe('refresherrestore:Success')
   })
 
   it('check_refresherabort', async () => {
@@ -48,7 +48,7 @@ describe('component-native-list-view-refresh', () => {
       duration: 100
     })
     await page.waitFor(1500)
-    expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
+    expect(await page.data('data.onRefresherabortTest')).toBe('refresherabort:Success')
   });
 
 })

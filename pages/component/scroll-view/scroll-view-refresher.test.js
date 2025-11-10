@@ -21,6 +21,11 @@ describe('component-native-scroll-view-refresher', () => {
   }
 
   let page;
+
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/scroll-view/scroll-view-refresher');
     await page.waitFor(300);
@@ -28,7 +33,7 @@ describe('component-native-scroll-view-refresher', () => {
 
   it('scroll-view-refresher-screenshot', async () => {
     //禁止滚动条
-    await page.setData({
+    await setPageData({
         showScrollbar: false
     })
     await page.waitFor(300);
@@ -37,18 +42,18 @@ describe('component-native-scroll-view-refresher', () => {
   })
 
   it('check_refresher_refresh_event', async () => {
-    await page.setData({
+    await setPageData({
       refresherTriggered: true
     })
     await page.waitFor(2000);
-    expect(await page.data('refresherrefreshTimes')).toBe(1)
+    expect(await page.data('data.refresherrefreshTimes')).toBe(1)
     // 手动设置下拉刷新状态refresher-triggered为true时，在web和iOS不触发@refresherpulling事件
     if(isAndroid){
-      expect(await page.data('onRefresherpullingTest')).toBe('refresherpulling:Success')
-      expect(await page.data('refresherrefreshTest')).toBe('refresherrefresh:Success')
+      expect(await page.data('data.onRefresherpullingTest')).toBe('refresherpulling:Success')
+      expect(await page.data('data.refresherrefreshTest')).toBe('refresherrefresh:Success')
     }
     await page.waitFor(2000);
-    expect(await page.data('onRefresherrestoreTest')).toBe('refresherrestore:Success')
+    expect(await page.data('data.onRefresherrestoreTest')).toBe('refresherrestore:Success')
   });
 
   // 仅App端支持手势下拉刷新,在不同设备上位置有差异可能导致不触发中止事件
@@ -70,13 +75,13 @@ describe('component-native-scroll-view-refresher', () => {
       }
       await page.waitFor(1500)
       if(isIos || platformInfo.startsWith('android 10') || platformInfo.startsWith('android 11')){
-        expect(await page.data('onRefresherabortTest')).toBe('refresherabort:Success')
+        expect(await page.data('data.onRefresherabortTest')).toBe('refresherabort:Success')
       }
     });
   }
 
   it('check_refresher_snapshot', async () => {
-    await page.setData({
+    await setPageData({
       refresherTriggered: true
     })
     await page.waitFor(300);

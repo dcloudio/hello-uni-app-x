@@ -31,6 +31,12 @@
 <script setup lang="uts">
 
 
+type DataType = {
+  touchTargets: string,
+  touchTargetsCount: number,
+  iconRect: DOMRect | null,
+}
+
 const move = ref(false)
 const posX = ref(0)
 const posY = ref(0)
@@ -38,18 +44,20 @@ const lastX = ref(0)
 const lastY = ref(0)
 const touchEvent = ref(null as TouchEvent | null)
 const icon = ref(null as UniElement | null)
-const touchTargets = ref("")
-const touchTargetsCount = ref(0)
-const iconRect = ref(null as DOMRect | null)
+const data = reactive({
+  touchTargets: "",
+  touchTargetsCount: 0,
+  iconRect: null as DOMRect | null,
+} as DataType)
 
 function onViewTouchStart(e : TouchEvent) {
-  touchTargets.value += e.target!.tagName + e.currentTarget!.tagName
-  touchTargetsCount.value++
+  data.touchTargets += e.target!.tagName + e.currentTarget!.tagName
+  data.touchTargetsCount++
 }
 
 function onTouchStart(e : TouchEvent) {
-  touchTargetsCount.value++
-  touchTargets.value += e.target!.tagName + e.currentTarget!.tagName
+  data.touchTargetsCount++
+  data.touchTargets += e.target!.tagName + e.currentTarget!.tagName
 
   touchEvent.value = e
   if (!move.value) {
@@ -95,10 +103,16 @@ function onTouchCancel(event : TouchEvent) {
 onReady(() => {
   icon.value = uni.getElementById("icon")
   // #ifdef APP-IOS || APP-HARMONY
-  iconRect.value = icon.value?.getBoundingClientRect()
+  data.iconRect = icon.value?.getBoundingClientRect() ?? null
   // 加上导航栏及状态栏高度
-  iconRect.value.y += uni.getSystemInfoSync().safeArea.top + 44
+  if (data.iconRect != null) {
+    data.iconRect.y += uni.getSystemInfoSync().safeArea.top + 44
+  }
   // #endif
+})
+
+defineExpose({
+  data
 })
 </script>
 

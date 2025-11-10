@@ -14,7 +14,7 @@ describe(PAGE_PATH, () => {
     const {
       testNode1,
       testNode2
-    } = await page.data()
+    } = await page.data('data')
     expect(testNode1).toBe(true)
     expect(testNode2).toBe(true)
 	})

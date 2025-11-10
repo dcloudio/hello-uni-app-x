@@ -12,26 +12,38 @@ import Comp2 from './Comp2.uvue'
 
 const id1 = ref('page-id-1')
 const id2 = ref('page-id-2')
-const testNode1 = ref(false)
-const testNode2 = ref(false)
+
+type DataType = {
+  testNode1: boolean,
+  testNode2: boolean,
+}
+
+const data = reactive({
+  testNode1: false,
+  testNode2: false,
+} as DataType)
 
 function onComp1Ready(testNode1Val: boolean) {
-  testNode1.value = testNode1Val
+  data.testNode1 = testNode1Val
 }
 
 onReady(() => {
   uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).select('#page-id-2').boundingClientRect().exec((ret) => {
     console.log(ret)
-    testNode2.value = ret.length > 0
+    data.testNode2 = ret.length > 0
     // #ifdef WEB || MP
-    testNode2.value = testNode2.value && ret[0] != null
+    data.testNode2 = data.testNode2 && ret[0] != null
     // #endif
-    if(testNode2.value) {
+    if(data.testNode2) {
       console.log('Comp2测试符合预期')
     } else {
       console.error('Comp2测试不符合预期')
     }
   })
+})
+
+defineExpose({
+  data
 })
 </script>
 

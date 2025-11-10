@@ -12,11 +12,21 @@
 
 import Item from './issue-13858-item.uvue'
 
-const childMountedTriggeredCount = ref(0)
+type DataType = {
+  childMountedTriggeredCount: number,
+}
+
+const data = reactive({
+  childMountedTriggeredCount: 0,
+} as DataType)
 
 function itemMounted() {
-  childMountedTriggeredCount.value++
+  data.childMountedTriggeredCount++
 }
+
+defineExpose({
+  data
+})
 
 onLoad(() => {
 

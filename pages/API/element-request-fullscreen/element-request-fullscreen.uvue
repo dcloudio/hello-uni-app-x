@@ -19,10 +19,18 @@
   const isFullscreen = ref(false)
   const orientation = ref("landscape")
   const navigationUI = ref("hide")
-  const fullscreenchangeCount = ref(0)
-  // 回调状态跟踪
-  const requestFullscreenCallbackStatus = ref(false)
-  const exitFullscreenCallbackStatus = ref(false)
+
+  type DataType = {
+    fullscreenchangeCount: number,
+    requestFullscreenCallbackStatus: boolean,
+    exitFullscreenCallbackStatus: boolean,
+  }
+
+  const data = reactive({
+    fullscreenchangeCount: 0,
+    requestFullscreenCallbackStatus: false,
+    exitFullscreenCallbackStatus: false,
+  } as DataType)
 
   function getCurrentPage() : UniPage {
     const pages = getCurrentPages()
@@ -45,7 +53,7 @@
         },
         complete: () => {
           console.log('complete')
-          exitFullscreenCallbackStatus.value = status1
+          data.exitFullscreenCallbackStatus = status1
         }
       })
     } else {
@@ -64,7 +72,7 @@
         },
         complete: () => {
           console.log('complete')
-          requestFullscreenCallbackStatus.value = status1
+          data.requestFullscreenCallbackStatus = status1
         }
       })
     }
@@ -74,8 +82,8 @@
 
   function fullscreenchange(e : UniEvent) {
     console.log(e.type)
-    fullscreenchangeCount.value++
-    console.log(fullscreenchangeCount.value)
+    data.fullscreenchangeCount++
+    console.log(data.fullscreenchangeCount)
   }
 
   function fullscreenerror(e : UniEvent) {
@@ -94,6 +102,11 @@
 
   onReady(() => {
     fullscreenElement.value = uni.getElementById('fullscreen') as UniElement
+  })
+
+  defineExpose({
+    data,
+    fullscreen
   })
 </script>
 

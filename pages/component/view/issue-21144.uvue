@@ -1,5 +1,5 @@
 <template>
-	<scroll-view style="flex: 1;" :scroll-top="scrollTop">
+	<scroll-view style="flex: 1;" :scroll-top="data.scrollTop">
 		<view id="testView" class="btn-plus">
 		</view>
 		<view style="width: 100%; height: 2000px;" @click="checkTestView"></view>
@@ -8,8 +8,13 @@
 
 <script setup lang="uts">
 	
+	type DataType = {
+		scrollTop: number,
+	}
 
-	const scrollTop = ref(0)
+	const data = reactive({
+		scrollTop: 0,
+	} as DataType)
 
 	function checkTestView():boolean {
 		let ele = uni.getElementById('testView') as UniElement
@@ -17,6 +22,11 @@
 		// TODO 鸿蒙低版本偏差稍大
 		return ele.getBoundingClientRect().y > 98
 	}
+
+	defineExpose({
+		data,
+		checkTestView
+	})
 </script>
 
 <style>

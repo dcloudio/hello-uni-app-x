@@ -31,7 +31,7 @@ describe('create-selector-query-onScroll', () => {
     })
 
     await page.waitFor(600);
-    const ret = await page.data('ret')
+    const ret = await page.data('data.ret')
     expect(ret).toBe(true)
   })
 })

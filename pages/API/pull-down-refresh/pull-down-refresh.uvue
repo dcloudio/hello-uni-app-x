@@ -4,7 +4,7 @@
   <!-- #endif -->
     <!-- 实际开发中，长列表应该使用list-view -->
     <view class="uni-padding-wrap uni-common-mt">
-      <text class="text" v-for="(num,index) in data" :key="index">list - {{num}}</text>
+      <text class="text" v-for="(num,index) in listData" :key="index">list - {{num}}</text>
       <view v-if="showLoadMore">{{loadMoreText}}</view>
     </view>
   <!-- #ifdef APP -->
@@ -14,24 +14,32 @@
 <script setup lang="uts">
   
 
-  const data = ref([] as Array<number>)
+  type DataType = {
+    pulldownRefreshTriggered: boolean,
+    startPullDownRefreshStaus: boolean,
+    stopPullDownRefreshStatus: boolean,
+  }
+
+  const listData = ref([] as Array<number>)
   const loadMoreText = ref("加载中...")
   const showLoadMore = ref(false)
   const max = ref(0)
-  const pulldownRefreshTriggered = ref(false)
-  const startPullDownRefreshStaus = ref(false)
-  const stopPullDownRefreshStatus = ref(false)
+  const data = reactive({
+    pulldownRefreshTriggered: false,
+    startPullDownRefreshStaus: false,
+    stopPullDownRefreshStatus: false,
+  } as DataType)
 
   function initData() {
     setTimeout(() => {
       max.value = 0;
-      data.value = [];
+      listData.value = [];
       let dataArr : Array<number> = [];
       max.value += 20;
       for (let i : number = max.value - 19; i < max.value + 1; i++) {
         dataArr.push(i)
       }
-      data.value = data.value.concat(dataArr);
+      listData.value = listData.value.concat(dataArr);
       let status = false
       uni.stopPullDownRefresh();
     }, 1000);
@@ -43,7 +51,7 @@
     for (let i : number = max.value - 9; i < max.value + 1; i++) {
       dataArr.push(i)
     }
-    data.value = data.value.concat(dataArr);
+    listData.value = listData.value.concat(dataArr);
   }
 
   onReady(() => {
@@ -56,7 +64,7 @@
         status = false
       },
       complete: () => {
-        startPullDownRefreshStaus.value = status
+        data.startPullDownRefreshStaus = status
       }
     });
     initData();
@@ -76,8 +84,12 @@
 
   onPullDownRefresh(() => {
     console.log('onPullDownRefresh');
-    pulldownRefreshTriggered.value = true
+    data.pulldownRefreshTriggered = true
     initData();
+  })
+
+  defineExpose({
+    data
   })
 </script>
 

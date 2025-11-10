@@ -11,17 +11,27 @@
 
 <script setup lang="uts">
 
+type DataType = {
+  text1Height: number,
+  text2Height: number,
+}
 
-const text1Height = ref(0)
-const text2Height = ref(0)
+const data = reactive({
+  text1Height: 0,
+  text2Height: 0,
+} as DataType)
 
 onReady(() => {
   const testText1Ele = uni.getElementById("testText1") as UniElement
   const testText2Ele = uni.getElementById("testText2") as UniElement
   setTimeout(() => {
-    text1Height.value = testText1Ele.getBoundingClientRect().height;
-    text2Height.value = testText2Ele.getBoundingClientRect().height;
+    data.text1Height = testText1Ele.getBoundingClientRect().height;
+    data.text2Height = testText2Ele.getBoundingClientRect().height;
   }, 1000)
+})
+
+defineExpose({
+  data
 })
 </script>
 

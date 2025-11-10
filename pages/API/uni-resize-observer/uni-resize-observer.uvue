@@ -36,7 +36,14 @@ const boxDisplay = ref(false)
 const outBoxElement = ref(null as UniElement | null)
 const innerBoxElement = ref(null as UniElement | null)
 const resizeObserver = ref(null as UniResizeObserver | null)
-const outBoxElementOnResize = ref(false)
+
+type DataType = {
+  outBoxElementOnResize: boolean,
+}
+
+const data = reactive({
+  outBoxElementOnResize: false,
+} as DataType)
 
 function innerBoxClick() {
   if (innerBoxElement.value != null) {
@@ -66,7 +73,7 @@ function revertBoxSize() {
 //自动化测试专用
 function setOutBoxMarginLeft(value : string) {
   if (outBoxElement.value != null) {
-    outBoxElementOnResize.value = false
+    data.outBoxElementOnResize = false
     outBoxElement.value!.style.setProperty("margin-left", value)
   }
 }
@@ -110,7 +117,7 @@ onReady(() => {
       entries.forEach(entry => {
         if (entry.target == outBoxElement.value) {
           outBoxSizeInfo.value = analysisResizeObserverEntry(entry)
-          outBoxElementOnResize.value = true
+          data.outBoxElementOnResize = true
         } else if (entry.target == innerBoxElement.value) {
           innerBoxSizeInfo.value = analysisResizeObserverEntry(entry)
         }
@@ -126,6 +133,11 @@ onReady(() => {
     }
     boxDisplay.value = true
   }
+})
+
+defineExpose({
+  data,
+  setOutBoxMarginLeft
 })
 </script>
 

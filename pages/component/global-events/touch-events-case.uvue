@@ -25,13 +25,22 @@
 <script setup lang="uts">
 
 
-const swiperChangeEvent = ref(false)
-const viewTouchEvent = ref(false)
-const swiperItemTouchEvent = ref(false)
-const swiperTouchEvent = ref(false)
+type DataType = {
+  swiperChangeEvent: boolean,
+  viewTouchEvent: boolean,
+  swiperItemTouchEvent: boolean,
+  swiperTouchEvent: boolean,
+}
+
 const stopPropagation = ref(false)
 const preventDefault = ref(false)
 const touchResult = ref("")
+const data = reactive({
+  swiperChangeEvent: false,
+  viewTouchEvent: false,
+  swiperItemTouchEvent: false,
+  swiperTouchEvent: false,
+} as DataType)
 
 function changeStopPropagation(value: boolean) {
   stopPropagation.value = value
@@ -43,13 +52,13 @@ function changePreventDefault(value: boolean) {
 
 function swiperChange(e: UniSwiperChangeEvent) {
   console.log("swiperChange", e.detail.current)
-  swiperChangeEvent.value = true
+  data.swiperChangeEvent = true
 }
 
 function viewTouchStart(e: UniTouchEvent) {
   console.log("viewTouchStart")
   touchResult.value = "viewTouchStart"
-  viewTouchEvent.value = true
+  data.viewTouchEvent = true
   if (stopPropagation.value) e.stopPropagation()
   if (preventDefault.value) e.preventDefault()
 }
@@ -57,7 +66,7 @@ function viewTouchStart(e: UniTouchEvent) {
 function viewTouchMove(e: UniTouchEvent) {
   console.log("viewTouchMove")
   touchResult.value = "viewTouchMove"
-  viewTouchEvent.value = true
+  data.viewTouchEvent = true
   if (stopPropagation.value) e.stopPropagation()
   if (preventDefault.value) e.preventDefault()
 }
@@ -71,7 +80,7 @@ function viewTouchEnd(e: UniTouchEvent) {
 function swiperItemTouchStart(e: UniTouchEvent) {
   console.log("swiperItemTouchStart")
   touchResult.value += " -> swiperItemTouchStart"
-  swiperItemTouchEvent.value = true
+  data.swiperItemTouchEvent = true
 }
 
 function swiperItemTouchMove(e: UniTouchEvent) {
@@ -87,7 +96,7 @@ function swiperItemTouchEnd(e: UniTouchEvent) {
 function swiperTouchStart(e: UniTouchEvent) {
   console.log("swiperTouchStart")
   touchResult.value += " -> swiperTouchStart"
-  swiperTouchEvent.value = true
+  data.swiperTouchEvent = true
 }
 
 function swiperTouchMove(e: UniTouchEvent) {
@@ -101,25 +110,30 @@ function swiperTouchEnd(e: UniTouchEvent) {
 }
 
 function resetEvent() {
-  swiperChangeEvent.value = false
-  viewTouchEvent.value = false
-  swiperItemTouchEvent.value = false
-  swiperTouchEvent.value = false
+  data.swiperChangeEvent = false
+  data.viewTouchEvent = false
+  data.swiperItemTouchEvent = false
+  data.swiperTouchEvent = false
   stopPropagation.value = true
   preventDefault.value = true
 }
 
 function isPassTest1() {
-  console.log("swiperChangeEvent:", swiperChangeEvent.value)
-  return swiperChangeEvent.value == false
+  console.log("swiperChangeEvent:", data.swiperChangeEvent)
+  return data.swiperChangeEvent == false
 }
 
 function isPassTest2() {
-  console.log("viewTouchEvent:", viewTouchEvent.value)
-  console.log("swiperItemTouchEvent:", swiperItemTouchEvent.value)
-  console.log("swiperTouchEvent:", swiperTouchEvent.value)
-  return viewTouchEvent.value == true && swiperItemTouchEvent.value == true  && swiperTouchEvent.value == true
+  console.log("viewTouchEvent:", data.viewTouchEvent)
+  console.log("swiperItemTouchEvent:", data.swiperItemTouchEvent)
+  console.log("swiperTouchEvent:", data.swiperTouchEvent)
+  return data.viewTouchEvent == true && data.swiperItemTouchEvent == true  && data.swiperTouchEvent == true
 }
+
+defineExpose({
+  data,
+  resetEvent
+})
 </script>
 
 <style>

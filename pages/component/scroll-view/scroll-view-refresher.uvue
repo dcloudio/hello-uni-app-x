@@ -1,9 +1,9 @@
 <template>
   <view class="container">
     <page-head title="scroll-view 下拉刷新"></page-head>
-    <scroll-view class="scroll" refresher-enabled=true :refresher-triggered="refresherTriggered"
+    <scroll-view class="scroll" refresher-enabled=true :refresher-triggered="data.refresherTriggered"
       @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort" @refresherrestore="onRefresherrestore"
-      @refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower" :show-scrollbar="showScrollbar">
+      @refresherpulling="onRefresherpulling" @scrolltolower="onScrolltolower" :show-scrollbar="data.showScrollbar">
       <view v-for="key in scrollData" :key="key">
         <view class="scroll-item">
           <text class="scroll-item-title">{{key}}</text>
@@ -13,7 +13,6 @@
   </view>
 </template>
 <script setup lang="uts">
-  
 
   type RefresherEventTest = {
     type : string;
@@ -22,16 +21,27 @@
     dy : number;
   }
 
+  type DataType = {
+    refresherTriggered: boolean,
+    refresherrefreshTimes: number,
+    showScrollbar: boolean,
+    refresherrefreshTest: string,
+    onRefresherabortTest: string,
+    onRefresherrestoreTest: string,
+    onRefresherpullingTest: string,
+  }
+
   const scrollData = ref([] as Array<string>)
-  const refresherTriggered = ref(false)
   const refresherrefresh = ref(false)
-  const refresherrefreshTimes = ref(0)
-  const showScrollbar = ref(false)
-  // 自动化测试使用
-  const refresherrefreshTest = ref("")
-  const onRefresherabortTest = ref("")
-  const onRefresherrestoreTest = ref("")
-  const onRefresherpullingTest = ref("")
+  const data = reactive({
+    refresherTriggered: false,
+    refresherrefreshTimes: 0,
+    showScrollbar: false,
+    refresherrefreshTest: "",
+    onRefresherabortTest: "",
+    onRefresherrestoreTest: "",
+    onRefresherpullingTest: "",
+  } as DataType)
 
   // 自动化测试专用（由于事件event参数对象中存在循环引用，在ios端JSON.stringify报错，自动化测试无法page.data获取）
   function checkEventTest(e : RefresherEventTest, eventName : String) {
@@ -44,16 +54,16 @@
     const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`;
     switch (eventName) {
       case 'refresherrefresh':
-        refresherrefreshTest.value = result
+        data.refresherrefreshTest = result
         break;
       case 'refresherpulling':
-        onRefresherpullingTest.value = result
+        data.onRefresherpullingTest = result
         break;
       case 'refresherrestore':
-        onRefresherrestoreTest.value = result
+        data.onRefresherrestoreTest = result
         break;
       case 'refresherabort':
-        onRefresherabortTest.value = result
+        data.onRefresherabortTest = result
         break;
       default:
         break;
@@ -69,10 +79,10 @@
       currentTarget: e.currentTarget,
       dy: e.detail.dy,
     } as RefresherEventTest, 'refresherrefresh')
-    refresherTriggered.value = true
-    refresherrefreshTimes.value++
+    data.refresherTriggered = true
+    data.refresherrefreshTimes++
     setTimeout(() => {
-      refresherTriggered.value = false
+      data.refresherTriggered = false
     }, 1500)
   }
   function onRefresherabort(e : UniRefresherEvent) {
@@ -119,6 +129,11 @@
       lists.push("item---" + i)
     }
     scrollData.value = lists
+  })
+
+  defineExpose({
+    data,
+    setPageStyle
   })
 </script>
 

@@ -26,7 +26,7 @@ describe('issue-21144', () => {
 
 	it('issue21144', async () => {
 
-    await page.setData({scrollTop: 100})
+    await page.setData({data: {scrollTop: 100}})
 		let ret = await page.callMethod('checkTestView')
     expect(ret).toBe(true)
 

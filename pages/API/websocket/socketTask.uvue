@@ -21,15 +21,21 @@
 </template>
 
 <script setup lang="uts">
-  
 
   const connected = ref(false)
   const connecting = ref(false)
   const socketTask = ref(null as SocketTask | null)
   const msg = ref('')
   const platform = ref('')
+
+  type DataType = {
+    jest_result: number,
+  }
+
   //自动化测试例专用
-  const jest_result = ref(0)
+  const data = reactive({
+    jest_result: 0,
+  } as DataType)
 
   const showMsg = computed(() : string => {
     if (connected.value) {
@@ -153,30 +159,30 @@
     socketTask.value = uni.connectSocket({
       url: 'wss://websocket.dcloud.net.cn',
       success: (_) => {
-        jest_result.value++
+        data.jest_result++
       },
       fail: (_) => {
-        jest_result.value = 0
+        data.jest_result = 0
       },
     })
     socketTask.value?.onOpen((_) => {
-      const data =
+      const message =
         'from ' +
         platform.value +
         ' : ' +
         parseInt(Math.random() * 10000 + '').toString()
       socketTask.value?.send({
-        data,
+        data: message,
         success: (_) => {
-          jest_result.value++
+          data.jest_result++
         },
         fail: (_) => {
-          jest_result.value = 0
+          data.jest_result = 0
         },
       } as SendSocketMessageOptions)
     })
     socketTask.value?.onError((_) => {
-      jest_result.value = 0;
+      data.jest_result = 0;
     })
   }
 
@@ -198,6 +204,11 @@
         },
       } as CloseSocketOptions)
     }
+  })
+
+  defineExpose({
+    data,
+    jest_connectSocket
   })
 </script>
 

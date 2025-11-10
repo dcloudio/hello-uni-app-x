@@ -25,7 +25,6 @@ describe('rich-text-test', () => {
     return
   }
 
-  let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
@@ -42,9 +41,15 @@ describe('rich-text-test', () => {
     });
   }
 
+  let page
+
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   if (isAndroid && !isAppWebView) {
     it("test attr mode", async () => {
-      await page.setData({
+      await setPageData({
         mode: 'native'
       });
       await page.waitFor(1000);
@@ -62,8 +67,8 @@ describe('rich-text-test', () => {
     })
 
     await page.waitFor(1000);
-    const fViewClicked = await page.data('fViewClicked')
-    const selfClicked = await page.data('selfClicked')
+    const fViewClicked = await page.data('data.fViewClicked')
+    const selfClicked = await page.data('data.selfClicked')
     expect(fViewClicked).toBe(true)
     expect(selfClicked).toBe(true)
   })
@@ -109,7 +114,7 @@ describe('rich-text-test', () => {
         })
     }
 
-    const imageClicked = await page.data('imageClicked')
+    const imageClicked = await page.data('data.imageClicked')
     expect(imageClicked).toBe(true)
   })
 

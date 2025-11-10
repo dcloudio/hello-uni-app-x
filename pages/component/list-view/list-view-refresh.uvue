@@ -1,6 +1,6 @@
 <template>
   <list-view v-if="list_show" id="listview" style="flex: 1;" show-scrollbar=false :refresher-enabled="true"
-    :refresher-triggered="refresherTriggered" @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
+    :refresher-triggered="data.refresherTriggered" @refresherrefresh="onRefresherrefresh" @refresherabort="onRefresherabort"
     @refresherrestore="onRefresherrestore" @refresherpulling="onRefresherpulling">
     <list-item class="item">
       <text>向下滑动触发下拉刷新</text>
@@ -21,14 +21,24 @@ type RefresherEventTest = {
   dy : number;
 }
 
+type DataType = {
+  refresherTriggered: boolean,
+  refresherrefreshTest: string,
+  onRefresherabortTest: string,
+  onRefresherrestoreTest: string,
+  onRefresherpullingTest: string,
+}
+
 // Data
 const item_count = ref(20)
 const list_show = ref(false)
-const refresherTriggered = ref(true)
-const refresherrefreshTest = ref("")
-const onRefresherabortTest = ref("")
-const onRefresherrestoreTest = ref("")
-const onRefresherpullingTest = ref("")
+const data = reactive({
+  refresherTriggered: true,
+  refresherrefreshTest: "",
+  onRefresherabortTest: "",
+  onRefresherrestoreTest: "",
+  onRefresherpullingTest: "",
+} as DataType)
 
 // Methods
 function checkEventTest(e : RefresherEventTest, eventName : String) {
@@ -36,16 +46,16 @@ function checkEventTest(e : RefresherEventTest, eventName : String) {
   const result = isPass ? `${eventName}:Success` : `${eventName}:Fail`
   switch (eventName) {
     case 'refresherrefresh':
-      refresherrefreshTest.value = result
+      data.refresherrefreshTest = result
       break
     case 'refresherpulling':
-      onRefresherpullingTest.value = result
+      data.onRefresherpullingTest = result
       break
     case 'refresherrestore':
-      onRefresherrestoreTest.value = result
+      data.onRefresherrestoreTest = result
       break
     case 'refresherabort':
-      onRefresherabortTest.value = result
+      data.onRefresherabortTest = result
       break
     default:
       break
@@ -54,7 +64,7 @@ function checkEventTest(e : RefresherEventTest, eventName : String) {
 
 function onRefresherrefresh(e : UniRefresherEvent) {
   console.log('refresherrefresh-----下拉刷新被触发', e.detail.dy)
-  refresherTriggered.value = true
+  data.refresherTriggered = true
   checkEventTest({
     type: e.type,
     target: e.target,
@@ -62,7 +72,7 @@ function onRefresherrefresh(e : UniRefresherEvent) {
     dy: e.detail.dy,
   } as RefresherEventTest, 'refresherrefresh')
   setTimeout(() => {
-    refresherTriggered.value = false
+    data.refresherTriggered = false
   }, 1000)
 }
 
@@ -101,6 +111,10 @@ onLoad(() => {
   setTimeout(() => {
     list_show.value = true
   }, 500)
+})
+
+defineExpose({
+  data
 })
 </script>
 <style>

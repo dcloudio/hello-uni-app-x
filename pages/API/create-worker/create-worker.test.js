@@ -19,7 +19,7 @@ describe('Api-createWorker', () => {
   let res;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500);
+    await page.waitFor(1000);
   });
 
   it('workerTask ', async () => {
