@@ -12,7 +12,7 @@
           :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
-        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
+        <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="uni-panel">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
             <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl"
@@ -46,10 +46,14 @@
 </template>
 
 <script setup lang="uts">
-  
+  const instance = getCurrentInstance()!.proxy!
+
   import { generateMenu, MenuItem } from './generateMenu.uts'
   const menuData = generateMenu('pages/CSS')
   import { state } from '@/store/index.uts'
+
+  // Template refs
+  const categoryRef = ref<ComponentPublicInstance[] | null>(null)
 
   const menu = ref(menuData as MenuItem[])
   const arrowRightIcon = ref('/static/icons/arrow-right.png')
@@ -74,8 +78,21 @@
     }
   }
 
-  // Note: Web platform specific code for route watching is not yet converted to use template refs
-  // This will need special handling as it involves $route which is platform-specific
+  // #ifdef WEB
+  watch(() => (instance as any).$route, (newRoute: any) => {
+    if (newRoute && newRoute.matched.length) {
+      const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
+      if (activeCategoryIndex > -1) {
+        nextTick(() => {
+          const categoryRefs = categoryRef.value
+          if (categoryRefs != null && categoryRefs[activeCategoryIndex] != null) {
+            categoryRefs[activeCategoryIndex].$callMethod('openCollapse', true)
+          }
+        })
+      }
+    }
+  }, { immediate: true })
+  // #endif
 </script>
 
 <style>
