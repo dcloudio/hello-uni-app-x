@@ -76,6 +76,7 @@ describe('nodes-info', () => {
 
   it('multi-child', async () => {
     const pageData = await page.data('data')
+    console.log('multi-child.pageData', pageData)
     expect(pageData.selectCount).toBe(1)
     expect(pageData.selectAllCount).toBe(2)
   })

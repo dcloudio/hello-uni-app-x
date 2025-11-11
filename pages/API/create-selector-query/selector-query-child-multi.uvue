@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
 
   const text1 = ref("")
   const text2 = ref("")
@@ -29,7 +30,7 @@
   }
 
   onMounted(() => {
-    uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).select('.selector-query-view').boundingClientRect().exec((ret) => {
+    uni.createSelectorQuery().in(instance).select('.selector-query-view').boundingClientRect().exec((ret) => {
       text1.value = JSON.stringify(ret, null, 2)
       if (ret.length == 1) {
         selectCount.value = ret.length
@@ -37,7 +38,7 @@
       testCounter.value++
       _dispatchEvent()
     })
-    uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).selectAll('.selector-query-view').boundingClientRect().exec((ret) => {
+    uni.createSelectorQuery().in(instance).selectAll('.selector-query-view').boundingClientRect().exec((ret) => {
       text2.value = JSON.stringify(ret, null, 2)
       if (ret.length == 1) {
         selectAllCount.value = (ret[0] as NodeInfo[]).length

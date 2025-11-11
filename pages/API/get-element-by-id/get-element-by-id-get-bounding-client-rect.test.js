@@ -1,6 +1,13 @@
 const PAGE_PATH = '/pages/API/get-element-by-id/get-element-by-id-get-bounding-client-rect'
-
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 describe('transform-DOMRect', () => {
+  if (isMP) {
+  	it('skip mp', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)

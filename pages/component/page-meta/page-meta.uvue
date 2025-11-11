@@ -1,10 +1,10 @@
 <template>
   <page-meta
-    :background-text-style="bgTextStyle"
-    :background-color="bgColor"
-    :background-color-top="bgColorTop"
-    :background-color-bottom="bgColorBottom"
-    :scroll-top="scrollTop"
+    :background-text-style="data.bgTextStyle"
+    :background-color="data.bgColor"
+    :background-color-top="data.bgColorTop"
+    :background-color-bottom="data.bgColorBottom"
+    :scroll-top="data.scrollTop"
     :scroll-duration="2000"
     @scroll="scroll"
     @scrolldone="scrolldone"
@@ -12,10 +12,10 @@
     root-font-size="30px"
   >
     <navigation-bar
-      :title="nbTitle"
-      :loading="nbLoading"
-      :front-color="nbFrontColor"
-      :background-color="nbBackgroundColor"
+      :title="data.nbTitle"
+      :loading="data.nbLoading"
+      :front-color="data.nbFrontColor"
+      :background-color="data.nbBackgroundColor"
     />
   </page-meta>
   <view class="content">
@@ -28,37 +28,56 @@
 </template>
 
 <script setup lang="uts">
+  type DataType = {
+    bgTextStyle: string,
+    scrollTop: string,
+    bgColor: string,
+    bgColorTop: string,
+    bgColorBottom: string,
+    nbTitle: string,
+    nbLoading: boolean,
+    nbFrontColor: string,
+    nbBackgroundColor: string,
+    scrollType: string | null,
+    scrolldoneType: string | null,
+  }
 
-// Data
-const bgTextStyle = ref('dark')
-const scrollTop = ref('0px')
-const bgColor = ref('#ff0000')
-const bgColorTop = ref('#00ff00')
-const bgColorBottom = ref('#0000ff')
-const nbTitle = ref('标题')
-const nbLoading = ref(false)
-const nbFrontColor = ref('#ffffff')
-const nbBackgroundColor = ref('#00aaff')
-const scrollType = ref(null as string | null)
-const scrolldoneType = ref(null as string | null)
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    bgTextStyle: 'dark',
+    scrollTop: '0px',
+    bgColor: '#ff0000',
+    bgColorTop: '#00ff00',
+    bgColorBottom: '#0000ff',
+    nbTitle: '标题',
+    nbLoading: false,
+    nbFrontColor: '#ffffff',
+    nbBackgroundColor: '#00aaff',
+    scrollType: null as string | null,
+    scrolldoneType: null as string | null,
+  } as DataType)
 
-// Methods
-function scrollTo() {
-  scrollTop.value = '300px'
-}
+  // Methods
+  function scrollTo() {
+    data.scrollTop = '300px'
+  }
 
-function scroll(e : any) {
-  scrollType.value = e.type
-}
+  function scroll(e : any) {
+    data.scrollType = e.type
+  }
 
-function scrolldone(e : any) {
-  scrolldoneType.value = e.type
-}
+  function scrolldone(e : any) {
+    data.scrolldoneType = e.type
+  }
 
-// Lifecycle
-onLoad(() => {
-  setTimeout(() => {
-    nbLoading.value = true
-  }, 2000)
-})
+  // Lifecycle
+  onLoad(() => {
+    setTimeout(() => {
+      data.nbLoading = true
+    }, 2000)
+  })
+
+  defineExpose({
+    data
+  })
 </script>

@@ -18,8 +18,6 @@ describe('unicloud-call-function', () => {
     const callFunctionResult = await page.data('data.callFunctionResult')
     const callFunctionError = await page.data('data.callFunctionError')
     const callFunctionResult_Detail_functionName = await page.data('data.callFunctionResult_Detail_functionName')
-    console.error(callFunctionResult)
-    console.error(callFunctionError)
     expect(callFunctionResult['showMessage']).toBe("Hello uniCloud function")
     expect(callFunctionResult['event']['num']).toBe(1)
     expect(callFunctionResult['event']['str']).toBe('ABC')
