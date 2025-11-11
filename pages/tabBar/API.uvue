@@ -58,6 +58,8 @@
 </template>
 
 <script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+
   import { generateMenu, MenuItem } from './generateMenu.uts'
   const menuData = generateMenu('pages/API')
   import { state } from '@/store/index.uts'
@@ -135,11 +137,11 @@
 
   // #ifdef WEB
   // Note: This watch is for web platform routing, keeping minimal getInstance usage for $route and $nextTick
-  watch(() => (getCurrentInstance()!.proxy! as any).$route, (newRoute: any) => {
+  watch(() => (instance as any).$route, (newRoute: any) => {
     if (newRoute.matched.length) {
       const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
       if (activeCategoryIndex > -1) {
-        (getCurrentInstance()!.proxy! as any).$nextTick(() => {
+        (instance as any).$nextTick(() => {
           const categoryRefs = category.value
           if (categoryRefs != null && categoryRefs[activeCategoryIndex] != null) {
             categoryRefs[activeCategoryIndex].$callMethod('openCollapse', true)

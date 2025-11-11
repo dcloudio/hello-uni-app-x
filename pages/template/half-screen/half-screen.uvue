@@ -16,6 +16,8 @@
 
 <script setup lang="uts">
 
+const instance = getCurrentInstance()!.proxy!
+
 const list = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'])
 const totalHeight = ref(0)		//总高度
 const halfMove = ref(false)	//是否Move，响应TouchMove
@@ -162,7 +164,6 @@ function onHalfTouchEnd(event : TouchEvent) {
 }
 
 onReady(() => {
-  const instance = getCurrentInstance()!.proxy!
   halfNode.value = instance.$refs['halfScreen'] as UniElement;//uni.getElementById('halfScreen');
   scrollNode.value = instance.$refs['halfScroll'] as UniElement;//uni.getElementById('halfScroll');
   halfNode.value!.getBoundingClientRectAsync()!.then((rect: DOMRect) => {

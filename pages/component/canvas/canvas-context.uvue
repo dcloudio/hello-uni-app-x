@@ -35,13 +35,14 @@
   const canvasHeight = ref(0)
   const fontLoaded = ref(false)
   const names = ref([...API_PATH, ...API_DRAW, ...API_STATE, ...API_PROPERTIES, "measureText", "path2D"].sort() as string[])
+  const instance = getCurrentInstance()!.proxy!
 
   onReady(() => {
     // HBuilderX 4.25+
     // 异步调用方式, 跨平台写法
     uni.createCanvasContextAsync({
       id: 'canvas',
-      component: getCurrentInstance()!.proxy!,
+      component: instance,
       success: (context : CanvasContext) => {
     canvasContext.value = context;
     renderingContext.value = context.getContext('2d')!;

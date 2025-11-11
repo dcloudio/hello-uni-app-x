@@ -6,23 +6,23 @@
 </template>
 
 <script setup lang="uts">
-
+const instance = getCurrentInstance()!.proxy!
 
 const compId = ref('comp1-id')
 const testNode1 = ref(false)
 
-interface Props {
-  id?: string
-}
-
-defineProps<Props>()
+defineProps({
+  id: {
+    type: String,
+    default: ''
+  }
+})
 
 const emit = defineEmits<{
   ready: [value: boolean]
 }>()
 
 function onMounted() {
-  const instance = getCurrentInstance()!.proxy!
   uni.createSelectorQuery().in(instance).select('#comp1-id').boundingClientRect().exec((ret) => {
     console.log(ret)
     testNode1.value = ret.length > 0

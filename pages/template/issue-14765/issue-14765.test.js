@@ -4,17 +4,14 @@ const PAGE_PATH = '/pages/template/issue-14765/issue-14765'
 
 describe(PAGE_PATH, () => {
   let page
-
 	beforeAll(async () => {
 		page = await program.reLaunch(PAGE_PATH)
 		await page.waitFor('view')
 	})
   it('basic bind id test', async () => {
 		await page.waitFor(500)
-    const {
-      testNode1,
-      testNode2
-    } = await page.data('data')
+    const testNode1 = await page.data('data.testNode1')
+    const testNode2 = await page.data('data.testNode2')
     expect(testNode1).toBe(true)
     expect(testNode2).toBe(true)
 	})

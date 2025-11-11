@@ -33,7 +33,8 @@
 </template>
 
 <script setup lang="uts">
-  const currentPage = getCurrentInstance()?.proxy?.$page
+  const instance = getCurrentInstance()!.proxy!
+  const currentPage = instance.$page
 
   const title = ref('dialog 5')
   const pageBody = ref(null as UniPageBody | null)
@@ -47,7 +48,6 @@
   })
 
   onReady(() => {
-    const currentPage = getCurrentInstance()!.proxy!.$page
     pageBody.value = currentPage.pageBody;
     safeAreaInsets.value = currentPage.safeAreaInsets
     // #ifdef APP-ANDROID || APP-IOS || WEB

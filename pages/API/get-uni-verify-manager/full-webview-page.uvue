@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="uts">
-  
+  const instance = getCurrentInstance()!.proxy!
 
   const url = ref('')
   const title = ref('')
@@ -25,9 +25,8 @@
   const backIcon = ref('\ue601')
 
   function onBack() {
-    const instance = getCurrentInstance()!
     uni.closeDialogPage({
-      dialogPage: instance.proxy!.$page,
+      dialogPage: instance.$page,
       animationType: animationType.value,
       success(res) {
         console.log('closeThisDialog success', res)

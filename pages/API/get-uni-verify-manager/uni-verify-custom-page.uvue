@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="uts">
-  
+  const instance = getCurrentInstance()!.proxy!
 
   const uniVerifyManager = ref(null as UniVerifyManager | null)
   const phone = ref('')
@@ -30,9 +30,8 @@
   const isLoading = ref(false)
 
   function closePage() {
-    const instance = getCurrentInstance()!
     uni.closeDialogPage({
-      dialogPage: instance.proxy!.$page,
+      dialogPage: instance.$page,
       animationType: 'slide-out-bottom',
       success(res) {
         console.log('closeThisDialog success', res)
@@ -97,12 +96,11 @@
     }else{
       isLoading.value = true;
     }
-    const instance = getCurrentInstance()!
-    const numberTextElement = instance.proxy!.$page.getElementById('number-text');
-    const sloganTextElement = instance.proxy!.$page.getElementById('slogan-text');
-    const loginButtonElement = instance.proxy!.$page.getElementById('login-button');
-    const privacyCheckBoxElement = instance.proxy!.$page.getElementById('privacy-checkbox');
-    const privacyTextElement = instance.proxy!.$page.getElementById('privacy-text');
+    const numberTextElement = instance.$page.getElementById('number-text');
+    const sloganTextElement = instance.$page.getElementById('slogan-text');
+    const loginButtonElement = instance.$page.getElementById('login-button');
+    const privacyCheckBoxElement = instance.$page.getElementById('privacy-checkbox');
+    const privacyTextElement = instance.$page.getElementById('privacy-text');
     if (numberTextElement != null && sloganTextElement != null && loginButtonElement != null && privacyCheckBoxElement != null && privacyTextElement != null) {
       uniVerifyManager.value?.customLogin({
         numberTextElement: numberTextElement,

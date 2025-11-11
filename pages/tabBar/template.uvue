@@ -41,6 +41,8 @@
 
 <script setup lang="uts">
 
+  const instance = getCurrentInstance()?.proxy
+
   type Page = {
     name : string
     enable ?: boolean
@@ -323,7 +325,7 @@
   // #endif
 
   // #ifdef WEB
-  watch(() => (getCurrentInstance()?.proxy as any)?.$route, (newRoute) => {
+  watch(() => (instance as any)?.$route, (newRoute) => {
     if (newRoute && newRoute.matched.length) {
       let path = newRoute.path.split('/')[3]
       for (const item of list.value) {

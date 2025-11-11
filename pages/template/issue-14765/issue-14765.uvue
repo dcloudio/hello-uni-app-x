@@ -10,6 +10,8 @@
 import Comp1 from './Comp1.uvue'
 import Comp2 from './Comp2.uvue'
 
+const instance = getCurrentInstance()!.proxy!
+
 const id1 = ref('page-id-1')
 const id2 = ref('page-id-2')
 
@@ -28,7 +30,7 @@ function onComp1Ready(testNode1Val: boolean) {
 }
 
 onReady(() => {
-  uni.createSelectorQuery().in(getCurrentInstance()!.proxy!).select('#page-id-2').boundingClientRect().exec((ret) => {
+  uni.createSelectorQuery().in(instance).select('#page-id-2').boundingClientRect().exec((ret) => {
     console.log(ret)
     data.testNode2 = ret.length > 0
     // #ifdef WEB || MP
