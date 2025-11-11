@@ -20,10 +20,16 @@
 </template>
 
 <script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+
+  defineOptions({
+    mixins: [uniCloud.mixinDatacom]
+  })
+
   // Data
   const mixinDatacomLoading = ref(false)
   const mixinDatacomError = ref<UniCloudError | null>(null)
-  const mixinDatacomResData = ref<UTSArray<UTSJSONObject>>([])
+  const mixinDatacomResData = ref<Array<UTSJSONObject>>([])
 
   // Functions
   function mixinDatacomGet(options : any | null) : Promise<UniCloudDBGetResult> {
@@ -35,14 +41,17 @@
     })
   }
 
+
   function load() {
     if (mixinDatacomLoading.value == true) {
       return
     }
     mixinDatacomLoading.value = true
 
+    // TODO：instance.mixinDatacomGet
     mixinDatacomGet(null).then((res : UniCloudDBGetResult) => {
       const data = res.data
+      console.log('data', data)
       // const count = res.count
       mixinDatacomResData.value = data
     }).catch((err : any | null) => {
@@ -50,6 +59,7 @@
     }).finally(() => {
       mixinDatacomLoading.value = false
     })
+
   }
 
   // 当组件属性发生变化时

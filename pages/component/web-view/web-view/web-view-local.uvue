@@ -9,14 +9,24 @@
 </template>
 
 <script setup lang="uts">
-  
+  type DataType = {
+    loadError: boolean,
+    loadFinish: boolean,
+    // 自动化测试
+    autoTest: boolean,
+    eventMessage: UTSJSONObject | null,
+    eventDownload: UTSJSONObject | null,
+  }
 
-  const loadError = ref(false)
-  const loadFinish = ref(false)
-  // 自动化测试
-  const autoTest = ref(false)
-  const eventMessage = ref(null as UTSJSONObject | null)
-  const eventDownload = ref(null as UTSJSONObject | null)
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    loadError: false,
+    loadFinish: false,
+    // 自动化测试
+    autoTest: false,
+    eventMessage: null as UTSJSONObject | null,
+    eventDownload: null as UTSJSONObject | null,
+  } as DataType)
 
   function evalJS() {
     const webview = uni.getElementById('web-view') as UniWebViewElement
@@ -33,8 +43,8 @@
       content: contentStr,
       showCancel: false
     });
-    if (autoTest.value) {
-      eventMessage.value = {
+    if (data.autoTest) {
+      data.eventMessage = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "data": event.detail.data
@@ -52,15 +62,15 @@
   }
 
   function load(event : UniWebViewLoadEvent) {
-    loadFinish.value = true;
+    data.loadFinish = true;
     console.log(JSON.stringify(event.detail));
   }
 
   function download(event : UniWebViewDownloadEvent) {
     console.log(JSON.stringify(event.detail));
-    if (autoTest.value) {
+    if (data.autoTest) {
       const arr = event.detail.userAgent.split(' ');
-      eventDownload.value = {
+      data.eventDownload = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "url": event.detail.url,
@@ -80,6 +90,10 @@
   function testEventMessage() {
     uni.createWebviewContext('web-view')?.evalJS("document.getElementById('postMessage').click()");
   }
+
+  defineExpose({
+    data
+  })
 </script>
 
 <style>

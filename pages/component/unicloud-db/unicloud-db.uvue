@@ -1,8 +1,8 @@
 <template>
   <view class="content">
-    <unicloud-db ref="udb" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
+    <unicloud-db ref="udbRef" v-slot:default="{data, pagination, loading, error}" :collection="collection" :getcount="true"
       loadtime="manual">
-      <list-view v-if="data.length>0" ref="listView" class="list" :scroll-y="true" @scrolltolower="loadMore()">
+      <list-view v-if="data.length>0" ref="listViewRef" class="list" :scroll-y="true" @scrolltolower="loadMore()">
         <list-item class="list-item" v-for="(item, _) in data">
           <view class="list-item-fill">
             <text>{{item}}</text>
@@ -29,12 +29,15 @@
 
 const db = uniCloud.databaseForJQL()
 
+// Template refs
+const udbRef = ref<UniCloudDBElement | null>(null)
+const listViewRef = ref<UniListViewElement | null>(null)
+
 // Data
 const collection = ref('unicloud-db-test')
 const collectionList = ref([
   db.collection('book').where('name == "水浒传"').getTemp(),
 ] as UTSJSONObject[])
-const uniCloudElement = ref(null as UniCloudDBElement | null)
 const isTesting = ref(false)
 const addResult = ref({})
 const updateResult = ref({})
@@ -42,11 +45,11 @@ const removeResult = ref({})
 
 // Methods
 function loadMore() {
-  uniCloudElement.value!.loadMore()
+  udbRef.value!.loadMore()
 }
 
 function get() {
-  uniCloudElement.value!.loadData({
+  udbRef.value!.loadData({
     clear: true
   })
 }
@@ -56,7 +59,7 @@ function add() {
     title: "title-" + Date.now(),
     comment: "comment" + Date.now()
   }
-  uniCloudElement.value!.add(value, {
+  udbRef.value!.add(value, {
     showToast: false,
     success: (res : UniCloudDBAddResult) => {
       addResult.value = {
@@ -75,7 +78,7 @@ function update(id : string) {
     title: "title-" + Date.now(),
     comment: "comment" + Date.now()
   }
-  uniCloudElement.value!.update(id, value, {
+  udbRef.value!.update(id, value, {
     showToast: false,
     needLoading: true,
     needConfirm: false,
@@ -92,7 +95,7 @@ function update(id : string) {
 }
 
 function remove(id : string) {
-  uniCloudElement.value!.remove(id, {
+  udbRef.value!.remove(id, {
     showToast: false,
     needConfirm: false,
     needLoading: false,
@@ -121,13 +124,11 @@ function showError(err : any | null) {
 
 // Lifecycle
 onReady(() => {
-  const instance = getCurrentInstance()!
-  uniCloudElement.value = instance.proxy!.$refs['udb'] as UniCloudDBElement
   get()
 })
 
 onPullDownRefresh(() => {
-  uniCloudElement.value!.loadData({
+  udbRef.value!.loadData({
     clear: true,
     success: (_ : UniCloudDBGetResult) => {
       uni.stopPullDownRefresh()
