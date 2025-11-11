@@ -12,7 +12,7 @@
           :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
-        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
+        <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="uni-panel">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
             <view v-if="childMenuItem.items.length==0" class="pl" hover-class="is--active"
@@ -42,10 +42,10 @@
         </uni-collapse-item>
       </uni-collapse>
       <!-- #ifdef MP || WEB -->
-      <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup" @touchmove.prevent="stopPropagation">
+      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="popup" @touchmove.prevent="stopPropagation">
       <!-- #endif -->
       <!-- #ifndef MP || WEB -->
-      <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup">
+      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="popup">
       <!-- #endif -->
         <view style="width: 90%; background-color: white" @click.stop="stopClickPop">
           <api-set-tabbar></api-set-tabbar>
@@ -65,8 +65,8 @@
   import { state } from '@/store/index.uts'
 
   // Template refs
-  const pop = ref<UniElement | null>(null)
-  const category = ref<ComponentPublicInstance[] | null>(null)
+  const popRef = ref<UniElement | null>(null)
+  const categoryRef = ref<ComponentPublicInstance[] | null>(null)
 
   const menu = ref(menuData as MenuItem[])
   const arrowRightIcon = ref('/static/icons/arrow-right.png')
@@ -92,7 +92,7 @@
   })
 
   function showPop() {
-    const popElement = pop.value
+    const popElement = popRef.value
     if (popElement != null) {
       popElement.style.setProperty("display", "flex")
     }
@@ -111,7 +111,7 @@
   }
 
   function hidePop() {
-    const popElement = pop.value
+    const popElement = popRef.value
     if (popElement != null) {
       popElement.style.setProperty("display", "none")
     }
@@ -142,7 +142,7 @@
       const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
       if (activeCategoryIndex > -1) {
         (instance as any).$nextTick(() => {
-          const categoryRefs = category.value
+          const categoryRefs = categoryRef.value
           if (categoryRefs != null && categoryRefs[activeCategoryIndex] != null) {
             categoryRefs[activeCategoryIndex].$callMethod('openCollapse', true)
           }

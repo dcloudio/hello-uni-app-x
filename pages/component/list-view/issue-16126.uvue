@@ -1,6 +1,6 @@
 <template>
 	<view style="flex: 1;">
-		<list-view ref="listview" :style="listViewStyle"  @scrolltolower="loadMore" :scroll-into-view="data.intoview" :scroll-top="scrolltop">
+		<list-view ref="listviewRef" :style="listViewStyle"  @scrolltolower="loadMore" :scroll-into-view="data.intoview" :scroll-top="scrolltop">
 			<list-item class="listItem" v-for="index in dataList" :key="index" :id="'item' + index" @click="changeSize" type=1>
 				<text>{{ index }}</text>
 			</list-item>
@@ -16,7 +16,7 @@
 const listViewStyle = ref("flex:1; width: 100%; heigth: 100%")
 const dataList = ref(10)
 const scrolltop = ref(0)
-const listview = ref<UniElement | null>(null)
+const listviewRef = ref<UniListViewElement | null>(null)
 
 type DataType = {
   intoview: string,
@@ -45,7 +45,7 @@ function setScrollTop(value: number) {
 }
 
 function getScrollTop() : number {
-  var ret = listview.value?.scrollTop ?? -1
+  var ret = listviewRef.value?.scrollTop ?? -1
   console.log(ret)
   return ret
 }

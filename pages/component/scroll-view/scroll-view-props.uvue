@@ -7,7 +7,7 @@
       :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
       :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation" style="flex-direction: row;"
       class="uni-margin-wrap" :show-scrollbar="showScrollbar" :bounces="bounces" @scrolltoupper="scrolltoupper"
-      @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewX" id="scrollViewX">
+      @scrolltolower="scrolltolower" @scroll="scroll" @scrollend="scrollend" ref="scrollViewXRef" id="scrollViewX">
       <!-- h-margin-right末尾元素添加margin-right 测试bug #3866-->
       <view class="item" :id="'horizontal_'+item.id" v-for="(item,index) in items"
         :class="index==9 ? 'h-margin-right': ''">
@@ -18,7 +18,7 @@
       :upper-threshold="upperThreshold" :lower-threshold="lowerThreshold" :scroll-into-view="scrollIntoView"
       :enable-back-to-top="enableBackToTop" :scroll-with-animation="scrollWithAnimation" :show-scrollbar="showScrollbar"
       :bounces="bounces" @scrolltoupper="scrolltoupper" @touchmove="onTouchMove" @scrolltolower="scrolltolower"
-      @scroll="scroll" @scrollend="scrollend" ref="scrollViewY" id="scrollViewY" class="uni-margin-wrap">
+      @scroll="scroll" @scrollend="scrollend" ref="scrollViewYRef" id="scrollViewY" class="uni-margin-wrap">
       <!-- v-margin-bottom末尾元素添加margin-bottom 测试bug #3866-->
       <view class="item" :id="item.id" v-for="(item, index) in items" :class="index==9 ? 'v-margin-bottom': ''">
         <text class="uni-text">{{item.label}}</text>
@@ -110,7 +110,8 @@ const scrollWithAnimation = ref(false)
 const showScrollbar = ref(true)
 const upperThreshold = ref(50)
 const lowerThreshold = ref(50)
-const instance = getCurrentInstance()!.proxy!
+const scrollViewXRef = ref<UniScrollViewElement | null>(null)
+const scrollViewYRef = ref<UniScrollViewElement | null>(null)
 // Methods
 function handleChangeScrollLeft(e : UniSliderChangeEvent) {
   scrollLeft.value = e.detail.value
@@ -189,9 +190,9 @@ function onTouchMove() {
 }
 
 function checkScrollHeight() : Boolean {
-  var element = instance.$refs["scrollViewY"]
+  var element = scrollViewYRef.value
   if (element != null) {
-    var scrollHeight = (element as UniElement).scrollHeight
+    var scrollHeight = element.scrollHeight
     console.log("checkScrollHeight" + scrollHeight)
     if (scrollHeight > 1900) {
       return true
@@ -201,9 +202,9 @@ function checkScrollHeight() : Boolean {
 }
 
 function checkScrollWidth() : Boolean {
-  var element = instance.$refs["scrollViewX"]
+  var element = scrollViewXRef.value
   if (element != null) {
-    var scrollWidth = (element as UniElement).scrollWidth
+    var scrollWidth = element.scrollWidth
     console.log("checkScrollWidth---" + scrollWidth)
     if (scrollWidth > 1900) {
       return true

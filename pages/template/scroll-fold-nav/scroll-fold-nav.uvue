@@ -1,6 +1,6 @@
 <template>
   <scroll-view @scroll="onScroll" class="page" show-scrollbar="false">
-    <view ref="seatbar" class="seatbar"></view>
+    <view ref="seatbarRef" class="seatbar"></view>
 
     <view class="content">
       <view class="content-item">
@@ -14,14 +14,14 @@
       </view>
     </view>
 
-    <view ref="navigatorbar" class="navigatorbar">
+    <view ref="navigatorbarRef" class="navigatorbar">
       <view class="titlebar">
         <view class="backview" @tap="back">
           <image class="back" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
         </view>
-        <text ref="title" class="title">DCloud 为开发者而生</text>
+        <text ref="titleRef" class="title">DCloud 为开发者而生</text>
       </view>
-      <view ref="searchbar" class="searchbar" @tap="search">
+      <view ref="searchbarRef" class="searchbar" @tap="search">
         <image class="searchimg" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
         <text class="searchinput">请输入你要搜索的内容</text>
         <text class="searchbutton">搜索</text>
@@ -31,8 +31,6 @@
 </template>
 
 <script setup lang="uts">
-  const instance = getCurrentInstance()!.proxy!
-
 //导航栏高度
 const NAVIBARHEIGHT = 88;
 //搜索栏高度
@@ -42,16 +40,16 @@ const BACKWIDTH = 32;
 
 const statusBarHeight = ref(0)
 const nviBarHeight = ref(0)
-const naviElement = ref(null as UniElement | null)
-const titleElement = ref(null as UniElement | null)
-const searchElement = ref(null as UniElement | null)
-const seatElement = ref(null as UniElement | null)
+const navigatorbarRef = ref<UniElement | null>(null)
+const searchbarRef = ref<UniElement | null>(null)
+const titleRef = ref<UniElement | null>(null)
+const seatbarRef = ref<UniElement | null>(null)
 
 function onScroll(e : ScrollEvent) {
   let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
-  naviElement.value?.style?.setProperty('height', (nviBarHeight.value -offset)+'px');
-  titleElement.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
-  searchElement.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
+  navigatorbarRef.value?.style?.setProperty('height', (nviBarHeight.value -offset)+'px');
+  titleRef.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
+  searchbarRef.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
 }
 
 function back() {
@@ -66,9 +64,9 @@ function search() {
 }
 
 function setStyle() {
-  naviElement.value?.style?.setProperty('padding-top', statusBarHeight.value + 'px');
-  naviElement.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
-  seatElement.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
+  navigatorbarRef.value?.style?.setProperty('padding-top', statusBarHeight.value + 'px');
+  navigatorbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
+  seatbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
 }
 
 onLoad(() => {
@@ -80,10 +78,6 @@ onLoad(() => {
 })
 
 onReady(() => {
-  naviElement.value = instance.$refs['navigatorbar'] as UniElement;
-  searchElement.value = instance.$refs['searchbar'] as UniElement;
-  titleElement.value = instance.$refs['title'] as UniElement;
-  seatElement.value = instance.$refs['seatbar'] as UniElement;
   setStyle();
 })
 
