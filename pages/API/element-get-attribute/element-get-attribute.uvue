@@ -3,7 +3,7 @@
   <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <view style="padding: 15px;">
-      <view id="box" ref="box">
+      <view id="box" ref="boxRef">
         <text class="uni-title-text">元素的id：{{ data.attrId }}</text>
         <!-- #ifndef APP -->
         <text class="uni-title-text">元素的style：{{ data.attrStyle }}</text>
@@ -19,7 +19,7 @@
       <!-- #endif -->
       <button @click="getPropertyValue">getPropertyValue获取背景色值</button>
 
-      <child id="child" ref="child"></child>
+      <child id="child" ref="childRef"></child>
       <button @click="getBoundingClientRectAsyncChild">获取自定义组件child元素信息</button>
       <view class="rect-info" v-if="data.rectInfo">
         <view class="node-info-item">
@@ -55,7 +55,7 @@
           <text class="node-info-item-v">{{data.rectInfo.bottom}}</text>
         </view>
       </view>
-      <scroll-view ref="scrollView" class="scroll-view_H" direction="horizontal">
+      <scroll-view ref="scrollViewRef" class="scroll-view_H" direction="horizontal">
         <view class="scroll-view-item_H uni-bg-red"><text class="text">A</text></view>
         <view class="scroll-view-item_H uni-bg-green"><text class="text">B</text></view>
         <view class="scroll-view-item_H uni-bg-blue"><text class="text">C</text></view>
@@ -90,8 +90,8 @@
     rectInfo: DomRectType,
   }
 
-  const box = ref<UniElement | null>(null)
-  const scrollView = ref<UniElement | null>(null)
+  const boxRef = ref<UniElement | null>(null)
+  const scrollViewRef = ref<UniScrollViewElement | null>(null)
   const data = reactive({
     attrId: "",
     attrStyle: "",
@@ -126,38 +126,38 @@
   }
 
   function getAttributeId() {
-    if (box.value != null) {
-      data.attrId = box.value!.getAttribute('id') ?? ""
+    if (boxRef.value != null) {
+      data.attrId = boxRef.value!.getAttribute('id') ?? ""
     }
   }
 
   function setStyle() {
-    if (box.value != null) {
-      box.value!.style.setProperty("background-color", "#FFF000")
+    if (boxRef.value != null) {
+      boxRef.value!.style.setProperty("background-color", "#FFF000")
     }
   }
 
   function getPropertyValue() {
-    if (box.value != null) {
-      data.propertyValue = box.value!.style.getPropertyValue("background-color")
+    if (boxRef.value != null) {
+      data.propertyValue = boxRef.value!.style.getPropertyValue("background-color")
     }
   }
 
   function getAttributeStyle() {
-    if (box.value != null) {
-      data.attrStyle = box.value!.getAttribute('style')?? ""
+    if (boxRef.value != null) {
+      data.attrStyle = boxRef.value!.getAttribute('style')?? ""
     }
   }
 
   function scrollTo() {
-    if (scrollView.value != null) {
+    if (scrollViewRef.value != null) {
       // #ifdef MP-WEIXIN
-      scrollView.value!.scrollTo({
+      scrollViewRef.value!.scrollTo({
         left: 200
       })
       // #endif
       // #ifndef MP-WEIXIN
-      scrollView.value!.scrollTo(200,0)
+      scrollViewRef.value!.scrollTo(200,0)
       // #endif
     }
   }

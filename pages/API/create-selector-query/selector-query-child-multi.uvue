@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="uts">
-  const instance = getCurrentInstance()!.proxy!
+  const instance =  getCurrentInstance()!.proxy!
 
   const text1 = ref("")
   const text2 = ref("")
@@ -25,7 +25,8 @@
 
   function _dispatchEvent() {
     if (testCounter.value == 2) {
-      uni.$emit('childReady')
+      // 通过事件传递数据，避免UTS无法访问动态属性的问题
+      uni.$emit('childDataReady', selectCount.value, selectAllCount.value)
     }
   }
 
@@ -46,6 +47,11 @@
       testCounter.value++
       _dispatchEvent()
     })
+  })
+
+  defineExpose({
+    selectCount,
+    selectAllCount
   })
 </script>
 

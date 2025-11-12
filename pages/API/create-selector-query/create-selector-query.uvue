@@ -98,12 +98,10 @@
   const multiChildRef = ref<ComponentPublicInstance | null>(null)
 
   // 仅用于自动化测试
-  const onChildReady = () => {
-    const instance2 = multiChildRef.value;
-    if (instance2 != null) {
-      data.selectCount = instance2.$data['selectCount'] as number;
-      data.selectAllCount = instance2.$data['selectAllCount'] as number;
-    }
+  const onChildReady = (count: number, allCount: number) => {
+    // 通过事件传递数据，子组件在ready时通过事件发送数据
+    data.selectCount = count
+    data.selectAllCount = allCount
   }
 
   // 仅用于自动化测试
@@ -184,11 +182,11 @@
   }
 
   onLoad(() => {
-    uni.$on('childReady', onChildReady)
+    uni.$on('childDataReady', onChildReady)
   })
 
   onUnload(() => {
-    uni.$off('childReady', onChildReady)
+    uni.$off('childDataReady', onChildReady)
   })
 
   onReady(() => {
