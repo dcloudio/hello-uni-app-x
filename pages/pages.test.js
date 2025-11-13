@@ -227,6 +227,7 @@ const pages = [
   '/pages/CSS/margin/margin-bottom',
   '/pages/CSS/margin/margin-left',
   '/pages/CSS/margin/margin-right',
+  '/pages/CSS/margin/margin-auto',
   '/pages/CSS/padding/padding',
   '/pages/CSS/padding/padding-top',
   '/pages/CSS/padding/padding-bottom',
