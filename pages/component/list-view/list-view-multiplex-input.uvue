@@ -3,7 +3,7 @@
   <view>
   <!-- #endif -->
     <list-view id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
-      <list-item v-for="index in item_count" class="item" @click="itemClick(index)">
+      <list-item v-for="index in data.item_count" class="item" @click="itemClick(index)">
         <text>item-------<text>{{index}}</text></text>
         <input style="border-width: 1px; border-style: solid;" :placeholder="index + ''"
           :value="index ==1 ? `第一个` :index " />
@@ -16,17 +16,25 @@
 
 <script setup lang="uts">
 
+type DataType = {
+  item_count: number,
+  isTesting: boolean,
+}
 
-const item_count = ref(20)
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  item_count: 20,
+  isTesting: false,
+} as DataType)
+
 const listViewElement = ref(null as UniListViewElement | null)
-const isTesting = ref(false)
 
 function onScrollTolower(event : ScrollToLowerEvent) {
   setTimeout(() => {
-    if (isTesting.value && item_count.value > 20) {
+    if (data.isTesting && data.item_count > 20) {
       return
     }
-    item_count.value += 20
+    data.item_count += 20
   }, 300)
 }
 
@@ -36,6 +44,10 @@ function itemClick(index : number) {
 
 onReady(() => {
   listViewElement.value = uni.getElementById<UniListViewElement>('listview')
+})
+
+defineExpose({
+  data
 })
 </script>
 

@@ -9,24 +9,36 @@
 
 <script setup lang="uts">
   
+type DataType = {
+  scrollEndTriggeredTimes: number,
+  scrollTop: number,
+}
 
-  const scrollEndTriggeredTimes = ref(0)
-  const scrollTop = ref(0)
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  scrollEndTriggeredTimes: 0,
+  scrollTop: 0,
+} as DataType)
 
-  function scrollTo() {
-    const scroll = uni.getElementById('scroll') as UniScrollViewElement
-    scroll.scrollTop = scrollTop.value
-    scrollTop.value += 20
-  }
+function scrollTo() {
+  const scroll = uni.getElementById('scroll') as UniScrollViewElement
+  scroll.scrollTop = data.scrollTop
+  data.scrollTop += 20
+}
 
-  function onScrollEnd() {
-    console.log('scrollEnd触发了')
-    scrollEndTriggeredTimes.value++
-  }
+function onScrollEnd() {
+  console.log('scrollEnd触发了')
+  data.scrollEndTriggeredTimes++
+}
 
-  onLoad(() => {
+onLoad(() => {
 
-  })
+})
+
+defineExpose({
+  data,
+  scrollTo
+})
 </script>
 
 <style>

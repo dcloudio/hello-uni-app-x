@@ -9,23 +9,34 @@
 
 <script setup lang="uts">
 
+type DataType = {
+  clickTriger: boolean,
+  longClickTriger: boolean,
+}
 
-const clickTriger = ref(false)
-const longClickTriger = ref(false)
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  clickTriger: false,
+  longClickTriger: false,
+} as DataType)
 
 function onclick(event : UniPointerEvent) {
-  clickTriger.value = true
+  data.clickTriger = true
   uni.showToast({
     title: "触发了点击事件"
   })
 }
 
 function onLongPress(event : UniTouchEvent) {
-  longClickTriger.value = true
+  data.longClickTriger = true
   uni.showToast({
     title: "触发了长按事件"
   })
 }
+
+defineExpose({
+  data
+})
 </script>
 
 <style>

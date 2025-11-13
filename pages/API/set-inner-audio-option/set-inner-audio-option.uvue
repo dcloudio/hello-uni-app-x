@@ -44,12 +44,23 @@
 </template>
 
 <script setup lang="uts">
+  type DataType = {
+    isBackgroundAudioPaused: boolean,
+    mixWithOther: boolean,
+    speakerOn: boolean,
+    obeyMuteSwitch: boolean,
+  }
+
+  // 使用reactive包装数据，便于自动化测试获取
+  const data = reactive({
+    isBackgroundAudioPaused: false,
+    mixWithOther: true,
+    speakerOn: true,
+    obeyMuteSwitch: true,
+  } as DataType)
+
   const backgroundManager = ref<BackgroundAudioManager | null>(null)
   const innerAudio = ref<InnerAudioContext | null>(null)
-  const isBackgroundAudioPaused = ref(false)
-  const mixWithOther = ref(true)
-  const speakerOn = ref(true)
-  const obeyMuteSwitch = ref(true)
   const labelTextStyle = 'margin-left: 8px'
   const radioGroupStyle = 'margin: 8px'
   const radioItemStyle = 'margin-left: 16px'
@@ -65,7 +76,7 @@
     if (backgroundManager.value == null) {
       backgroundManager.value = uni.getBackgroundAudioManager()
       backgroundManager.value.onPause(() => {
-        isBackgroundAudioPaused.value = true
+        data.isBackgroundAudioPaused = true
       })
     } else {
       backgroundManager.value!.stop()
@@ -107,21 +118,21 @@
     // 使用 switch 语句，意图更明确
     switch (propertyName) {
       case 'mixWithOther':
-        mixWithOther.value = value;
+        data.mixWithOther = value;
         break;
       case 'speakerOn':
-        speakerOn.value = value;
+        data.speakerOn = value;
         break;
       case 'obeyMuteSwitch':
-        obeyMuteSwitch.value = value;
+        data.obeyMuteSwitch = value;
         break;
     }
 
     uni.setInnerAudioOption({
-      mixWithOther: mixWithOther.value,
-      speakerOn: speakerOn.value,
+      mixWithOther: data.mixWithOther,
+      speakerOn: data.speakerOn,
       // #ifdef MP-WEIXIN
-      obeyMuteSwitch: obeyMuteSwitch.value
+      obeyMuteSwitch: data.obeyMuteSwitch
       // #endif
     })
   }
@@ -133,6 +144,7 @@
   }
 
   defineExpose({
+    data,
     playBackgroundMusic,
     testInnerAudioOption,
     playInnerMusic

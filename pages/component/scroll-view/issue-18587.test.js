@@ -27,7 +27,7 @@ describe('issue-18587', () => {
       await page.waitFor(300)
       await page.callMethod('scrollTo', 300)
       await page.waitFor(300)
-      const scrollEndTriggeredTimes = await page.data('scrollEndTriggeredTimes')
+      const scrollEndTriggeredTimes = await page.data('data.scrollEndTriggeredTimes')
       expect(scrollEndTriggeredTimes).toBe(3)
     })
 });

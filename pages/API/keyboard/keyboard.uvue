@@ -1,23 +1,32 @@
 <template>
 	<view class="container">
 		<view class="input-section">
-			<input id="uni-input-box" class="input-box" type="text" :value="inputValue" placeholder="点击输入框显示键盘" :focus="isFocus" hold-keyboard="true" />
+			<input id="uni-input-box" class="input-box" type="text" :value="data.inputValue" placeholder="点击输入框显示键盘" :focus="data.isFocus" hold-keyboard="true" />
 			<button class="btn" @click="hideKeyboard">隐藏键盘</button>
 		</view>
 		<view class="info-section">
-			<text class="info-text">键盘高度: {{keyboardHeight}}px</text>
-			<text class="info-text">键盘状态: {{keyboardStatus}}</text>
+			<text class="info-text">键盘高度: {{data.keyboardHeight}}px</text>
+			<text class="info-text">键盘状态: {{data.keyboardStatus}}</text>
 		</view>
 	</view>
 </template>
 
 <script setup lang="uts">
 
+type DataType = {
+  inputValue: string,
+  isFocus: boolean,
+  keyboardHeight: number,
+  keyboardStatus: string,
+}
 
-const inputValue = ref('')
-const isFocus = ref(false)
-const keyboardHeight = ref(0)
-const keyboardStatus = ref('未显示')
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  inputValue: '',
+  isFocus: false,
+  keyboardHeight: 0,
+  keyboardStatus: '未显示',
+} as DataType)
 
 function hideKeyboard() {
   uni.hideKeyboard();
@@ -26,14 +35,19 @@ function hideKeyboard() {
 onLoad(() => {
   // 监听键盘高度变化
   uni.onKeyboardHeightChange(res => {
-    keyboardHeight.value = res.height;
-    keyboardStatus.value = res.height > 0 ? '显示中' : '已隐藏';
+    data.keyboardHeight = res.height;
+    data.keyboardStatus = res.height > 0 ? '显示中' : '已隐藏';
   });
 })
 
 onUnload(() => {
   // 页面卸载时移除监听
   uni.offKeyboardHeightChange();
+})
+
+defineExpose({
+  data,
+  hideKeyboard
 })
 </script>
 

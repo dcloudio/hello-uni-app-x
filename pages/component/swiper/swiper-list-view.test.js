@@ -15,17 +15,21 @@ describe('component-swiper-list-view', () => {
     await page.waitFor('list-view')
   })
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('check-sticky-header', async () => {
-    await page.setData({scrollTop: 300})
+    await setPageData({scrollTop: 300})
     await page.waitFor(600)
-    await page.setData({currentVal: 1})
+    await setPageData({currentVal: 1})
     await page.waitFor(async () => {
-      return await page.data('swiperCurrentIndex') === 1;
+      return await page.data('data.swiperCurrentIndex') === 1;
     });
     await page.waitFor(200)
-    await page.setData({currentVal: 0})
+    await setPageData({currentVal: 0})
     await page.waitFor(async () => {
-      return await page.data('swiperCurrentIndex') === 0;
+      return await page.data('data.swiperCurrentIndex') === 0;
     });
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: true});
