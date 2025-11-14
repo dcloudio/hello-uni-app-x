@@ -1,13 +1,31 @@
 <template>
   <view style="flex:1">
     <view ref="transformView" class="view" @click="changetransform"></view>
+
+    <view style="margin-top: 150px; margin-left: 20px;">
+      <text style="font-size: 18px; font-weight: bold;">text 组件 transform-origin 测试</text>
+    </view>
+    <view class="text-container">
+      <text ref="textTransformView" class="text-view" @click="changeTextTransform">点击 text 测试 transform-origin</text>
+    </view>
+
+    <view style="margin-top: 20px; margin-left: 20px;">
+      <text style="font-size: 18px; font-weight: bold;">image 组件 transform-origin 测试</text>
+    </view>
+    <view class="image-container">
+      <image ref="imageTransformView" class="image-view" @click="changeImageTransform" src="/static/test-image/logo.png"></image>
+    </view>
   </view>
 </template>
 
 <script setup lang="uts">
 
   const transformView = ref(null as UniElement | null)
+  const textTransformView = ref(null as UniElement | null)
+  const imageTransformView = ref(null as UniElement | null)
   const count = ref(0)
+  const textCount = ref(0)
+  const imageCount = ref(0)
 
   const changetransform = () => {
     const element = transformView.value
@@ -23,6 +41,46 @@
 
     count.value++
   }
+
+  const changeTextTransform = () => {
+    const element = textTransformView.value
+
+    if (textCount.value == 0) {
+      element?.style.setProperty("transform-origin", "60px 30px")
+      element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
+    }
+    else if (textCount.value == 1) {
+      element?.style.setProperty("transform-origin", "100% 0%")
+      element?.style.setProperty("transform", "rotate(-20deg)")
+    }
+    else {
+      element?.style.setProperty("transform-origin", "10px 10px")
+      element?.style.setProperty("transform", "scale(1)")
+      textCount.value = -1
+    }
+
+    textCount.value++
+  }
+
+  const changeImageTransform = () => {
+    const element = imageTransformView.value
+
+    if (imageCount.value == 0) {
+      element?.style.setProperty("transform-origin", "60px 60px")
+      element?.style.setProperty("transform", "translate(50px, 50px) scale(2)")
+    }
+    else if (imageCount.value == 1) {
+      element?.style.setProperty("transform-origin", "100% 0%")
+      element?.style.setProperty("transform", "rotate(-20deg)")
+    }
+    else {
+      element?.style.setProperty("transform-origin", "10px 10px")
+      element?.style.setProperty("transform", "scale(1)")
+      imageCount.value = -1
+    }
+
+    imageCount.value++
+  }
 </script>
 
 <style>
@@ -35,5 +93,43 @@
     border-width: 1px;
     border-color: black;
     border-style: solid;
+  }
+
+  .text-view {
+    width: 200px;
+    height: 70px;
+    padding: 10px;
+    margin: 20px;
+    font-size: 16px;
+    transform-origin: 10px 10px;
+    background-color: aqua;
+    transform: scale(1);
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    text-align: center;
+  }
+
+  .image-view {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    transform-origin: 10px 10px;
+    transform: scale(1);
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+  }
+
+  .text-container {
+    width: 400px;
+    height: 300px;
+    overflow: visible;
+  }
+
+  .image-container {
+    width: 400px;
+    height: 400px;
+    overflow: visible;
   }
 </style>

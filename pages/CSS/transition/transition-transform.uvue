@@ -2,12 +2,24 @@
 	<view style="flex: 1;">
 		<view id="v" class="popup" @click="open"></view>
 		<view class="test"></view>
+
+		<view class="text-container">
+      <text class="tip">text 组件 transition-transform 测试</text>
+			<text id="textTransform" class="text-popup" @click="openText">点击 text 测试 transform transition</text>
+		</view>
+
+		<view class="image-container">
+      <text class="tip">image 组件 transition-transform 测试</text>
+			<image id="imageTransform" class="image-popup" @click="openImage" src="/static/test-image/logo.png"></image>
+		</view>
 	</view>
 </template>
 
 <script setup lang="uts">
 
 	const transform = ref('scale(0.6) translate(-50%, -50%)')
+	const textTransform = ref('scale(0.6) translate(-50%, -50%)')
+	const imageTransform = ref('scale(0.6) translate(-50%, -50%)')
 
 	const open = () => {
 		if ('scale(0.6) translate(-50%, -50%)' == transform.value) {
@@ -17,11 +29,29 @@
 		}
 		uni.getElementById('v')?.style.setProperty('transform', transform.value)
 	}
-	
+
+	const openText = () => {
+		if ('scale(0.6) translate(-50%, -50%)' == textTransform.value) {
+			textTransform.value = 'scale(1) translate(-50%, -50%)'
+		} else {
+			textTransform.value = 'scale(0.6) translate(-50%, -50%)'
+		}
+		uni.getElementById('textTransform')?.style.setProperty('transform', textTransform.value)
+	}
+
+	const openImage = () => {
+		if ('scale(0.6) translate(-50%, -50%)' == imageTransform.value) {
+			imageTransform.value = 'scale(1) translate(-50%, -50%)'
+		} else {
+			imageTransform.value = 'scale(0.6) translate(-50%, -50%)'
+		}
+		uni.getElementById('imageTransform')?.style.setProperty('transform', imageTransform.value)
+	}
+
 	defineExpose({
 	  open
 	})
-	
+
 </script>
 
 <style>
@@ -50,4 +80,52 @@
 		height: 200px;
 		background: rgba(0, 0, 0, 0.5);
 	}
+
+	.text-popup {
+		position: relative;
+		left: 50%;
+		width: 200px;
+		height: 70px;
+		padding: 10px;
+		font-size: 16px;
+		background: red;
+		text-align: center;
+		transition-duration: 300ms;
+		transition-property: transform, opacity;
+		transition-timing-function: ease;
+		overflow: visible;
+		transform-origin: left top;
+		transform: scale(0.6) translate(-50%, -50%);
+	}
+
+	.image-popup {
+		position: relative;
+		left: 50%;
+		width: 200px;
+		height: 200px;
+		transition-duration: 300ms;
+		transition-property: transform, opacity;
+		transition-timing-function: ease;
+		overflow: visible;
+		transform-origin: left top;
+		transform: scale(0.6) translate(-50%, -50%);
+	}
+
+	.text-container {
+		width: 400px;
+		height: 300px;
+		margin-left: 20px;
+	}
+
+	.image-container {
+		width: 400px;
+		height: 400px;
+		margin-left: 20px;
+	}
+
+  .tip{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 60px;
+  }
 </style>
