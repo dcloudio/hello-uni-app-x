@@ -20,7 +20,7 @@
       </view>
       <view ref="view" class="common" style="background-color: green;z-index: 5;top: -37px;left: 87px;"
         @click="changeZIndex(20)">
-        <text>z-index: {{zIndex}}</text>
+        <text>z-index: {{data.zIndex}}</text>
         <text>点击修改z-index</text>
       </view>
       <view class="common" style="background-color: blue;top: -75px;left: 175px;">
@@ -36,7 +36,7 @@
       </view>
     </view>
   </view>
-  <view v-if="autoTest">
+  <view v-if="data.autoTest">
     <view style="z-index: 1;position: fixed;">111</view>
     <view style="width: 750rpx;">222</view>
   </view>
@@ -66,15 +66,27 @@
 
 <script setup lang="uts">
 
-  const zIndex = ref(5)
-  // 自动化测试
-  const autoTest = ref(false)
+  type DataType = {
+    zIndex: number
+    autoTest: boolean
+  }
+
+  const data = reactive({
+    zIndex: 5,
+    autoTest: false
+  } as DataType)
+
   const view = ref(null as UniElement | null)
 
   const changeZIndex = (zIndexValue: number) => {
-    zIndex.value = 20
+    data.zIndex = 20
     view.value?.style.setProperty('z-index', zIndexValue)
   }
+
+  defineExpose({
+    data,
+    changeZIndex
+  })
 </script>
 
 <style>

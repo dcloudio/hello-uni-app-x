@@ -33,7 +33,8 @@ describe('dialog page', () => {
   });
 
   it('dialogPage should empty', async () => {
-		const dialogPagesNum = await page.data('dialogPagesNum.value')
+		const dialogPagesNum = await page.data('data.dialogPagesNum')
+    console.log('dialogPagesNum',dialogPagesNum)
 		expect(dialogPagesNum).toBe(0)
 	})
 

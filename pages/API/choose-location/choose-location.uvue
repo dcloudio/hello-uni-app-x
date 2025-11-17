@@ -1,16 +1,16 @@
 <template>
   <view>
-    <page-head :title="title"></page-head>
+    <page-head :title="data.title"></page-head>
     <view class="uni-padding-wrap">
       <view class="uni-column uni-container align-center">
         <text class="uni-hello-text">位置信息</text>
-        <text v-if="!hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
-        <view v-if="hasLocation" class="align-center">
-          <text class="uni-common-mt">{{locationName}}</text>
-          <text class="uni-common-mt">{{locationAddress}}</text>
-          <view class="uni-common-mt" v-if="location.latitude.length>1">
-            <text>E: {{location.longitude[0]}}°{{location.longitude[1]}}′</text>
-            <text>\nN: {{location.latitude[0]}}°{{location.latitude[1]}}′</text>
+        <text v-if="!data.hasLocation" class="uni-title-text uni-common-mt">未选择位置</text>
+        <view v-if="data.hasLocation" class="align-center">
+          <text class="uni-common-mt">{{data.locationName}}</text>
+          <text class="uni-common-mt">{{data.locationAddress}}</text>
+          <view class="uni-common-mt" v-if="data.location.latitude.length>1">
+            <text>E: {{data.location.longitude[0]}}°{{data.location.longitude[1]}}′</text>
+            <text>\nN: {{data.location.latitude[0]}}°{{data.location.latitude[1]}}′</text>
           </view>
         </view>
       </view>
@@ -41,22 +41,32 @@
     longitude: string[]
   }
 
-  type DialogPagesNum = {
-    value: number
+  type DataType = {
+    title: string
+    hasLocation: boolean
+    location: Location
+    locationName: string
+    locationAddress: string
+    dialogPagesNum: number
+    hoverLocation: boolean
+    hoverKeyword: boolean
+    hoverPayload: boolean
   }
 
-  const title = ref<string>('chooseLocation')
-  const hasLocation = ref<boolean>(false)
-  const location = ref<Location>({
-    latitude: [],
-    longitude: []
-  })
-  const locationName = ref<string>('')
-  const locationAddress = ref<string>('')
-  const dialogPagesNum = reactive({ value: -1 } as DialogPagesNum)
-  const hoverLocation = ref<boolean>(false)
-  const hoverKeyword = ref<boolean>(false)
-  const hoverPayload = ref<boolean>(false)
+  const data = reactive({
+    title: 'chooseLocation',
+    hasLocation: false,
+    location: {
+      latitude: [],
+      longitude: []
+    } as Location,
+    locationName: '',
+    locationAddress: '',
+    dialogPagesNum: -1,
+    hoverLocation: false,
+    hoverKeyword: false,
+    hoverPayload: false
+  } as DataType)
 
   const formatLocation = (longitude: number, latitude: number): Location => {
     const longitudeArr = longitude.toString().split('.')
@@ -74,19 +84,19 @@
   }
 
   const clear = () => {
-    hasLocation.value = false
+    data.hasLocation = false
   }
 
   const changeLocationBoolean = (checked: boolean) => {
-    hoverLocation.value = checked
+    data.hoverLocation = checked
   }
 
   const changeKeywordBoolean = (checked: boolean) => {
-    hoverKeyword.value = checked
+    data.hoverKeyword = checked
   }
 
   const changePayloadBoolean = (checked: boolean) => {
-    hoverPayload.value = checked
+    data.hoverPayload = checked
   }
 
   // #ifdef APP-IOS
@@ -101,7 +111,7 @@
     const page = pages[pages.length - 1]
     // #ifdef APP || WEB
     const dialogPages = page.getDialogPages()
-    dialogPagesNum.value = dialogPages.length
+    data.dialogPagesNum = dialogPages.length
     // #endif
   }
 
@@ -119,21 +129,21 @@
     let chooseLocationOptions = {
       success: (res) => {
         console.log('chooseLocation success', res)
-        hasLocation.value = true
-        location.value = formatLocation(res.longitude, res.latitude)
-        locationName.value = res.name
-        locationAddress.value = res.address
+        data.hasLocation = true
+        data.location = formatLocation(res.longitude, res.latitude)
+        data.locationName = res.name
+        data.locationAddress = res.address
       }
     } as ChooseLocationOptions
-    if (hoverLocation.value) {
+    if (data.hoverLocation) {
       chooseLocationOptions.latitude = 39.908823
       chooseLocationOptions.longitude = 116.39747
     }
-    if (hoverKeyword.value) {
+    if (data.hoverKeyword) {
       chooseLocationOptions.keyword = '公园'
     }
     // #ifndef MP
-    if (hoverPayload.value) {
+    if (data.hoverPayload) {
       chooseLocationOptions.payload = {
         token: 'xxx'
       }
@@ -159,13 +169,18 @@
   })
 
   defineExpose({
+    data,
     setLifeCycleNumFunc,
     getLifeCycleNum,
     chooseLocation,
     // #ifdef APP-IOS
     chooseLocationByPlugin,
     // #endif
-    dialogPagesNum
+    clear,
+    changeLocationBoolean,
+    changeKeywordBoolean,
+    changePayloadBoolean,
+    test
   })
 </script>
 

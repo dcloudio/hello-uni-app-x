@@ -13,7 +13,7 @@
       <view class="uni-common-mt" v-for="(item,index) in data" :key="index">
         <text class="uni-subtitle-text">{{item.name}}</text>
         <view style="background:#FFFFFF;">
-          <rich-text :nodes="item.html" @itemclick="itemClick" :mode="mode"></rich-text>
+          <rich-text :nodes="item.html" @itemclick="itemClick" :mode="modeData.mode"></rich-text>
         </view>
       </view>
     </view>
@@ -322,7 +322,15 @@
       ] as Array<UTSJSONObject>
     }
   ] as Array<TagInfo>)
-  const mode = ref('web')
+  
+  type ModeDataType = {
+    mode: string
+  }
+  
+  const modeData = reactive({
+    mode: 'web'
+  } as ModeDataType)
+  
   const modeItems = ref(['web', 'native'])
   const modeItemTypes = ref<ItemType[]>([{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[])
 
@@ -341,6 +349,10 @@
   }
 
   function onModeChange(value : number) {
-    mode.value = modeItems.value[value];
+    modeData.mode = modeItems.value[value];
   }
+  
+  defineExpose({
+    modeData
+  })
 </script>
