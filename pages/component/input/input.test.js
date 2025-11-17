@@ -70,11 +70,15 @@ describe('component-native-input', () => {
       pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(true)
       expect(pageData.triggerBlur).toBe(false)
+      const focusEventDetail = JSON.parse(pageData.focusAndBlurEventDetail)
+      expect(focusEventDetail.height).not.toBe(undefined)
       await page.callMethod('triggerFocusOrBlur')
       await page.waitFor(500)
       pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(false)
       expect(pageData.triggerBlur).toBe(true)
+      const blurEventDetail = JSON.parse(pageData.focusAndBlurEventDetail)
+      expect(blurEventDetail.cursor).not.toBe(undefined)
       if (isHarmony) {
         await program.tap({ x: 100, y: 50 })
         await page.waitFor(1000);
