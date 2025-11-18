@@ -1,40 +1,3 @@
-<script>
-  import { ItemType } from '@/components/enum-data/enum-data-types'
-  export default {
-    data() {
-      return {
-        plain_boolean: false,
-        disabled_boolean: false,
-        default_style: false,
-        size_enum: [{ "value": 0, "name": "default" }, { "value": 1, "name": "mini" }] as ItemType[],
-        size_enum_current: 0,
-        type_enum: [{ "value": 0, "name": "default" }, { "value": 1, "name": "primary" }, { "value": 2, "name": "warn" }] as ItemType[],
-        type_enum_current: 0,
-        count: 0,
-        text: 'uni-app-x'
-      }
-    },
-    methods: {
-      button_click() {
-        console.log("组件被点击时触发")
-        this.count++
-      },
-      button_touchstart() { console.log("手指触摸动作开始") },
-      button_touchmove() { console.log("手指触摸后移动") },
-      button_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") },
-      button_touchend() { console.log("手指触摸动作结束") },
-      button_tap() { console.log("手指触摸后马上离开") },
-      button_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") },
-      change_plain_boolean(checked : boolean) { this.plain_boolean = checked },
-      change_disabled_boolean(checked : boolean) { this.disabled_boolean = checked },
-      change_default_style(checked : boolean) { this.default_style = checked },
-      radio_change_size_enum(checked : number) { this.size_enum_current = checked },
-      radio_change_type_enum(checked : number) { this.type_enum_current = checked },
-      confirm_text_input(value : string) { this.text = value }
-    }
-  }
-</script>
-
 <template>
   <!-- #ifdef APP -->
   <scroll-view direction="vertical" style="flex:1">
@@ -169,6 +132,39 @@
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup lang="uts">
+  
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const plain_boolean = ref(false)
+  const disabled_boolean = ref(false)
+  const default_style = ref(false)
+  const size_enum = ref([{ "value": 0, "name": "default" }, { "value": 1, "name": "mini" }] as ItemType[])
+  const size_enum_current = ref(0)
+  const type_enum = ref([{ "value": 0, "name": "default" }, { "value": 1, "name": "primary" }, { "value": 2, "name": "warn" }] as ItemType[])
+  const type_enum_current = ref(0)
+  const count = ref(0)
+  const text = ref('uni-app-x')
+
+  function button_click() {
+    console.log("组件被点击时触发")
+    count.value++
+  }
+
+  function button_touchstart() { console.log("手指触摸动作开始") }
+  function button_touchmove() { console.log("手指触摸后移动") }
+  function button_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
+  function button_touchend() { console.log("手指触摸动作结束") }
+  function button_tap() { console.log("手指触摸后马上离开") }
+  function button_longpress() { console.log("如果一个组件被绑定了 longpress 事件，那么当用户长按这个组件时，该事件将会被触发。") }
+  function change_plain_boolean(checked : boolean) { plain_boolean.value = checked }
+  function change_disabled_boolean(checked : boolean) { disabled_boolean.value = checked }
+  function change_default_style(checked : boolean) { default_style.value = checked }
+  function radio_change_size_enum(checked : number) { size_enum_current.value = checked }
+  function radio_change_type_enum(checked : number) { type_enum_current.value = checked }
+  function confirm_text_input(value : string) { text.value = value }
+</script>
 
 <style>
   .main {

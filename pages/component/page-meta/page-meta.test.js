@@ -23,12 +23,12 @@ describe('test page-meta', () => {
     expect(await titleEl.style('font-size')).toEqual('30px');
   });
   it('check scrollTop', async () => {
-    expect(await page.data('scrollTop')).toEqual('0px');
+    expect(await page.data('data.scrollTop')).toEqual('0px');
     const buttonEl = await page.$("button")
     await buttonEl.tap()
     await page.waitFor(2100)
-    expect(await page.data('scrollTop')).toEqual('300px');
-    expect(await page.data('scrollType')).toEqual('scroll');
-    expect(await page.data('scrolldoneType')).toEqual('scrolldone');
+    expect(await page.data('data.scrollTop')).toEqual('300px');
+    expect(await page.data('data.scrollType')).toEqual('scroll');
+    expect(await page.data('data.scrolldoneType')).toEqual('scrolldone');
   });
 });

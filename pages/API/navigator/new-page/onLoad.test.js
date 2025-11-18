@@ -174,7 +174,7 @@ describe("onLoad", () => {
     })
     await page.waitFor(1000);
     page = await program.currentPage();
-    const data = await page.data();
-    expect(data.data).toBe(TEXT);
+    const pageData = await page.data('data');
+    expect(pageData.data).toBe(TEXT);
   })
 });

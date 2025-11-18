@@ -20,7 +20,9 @@ describe('issue-16162', () => {
     await page.callMethod('setScrollTop', 2000)
     await page.waitFor(2000)
     await page.setData({
-      'intoview': 'item1'
+      data: {
+        intoview: 'item1'
+      }
     })
     await page.waitFor(600)
     const scrollTop = await page.callMethod('getScrollTop')

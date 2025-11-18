@@ -20,7 +20,7 @@ describe('set-page-backgroundColorContent', () => {
     await page.callMethod('changeColor', "")
     page.waitFor(200)
 
-    const color = (await page.data()).currentBackgroundColorContent
+    const color = (await page.data('data')).currentBackgroundColorContent
     expect(color).toBe("red")
 
 

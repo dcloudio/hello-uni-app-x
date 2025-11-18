@@ -5,37 +5,41 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        compId: 'comp1-id',
-        testNode1: false
-      }
-    },
-    props: {
-      id: {
-        type: String,
-        default: ''
-      }
-    },
-    emits: ['ready'],
-    mounted() {
-      uni.createSelectorQuery().in(this).select('#comp1-id').boundingClientRect().exec((ret) => {
-        console.log(ret)
-        this.testNode1 = ret.length > 0
-        // #ifdef WEB || MP
-        this.testNode1 = this.testNode1 && ret[0] != null
-        // #endif
-        if(this.testNode1) {
-          console.log('Comp1测试符合预期')
-        } else {
-          console.error('Comp1测试不符合预期')
-        }
-        this.$emit('ready', this.testNode1)
-      })
-    }
+<script setup lang="uts">
+const instance = getCurrentInstance()!.proxy!
+
+const compId = ref('comp1-id')
+const testNode1 = ref(false)
+
+defineProps({
+  id: {
+    type: String,
+    default: ''
   }
+})
+
+const emit = defineEmits<{
+  ready: [value: boolean]
+}>()
+
+
+onMounted(()=>{
+  uni.createSelectorQuery().in(instance).select('#comp1-id').boundingClientRect().exec((ret) => {
+    console.log(ret)
+    testNode1.value = ret.length > 0
+    // #ifdef WEB || MP
+    testNode1.value = testNode1.value && ret[0] != null
+    // #endif
+    if(testNode1.value) {
+      console.log('Comp1测试符合预期')
+    } else {
+      console.error('Comp1测试不符合预期')
+    }
+    emit('ready', testNode1.value)
+  })
+})
+
+
 </script>
 
 <style>

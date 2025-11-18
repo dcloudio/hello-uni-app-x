@@ -3,25 +3,34 @@
   <view class="uni-padding-wrap">
     <view class="uni-common-mt">
       <text>应用本次启动路径：</text>
-      <text style="margin-top: 5px">{{ enterOptionsString }}</text>
+      <text style="margin-top: 5px">{{ data.enterOptionsString }}</text>
     </view>
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        enterOptionsString: '',
-        testResult: false
-      }
-    },
-    onReady() {
-      const app = getApp()
-      const appOnShow = app.globalData.onShowOption
-      const onShowOption = uni.getEnterOptionsSync()
-      this.enterOptionsString = JSON.stringify(onShowOption, null, 2)
-      this.testResult = (onShowOption.path == appOnShow.path && onShowOption.appScheme == appOnShow.appScheme && onShowOption.appLink == appOnShow.appLink)
-    }
-  }
+<script setup lang="uts">
+
+type DataType = {
+  enterOptionsString: string,
+  testResult: boolean,
+}
+
+// Data
+const data = reactive({
+  enterOptionsString: '',
+  testResult: false,
+} as DataType)
+
+// Lifecycle
+onReady(() => {
+  const app = getApp()
+  const appOnShow = app.globalData.onShowOption
+  const onShowOption = uni.getEnterOptionsSync()
+  data.enterOptionsString = JSON.stringify(onShowOption, null, 2)
+  data.testResult = (onShowOption.path == appOnShow.path && onShowOption.appScheme == appOnShow.appScheme && onShowOption.appLink == appOnShow.appLink)
+})
+
+defineExpose({
+  data
+})
 </script>

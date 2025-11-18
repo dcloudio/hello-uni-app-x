@@ -122,6 +122,44 @@
       <view class="base-style transition-width" id="changeWidthInEnd" style="transition-duration: 0.5s;" @transitionend="onChangeWidthEnd" @click="changeWidthInEndFun"></view>
     </view>
 
+    <view style="margin-top: 20px; margin-left: 7px;">
+      <text style="font-size: 18px; font-weight: bold;">text 组件 transition 测试</text>
+    </view>
+
+    <view class="container">
+      <text class="text">text 点击修改 transform (rotate)</text>
+      <text class="text-base-style transition-transform" id="textTransform" @click="changeTextTransform">文字内容</text>
+    </view>
+
+    <view class="container">
+      <text class="text">text 点击修改 opacity</text>
+      <text class="text-base-style transition-opacity" id="textOpacity" @click="changeTextOpacity">文字内容</text>
+    </view>
+
+    <view class="container">
+      <text class="text">text 点击修改 background-color</text>
+      <text class="text-base-style transition-background" id="textBackground" @click="changeTextBackground">文字内容</text>
+    </view>
+
+    <view style="margin-top: 20px; margin-left: 7px;">
+      <text style="font-size: 18px; font-weight: bold;">image 组件 transition 测试</text>
+    </view>
+
+    <view class="container">
+      <text class="text">image 点击修改 transform (rotate)</text>
+      <image class="image-base-style transition-transform" id="imageTransform" @click="changeImageTransform" src="/static/test-image/logo.png"></image>
+    </view>
+
+    <view class="container">
+      <text class="text">image 点击修改 opacity</text>
+      <image class="image-base-style transition-opacity" id="imageOpacity" @click="changeImageOpacity" src="/static/test-image/logo.png"></image>
+    </view>
+
+    <view class="container">
+      <text class="text">image 点击修改 transform (scale)</text>
+      <image class="image-base-style transition-transform" id="imageScale" @click="changeImageScale" src="/static/test-image/logo.png"></image>
+    </view>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -173,6 +211,18 @@
   const lineWidth = ref(200)
   const changeWidthInEnd = ref(null as UniElement | null)
   const changeWidthInEndCount = ref(0)
+  const isTextTransform = ref(false)
+  const textTransform = ref(null as UniElement | null)
+  const isTextOpacity = ref(false)
+  const textOpacity = ref(null as UniElement | null)
+  const isTextBackground = ref(false)
+  const textBackground = ref(null as UniElement | null)
+  const isImageTransform = ref(false)
+  const imageTransform = ref(null as UniElement | null)
+  const isImageOpacity = ref(false)
+  const imageOpacity = ref(null as UniElement | null)
+  const isImageScale = ref(false)
+  const imageScale = ref(null as UniElement | null)
 	// 测试例辅助函数
 	const getChangeWidthInEndCount = ():number => {
 	  return changeWidthInEndCount.value
@@ -198,6 +248,12 @@
     styleTransitionAll.value = uni.getElementById("styleTransitionAll")
     widthOrHeightAuto.value = uni.getElementById("widthOrHeightAuto")
     changeWidthInEnd.value = uni.getElementById("changeWidthInEnd")
+    textTransform.value = uni.getElementById("textTransform")
+    textOpacity.value = uni.getElementById("textOpacity")
+    textBackground.value = uni.getElementById("textBackground")
+    imageTransform.value = uni.getElementById("imageTransform")
+    imageOpacity.value = uni.getElementById("imageOpacity")
+    imageScale.value = uni.getElementById("imageScale")
   })
 
   const changeWidthOrHeight = () => {
@@ -410,6 +466,54 @@
   const changeWidthInEndFun = () => {
     changeWidthInEnd.value?.style.setProperty("width","300px")
   }
+
+  const changeTextTransform = () => {
+    textTransform.value?.style?.setProperty("transform", isTextTransform.value
+      ? 'rotate(0deg)'
+      : 'rotate(45deg)'
+    )
+    isTextTransform.value = !isTextTransform.value
+  }
+
+  const changeTextOpacity = () => {
+    textOpacity.value?.style?.setProperty("opacity", isTextOpacity.value
+      ? '1'
+      : '0.5'
+    )
+    isTextOpacity.value = !isTextOpacity.value
+  }
+
+  const changeTextBackground = () => {
+    textBackground.value?.style?.setProperty("background-color", isTextBackground.value
+      ? 'transparent'
+      : 'yellow'
+    )
+    isTextBackground.value = !isTextBackground.value
+  }
+
+  const changeImageTransform = () => {
+    imageTransform.value?.style?.setProperty("transform", isImageTransform.value
+      ? 'rotate(0deg)'
+      : 'rotate(45deg)'
+    )
+    isImageTransform.value = !isImageTransform.value
+  }
+
+  const changeImageOpacity = () => {
+    imageOpacity.value?.style?.setProperty("opacity", isImageOpacity.value
+      ? '1'
+      : '0.5'
+    )
+    isImageOpacity.value = !isImageOpacity.value
+  }
+
+  const changeImageScale = () => {
+    imageScale.value?.style?.setProperty("transform", isImageScale.value
+      ? 'scale(1)'
+      : 'scale(1.5)'
+    )
+    isImageScale.value = !isImageScale.value
+  }
 	
 	defineExpose({
 	  changeWidthOrHeight,
@@ -515,5 +619,21 @@
   .transition-all {
     transition-property: all;
     transition-duration: 1s;
+  }
+
+  .text-base-style {
+    width: 200px;
+    height: 50px;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+    background-color: lightblue;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .image-base-style {
+    width: 200px;
+    height: 200px;
   }
 </style>

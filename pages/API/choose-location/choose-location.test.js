@@ -33,7 +33,8 @@ describe('dialog page', () => {
   });
 
   it('dialogPage should empty', async () => {
-		const dialogPagesNum = await page.data('dialogPagesNum.value')
+		const dialogPagesNum = await page.data('data.dialogPagesNum')
+    console.log('dialogPagesNum',dialogPagesNum)
 		expect(dialogPagesNum).toBe(0)
 	})
 
@@ -56,6 +57,7 @@ describe('dialog page', () => {
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
   });
+
 	if (isIos) {
 		// 15以下的模拟器所对应的xcode不能编译自定义插件，大于15是因为某台设备，会用xcode14.1跑15.5的设备
     let version = process.env.uniTestPlatformInfo

@@ -15,7 +15,7 @@ describe('interceptor', () => {
     it('no Interceptor', async () => {
       const newPage = await program.navigateTo('./page1')
       await newPage.waitFor('text')
-      const num = (await newPage.data()).page
+      const num = (await newPage.data('data')).page
       await program.navigateBack()
       expect(num).toBe(1)
       // 新增 navigator 元素
@@ -32,7 +32,7 @@ describe('interceptor', () => {
       await page.callMethod('addInterceptor')
       const newPage = await program.navigateTo('./page1')
       await newPage.waitFor('text')
-      const num = (await newPage.data()).page
+      const num = (await newPage.data('data')).page
       await program.navigateBack()
       expect(num).toBe(2)
       // 新增 navigator 元素
@@ -49,7 +49,7 @@ describe('interceptor', () => {
       await page.callMethod('removeInterceptor')
       const newPage = await program.navigateTo('./page1')
       await newPage.waitFor('text')
-      const num = (await newPage.data()).page
+      const num = (await newPage.data('data')).page
       await program.navigateBack()
       expect(num).toBe(1)
       // 新增 navigator 元素
@@ -104,10 +104,12 @@ describe('interceptor', () => {
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe('pages/tabBar/component')
   })
+
   it('preventNavigateTo', async () => {
     await page.callMethod('preventNavigateTo')
     await page.waitFor(500)
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe('pages/API/interceptor/interceptor')
   })
+
 })

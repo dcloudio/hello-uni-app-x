@@ -3,9 +3,9 @@
   <view>
   <!-- #endif -->
     <list-view class="list" @scrolltolower="onScrollTolower">
-      <list-item class="list-item" v-for="(_,index) in item_count">
+      <list-item class="list-item" v-for="(_,index) in data.item_count">
         <text>第{{index + 1}}个视频</text>
-        <video class="video" :src="src" :controls="true" @pause="onPause"></video>
+        <video class="video" :src="data.src" :controls="true" @pause="onPause"></video>
       </list-item>
     </list-view>
   <!-- #ifdef WEB -->
@@ -13,29 +13,37 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        item_count: 10,
-        src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
-        isTesting: false
-      }
-    },
-    methods: {
-      onPause(e : UniEvent) {
-        console.log(JSON.stringify(e));
-      },
-      onScrollTolower(_ : ScrollToLowerEvent) {
-        setTimeout(() => {
-          if (this.isTesting && this.item_count >= 10) {
-            return
-          }
-          this.item_count += 10
-        }, 300)
-      },
+<script setup lang="uts">
+
+type DataType = {
+  item_count: number,
+  src: string,
+  isTesting: boolean,
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  item_count: 10,
+  src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
+  isTesting: false,
+} as DataType)
+
+function onPause(e : UniEvent) {
+  console.log(JSON.stringify(e));
+}
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    if (data.isTesting && data.item_count >= 10) {
+      return
     }
-  }
+    data.item_count += 10
+  }, 300)
+}
+
+defineExpose({
+  data
+})
 </script>
 
 <style>

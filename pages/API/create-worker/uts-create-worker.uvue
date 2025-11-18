@@ -42,7 +42,7 @@
   const created_boolean = ref(false)
   const workerStatus = ref('none') // none, created, destroyed
   const isListening = ref(false)
-  const logs = ref<Array<UTSJSONObject>>([])
+  const logs = ref([] as Array<UTSJSONObject>)
   const inputValue = ref('1') // 默认值为1
   const taskResult = ref('')
 
@@ -80,9 +80,9 @@
     // #ifndef APP-IOS
     // 添加消息监听
     onWorkerMessage({
-      success: (res) => {
-        const result = res.result;
-        const resultData = result['data'] as string;
+      success: (res : any) => {
+        const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
+        const resultData = result.getString('data');
         taskResult.value = resultData as string;
         inputValue.value = taskResult.value
         addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
@@ -91,8 +91,9 @@
 
     // 添加错误监听
     onWorkerError({
-      success: (error) => {
-        addLog(`Worker错误: ${error.message}`, 'error');
+      success: (error : any) => {
+        const errorMsg = (error as UTSJSONObject).getString('message');
+        addLog(`Worker错误: ${errorMsg}`, 'error');
         console.log("Worker错误:", error);
       }
     } as UTSWorkerErrorOptions);
@@ -109,9 +110,9 @@
     // #ifdef APP-IOS
     // 添加消息监听
     onWorkerMessage({
-      success: (res) => {
-        const result = res.result;
-        const resultData = result['data'] as string;
+      success: (res : any) => {
+        const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
+        const resultData = result.getString('data');
         taskResult.value = resultData as string;
         inputValue.value = taskResult.value
         addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
@@ -120,8 +121,9 @@
 
     // 添加错误监听
     onWorkerError({
-      success: (error) => {
-        addLog(`Worker错误: ${error.message}`, 'error');
+      success: (error : any) => {
+        const errorMsg = (error as UTSJSONObject).getString('message');
+        addLog(`Worker错误: ${errorMsg}`, 'error');
         console.log("Worker错误:", error);
       }
     } as UTSWorkerErrorOptions);
@@ -154,25 +156,21 @@
     inputValue.value = '1'
   }
 
+  function test_taskResult():string {
+    return taskResult.value
+  }
+
   onUnload(() => {
     destory();
   })
 
   defineExpose({
-    created_boolean,
-    workerStatus,
-    isListening,
-    logs,
-    inputValue,
-    taskResult,
-    statusText,
-    addLog,
+    test_resetInputValue,
     create,
     sendMessage,
-    destory,
-    clearLogs,
-    test_resetInputValue
+    test_taskResult
   })
+
 </script>
 
 <style>

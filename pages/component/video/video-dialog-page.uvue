@@ -16,32 +16,32 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'dialogPage Video',
-        backgroundColorContent: 'transparent'
-      }
-    },
-    onBackPress() {
-      this.exitFullScreen()
-      return true
-    },
-    methods: {
-      requestFullScreen() {
-        uni.createVideoContext('myVideo')?.requestFullScreen(null)
-      },
-      exitFullScreen() {
-        uni.createVideoContext('myVideo')?.exitFullScreen()
-      },
-      closeThisPage() {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        })
-      }
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
+  const title = ref('dialogPage Video')
+  const backgroundColorContent = ref('transparent')
+
+  function requestFullScreen() {
+    uni.createVideoContext('myVideo')?.requestFullScreen(null)
+  }
+
+  function exitFullScreen() {
+    uni.createVideoContext('myVideo')?.exitFullScreen()
+  }
+
+  function closeThisPage() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage
+      })
     }
   }
+
+  onBackPress(() => {
+    exitFullScreen()
+    return true
+  })
 </script>
 
 <style>

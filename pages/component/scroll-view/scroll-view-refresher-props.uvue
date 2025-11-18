@@ -58,71 +58,73 @@
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  
+
   type Item = {
     id : string,
     label : string,
   }
 
-  export default {
-    data() {
-      return {
-        items: [] as Item[],
-        refresherEnabled: true,
-        refresherTriggered: false,
-        refresherThreshold: 45,
-        refresherDefaultStyle: "black",
-        refresherBackground: "transparent",
-      }
-    },
-    onLoad() {
-      for (let i = 0; i < 10; i++) {
-        const item = {
-          id: "item" + i,
-          label: "item" + i,
-        } as Item;
-        this.items.push(item);
-      }
-    },
-    methods: {
-      handleTrunOnRefresher() {
-        this.refresherTriggered = false;
-        //不能同时关闭下拉状态和关闭下拉刷新。
-        setTimeout(() => {
-          this.refresherEnabled = !this.refresherEnabled;
-        }, 0)
-      },
-      handleRefresherThresholdInput(e : InputEvent) {
-        const value = e.detail.value;
-        if (value == "") {
-          this.refresherThreshold = 45;
-        } else {
-          this.refresherThreshold = parseInt(e.detail.value);
-        }
-      },
-      handleRefresherBackground(e : InputEvent) {
-        const value = e.detail.value;
-        this.refresherBackground = value;
-      },
-      //响应事件
-      refresherpulling() {
-        console.log("下拉刷新控件被下拉");
-      },
-      refresherrefresh() {
-        console.log("下拉刷新被触发");
-        this.refresherTriggered = true;
-        //不能同时关闭下拉状态和关闭下拉刷新。
-        setTimeout(() => {
-          this.refresherTriggered = false;
-        }, 1500)
-      },
-      refresherrestore() {
-        console.log("下拉刷新被复位");
-      },
-      refresherabort() {
-        console.log("下拉刷新被中止");
-      }
+  const items = ref<Item[]>([])
+  const refresherEnabled = ref(true)
+  const refresherTriggered = ref(false)
+  const refresherThreshold = ref(45)
+  const refresherDefaultStyle = ref("black")
+  const refresherBackground = ref("transparent")
+
+  onLoad(() => {
+    for (let i = 0; i < 10; i++) {
+      const item = {
+        id: "item" + i,
+        label: "item" + i,
+      } as Item;
+      items.value.push(item);
     }
+  })
+
+  function handleTrunOnRefresher() {
+    refresherTriggered.value = false;
+    //不能同时关闭下拉状态和关闭下拉刷新。
+    setTimeout(() => {
+      refresherEnabled.value = !refresherEnabled.value;
+    }, 0)
+  }
+
+  function handleRefresherThresholdInput(e : InputEvent) {
+    const value = e.detail.value;
+    if (value == "") {
+      refresherThreshold.value = 45;
+    } else {
+      refresherThreshold.value = parseInt(e.detail.value);
+    }
+  }
+
+  function handleRefresherBackground(e : InputEvent) {
+    const value = e.detail.value;
+    refresherBackground.value = value;
+  }
+
+  //响应事件
+  function refresherpulling() {
+    console.log("下拉刷新控件被下拉");
+  }
+
+  function refresherrefresh() {
+    console.log("下拉刷新被触发");
+    refresherTriggered.value = true;
+    //不能同时关闭下拉状态和关闭下拉刷新。
+    setTimeout(() => {
+      refresherTriggered.value = false;
+    }, 1500)
+  }
+
+  function refresherrestore() {
+    console.log("下拉刷新被复位");
+  }
+
+  function refresherabort() {
+    console.log("下拉刷新被中止");
   }
 </script>
 

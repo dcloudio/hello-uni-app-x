@@ -19,44 +19,47 @@
   </scroll-view>
 </template>
 
-<script>
-  import { createNativeButtonContext } from "@/uni_modules/native-button";
-  export default {
-    data() {
-      return {
-        title: 'Hello',
-        buttonText: "native-button",
-        isLoad: false,
-        clickCount: 0
-      }
-    },
-    onLoad() {
+<script setup lang="uts">
 
-    },
-    methods: {
-      ontap(e : UniNativeViewEvent) {
-        uni.showToast({
-          title: "按钮被点击了"
-        })
-        this.clickCount ++
-        this.buttonText = "native-button"+this.clickCount
-      },
-      onload() {
-        //标记已初始化 用于自动化测试
-        this.isLoad = true
-      },
-      testCallMethod: function () {
-      	let context = createNativeButtonContext("helloView")
-      	context?.updateText("test code")
-      },
-      gotoTimePicker() {
-        uni.openDialogPage({
-          url: "/pages/component/native-view/native-view-time-picker-dialog",
-          animationType: "fade-in"
-        })
-      }
-    }
-  }
+import { createNativeButtonContext } from "@/uni_modules/native-button";
+
+const title = ref('Hello')
+const buttonText = ref("native-button")
+const isLoad = ref(false)
+const clickCount = ref(0)
+
+function ontap(e : UniNativeViewEvent) {
+  uni.showToast({
+    title: "按钮被点击了"
+  })
+  clickCount.value ++
+  buttonText.value = "native-button"+clickCount.value
+}
+
+function onload() {
+  //标记已初始化 用于自动化测试
+  isLoad.value = true
+}
+
+//用于自动化测试
+function getIsLoadTest():boolean {
+  return isLoad.value
+}
+
+function testCallMethod() {
+  let context = createNativeButtonContext("helloView")
+  context?.updateText("test code")
+}
+
+function gotoTimePicker() {
+  uni.openDialogPage({
+    url: "/pages/component/native-view/native-view-time-picker-dialog",
+    animationType: "fade-in"
+  })
+}
+
+defineExpose({getIsLoadTest})
+
 </script>
 
 <style>

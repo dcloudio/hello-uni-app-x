@@ -26,14 +26,14 @@ describe('Api-uts-createWorker', () => {
     await page.waitFor(500);
     await page.callMethod('sendMessage');
     await page.waitFor(500);
-    const myBufLength = await page.data('myBufLength')
-    const sendableNumber = await page.data('sendableNumber')
+    const myBufLength = await page.data('data.myBufLength')
+    const sendableNumber = await page.data('data.sendableNumber')
     if (isHarmony) {
-      expect(myBufLength._value).toBe(8);
-      expect(sendableNumber._value).toBe(666);
+      expect(myBufLength).toBe(8);
+      expect(sendableNumber).toBe(666);
     }
     if (isWeb) {
-      expect(myBufLength._value).toBe(0);
+      expect(myBufLength).toBe(0);
     }
   });
 });

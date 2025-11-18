@@ -8,27 +8,29 @@
   </view>
 </template>
 
-<script>
-  import Item from './issue-13858-item.uvue'
+<script setup lang="uts">
 
-  export default {
-    data() {
-      return {
-        childMountedTriggeredCount: 0
-      }
-    },
-    components: {
-      Item
-    },
-    onLoad() {
+import Item from './issue-13858-item.uvue'
 
-    },
-    methods: {
-      itemMounted() {
-        this.childMountedTriggeredCount++
-      }
-    }
-  }
+type DataType = {
+  childMountedTriggeredCount: number,
+}
+
+const data = reactive({
+  childMountedTriggeredCount: 0,
+} as DataType)
+
+function itemMounted() {
+  data.childMountedTriggeredCount++
+}
+
+defineExpose({
+  data
+})
+
+onLoad(() => {
+
+})
 </script>
 
 <style>

@@ -26,103 +26,119 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        outBoxSizeInfo: "",
-        innerBoxSizeInfo: "",
-        offset: 2,
-        boxDisplay: false,
-        outBoxElement: null as UniElement | null,
-        innerBoxElement: null as UniElement | null,
-        resizeObserver: null as UniResizeObserver | null,
-        outBoxElementOnResize: false
-      }
-    },
-    onBackPress() : boolean {
-      if (this.resizeObserver != null) {
-        this.resizeObserver!.disconnect()
-      }
-      return false
-    },
-    onReady() {
-      if (this.resizeObserver == null) {
-        this.resizeObserver = new UniResizeObserver((entries : Array<UniResizeObserverEntry>) => {
+<script setup lang="uts">
 
-          entries.forEach(entry => {
-            if (entry.target == this.outBoxElement) {
-              this.outBoxSizeInfo = this.analysisResizeObserverEntry(entry)
-              this.outBoxElementOnResize = true
-            } else if (entry.target == this.innerBoxElement) {
-              this.innerBoxSizeInfo = this.analysisResizeObserverEntry(entry)
-            }
-          })
-        })
-        this.outBoxElement = uni.getElementById("outBox")
-        if (this.outBoxElement != null) {
-          this.resizeObserver!.observe(this.outBoxElement!)
-        }
-        this.innerBoxElement = uni.getElementById("innerBox")
-        if (this.innerBoxElement != null) {
-          this.resizeObserver!.observe(this.innerBoxElement!)
-        }
-        this.boxDisplay = true
-      }
-    },
-    methods: {
-      innerBoxClick() {
-        if (this.innerBoxElement != null) {
-          this.innerBoxElement!.style.setProperty("width", this.innerBoxElement!.offsetWidth + this.offset + 'px')
-          this.innerBoxElement!.style.setProperty("height", this.innerBoxElement!.offsetWidth + this.offset + 'px')
-        }
-      },
-      outBoxClick() {
-        if (this.outBoxElement != null) {
-          this.outBoxElement!.style.setProperty("width", this.outBoxElement!.offsetWidth + this.offset + 'px')
-          this.outBoxElement!.style.setProperty("height", this.outBoxElement!.offsetWidth + this.offset + 'px')
-        }
-      },
-      revertBoxSize() {
-        if (this.outBoxElement != null) {
-          this.outBoxElement!.style.setProperty("width", "140px")
-          this.outBoxElement!.style.setProperty("height", "140px")
-        }
-        if (this.innerBoxElement != null) {
-          this.innerBoxElement!.style.setProperty("width", "80px")
-          this.innerBoxElement!.style.setProperty("height", "80px")
-        }
-      },
-      //自动化测试专用
-      setOutBoxMarginLeft(value : string) {
-        if (this.outBoxElement != null) {
-          this.outBoxElementOnResize = false
-          this.outBoxElement!.style.setProperty("margin-left", value)
-        }
-      },
-      toggleDisplay() {
-        this.boxDisplay = !this.boxDisplay
-      },
-      analysisResizeObserverEntry(entry : UniResizeObserverEntry) : string {
-        const contentBoxSize = entry.contentBoxSize[0]
-        const borderBoxSize = entry.borderBoxSize[0]
-        const devicePixelContentBoxSize = entry.devicePixelContentBoxSize[0]
-        return "borderBoxSize: \n{blockSize:" + borderBoxSize.blockSize + ", inlineSize:" + borderBoxSize.inlineSize + "}\n" +
-          "contentBoxSize: \n{blockSize:" + contentBoxSize.blockSize + ", inlineSize:" + contentBoxSize.inlineSize + "}\n" +
-          "devicePixelContentBoxSize: \n{blockSize:" + devicePixelContentBoxSize.blockSize + ", inlineSize:" + devicePixelContentBoxSize.inlineSize + "}\n" +
-          "contentRect: \n{x:" + entry.contentRect.x + ", y:" + entry.contentRect.y + ", width:" + entry.contentRect.width + ", height:" + entry.contentRect.height + "}"
-      },
-      cancelListen() {
-        // this.resizeObserver?.unobserve()
-        this.resizeObserver!.unobserve(this.outBoxElement!)
-        this.resizeObserver!.unobserve(this.innerBoxElement!)
-      },
-      goOnListen() {
-        this.resizeObserver!.observe(this.outBoxElement!)
-        this.resizeObserver!.observe(this.innerBoxElement!)
-      }
-    }
+
+const outBoxSizeInfo = ref("")
+const innerBoxSizeInfo = ref("")
+const offset = ref(2)
+const boxDisplay = ref(false)
+const outBoxElement = ref(null as UniElement | null)
+const innerBoxElement = ref(null as UniElement | null)
+const resizeObserver = ref(null as UniResizeObserver | null)
+
+type DataType = {
+  outBoxElementOnResize: boolean,
+}
+
+const data = reactive({
+  outBoxElementOnResize: false,
+} as DataType)
+
+function innerBoxClick() {
+  if (innerBoxElement.value != null) {
+    innerBoxElement.value!.style.setProperty("width", innerBoxElement.value!.offsetWidth + offset.value + 'px')
+    innerBoxElement.value!.style.setProperty("height", innerBoxElement.value!.offsetWidth + offset.value + 'px')
   }
+}
+
+function outBoxClick() {
+  if (outBoxElement.value != null) {
+    outBoxElement.value!.style.setProperty("width", outBoxElement.value!.offsetWidth + offset.value + 'px')
+    outBoxElement.value!.style.setProperty("height", outBoxElement.value!.offsetWidth + offset.value + 'px')
+  }
+}
+
+function revertBoxSize() {
+  if (outBoxElement.value != null) {
+    outBoxElement.value!.style.setProperty("width", "140px")
+    outBoxElement.value!.style.setProperty("height", "140px")
+  }
+  if (innerBoxElement.value != null) {
+    innerBoxElement.value!.style.setProperty("width", "80px")
+    innerBoxElement.value!.style.setProperty("height", "80px")
+  }
+}
+
+//自动化测试专用
+function setOutBoxMarginLeft(value : string) {
+  if (outBoxElement.value != null) {
+    data.outBoxElementOnResize = false
+    outBoxElement.value!.style.setProperty("margin-left", value)
+  }
+}
+
+function toggleDisplay() {
+  boxDisplay.value = !boxDisplay.value
+}
+
+function analysisResizeObserverEntry(entry : UniResizeObserverEntry) : string {
+  const contentBoxSize = entry.contentBoxSize[0]
+  const borderBoxSize = entry.borderBoxSize[0]
+  const devicePixelContentBoxSize = entry.devicePixelContentBoxSize[0]
+  return "borderBoxSize: \n{blockSize:" + borderBoxSize.blockSize + ", inlineSize:" + borderBoxSize.inlineSize + "}\n" +
+    "contentBoxSize: \n{blockSize:" + contentBoxSize.blockSize + ", inlineSize:" + contentBoxSize.inlineSize + "}\n" +
+    "devicePixelContentBoxSize: \n{blockSize:" + devicePixelContentBoxSize.blockSize + ", inlineSize:" + devicePixelContentBoxSize.inlineSize + "}\n" +
+    "contentRect: \n{x:" + entry.contentRect.x + ", y:" + entry.contentRect.y + ", width:" + entry.contentRect.width + ", height:" + entry.contentRect.height + "}"
+}
+
+function cancelListen() {
+  // resizeObserver.value?.unobserve()
+  resizeObserver.value!.unobserve(outBoxElement.value!)
+  resizeObserver.value!.unobserve(innerBoxElement.value!)
+}
+
+function goOnListen() {
+  resizeObserver.value!.observe(outBoxElement.value!)
+  resizeObserver.value!.observe(innerBoxElement.value!)
+}
+
+onBackPress(() : boolean => {
+  if (resizeObserver.value != null) {
+    resizeObserver.value!.disconnect()
+  }
+  return false
+})
+
+onReady(() => {
+  if (resizeObserver.value == null) {
+    resizeObserver.value = new UniResizeObserver((entries : Array<UniResizeObserverEntry>) => {
+
+      entries.forEach(entry => {
+        if (entry.target == outBoxElement.value) {
+          outBoxSizeInfo.value = analysisResizeObserverEntry(entry)
+          data.outBoxElementOnResize = true
+        } else if (entry.target == innerBoxElement.value) {
+          innerBoxSizeInfo.value = analysisResizeObserverEntry(entry)
+        }
+      })
+    })
+    outBoxElement.value = uni.getElementById("outBox")
+    if (outBoxElement.value != null) {
+      resizeObserver.value!.observe(outBoxElement.value!)
+    }
+    innerBoxElement.value = uni.getElementById("innerBox")
+    if (innerBoxElement.value != null) {
+      resizeObserver.value!.observe(innerBoxElement.value!)
+    }
+    boxDisplay.value = true
+  }
+})
+
+defineExpose({
+  data,
+  setOutBoxMarginLeft
+})
 </script>
 
 <style>

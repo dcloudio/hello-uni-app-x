@@ -7,36 +7,35 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import {
     state,
     setLifeCycleNum
   } from '@/store/index.uts'
 
-  export default {
-    data() {
-      return {
-        title: 'dialog 1-1',
-      }
-    },
-    onReady() {
-      console.log('dialog 1-1 onReady')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 2)
-    },
-    onUnload() {
-      console.log('dialog 1-1 onUnload')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum - 5)
-    },
-    methods: {
-      closeThisDialog() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-        })
-      }
+  const title = ref('dialog 1-1')
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+      })
     }
   }
+
+  onReady(() => {
+    console.log('dialog 1-1 onReady')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 2)
+  })
+
+  onUnload(() => {
+    console.log('dialog 1-1 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
 </script>
 
 <style>

@@ -8,10 +8,10 @@
       :refresher-threshold="300" :refresher-max-drag-distance="299"
       @scroll="onScroll" :bounces="false"
       >
-      <view class="head-img-box-2" ref="head-img-box-2">
-        <image class="img" ref="head-img-2" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
+      <view class="head-img-box-2" ref="headImgBox2">
+        <image class="img" ref="headImg2" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
       </view>
-      <view class="user-info" ref="user-info">
+      <view class="user-info" ref="userInfo">
         <image class="user-avatar" src="../../../static/test-image/logo.png" mode="widthFix"></image>
         <view class="font-box">
           <text class="username">uni-app-x</text>
@@ -27,7 +27,7 @@
       <!--#ifdef APP -->
       <view slot="refresher">
         <view class="head-img-box-1">
-          <image class="img" ref="head-img-1" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
+          <image class="img" ref="headImg1" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
         </view>
       </view>
       <!--#endif-->
@@ -36,57 +36,74 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        $elementMap: new Map<string, UniElement>()
+<script setup lang="uts">
+  // Template refs
+  const headImg1 = ref<UniElement | null>(null)
+  const headImg2 = ref<UniElement | null>(null)
+  const userInfo = ref<UniElement | null>(null)
+  const headImgBox2 = ref<UniElement | null>(null)
+
+  const $elementMap = ref(new Map<string, UniElement>())
+
+  // 工具方法，用于快速设置 Element 的 style
+  function setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
+    let element : UniElement | null = $elementMap.value.get(refName)
+    if (element == null) {
+      // Map ref name to corresponding ref variable
+      if (refName == 'head-img-1') {
+        element = headImg1.value
+      } else if (refName == 'head-img-2') {
+        element = headImg2.value
+      } else if (refName == 'user-info') {
+        element = userInfo.value
+      } else if (refName == 'head-img-box-2') {
+        element = headImgBox2.value
       }
-    },
-    methods: {
-      onScroll(e : ScrollEvent) {
-        const {scrollTop} = e.detail
-        let y : number = scrollTop - 110
-        let s : number = (100 - scrollTop/3)/100
-        if(y < 0){
-          y = 0
-        }
-        if(s < 0.7){
-          s = 0.7
-        }
-        let x : number = (1 - s) * -100
-        this.setElementStyle("user-info", "transform", `translate(${x}px, ${y + (s-1)* -50}px) scale(${s})`)
-        this.setElementStyle("head-img-box-2", "transform", `translateY(${y}px)`)
-      },
-      onRefresherpulling(e : RefresherEvent) {
-        // console.log('onRefresherpulling',e.detail.dy)
-        let pullingDistance : number = e.detail.dy
-        this.setElementStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
-        this.setElementStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
-      },
-      // 工具方法，用于快速设置 Element 的 style
-      setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-        let element : UniElement | null = (this.$data['$elementMap'] as Map<string, UniElement>).get(refName)
-        if (element == null) {
-          element = this.$refs[refName] as UniElement;
-          (this.$data['$elementMap'] as Map<string, UniElement>).set(refName, element)
-        }
-        element.style.setProperty(propertyName, propertyStyle);
-      },
-      back() {
-        uni.navigateBack({
-          success(result) {
-            console.log('navigateBack success', result.errMsg)
-          },
-          fail(error) {
-            console.log('navigateBack fail', error.errMsg)
-          },
-          complete(result) {
-            console.log('navigateBack complete', result.errMsg)
-          }
-        })
+
+      if (element != null) {
+        $elementMap.value.set(refName, element)
       }
     }
+
+    if (element != null) {
+      element.style.setProperty(propertyName, propertyStyle);
+    }
+  }
+
+  function onScroll(e : ScrollEvent) {
+    const {scrollTop} = e.detail
+    let y : number = scrollTop - 110
+    let s : number = (100 - scrollTop/3)/100
+    if(y < 0){
+      y = 0
+    }
+    if(s < 0.7){
+      s = 0.7
+    }
+    let x : number = (1 - s) * -100
+    setElementStyle("user-info", "transform", `translate(${x}px, ${y + (s-1)* -50}px) scale(${s})`)
+    setElementStyle("head-img-box-2", "transform", `translateY(${y}px)`)
+  }
+
+  function onRefresherpulling(e : RefresherEvent) {
+    // console.log('onRefresherpulling',e.detail.dy)
+    let pullingDistance : number = e.detail.dy
+    setElementStyle("head-img-1", 'transform', `scale(${pullingDistance / 200 + 1})`)
+    setElementStyle("head-img-2", 'transform', `scale(${pullingDistance / 200 + 1})`)
+  }
+
+  function back() {
+    uni.navigateBack({
+      success(result) {
+        console.log('navigateBack success', result.errMsg)
+      },
+      fail(error) {
+        console.log('navigateBack fail', error.errMsg)
+      },
+      complete(result) {
+        console.log('navigateBack complete', result.errMsg)
+      }
+    })
   }
 </script>
 

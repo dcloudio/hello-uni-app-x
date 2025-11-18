@@ -15,60 +15,61 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import {
     state,
     setLifeCycleNum
   } from '@/store/index.uts'
 
-  export default {
-    data() {
-      return {
-        title: 'dialog 4'
-      }
-    },
-    onShow() {
-      console.log('dialog 4 onShow')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum + 1)
-    },
-    onUnload() {
-      console.log('dialog 4 onUnload')
-      // 自动化测试
-      setLifeCycleNum(state.lifeCycleNum - 5)
-    },
-    methods: {
-      closeDialog() {
-        uni.closeDialogPage({
-          success(res) {
-            console.log('closeDialog success', res)
-          },
-          fail(err) {
-            console.log('closeDialog fail', err)
-          },
-          complete(res) {
-            console.log('closeDialog complete', res)
-          }
-        })
+  const title = ref('dialog 4')
+
+  onPageShow(() => {
+    console.log('dialog 4 onShow')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum + 1)
+  })
+
+  onUnload(() => {
+    console.log('dialog 4 onUnload')
+    // 自动化测试
+    setLifeCycleNum(state.lifeCycleNum - 5)
+  })
+
+  function closeDialog() {
+    uni.closeDialogPage({
+      success(res) {
+        console.log('closeDialog success', res)
       },
-      closeThisDialog() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          success(res) {
-            console.log('closeThisDialog success', res)
-          },
-          fail(err) {
-            console.log('closeThisDialog fail', err)
-          },
-          complete(res) {
-            console.log('closeThisDialog complete', res)
-          }
-        })
+      fail(err) {
+        console.log('closeDialog fail', err)
       },
-      openDialog3(){
-        uni.openDialogPage({url: '/pages/API/dialog-page/dialog-3'})
+      complete(res) {
+        console.log('closeDialog complete', res)
       }
+    })
+  }
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+        }
+      })
     }
+  }
+
+  function openDialog3(){
+    uni.openDialogPage({url: '/pages/API/dialog-page/dialog-3'})
   }
 </script>
 

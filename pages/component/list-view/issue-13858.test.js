@@ -19,7 +19,7 @@ describe('issue-13858', () => {
     await page.waitFor(500)
     const {
       childMountedTriggeredCount
-    } = await page.data()
+    } = await page.data('data')
     expect(childMountedTriggeredCount).toBe(1)
   })
 

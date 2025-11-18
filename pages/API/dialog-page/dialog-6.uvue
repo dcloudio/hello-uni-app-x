@@ -9,49 +9,47 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  const currentPage = getCurrentInstance()?.proxy?.$page
+
   import { state, setLifeCycleNum } from '@/store/index.uts'
-  
-  export default {
-    data() {
-      return {
-        title: 'dialog 6',
+
+  const title = ref('dialog 6')
+
+  onPageShow(() => {
+    console.log('dialog 6 onShow')
+    uni.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#ff0000',
+      success(res) {
+        console.log('setNavigationBarColor success', res)
+        setLifeCycleNum(state.lifeCycleNum + 1)
+      },
+      fail(err) {
+        console.log('setNavigationBarColor fail', err)
+        setLifeCycleNum(state.lifeCycleNum - 1)
+      },
+      complete(res) {
+        console.log('setNavigationBarColor complete', res)
+        setLifeCycleNum(state.lifeCycleNum + 1)
       }
-    },
-    onShow() {
-      console.log('dialog 6 onShow')
-      uni.setNavigationBarColor({
-        frontColor: '#000000',
-        backgroundColor: '#ff0000',
+    })
+  })
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
         success(res) {
-          console.log('setNavigationBarColor success', res)
-          setLifeCycleNum(state.lifeCycleNum + 1)
+          console.log('closeThisDialog success', res)
         },
         fail(err) {
-          console.log('setNavigationBarColor fail', err)
-          setLifeCycleNum(state.lifeCycleNum - 1)
+          console.log('closeThisDialog fail', err)
         },
         complete(res) {
-          console.log('setNavigationBarColor complete', res)
-          setLifeCycleNum(state.lifeCycleNum + 1)
+          console.log('closeThisDialog complete', res)
         }
       })
-    },
-    methods: {
-      closeThisDialog() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          success(res) {
-            console.log('closeThisDialog success', res)
-          },
-          fail(err) {
-            console.log('closeThisDialog fail', err)
-          },
-          complete(res) {
-            console.log('closeThisDialog complete', res)
-          }
-        })
-      }
     }
   }
 </script>

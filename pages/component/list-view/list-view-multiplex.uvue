@@ -4,7 +4,7 @@
       <button class="button_item" @click="delayShow">测试延时显示</button>
       <button class="button_item" @click="switchItemContent">修改item子元素</button>
     </scroll-view>
-    <list-view v-show="list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
+    <list-view v-show="data.list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
       <list-item v-for="index in item_count" :id="'item_'+index" class="item" @click="itemClick(index)">
         <view style="flex-direction: row;">
           <text>item-------<text>{{index}}</text></text>
@@ -13,7 +13,7 @@
             <text class="tip_text" v-for="tab in 5">元素{{tab}}</text>
           </scroll-view>
         </view>
-        <text v-show="displayArrow">item-------<text>{{index}}</text></text>
+        <text v-show="data.displayArrow">item-------<text>{{index}}</text></text>
 
         <switch :checked="true"></switch>
       </list-item>
@@ -21,50 +21,65 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        item_count: 20,
-        list_show: true,
-        listViewElement: null as UniListViewElement | null,
-        displayArrow: false
-      }
-    },
-    onReady() {
-      this.listViewElement = uni.getElementById<UniListViewElement>('listview')
-    },
-    methods: {
-      onScrollTolower(_ : ScrollToLowerEvent) {
-        setTimeout(() => {
-          this.item_count += 20
-        }, 300)
-      },
-      //用于自动化测试
-      listViewScrollByY(y : number) {
-        this.listViewElement?.scrollBy(0, y)
-      },
-      itemClick(index : number) {
-        console.log("itemTextClick---" + index)
-      },
-      delayShow() {
-        this.list_show = !this.list_show
-        this.item_count += 20
-        //延时显示list-view 测试list-item延时显示bug
-        setTimeout(() => {
-          this.list_show = !this.list_show
-        }, 400)
-      },
-      switchItemContent() {
-        this.displayArrow = !this.displayArrow
-        this.modifyItemPadding(1)
-      },
-      modifyItemPadding(index: number) {
-        var element = uni.getElementById("item_"+index)
-        element?.style.setProperty("padding", "0px")
-      }
-    }
-  }
+<script setup lang="uts">
+
+const item_count = ref(20)
+const listViewElement = ref(null as UniListViewElement | null)
+
+type DataType = {
+  list_show: boolean,
+  displayArrow: boolean,
+}
+
+const data = reactive({
+  list_show: true,
+  displayArrow: false,
+} as DataType)
+
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    item_count.value += 20
+  }, 300)
+}
+
+//用于自动化测试
+function listViewScrollByY(y : number) {
+  listViewElement.value?.scrollBy(0, y)
+}
+
+function itemClick(index : number) {
+  console.log("itemTextClick---" + index)
+}
+
+function delayShow() {
+  data.list_show = !data.list_show
+  item_count.value += 20
+  //延时显示list-view 测试list-item延时显示bug
+  setTimeout(() => {
+    data.list_show = !data.list_show
+  }, 400)
+}
+
+function modifyItemPadding(index: number) {
+  var element = uni.getElementById("item_"+index)
+  element?.style.setProperty("padding", "0px")
+}
+
+function switchItemContent() {
+  data.displayArrow = !data.displayArrow
+  modifyItemPadding(1)
+}
+
+onReady(() => {
+  listViewElement.value = uni.getElementById<UniListViewElement>('listview')
+})
+
+defineExpose({
+  data,
+  listViewScrollByY,
+  delayShow,
+  switchItemContent
+})
 </script>
 
 <style>

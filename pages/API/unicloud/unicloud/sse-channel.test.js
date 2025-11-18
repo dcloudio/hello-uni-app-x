@@ -15,14 +15,10 @@ describe('sse-channel', () => {
     return
   }
 
-
-
   it('basic', async () => {
     await page.callMethod('receiveMessage')
     await page.waitFor(5000)
-    const {
-      messages
-    } = await page.data()
+    const messages = await page.data('data.messages')
     expect(messages.length).toBe(2)
   })
 });

@@ -22,6 +22,10 @@ describe("payment", () => {
 
   let page;
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
   });
@@ -31,7 +35,7 @@ describe("payment", () => {
   it("trigger pulldown refresh by swipe", async () => {
     await page.waitFor('view')
     await page.waitFor(4000)
-    await page.setData({
+    await setPageData({
       pulldownRefreshTriggered: false
     })
 
@@ -42,7 +46,7 @@ describe("payment", () => {
         y: 500
       })
     }
-    expect(await page.data('startPullDownRefreshStaus')).toBe(true)
+    expect(await page.data('data.startPullDownRefreshStaus')).toBe(true)
 
     await program.swipe({
       startPoint: {
@@ -56,8 +60,8 @@ describe("payment", () => {
       duration: 1000
     })
     await page.waitFor(1500)
-    expect(await page.data('pulldownRefreshTriggered')).toBe(true)
+    expect(await page.data('data.pulldownRefreshTriggered')).toBe(true)
     // 目前 stopPullDownRefreshStatus  是空方法无需测试
-    // expect(await page.data('stopPullDownRefreshStatus')).toBe(true)
+    // expect(await page.data('data.stopPullDownRefreshStatus')).toBe(true)
   });
 });

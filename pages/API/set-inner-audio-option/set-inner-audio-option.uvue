@@ -28,7 +28,6 @@
       <button @click="pauseBackgroundMusic" type="primary" class="radioGroup">暂停背景音频</button>
       <button @click="stopBackgroundMusic" type="primary" class="radioGroup">停止背景音频</button>
 
-
       <button @click="playInnerMusic" type="primary" class="radioGroup">播放音频</button>
       <button @click="pauseInnerMusic" type="primary" class="radioGroup">暂停音频</button>
       <button @click="stopInnerMusic" type="primary" class="radioGroup">停止音频</button>
@@ -44,99 +43,123 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        backgroundManager: null as BackgroundAudioManager | null,
-        innerAudio: null as InnerAudioContext | null,
-        isBackgroundAudioPaused: false,
-        mixWithOther: true,
-        speakerOn: true,
-        obeyMuteSwitch: true
-      }
-    },
-    onUnload() {
-      this.backgroundManager?.stop()
-      this.innerAudio?.stop()
-      this.innerAudio?.destroy()
-    },
-    methods: {
-      playBackgroundMusic() {
-        if (this.backgroundManager == null) {
-          this.backgroundManager = uni.getBackgroundAudioManager()
-          this.backgroundManager.onPause(() => {
-            this.isBackgroundAudioPaused = true
-          })
-        } else {
-          this.backgroundManager!.stop()
-        }
-        this.backgroundManager!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
-        this.backgroundManager!.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
-        this.backgroundManager!.play()
-      },
-      pauseBackgroundMusic() {
-        this.backgroundManager?.pause()
-      },
-      stopBackgroundMusic() {
-        this.backgroundManager?.stop()
-      },
-      playInnerMusic() {
-        if (this.innerAudio == null)
-          this.innerAudio = uni.createInnerAudioContext()
-        else {
-          this.innerAudio!.stop()
-        }
-        this.innerAudio!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
-        this.innerAudio!.play()
-      },
-      pauseInnerMusic() {
-        this.innerAudio?.pause()
-      },
-      stopInnerMusic() {
-        this.innerAudio?.stop()
-      },
-      handleRadioChange(event : UniRadioGroupChangeEvent, propertyName : 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
-        const value = event.detail.value == "1"
-
-        // 使用 switch 语句，意图更明确
-        switch (propertyName) {
-          case 'mixWithOther':
-            this.mixWithOther = value;
-            break;
-          case 'speakerOn':
-            this.speakerOn = value;
-            break;
-          case 'obeyMuteSwitch':
-            this.obeyMuteSwitch = value;
-            break;
-        }
-
-        uni.setInnerAudioOption({
-          mixWithOther: this.mixWithOther,
-          speakerOn: this.speakerOn,
-          obeyMuteSwitch: this.obeyMuteSwitch
-        })
-      },
-      testInnerAudioOption() {
-        uni.setInnerAudioOption({
-          mixWithOther: false
-        })
-      }
-    }
+<script setup lang="uts">
+  type DataType = {
+    isBackgroundAudioPaused: boolean,
+    mixWithOther: boolean,
+    speakerOn: boolean,
+    obeyMuteSwitch: boolean,
   }
+
+  // 使用reactive包装数据，便于自动化测试获取
+  const data = reactive({
+    isBackgroundAudioPaused: false,
+    mixWithOther: true,
+    speakerOn: true,
+    obeyMuteSwitch: true,
+  } as DataType)
+
+  const backgroundManager = ref<BackgroundAudioManager | null>(null)
+  const innerAudio = ref<InnerAudioContext | null>(null)
+
+  onUnload(() => {
+    backgroundManager.value?.stop()
+    innerAudio.value?.stop()
+    innerAudio.value?.destroy()
+  })
+
+  function playBackgroundMusic() {
+    if (backgroundManager.value == null) {
+      backgroundManager.value = uni.getBackgroundAudioManager()
+      backgroundManager.value.onPause(() => {
+        data.isBackgroundAudioPaused = true
+      })
+    } else {
+      backgroundManager.value!.stop()
+    }
+    backgroundManager.value!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+    backgroundManager.value!.coverImgUrl = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/music-a.png';
+    backgroundManager.value!.play()
+  }
+
+  function pauseBackgroundMusic() {
+    backgroundManager.value?.pause()
+  }
+
+  function stopBackgroundMusic() {
+    backgroundManager.value?.stop()
+  }
+
+  function playInnerMusic() {
+    if (innerAudio.value == null)
+      innerAudio.value = uni.createInnerAudioContext()
+    else {
+      innerAudio.value!.stop()
+    }
+    innerAudio.value!.src = 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3'
+    innerAudio.value!.play()
+  }
+
+  function pauseInnerMusic() {
+    innerAudio.value?.pause()
+  }
+
+  function stopInnerMusic() {
+    innerAudio.value?.stop()
+  }
+
+  function handleRadioChange(event : UniRadioGroupChangeEvent, propertyName : 'mixWithOther' | 'speakerOn' | 'obeyMuteSwitch') {
+    const value = event.detail.value == "1"
+
+    // 使用 switch 语句，意图更明确
+    switch (propertyName) {
+      case 'mixWithOther':
+        data.mixWithOther = value;
+        break;
+      case 'speakerOn':
+        data.speakerOn = value;
+        break;
+      case 'obeyMuteSwitch':
+        data.obeyMuteSwitch = value;
+        break;
+    }
+
+    uni.setInnerAudioOption({
+      mixWithOther: data.mixWithOther,
+      speakerOn: data.speakerOn,
+      obeyMuteSwitch: data.obeyMuteSwitch
+    })
+  }
+
+  function testInnerAudioOption() {
+    uni.setInnerAudioOption({
+      mixWithOther: false
+    })
+  }
+
+  defineExpose({
+    data,
+    playBackgroundMusic,
+    testInnerAudioOption,
+    playInnerMusic
+  })
+
+
 </script>
 
 <style>
 .labelText {
   margin-left: 8px
 }
+
 .radioGroup {
   margin: 8px
 }
+
 .radioItem {
   margin-left: 16px
 }
+
 .buttonContainer {
   padding: 8px 8px;
 }

@@ -5,9 +5,7 @@ describe('unicloud-import-object', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500)
-    await page.setData({
-      isUniTest: true
-    })
+    await page.setData({ data: { isUniTest: true } })
   })
   it('importObject', async () => {
     await page.callMethod('addTodo')
@@ -16,19 +14,17 @@ describe('unicloud-import-object', () => {
     await page.callMethod('failWithNumberErrCode')
     await page.callMethod('success')
 
-    const {
-      todoTitle,
-      todoContent,
-      returnTodoTitle,
-      returnTodoContent,
-      genericDemoReturnTodoTitle,
-      genericDemoReturnTodoContent,
-      failErrCode,
-      failErrSubject,
-      failErrDetailTips,
-      failNumberErrCode,
-      successErrCode,
-    } = await page.data()
+    const todoTitle = await page.data('data.todoTitle')
+    const todoContent = await page.data('data.todoContent')
+    const returnTodoTitle = await page.data('data.returnTodoTitle')
+    const returnTodoContent = await page.data('data.returnTodoContent')
+    const genericDemoReturnTodoTitle = await page.data('data.genericDemoReturnTodoTitle')
+    const genericDemoReturnTodoContent = await page.data('data.genericDemoReturnTodoContent')
+    const failErrCode = await page.data('data.failErrCode')
+    const failErrSubject = await page.data('data.failErrSubject')
+    const failErrDetailTips = await page.data('data.failErrDetailTips')
+    const failNumberErrCode = await page.data('data.failNumberErrCode')
+    const successErrCode = await page.data('data.successErrCode')
 
     expect(returnTodoTitle).toBe(todoTitle)
     expect(returnTodoContent).toBe(todoContent)

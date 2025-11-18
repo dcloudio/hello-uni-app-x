@@ -33,10 +33,9 @@ describe('Api-uts-createWorker', () => {
     await page.callMethod('sendMessage');
     await page.waitFor(500);
     await page.waitFor(async () => {
-      const taskResult = await page.data('taskResult')
-      return taskResult._value.length > 0
+      const taskResult = await page.callMethod('test_taskResult')
+      return taskResult.length > 0
     });
-    const taskResult = await page.data('taskResult')
-    expect(taskResult._value).toBe('2');
+    expect(await page.callMethod('test_taskResult')).toBe('2');
   });
 });

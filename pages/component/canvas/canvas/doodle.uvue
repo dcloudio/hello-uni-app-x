@@ -5,92 +5,94 @@
   </view>
 </template>
 
-<script>
-  type Point = {
-    x : number
-    y : number
-  };
+<script setup lang="uts">
 
-  export default {
-    data() {
-      return {
-        lastPointX: 0,
-        lastPointY: 0,
-        offsetX: 0,
-        offsetY: 0,
-        renderingContext: null as CanvasRenderingContext2D | null,
-      }
-    },
-    onReady() {
-      uni.createCanvasContextAsync({
-        id: 'tablet',
-        // component: this,
-        success: (context : CanvasContext) => {
-          console.log('success');
-          this.renderingContext = context.getContext('2d')!;
-          const canvas = this.renderingContext!.canvas;
 
-          const dpr = uni.getWindowInfo().pixelRatio;
-          canvas.width = canvas.offsetWidth * dpr
-          canvas.height = canvas.offsetHeight * dpr
-          this.renderingContext!.scale(dpr, dpr)
+type Point = {
+  x : number
+  y : number
+}
 
-          // #ifndef MP
-          const elRect = canvas.getBoundingClientRect()
-          this.offsetX = elRect.left
-          this.offsetY = elRect.top
-          // #endif
-        }
-      })
-    },
-    methods: {
-      touchStart(event : TouchEvent) {
-        const position = this.getPosition(event)
-        this.lastPointX = position.x
-        this.lastPointY = position.y
-      },
-      touchMove(event : TouchEvent) {
-        const position = this.getPosition(event)
-        const x = position.x
-        const y = position.y
+// Data
+const lastPointX = ref(0)
+const lastPointY = ref(0)
+const offsetX = ref(0)
+const offsetY = ref(0)
+const renderingContext = ref(null as CanvasRenderingContext2D | null)
 
-        const ctx = this.renderingContext!
-        ctx.lineWidth = 5
-        ctx.lineCap = "round"
-        ctx.lineJoin = "round"
-        ctx.beginPath()
-        ctx.moveTo(this.lastPointX, this.lastPointY)
-        ctx.lineTo(x, y)
-        ctx.stroke()
+// Methods
+function getPosition(event : TouchEvent) : Point {
+  const touch = event.touches[0]
+  // #ifndef MP-WEIXIN
+  return {
+    x: touch.clientX - offsetX.value,
+    y: touch.clientY - offsetY.value
+  } as Point
+  // #endif
 
-        this.lastPointX = x
-        this.lastPointY = y
-      },
-      touchEnd(_ : TouchEvent) {
-      },
-      doClear() {
-        if (this.renderingContext != null) {
-          this.renderingContext!.clearRect(0, 0, this.renderingContext!.canvas.width, this.renderingContext!.canvas.height)
-        }
-      },
-      getPosition(event : TouchEvent) : Point {
-        const touch = event.touches[0]
-        // #ifndef MP-WEIXIN
-        return {
-          x: touch.clientX - this.offsetX,
-          y: touch.clientY - this.offsetY
-        } as Point
-        // #endif
+  // #ifdef MP-WEIXIN
+  return {
+    x: touch.x,
+    y: touch.y
+  } as Point
+  // #endif
+}
 
-        // #ifdef MP-WEIXIN
-        return {
-          x: touch.x,
-          y: touch.y
-        } as Point
-        // #endif
-      }
-    }
+function touchStart(event : TouchEvent) {
+  const position = getPosition(event)
+  lastPointX.value = position.x
+  lastPointY.value = position.y
+}
+
+function touchMove(event : TouchEvent) {
+  const position = getPosition(event)
+  const x = position.x
+  const y = position.y
+
+  const ctx = renderingContext.value!
+  ctx.lineWidth = 5
+  ctx.lineCap = "round"
+  ctx.lineJoin = "round"
+  ctx.beginPath()
+  ctx.moveTo(lastPointX.value, lastPointY.value)
+  ctx.lineTo(x, y)
+  ctx.stroke()
+
+  lastPointX.value = x
+  lastPointY.value = y
+}
+
+function touchEnd(event : TouchEvent) {
+}
+
+function doClear() {
+  if (renderingContext.value != null) {
+    renderingContext.value!.clearRect(0, 0, renderingContext.value!.canvas.width, renderingContext.value!.canvas.height)
   }
+}
+
+// Lifecycle
+onReady(() => {
+  uni.createCanvasContextAsync({
+    id: 'tablet',
+    success: (context : CanvasContext) => {
+      console.log('success')
+      renderingContext.value = context.getContext('2d')!
+      const canvas = renderingContext.value!.canvas
+
+      const dpr = uni.getWindowInfo().pixelRatio
+      canvas.width = canvas.offsetWidth * dpr
+      canvas.height = canvas.offsetHeight * dpr
+      renderingContext.value!.scale(dpr, dpr)
+
+      // #ifndef MP
+      const elRect = canvas.getBoundingClientRect()
+      offsetX.value = elRect.left
+      offsetY.value = elRect.top
+      // #endif
+    }
+  })
+})
 </script>
 
 <style>
