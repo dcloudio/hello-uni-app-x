@@ -71,52 +71,50 @@
   </scroll-view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      widthPx: 100,
-      heightPx: 100,
-      borderColor: 'blue',
-      borderWidthKw: 'medium',
-      colors: ['blue', 'red', 'green', 'yellow'],
-      colorIndex: 0
-    }
-  },
-  computed: {
-    dynamicStyle() {
-      return {
-        width: this.widthPx + 'px',
-        height: this.heightPx + 'px',
-        borderColor: this.borderColor,
-        borderWidth: this.borderWidthKw
-      }
-    }
-  },
-  methods: {
-    increaseSize() {
-      this.widthPx += 10
-      this.heightPx += 10
-    },
-    decreaseSize() {
-      this.widthPx = Math.max(20, this.widthPx - 10)
-      this.heightPx = Math.max(20, this.heightPx - 10)
-    },
-    toggleBorderWidth() {
-      this.borderWidthKw = this.borderWidthKw === 'medium' ? 'thick' : 'medium'
-    },
-    nextColor() {
-      this.colorIndex = (this.colorIndex + 1) % this.colors.length
-      this.borderColor = this.colors[this.colorIndex]
-    },
-    reset() {
-      this.widthPx = 100
-      this.heightPx = 100
-      this.borderColor = 'blue'
-      this.borderWidthKw = 'medium'
-      this.colorIndex = 0
-    }
+<script setup>
+import { ref, computed } from 'vue'
+
+const widthPx = ref(100)
+const heightPx = ref(100)
+const borderColor = ref('blue')
+const borderWidthKw = ref('medium')
+const colors = ['blue', 'red', 'green', 'yellow']
+const colorIndex = ref(0)
+
+const dynamicStyle = computed(() => {
+  return {
+    width: widthPx.value + 'px',
+    height: heightPx.value + 'px',
+    borderColor: borderColor.value,
+    borderWidth: borderWidthKw.value
   }
+})
+
+const increaseSize = () => {
+  widthPx.value += 10
+  heightPx.value += 10
+}
+
+const decreaseSize = () => {
+  widthPx.value = Math.max(20, widthPx.value - 10)
+  heightPx.value = Math.max(20, heightPx.value - 10)
+}
+
+const toggleBorderWidth = () => {
+  borderWidthKw.value = borderWidthKw.value === 'medium' ? 'thick' : 'medium'
+}
+
+const nextColor = () => {
+  colorIndex.value = (colorIndex.value + 1) % colors.length
+  borderColor.value = colors[colorIndex.value]
+}
+
+const reset = () => {
+  widthPx.value = 100
+  heightPx.value = 100
+  borderColor.value = 'blue'
+  borderWidthKw.value = 'medium'
+  colorIndex.value = 0
 }
 </script>
 
@@ -184,24 +182,21 @@ export default {
   text-align: center;
 }
 
-/* 基础边框容器 */
 .box {
   border-style: solid;
   border-radius: 6px;
 }
 
-/* 尺寸类 */
+
 .size-80 { width: 80px; height: 80px; }
 .size-100 { width: 100px; height: 100px; }
 .size-140 { width: 140px; height: 140px; }
 
-/* 边框颜色类 */
 .bc-blue { border-color: blue; }
 .bc-red { border-color: red; }
 .bc-green { border-color: green; }
 .bc-yellow { border-color: yellow; }
 
-/* 边框宽度类（关键字） */
 .bw-medium { border-width: medium; }
 .bw-thick { border-width: thick; }
 </style>
