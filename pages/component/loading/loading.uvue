@@ -2,7 +2,7 @@
   <scroll-view class="container">
     <!-- 标题 -->
     <view class="header">
-      <text class="title">loading-x 样式测试页</text>
+      <text class="title">loading 样式测试页</text>
       <text class="subtitle">class / style / 动态 style 对比</text>
     </view>
 
@@ -12,19 +12,19 @@
       <view class="row">
         <view class="item">
           <text class="label">100×100 / blue / medium</text>
-          <loading-x class="box size-100 bc-blue bw-medium" />
+          <loading class="box size-100 bc-blue bw-medium" />
         </view>
         <view class="item">
           <text class="label">100×100 / red / thick</text>
-          <loading-x class="box size-100 bc-red bw-thick" />
+          <loading class="box size-100 bc-red bw-thick" />
         </view>
         <view class="item">
           <text class="label">80×80 / green / medium</text>
-          <loading-x class="box size-80 bc-green bw-medium" />
+          <loading class="box size-80 bc-green bw-medium" />
         </view>
         <view class="item">
           <text class="label">140×140 / yellow / thick</text>
-          <loading-x class="box size-140 bc-yellow bw-thick" />
+          <loading class="box size-140 bc-yellow bw-thick" />
         </view>
       </view>
     </view>
@@ -35,14 +35,14 @@
       <view class="row">
         <view class="item">
           <text class="label">80×80 / red / thick</text>
-          <loading-x
+          <loading
             class="box"
             :style="{ width:'80px', height:'80px', borderColor:'red', borderWidth:'thick' }"
           />
         </view>
         <view class="item">
           <text class="label">120×120 / green / medium</text>
-          <loading-x
+          <loading
             class="box"
             :style="{ width:'120px', height:'120px', borderColor:'green', borderWidth:'medium' }"
           />
@@ -64,15 +64,15 @@
       <view class="row">
         <view class="item">
           <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / {{ borderWidthKw }}</text>
-          <loading-x class="box" :style="dynamicStyle" />
+          <loading class="box" :style="dynamicStyle" />
         </view>
       </view>
     </view>
   </scroll-view>
 </template>
 
-<script setup lang="uts">
-
+<script setup>
+import { ref, computed } from 'vue'
 
 const widthPx = ref(100)
 const heightPx = ref(100)
@@ -90,26 +90,26 @@ const dynamicStyle = computed(() => {
   }
 })
 
-function increaseSize() {
+const increaseSize = () => {
   widthPx.value += 10
   heightPx.value += 10
 }
 
-function decreaseSize() {
+const decreaseSize = () => {
   widthPx.value = Math.max(20, widthPx.value - 10)
   heightPx.value = Math.max(20, heightPx.value - 10)
 }
 
-function toggleBorderWidth() {
+const toggleBorderWidth = () => {
   borderWidthKw.value = borderWidthKw.value === 'medium' ? 'thick' : 'medium'
 }
 
-function nextColor() {
+const nextColor = () => {
   colorIndex.value = (colorIndex.value + 1) % colors.length
   borderColor.value = colors[colorIndex.value]
 }
 
-function reset() {
+const reset = () => {
   widthPx.value = 100
   heightPx.value = 100
   borderColor.value = 'blue'
@@ -182,24 +182,21 @@ function reset() {
   text-align: center;
 }
 
-/* 基础边框容器 */
 .box {
   border-style: solid;
   border-radius: 6px;
 }
 
-/* 尺寸类 */
+
 .size-80 { width: 80px; height: 80px; }
 .size-100 { width: 100px; height: 100px; }
 .size-140 { width: 140px; height: 140px; }
 
-/* 边框颜色类 */
 .bc-blue { border-color: blue; }
 .bc-red { border-color: red; }
 .bc-green { border-color: green; }
 .bc-yellow { border-color: yellow; }
 
-/* 边框宽度类（关键字） */
 .bw-medium { border-width: medium; }
 .bw-thick { border-width: thick; }
 </style>
