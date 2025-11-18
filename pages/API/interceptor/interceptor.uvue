@@ -4,6 +4,7 @@
     <button @click="removeInterceptor">移除路由拦截器</button>
     <text>点击下方按钮{{ msg }}</text>
     <button @click="navigateTo">navigatorTo API跳转到测试页面</button>
+    <button @click="preventNavigateTo">拦截器阻止 navigatorTo 执行</button>
     <!-- #ifndef MP -->
     <navigator url="./page1">
       <button class="navigatorButton">navigator组件跳转到测试页面</button>
@@ -93,6 +94,22 @@
     })
   }
 
+   const preventNavigateTo = () => {
+      const preventNavigateToInterceptor = {
+        invoke: function (options : NavigateToOptions) {
+            console.log('通过 return false 方式阻止 navigateTo 执行，传入参数为：', options)
+            uni.showToast({
+              title: '拦截器已阻止跳转'
+            })
+            return false
+          }
+      } as AddInterceptorOptions
+
+      uni.addInterceptor('navigateTo',preventNavigateToInterceptor)
+      navigateTo()
+      uni.removeInterceptor('navigateTo',preventNavigateToInterceptor)
+    }
+
   const switchTab = () => {
     uni.switchTab({
       url: '/pages/tabBar/component',
@@ -120,6 +137,7 @@
     addSwitchTabInterceptor,
     removeSwitchTabInterceptor,
     navigateTo,
-    switchTab
+    switchTab,
+    preventNavigateTo
   })
 </script>
