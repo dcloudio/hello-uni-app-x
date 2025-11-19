@@ -1,31 +1,37 @@
 <template>
-  <view>
-    <view :class="classValue"></view>
-    <button @click="start">start</button>
-    <button @click="reset">reset</button>
-
-    <view style="margin-top: 20px;">
-      <text style="font-size: 18px; font-weight: bold;">text 组件 transition-duration 测试</text>
-    </view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
     <view>
-      <text :class="textClassValue">text transition-duration: 5s</text>
-      <button @click="textStart">text start</button>
-      <button @click="textReset">text reset</button>
-    </view>
+      <view :class="classValue"></view>
+      <button @click="start">start</button>
+      <button @click="reset">reset</button>
 
-    <view style="margin-top: 20px;">
-      <text style="font-size: 18px; font-weight: bold;">image 组件 transition-duration 测试</text>
+      <view style="margin-top: 20px;">
+        <text style="font-size: 18px; font-weight: bold;">text 组件 transition-duration 测试</text>
+      </view>
+      <view>
+        <text :class="textClassValue">text transition-duration: 5s</text>
+        <button @click="textStart">text start</button>
+        <button @click="textReset">text reset</button>
+      </view>
+
+      <view style="margin-top: 20px;">
+        <text style="font-size: 18px; font-weight: bold;">image 组件 transition-duration 测试</text>
+      </view>
+      <view>
+        <image :class="imageClassValue" src="/static/test-image/logo.png"></image>
+        <button @click="imageStart">image start</button>
+        <button @click="imageReset">image reset</button>
+      </view>
     </view>
-    <view>
-      <image :class="imageClassValue" src="/static/test-image/logo.png"></image>
-      <button @click="imageStart">image start</button>
-      <button @click="imageReset">image reset</button>
-    </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
 <script setup lang="uts">
- 
+
   const classValue = ref('box')
   const textClassValue = ref('text-box')
   const imageClassValue = ref('image-box')
@@ -61,12 +67,12 @@
   const jest_reset = () => {
     reset()
   }
-	
+
 	defineExpose({
 	  jest_start,
 	  jest_reset
 	})
-	
+
 </script>
 
 <style>
@@ -82,8 +88,8 @@
   }
 
   .text-box {
-    width: 100px;
-    height: 50px;
+    width: 200px;
+    height: 60px;
     padding: 10px;
     font-size: 16px;
     background-color: lightblue;
@@ -92,7 +98,7 @@
 
   .text-ani {
     transition-duration: 5s;
-    width: 200px;
+    width: 300px;
   }
 
   .image-box {
