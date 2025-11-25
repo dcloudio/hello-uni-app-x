@@ -95,6 +95,7 @@
     <button class="btnstyle" type="primary" @tap="saveFileTest3" id="btn-save-file3">保存临时文件到本地,
       filePath=xxx/path/</button>
 
+    <button class="btnstyle" type="primary" @tap="saveFileAndReadFileTest" id="btn-save-file-read-file">saveFile成功后验证是否可以readFile</button>
     <button class="btnstyle" type="primary" @tap="saveFileSyncTest" id="btn-save-file-sync">同步保存临时文件到本地</button>
     <button class="btnstyle" type="primary" @tap="unzipFileTest" id="btn-unzip-file-sync">解压文件</button>
     <button class="btnstyle" type="primary" @tap="truncateFileSyncTest"
@@ -889,6 +890,49 @@
       }
     } as SaveFileOptions)
   }
+
+  const saveFileAndReadFileTest = (_ : any) => {
+    const fileManager = uni.getFileSystemManager()
+    writeFileSyncTest("")
+
+    fileManager.saveFile({
+      tempFilePath: `${data.basePath}${data.temFile}`,
+      success: (res : SaveFileSuccessResult) => {
+        if (data.logAble) {
+          data.log += 'saveFileTest success:' + JSON.stringify(res) + '\n\n'
+        }
+        fileManager.readFile({
+          encoding: 'utf-8',
+          filePath: res.savedFilePath,
+          success: (res) => {
+            data.log += 'saveFileAndReadFileTest 成功:' + JSON.stringify(res.data) + '\n\n'
+            console.log('success', res)
+            data.readFileRet = 'saveFileAndReadFileTest:ok'
+            data.done = true
+          },
+          fail: (err) => {
+            data.log += 'saveFileAndReadFileTest 失败:' + JSON.stringify(err.errMsg) + '\n\n'
+            data.done = true
+          }
+        })
+
+      },
+
+      fail: (res : IUniError) => {
+        if (data.logAble) {
+          data.log += 'saveFileTest fail:' + JSON.stringify(res) + '\n\n'
+        }
+        console.log('saveFileTest fail', res)
+        data.lastFailError = new UniError(res.errSubject, res.errCode, res.errMsg)
+
+        data.done = true
+      },
+      complete: (_) => {
+        data.done = true
+      }
+    } as SaveFileOptions)
+  }
+
   const saveFileTest1 = (_ : any) => {
     const fileManager = uni.getFileSystemManager()
     writeFileSyncTest("")

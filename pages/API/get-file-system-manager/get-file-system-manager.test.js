@@ -1452,6 +1452,22 @@ describe('ExtApi-FileManagerTest', () => {
         let getSavedFileListRet = await page.data("data.getSavedFileListRet")
         expect(getSavedFileListRet).toEqual('getSavedFileList:ok')
     });
+
+    it('saveFileAndReadFileTest', async () => {
+        await setPageData({
+          logAble: true,
+          basePath: mBasePath,
+          writeFile: 'a/1.txt',
+          temFile: 'a/1.txt',
+          readFileRet: ''
+        })
+        btn = await page.$('#btn-save-file-read-file')
+        await btn.tap()
+        await isDone()
+
+        let getRet = await page.data("data.readFileRet")
+        expect(getRet).toEqual('saveFileAndReadFileTest:ok')
+    });
   }
 
   if (isAndroid) {
