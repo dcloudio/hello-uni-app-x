@@ -107,5 +107,25 @@ describe('/pages/CSS/overflow/overflow-visible-event.uvue', () => {
     await page.waitFor(500);
     res = await page.data('jest_result');
     expect(res).toBe(true)
+    await page.callMethod('jest_restScorllView')
+    await page.waitFor(500);
+  })
+
+  it('Check Overflow Visible Z-Index Click', async () => {
+    await page.callMethod('jest_scrollToZIndexOverflow')
+    await page.waitFor(500);
+    const point_x = await page.data('jest_click_x');
+    const point_y = await page.data('jest_click_y');
+    console.log("input tap" + " " + point_x + " " + point_y);
+    if (isAndroid) {
+      await program.adbCommand("input tap" + " " + point_x + " " + point_y)
+    } else {
+      await program.tap({x: point_x, y: point_y})
+    }
+    await page.waitFor(500);
+    res = await page.data('jest_result');
+    expect(res).toBe(true)
+    await page.callMethod('jest_restScorllView')
+    await page.waitFor(500);
   })
 });

@@ -116,12 +116,12 @@
         this.out_trade_no = this.order_no;
         let productInfo : UTSJSONObject = this.productList.find((item : UTSJSONObject) : boolean => {
           return item['product_id'] == this.product_id;
-        });
+        }) || {};
         let buy_quantity = productInfo.getNumber('buy_quantity') || 1;
         let goods_price = productInfo.getNumber('goods_price') || 1;
         let product_type = productInfo['product_type'];
         // 发起支付
-        this.$refs.payRef.createOrder({
+        this.$refs['payRef'].createOrder({
           provider: "appleiap", // 支付供应商（这里固定为appleiap，代表苹果虚拟支付）
           order_no: this.order_no, // 业务系统订单号（即你自己业务系统的订单表的订单号）
           out_trade_no: this.out_trade_no, // 插件支付单号

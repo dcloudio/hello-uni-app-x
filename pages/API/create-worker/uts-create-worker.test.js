@@ -16,6 +16,17 @@ describe('Api-uts-createWorker', () => {
     return
   }
 
+  if (
+    platformInfo.indexOf('14.5') != -1 ||
+    platformInfo.indexOf('13.7') != -1 ||
+    platformInfo.indexOf('12.4') != -1
+  ) {
+    it('iOS 14.5 13.7 12.4 不支持依赖uts插件测试', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -31,8 +42,9 @@ describe('Api-uts-createWorker', () => {
     await page.waitFor(500);
     await page.waitFor(async () => {
       const taskResult = await page.data('taskResult')
-      return taskResult.length > 0
+      return taskResult._value.length > 0
     });
-    expect(await page.data('taskResult')).toBe('2');
+    const taskResult = await page.data('taskResult')
+    expect(taskResult._value).toBe('2');
   });
 });

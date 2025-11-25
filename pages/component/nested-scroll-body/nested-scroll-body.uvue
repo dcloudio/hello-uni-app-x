@@ -14,15 +14,19 @@
         <view style="flex-direction: row;">
           <text style="padding: 12px 15px;">nested-scroll-body</text>
         </view>
-        <!-- 嵌套滚动仅可能关闭bounces效果 会影响嵌套滚动不连贯 -->
-        <list-view bounces="false" id="body-list" :scroll-top="scrollTop" style="flex:1"
-          associative-container="nested-scroll-view" :refresher-enabled="false">
-          <list-item v-for="key in scrollData">
-            <view class="scroll-item">
-              <text class="scroll-item-title">{{key}}</text>
-            </view>
-          </list-item>
-        </list-view>
+        <swiper style="flex: 1;">
+          <swiper-item style="flex: 1;" v-for="item in swiperList">
+            <!-- 嵌套滚动仅可能关闭bounces效果 会影响嵌套滚动不连贯 -->
+            <list-view bounces="false" id="body-list" :scroll-top="scrollTop" style="flex:1" :key="item.type"
+              associative-container="nested-scroll-view" :refresher-enabled="false">
+              <list-item v-for="key in scrollData">
+                <view class="scroll-item">
+                  <text class="scroll-item-title">{{key}}</text>
+                </view>
+              </list-item>
+            </list-view>
+          </swiper-item>
+        </swiper>
       </view>
       <text>不会渲染，因为 nested-scroll-body 只会渲染第一个子节点</text>
     </nested-scroll-body>
@@ -38,6 +42,7 @@
     data() {
       return {
         scrollData: [] as Array<string>,
+        swiperList: [] as UTSJSONObject[],
         scrollTop: 0,
         refresherTriggered: false,
         pullingDistance: 0,
@@ -61,11 +66,18 @@
       }
     },
     onLoad() {
-      let lists : Array<string> = []
-      for (let i = 0; i < 30; i++) {
-        lists.push("item---" + i)
-      }
-      this.scrollData = lists
+      setTimeout(()=> {
+        this.swiperList = [
+        	{ type: 'list1'},
+        	{ type: 'list2'},
+        	{ type: 'list3'}
+        ];
+        let lists : Array<string> = []
+        for (let i = 0; i < 30; i++) {
+          lists.push("item---" + i)
+        }
+        this.scrollData = lists
+      }, 500)
     },
     methods: {
       onRefresherpulling(e : RefresherEvent) {

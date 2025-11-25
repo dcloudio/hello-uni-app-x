@@ -1,11 +1,11 @@
 <template>
-  <!-- 父组件暂时无用，后续子组件联动需要使用到父组件 -->
   <view>
     <slot></slot>
   </view>
 </template>
 
 <script lang="uts" setup>
+  import {ItemChildType} from './item.type.uts'
   defineOptions({
     name: "UniCollapse"
   })
@@ -14,29 +14,28 @@
     accordion: { type: Boolean, default: true }
   })
 
-  let child_nodes = [] as Array<UniCollapseItemComponentPublicInstance>
+  let child_nodes = [] as ItemChildType[]
 
-  function init(child : UniCollapseItemComponentPublicInstance) {
+  function registerChild(child : ItemChildType) {
     child_nodes.push(child)
   }
+
   // 关闭所有
-  function cloceAll() {
+  function toggle(elId:string) {
     // 开启手风琴效果才回关闭其他
     if (props.accordion && child_nodes.length > 0) {
-      child_nodes.forEach((item : UniCollapseItemComponentPublicInstance) => {
-        const is_open = item.is_open as boolean
-        if (is_open) {
-          item.is_open = false
+      child_nodes.forEach((item : ItemChildType) => {
+        const is_open = item.is_open.value as boolean
+        if (is_open && item.elId != elId) {
+          item.is_open.value = false
           item.openOrClose(false)
         }
       })
     }
   }
 
-  defineExpose({
-    init,
-    cloceAll
-  })
+  provide('uni-collapse-register-child', registerChild)
+  provide('k-collapse-child-toggle', toggle)
 </script>
 
 <style>

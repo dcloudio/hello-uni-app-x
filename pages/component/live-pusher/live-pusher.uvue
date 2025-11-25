@@ -12,28 +12,29 @@
         <text class="uni-title-text">API示例</text>
       </View>
       <view class="uni-btn-v">
-        <button type="primary" @click="start">开始推流</button>
+        <button type="primary" @click="start" :disabled="connectedState || !previewState">开始推流</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="pause">暂停推流</button>
+        <button type="primary" @click="pause" :disabled="!connectedState || !previewState">暂停推流</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="resume">恢复推流</button>
+        <button type="primary" @click="resume"
+          :disabled="initState || connectedState || stopState || !previewState">恢复推流</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="stop">停止推流</button>
+        <button type="primary" @click="stop" :disabled="!connectedState || !previewState">停止推流</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="switchCamera">切换前后摄像头</button>
+        <button type="primary" @click="switchCamera" :disabled="stopState || !previewState">切换前后摄像头</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="snapshot">快照</button>
+        <button type="primary" @click="snapshot" :disabled="stopState || !previewState">快照</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="startPreview">开启摄像头预览</button>
+        <button type="primary" @click="startPreview" :disabled="stopState || previewState">开启摄像头预览</button>
       </view>
       <view class="uni-btn-v">
-        <button type="primary" @click="stopPreview">关闭摄像头预览</button>
+        <button type="primary" @click="stopPreview" :disabled="stopState || !previewState">关闭摄像头预览</button>
       </view>
       <view class="uni-title">
         <text class="uni-title-text">属性示例</text>
@@ -98,6 +99,10 @@
   const fps = ref(0);
   const isPermissionGranted = ref(false);
   const isUrlSet = ref(true);
+  const initState = ref(true);
+  const connectedState = ref(false);
+  const stopState = ref(false);
+  const previewState = ref(true);
 
   onReady(() => {
     instance.value = getCurrentInstance()?.proxy;
@@ -116,6 +121,16 @@
 
   const statechange = (e : UniLivePusherStatechangeEvent) => {
     console.log("statechange", e);
+    switch (e.detail.code) {
+      case 1002:
+        initState.value = false;
+        connectedState.value = true;
+        stopState.value = false;
+        break;
+      case 3004:
+        connectedState.value = false;
+        break;
+    }
   };
   const netstatus = (e : UniLivePusherNetstatusEvent) => {
     console.log("netstatus", e);
@@ -123,7 +138,18 @@
   const error = (e : UniLivePusherErrorEvent) => {
     console.log("error", e);
   };
+  const isUrlValid = () : boolean => {
+    const valid = url.value != "rtmp://test";
+    if (!valid) {
+      uni.showToast({
+        title: "请输入推流地址",
+        icon: "none"
+      });
+    }
+    return valid;
+  };
   const start = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -140,6 +166,7 @@
     });
   };
   const pause = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -156,6 +183,7 @@
     });
   };
   const resume = () => {
+    if (!isUrlValid()) return;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -172,6 +200,8 @@
     });
   };
   const stop = () => {
+    if (!isUrlValid()) return;
+    stopState.value = true;
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
@@ -223,6 +253,7 @@
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
+    previewState.value = true;
     context.value?.startPreview({
       success: (res) => {
         console.log("startPreview", JSON.stringify(res));
@@ -239,6 +270,7 @@
     if (context.value == null) {
       context.value = uni.createLivePusherContext("live-pusher", instance.value);
     }
+    previewState.value = false;
     context.value?.stopPreview({
       success: (res) => {
         console.log("stopPreview", JSON.stringify(res));
@@ -272,7 +304,7 @@
     setTimeout(() => {
       url.value = value;
       isUrlSet.value = true;
-    }, 100);
+    }, 200);
     console.log("url ->", value);
   };
   const onMinBitrateComfirm = (event : UniInputConfirmEvent) => {

@@ -13,9 +13,7 @@
 </template>
 
 <script lang="uts" setup>
-  import { $dispatch } from './util.uts'
-
-  const instance = getCurrentInstance()!.proxy!
+  import { ItemChildType } from '../uni-collapse/item.type.uts'
 
   defineOptions({
     name: "UniCollapseItem"
@@ -35,12 +33,16 @@
 
   let openType = computed(() => props.open)
 
+  // 组件唯一ID
+  const elId = ref(`uni_collapse_item_${Math.ceil(Math.random() * 10e5).toString(36)}`)
 
+  const registerChild = inject<((child : ItemChildType) => string) | null>('uni-collapse-register-child', null)
+  const collapseToggle = inject<((elId : string) => string) | null>('k-collapse-child-toggle', null)
 
   function openOrClose(open : boolean) {
-    setTimeout(()=>{
+    setTimeout(() => {
       box_is_open.value = !box_is_open.value
-    },10)
+    }, 10)
     // #ifndef MP-WEIXIN
     const bNode = boxRef.value?.style!;
     const cNode = contentRef.value?.style!;
@@ -61,14 +63,23 @@
   function openCollapse(open : boolean) {
     if (props.disabled) return
     // 关闭其他已打开
-    $dispatch(instance, 'UniCollapse', 'cloceAll')
+    if (collapseToggle != null) {
+      collapseToggle(elId.value)
+    }
     is_open.value = open
     openOrClose(open)
   }
 
 
   onMounted(() => {
-    $dispatch(instance, 'UniCollapse', 'init', instance)
+    if (registerChild != null) {
+      const child : ItemChildType = {
+        is_open,
+        elId: elId.value,
+        openOrClose
+      }
+      registerChild(child)
+    }
   })
 
   watch(openType, (value : boolean) => {

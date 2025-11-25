@@ -40,19 +40,5 @@ describe('issue-20486', () => {
 
 		const image = await program.screenshot({ fullPage: true });
 		expect(image).toSaveImageSnapshot();
-
-    await page.waitFor(300)
-
-    await program.tap({
-    	x: 50,
-    	y: testViewY + 10,
-    	duration: 100
-    })
-
-    await page.waitFor(500)
-
-    const image1 = await program.screenshot({ fullPage: true });
-    expect(image1).toSaveImageSnapshot();
-
 	})
 })

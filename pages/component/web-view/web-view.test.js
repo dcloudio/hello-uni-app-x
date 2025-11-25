@@ -182,13 +182,6 @@ describe('component-native-web-view', () => {
     expect(has).toBe(true)
   })
 
-  it('test lodaData', async () => {
-    await page.callMethod('loadData');
-    await page.waitFor(1000);
-    const image = await program.screenshot({ fullPage: true });
-    expect(image).toSaveImageSnapshot();
-  });
-
   it('checkLoadingCount', async () => {
     if (
       platformInfo.indexOf('14.5') != -1 ||
@@ -207,4 +200,31 @@ describe('component-native-web-view', () => {
       expect(await page.data('loadingCount')).toBe(0);
     }
   })
+
+  it('test lodaData', async () => {
+    await page.callMethod('loadData');
+    await page.waitFor(1000);
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
+
+  it('test half screen toggle', async () => {
+    // 点击宽窄屏切换按钮
+    const toggleButton = await page.$('#half-screen-toggle');
+    expect(toggleButton).toBeTruthy();
+
+    await toggleButton.tap();
+    await page.waitFor(500);
+
+    // 点击后截图
+    const image = await program.screenshot({
+      fullPage: true,
+    });
+    expect(image).toSaveImageSnapshot();
+
+    // 截图点击恢复
+    await page.waitFor(200);
+    await toggleButton.tap();
+
+  });
 });

@@ -24,6 +24,11 @@
           <button type="primary" @click="pause">视频格式示例</button>
         </navigator>
       </view>
+      <!-- #ifdef APP-HARMONY -->
+      <view class="uni-btn-v">
+        <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
+      </view>
+      <!-- #endif -->
       <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
         <text class="uni-title" style="width: 80%;">子组件实现快进、快退、发送弹幕功能（全屏后显示）</text>
         <switch :checked="subCompEnable" @change="onSubCompEnableChange" />
@@ -214,12 +219,24 @@
         eventError: null as UTSJSONObject | null,
         eventProgress: null as UTSJSONObject | null,
         eventFullscreenclick: null as UTSJSONObject | null,
-        eventControlstoggle: null as UTSJSONObject | null
+        eventControlstoggle: null as UTSJSONObject | null,
+        dialogPageVideo: null as UniPage | null
       }
     },
     onLoad() {
     },
     methods: {
+      openDialogPageVideo() {
+        this.pause()
+        this.dialogPageVideo = uni.openDialogPage({
+          url: '/pages/component/video/video-dialog-page'
+        })
+      },
+      closeDialogPageVideo() {
+        uni.closeDialogPage({
+          dialogPage: this.dialogPageVideo
+        })
+      },
       // API
       play: function () {
         console.log("play");

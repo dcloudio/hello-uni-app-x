@@ -345,6 +345,22 @@ describe('component-native-video', () => {
     });
   }
 
+  it('test dialog video', async () => {
+    if (isAppWebView || isMP || isWeb) {
+      expect(1).toBe(1)
+      return
+    }
+    await page.callMethod('openDialogPageVideo')
+    // TODO 先测试 closeThisPage 一次
+    await program.tap({ x: 154, y: 577 }) // closeThisPage
+    await page.callMethod('openDialogPageVideo')
+    await program.tap({ x: 154, y: 492 }) // requestFullScreen
+    await page.waitFor(2000);
+    const image = await program.screenshot({ deviceShot: true });
+    expect(image).toSaveImageSnapshot();
+    await page.callMethod('closeDialogPageVideo')
+  });
+
   it('test format', async () => {
     page = await program.navigateTo('/pages/component/video/video-format');
     await page.waitFor(1000);

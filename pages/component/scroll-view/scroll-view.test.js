@@ -5,6 +5,7 @@ const isIos = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+
 describe('component-native-scroll-view', () => {
   let page;
   beforeAll(async () => {

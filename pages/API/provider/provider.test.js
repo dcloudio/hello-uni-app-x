@@ -29,8 +29,9 @@ describe("provider", () => {
       expect(providerIds).toEqual(expect.arrayContaining(['tencent']))
     } else {
       expect(providerIds).toEqual(expect.arrayContaining(['huawei']))
+      expect(providerIds).toEqual(expect.arrayContaining(['weixin']))
     }
-    expect(providerIds).toHaveLength(4)
+    expect(providerIds).toHaveLength(isHarmony ? 6 : 4)
 
     let providerObjects = await page.data('providerObjects')
 
@@ -39,8 +40,10 @@ describe("provider", () => {
       expect(providerObjects).toEqual(expect.arrayContaining(['腾讯定位']))
     } else {
       expect(providerObjects).toEqual(expect.arrayContaining(['华为登录']))
+      expect(providerObjects).toEqual(expect.arrayContaining(['微信登录']))
+      expect(providerObjects).toEqual(expect.arrayContaining(['微信分享']))
     }
 
-    expect(providerObjects).toHaveLength(4)
+    expect(providerIds).toHaveLength(isHarmony ? 6 : 4)
   });
 });
