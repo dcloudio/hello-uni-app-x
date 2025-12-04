@@ -1455,7 +1455,7 @@ describe('ExtApi-FileManagerTest', () => {
 
     it('saveFileAndReadFileTest', async () => {
         await setPageData({
-          logAble: true,
+          logAble: false,
           basePath: mBasePath,
           writeFile: 'a/1.txt',
           temFile: 'a/1.txt',
