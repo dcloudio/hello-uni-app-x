@@ -106,7 +106,7 @@ describe('Button.uvue', () => {
       disabled_boolean: false,
       default_style: false
     })
-
+    await page.waitFor(100);
     expect(await btn.property('size')).toBe('default')
     expect(await btn.property('plain')).toBe('true')
     expect(await btn.property('type')).toBe('primary')
@@ -125,6 +125,7 @@ describe('Button.uvue', () => {
       disabled_boolean: false,
       default_style: true
     })
+    await page.waitFor(100);
     const image2 = await program.screenshot({
       fullPage: true
     });
@@ -140,6 +141,7 @@ describe('Button.uvue', () => {
       disabled_boolean: false,
       default_style: false
     })
+    await page.waitFor(100);
     const image3 = await program.screenshot({
       fullPage: true
     });
