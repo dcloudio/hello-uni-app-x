@@ -111,8 +111,12 @@
     // 添加消息监听
     onWorkerMessage({
       success: (res : any) => {
-        const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
-        const resultData = result.getString('data');
+        // 临时注释后续需要排查 原生Object转UTSJSONObject无效的问题
+        // const result = (res as UTSJSONObject).getAny('result') as UTSJSONObject;
+        // const resultData = result.getString('data');
+
+        const result = res["result"];
+        const resultData = result["data"];
         taskResult.value = resultData as string;
         inputValue.value = taskResult.value
         addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
