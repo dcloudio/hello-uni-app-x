@@ -54,7 +54,7 @@ describe('component-native-web-view', () => {
           type: 'download',
           url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: 'Mobile',
-          contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
+          contentDisposition: `attachment; filename="hello-uniapp-x.apk"; filename*=utf-8''hello-uniapp-x.apk`,
           mimetype: 'application/vnd.android.package-archive',
           isContentLengthValid: true
         });
@@ -81,7 +81,7 @@ describe('component-native-web-view', () => {
           type: 'download',
           url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
-          contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
+          contentDisposition: `attachment; filename="hello-uniapp-x.apk"; filename*=utf-8''hello-uniapp-x.apk`,
           mimetype: 'application/vnd.android.package-archive',
           isContentLengthValid: true
         });
