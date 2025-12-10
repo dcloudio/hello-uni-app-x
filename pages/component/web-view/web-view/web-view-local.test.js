@@ -52,7 +52,7 @@ describe('component-native-web-view', () => {
         expect(await page.data('eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
-          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: 'Mobile',
           contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
           mimetype: 'application/vnd.android.package-archive',
@@ -64,7 +64,7 @@ describe('component-native-web-view', () => {
         // expect(await page.data('eventDownload')).toEqual({
         //   tagName: 'WEB-VIEW',
         //   type: 'download',
-        //   url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+        //   url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
         //   userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
         //   contentDisposition: '',
         //   mimetype: 'application/vnd.android.package-archive',
@@ -79,7 +79,7 @@ describe('component-native-web-view', () => {
         expect(await page.data('eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
-          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
           contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
           mimetype: 'application/vnd.android.package-archive',
@@ -89,7 +89,7 @@ describe('component-native-web-view', () => {
         expect(await page.data('eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
-          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: '',
           contentDisposition: '',
           mimetype: '',
