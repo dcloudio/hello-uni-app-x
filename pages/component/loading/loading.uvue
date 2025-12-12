@@ -65,6 +65,7 @@
         <button @click="increaseSize">+10px</button>
         <button @click="toggleBorderWidth">border: {{ borderWidthKw }}</button>
         <button @click="nextColor">color: {{ borderColor }}</button>
+        <button @click="setPaused">setPaused={{ paused }}</button>
         <button @click="reset">reset</button>
       </view>
 
@@ -72,7 +73,8 @@
         <view class="item">
           <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / {{ borderWidthKw }}</text>
           <view class="box">
-            <loading :style="dynamicStyle" />
+             <!-- :paused 如果报错，就remove，应该是基座中还没包含 -->
+            <loading :paused="paused" :style="dynamicStyle" />
           </view>
         </view>
       </view>
@@ -89,6 +91,7 @@ const borderColor = ref('blue')
 const borderWidthKw = ref('medium')
 const colors = ['blue', 'red', 'green', 'yellow']
 const colorIndex = ref(0)
+const paused = ref(false)
 
 const dynamicStyle = computed(() => {
   return {
@@ -124,6 +127,11 @@ const reset = () => {
   borderColor.value = 'blue'
   borderWidthKw.value = 'medium'
   colorIndex.value = 0
+  paused.value = false
+}
+
+const setPaused = () => {
+  paused.value = !paused.value
 }
 </script>
 
