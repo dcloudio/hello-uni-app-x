@@ -614,6 +614,18 @@ describe('dialog page', () => {
     })
   }
 
+  if (isAndroid) {
+    it ('open dialogPage in tabBar', async () => {
+      const tabPage = await program.reLaunch('/pages/tabBar/API');
+      await tabPage.callMethod('testOpenDialogPage');
+      await tabPage.waitFor(1000);
+      const image = await program.screenshot(deviceShotOptions);
+      expect(image).toSaveImageSnapshot();
+      await tabPage.callMethod('testCloseDialogPage');
+      page = await program.reLaunch(FIRST_PAGE_PATH);
+    });
+  }
+
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', initLifeCycleNum)
   });
