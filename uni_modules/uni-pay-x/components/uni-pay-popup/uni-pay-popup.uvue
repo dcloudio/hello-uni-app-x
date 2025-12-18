@@ -6,67 +6,63 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		emits: ["close", "clickMask"],
-		data() {
-			return {
-				isShow: false,
-				isOpen: false
-			}
-		},
-		props: {
-			maskClick: {
-				type: Boolean,
-				default: true
-			},
-			type: {
-				type: String,
-				default: "center"
-			}
-		},
-		watch: {
-			// 设置show = true 时，如果没有 open 需要设置为 open
-			isShow: {
-				handler(newVal : boolean) {
-					if (newVal && this.isOpen == false) {
-						this.isOpen = true;
-					}
-				},
-				immediate: true
-			},
-			// 设置isOpen = true 时，如果没有 isShow 需要设置为 isShow
-			isOpen: {
-				handler(newVal : boolean) {
-					if (newVal && this.isShow == false) {
-						this.isShow = true;
-					}
-				},
-				immediate: true
-			}
-		},
-		methods: {
-			open() {
-				this.isOpen = true;
-			},
-			clickMask() {
-				if (this.maskClick == true) {
-					this.$emit('clickMask');
-					this.close();
-				}
-			},
-			close() : void {
-				this.isOpen = false;
-				this.$emit('close');
-			},
-			hiden() {
-				this.isShow = false;
-			},
-			show() {
-				this.isShow = true;
-			}
+<script setup lang="uts">
+
+	const props = withDefaults(defineProps<{
+		maskClick?: boolean
+		type?: string
+	}>(), {
+		maskClick: true,
+		type: "center"
+	})
+
+	const emit = defineEmits(['close', 'clickMask'])
+
+	const isShow = ref(false)
+	const isOpen = ref(false)
+
+	function open() {
+		isOpen.value = true;
+	}
+
+	function close() : void {
+		isOpen.value = false;
+		emit('close');
+	}
+
+	function clickMask() {
+		if (props.maskClick == true) {
+			emit('clickMask');
+			close();
 		}
 	}
+
+	function hiden() {
+		isShow.value = false;
+	}
+
+	function show() {
+		isShow.value = true;
+	}
+
+	watch(isShow, (newVal : boolean) => {
+		if (newVal && isOpen.value == false) {
+			isOpen.value = true;
+		}
+	}, { immediate: true })
+
+	watch(isOpen, (newVal : boolean) => {
+		if (newVal && isShow.value == false) {
+			isShow.value = true;
+		}
+	}, { immediate: true })
+
+	defineExpose({
+		open,
+		close,
+		hiden,
+		show
+	})
 </script>
 
 <style>
@@ -87,7 +83,4 @@
     justify-content: center;
     align-items: center;
   }
-	.popup-bottom {
-		justify-content: flex-end;
-	}
 </style>
