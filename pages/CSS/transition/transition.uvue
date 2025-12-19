@@ -160,6 +160,11 @@
       <image class="image-base-style transition-transform" id="imageScale" @click="changeImageScale" src="/static/test-image/logo.png"></image>
     </view>
 
+    <view class="container">
+      <text class="text">设置box-shadow之后验证border和background-color效果</text>
+      <view class="base-style transition-border-background" id="borderAndBackgroundColor" @click="changeBorderAndBackgroundColor"></view>
+    </view>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -223,6 +228,8 @@
   const imageOpacity = ref(null as UniElement | null)
   const isImageScale = ref(false)
   const imageScale = ref(null as UniElement | null)
+  const isChangeBorderAndBackgroundColor = ref(false)
+  const elChangeBorderAndBackgroundColor = ref(null as UniElement | null)
 	// 测试例辅助函数
 	const getChangeWidthInEndCount = ():number => {
 	  return changeWidthInEndCount.value
@@ -254,6 +261,7 @@
     imageTransform.value = uni.getElementById("imageTransform")
     imageOpacity.value = uni.getElementById("imageOpacity")
     imageScale.value = uni.getElementById("imageScale")
+    elChangeBorderAndBackgroundColor.value = uni.getElementById("borderAndBackgroundColor")
   })
 
   const changeWidthOrHeight = () => {
@@ -514,7 +522,13 @@
     )
     isImageScale.value = !isImageScale.value
   }
-	
+
+  function changeBorderAndBackgroundColor() {
+    elChangeBorderAndBackgroundColor.value?.style?.setProperty("background-color",!isChangeBorderAndBackgroundColor.value?"pink":"brown")
+    elChangeBorderAndBackgroundColor.value?.style?.setProperty("border-color",!isChangeBorderAndBackgroundColor.value?"yellow":"blue")
+    isChangeBorderAndBackgroundColor.value = !isChangeBorderAndBackgroundColor.value
+  }
+
 	defineExpose({
 	  changeWidthOrHeight,
 	  changeWidthProgress,
@@ -532,9 +546,10 @@
 	  changestylePosition,
 	  changeTransitionAll,
 	  changeWidthInEndFun,
-	  getChangeWidthInEndCount
+	  getChangeWidthInEndCount,
+    changeBorderAndBackgroundColor
 	})
-	
+
 </script>
 
 <style>
@@ -635,5 +650,13 @@
   .image-base-style {
     width: 200px;
     height: 200px;
+  }
+  .transition-border-background {
+    box-shadow: 8px 8px 8px rgba(0, 255, 0, 1);
+    border-color: blue;
+    border-width: 3px;
+    border-style: solid;
+    transition-property: border-color, background-color;
+    transition-duration: 1s;
   }
 </style>
