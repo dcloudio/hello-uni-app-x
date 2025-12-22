@@ -44,6 +44,16 @@ describe('ExtApi-FileManagerTest', () => {
     return isDone
   }
 
+  it('test open flag=a+ write fail', async () => {
+    await setPageData({
+      testOpenFlataplusWrite: false
+    })
+    await page.callMethod('testOpenFlagWrite')
+    await page.waitFor(300)
+    let testOpenFlataplusWrite = await page.data('data.testOpenFlataplusWrite')
+    expect(testOpenFlataplusWrite).toBe(true)
+  })
+
   it('USER_DATA_PATH test', async () => {
     // 测试 USER_DATA_PATH
     let globalUserDataPath = await page.data('data.globalUserDataPath')

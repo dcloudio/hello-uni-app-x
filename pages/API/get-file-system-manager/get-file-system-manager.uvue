@@ -188,6 +188,7 @@
     globalTempPath : string
     globalRootPath : string
     globalUserDataPath : string
+    testOpenFlataplusWrite:boolean
   }
 
   const data = reactive({
@@ -242,6 +243,7 @@
     readZipFile: 'to.zip',
     getSavedFileListRet: '',
     arrayBufferRes: 0,
+    testOpenFlataplusWrite:false,
     /**
      * 待测试的全局环境变量
      */
@@ -322,7 +324,6 @@
       }
     } as GetFileInfoOptions)
   }
-
   const copyFileTest = () => {
     const fileManager = uni.getFileSystemManager()
 
@@ -2058,8 +2059,31 @@
     })
   }
 
+  const testOpenFlagWrite = () => {
+    uni.getFileSystemManager().writeFileSync(`${data.basePath}b/t.txt`, "aaa", "utf-8")
+    uni.getFileSystemManager().open({
+    	filePath : `${data.basePath}b/t.txt`,
+    	flag : "a+",
+    	success : (res: OpenFileSuccessResult) => {
+    		uni.getFileSystemManager().write({
+    			fd : res.fd,
+    			data : "appended",
+    			position : 10,
+          success:(e)=> {
+            data.testOpenFlataplusWrite = true
+          },
+          fail:(e)=> {
+            data.testOpenFlataplusWrite = false
+          }
+    		})
+    	},
+      fail(e) {}
+    })
+  }
+
   defineExpose({
-    data
+    data,
+    testOpenFlagWrite
   })
 </script>
 
