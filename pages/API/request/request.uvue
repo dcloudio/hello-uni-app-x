@@ -83,6 +83,12 @@
         <view class="uni-common-pb"></view>
         <button type="primary" @click="sendChunkRequest">流式请求</button>
       </view>
+
+      <view style="padding: 20px;">
+        <text>enableQuic 测试</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendH3Request">http3请求</button>
+      </view>
       <view class="uni-common-pb"></view>
       <view class="uni-common-pb"></view>
     </scroll-view>
@@ -110,6 +116,8 @@
     "OPTIONS": "/api/http/method/options",
     "HEAD": "/api/http/method/head"
   }
+
+  const h3url = "https://request-h3.dcloud.net.cn/api/http/protocol";
 
   type DataType = {
     title: string;
@@ -191,6 +199,21 @@
   const sendChunkRequest = () => {
     uni.navigateTo({
       url: "/pages/API/request/requestTask"
+    })
+  }
+
+  const sendH3Request = () => {
+    uni.request({
+      url:h3url,
+      // #ifdef APP-ANDROID
+      enableQuic:true,
+      // #endif
+      success:(res) => {
+        console.log("res: ", res);
+      },
+      fail:(e) => {
+        console.log("error: ", e);
+      }
     })
   }
 
