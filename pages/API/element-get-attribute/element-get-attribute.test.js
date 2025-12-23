@@ -53,4 +53,12 @@ describe('test element-get-attribute', () => {
       expect(await scrollView.property('scrollLeft')).toBe(200);
     });
   }
+
+  it('getBoundingClientRect-scaledView', async () => {
+    await page.callMethod("handleGetScaledViewSize");
+    const scaledViewWidth = await page.data("data.scaledViewWidth")
+    const scaledViewHeight = await page.data("data.scaledViewHeight")
+    expect(scaledViewWidth).toBe(100);
+    expect(scaledViewHeight).toBe(100);
+  })
 });

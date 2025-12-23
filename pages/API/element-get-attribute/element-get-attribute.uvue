@@ -63,6 +63,10 @@
       <!-- #ifndef WEB -->
       <button @click="scrollTo">scrollTo设置left滚动200px</button>
       <!-- #endif -->
+
+      <view id="scaledView" style="transform: scale(2);background-color: green;width: 50px;height: 50px;margin-top: 45px;margin-left: 25px;"></view>
+
+      <button type="default" @click="handleGetScaledViewSize" style="margin-top: 30px;">获取scale后的view尺寸信息</button>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -88,6 +92,8 @@
     attrStyle: string,
     propertyValue: string,
     rectInfo: DomRectType,
+    scaledViewWidth: number,
+    scaledViewHeight: number
   }
 
   const boxRef = ref<UniElement | null>(null)
@@ -106,6 +112,8 @@
       right: 0,
       bottom: 0,
     },
+    scaledViewWidth: 0,
+    scaledViewHeight: 0
   } as DataType)
 
   function getBoundingClientRectAsyncChild(){
@@ -162,6 +170,16 @@
     }
   }
 
+  const handleGetScaledViewSize = () => {
+    const element = uni.getElementById("scaledView")
+    if (element != null) {
+      const rect = element.getBoundingClientRect()
+      data.scaledViewWidth = rect.width
+      data.scaledViewHeight = rect.height
+      console.log("scaledView size : ", data.scaledViewWidth, data.scaledViewHeight);
+    }
+  }
+
   onReady(() => {
     // Refs are already assigned via template
   })
@@ -173,7 +191,8 @@
     getAttributeStyle,
     getPropertyValue,
     getBoundingClientRectAsyncChild,
-    scrollTo
+    scrollTo,
+    handleGetScaledViewSize
   })
 
 </script>
