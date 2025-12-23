@@ -12,8 +12,8 @@
             <text style="margin-top: 5px">index: {{ index }}, route: {{ page }}</text>
           </template>
         </view>
+        <button class="uni-common-mt" @click="check$page">page check $page</button>
         <!-- #ifndef MP -->
-        <button class="uni-common-mt" @click="check$page">check $page</button>
         <button class="uni-common-mt" @click="checkGetParentPage">
           check getParentPage
         </button>
@@ -72,6 +72,7 @@
       </button>
       <!-- #endif -->
       <!-- #endif -->
+      <ComponentCheckPage />
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -79,7 +80,9 @@
 </template>
 
 <script setup lang="uts">
+  import ComponentCheckPage from './component-check-page.uvue'
   import { PageStyleItem, PageStyleArray } from './page-style.uts';
+
   const currentInstance = getCurrentInstance()
 
   type DataType = {
@@ -185,8 +188,8 @@
   }
   const check$page = () : boolean => {
     const page = getCurrentPage()
-    const dialogPage = currentInstance?.proxy?.$page
-    let res = dialogPage === page
+    const $page = currentInstance?.proxy?.$page
+    let res = $page === page
     if (data.testing && res) {
       res = page.options['test'] == '123'
       if (res) {

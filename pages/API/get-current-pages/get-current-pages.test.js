@@ -47,6 +47,17 @@ describe('getCurrentPages', () => {
     expect(data.checked).toBe(true)
   })
 
+  it('$page', async () => {
+    await page.setData({data:{testing: true}})
+    const pageRes = await page.callMethod('check$page')
+    expect(pageRes).toBe(true)
+
+    const componentCheckPageBtn = await page.$('.component-check-page-btn')
+    await componentCheckPageBtn.tap()
+    const checkPageResText = await page.$('.check-page-res')
+    expect(await checkPageResText.text()).toBe('true')
+  })
+
   if (isMP) {
     return
   }
@@ -128,11 +139,6 @@ describe('getCurrentPages', () => {
     expect(image7).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
-  })
-  it('$page', async () => {
-    await page.setData({data:{testing: true}})
-    const res = await page.callMethod('check$page')
-    expect(res).toBe(true)
   })
   it('getParentPage', async () => {
     const res = await page.callMethod('checkGetParentPage')
