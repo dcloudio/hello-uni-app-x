@@ -10,8 +10,8 @@
       <view class="custom-navbar-inner">
         <view class="left-content">
           <view ref="backRef" class="left-content-inner" @click="back">
-            <uni-icons style="margin-left: -1px;" type="back" ></uni-icons>
-            <!-- <text :style="'font-family: uni-icon;color='+iconColor">{{'\uE601'}}</text> -->
+            <!-- <uni-icons style="margin-left: -1px;" type="back" ></uni-icons> -->
+            <text :style="'font-family: uni-icon;color:'+iconColor">{{'\uE601'}}</text>
           </view>
         </view>
         <view class="custom-navbar-content">
@@ -26,13 +26,13 @@
         <image class="banner-img" :src="banner.cover"></image>
         <text class="banner-title">{{ banner.title }}</text>
       </view>
-      <view class="list-tab" ref="tabRef">
+      <!-- <view class="list-tab" ref="tabRef">
         <view class="th-item">
           <text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" class="th-item-text">
             {{name}}
           </text>
         </view>
-      </view>
+      </view> -->
       <template v-for="(value, index) in listData" :key="index">
         <view class="uni-list-cell" hover-class="uni-list-cell-hover">
           <view class="uni-media-list">
@@ -86,7 +86,7 @@
   const textRef = ref<UniElement | null>(null);
   const iconColor = ref('#999')
   const navbarHeight = ref(0)
-  const tabRef = ref<UniElement | null>(null);
+  // const tabRef = ref<UniElement | null>(null);
   const tabTop = ref(0)
 
   function getBanner() {
@@ -165,19 +165,19 @@
     navbar.value!.style.setProperty('background-color', `rgba(0, 122, 255,${transparent_count})`)
     backRef.value!.style.setProperty('background-color', `rgba(255, 255, 255,${1 - transparent_count})`)
     textRef.value!.style.setProperty('opacity', transparent_count.toString())
-    if (tabTop.value <= top) {
-      const stickyTran = top - tabTop.value
-      tabRef.value!.style.setProperty('transform', 'translateY(' + stickyTran + 'px)');
-    }
+    // if (tabTop.value <= top) {
+      // const stickyTran = top - tabTop.value
+      // tabRef.value!.style.setProperty('transform', 'translateY(' + stickyTran + 'px)');
+    // }
 
   }
 
-  async function calcStickyTop() {
+  /* async function calcStickyTop() {
     const stickyRect = await (tabRef.value! as UniElement).getBoundingClientRectAsync()!;
     const navbarRect = await (navbar.value! as UniElement).getBoundingClientRectAsync()!;
     navbarHeight.value = navbarRect.height
     tabTop.value = stickyRect.top - navbarHeight.value
-  }
+  } */
 
   const back = () => {
     uni.navigateBack({});
@@ -193,7 +193,7 @@
     // const top = tabRef.value!.getBoundingClientRect().top
     // navbarHeight.value = navbar.value!.offsetHeight
     // tabTop.value = top - navbarHeight.value
-    calcStickyTop()
+    // calcStickyTop()
   })
 
 
