@@ -11,33 +11,33 @@
       <text class="section-title">Class 实现</text>
       <view class="row">
         <view class="item">
-          <text class="label">100×100 / blue / medium</text>
+          <text class="label">100×100 / blue / bold=false</text>
           <view class="box">
-            <loading class="size-100 bc-blue bw-medium" />
+            <loading :bold=false class="size-100 bc-blue" />
           </view>
         </view>
         <view class="item">
-          <text class="label">100×100 / red / thick</text>
+          <text class="label">100×100 / red / bold=true</text>
           <view class="box">
-            <loading class="size-100 bc-red bw-thick" />
+            <loading :bold=true class="size-100 bc-red" />
           </view>
         </view>
         <view class="item">
-          <text class="label">80×80 / green / medium</text>
+          <text class="label">80×80 / green / bold=false</text>
           <view class="box">
-            <loading class="size-80 bc-green bw-medium" />
+            <loading :bold=false class="size-80 bc-green" />
           </view>
         </view>
         <view class="item">
-          <text class="label">140×140 / yellow / thick</text>
+          <text class="label">140×140 / yellow / bold=true</text>
           <view class="box">
-            <loading class="size-140 bc-yellow bw-thick" />
+            <loading :bold=true class="size-140 bc-yellow" />
           </view>
         </view>
         <view class="item">
-          <text class="label">140×140 / yellow / thick, 默认paused属性=true</text>
+          <text class="label">140×140 / yellow / bold=true, 默认paused属性=true</text>
           <view class="box">
-            <loading :paused="true" class="size-140 bc-yellow bw-thick" />
+            <loading :bold=true :paused="true" class="size-140 bc-yellow" />
           </view>
         </view>
       </view>
@@ -48,16 +48,16 @@
       <text class="section-title">Style 实现</text>
       <view class="row">
         <view class="item">
-          <text class="label">80×80 / red / thick</text>
+          <text class="label">80×80 / red / bold=true</text>
           <view class="box">
-            <loading :style="{ width:'80px', height:'80px', borderColor:'red', borderWidth:'thick' }" />
+            <loading :bold=true :style="{ width:'80px', height:'80px', borderColor:'red'}" />
           </view>
         </view>
 
         <view class="item">
-          <text class="label">120×120 / green / medium</text>
+          <text class="label">120×120 / green / bold=false</text>
           <view class="box">
-            <loading :style="{ width:'120px', height:'120px', borderColor:'green', borderWidth:'medium' }" />
+            <loading :bold=false :style="{ width:'120px', height:'120px', borderColor:'green'}" />
           </view>
         </view>
       </view>
@@ -69,18 +69,18 @@
       <view class="controls">
         <button @click="decreaseSize">-10px</button>
         <button @click="increaseSize">+10px</button>
-        <button @click="toggleBorderWidth">border: {{ borderWidthKw }}</button>
-        <button @click="nextColor">color: {{ borderColor }}</button>
-        <button @click="setPaused">setPaused={{ paused }}</button>
+        <button @click="toggleBold">bold 属性: {{ isBold }}</button>
+        <button @click="nextColor">color style: {{ borderColor }}</button>
+        <button @click="setPaused">paused 属性：{{ paused }}</button>
         <button @click="reset">reset</button>
       </view>
 
       <view class="row">
         <view class="item">
-          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / {{ borderWidthKw }}</text>
+          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / bold: {{ isBold }}</text>
           <view class="box">
              <!-- :paused 如果报错，就remove，应该是基座中还没包含 -->
-            <loading :paused="paused" :style="dynamicStyle" />
+            <loading :bold=isBold :paused="paused" :style="dynamicStyle" />
           </view>
         </view>
       </view>
@@ -94,7 +94,7 @@ import { ref, computed } from 'vue'
 const widthPx = ref(100)
 const heightPx = ref(100)
 const borderColor = ref('blue')
-const borderWidthKw = ref('medium')
+const isBold = ref(false)
 const colors = ['blue', 'red', 'green', 'yellow']
 const colorIndex = ref(0)
 const paused = ref(false)
@@ -104,7 +104,7 @@ const dynamicStyle = computed(() => {
     width: widthPx.value + 'px',
     height: heightPx.value + 'px',
     borderColor: borderColor.value,
-    borderWidth: borderWidthKw.value
+    borderWidth: isBold.value
   }
 })
 
@@ -118,8 +118,8 @@ const decreaseSize = () => {
   heightPx.value = Math.max(20, heightPx.value - 10)
 }
 
-const toggleBorderWidth = () => {
-  borderWidthKw.value = borderWidthKw.value === 'medium' ? 'thick' : 'medium'
+const toggleBold = () => {
+  isBold.value = !isBold.value
 }
 
 const nextColor = () => {
@@ -131,7 +131,7 @@ const reset = () => {
   widthPx.value = 100
   heightPx.value = 100
   borderColor.value = 'blue'
-  borderWidthKw.value = 'medium'
+  isBold.value = false
   colorIndex.value = 0
   paused.value = false
 }
@@ -219,6 +219,4 @@ const setPaused = () => {
 .item .bc-green { border-color: green; }
 .item .bc-yellow { border-color: yellow; }
 
-.item .bw-medium { border-width: medium; }
-.item .bw-thick { border-width: thick; }
 </style>
