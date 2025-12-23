@@ -89,6 +89,13 @@
         <view class="uni-common-pb"></view>
         <button type="primary" @click="sendH3Request">http3请求</button>
       </view>
+
+      <view style="padding: 20px;">
+        <text>Accept-Encoding:'gzip'测试</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="sendGzipRequest">Accept-Encoding:'gzip'请求</button>
+      </view>
+
       <view class="uni-common-pb"></view>
       <view class="uni-common-pb"></view>
     </scroll-view>
@@ -213,6 +220,27 @@
       },
       fail:(e) => {
         console.log("error: ", e);
+      }
+    })
+  }
+
+  const sendGzipRequest = () => {
+    uni.request({
+      url: data.host + methodMap["POST"],
+      header: {
+        'Accept-Encoding': 'gzip'
+      },
+      method:"POST",
+      data:{
+        "hello": "world"
+      },
+      success:(res) => {
+        console.log("res: ", res);
+        data.jest_result = true;
+      },
+      fail: (e) => {
+        console.log("error: ", e);
+        data.jest_result = false;
       }
     })
   }
@@ -691,7 +719,8 @@
     jest_respone_with_string_generics,
     jest_respone_with_404_and_string_generics,
     jest_issue_19687,
-    jest_test_issue21823_crash
+    jest_test_issue21823_crash,
+    sendGzipRequest
   })
 </script>
 

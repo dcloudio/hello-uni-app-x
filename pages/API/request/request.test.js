@@ -230,4 +230,11 @@ describe('ExtApi-Request', () => {
     })
   }
 
+  it('gzip-test', async () => {
+    res = await page.callMethod('sendGzipRequest')
+    await page.waitFor(2000);
+    res = await page.data('data.jest_result');
+    expect(res).toBe(true)
+  })
+
 });
