@@ -237,4 +237,11 @@ describe('ExtApi-Request', () => {
     expect(res).toBe(true)
   })
 
+  it('checkQuery', async () => {
+    res = await page.callMethod('checkQuery')
+    await page.waitFor(2000);
+    res = await page.data('data.jest_result');
+    expect(res).toBe(true)
+  })
+
 });

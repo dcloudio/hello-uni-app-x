@@ -96,6 +96,12 @@
         <button type="primary" @click="sendGzipRequest">Accept-Encoding:'gzip'请求</button>
       </view>
 
+      <view style="padding: 20px;">
+        <text>检测query</text>
+        <view class="uni-common-pb"></view>
+        <button type="primary" @click="checkQuery">检测query</button>
+      </view>
+
       <view class="uni-common-pb"></view>
       <view class="uni-common-pb"></view>
     </scroll-view>
@@ -237,6 +243,20 @@
       success:(res) => {
         console.log("res: ", res);
         data.jest_result = true;
+      },
+      fail: (e) => {
+        console.log("error: ", e);
+        data.jest_result = false;
+      }
+    })
+  }
+
+  const checkQuery = () => {
+    uni.request<string>({
+      url: "https://request.dcloud.net.cn/api/http/echo/text?Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D",
+      success:(res) => {
+        data.jest_result = res.data == "Signature=whpMFJg%2B%2Fc0tqdNXxo4330muVdc%3D\n";
+        console.log("res: ", res);
       },
       fail: (e) => {
         console.log("error: ", e);
@@ -720,7 +740,8 @@
     jest_respone_with_404_and_string_generics,
     jest_issue_19687,
     jest_test_issue21823_crash,
-    sendGzipRequest
+    sendGzipRequest,
+    checkQuery
   })
 </script>
 
