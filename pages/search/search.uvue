@@ -1,0 +1,235 @@
+<template>
+    <view class="container">
+        <view class="input-wrapper">
+            <input class="search-input" type="search" placeholder="输入关键字搜索页面......" v-model="keyword"
+                @confirm="doSearch" />
+            <!-- <input class="uni-input" type="text" placeholder="输入关键字搜索页面......" v-model="keyword" @input="onInput" /> -->
+            <image class="uni-icon" src="/static/icons/clear.png" v-if="keyword" @click="clearIcon"> </image>
+        </view>
+        <view class="history-box" v-if="historyList.length > 0 && keyword == ''">
+            <view class="history-header">
+                <text class="history-title">搜索历史</text>
+                <text class="history-clear" @click="clearHistory">清除</text>
+            </view>
+            <view class="history-content">
+                <view class="history-item" v-for="(item, index) in historyList" :key="index"
+                    @click="onHistoryClick(item)">
+                    <text class="history-text">{{ item }}</text>
+                </view>
+            </view>
+        </view>
+        <scroll-view class="result-list" scroll-y="true">
+            <view class="result-item" v-for="(item, index) in searchResults" :key="index" @click="navigateTo(item)">
+                <text class="result-title">{{ item.title }}</text>
+                <text class="result-path">{{ item.path }}</text>
+            </view>
+        </scroll-view>
+    </view>
+</template>
+
+<script setup lang="uts">
+    import { generateMenu, MenuItem } from '../tabBar/generateMenu.uts';
+
+    type PageItem = {
+        path : string
+        title : string
+    };
+    let allPages : PageItem[] = [];
+
+    const menusForAPI = generateMenu('pages/API');
+    const menusForComponent = generateMenu('pages/component');
+    const menusForTemplate = generateMenu('pages/template');
+    const menusForCSS = generateMenu('pages/CSS');
+
+    let menusAPI = ref(menusForAPI as MenuItem[]);
+    let menusComponent = ref(menusForComponent as MenuItem[]);
+    let menusTemplate = ref(menusForTemplate as MenuItem[]);
+    let menusCSS = ref(menusForCSS as MenuItem[]);
+
+    const menuALL = computed<MenuItem[]>(() => {
+        const result : MenuItem[] = []
+        const sources = [menusAPI.value, menusComponent.value, menusTemplate.value, menusCSS.value]
+        for (const src of sources) {
+            if (src.length > 0) {
+                result.push(...src);
+            };
+        };
+        return result;
+    });
+
+    for (const item of menuALL.value) {
+        let pItems = item.items;
+        if (pItems instanceof Array && pItems.length > 0) {
+            for (const p of pItems) {
+                if (typeof p.path == "string" && p.path != '') {
+                    allPages.push({ path: p.path, title: p.name });
+                };
+            };
+        };
+    };
+    // console.log(allPages);
+
+    const keyword = ref('');
+    const searchResults = ref<PageItem[]>([]);
+    const historyList = ref<string[]>([]);
+
+    const loadHistory = () => {
+        const res = uni.getStorageSync('search_history');
+        if (Array.isArray(res)) {
+            historyList.value = res as string[];
+        }
+    }
+    loadHistory();
+
+    const clearHistory = () => {
+        historyList.value = [];
+        uni.removeStorageSync('search_history');
+    }
+
+    const doSearch = () => {
+        const query = keyword.value.trim();
+        if (query == '') {
+            searchResults.value = [] as PageItem[];
+            return
+        }
+
+        // Save history
+        const index = historyList.value.indexOf(query);
+        if (index > -1) {
+            historyList.value.splice(index, 1);
+        }
+        historyList.value.unshift(query);
+        if (historyList.value.length > 10) {
+            historyList.value.pop();
+        }
+        uni.setStorageSync('search_history', historyList.value);
+
+        const lowerQuery = query.toLowerCase();
+        searchResults.value = allPages.filter((p : PageItem) : boolean => {
+            const title = p.title.toLowerCase();
+            const path = p.path.toLowerCase();
+            return title.includes(lowerQuery) || path.includes(lowerQuery);
+        })
+    };
+
+    const onHistoryClick = (text : string) => {
+        keyword.value = text;
+        doSearch();
+    };
+
+    const onInput = (e : InputEvent) => {
+        doSearch();
+    };
+
+    const clearIcon = () => {
+        keyword.value = '';
+        searchResults.value = [] as PageItem[];
+    };
+
+    const navigateTo = (item : PageItem) => {
+        uni.navigateTo({
+            url: '/' + item.path,
+            fail: (err) => {
+                // console.log('Navigate failed, trying switchTab', err);
+                uni.switchTab({
+                    url: '/' + item.path
+                })
+            }
+        })
+    }
+</script>
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .input-wrapper {
+        display: flex;
+        padding: 8px 13px;
+        margin: 5px 0;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        background-color: #ffffff;
+    }
+
+    .uni-input {
+        height: 28px;
+        font-size: 15px;
+        padding: 0px;
+        flex: 1;
+        background-color: #ffffff;
+    }
+
+    .uni-icon {
+        width: 24px;
+        height: 24px;
+        right: 15px;
+    }
+
+    .result-list {
+        flex: 1;
+    }
+
+    .result-item {
+        padding: 15px;
+        border-bottom: 1px solid #eeeeee;
+        background-color: #ffffff;
+    }
+
+    .result-title {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .result-path {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    .history-box {
+        padding: 10px 15px;
+        background-color: #ffffff;
+    }
+
+    .history-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .history-title {
+        font-size: 14px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .history-clear {
+        font-size: 12px;
+        color: #999;
+    }
+
+    .history-content {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .history-item {
+        background-color: #f5f5f5;
+        padding: 5px 10px;
+        border-radius: 15px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .history-text {
+        font-size: 12px;
+        color: #666;
+    }
+</style>
