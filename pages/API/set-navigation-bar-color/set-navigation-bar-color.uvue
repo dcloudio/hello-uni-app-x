@@ -13,60 +13,67 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
   import { state, setLifeCycleNum } from '@/store/index.uts'
 
-  export default {
-    methods: {
-      setNavigationBarColor1() {
-        uni.setNavigationBarColor({
-          frontColor: '#ffffff',
-          backgroundColor: '#00ff00',
-          success: () => {
-            console.log('setNavigationBarColor success')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          },
-          fail: () => {
-            console.log('setNavigationBarColor fail')
-            this.setLifeCycleNum(state.lifeCycleNum - 1)
-          },
-          complete: () => {
-            console.log('setNavigationBarColor complete')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          }
-        })
-      },
-      setNavigationBarColor2() {
-        uni.setNavigationBarColor({
-          frontColor: '#000000',
-          backgroundColor: '#ff0000',
-          success: () => {
-            console.log('setNavigationBarColor success')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          },
-          fail: () => {
-            console.log('setNavigationBarColor fail')
-            this.setLifeCycleNum(state.lifeCycleNum - 1)
-          },
-          complete: () => {
-            console.log('setNavigationBarColor complete')
-            this.setLifeCycleNum(state.lifeCycleNum + 1)
-          }
-        })
-      },
-      // 自动化测试
-      getLifeCycleNum() : number {
-        return state.lifeCycleNum
-      },
-      // 自动化测试
-      setLifeCycleNum(num : number) {
-        setLifeCycleNum(num)
-      },
-      goNavbarLite() {
-        uni.navigateTo({
-          url: '/pages/template/navbar-lite/navbar-lite'
-        })
-      }
-    },
+  // 自动化测试
+  const getLifeCycleNum = () : number => {
+    return state.lifeCycleNum
   }
+
+  // 自动化测试
+  const setLifeCycleNumFunc = (num : number) => {
+    setLifeCycleNum(num)
+  }
+
+  const setNavigationBarColor1 = () => {
+    uni.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#00ff00',
+      success: () => {
+        console.log('setNavigationBarColor success')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNumFunc(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  const setNavigationBarColor2 = () => {
+    uni.setNavigationBarColor({
+      frontColor: '#000000',
+      backgroundColor: '#ff0000',
+      success: () => {
+        console.log('setNavigationBarColor success')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      },
+      fail: () => {
+        console.log('setNavigationBarColor fail')
+        setLifeCycleNumFunc(state.lifeCycleNum - 1)
+      },
+      complete: () => {
+        console.log('setNavigationBarColor complete')
+        setLifeCycleNumFunc(state.lifeCycleNum + 1)
+      }
+    })
+  }
+
+  const goNavbarLite = () => {
+    uni.navigateTo({
+      url: '/pages/template/navbar-lite/navbar-lite'
+    })
+  }
+
+  defineExpose({
+    getLifeCycleNum,
+    setLifeCycleNum: setLifeCycleNumFunc,
+    setNavigationBarColor1,
+    setNavigationBarColor2
+  })
 </script>

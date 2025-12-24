@@ -9,7 +9,7 @@ describe('ExtApi-GetNetworkType', () => {
     await page.waitFor(600);
     await page.callMethod('jest_getNetworkType');
     await page.waitFor(200);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
   });
 
   it('Check ', async () => {

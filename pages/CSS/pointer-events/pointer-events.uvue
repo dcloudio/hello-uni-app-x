@@ -20,46 +20,92 @@
         <view class="width-progress transition-width" id="widthProgress" @click="changeWidthProgress"></view>
         <view class="mask" :style="{ 'pointer-events': pointerEvents2 }"></view>
       </view>
+      <view class="container1">
+        <text>控制text组件pointer-events打开时可以点击</text>
+        <switch :checked="true" @change="onChange3" />
+      </view>
+      <view class="container" :style="{ 'pointer-events': pointerEvents3 }">
+        <text class="text">点击修改宽度</text>
+        <text class="text-pointer transition-width" id="textPointer" @click="changeTextWidth">测试文本</text>
+      </view>
+      <view class="container1">
+        <text>控制image组件pointer-events打开时可以点击</text>
+        <switch :checked="true" @change="onChange4" />
+      </view>
+      <view class="container" :style="{ 'pointer-events': pointerEvents4 }">
+        <text class="text">点击修改宽度</text>
+        <image class="image-pointer transition-width" id="imagePointer" @click="changeImageWidth" src="/static/logo.png"></image>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        isTranstionWidthOrHeight: false,
-        widthOrHeight: null as UniElement | null,
-        widthProgress: null as UniElement | null,
-        progressWidth: 200,
-        pointerEvents1: 'auto',
-        pointerEvents2: 'auto',
-      }
-    },
-    onReady() {
-      this.widthOrHeight = uni.getElementById("widthOrHeight")
-      this.widthProgress = uni.getElementById("widthProgress")
-    },
-    methods: {
-      changeWidthOrHeight() {
-        this.widthOrHeight?.style?.setProperty("width", this.isTranstionWidthOrHeight
-          ? '200px'
-          : '300px')
-        this.isTranstionWidthOrHeight = !this.isTranstionWidthOrHeight
-      },
-      changeWidthProgress() {
-        this.progressWidth += 20
-        this.widthProgress?.style?.setProperty("width", this.progressWidth + 'px')
-      },
-      onChange1(e : UniSwitchChangeEvent) {
-        this.pointerEvents1 = e.detail.value ? 'auto' : 'none'
-      },
-      onChange2(e : UniSwitchChangeEvent) {
-        this.pointerEvents2 = e.detail.value ? 'auto' : 'none'
-      }
-    }
+<script setup lang="uts">
+
+  const isTranstionWidthOrHeight = ref(false)
+  const widthOrHeight = ref(null as UniElement | null)
+  const widthProgress = ref(null as UniElement | null)
+  const textPointer = ref(null as UniElement | null)
+  const imagePointer = ref(null as UniElement | null)
+  const progressWidth = ref(200)
+  const textWidth = ref(200)
+  const imageWidth = ref(200)
+  const isTextWidth = ref(false)
+  const isImageWidth = ref(false)
+  const pointerEvents1 = ref('auto')
+  const pointerEvents2 = ref('auto')
+  const pointerEvents3 = ref('auto')
+  const pointerEvents4 = ref('auto')
+
+  onReady(() => {
+    widthOrHeight.value = uni.getElementById("widthOrHeight")
+    widthProgress.value = uni.getElementById("widthProgress")
+    textPointer.value = uni.getElementById("textPointer")
+    imagePointer.value = uni.getElementById("imagePointer")
+  })
+
+  const changeWidthOrHeight = () => {
+    widthOrHeight.value?.style?.setProperty("width", isTranstionWidthOrHeight.value
+      ? '200px'
+      : '300px')
+    isTranstionWidthOrHeight.value = !isTranstionWidthOrHeight.value
+  }
+
+  const changeWidthProgress = () => {
+    progressWidth.value += 20
+    widthProgress.value?.style?.setProperty("width", progressWidth.value + 'px')
+  }
+
+  const onChange1 = (e : UniSwitchChangeEvent) => {
+    pointerEvents1.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const onChange2 = (e : UniSwitchChangeEvent) => {
+    pointerEvents2.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const changeTextWidth = () => {
+    textPointer.value?.style?.setProperty("width", isTextWidth.value
+      ? '200px'
+      : '300px')
+    isTextWidth.value = !isTextWidth.value
+  }
+
+  const changeImageWidth = () => {
+    imagePointer.value?.style?.setProperty("width", isImageWidth.value
+      ? '200px'
+      : '300px')
+    isImageWidth.value = !isImageWidth.value
+  }
+
+  const onChange3 = (e : UniSwitchChangeEvent) => {
+    pointerEvents3.value = e.detail.value ? 'auto' : 'none'
+  }
+
+  const onChange4 = (e : UniSwitchChangeEvent) => {
+    pointerEvents4.value = e.detail.value ? 'auto' : 'none'
   }
 </script>
 
@@ -106,5 +152,19 @@
     width: 100%;
     height: 200px;
     background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .text-pointer {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
+    font-size: 16px;
+    color: white;
+  }
+
+  .image-pointer {
+    width: 200px;
+    height: 200px;
+    background-color: brown;
   }
 </style>

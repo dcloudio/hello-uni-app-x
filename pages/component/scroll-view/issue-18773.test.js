@@ -23,7 +23,7 @@ describe('issue-18587', () => {
     it('check_scroll_end_test1', async () => {
       await page.callMethod('scrollTo')
       await page.waitFor(1000)
-      const scrollEndTriggeredTimes = await page.data('scrollEndTriggeredTimes')
+      const scrollEndTriggeredTimes = await page.data('data.scrollEndTriggeredTimes')
       expect(scrollEndTriggeredTimes).toBe(0)
     })
 
@@ -31,7 +31,7 @@ describe('issue-18587', () => {
     it('check_scroll_end_test2', async () => {
       await page.callMethod('scrollTo')
       await page.waitFor(1000)
-      const scrollEndTriggeredTimes = await page.data('scrollEndTriggeredTimes')
+      const scrollEndTriggeredTimes = await page.data('data.scrollEndTriggeredTimes')
       expect(scrollEndTriggeredTimes).toBe(1)
     })
 });

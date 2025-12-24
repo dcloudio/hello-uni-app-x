@@ -78,7 +78,7 @@ describe('ExtApi-GetSystemInfo', () => {
       expect(1).toBe(1)
     }else{
       await page.callMethod('jest_getScreenHeight_at_different_stages')
-      const res = await page.data('jest_result');
+      const res = await page.data('data.jest_result');
       expect(res).toBe(true)
     }
   })

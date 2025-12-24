@@ -22,7 +22,9 @@ describe("rich-text-tags", () => {
   if (isAndroid) {
     it("test attr mode", async () => {
       await page.setData({
-        mode: 'native'
+        modeData: {
+          mode: 'native'
+        }
       });
       await page.waitFor(1000);
       const image = await program.screenshot({ fullPage: true });

@@ -27,7 +27,7 @@ describe('component-native-list-view', () => {
   it('check_list_item_v_show', async () => {
     await page.callMethod('delayShow')
     await page.waitFor(async () => {
-      return await page.data('list_show') === true;
+      return await page.data('data.list_show') === true;
     });
     await page.waitFor(1000)
     const image = await program.screenshot({fullPage: true});
@@ -38,7 +38,7 @@ describe('component-native-list-view', () => {
   it('check_switch_item_content', async () => {
     await page.callMethod('switchItemContent')
     await page.waitFor(async () => {
-      return await page.data('displayArrow') === true;
+      return await page.data('data.displayArrow') === true;
     });
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: true});

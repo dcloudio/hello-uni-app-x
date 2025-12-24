@@ -11,6 +11,10 @@ describe('Button.uvue', () => {
     await page.waitFor('view')
   })
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('click', async () => {
     // TODO 待测试框架支持text的dispatchEvent
     // const btn = await page.$('.btn')
@@ -35,29 +39,21 @@ describe('Button.uvue', () => {
   it('text', async () => {
     const textBtn = await page.$('.btn')
     expect(await textBtn.text()).toEqual('uni-app-x')
-    await page.setData({
-      text: 'uni-app-x button',
-    })
+    await setPageData({text: 'uni-app-x button'})
     expect(await textBtn.text()).toEqual('uni-app-x button')
   })
   it('type', async () => {
     const btn = await page.$('.btn')
     expect(await btn.property('type')).toBe('default')
-    await page.setData({
-      type_enum_current: 1,
-    })
+    await setPageData({type_enum_current: 1})
     expect(await btn.property('type')).toBe('primary')
-    await page.setData({
-      type_enum_current: 2,
-    })
+    await setPageData({type_enum_current: 2})
     expect(await btn.property('type')).toBe('warn')
   })
   it('size', async () => {
     const btn = await page.$('.btn')
     expect(await btn.property('size')).toBe('default')
-    await page.setData({
-      size_enum_current: 1,
-    })
+    await setPageData({size_enum_current: 1})
     expect(await btn.property('size')).toBe('mini')
   })
   it('plain', async () => {
@@ -65,9 +61,7 @@ describe('Button.uvue', () => {
     // TODO
     const newValue1 = await btn.property('plain')
     expect(newValue1.toString()).toBe(false + '')
-    await page.setData({
-      plain_boolean: true,
-    })
+    await setPageData({plain_boolean: true})
     const newValue2 = await btn.property('plain')
     expect(newValue2.toString()).toBe(true + '')
   })
@@ -76,9 +70,7 @@ describe('Button.uvue', () => {
     // TODO
     const newValue1 = await btn.property('disabled')
     expect(newValue1.toString()).toBe(false + '')
-    await page.setData({
-      disabled_boolean: true,
-    })
+    await setPageData({disabled_boolean: true})
     const newValue2 = await btn.property('disabled')
     expect(newValue2.toString()).toBe(true + '')
   })
@@ -93,9 +85,7 @@ describe('Button.uvue', () => {
   })
   it("setbuttonEmpty", async () => {
     const textBtn = await page.$('.btn')
-    await page.setData({
-      text: '',
-    })
+    await setPageData({text: ''})
     expect(await textBtn.text()).toEqual('')
   })
 
@@ -108,7 +98,7 @@ describe('Button.uvue', () => {
 
     const btn = await page.$('.btn')
 
-    await page.setData({
+    await setPageData({
       text: 'uni-app-x',
       plain_boolean: true,
       type_enum_current: 1,
@@ -127,7 +117,7 @@ describe('Button.uvue', () => {
       return 'button-screenshot-plain+primary+default'
     }});
 
-    await page.setData({
+    await setPageData({
       text: 'uni-app-x',
       plain_boolean: true,
       type_enum_current: 1,
@@ -143,7 +133,7 @@ describe('Button.uvue', () => {
       return 'custom-button-screenshot-plain+primary+default'
     }});
 
-    await page.setData({
+    await setPageData({
       text: 'uni-app-x',
       plain_boolean: true,
       type_enum_current: 1,

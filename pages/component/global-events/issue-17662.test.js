@@ -26,10 +26,10 @@ describe('issue-17662', () => {
 		})
 		await page.waitFor(300)
 
-		var longpressItem = await page.data('longpressItem')
+		var longpressItem = await page.data('data.longpressItem')
 		expect(longpressItem).toBe(true)
 
-		var longpressText = await page.data('longpressText')
+		var longpressText = await page.data('data.longpressText')
 		expect(longpressText).toBe(true)
 
 		if (isHarmony) {
@@ -37,10 +37,12 @@ describe('issue-17662', () => {
 			return
 		}
 		await page.setData({
-			'scrollTop': 2000,
-			'isStopPropagation': true,
-      'longpressItem': false,
-      'longpressText': false
+			data: {
+				scrollTop: 2000,
+				isStopPropagation: true,
+				longpressItem: false,
+				longpressText: false
+			}
 		})
 		await page.waitFor(500)
 
@@ -51,10 +53,10 @@ describe('issue-17662', () => {
 		})
 		await page.waitFor(300)
 
-    longpressItem = await page.data('longpressItem')
+    longpressItem = await page.data('data.longpressItem')
 		expect(longpressItem).toBe(false)
 
-		longpressText = await page.data('longpressText')
+		longpressText = await page.data('data.longpressText')
 		expect(longpressText).toBe(true)
 	})
 })

@@ -8,27 +8,23 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        url: "",
-        coverPath: ""
-      }
-    },
-    onLoad(options : OnLoadOptions) {
-      uni.$once("__ONRECEIVEURL",(value:UTSJSONObject)=>{
-        this.url = value["url"] as string;
-        this.coverPath = value["cover"] as string;
-      })
-      uni.$emit("__ONFULLVIDEOLOAD",null)
-    },
-    methods: {
-      back() {
-        uni.navigateBack()
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+const url = ref("")
+const coverPath = ref("")
+
+function back() {
+  uni.navigateBack()
+}
+
+onLoad((options : OnLoadOptions) => {
+  uni.$once("__ONRECEIVEURL",(value:UTSJSONObject)=>{
+    url.value = value["url"] as string;
+    coverPath.value = value["cover"] as string;
+  })
+  uni.$emit("__ONFULLVIDEOLOAD",null)
+})
 </script>
 
 <style>

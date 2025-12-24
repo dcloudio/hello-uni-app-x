@@ -118,185 +118,197 @@
   <!-- #endif -->
 </template>
 
-<script>
-  var sourceTypeArray = [
-    ['camera'],
-    ['album'],
-    ['camera', 'album']
-  ]
-  var sizeTypeArray = [
-    ['compressed'],
-    ['original'],
-    ['compressed', 'original']
-  ]
-  var orientationTypeArray = [
-    'portrait',
-    'landscape',
-    'auto'
-  ]
-  var albumModeTypeArray = [
-    "custom",
-    "system"
-  ]
-  export default {
-    data() {
-      return {
-        title: 'chooseImage',
-        imageList: [] as Array<string>,
-        sourceTypeIndex: 2,
-        sourceType: ['拍照', '相册', '拍照或相册'],
-        sizeTypeIndex: 2,
-        sizeType: ['压缩', '原图', '压缩或原图'],
-        orientationTypeIndex: 0,
-        orientationType: ['竖屏', '横屏', '自动'],
-        albumModeTypeIndex:0,
-        albumModeType:["自定义相册","系统相册"],
-        count: 9,
-        isCrop: false,
-        cropPercent: 80,
-        cropWidth: 100,
-        cropHeight: 100,
-        cropResize: false
-      }
-    },
-    onHide() {
-      console.log("Page Hide");
-    },
-    onUnload() {
-      this.imageList = [];
-      this.sourceTypeIndex = 2
-      this.sourceType = ['拍照', '相册', '拍照或相册']
-      this.sizeTypeIndex = 2
-      this.sizeType = ['压缩', '原图', '压缩或原图']
-      this.orientationTypeIndex = 0
-      this.orientationType = ['竖屏', '横屏', '自动']
-    },
-    methods: {
-      cropHeightConfim(e : InputConfirmEvent) {
-        let value = parseInt(e.detail.value)
-        if (value > 0) {
-          this.cropHeight = value
-        } else {
-          uni.showToast({
-            position: "bottom",
-            title: "裁剪高度需要大于0"
-          })
-        }
-      },
-      cropWidthConfim(e : InputConfirmEvent) {
-        let value = parseInt(e.detail.value)
-        if (value > 0) {
-          this.cropWidth = value
-        } else {
-          uni.showToast({
-            position: "bottom",
-            title: "裁剪宽度需要大于0"
-          })
-        }
-      },
-      cropPercentConfim(e : InputConfirmEvent) {
-        let value = parseInt(e.detail.value)
-        if (value > 0 && value <= 100) {
-          this.cropPercent = value
-        } else {
-          uni.showToast({
-            position: "bottom",
-            title: "请输入0~100之间的值"
-          })
-        }
-      },
-      albumModeChange(){
-        uni.showActionSheet({
-          itemList: this.albumModeType,
-          success: (e) => {
-            this.albumModeTypeIndex = e.tapIndex
-          }
-        })
-      },
-      cropResizeChange(e : UniSwitchChangeEvent) {
-        this.cropResize = e.detail.value
-      },
-      switchCrop(e : UniSwitchChangeEvent) {
-        this.isCrop = e.detail.value
-      },
-      removeImage(index : number) {
-        this.imageList.splice(index, 1)
-      },
-      chooseImageSource() {
-        uni.showActionSheet({
-          itemList: ['拍照', '相册', '拍照或相册'],
-          success: (e) => {
-            this.sourceTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseImageType() {
-        uni.showActionSheet({
-          itemList: ['压缩', '原图', '压缩或原图'],
-          success: (e) => {
-            this.sizeTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseOrientationType(){
-        uni.showActionSheet({
-          itemList: ['竖屏', '横屏', '自动'],
-          success: (e) => {
-            this.orientationTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseImageCount(event : InputBlurEvent) {
-        let count = parseInt(event.detail.value)
-        if (count < 0) {
-          uni.showToast({
-            position: "bottom",
-            title: "图片数量应该大于0"
-          })
-          return
-        }
-        this.count = count
-      },
-      chooseImage: function () {
-        if (this.imageList.length >= this.count) {
-          uni.showToast({
-            position: "bottom",
-            title: `已经有 ${this.count} 张图片了，请删除部分图片之后重新选择`
-          })
-          return
-        }
-        uni.chooseImage({
-          sourceType: sourceTypeArray[this.sourceTypeIndex],
-          sizeType: sizeTypeArray[this.sizeTypeIndex],
-          crop: this.isCrop ? { "quality": this.cropPercent, "width": this.cropWidth, "height": this.cropHeight, "resize": this.cropResize } as ChooseImageCropOptions : null,
-          count: this.count - this.imageList.length,
-          // #ifdef APP
-          pageOrientation: orientationTypeArray[this.orientationTypeIndex],
-          // #endif
-          // #ifdef APP-ANDROID
-          albumMode: albumModeTypeArray[this.albumModeTypeIndex],
-          // #endif
-          success: (res) => {
-            this.imageList = this.imageList.concat(res.tempFilePaths);
-            console.log("this.imageList: ",this.imageList)
-          },
-          fail: (err) => {
-            console.log("err: ", JSON.stringify(err));
-            uni.showToast({
-              title:"choose image error.code:" + err.errCode+";message:"+err.errMsg,
-              position:"bottom"
-            })
-          }
-        })
-      },
-      previewImage: function (index : number) {
-        uni.previewImage({
-          current: index,
-          urls: this.imageList
-        })
-      }
-    }
+<script setup lang="uts">
+
+const sourceTypeArray = [
+  ['camera'],
+  ['album'],
+  ['camera', 'album']
+]
+const sizeTypeArray = [
+  ['compressed'],
+  ['original'],
+  ['compressed', 'original']
+]
+const orientationTypeArray = [
+  'portrait',
+  'landscape',
+  'auto'
+]
+const albumModeTypeArray = [
+  "custom",
+  "system"
+]
+
+// 响应式数据
+const title = ref('chooseImage')
+const imageList = ref([] as Array<string>)
+const sourceTypeIndex = ref(2)
+const sourceType = ref(['拍照', '相册', '拍照或相册'])
+const sizeTypeIndex = ref(2)
+const sizeType = ref(['压缩', '原图', '压缩或原图'])
+const orientationTypeIndex = ref(0)
+const orientationType = ref(['竖屏', '横屏', '自动'])
+const albumModeTypeIndex = ref(0)
+const albumModeType = ref(["自定义相册","系统相册"])
+const count = ref(9)
+const isCrop = ref(false)
+const cropPercent = ref(80)
+const cropWidth = ref(100)
+const cropHeight = ref(100)
+const cropResize = ref(false)
+
+// 生命周期钩子
+onPageHide(() => {
+  console.log("Page Hide");
+})
+
+onUnload(() => {
+  imageList.value = [];
+  sourceTypeIndex.value = 2
+  sourceType.value = ['拍照', '相册', '拍照或相册']
+  sizeTypeIndex.value = 2
+  sizeType.value = ['压缩', '原图', '压缩或原图']
+  orientationTypeIndex.value = 0
+  orientationType.value = ['竖屏', '横屏', '自动']
+})
+
+// 方法
+const cropHeightConfim = (e: InputConfirmEvent) => {
+  let value = parseInt(e.detail.value)
+  if (value > 0) {
+    cropHeight.value = value
+  } else {
+    uni.showToast({
+      position: "bottom",
+      title: "裁剪高度需要大于0"
+    })
   }
+}
+
+const cropWidthConfim = (e: InputConfirmEvent) => {
+  let value = parseInt(e.detail.value)
+  if (value > 0) {
+    cropWidth.value = value
+  } else {
+    uni.showToast({
+      position: "bottom",
+      title: "裁剪宽度需要大于0"
+    })
+  }
+}
+
+const cropPercentConfim = (e: InputConfirmEvent) => {
+  let value = parseInt(e.detail.value)
+  if (value > 0 && value <= 100) {
+    cropPercent.value = value
+  } else {
+    uni.showToast({
+      position: "bottom",
+      title: "请输入0~100之间的值"
+    })
+  }
+}
+
+const albumModeChange = () => {
+  uni.showActionSheet({
+    itemList: albumModeType.value,
+    success: (e) => {
+      albumModeTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const cropResizeChange = (e: UniSwitchChangeEvent) => {
+  cropResize.value = e.detail.value
+}
+
+const switchCrop = (e: UniSwitchChangeEvent) => {
+  isCrop.value = e.detail.value
+}
+
+const removeImage = (index: number) => {
+  imageList.value.splice(index, 1)
+}
+
+const chooseImageSource = () => {
+  uni.showActionSheet({
+    itemList: ['拍照', '相册', '拍照或相册'],
+    success: (e) => {
+      sourceTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const chooseImageType = () => {
+  uni.showActionSheet({
+    itemList: ['压缩', '原图', '压缩或原图'],
+    success: (e) => {
+      sizeTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const chooseOrientationType = () => {
+  uni.showActionSheet({
+    itemList: ['竖屏', '横屏', '自动'],
+    success: (e) => {
+      orientationTypeIndex.value = e.tapIndex
+    }
+  })
+}
+
+const chooseImageCount = (event: InputBlurEvent) => {
+  let countValue = parseInt(event.detail.value)
+  if (countValue < 0) {
+    uni.showToast({
+      position: "bottom",
+      title: "图片数量应该大于0"
+    })
+    return
+  }
+  count.value = countValue
+}
+
+const chooseImage = () => {
+  if (imageList.value.length >= count.value) {
+    uni.showToast({
+      position: "bottom",
+      title: `已经有 ${count.value} 张图片了，请删除部分图片之后重新选择`
+    })
+    return
+  }
+  uni.chooseImage({
+    sourceType: sourceTypeArray[sourceTypeIndex.value],
+    sizeType: sizeTypeArray[sizeTypeIndex.value],
+    crop: isCrop.value ? { "quality": cropPercent.value, "width": cropWidth.value, "height": cropHeight.value, "resize": cropResize.value } as ChooseImageCropOptions : null,
+    count: count.value - imageList.value.length,
+    // #ifdef APP
+    pageOrientation: orientationTypeArray[orientationTypeIndex.value],
+    // #endif
+    // #ifdef APP-ANDROID
+    albumMode: albumModeTypeArray[albumModeTypeIndex.value],
+    // #endif
+    success: (res) => {
+      imageList.value = imageList.value.concat(res.tempFilePaths);
+      console.log("imageList: ", imageList.value)
+    },
+    fail: (err) => {
+      console.log("err: ", JSON.stringify(err));
+      uni.showToast({
+        title:"choose image error.code:" + err.errCode+";message:"+err.errMsg,
+        position:"bottom"
+      })
+    }
+  })
+}
+
+const previewImage = (index: number) => {
+  uni.previewImage({
+    current: index,
+    urls: imageList.value
+  })
+}
 </script>
 
 <style>

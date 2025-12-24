@@ -18,6 +18,10 @@ describe('touch-events-test', () => {
     await page.waitFor('view');
   })
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('test-screenshot-custom-refresher', async () => {
     await page.waitFor(300);
     const windowInfo = await program.callUniMethod('getWindowInfo');
@@ -36,7 +40,7 @@ describe('touch-events-test', () => {
     let x = 100
     let y = 250
 
-    await page.setData({
+    await setPageData({
       triggered: false,
       listCount: 5
     })
@@ -57,7 +61,7 @@ describe('touch-events-test', () => {
     })
 
     await page.waitFor(500);
-    const ret = await page.data('triggered')
+    const ret = await page.data('data.triggered')
     expect(ret).toBe(true)
   })
 })

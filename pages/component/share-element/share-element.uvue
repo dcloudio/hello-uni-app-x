@@ -56,7 +56,7 @@
     </view>
   </share-element>
 </template>
-<script>
+<script setup lang="uts">
   type ShareElementOpenAnimationType =
     'auto' |
     'none' |
@@ -81,69 +81,87 @@
     'to'
 
   import { ItemType } from '@/components/enum-data/enum-data-types'
-  export default {
-    data() {
-      return {
-        transitionOnGesture: true,
-        shuttleOnPopType: 'to' as ShuttleOnType,
-        shuttleOnPushType: 'to' as ShuttleOnType,
-        shuttleOnTypeList: [
-          'from',
-          'to'
-        ],
-        openAnimationType: 'slide-in-right' as ShareElementOpenAnimationType,
-        openAnimationTypeList: [
-          'auto',
-          'none',
-          'slide-in-right',
-          'slide-in-left',
-          'slide-in-top',
-          'slide-in-bottom',
-          'fade-in',
-          'pop-in',
-          'zoom-out',
-          'zoom-fade-out'
-        ],
-        easingFunctionType: 'ease' as ShareElementEasingFunctionType,
-        easingFunctionTypeList: [
-          'ease',
-          'ease-in',
-          'ease-out',
-          'ease-in-out',
-          'linear'
-        ]
-      }
-    },
-    methods: {
-      openPage() {
-        uni.navigateTo({
-          animationType: this.openAnimationType,
-          url: "/pages/component/share-element/share-element-to?shuttleOnPush=" + this.shuttleOnPushType + "&transitionOnGesture=" + this.transitionOnGesture
-        })
-      },
-      gotoShareElementWithSwiper(){
-        uni.navigateTo({
-          url:'/pages/component/share-element/share-element-with-swiper'
-        })
-      },
-      changeTransitionOnGesture(checked : boolean) {
-        console.log(`changeTransitionOnGesture:${checked}`)
-        this.transitionOnGesture = checked
-      },
-      handleOpenAnimationType(e : RadioGroupChangeEvent) {
-        this.openAnimationType = e.detail.value as ShareElementOpenAnimationType
-      },
-      handleEasingFunction(e : RadioGroupChangeEvent) {
-        this.easingFunctionType = e.detail.value as ShareElementEasingFunctionType
-      },
-      handleShuttleOnPopType(e : RadioGroupChangeEvent) {
-        this.shuttleOnPopType = e.detail.value as ShuttleOnType
-      },
-      handleShuttleOnPushType(e : RadioGroupChangeEvent) {
-        this.shuttleOnPushType = e.detail.value as ShuttleOnType
-      },
-    }
+
+  const transitionOnGesture = ref(true)
+  const shuttleOnPopType = ref('to' as ShuttleOnType)
+  const shuttleOnPushType = ref('to' as ShuttleOnType)
+  const shuttleOnTypeList = ref([
+    'from',
+    'to'
+  ])
+  const openAnimationType = ref('slide-in-right' as ShareElementOpenAnimationType)
+  const openAnimationTypeList = ref([
+    'auto',
+    'none',
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'pop-in',
+    'zoom-out',
+    'zoom-fade-out'
+  ])
+  const easingFunctionType = ref('ease' as ShareElementEasingFunctionType)
+  const easingFunctionTypeList = ref([
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'linear'
+  ])
+
+  const openPage = () => {
+    uni.navigateTo({
+      animationType: openAnimationType.value,
+      url: "/pages/component/share-element/share-element-to?shuttleOnPush=" + shuttleOnPushType.value + "&transitionOnGesture=" + transitionOnGesture.value
+    })
   }
+
+  const gotoShareElementWithSwiper = () => {
+    uni.navigateTo({
+      url:'/pages/component/share-element/share-element-with-swiper'
+    })
+  }
+
+  const changeTransitionOnGesture = (checked : boolean) => {
+    console.log(`changeTransitionOnGesture:${checked}`)
+    transitionOnGesture.value = checked
+  }
+
+  const handleOpenAnimationType = (e : RadioGroupChangeEvent) => {
+    openAnimationType.value = e.detail.value as ShareElementOpenAnimationType
+  }
+
+  const handleEasingFunction = (e : RadioGroupChangeEvent) => {
+    easingFunctionType.value = e.detail.value as ShareElementEasingFunctionType
+  }
+
+  const handleShuttleOnPopType = (e : RadioGroupChangeEvent) => {
+    shuttleOnPopType.value = e.detail.value as ShuttleOnType
+  }
+
+  const handleShuttleOnPushType = (e : RadioGroupChangeEvent) => {
+    shuttleOnPushType.value = e.detail.value as ShuttleOnType
+  }
+
+  defineExpose({
+    transitionOnGesture,
+    shuttleOnPopType,
+    shuttleOnPushType,
+    shuttleOnTypeList,
+    openAnimationType,
+    openAnimationTypeList,
+    easingFunctionType,
+    easingFunctionTypeList,
+    openPage,
+    gotoShareElementWithSwiper,
+    changeTransitionOnGesture,
+    handleOpenAnimationType,
+    handleEasingFunction,
+    handleShuttleOnPopType,
+    handleShuttleOnPushType
+  })
 </script>
 
 <style>

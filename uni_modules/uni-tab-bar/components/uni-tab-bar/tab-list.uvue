@@ -1,0 +1,39 @@
+<template>
+	<view class="tab-list">
+		<slot></slot>
+	</view>
+</template>
+
+<script setup lang="uts">
+
+// 存储子项数量
+const itemCount = ref<number>(0)
+
+// 注册子项
+function registerItem(): number {
+	const index = itemCount.value
+	itemCount.value++
+	return index
+}
+
+// 向子组件提供注册方法
+provide('tabListRegisterItem', registerItem)
+</script>
+
+<style>
+.tab-list {
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+	height: 50px; /* 默认50px高*/
+	overflow: visible; /* 避免裁剪badge*/
+	background-color: #ffffff;
+	border-top-width: 1px;
+	border-top-color: #e5e5e5;
+	margin-bottom: var(--uni-safe-area-inset-bottom); /* 默认避让底部安全区*/
+	/* #ifdef APP */
+	/* margin-bottom: 14px; */ /*TODO 没有css变量，临时使用固定10px，避免安全区遮挡 @郭胜强*/
+	/* #endif */
+}
+</style>

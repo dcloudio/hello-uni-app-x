@@ -15,7 +15,7 @@ describe('list-view-multiplex-input', () => {
     await page.waitFor('list-view')
     await page.waitFor(300)
 
-    await page.setData({ isTesting: true })
+    await page.setData({ data: { isTesting: true } })
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot()
   })

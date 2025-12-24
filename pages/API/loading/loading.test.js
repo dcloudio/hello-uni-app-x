@@ -11,6 +11,18 @@ const PAGE_PATH = '/pages/API/loading/loading'
 describe('API-loading', () => {
   let deviceShotOptions = {}
   let page;
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
+  function getData (key = '') {
+    return new Promise(async (resolve, reject) => {
+      const data = await page.data('data')
+      resolve(key ? data[key] : data)
+    })
+  }
+
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
@@ -78,4 +90,30 @@ describe('API-loading', () => {
     await toScreenshot('loading-manual-hide')
   })
 
+
+  it('close-loading-test', async () => {
+    await page.callMethod('closeSomeLoading')
+    await page.waitFor(1500)
+    await toScreenshot('close-loading-test-1')
+    await page.callMethod('hideLoading')
+    await page.waitFor(3500)
+    await toScreenshot('close-loading-test-2')
+    const dataRet = await getData('callbackText')
+    const callbackTextRet = JSON.stringify(dataRet)
+    expect(callbackTextRet)
+    .toEqual('["showLoading 1 success","showLoading 1 complete","showLoading 2 success","showLoading 2 complete","hideLoading 2 success","hideLoading 2 complete","hideLoading 1 success","hideLoading 1 complete"]')
+
+  })
+
+  it('no-param-loading-test', async () => {
+    await page.callMethod('noParamLoading')
+    await toScreenshot('no-param-loading-test-1')
+    await page.waitFor(2500)
+    await toScreenshot('no-param-loading-test-2')
+    const dataRet = await getData('callbackText')
+    const callbackTextRet = JSON.stringify(dataRet)
+    expect(callbackTextRet)
+    .toEqual('["showLoading 1 success","showLoading 1 complete","showLoading 2 success","showLoading 2 complete","hideLoading 2 success","hideLoading 2 complete","hideLoading 1 success","hideLoading 1 complete","noParamLoading 1 success","noParamLoading 2 complete","hide loading success"]')
+
+  })
 });

@@ -15,15 +15,22 @@ describe("get-location", () => {
       })
       return
     }
+
+    let page;
     beforeAll(async () => {
       page = await program.reLaunch(PAGE_PATH)
       await page.waitFor(600)
     });
 
+    // 测试辅助函数
+    async function setPageData(newData) {
+      return await page.setData({ jestData: newData });
+    }
+
     //system 定位
     if(!isWeb){
       it("system+type=wgs84+success", async () => {
-        await page.setData({
+        await setPageData({
           jest_provider: 'system',
           jest_type: 'wgs84',
           jest_isAltitude: true,
@@ -35,22 +42,22 @@ describe("get-location", () => {
           await program.tap({x: 100, y: 525})
         }
         await page.waitFor(async () => {
-          return await page.data('jest_complete') === true;
+          return await page.data('jestData.jest_complete') === true;
         });
 
-        const data = await page.data()
+        const data = await page.data('jestData')
         const jest_errCode = data['jest_errCode']
 
         if (jest_errCode > 0) {
-          expect((await page.data())['jest_errCode']).toEqual(expect.any(Number));
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(expect.any(Number));
         } else {
           //判断经纬度是否在正常范围
-          expect((await page.data())['jest_longitude']).toBeGreaterThanOrEqual(-180);
-          expect((await page.data())['jest_longitude']).toBeLessThanOrEqual(180);
-          expect((await page.data())['jest_latitude']).toBeGreaterThanOrEqual(-90);
-          expect((await page.data())['jest_latitude']).toBeLessThanOrEqual(90);
+          expect((await page.data('jestData'))['jest_longitude']).toBeGreaterThanOrEqual(-180);
+          expect((await page.data('jestData'))['jest_longitude']).toBeLessThanOrEqual(180);
+          expect((await page.data('jestData'))['jest_latitude']).toBeGreaterThanOrEqual(-90);
+          expect((await page.data('jestData'))['jest_latitude']).toBeLessThanOrEqual(90);
           //判断海拔是否正确
-          expect((await page.data())['jest_altitude']).toEqual(expect.any(Number));
+          expect((await page.data('jestData'))['jest_altitude']).toEqual(expect.any(Number));
         }
       });
     }
@@ -58,7 +65,7 @@ describe("get-location", () => {
     //system 定位
     it("system+type=wgs84+success+geocode=true", async () => {
 
-      await page.setData({
+      await setPageData({
         jest_provider: 'system',
         jest_type: 'wgs84',
         jest_isAltitude: true,
@@ -67,19 +74,19 @@ describe("get-location", () => {
       })
       await page.callMethod('jestGetLocation')
       await page.waitFor(async () => {
-        return await page.data('jest_complete') === true;
+        return await page.data('jestData.jest_complete') === true;
       });
 
-      const data = await page.data()
+      const data = await page.data('jestData')
       const jest_errCode = data['jest_errCode']
 
       if (jest_errCode > 0) {
         if (isIos) {
-          expect((await page.data())['jest_errCode']).toEqual(1505603);
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(1505603);
         } else if (isAndroid) {
-          expect((await page.data())['jest_errCode']).toEqual(1505700);
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(1505700);
         } else {
-          expect((await page.data())['jest_errCode']).toEqual(expect.any(Number));
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(expect.any(Number));
         }
       }
     });
@@ -87,7 +94,7 @@ describe("get-location", () => {
     //system 定位
     if(!isWeb){
       it("system+type=wgs84+success+altitude=false", async () => {
-        await page.setData({
+        await setPageData({
           jest_provider: 'system',
           jest_type: 'wgs84',
           jest_isAltitude: false,
@@ -96,24 +103,24 @@ describe("get-location", () => {
         })
         await page.callMethod('jestGetLocation')
         await page.waitFor(async () => {
-          return await page.data('jest_complete') === true;
+          return await page.data('jestData.jest_complete') === true;
         });
 
-        const data = await page.data()
+        const data = await page.data('jestData')
         const jest_errCode = data['jest_errCode']
 
         if (jest_errCode > 0) {
           //如果定位出错
-          expect((await page.data())['jest_errCode']).toEqual(expect.any(Number));
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(expect.any(Number));
         } else {
-          expect((await page.data())['jest_altitude']).toEqual(0);
+          expect((await page.data('jestData'))['jest_altitude']).toEqual(0);
         }
       });
     }
 
     //system 定位
     it("system+type=gcj02+fail", async () => {
-      await page.setData({
+      await setPageData({
         jest_provider: 'system',
         jest_type: 'gcj02',
         jest_isAltitude: true,
@@ -122,10 +129,10 @@ describe("get-location", () => {
       })
       await page.callMethod('jestGetLocation')
       await page.waitFor(async () => {
-        return await page.data('jest_complete') === true;
+        return await page.data('jestData.jest_complete') === true;
       });
       if (isApp) {
-        expect((await page.data())['jest_errCode']).toEqual(1505601);
+        expect((await page.data('jestData'))['jest_errCode']).toEqual(1505601);
       }
     });
 
@@ -133,7 +140,7 @@ describe("get-location", () => {
     //tencent 定位
     if(!isWeb){
       it("tencent+type=gcj02+success", async () => {
-        await page.setData({
+        await setPageData({
           jest_provider: 'tencent',
           jest_type: 'gcj02',
           jest_isAltitude: true,
@@ -142,32 +149,32 @@ describe("get-location", () => {
         })
         await page.callMethod('jestGetLocation')
         await page.waitFor(async () => {
-          return await page.data('jest_complete') === true;
+          return await page.data('jestData.jest_complete') === true;
         });
 
-        const data = await page.data()
+        const data = await page.data('jestData')
         const jest_errCode = data['jest_errCode']
 
         if (jest_errCode > 0) {
           //如果定位出错
-          expect((await page.data())['jest_errCode']).toEqual(expect.any(Number));
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(expect.any(Number));
         } else {
           //判断逆地理编码是否正确
-          expect((await page.data())['jest_address']).toEqual(expect.any(String));
+          expect((await page.data('jestData'))['jest_address']).toEqual(expect.any(String));
           //判断经纬度是否在正常范围
-          expect((await page.data())['jest_longitude']).toBeGreaterThanOrEqual(-180);
-          expect((await page.data())['jest_longitude']).toBeLessThanOrEqual(180);
-          expect((await page.data())['jest_latitude']).toBeGreaterThanOrEqual(-90);
-          expect((await page.data())['jest_latitude']).toBeLessThanOrEqual(90);
+          expect((await page.data('jestData'))['jest_longitude']).toBeGreaterThanOrEqual(-180);
+          expect((await page.data('jestData'))['jest_longitude']).toBeLessThanOrEqual(180);
+          expect((await page.data('jestData'))['jest_latitude']).toBeGreaterThanOrEqual(-90);
+          expect((await page.data('jestData'))['jest_latitude']).toBeLessThanOrEqual(90);
           //判断海拔是否正确
-          expect((await page.data())['jest_altitude']).toEqual(expect.any(Number));
+          expect((await page.data('jestData'))['jest_altitude']).toEqual(expect.any(Number));
         }
       });
     }
 
     //tencent 定位
     it("tencent+type=wgs84+fail", async () => {
-      await page.setData({
+      await setPageData({
         jest_provider: 'tencent',
         jest_type: 'wgs84',
         jest_isAltitude: true,
@@ -176,10 +183,10 @@ describe("get-location", () => {
       })
       await page.callMethod('jestGetLocation')
       await page.waitFor(async () => {
-        return await page.data('jest_complete') === true;
+        return await page.data('jestData.jest_complete') === true;
       });
       if (isApp) {
-          expect((await page.data())['jest_errCode']).toEqual(1505607);
+          expect((await page.data('jestData'))['jest_errCode']).toEqual(1505607);
       }
     });
 });

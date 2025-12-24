@@ -15,10 +15,10 @@ describe('component-native-scroll-view', () => {
 
   it('Event scroll-vertical',async()=>{
     // 纵向滚动
-    await page.setData({scrollTop: 100})
+    await page.setData({data:{scrollTop: 100}})
     await page.waitFor(1000)
     // 设置top 是否触发scroll 事件
-    const topScrollDetail = await page.data('scrollDetailTest')
+    const topScrollDetail = await page.data('data.scrollDetailTest')
     expect(topScrollDetail.scrollLeft).toBe(0)
     // Android 差异scrollTop：99.809525
     expect(topScrollDetail.scrollTop).toBeGreaterThan(99.5)
@@ -27,15 +27,15 @@ describe('component-native-scroll-view', () => {
     expect(topScrollDetail.scrollWidth).toBeGreaterThan(0)
     expect(topScrollDetail.deltaX).toBe(0)
     expect(topScrollDetail.deltaY).not.toBe(0)
-    expect(await page.data('isScrollTest')).toBe('scroll:Success')
+    expect(await page.data('data.isScrollTest')).toBe('scroll:Success')
   })
 
   it('Event scroll-horizontal',async()=>{
     // 横向滚动
-    await page.setData({scrollLeft:220})
+    await page.setData({data:{scrollLeft:220}})
     await page.waitFor(1000)
     //设置left 是否触发scroll 事件
-    const leftScrollDetail = await page.data('scrollDetailTest')
+    const leftScrollDetail = await page.data('data.scrollDetailTest')
     // Android 差异scrollLeft：219.80952
     expect(leftScrollDetail.scrollLeft).toBeGreaterThan(219.5)
     //expect([220, 219.80952]).toContain(leftScrollDetail.scrollLeft);
@@ -46,14 +46,14 @@ describe('component-native-scroll-view', () => {
     expect(leftScrollDetail.deltaX).toBeLessThan(-99.5)
     //expect([-100, -99.809525]).toContain(leftScrollDetail.deltaX);
     expect(leftScrollDetail.deltaY).toBe(0)
-    expect(await page.data('isScrollTest')).toBe('scroll:Success')
+    expect(await page.data('data.isScrollTest')).toBe('scroll:Success')
   })
 
   // 移后：此测试用例在某些mac-chrome会影响scroll-horizontal的deltaX结果
   it('scroll-view-screenshot', async () => {
     //禁止滚动条
     await page.setData({
-        showScrollbar: false
+        data:{showScrollbar: false}
     })
     await page.waitFor(1000);
     const image = await program.screenshot({fullPage: true});
@@ -62,17 +62,17 @@ describe('component-native-scroll-view', () => {
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
     // 滚动到底部scrollTop:300,是否触发scrolltolower事件
-    await page.setData({scrollTop: 300})
+    await page.setData({data:{scrollTop: 300}})
     await page.waitFor(600)
-    expect(await page.data('isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
+    expect(await page.data('data.isScrolltolowerTest')).toBe('scrolltolower:Success-bottom')
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
     // 滚动到顶部scrollTop: 0,是否触发scrolltoupper事件
-    await page.setData({scrollTop: 0})
+    await page.setData({data:{scrollTop: 0}})
     // await page.callMethod('goTop')
     await page.waitFor(600)
-    expect(await page.data('isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
+    expect(await page.data('data.isScrolltoupperTest')).toBe('scrolltoupper:Success-top')
   })
 
   if(!isWeb && !isMP){
@@ -81,7 +81,7 @@ describe('component-native-scroll-view', () => {
         // 鸿蒙scrollEnd触发比较慢
         await page.waitFor(500)
       }
-      const endDetail = await page.data('scrollEndDetailTest')
+      const endDetail = await page.data('data.scrollEndDetailTest')
       expect(endDetail.scrollLeft).toBe(0)
       expect(endDetail.scrollTop).toBe(0)
       expect(endDetail.deltaY).toBe(0)
@@ -95,7 +95,7 @@ describe('component-native-scroll-view', () => {
     it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
       await page.callMethod('setVerticalScrollBy', 120)
       await page.waitFor(600)
-      const scrollDetail = await page.data('scrollDetailTest')
+      const scrollDetail = await page.data('data.scrollDetailTest')
       expect(scrollDetail.scrollTop).toBeGreaterThan(119)
     })
   }

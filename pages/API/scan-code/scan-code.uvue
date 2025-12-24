@@ -12,28 +12,20 @@
 		</view>
 	</view>
 </template>
-<script lang="uts">
-	export default {
-		data() {
-			return {
-				title: 'scanCode',
-				result: ''
+<script setup lang="uts">
+	const title = ref('scanCode')
+	const result = ref('')
+	const scan = () => {
+		uni.scanCode({
+			success: (res: ScanCodeSuccess) => {
+        console.log('res: ',res);
+				result.value = res.result
+			},
+			fail: (err: ScanCodeFail) => {
+        console.log('err: ',err);
+				// 需要注意的是小程序扫码不需要申请相机权限
 			}
-		},
-		methods: {
-			scan() {
-				uni.scanCode({
-					success: (res: ScanCodeSuccess) => {
-            console.log('res: ',res);
-						this.result = res.result
-					},
-					fail: (err: ScanCodeFail) => {
-            console.log('err: ',err);
-						// 需要注意的是小程序扫码不需要申请相机权限
-					}
-				});
-			}
-		}
+		});
 	}
 </script>
 

@@ -19,16 +19,16 @@ describe('API-cancelAnimationFrame', () => {
   it('cancelAnimationFrame', async () => {
     await page.callMethod('startRequestAnimationFrame')
     await page.waitFor(100)
-    const data1 = await page.data()
+    const data1 = await page.data('data')
     expect(data1.testFrameCount > 0).toBe(true)
 
     await page.callMethod('stopRequestAnimationFrame')
     await page.waitFor(100)
-    const data2 = await page.data()
+    const data2 = await page.data('data')
     const testFrameCount = data2.testFrameCount
 
     await page.waitFor(100)
-    const data3 = await page.data()
+    const data3 = await page.data('data')
     expect(data3.testFrameCount).toBe(testFrameCount)
   });
 });

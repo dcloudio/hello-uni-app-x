@@ -342,7 +342,8 @@ if (!isAppWebView) {
       // 动态内容
       // '/pages/component/waterflow/waterflow-fit-height',
       '/pages/API/share-with-system/share-with-system',
-      '/pages/template/test-uts-button/test-uts-button'
+      '/pages/template/test-uts-button/test-uts-button',
+      '/pages/component/loading/loading',
     )
   }
   pages.push(
@@ -434,16 +435,16 @@ for (let i = 0; i < pages.length; i += BATCH_SIZE) {
 pageBatches.forEach((batch, batchIndex) => {
   describe(`Page Screenshot Batch ${batchIndex + 1}`, () => {
     let localPageIndex = 0;
-    
+
     beforeAll(async () => {
       console.log(`Starting batch ${batchIndex + 1} with ${batch.length} pages`);
       windowInfo = await program.callUniMethod('getWindowInfo');
     });
-    
+
     afterAll(async () => {
       console.log(`Finished batch ${batchIndex + 1}`);
     });
-    
+
     test.each(batch)("%s", async () => {
       const currentPagePath = batch[localPageIndex];
       page = await program.reLaunch(currentPagePath);

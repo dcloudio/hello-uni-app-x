@@ -15,9 +15,13 @@ describe('component-native-textarea', () => {
     await page.waitFor(1000);
   });
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   beforeEach(async () => {
-    await page.setData({
-      jest_result: false,
+    await setPageData({
+      jest_result: false
     })
   });
 
@@ -25,20 +29,22 @@ describe('component-native-textarea', () => {
     it("input event should triggered", async () => {
       const options = { text: '1' }
       if (isHarmony) {
-        const textareaRect = await page.data('textareaRect');
+        const textareaRect = await page.data('data.textareaRect');
         options.x = textareaRect.x + textareaRect.width / 2.0;
         options.y = textareaRect.y + textareaRect.height - 5;
       }
       await program.keyboardInput(options)
       await page.waitFor(2000)
-      expect(await page.data('jest_result')).toBe(true)
+      expect(await page.data('data.jest_result')).toBe(true)
+      const image = await program.screenshot();
+      expect(image).toSaveImageSnapshot();
     })
 
     // TODO 微信小程序自动化测试textarea focus属性取到的是数字
     it('focus', async () => {
       expect(await textarea.attribute("focus")).toBe("true")
-      await page.setData({
-        focus_boolean: false,
+      await setPageData({
+        focus_boolean: false
       })
       await page.waitFor(500)
       expect(await textarea.attribute("focus")).toBe("false")
@@ -46,7 +52,7 @@ describe('component-native-textarea', () => {
 
 
     it('trigger change event', async () => {
-      const changeValue = await page.data('changeValue');
+      const changeValue = await page.data('data.changeValue');
       expect(changeValue).not.toBe("")
 
       if (isAndroid) {
@@ -57,14 +63,14 @@ describe('component-native-textarea', () => {
 
     if (isAndroid) {
       it('focus-keyboard-height', async () => {
-        await page.setData({
-          focus_boolean: true,
+        await setPageData({
+          focus_boolean: true
         })
         await page.waitFor(500)
-        let res = await page.data('jest_result');
+        let res = await page.data('data.jest_result');
         expect(res).toBe(true)
-        await page.setData({
-          focus_boolean: false,
+        await setPageData({
+          focus_boolean: false
         })
         await page.waitFor(500)
       })
@@ -73,8 +79,8 @@ describe('component-native-textarea', () => {
 
     // 微信小程序text-area不支持cursor-color属性
     it("cursor-color", async () => {
-      await page.setData({
-        cursor_color: "transparent",
+      await setPageData({
+        cursor_color: "transparent"
       })
       await page.waitFor(500)
       expect(await textarea.attribute("cursor-color")).toBe("transparent")
@@ -82,7 +88,7 @@ describe('component-native-textarea', () => {
 
     // 微信小程序自动化测试无法获取inputmode属性
     it("inputmode", async () => {
-      const inputmodeEnum = await page.data("inputmode_enum")
+      const inputmodeEnum = await page.data("data.inputmode_enum")
       for (var i = 0; i < inputmodeEnum.length; i++) {
         var x = inputmodeEnum[i]
         var selected = x['value'] - 1
@@ -98,11 +104,11 @@ describe('component-native-textarea', () => {
   }
 
   it("auto-height", async () => {
-    await page.setData({
-      default_value: "",
+    await setPageData({
+      default_value: ""
     })
     await page.waitFor(500)
-    await page.setData({
+    await setPageData({
       auto_height_boolean: true
     })
     await page.waitFor(500)
@@ -111,7 +117,7 @@ describe('component-native-textarea', () => {
     expect(textareaHeight).toBeLessThanOrEqual(150)
     if (!isMP) {
       // TODO 微信小程序auto-height由true切换成false时不会影响text-area高度
-      await page.setData({
+      await setPageData({
         default_value: "1\n2\n3\n4\n5\n6",
         auto_height_boolean: false
       })
@@ -136,12 +142,12 @@ describe('component-native-textarea', () => {
     for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
-    await page.setData({
+    await setPageData({
       textareaMaxLengthValue: str
     })
     let length = (await input.value()).length
     expect(length).toBe(10)
-    await page.setData({
+    await setPageData({
       textareaMaxLengthValue: ""
     })
   })
@@ -153,7 +159,7 @@ describe('component-native-textarea', () => {
 
   if (isIOS) {
     it('test-iOS-width', async () => {
-      await page.setData({
+      await setPageData({
         isAutoTest: true
       })
       await page.waitFor(500)

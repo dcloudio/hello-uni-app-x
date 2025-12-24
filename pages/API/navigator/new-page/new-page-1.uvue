@@ -5,49 +5,56 @@
   </share-element>
   <view class="uni-padding-wrap">
     <text>onLoad 接收到参数</text>
-    <text>data: {{ data }}</text>
+    <text>data: {{ data.data }}</text>
     <button @tap="navigateBackWithDelta2" class="uni-btn">
       回退到上上层页面
     </button>
   </view>
 </template>
 
-<script lang="uts">
+<script setup lang="uts">
+  
   import { state } from '@/store/index.uts'
 
-  export default {
-    data() {
-      return {
-        data: '',
-        checked: false
-      }
-    },
-    onLoad(options : OnLoadOptions) {
-      if (options['data'] != null) {
-        this.data = options['data']!
-      }
-    },
-    methods: {
-      // 自动化测试
-      getLifeCycleNum() : number {
-        return state.lifeCycleNum
-      },
-      navigateBackWithDelta2() {
-        uni.navigateBack({
-          delta: 2,
-          success() {
-            console.log('回退上上层页面成功')
-          },
-          fail(error) {
-            console.warn(`回退上上层页面失败: ${error.errMsg}`)
-          },
-        })
-      },
-      navigateToOnLoadWithType(type : string) {
-        uni.navigateTo({
-          url: `/pages/API/navigator/new-page/onLoad?type=${type}`,
-        })
-      }
-    },
+  type DataType = {
+    data: string,
   }
+
+  const checked = ref(false)
+  const data = reactive({
+    data: '',
+  } as DataType)
+
+  function getLifeCycleNum() : number {
+    return state.lifeCycleNum
+  }
+
+  function navigateBackWithDelta2() {
+    uni.navigateBack({
+      delta: 2,
+      success() {
+        console.log('回退上上层页面成功')
+      },
+      fail(error) {
+        console.warn(`回退上上层页面失败: ${error.errMsg}`)
+      },
+    })
+  }
+
+  function navigateToOnLoadWithType(type : string) {
+    uni.navigateTo({
+      url: `/pages/API/navigator/new-page/onLoad?type=${type}`,
+    })
+  }
+
+  onLoad((options : OnLoadOptions) => {
+    if (options['data'] != null) {
+      data.data = options['data']!
+    }
+  })
+
+  defineExpose({
+    data,
+    navigateToOnLoadWithType
+  })
 </script>

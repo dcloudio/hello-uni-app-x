@@ -18,12 +18,12 @@ describe('global event transform', () => {
     const el = await page.$('#event-transform')
     await el.tap()
     await page.waitFor(100)
-    expect(await page.data("clickTriger")).toBe(true)
+    expect(await page.data("data.clickTriger")).toBe(true)
   });
   it('event transform longclick', async () => {
     const el = await page.$('#event-transform')
     await el.longpress()
     await page.waitFor(100)
-    expect(await page.data("longClickTriger")).toBe(true)
+    expect(await page.data("data.longClickTriger")).toBe(true)
   });
 });

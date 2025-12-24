@@ -121,22 +121,23 @@ export const setAllowCapture = (allow: boolean) => {
 
 // 检查系统主题
 export const checkSystemTheme = () => {
-  // #ifdef WEB || MP
+  // #ifdef WEB || MP-WEIXIN
   const info = uni.getAppBaseInfo();
   state.isDarkMode = info.hostTheme === 'dark';
   uni.onHostThemeChange((result) => {
     state.isDarkMode = result.hostTheme === 'dark';
   });
   // #endif
+  // web和小程序只支持监听宿主的主题，不支持自行设置与宿主不同的主题。但App端支持自行设置主题，因此单独处理
   // #ifdef APP
   uni.getSystemInfo({
     success: (res : GetSystemInfoResult) => {
       const appTheme = res.appTheme == "auto" ? res.osTheme! : res.appTheme!
-      state.isDarkMode = appTheme.trim() == 'dark';
+      state.isDarkMode = appTheme == 'dark';
     }
   })
   uni.onAppThemeChange((res : AppThemeChangeResult) => {
-    state.isDarkMode = res.appTheme.trim() == 'dark';
+    state.isDarkMode = res.appTheme == 'dark';
   })
   // #endif
 }
@@ -144,4 +145,3 @@ export const checkSystemTheme = () => {
 export const setNetless = (netless: boolean) => {
   state.netless = netless
 }
-

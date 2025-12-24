@@ -7,7 +7,7 @@ const isApp = isIos || isAndroid || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/API/modal/modal'
-  
+
 describe('API-loading', () => {
   if(isMP) {
     // 微信小程序截图无法截到弹框
@@ -35,6 +35,12 @@ describe('API-loading', () => {
 
   let page;
   let deviceShotOptions = {}
+
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
@@ -89,7 +95,7 @@ describe('API-loading', () => {
     await btnModalButtonHideAll.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 0,
       showCancelSelect: false,
       cancelTextSelect: false,
@@ -114,7 +120,7 @@ describe('API-loading', () => {
     page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
     await page.waitFor('view');
 
-    await page.setData({
+    await setPageData({
       current: 1,
       showCancelSelect: false,
       cancelTextSelect: false,
@@ -150,7 +156,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: false,
       cancelTextSelect: false,
@@ -180,7 +186,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: false,
@@ -203,7 +209,7 @@ describe('API-loading', () => {
     page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
     await page.waitFor('view');
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -233,7 +239,7 @@ describe('API-loading', () => {
     page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
     await page.waitFor('view');
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -270,7 +276,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -301,7 +307,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: false,
@@ -331,7 +337,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: false,
@@ -361,7 +367,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: false,
@@ -391,7 +397,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: false,
@@ -421,7 +427,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -451,7 +457,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -482,7 +488,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -512,7 +518,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -542,7 +548,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -572,7 +578,7 @@ describe('API-loading', () => {
     await btnModalButtonHideLast.tap()
     await page.waitFor(500);
 
-    await page.setData({
+    await setPageData({
       current: 2,
       showCancelSelect: true,
       cancelTextSelect: true,
@@ -595,7 +601,7 @@ describe('API-loading', () => {
     page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
     await page.waitFor('view');
 
-    await page.setData({
+    await setPageData({
       current: 0,
     })
     /**
@@ -624,8 +630,8 @@ describe('API-loading', () => {
   it("modal-test-current-1-multi-time-show-hidelast", async () => {
     page = await program.reLaunch(PAGE_PATH+ '?onLoadShowModal=false')
     await page.waitFor('view');
-    
-    await page.setData({
+
+    await setPageData({
       current: 1,
     })
     /**

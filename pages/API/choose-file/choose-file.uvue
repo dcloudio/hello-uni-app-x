@@ -37,214 +37,217 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        log: '',
-        title: 'choose-file',
-        src: '',
-        _audioContext: null as InnerAudioContext | null,
-      }
-    },
-    unmounted() {
-      if (this._audioContext != null) {
-        this._audioContext!.destroy()
-      }
-    },
-    methods: {
+<script setup lang="uts">
+  const log = ref('')
+  const title = ref('choose-file')
+  const src = ref('')
+  const _audioContext = ref(null as InnerAudioContext | null)
 
-      getPath(chooseFils : ChooseFileTempFile[]) : string {
-        var urls = new Array<string>()
-        chooseFils.forEach(value => {
-          urls.push(value.path)
-        })
-        return urls.join(', ')
-      },
-      chooseVideo() {
-        uni.chooseFile({
-          type: 'video',
-          count: 1,
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      chooseVideoMul() {
-        uni.chooseFile({
-          type: 'video',
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      playVideo() {
-        uni.chooseFile({
-          type: 'video',
-          count: 1,
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.src = res.tempFiles[0].path
-              this._audioContext?.destroy()
-              this._audioContext = null
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      chooseImage() {
-        uni.chooseFile({
-          type: 'image',
-          count: 1,
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      chooseImageMul() {
-        uni.chooseFile({
-          type: 'image',
-          count: 90,
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      viewImg() {
-        uni.chooseFile({
-          type: 'image',
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              const tempFiles: Array<string> = res.tempFiles.map((value) => {
-              	return value.path
-              })
-              uni.previewImage({
-                current: 0,
-                urls: tempFiles,
-                success: (res) => {
-                  console.log(res)
-                },
-                fail: (err) => {
-                  console.log(err)
-                }
-              })
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      chooseAudio() {
-        uni.chooseFile({
-          type: 'audio',
-          count: 1,
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      chooseAudioMul() {
-        uni.chooseFile({
-          type: 'audio',
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      playAudio() {
-        uni.chooseFile({
-          type: 'audio',
-          count: 1,
-          success: (res) => {
-            console.log(res);
-            if (res.tempFiles.length > 0) {
-              if (this._audioContext == null) {
-              this.src = ''
-                this._audioContext = uni.createInnerAudioContext()
-                this._audioContext!.autoplay = true
-              } else if (!this._audioContext!.paused) {
-                this._audioContext!.stop()
-              }
-              this._audioContext!.src = res.tempFiles[0].path
-            }
-          },
-          complete: (res) => {
-            console.log(res);
-          }
-        });
-
-      },
-      chooseAll() {
-        uni.chooseFile({
-          type: 'all',
-          count: 1,
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      },
-      chooseAllMul() {
-        uni.chooseFile({
-          type: 'all',
-          success: (res) => {
-            console.log(res)
-            if (res.tempFiles.length > 0) {
-              this.log += this.getPath(res.tempFiles) + '\n\n'
-            }
-          },
-          complete: (res) => {
-            console.log(res)
-          }
-        })
-      }
+  onUnmounted(() => {
+    if (_audioContext.value != null) {
+      _audioContext.value!.destroy()
     }
+  })
+
+  const getPath = (chooseFils: ChooseFileTempFile[]): string => {
+    var urls = new Array<string>()
+    chooseFils.forEach(value => {
+      urls.push(value.path)
+    })
+    return urls.join(', ')
+  }
+
+  const chooseVideo = () => {
+    uni.chooseFile({
+      type: 'video',
+      count: 1,
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseVideoMul = () => {
+    uni.chooseFile({
+      type: 'video',
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const playVideo = () => {
+    uni.chooseFile({
+      type: 'video',
+      count: 1,
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          src.value = res.tempFiles[0].path
+          _audioContext.value?.destroy()
+          _audioContext.value = null
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseImage = () => {
+    uni.chooseFile({
+      type: 'image',
+      count: 1,
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseImageMul = () => {
+    uni.chooseFile({
+      type: 'image',
+      count: 90,
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const viewImg = () => {
+    uni.chooseFile({
+      type: 'image',
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          const tempFiles: Array<string> = res.tempFiles.map((value) => {
+          	return value.path
+          })
+          uni.previewImage({
+            current: 0,
+            urls: tempFiles,
+            success: (res) => {
+              console.log(res)
+            },
+            fail: (err) => {
+              console.log(err)
+            }
+          })
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseAudio = () => {
+    uni.chooseFile({
+      type: 'audio',
+      count: 1,
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseAudioMul = () => {
+    uni.chooseFile({
+      type: 'audio',
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const playAudio = () => {
+    uni.chooseFile({
+      type: 'audio',
+      count: 1,
+      success: (res) => {
+        console.log(res);
+        if (res.tempFiles.length > 0) {
+          if (_audioContext.value == null) {
+          src.value = ''
+            _audioContext.value = uni.createInnerAudioContext()
+            _audioContext.value!.autoplay = true
+          } else if (!_audioContext.value!.paused) {
+            _audioContext.value!.stop()
+          }
+          _audioContext.value!.src = res.tempFiles[0].path
+        }
+      },
+      complete: (res) => {
+        console.log(res);
+      }
+    });
+  }
+
+  const chooseAll = () => {
+    uni.chooseFile({
+      type: 'all',
+      count: 1,
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
+  }
+
+  const chooseAllMul = () => {
+    uni.chooseFile({
+      type: 'all',
+      success: (res) => {
+        console.log(res)
+        if (res.tempFiles.length > 0) {
+          log.value += getPath(res.tempFiles) + '\n\n'
+        }
+      },
+      complete: (res) => {
+        console.log(res)
+      }
+    })
   }
 </script>
 

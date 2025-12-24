@@ -35,170 +35,184 @@
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
   // #ifdef APP-ANDROID
   import FileInputStream from 'java.io.FileInputStream';
   // #endif
-  export default {
-    data() {
-      return {
-        title: "compressImage",
-        beforeCompressImageInfo: "",
-        afterCompressImageInfo: "",
-        beforeCompressPath: "",
-        afterCompressPath: "",
-        quality: 80,
-        compressedWidth: null as number | null,
-        compressedHeight: null as number | null,
-        rotate: 0,
-        // 自动化测试
-        imageInfoForTest: null as UTSJSONObject | null,
-        imageSrcForTest: '/static/test-image/logo.png'
-      }
-    },
-    methods: {
-      compressImage() {
-        if (this.beforeCompressPath == "") {
-          uni.showToast({
-            title: "请先选择图片",
-            icon: "error"
-          });
-          return;
-        }
-        uni.showLoading({
-          title: "图片压缩中"
+
+  type DataType = {
+    imageInfoForTest: UTSJSONObject | null,
+    imageSrcForTest: string,
+    compressedWidth: number | null,
+    compressedHeight: number | null
+  }
+
+  const title = ref("compressImage")
+  const beforeCompressImageInfo = ref("")
+  const afterCompressImageInfo = ref("")
+  const beforeCompressPath = ref("")
+  const afterCompressPath = ref("")
+  const quality = ref(80)
+  const rotate = ref(0)
+  // 自动化测试
+  const data = reactive({
+    imageInfoForTest: null,
+    imageSrcForTest: '/static/test-image/logo.png',
+    compressedWidth: null,
+    compressedHeight: null
+  } as DataType)
+
+  const compressImage = () => {
+    if (beforeCompressPath.value == "") {
+      uni.showToast({
+        title: "请先选择图片",
+        icon: "error"
+      });
+      return;
+    }
+    uni.showLoading({
+      title: "图片压缩中"
+    });
+    uni.compressImage({
+      src: beforeCompressPath.value,
+      quality: quality.value,
+      compressedWidth: data.compressedWidth,
+      compressedHeight: data.compressedHeight,
+      rotate: rotate.value,
+      success: (res) => {
+        console.log("compressImage success", JSON.stringify(res));
+        afterCompressPath.value = res.tempFilePath;
+        uni.showToast({
+          title: "压缩成功",
+          icon: null
         });
-        uni.compressImage({
-          src: this.beforeCompressPath,
-          quality: this.quality,
-          compressedWidth: this.compressedWidth,
-          compressedHeight: this.compressedHeight,
-          rotate: this.rotate,
-          success: (res) => {
-            console.log("compressImage success", JSON.stringify(res));
-            this.afterCompressPath = res.tempFilePath;
-            uni.showToast({
-              title: "压缩成功",
-              icon: null
-            });
-            uni.getImageInfo({
-              src: res.tempFilePath,
-              success: (_res) => {
-                this.afterCompressImageInfo = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
-                // #ifdef APP-ANDROID
-                const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
-                this.afterCompressImageInfo = this.afterCompressImageInfo.concat(`图片大小: ${size}KB`);
-                // #endif
-                // #ifdef APP-HARMONY
-                const fsm = uni.getFileSystemManager()
+        uni.getImageInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            afterCompressImageInfo.value = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
+            // #ifdef APP-ANDROID
+            const size = new FileInputStream(res.tempFilePath.substring("file://".length)).available() / 1024;
+            afterCompressImageInfo.value = afterCompressImageInfo.value.concat(`图片大小: ${size}KB`);
+            // #endif
+            // #ifdef APP-HARMONY
+            const fsm = uni.getFileSystemManager()
+            fsm.getFileInfo({
+              filePath: res.tempFilePath,
+              digestAlgorithm: null,
+              success: (res) => {
+                afterCompressImageInfo.value = afterCompressImageInfo.value.concat(`图片大小: ${res.size}KB`);
+              }
+            })
+            // #endif
+          }
+        });
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "压缩图片失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+      },
+      complete: (_) => {
+        uni.hideLoading();
+      }
+    });
+  }
+
+  const chooseImage = () => {
+    uni.chooseImage({
+      count: 1,
+      sizeType: ["original"],
+      sourceType: ["album"],
+      success: (res) => {
+        beforeCompressPath.value = res.tempFilePaths[0];
+        uni.getImageInfo({
+          src: res.tempFilePaths[0],
+          success: (_res) => {
+            beforeCompressImageInfo.value = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
+            // #ifdef APP-ANDROID
+            const size = new FileInputStream(res.tempFilePaths[0].substring("file://".length)).available() / 1024;
+            beforeCompressImageInfo.value = beforeCompressImageInfo.value.concat(`图片大小: ${size}KB`);
+            // #endif
+            // #ifdef APP-HARMONY
+            const fsm = uni.getFileSystemManager()
+            fsm.getFileInfo({
+              filePath: res.tempFilePaths[0],
+              digestAlgorithm: null,
+              success: (res) => {
+                beforeCompressImageInfo.value = beforeCompressImageInfo.value.concat(`图片大小: ${res.size}KB`);
+              },
+              fail: (err) => {
+                console.log(err);
+              }
+            })
+            // #endif
+          }
+        });
+      }
+    });
+  }
+
+  const onQualityConfirm = (value: number) => {
+    quality.value = value;
+  }
+
+  const onCompressedWidthConfirm = (value: string) => {
+    data.compressedWidth = parseInt(value);
+  }
+
+  const onCompressedHeightConfirm = (value: string) => {
+    data.compressedHeight = parseInt(value);
+  }
+
+  const onRotateConfirm = (value: number) => {
+    rotate.value = value;
+  }
+
+  const testCompressImage = () => {
+    uni.compressImage({
+      src: data.imageSrcForTest,
+      quality: 50,
+      compressedWidth: 100,
+      compressedHeight: 100,
+      success: (res) => {
+        uni.getImageInfo({
+          src: res.tempFilePath,
+          success: (_res) => {
+            // #ifdef APP-HARMONY || APP-ANDROID
+            const fsm = uni.getFileSystemManager()
+            fsm.getFileInfo({
+              filePath: data.imageSrcForTest,
+              digestAlgorithm: null,
+              success: (imageInfo) => {
                 fsm.getFileInfo({
                   filePath: res.tempFilePath,
                   digestAlgorithm: null,
                   success: (res) => {
-                    this.afterCompressImageInfo = this.afterCompressImageInfo.concat(`图片大小: ${res.size}KB`);
+                    data.imageInfoForTest = {
+                      "width": _res.width,
+                      "height": _res.height,
+                      "isSizeReduce": res.size < imageInfo.size
+                    };
                   }
                 })
-                // #endif
               }
-            });
-          },
-          fail: (err) => {
-            uni.showModal({
-              title: "压缩图片失败",
-              content: JSON.stringify(err),
-              showCancel: false
-            });
-          },
-          complete: (_) => {
-            uni.hideLoading();
+            })
+            // #endif
           }
         });
       },
-      chooseImage() {
-        uni.chooseImage({
-          count: 1,
-          sizeType: ["original"],
-          sourceType: ["album"],
-          success: (res) => {
-            this.beforeCompressPath = res.tempFilePaths[0];
-            uni.getImageInfo({
-              src: res.tempFilePaths[0],
-              success: (_res) => {
-                this.beforeCompressImageInfo = `图片宽度: ${_res.width}\n图片高度: ${_res.height}\n`;
-                // #ifdef APP-ANDROID
-                const size = new FileInputStream(res.tempFilePaths[0].substring("file://".length)).available() / 1024;
-                this.beforeCompressImageInfo = this.beforeCompressImageInfo.concat(`图片大小: ${size}KB`);
-                // #endif
-                // #ifdef APP-HARMONY
-                const fsm = uni.getFileSystemManager()
-                fsm.getFileInfo({
-                  filePath: res.tempFilePaths[0],
-                  digestAlgorithm: null,
-                  success: (res) => {
-                    this.beforeCompressImageInfo = this.beforeCompressImageInfo.concat(`图片大小: ${res.size}KB`);
-                  },
-                  fail: (err) => {
-                    console.log(err);
-                  }
-                })
-                // #endif
-              }
-            });
-          }
-        });
-      },
-      onQualityConfirm(value : number) {
-        this.quality = value;
-      },
-      onCompressedWidthConfirm(value : string) {
-        this.compressedWidth = parseInt(value);
-      },
-      onCompressedHeightConfirm(value : string) {
-        this.compressedHeight = parseInt(value);
-      },
-      onRotateConfirm(value : number) {
-        this.rotate = value;
-      },
-      testCompressImage() {
-        uni.compressImage({
-          src: this.imageSrcForTest,
-          quality: 50,
-          compressedWidth: 100,
-          compressedHeight: 100,
-          success: (res) => {
-            uni.getImageInfo({
-              src: res.tempFilePath,
-              success: (_res) => {
-                // #ifdef APP-HARMONY || APP-ANDROID
-                const fsm = uni.getFileSystemManager()
-                fsm.getFileInfo({
-                  filePath: this.imageSrcForTest,
-                  digestAlgorithm: null,
-                  success: (imageInfo) => {
-                    fsm.getFileInfo({
-                      filePath: res.tempFilePath,
-                      digestAlgorithm: null,
-                      success: (res) => {
-                        this.imageInfoForTest = {
-                          "width": _res.width,
-                          "height": _res.height,
-                          "isSizeReduce": res.size < imageInfo.size
-                        };
-                      }
-                    })
-                  }
-                })
-                // #endif
-              }
-            });
-          },
-          fail: (_) => {
-            this.imageInfoForTest = null;
-          }
-        });
+      fail: (_) => {
+        data.imageInfoForTest = null;
       }
-    }
+    });
   }
+
+  defineExpose({
+    data,
+    testCompressImage
+  })
 </script>
 
 <style>

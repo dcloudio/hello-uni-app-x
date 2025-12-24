@@ -12,7 +12,7 @@ describe('base64', () => {
   it('arrayBufferToBase64', async () => {
     await page.callMethod('arrayBufferToBase64')
     await page.waitFor(200)
-    const data = await page.data()
+    const data = await page.data('data')
     expect(data.arrayBufferToBase64Res).toEqual('CxYh')
   })
   if (isIOS) {
@@ -21,7 +21,7 @@ describe('base64', () => {
   it('base64ToArrayBuffer', async () => {
     await page.callMethod('base64ToArrayBuffer')
     await page.waitFor(200)
-    const data = await page.data()
+    const data = await page.data('data')
     expect(data.base64ToArrayBufferRes).toEqual('11,22,33')
     await page.waitFor(3000)
   })

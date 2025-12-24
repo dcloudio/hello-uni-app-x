@@ -16,13 +16,15 @@ describe('label.uvue', () => {
   });
   afterEach(async() => {
     await page.setData({
-      checkboxValue: [],
-      radioValue:''
+      data:{
+        checkboxValue: [],
+        radioValue:''
+      }
     })
   });
   function getData(key = '') {
     return new Promise(async (resolve, reject) => {
-      const data = await page.data()
+      const data = await page.data('data')
       resolve(key ? data[key] : data)
     })
   }

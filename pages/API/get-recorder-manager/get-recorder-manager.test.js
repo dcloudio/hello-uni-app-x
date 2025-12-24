@@ -20,14 +20,14 @@ describe('recorder', () => {
     const btnError = await page.$('#btn-error')
     await btnError.tap()
     await page.waitFor(200)
-    expect(await page.data('registerError')).toBeTruthy()
+    expect(await page.data('data.registerError')).toBeTruthy()
   });
   it('start and onStart', async () => {
     await page.waitFor(1000)
     const btnStart = await page.$('#btn-startRecord')
     await btnStart.tap()
     await page.waitFor(200)
-    expect(await page.data('recording')).toBeTruthy()
+    expect(await page.data('data.recording')).toBeTruthy()
   })
 
   it('onStop', async () => {
@@ -35,14 +35,14 @@ describe('recorder', () => {
     const btnStop = await page.$('#btn-stopRecord')
     await btnStop.tap()
     await page.waitFor(200)
-    expect(await page.data('recording')).toBeFalsy()
+    expect(await page.data('data.recording')).toBeFalsy()
   });
   it('startPlay', async () => {
     await page.waitFor(100)
     const startPlay = await page.$('#btn-startPlay')
     await startPlay.tap()
     await page.waitFor(200)
-    expect(await page.data('playing')).toBeTruthy()
+    expect(await page.data('data.playing')).toBeTruthy()
   });
 
   it('stopPlay', async () => {
@@ -50,6 +50,6 @@ describe('recorder', () => {
     const stopPlay = await page.$('#btn-stopPlay')
     await stopPlay.tap()
     await page.waitFor(200)
-    expect(await page.data('playing')).toBeFalsy()
+    expect(await page.data('data.playing')).toBeFalsy()
   });
 });

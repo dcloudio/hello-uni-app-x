@@ -11,47 +11,46 @@
   </scroll-view>
 </template>
 
-<script>
+<script setup lang="uts">
   type ListItem = {
     title : string
   }
 
-  export default {
-    data() {
-      return {
-        dataList: [] as ListItem[],
-        oldScrollTop: 0,
-        newScrollTop: 0
-      }
-    },
-    created() {
-      this.loadData()
-      // console.log("tab1 created");
-    },
-    methods: {
-      loadData() {
-        let index = this.dataList.length
-        for (let i = 0; i < 20; i++) {
-          this.dataList.push({
-            title: index.toString(),
-          } as ListItem)
-          index++
-        }
-      },
-      onScroll(e : ScrollEvent) {
-        uni.$emit('tabchange', e.detail.scrollTop)
-        this.oldScrollTop = e.detail.scrollTop
-      },
-      scrollTop(top : number) {
-        // (this.$refs["listView"] as UniElement).scrollTop = top
-        // console.log("tab1 to top");
-        this.newScrollTop = this.oldScrollTop
-        this.$nextTick(() => {
-          this.newScrollTop = top
-        })
-      }
+  const dataList = ref([] as ListItem[])
+  const oldScrollTop = ref(0)
+  const newScrollTop = ref(0)
+
+  function loadData() {
+    let index = dataList.value.length
+    for (let i = 0; i < 20; i++) {
+      dataList.value.push({
+        title: index.toString(),
+      } as ListItem)
+      index++
     }
   }
+  function onScroll(e : ScrollEvent) {
+    uni.$emit('tabchange', e.detail.scrollTop)
+    oldScrollTop.value = e.detail.scrollTop
+  }
+  function scrollTop(top : number) {
+    // (getCurrentInstance()!.proxy!.$refs["listView"] as UniElement).scrollTop = top
+    // console.log("tab1 to top");
+    newScrollTop.value = oldScrollTop.value
+    nextTick(() => {
+      newScrollTop.value = top
+    })
+  }
+
+  onMounted(() => {
+    loadData()
+    // console.log("tab1 created");
+  })
+
+  // Expose methods to parent component
+  defineExpose({
+    scrollTop
+  })
 </script>
 
 <style>

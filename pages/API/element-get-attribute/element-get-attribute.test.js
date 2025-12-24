@@ -13,27 +13,27 @@ describe('test element-get-attribute', () => {
   });
   it('check getAttributeId', async () => {
     await page.callMethod('getAttributeId')
-    expect(await page.data('attrId')).toEqual('box');
+    expect(await page.data('data.attrId')).toEqual('box');
   });
   it('check setStyle getAttributeStyle', async () => {
     await page.callMethod('setStyle')
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
-      expect(await page.data('attrStyle')).toEqual(attrStyle);
+      expect(await page.data('data.attrStyle')).toEqual(attrStyle);
     }
   });
   it('check getPropertyValue', async () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
     const propertyValue = isWeb?'rgb(255, 240, 0)':'#FFF000'
-    expect(await page.data('propertyValue')).toEqual(propertyValue);
+    expect(await page.data('data.propertyValue')).toEqual(propertyValue);
   });
 
   it('getBoundingClientRectSync', async () => {
     await page.callMethod("getBoundingClientRectAsyncChild");
     await page.waitFor(100)
-    const rectInfo = await page.data("rectInfo")
+    const rectInfo = await page.data("data.rectInfo")
     const systemInfo = await program.systemInfo();
     const width = systemInfo.screenWidth
     expect(Math.round(rectInfo.x)).toBe(15)
@@ -53,4 +53,12 @@ describe('test element-get-attribute', () => {
       expect(await scrollView.property('scrollLeft')).toBe(200);
     });
   }
+
+  it('getBoundingClientRect-scaledView', async () => {
+    await page.callMethod("handleGetScaledViewSize");
+    const scaledViewWidth = await page.data("data.scaledViewWidth")
+    const scaledViewHeight = await page.data("data.scaledViewHeight")
+    expect(scaledViewWidth).toBe(100);
+    expect(scaledViewHeight).toBe(100);
+  })
 });

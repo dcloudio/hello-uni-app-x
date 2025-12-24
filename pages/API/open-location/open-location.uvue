@@ -48,14 +48,14 @@
   </view>
 </template>
 <script lang="uts" setup>
-  type DialogPagesNum = {
-    value: number
-  }
-
   import {
     state,
     setLifeCycleNum
   } from '@/store/index.uts'
+
+  type DataType = {
+    dialogPagesNum: number
+  }
 
   // 响应式数据
   const title = ref('openLocation')
@@ -64,7 +64,9 @@
   const name = ref('天安门')
   const address = ref('北京市东城区东长安街')
   // 自动化测试
-  const dialogPagesNum = reactive({ value: -1 } as DialogPagesNum)
+  const data = reactive({
+    dialogPagesNum: -1
+  } as DataType)
 
   // 生命周期钩子
   onPageShow(() => {
@@ -85,7 +87,7 @@
     const page = pages[pages.length - 1]
     // #ifdef APP || WEB
     const dialogPages = page.getDialogPages()
-    dialogPagesNum.value = dialogPages.length
+    data.dialogPagesNum = dialogPages.length
     // #endif
   }
 
@@ -114,7 +116,7 @@
   }
 
   defineExpose({
-    dialogPagesNum,
+    data,
     openLocation,
     pageSetLifeCycleNum,
     getLifeCycleNum,

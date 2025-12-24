@@ -1,11 +1,11 @@
 <template>
 	<view>
-		<page-head :title="title"></page-head>
+		<page-head :title="data.title"></page-head>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="uni-title uni-common-mt">
-				{{appear ? '小球出现' : '小球消失'}}
+				{{data.appear ? '小球出现' : '小球消失'}}
 			</view>
-			<scroll-view class="scroll-view" scroll-y :scrollTop="scrollTop">
+			<scroll-view class="scroll-view" scroll-y :scrollTop="data.scrollTop">
 				<view class="scroll-area">
 					<text class="notice">向下滚动让小球出现</text>
 					<view class="ball"></view>
@@ -14,35 +14,44 @@
 		</view>
 	</view>
 </template>
-<script lang="uts">
+<script setup lang="uts">
   let observer: IntersectionObserver | null = null;
-	export default {
-		data() {
-			return {
-				appear: false,
-				title:'intersectionObserver',
-				// 自动化测试
-				testRes: null as ObserveResult | null,
-				scrollTop:0
-			}
-		},
-		onReady() {
-			observer = uni.createIntersectionObserver(this,{});
-			observer.relativeTo('.scroll-view').observe('.ball', (res:ObserveResult) => {
-				this.testRes = res;
-				if (res.intersectionRatio > 0 && !this.appear) {
-					this.appear = true;
-				} else if (res.intersectionRatio <= 0 && this.appear) {
-					this.appear = false;
-				}
-			})
-		},
-		onUnload() {
-			if (observer) {
-				observer.disconnect()
-			}
-		}
-	}
+
+  type DataType = {
+    appear: boolean;
+    title: string;
+    testRes: ObserveResult | null;
+    scrollTop: number;
+  }
+
+  const data = reactive({
+    appear: false,
+    title: 'intersectionObserver',
+    testRes: null,
+    scrollTop: 0
+  } as DataType)
+
+  onReady(() => {
+    observer = uni.createIntersectionObserver(getCurrentInstance()!.proxy!, {});
+    observer.relativeTo('.scroll-view').observe('.ball', (res: ObserveResult) => {
+      data.testRes = res;
+      if (res.intersectionRatio > 0 && !data.appear) {
+        data.appear = true;
+      } else if (res.intersectionRatio <= 0 && data.appear) {
+        data.appear = false;
+      }
+    })
+  })
+
+  onUnload(() => {
+    if (observer) {
+      observer.disconnect()
+    }
+  })
+
+  defineExpose({
+    data
+  })
 </script>
 <style>
 	.scroll-view {

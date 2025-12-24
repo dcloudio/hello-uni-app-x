@@ -178,30 +178,55 @@
           </view>
         </view>
       </view>
+      <view>
+        <text>text组件: box-shadow: 5px 5px black</text>
+        <view class="backgroundview">
+          <text class="text-shadow" style="box-shadow: 5px 5px black;">测试文本</text>
+        </view>
+      </view>
+      <view>
+        <text>text组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <view class="backgroundview">
+          <text class="text-shadow" style="box-shadow: 5px 5px 5px #00FF00;">测试文本</text>
+        </view>
+      </view>
+      <view>
+        <text>image组件: box-shadow: 5px 5px black</text>
+        <view class="backgroundview">
+          <image class="image-shadow" style="box-shadow: 5px 5px black;" src="/static/logo.png"></image>
+        </view>
+      </view>
+      <view>
+        <text>image组件: box-shadow: 5px 5px 5px #00FF00</text>
+        <view class="backgroundview">
+          <image class="image-shadow" style="box-shadow: 5px 5px 5px #00FF00;" src="/static/logo.png"></image>
+        </view>
+      </view>
+      <view>
+        <text>image组件（圆形）: box-shadow: 5px 5px black</text>
+        <view class="backgroundview">
+          <image class="image-shadow-circle" style="border-radius: 62px; box-shadow: 5px 5px black;" src="/static/logo.png"></image>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        disabled: false
-      }
-    },
-    onReady() {
-      this.$nextTick(() => {
-        let element = uni.getElementById("dynamic-height-textarea")
-        element?.style.setProperty("height", "52px")
-      })
-    },
-    methods: {
-      changed() {
-        this.disabled = !this.disabled
-      }
-    },
+<script setup lang="uts">
+
+  const disabled = ref(false)
+
+  onReady(() => {
+    nextTick(() => {
+      const element = uni.getElementById("dynamic-height-textarea")
+      element?.style.setProperty("height", "52px")
+    })
+  })
+
+  const changed = () => {
+    disabled.value = !disabled.value
   }
 </script>
 
@@ -230,5 +255,25 @@
 
   .invalidShadow {
     box-shadow: abcd;
+  }
+
+  .text-shadow {
+    width: 125px;
+    height: 125px;
+    background-color: brown;
+    font-size: 16px;
+    color: white;
+  }
+
+  .image-shadow {
+    width: 125px;
+    height: 125px;
+    background-color: brown;
+  }
+
+  .image-shadow-circle {
+    width: 125px;
+    height: 125px;
+    background-color: brown;
   }
 </style>

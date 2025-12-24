@@ -2,7 +2,6 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isIos = platformInfo.startsWith('ios')
 
 describe("element take snapshot", () => {
   if (isWeb || isAppWebView || isMP) {
@@ -23,14 +22,14 @@ describe("element take snapshot", () => {
     let btnTakeSnapshot = await page.$('.btn-TakeSnapshot')
     await btnTakeSnapshot.tap()
     await page.waitFor(1200)
-    const image = await page.data('snapImage')
+    const image = await page.data('data.snapImage')
     console.log(image)
     ///storage/emulated/0/Android/data/io.dcloud.uniappx/apps/__UNI__3584C99/cache/temp/screenshot/1697513148915.png
     expect(image.length).toBeGreaterThan(20)
   });
 
   it("complete should be triggered", async () => {
-    const completeTriggered = await page.data('completeTriggered')
+    const completeTriggered = await page.data('data.completeTriggered')
     expect(completeTriggered).toBe(true)
   });
 });

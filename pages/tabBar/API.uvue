@@ -12,7 +12,7 @@
           :inWhiteList="true"></u-link>
       </view>
       <uni-collapse>
-        <uni-collapse-item ref="category" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
+        <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
           class="uni-panel">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
             <view v-if="childMenuItem.items.length==0" class="pl" hover-class="is--active"
@@ -42,10 +42,10 @@
         </uni-collapse-item>
       </uni-collapse>
       <!-- #ifdef MP || WEB -->
-      <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup" @touchmove.prevent="stopPropagation">
+      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="popup" @touchmove.prevent="stopPropagation">
       <!-- #endif -->
       <!-- #ifndef MP || WEB -->
-      <view v-if="!hasLeftWin" ref="pop" @click="hidePop()" class="popup">
+      <view v-if="!hasLeftWin" ref="popRef" @click="hidePop()" class="popup">
       <!-- #endif -->
         <view style="width: 90%; background-color: white" @click.stop="stopClickPop">
           <api-set-tabbar></api-set-tabbar>
@@ -57,91 +57,123 @@
   <!-- #endif -->
 </template>
 
-<script lang="uts">
-  import { generateMenu, MenuItem } from './generateMenu.uts'
-  const menu = generateMenu('pages/API')
-  import { state } from '@/store/index.uts'
-  export default {
-    data() {
-      return {
-        menu: menu as MenuItem[],
-        arrowRightIcon: '/static/icons/arrow-right.png'
-      }
-    },
-    computed: {
-      hasLeftWin() : boolean {
-        return !state.noMatchLeftWindow
-      },
-      leftWinActive() : string {
-        return state.leftWinActive.slice(1)
-      },
-      windowWidth() : number {
-        return uni.getWindowInfo().windowWidth
-      },
-      isDarkMode() : boolean {
-        return state.isDarkMode
-      },
-      netless() : boolean {
-        return state.netless
-      }
-    },
-    // #ifdef APP-HARMONY
-    watch: {
-      'netless': {
-        immediate: true,
-        handler(netless) {
-          if (netless) {
-            this.menu = this.menu.filter(item => {
-              return !['unicloud'].includes(item.id)
-            })
-          }
-        }
-      }
-    },
-    // #endif
-    methods: {
-      goPage(url : string) {
-        if (url == '/set-tab-bar') {
-          this.showPop()
-        }else {
-          if (this.hasLeftWin) {
-            uni.reLaunch({ url })
-          } else {
-            uni.navigateTo({ url })
-          }
-        }
-      },
-      showPop: function () {
-        (this.$refs["pop"] as UniElement).style.setProperty("display", "flex")
-      },
-      hidePop: function () {
-        (this.$refs["pop"] as UniElement).style.setProperty("display", "none")
-      },
-      stopClickPop: function (e : PointerEvent) {
-        e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
-      },
-      stopPropagation() {
+<script setup lang="uts">
+  defineOptions({
+    styleIsolation: 'app-shared'
+  })
 
-      }
-    },
-    // #ifdef WEB
-    watch: {
-      $route: {
-        immediate: true,
-        handler(newRoute) {
-          if (newRoute.matched.length) {
-            const activeCategoryIndex = this.menu.findIndex(menuItem => menuItem?.items.some(item => this.leftWinActive !== "" && this.leftWinActive === item?.path))
-            if (activeCategoryIndex > -1) {
-              this.$nextTick(() => {
-                ((this.$refs['category'] as ComponentPublicInstance[])[activeCategoryIndex])?.$callMethod('openCollapse', true)
-              })
-            }
-          }
-        }
-      }
-    },
-    // #endif
+  const activeIndex = inject<Ref<number>>('tabBarCurrentIndex', ref(0))
+
+  const instance = getCurrentInstance()!.proxy!
+
+  import { generateMenu, MenuItem } from './generateMenu.uts'
+  const menuData = generateMenu('pages/API')
+  import { state } from '@/store/index.uts'
+
+  // Template refs
+  const popRef = ref<UniElement | null>(null)
+  const categoryRef = ref<ComponentPublicInstance[] | null>(null)
+
+  const menu = ref(menuData as MenuItem[])
+  const arrowRightIcon = ref('/static/icons/arrow-right.png')
+
+  const hasLeftWin = computed((): boolean => {
+    return !state.noMatchLeftWindow
+  })
+
+  const leftWinActive = computed((): string => {
+    return state.leftWinActive.slice(1)
+  })
+
+  const windowWidth = computed((): number => {
+    return uni.getWindowInfo().windowWidth
+  })
+
+  const isDarkMode = computed((): boolean => {
+    return state.isDarkMode
+  })
+
+  const netless = computed((): boolean => {
+    return state.netless
+  })
+
+  function showPop() {
+    const popElement = popRef.value
+    if (popElement != null) {
+      popElement.style.setProperty("display", "flex")
+    }
   }
+
+  function goPage(url : string) {
+    if (url == '/set-tab-bar') {
+      showPop()
+    }else {
+      if (hasLeftWin.value) {
+        uni.reLaunch({ url })
+      } else {
+        uni.navigateTo({ url })
+      }
+    }
+  }
+
+  function hidePop() {
+    const popElement = popRef.value
+    if (popElement != null) {
+      popElement.style.setProperty("display", "none")
+    }
+  }
+
+  function stopClickPop(e : PointerEvent) {
+    e.stopPropagation() //点击到pop的非灰色区域，拦截点击事件
+  }
+
+  function stopPropagation() {
+
+  }
+
+  // #ifdef APP-HARMONY
+  watch(netless, (netlessValue) => {
+    if (netlessValue) {
+      menu.value = menu.value.filter(item => {
+        return !['unicloud'].includes(item.id)
+      })
+    }
+  }, { immediate: true })
+  // #endif
+
+  // #ifdef WEB
+  // Note: This watch is for web platform routing, keeping minimal getInstance usage for $route and $nextTick
+  watch(() => (instance as any).$route, (newRoute: any) => {
+    if (newRoute.matched.length) {
+      const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
+      if (activeCategoryIndex > -1) {
+        nextTick(() => {
+          const categoryRefs = categoryRef.value
+          if (categoryRefs != null && categoryRefs[activeCategoryIndex] != null) {
+            categoryRefs[activeCategoryIndex].$callMethod('openCollapse', true)
+          }
+        })
+      }
+    }
+  }, { immediate: true })
+  // #endif
+
+  // #ifdef APP-ANDROID
+  const testOpenDialogPage = () => {
+    uni.openDialogPage({
+      url: '/pages/API/dialog-page/dialog-5'
+    });
+  }
+
+  const testCloseDialogPage = () => {
+    uni.closeDialogPage();
+  }
+
+  defineExpose({
+    testOpenDialogPage,
+    testCloseDialogPage
+  })
+  // #endif
 </script>
 
 <style>

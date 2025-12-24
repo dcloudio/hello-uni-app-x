@@ -16,7 +16,7 @@ describe('calendar', () => {
     await page.waitFor(500)
   })
   it('width', async () => {
-    const pageData = await page.data()
+    const pageData = await page.data('data')
     expect(pageData.testWidth > 0).toBe(true)
   })
 })

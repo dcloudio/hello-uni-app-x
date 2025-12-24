@@ -23,8 +23,8 @@ describe('text-nested-test', () => {
 
     await page.waitFor(1000);
 
-    let h1 = await page.data('text1Height')
-    let h2 = await page.data('text2Height')
+    let h1 = await page.data('data.text1Height')
+    let h2 = await page.data('data.text2Height')
 
     expect(h1).toBe(40)
     expect(h2).toBe(80)

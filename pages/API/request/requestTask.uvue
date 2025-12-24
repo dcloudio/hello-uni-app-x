@@ -38,137 +38,140 @@
     </scroll-view>
   </view>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-        res: '',
-        task: null as RequestTask | null,
-        host: "https://request.dcloud.net.cn",
-        url: "/api/http/contentType/eventStream?limit=10",
-        method: "POST" as RequestMethod,
-        onHeadersReceivedObseves: [] as number[],
-        onChunkReceivedObseves: [] as number[],
-        onHeadersReceived_returnid_1: -1,
-        onHeadersReceived_returnid_2: -1,
-        isAbort: false,
-      }
-    },
-    onLoad() {
-      this.onHeadersReceivedObseves.push(1)
-      this.onChunkReceivedObseves.push(1)
-    },
-    onUnload() {
-      uni.hideLoading();
-      this.task?.abort();
-    },
-    methods: {
-      onHeadersReceived_observe_1: function () {
-        this.onHeadersReceivedObseves.push(1)
+<script setup lang="uts">
+
+  const res = ref('')
+  const task = ref<RequestTask | null>(null)
+  const host = "https://request.dcloud.net.cn"
+  const url = "/api/http/contentType/eventStream?limit=10"
+  const method: RequestMethod = "POST"
+  const onHeadersReceivedObseves = ref<number[]>([])
+  const onChunkReceivedObseves = ref<number[]>([])
+  const onHeadersReceived_returnid_1 = ref(-1)
+  const onHeadersReceived_returnid_2 = ref(-1)
+  const isAbort = ref(false)
+
+  onLoad((options : OnLoadOptions) => {
+    onHeadersReceivedObseves.value.push(1)
+    onChunkReceivedObseves.value.push(1)
+  })
+
+  onUnload(() => {
+    uni.hideLoading();
+    task.value?.abort();
+  })
+
+  function onHeadersReceived_observe_1() {
+    onHeadersReceivedObseves.value.push(1)
+  }
+
+  function onHeadersReceived_observe_2() {
+    onHeadersReceivedObseves.value.push(2)
+  }
+
+  function offHeadersReceived_observe() {
+    onHeadersReceivedObseves.value = []
+  }
+
+  function offHeadersReceived_id() {
+    onHeadersReceivedObseves.value = []
+    onHeadersReceivedObseves.value.push(1)
+  }
+
+  function onChunkReceived_observe_1() {
+    onChunkReceivedObseves.value.push(1)
+  }
+
+  function onChunkReceived_observe_2() {
+    onChunkReceivedObseves.value.push(2)
+  }
+
+  function offChunkReceived_observe() {
+    onChunkReceivedObseves.value = []
+  }
+
+  function checkRequestTask() {
+    isAbort.value = false
+    res.value = '发起post流式请求 \n\n'
+    task.value = uni.request({
+      url: "https://request.dcloud.net.cn/api/http/contentType/eventStream?limit=10",
+      timeout: 600000,
+      method: method,
+      enableChunked: true,
+      success: (response) => {
+        console.log('request success', JSON.stringify(response.data))
+        console.log('request success header is :', JSON.stringify(response.header))
+        res.value += '流式请求结束 \n\n'
+        console.log('请求结果 : ' + JSON.stringify(response))
       },
-      onHeadersReceived_observe_2: function () {
-        this.onHeadersReceivedObseves.push(2)
-      },
-      offHeadersReceived_observe: function () {
-        this.onHeadersReceivedObseves = []
-      },
-      offHeadersReceived_id: function () {
-        this.onHeadersReceivedObseves = []
-        this.onHeadersReceivedObseves.push(1)
-      },
-      onChunkReceived_observe_1: function () {
-        this.onChunkReceivedObseves.push(1)
-      },
-      onChunkReceived_observe_2: function () {
-        this.onChunkReceivedObseves.push(2)
-      },
-      offChunkReceived_observe: function () {
-        this.onChunkReceivedObseves = []
-      },
-      checkRequestTask: function () {
-        this.isAbort = false
-        this.res = '发起post流式请求 \n\n'
-        this.task = uni.request({
-          url: "https://request.dcloud.net.cn/api/http/contentType/eventStream?limit=10",
-          timeout: 600000,
-          method: this.method,
-          enableChunked: true,
-          success: (res) => {
-            console.log('request success', JSON.stringify(res.data))
-            console.log('request success header is :', JSON.stringify(res.header))
-            this.res += '流式请求结束 \n\n'
-            console.log('请求结果 : ' + JSON.stringify(res))
-          },
-          fail: (err) => {
-            let content = err.errMsg
-            if (this.isAbort) {
-              content = "中断成功"
-            }
-            console.log('request fail', err);
-            uni.showModal({
-              content: content,
-              showCancel: false
-            });
-          },
-          complete: () => {
-            this.task = null
-          },
+      fail: (err) => {
+        let content = err.errMsg
+        if (isAbort.value) {
+          content = "中断成功"
+        }
+        console.log('request fail', err);
+        uni.showModal({
+          content: content,
+          showCancel: false
         });
-
-        const onHeadersReceivedCallback1 = (res : RequestTaskOnHeadersReceivedListenerResult) => {
-          console.log("-------onHeadersReceived监听1------", res)
-          this.res += `onHeadersReceived监听1：\n ${JSON.stringify(res)} \n\n`
-        }
-        const onHeadersReceivedCallback2 = (res : RequestTaskOnHeadersReceivedListenerResult) => {
-          console.log("-------onHeadersReceived监听2------", res)
-          this.res += `onHeadersReceived监听2：\n ${JSON.stringify(res)}  \n\n`
-        }
-
-        if (this.onHeadersReceivedObseves.includes(1)) {
-          this.onHeadersReceived_returnid_1 = this.task?.onHeadersReceived(onHeadersReceivedCallback1) ?? -1
-        }
-
-        if (this.onHeadersReceivedObseves.length == 0) {
-          this.task?.offHeadersReceived(null)
-          this.res += "点击了 offHeadersReceived \n\n"
-        } else if (this.onHeadersReceivedObseves.length == 1) {
-          this.task?.offHeadersReceived(this.onHeadersReceived_returnid_2)
-        }
-
-        const onChunkReceivedCallback1 = (res : RequestTaskOnChunkReceivedListenerResult) => {
-          const chunkText : string = new TextDecoder().decode(res.data)
-          console.log("-------onChunkReceived监听1------", chunkText)
-          this.res += `onChunkReceived监听1：\n ${chunkText}`
-        }
-        const onChunkReceivedCallback2 = (res : RequestTaskOnChunkReceivedListenerResult) => {
-          const chunkText : string = new TextDecoder().decode(res.data)
-          console.log("-------onChunkReceived监听2------", chunkText)
-          this.res += `onChunkReceived监听2：\n ${chunkText}`
-        }
-
-        if (this.onHeadersReceivedObseves.includes(2)) {
-          this.onHeadersReceived_returnid_2 = this.task?.onHeadersReceived(onHeadersReceivedCallback2) ?? -1
-        }
-
-        if (this.onChunkReceivedObseves.includes(1)) {
-          this.task?.onChunkReceived(onChunkReceivedCallback1)
-        }
-
-        if (this.onChunkReceivedObseves.includes(2)) {
-          this.task?.onChunkReceived(onChunkReceivedCallback2)
-        }
-
-        if (this.onChunkReceivedObseves.length == 0) {
-          this.task?.offChunkReceived(null)
-          this.res += "点击了 offChunkReceived \n\n"
-        }
       },
-      abort() {
-        this.isAbort = true
-        this.task?.abort()
-      }
+      complete: () => {
+        task.value = null
+      },
+    });
 
+    const onHeadersReceivedCallback1 = (response : RequestTaskOnHeadersReceivedListenerResult) => {
+      console.log("-------onHeadersReceived监听1------", response)
+      res.value += `onHeadersReceived监听1：\n ${JSON.stringify(response)} \n\n`
     }
+    const onHeadersReceivedCallback2 = (response : RequestTaskOnHeadersReceivedListenerResult) => {
+      console.log("-------onHeadersReceived监听2------", response)
+      res.value += `onHeadersReceived监听2：\n ${JSON.stringify(response)}  \n\n`
+    }
+
+    if (onHeadersReceivedObseves.value.includes(1)) {
+      onHeadersReceived_returnid_1.value = task.value?.onHeadersReceived(onHeadersReceivedCallback1) ?? -1
+    }
+
+    if (onHeadersReceivedObseves.value.length == 0) {
+      task.value?.offHeadersReceived(null)
+      res.value += "点击了 offHeadersReceived \n\n"
+    } else if (onHeadersReceivedObseves.value.length == 1) {
+      task.value?.offHeadersReceived(onHeadersReceived_returnid_2.value)
+    }
+
+    const onChunkReceivedCallback1 = (response : RequestTaskOnChunkReceivedListenerResult) => {
+      const chunkText : string = new TextDecoder().decode(response.data)
+      console.log("-------onChunkReceived监听1------", chunkText)
+      res.value += `onChunkReceived监听1：\n ${chunkText}`
+    }
+    const onChunkReceivedCallback2 = (response : RequestTaskOnChunkReceivedListenerResult) => {
+      const chunkText : string = new TextDecoder().decode(response.data)
+      console.log("-------onChunkReceived监听2------", chunkText)
+      res.value += `onChunkReceived监听2：\n ${chunkText}`
+    }
+
+    if (onHeadersReceivedObseves.value.includes(2)) {
+      onHeadersReceived_returnid_2.value = task.value?.onHeadersReceived(onHeadersReceivedCallback2) ?? -1
+    }
+
+    if (onChunkReceivedObseves.value.includes(1)) {
+      task.value?.onChunkReceived(onChunkReceivedCallback1)
+    }
+
+    if (onChunkReceivedObseves.value.includes(2)) {
+      task.value?.onChunkReceived(onChunkReceivedCallback2)
+    }
+
+    if (onChunkReceivedObseves.value.length == 0) {
+      task.value?.offChunkReceived(null)
+      res.value += "点击了 offChunkReceived \n\n"
+    }
+  }
+
+  function abort() {
+    isAbort.value = true
+    task.value?.abort()
   }
 </script>
 

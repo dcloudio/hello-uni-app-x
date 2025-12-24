@@ -31,7 +31,7 @@ describe('native-view.uvue', () => {
     page = await program.reLaunch('/pages/component/native-view/native-view')
     await page.waitFor('view')
 
-    const value = await page.data('isLoad')
-    expect(value).toBe(true)
+    const isLoad = await page.callMethod('getIsLoadTest')
+    expect(isLoad).toBe(true)
   })
 })
