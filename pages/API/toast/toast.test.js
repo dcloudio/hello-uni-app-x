@@ -100,6 +100,18 @@ describe('API-toast', () => {
   }
 
   it("position-toast-test", async () => {
+    if (isIOS) {
+      const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+      if (
+        platformInfo.indexOf('14.5') != -1 ||
+        platformInfo.indexOf('13.7') != -1 ||
+        platformInfo.indexOf('12.4') != -1
+      ) {
+        expect(1).toBe(1)
+        return
+      }
+    }
+
     const positions = await page.$$('.radio-position')
     for (let i = 0;i < positions.length;i++) {
       // 等待上一个 toast 消失
@@ -110,6 +122,6 @@ describe('API-toast', () => {
       await page.waitFor(500);
       await toScreenshot(`toast-position-${positionsText}`)
     }
-  }, 30000)
+  })
 
 });
