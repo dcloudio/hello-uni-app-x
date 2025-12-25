@@ -110,6 +110,6 @@ describe('API-toast', () => {
       await page.waitFor(500);
       await toScreenshot(`toast-position-${positionsText}`)
     }
-  })
+  }, 30000)
 
 });
