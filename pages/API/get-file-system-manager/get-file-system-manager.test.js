@@ -1485,7 +1485,7 @@ describe('ExtApi-FileManagerTest', () => {
         btn = await page.$('#btn-save-file-read-file')
         await btn.tap()
         await isDone()
-
+        await page.waitFor(600);
         let getRet = await page.data("data.readFileRet")
         expect(getRet).toEqual('saveFileAndReadFileTest:ok')
     });
