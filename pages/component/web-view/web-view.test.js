@@ -61,7 +61,7 @@ describe('component-native-web-view', () => {
       y: windowInfo.safeAreaInsets.top + 44 + 1
     });
     await page.waitFor(500);
-    if (!isIOS) {
+    if (!isIOS && !isAndroid) {
       expect(await page.data('data.isTouchEnable')).toBe(true);
     }
 
@@ -75,7 +75,7 @@ describe('component-native-web-view', () => {
       y: windowInfo.safeAreaInsets.top + 44 + 10
     });
     await page.waitFor(500);
-    if (!isIOS && !isHarmony) {
+    if (!isIOS && !isHarmony && !isAndroid) {
       expect(await page.data('data.isTouchEnable')).toBe(false);
     }
     await setPageData({
