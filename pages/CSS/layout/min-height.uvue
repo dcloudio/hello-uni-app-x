@@ -6,11 +6,25 @@
         <text>height: 50px</text>
       </view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 min-height 测试</text>
+      <text>min-height: {{minHeight}}</text>
+      <view ref="viewRef" class="common" style="min-height: 100px;" @click="changeMinHeight('300px')">
+        <text>点击修改 min-height</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup>
+  const minHeight = ref('100px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeMinHeight = (value: string) => {
+    minHeight.value = value
+    viewRef.value?.style.setProperty('min-height', value)
+  }
 </script>
 
 <style>

@@ -40,6 +40,14 @@
         <text>image组件: border: 5px dotted blue</text>
         <image class="image-border" style="border: 5px dotted blue;" src="/static/logo.png"></image>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 border 测试</text>
+        <text>border: {{border}}</text>
+        <view ref="viewRef" class="common" style="border: 5px solid red;" @click="changeBorder('10px dashed green')">
+          <text>点击修改 border</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -51,6 +59,14 @@
   setTimeout(() => {
     shown.value = true
   }, 1000);
+
+  const border = ref('5px solid red')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBorder = (value: string) => {
+    border.value = value
+    viewRef.value?.style.setProperty('border', value)
+  }
 </script>
 
 <style>

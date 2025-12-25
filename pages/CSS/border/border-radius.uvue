@@ -61,11 +61,29 @@
         <text>image组件: border-radius: 125px（与长宽相同形成正圆）</text>
         <image class="image-radius-circle" style="border-radius: 125px;" src="/static/logo.png"></image>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 border-radius 测试</text>
+        <text>border-radius: {{borderRadius}}</text>
+        <view ref="viewRef" class="common" style="border-radius: 10px;" @click="changeBorderRadius('50px')">
+          <text>点击修改 border-radius</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup>
+  const borderRadius = ref('10px')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBorderRadius = (value: string) => {
+    borderRadius.value = value
+    viewRef.value?.style.setProperty('border-radius', value)
+  }
+</script>
 
 <style>
   .common {

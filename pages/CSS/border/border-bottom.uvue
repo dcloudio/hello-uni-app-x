@@ -4,11 +4,25 @@
       <text>border-bottom: 5px dashed blue</text>
       <view class="common" style="border-bottom: 5px dashed blue;"></view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 border-bottom 测试</text>
+      <text>border-bottom: {{borderBottom}}</text>
+      <view ref="viewRef" class="common" style="border-bottom: 5px solid red;" @click="changeBorderBottom('10px dashed green')">
+        <text>点击修改 border-bottom</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup>
+  const borderBottom = ref('5px solid red')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeBorderBottom = (value: string) => {
+    borderBottom.value = value
+    viewRef.value?.style.setProperty('border-bottom', value)
+  }
 </script>
 
 <style>

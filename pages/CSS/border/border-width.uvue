@@ -32,11 +32,29 @@
         <text>border-bottom-width: 20px</text>
         <view class="common" style="border-bottom-width: 20px; border-bottom-style: solid; "></view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 border-width 测试</text>
+        <text>border-width: {{borderWidth}}</text>
+        <view ref="viewRef" class="common" style="border-width: 5px; border-style: solid;" @click="changeBorderWidth('10px')">
+          <text>点击修改 border-width</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup>
+  const borderWidth = ref('5px')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBorderWidth = (value: string) => {
+    borderWidth.value = value
+    viewRef.value?.style.setProperty('border-width', value)
+  }
+</script>
 
 <style>
   .common {

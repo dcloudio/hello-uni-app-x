@@ -22,6 +22,14 @@
       <text>嵌套子元素测试 v-deep width: 150rpx</text>
       <child-width-uvue></child-width-uvue>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 width 测试</text>
+      <text>width: {{width}}</text>
+      <view ref="viewRef" class="common" style="width: 250px;" @click="changeWidth('400px')">
+        <text>点击修改 width</text>
+      </view>
+    </view>
   </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -30,6 +38,14 @@
 
 <script setup lang="uts">
   import childWidthUvue from "./child-width.uvue"
+
+  const width = ref('250px')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeWidth = (value: string) => {
+    width.value = value
+    viewRef.value?.style.setProperty('width', value)
+  }
 </script>
 
 <style>

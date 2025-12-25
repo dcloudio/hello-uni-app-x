@@ -65,6 +65,13 @@
       <image class="image-zindex" src="/static/logo.png"></image>
     </view>
   </view>
+  <view class="uni-common-mt">
+    <text class="uni-title-text">style.setProperty 动态设置 z-index 测试</text>
+    <text>z-index: {{zIndexValue}}</text>
+    <view ref="viewRef" class="common" style="background-color: red;z-index: 5;" @click="changeZIndexProperty(10)">
+      <text>点击修改 z-index</text>
+    </view>
+  </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -87,6 +94,14 @@
   const changeZIndex = (zIndexValue: number) => {
     data.zIndex = 20
     view.value?.style.setProperty('z-index', zIndexValue)
+  }
+
+  const zIndexValue = ref(5)
+  const viewRef = ref(null as UniElement | null)
+
+  const changeZIndexProperty = (value: number) => {
+    zIndexValue.value = value
+    viewRef.value?.style.setProperty('z-index', value)
   }
 
   defineExpose({

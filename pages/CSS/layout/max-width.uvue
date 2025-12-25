@@ -6,11 +6,25 @@
         <text>width: 500px</text>
       </view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 max-width 测试</text>
+      <text>max-width: {{maxWidth}}</text>
+      <view ref="viewRef" class="common" style="max-width: 250px;" @click="changeMaxWidth('400px')">
+        <text>点击修改 max-width</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup>
+  const maxWidth = ref('250px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeMaxWidth = (value: string) => {
+    maxWidth.value = value
+    viewRef.value?.style.setProperty('max-width', value)
+  }
 </script>
 
 <style>

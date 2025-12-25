@@ -42,6 +42,14 @@
         <text>border-style: 点击切换</text>
         <view class="common" :style="borderStyle"></view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 border-style 测试</text>
+        <text>border-style: {{borderStyleValue}}</text>
+        <view ref="viewRef" class="common" style="border-width: 5px; border-style: solid;" @click="changeBorderStyleValue('dashed')">
+          <text>点击修改 border-style</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -58,6 +66,14 @@
     const solid = "border-style: solid; border-width: 5px;"
     const none = ""
     borderStyle.value = isSolid.value ? solid : none
+  }
+
+  const borderStyleValue = ref('solid')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBorderStyleValue = (value: string) => {
+    borderStyleValue.value = value
+    viewRef.value?.style.setProperty('border-style', value)
   }
 </script>
 

@@ -6,11 +6,25 @@
         <text>width: 50px</text>
       </view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 min-width 测试</text>
+      <text>min-width: {{minWidth}}</text>
+      <view ref="viewRef" class="common" style="min-width: 100px;" @click="changeMinWidth('300px')">
+        <text>点击修改 min-width</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup>
+  const minWidth = ref('100px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeMinWidth = (value: string) => {
+    minWidth.value = value
+    viewRef.value?.style.setProperty('min-width', value)
+  }
 </script>
 
 <style>

@@ -4,11 +4,25 @@
       <text>border-top: 5px dashed blue</text>
       <view class="common" style="border-top: 5px dashed blue;"></view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 border-top 测试</text>
+      <text>border-top: {{borderTop}}</text>
+      <view ref="viewRef" class="common" style="border-top: 5px solid red;" @click="changeBorderTop('10px dashed green')">
+        <text>点击修改 border-top</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup>
+  const borderTop = ref('5px solid red')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeBorderTop = (value: string) => {
+    borderTop.value = value
+    viewRef.value?.style.setProperty('border-top', value)
+  }
 </script>
 
 <style>

@@ -97,6 +97,14 @@
         <text>image background-color: yellow (有src时，背景色在图片加载失败或透明区域显示)</text>
         <image class="image-common" style="background-color: yellow" src="/static/test-image/logo.png"></image>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 background-color 测试</text>
+        <text>background-color: {{backgroundColor}}</text>
+        <view ref="viewRef" class="common" style="background-color: red;" @click="changeBackgroundColor('blue')">
+          <text>点击修改 background-color 为 blue</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -104,6 +112,13 @@
 </template>
 
 <script setup>
+  const backgroundColor = ref('red')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBackgroundColor = (color: string) => {
+    backgroundColor.value = color
+    viewRef.value?.style.setProperty('background-color', color)
+  }
 
   const jumpToCheckBoxWithBackgroundColor = () => {
     uni.navigateTo({

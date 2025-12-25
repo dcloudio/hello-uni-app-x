@@ -54,12 +54,32 @@
         </scroll-view>
       </view>
 
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 position 测试</text>
+        <text>position: {{position}}</text>
+        <view style="width: 250px; height: 250px; background-color: gray; position: relative;">
+          <view ref="viewRef" class="common" style="position: relative;" @click="changePosition('absolute')">
+            <text class="text">点击修改 position</text>
+          </view>
+        </view>
+      </view>
+
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 
 </template>
+
+<script setup>
+  const position = ref('relative')
+  const viewRef = ref(null as UniElement | null)
+
+  const changePosition = (value: string) => {
+    position.value = value
+    viewRef.value?.style.setProperty('position', value)
+  }
+</script>
 
 <style>
   .common {

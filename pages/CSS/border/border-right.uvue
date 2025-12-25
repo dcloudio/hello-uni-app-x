@@ -4,11 +4,25 @@
       <text>border-right: 5px solid blue</text>
       <view class="common" style="border-right: 5px solid blue;"></view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 border-right 测试</text>
+      <text>border-right: {{borderRight}}</text>
+      <view ref="viewRef" class="common" style="border-right: 5px solid red;" @click="changeBorderRight('10px dashed green')">
+        <text>点击修改 border-right</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup>
+  const borderRight = ref('5px solid red')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeBorderRight = (value: string) => {
+    borderRight.value = value
+    viewRef.value?.style.setProperty('border-right', value)
+  }
 </script>
 
 <style>

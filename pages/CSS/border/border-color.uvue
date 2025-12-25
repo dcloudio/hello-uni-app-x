@@ -44,11 +44,29 @@
         <view class="common" style="border-bottom-width: 5px; border-bottom-color: blue; border-bottom-style: solid; ">
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 border-color 测试</text>
+        <text>border-color: {{borderColor}}</text>
+        <view ref="viewRef" class="common" style="border-width: 5px; border-color: red; border-style: solid;" @click="changeBorderColor('blue')">
+          <text>点击修改 border-color</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup>
+  const borderColor = ref('red')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBorderColor = (value: string) => {
+    borderColor.value = value
+    viewRef.value?.style.setProperty('border-color', value)
+  }
+</script>
 
 <style>
   .common {

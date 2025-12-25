@@ -15,6 +15,14 @@
         <text>image组件: visibility: {{visibility}}（点击切换）</text>
         <image class="image-visibility" :style="{'visibility': visibility}" src="/static/logo.png"></image>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 visibility 测试</text>
+        <text>visibility: {{visibilityValue}}</text>
+        <view ref="viewRef" class="common" style="visibility: visible;" @click="changeVisibilityProperty('hidden')">
+          <text>点击修改 visibility</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -22,7 +30,6 @@
 </template>
 
 <script setup lang="uts">
-
   const visibility = ref('visible')
   const flag = ref(true)
 
@@ -33,6 +40,14 @@
     } else {
       visibility.value = 'hidden'
     }
+  }
+
+  const visibilityValue = ref('visible')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeVisibilityProperty = (value: string) => {
+    visibilityValue.value = value
+    viewRef.value?.style.setProperty('visibility', value)
   }
 </script>
 
