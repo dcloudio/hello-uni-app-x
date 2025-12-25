@@ -115,7 +115,7 @@
     border-bottom: 1px #999 solid;
     margin-top: -3px;
     transition-property: transform;
-    transition-duration: 0.2s;
+    transition-duration: 150ms;
   }
 
   .down_arrow--active {
@@ -152,7 +152,7 @@
   .uni-collapse-item__content-box {
     width: 100%;
     transition-property: transform, opacity;
-    transition-duration: 0.2s;
+    transition-duration: 150ms;
     transform: translateY(-100%);
     opacity: 0;
   }
