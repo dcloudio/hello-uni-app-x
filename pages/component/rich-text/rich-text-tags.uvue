@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="uts">
-  
+
   import { ItemType } from '@/components/enum-data/enum-data-types';
 
   type TagInfo = {
@@ -320,17 +320,42 @@
           }
         }
       ] as Array<UTSJSONObject>
-    }
+    },
+    {
+      name: '需要截断换行显示的超长内容',
+      html: [
+        {
+        	name: "p",
+        	attrs: {
+        		style: "font-family: PingFang-SC, PingFang-SC; font-weight: 500; font-size: 28rpx; color: #333333; line-height: 40rpx; letter-spacing: 1px; margin-bottom: 16rpx;"
+        	},
+        	children: [
+        		{
+        			name: "span",
+        			attrs: {
+        				style: "font-size:16px"
+        			},
+        			children: [
+        				{
+        					text: "原文参见：https://mp.weixin.qq.com/s/b0uwMQb0uwMQb0uwMQb0uwMQb0uwMQb0uwMQb0uwMQ?search_click_id=3864893047246715565-1762413373324-4083157219"
+        				}
+        			]
+        		}
+        	]
+        }
+      ] as Array<UTSJSONObject>
+    },
+
   ] as Array<TagInfo>)
-  
+
   type ModeDataType = {
     mode: string
   }
-  
+
   const modeData = reactive({
     mode: 'web'
   } as ModeDataType)
-  
+
   const modeItems = ref(['web', 'native'])
   const modeItemTypes = ref<ItemType[]>([{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[])
 
@@ -351,7 +376,7 @@
   function onModeChange(value : number) {
     modeData.mode = modeItems.value[value];
   }
-  
+
   defineExpose({
     modeData
   })
