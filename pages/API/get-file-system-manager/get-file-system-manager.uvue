@@ -2081,9 +2081,32 @@
     })
   }
 
+  const testWriteLongString = () =>{
+    uni.getFileSystemManager().writeFileSync(`${data.basePath}b/t.txt`, "aaa", "utf-8")
+    uni.getFileSystemManager().open({
+    	filePath : `${data.basePath}b/t.txt`,
+    	flag : "a+",
+    	success : (res: OpenFileSuccessResult) => {
+    		uni.getFileSystemManager().write({
+    			fd : res.fd,
+    			data : "appended long strings.appended long strings.appended long strings.appended long strings.appended long strings.",
+    			position : 10,
+          success:(e)=> {
+            data.testOpenFlataplusWrite = true
+          },
+          fail:(e)=> {
+            data.testOpenFlataplusWrite = false
+          }
+    		})
+    	},
+      fail(e) {}
+    })
+  }
+
   defineExpose({
     data,
-    testOpenFlagWrite
+    testOpenFlagWrite,
+    testWriteLongString
   })
 </script>
 

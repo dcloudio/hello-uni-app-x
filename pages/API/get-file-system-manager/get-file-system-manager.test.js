@@ -54,6 +54,17 @@ describe('ExtApi-FileManagerTest', () => {
     expect(testOpenFlataplusWrite).toBe(true)
   })
 
+  it('test write long string error', async () => {
+      await setPageData({
+        testOpenFlataplusWrite: false
+      })
+      await page.callMethod('testWriteLongString')
+      await page.waitFor(300)
+
+      let getRet = await page.data("data.testOpenFlataplusWrite")
+      expect(getRet).toBe(true)
+  });
+
   it('USER_DATA_PATH test', async () => {
     // 测试 USER_DATA_PATH
     let globalUserDataPath = await page.data('data.globalUserDataPath')
