@@ -4,35 +4,35 @@
 		<!-- PC版收银台弹窗开始 -->
 		<uni-pay-popup v-if="modeCom == 'pc'" ref="payPopup" type="center" :safe-area="false">
 			<view class="pc-pay-popup">
-				<view class="pc-pay-popup-title"><text class="text">收银台</text></view>
+				<view class="pc-pay-popup-title"><text class="pc-pay-popup-title-text">收银台</text></view>
 				<view class="pc-pay-popup-flex">
 					<view class="pc-pay-popup-qrcode-box">
 						<image class="pc-pay-popup-qrcode-image" :src="orderRes['qr_code_image']"></image>
 						<view class="pc-pay-popup-amount-box">
 							<view class="pc-pay-popup-amount-tips">
-								<text class="text" v-if="orderRes['provider'] == 'wxpay'">微信扫一扫付款</text>
-								<text class="text" v-else-if="orderRes['provider'] == 'alipay'">支付宝扫一扫付款</text>
-								<text class="text" v-else>扫一扫付款</text>
+								<text class="pc-pay-popup-amount-tips-text" v-if="orderRes['provider'] == 'wxpay'">微信扫一扫付款</text>
+								<text class="pc-pay-popup-amount-tips-text" v-else-if="orderRes['provider'] == 'alipay'">支付宝扫一扫付款</text>
+								<text class="pc-pay-popup-amount-tips-text" v-else>扫一扫付款</text>
 							</view>
-							<view class="pc-pay-popup-amount"><text class="text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
+							<view class="pc-pay-popup-amount"><text class="pc-pay-popup-amount-text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
 						</view>
 						<view class="pc-pay-popup-complete-button" v-if="orderRes['qr_code_image']">
 							<button type="primary" @click="_getOrder()">我已完成支付</button>
 						</view>
 					</view>
 					<view class="pc-pay-popup-provider-list">
-						<view class="pc-pay-popup-provider-item" v-if="currentProviders.indexOf('wxpay') > -1" :class="myOptions['provider'] == 'wxpay' ? 'active' : ''"
+						<view class="pc-pay-popup-provider-item" :class="myOptions['provider'] == 'wxpay' ? 'pc-pay-popup-provider-item-active' : ''" v-if="currentProviders.indexOf('wxpay') > -1"
 							@click="_pcChooseProvider('wxpay')">
 							<image :src="images['wxpay']" class="pc-pay-popup-provider-image"></image>
 							<text class="pc-pay-popup-provider-text">微信支付</text>
 						</view>
-						<view class="pc-pay-popup-provider-item" v-if="currentProviders.indexOf('alipay') > -1" :class="myOptions['provider'] == 'alipay' ? 'active' : ''"
+						<view class="pc-pay-popup-provider-item" :class="myOptions['provider'] == 'alipay' ? 'pc-pay-popup-provider-item-active' : ''" v-if="currentProviders.indexOf('alipay') > -1"
 							@click="_pcChooseProvider('alipay')">
 							<image :src="images['alipay']" class="pc-pay-popup-provider-image"></image>
 							<text class="pc-pay-popup-provider-text">支付宝支付</text>
 						</view>
 						<view class="pc-pay-popup-logo">
-							<image class="image" :src="logo" mode="widthFix"></image>
+							<image class="pc-pay-popup-logo-image" :src="logo" mode="widthFix"></image>
 						</view>
 					</view>
 				</view>
@@ -43,37 +43,37 @@
 		<!-- 手机版收银台弹窗开始 -->
 		<uni-pay-popup v-else ref="payPopup" type="bottom" :safe-area="false">
 			<view class="mobile-pay-popup" :style="'min-height: '+height+';'">
-				<view class="mobile-pay-popup-title"><text class="text">收银台</text></view>
+				<view class="mobile-pay-popup-title"><text class="mobile-pay-popup-title-text">收银台</text></view>
 				<view class="mobile-pay-popup-amount-box">
-					<view><text class="text">待支付金额：</text></view>
-					<view class="mobile-pay-popup-amount"><text class="text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
+					<view><text class="mobile-pay-popup-amount-box-text">待支付金额：</text></view>
+					<view class="mobile-pay-popup-amount"><text class="mobile-pay-popup-amount-text">{{ (totalFeeCom / 100).toFixed(2) }}</text></view>
 				</view>
 				<view class="mobile-pay-popup-provider-list">
 					<view class="uni-list">
 						<!-- #ifdef MP-WEIXIN || H5 || APP -->
 						<view class="uni-list-item" v-if="currentProviders.indexOf('wxpay') > -1" @click="createOrderByProvider('wxpay')">
-							<view class="uni-list-item__container container--right">
+							<view class="uni-list-item__container uni-list-item__container--right">
 								<view class="uni-list-item__header">
-									<image :src="images['wxpay']" class="image"></image>
+									<image :src="images['wxpay']" class="uni-list-item__header-image"></image>
 								</view>
 								<view class="uni-list-item__content uni-list-item__content--center">
-									<text class="text">微信支付</text>
+									<text class="uni-list-item__content-text">微信支付</text>
 								</view>
 							</view>
-							<view class="arrowright"></view>
+							<view class="uni-list-item-arrowright"></view>
 						</view>
 						<!-- #endif -->
 						<!-- #ifdef MP-ALIPAY || H5 || APP -->
 						<view class="uni-list-item" v-if="currentProviders.indexOf('alipay') > -1" @click="createOrderByProvider('alipay')">
-							<view class="uni-list-item__container container--right">
+							<view class="uni-list-item__container uni-list-item__container--right">
 								<view class="uni-list-item__header">
-									<image :src="images['alipay']" class="image"></image>
+									<image :src="images['alipay']" class="uni-list-item__header-image"></image>
 								</view>
 								<view class="uni-list-item__content uni-list-item__content--center">
-									<text class="text">支付宝</text>
+									<text class="uni-list-item__content-text">支付宝</text>
 								</view>
 							</view>
-							<view class="arrowright"></view>
+							<view class="uni-list-item-arrowright"></view>
 						</view>
 						<!-- #endif -->
 					</view>
@@ -85,18 +85,18 @@
 		<!-- 二维码支付弹窗开始 -->
 		<uni-pay-popup ref="qrcodePopup" type="center" :safe-area="false" :animation="false" :mask-click="false" @close="clearQrcode">
 			<view class="qrcode-popup-content">
-				<image :src="orderRes['qr_code_image']" class="qrcode-image"></image>
+				<image :src="orderRes['qr_code_image']" class="qrcode-popup-content-qrcode-image"></image>
 				<view class="qrcode-popup-info">
 					<view class="qrcode-popup-info-fee-box">
 						<view class="qrcode-popup-info-fee">
-							<text class="text">{{ (totalFeeCom / 100).toFixed(2) }}</text>
+							<text class="qrcode-popup-info-fee-text">{{ (totalFeeCom / 100).toFixed(2) }}</text>
 						</view>
 						<view class="qrcode-popup-info-fee-unit">
-							<text class="text">元</text>
+							<text class="qrcode-popup-info-fee-unit-text">元</text>
 						</view>
 					</view>
-					<view v-if="myOptions['provider'] == 'wxpay'"><text>请用微信扫码支付</text></view>
-					<view v-else-if="myOptions['provider'] == 'alipay'"><text>请用支付宝扫码支付</text></view>
+					<view v-if="myOptions['provider'] == 'wxpay'"><text class="qrcode-popup-info-text">请用微信扫码支付</text></view>
+					<view v-else-if="myOptions['provider'] == 'alipay'"><text class="qrcode-popup-info-text">请用支付宝扫码支付</text></view>
 				</view>
 				<button type="primary" @click="_getOrder()" class="qrcode-popup-btn-primary">我已完成支付</button>
 				<view class="qrcode-popup-cancel" @click="closePopup('qrcodePopup')"><text class="qrcode-popup-cancel-text">暂不支付</text></view>
@@ -107,10 +107,10 @@
 		<!-- 外部浏览器确认支付弹窗开始 -->
 		<uni-pay-popup ref="payConfirmPopup" type="center" :safe-area="false" :animation="false" :mask-click="false">
 			<view class="pay-confirm-popup-content">
-				<view class="pay-confirm-popup-title"><text>请确认支付是否已完成</text></view>
+				<view class="pay-confirm-popup-title"><text class="pay-confirm-popup-title-text">请确认支付是否已完成</text></view>
 				<view><button type="primary" @click="_getOrder()">已完成支付</button></view>
 				<view class="pay-confirm-popup-refresh"><button type="default" @click="_afreshPayment()">支付遇到问题，重新支付</button></view>
-				<view class="pay-confirm-popup-cancel" @click="closePopup('payConfirmPopup')"><text>暂不支付</text></view>
+				<view class="pay-confirm-popup-cancel" @click="closePopup('payConfirmPopup')"><text class="pay-confirm-popup-cancel-text">暂不支付</text></view>
 			</view>
 		</uni-pay-popup>
 		<!-- 外部浏览器确认支付弹窗结束 -->
@@ -906,114 +906,120 @@
 		background-color: $bgcolor;
 		border-radius: 15px 15px 0 0;
 		overflow: hidden;
+	}
 
-		.mobile-pay-popup-title {
-			background-color: #ffffff;
-			padding: 10px;
+	.mobile-pay-popup-title {
+		background-color: #ffffff;
+		padding: 10px;
+	}
 
-			.text {
-				text-align: center;
-				font-weight: bold;
-				font-size: 20px;
-			}
-		}
+	.mobile-pay-popup-title-text {
+		text-align: center;
+		font-weight: bold;
+		font-size: 20px;
+	}
 
-		.mobile-pay-popup-amount-box {
-			background-color: #ffffff;
-			padding: 15px;
+	.mobile-pay-popup-amount-box {
+		background-color: #ffffff;
+		padding: 15px;
+	}
 
-			.mobile-pay-popup-amount {
-				margin-top: 10px;
+	.mobile-pay-popup-amount-box-text {
+		color: #333333;
+		font-size: 14px;
+	}
 
-				.text {
-					color: #e43d33;
-					font-size: 30px;
-				}
-			}
-		}
+	.mobile-pay-popup-amount {
+		margin-top: 10px;
+	}
 
-		.mobile-pay-popup-provider-list {
-			background-color: #ffffff;
-			margin-top: 10px;
+	.mobile-pay-popup-amount-text {
+		color: #e43d33;
+		font-size: 30px;
+	}
 
-			.uni-list {
-				display: flex;
-				background-color: #fff;
-				position: relative;
-				flex-direction: column;
+	.mobile-pay-popup-provider-list {
+		background-color: #ffffff;
+		margin-top: 10px;
+	}
 
-				.uni-list-item {
-					display: flex;
-					position: relative;
-					justify-content: space-between;
-					align-items: center;
-					background-color: #fff;
-					flex-direction: row;
-					border-bottom: 1px solid #f8f8f8;
+	.uni-list {
+		display: flex;
+		background-color: #fff;
+		position: relative;
+		flex-direction: column;
+	}
 
-					/* #ifdef H5 */
-					cursor: pointer;
-					/* #endif */
+	.uni-list-item {
+		display: flex;
+		position: relative;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #fff;
+		flex-direction: row;
+		border-bottom: 1px solid #f8f8f8;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
+	}
+	
+	/* #ifndef VUE3-VAPOR */
+	.uni-list-item:hover {
+		background-color: #f1f1f1;
+	}
+	/* #endif */
 
-					&:hover {
-						background-color: #f1f1f1;
-					}
+	.uni-list-item__container {
+		position: relative;
+		display: flex;
+		flex-direction: row;
+		padding: 12px 15px;
+		padding-left: 15px;
+		flex: 1;
+		overflow: hidden;
+	}
 
-					.uni-list-item__container {
-						position: relative;
-						display: flex;
-						flex-direction: row;
-						padding: 12px 15px;
-						padding-left: 15px;
-						flex: 1;
-						overflow: hidden;
+	.uni-list-item__container--right {
+		padding-right: 0;
+	}
 
-						.uni-list-item__header {
-							display: flex;
-							flex-direction: row;
-							align-items: center;
+	.uni-list-item__header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
 
-							.image {
-								width: 26px;
-								height: 26px;
-								margin-right: 9px;
-							}
-						}
-					}
+	.uni-list-item__header-image {
+		width: 26px;
+		height: 26px;
+		margin-right: 9px;
+	}
 
-					.container--right {
-						padding-right: 0;
-					}
+	.uni-list-item__content {
+		display: flex;
+		padding-right: 8px;
+		flex: 1;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow: hidden;
+	}
 
-					.uni-list-item__content {
-						display: flex;
-						padding-right: 8px;
-						flex: 1;
-						flex-direction: column;
-						justify-content: space-between;
-						overflow: hidden;
+	.uni-list-item__content-text {
+		color: #3b4144;
+		font-size: 14px;
+	}
 
-						.text {
-							color: #3b4144;
-							font-size: 14px;
-						}
-					}
+	.uni-list-item__content--center {
+		justify-content: center;
+	}
 
-					.uni-list-item__content--center {
-						justify-content: center;
-					}
-
-					.arrowright {
-						border-top: 1px solid #bbbbbb;
-						border-right: 1px solid #bbbbbb;
-						width: 8px;
-						height: 8px;
-						margin-right: 15px;
-						transform: rotate(45deg);
-					}
-				}
-			}
-		}
+	.uni-list-item-arrowright {
+		border-top: 1px solid #bbbbbb;
+		border-right: 1px solid #bbbbbb;
+		width: 8px;
+		height: 8px;
+		margin-right: 15px;
+		transform: rotate(45deg);
 	}
 
 	/* 手机版收银台弹窗结束 */
@@ -1025,117 +1031,117 @@
 		background-color: $bgcolor;
 		border-radius: 10px;
 		overflow: hidden;
+	}
 
-		.pc-pay-popup-title {
-			background-color: #ffffff;
-			height: 66px;
+	.pc-pay-popup-title {
+		background-color: #ffffff;
+		height: 66px;
+	}
 
-			.text {
-				text-align: center;
-				font-weight: bold;
-				font-size: 20px;
-				line-height: 66px;
-			}
-		}
+	.pc-pay-popup-title-text {
+		text-align: center;
+		font-weight: bold;
+		font-size: 20px;
+		line-height: 66px;
+	}
 
-		.pc-pay-popup-flex {
-			width: 100%;
-			display: flex;
-			flex-direction: row;
+	.pc-pay-popup-flex {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+	}
 
-			.pc-pay-popup-qrcode-box {
-				height: 534px;
-				flex: 1;
-				background-color: #ffffff;
-				display: flex;
-				flex-direction: row;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
+	.pc-pay-popup-qrcode-box {
+		height: 534px;
+		flex: 1;
+		background-color: #ffffff;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
 
-				.pc-pay-popup-qrcode-image {
-					width: 225px;
-					height: 225px;
-				}
+	.pc-pay-popup-qrcode-image {
+		width: 225px;
+		height: 225px;
+	}
 
-				.pc-pay-popup-amount-box {
-					.pc-pay-popup-amount-tips {
-						margin-top: 20px;
+	.pc-pay-popup-amount-box {
+		/* 容器样式 */
+	}
 
-						.text {
-							text-align: center;
-							color: #333;
-							font-size: 20px;
-						}
-					}
+	.pc-pay-popup-amount-tips {
+		margin-top: 20px;
+	}
 
-					.pc-pay-popup-amount {
-						margin-top: 20px;
+	.pc-pay-popup-amount-tips-text {
+		text-align: center;
+		color: #333;
+		font-size: 20px;
+	}
 
-						.text {
-							text-align: center;
-							color: #dd524d;
-							font-weight: bold;
-							font-size: 32px;
-						}
-					}
-				}
+	.pc-pay-popup-amount {
+		margin-top: 20px;
+	}
 
-				.pc-pay-popup-complete-button {
-					margin-top: 20px;
-				}
+	.pc-pay-popup-amount-text {
+		text-align: center;
+		color: #dd524d;
+		font-weight: bold;
+		font-size: 32px;
+	}
 
-			}
+	.pc-pay-popup-complete-button {
+		margin-top: 20px;
+	}
 
-			.pc-pay-popup-provider-list {
-				width: 300px;
-				display: flex;
-				flex-direction: column;
+	.pc-pay-popup-provider-list {
+		width: 300px;
+		display: flex;
+		flex-direction: column;
+	}
 
-				.pc-pay-popup-provider-item {
-					padding: 20px;
-					display: flex;
-					flex-direction: row;
-					align-items: center;
+	.pc-pay-popup-provider-item {
+		padding: 20px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
 
-					.pc-pay-popup-provider-image {
-						width: 60px;
-						height: 60px;
-					}
+	.pc-pay-popup-provider-item-active {
+		background-color: #ffffff;
+	}
+	
+	/* #ifndef VUE3-VAPOR */
+	.pc-pay-popup-provider-item:hover {
+		background-color: #ffffff;
+		/* #ifdef H5 */
+		cursor: pointer;
+		/* #endif */
+	}
+	/* #endif */
 
-					.pc-pay-popup-provider-text {
-						color: #333;
-						font-size: 20px;
-						margin-left: 10px;
-					}
-				}
+	.pc-pay-popup-provider-image {
+		width: 60px;
+		height: 60px;
+	}
 
-				.pc-pay-popup-provider-item.active {
-					background-color: #ffffff;
-				}
+	.pc-pay-popup-provider-text {
+		color: #333;
+		font-size: 20px;
+		margin-left: 10px;
+	}
 
-				.pc-pay-popup-provider-item:hover {
-					background-color: #ffffff;
+	.pc-pay-popup-logo {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
 
-					/* #ifdef H5 */
-					cursor: pointer;
-					/* #endif */
-				}
-
-				.pc-pay-popup-logo {
-					flex: 1;
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					justify-content: center;
-
-					.image {
-						width: 120px;
-					}
-				}
-
-			}
-		}
+	.pc-pay-popup-logo-image {
+		width: 120px;
 	}
 
 	/* PC版收银台弹窗结束 */
@@ -1152,53 +1158,68 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+	}
 
-		.qrcode-image {
-			width: 225px;
-			height: 225px;
-		}
+	.qrcode-popup-content-qrcode-image {
+		width: 225px;
+		height: 225px;
+	}
 
-		.qrcode-popup-info {
-			padding: 10px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
+	.qrcode-popup-info {
+		padding: 10px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 
-			.qrcode-popup-info-fee-box {
-				display: flex;
-				flex-direction: row;
-				margin-bottom: 3px;
+	.qrcode-popup-info-text {
+		color: #333333;
+		font-size: 14px;
+		text-align: center;
+	}
 
-				.qrcode-popup-info-fee {
-					.text {
-						color: red;
-						font-size: 30px;
-						font-weight: bold;
-						text-align: center;
-					}
-				}
+	.qrcode-popup-info-fee-box {
+		display: flex;
+		flex-direction: row;
+		margin-bottom: 3px;
+	}
 
-				.qrcode-popup-info-fee-unit {
-					display: flex;
-					flex-direction: row;
-					align-items: flex-end;
-					padding-bottom: 5px;
-				}
-			}
-		}
+	.qrcode-popup-info-fee {
+		/* 容器样式 */
+	}
 
-		.qrcode-popup-btn-primary {
-			width: 260px;
-		}
+	.qrcode-popup-info-fee-text {
+		color: red;
+		font-size: 30px;
+		font-weight: bold;
+		text-align: center;
+	}
 
-		.qrcode-popup-cancel {
-			margin-top: 10px;
-			width: 260px;
+	.qrcode-popup-info-fee-unit {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-end;
+		padding-bottom: 5px;
+	}
 
-			.qrcode-popup-cancel-text {
-				text-align: center;
-			}
-		}
+	.qrcode-popup-info-fee-unit-text {
+		color: #333333;
+		font-size: 14px;
+	}
+
+	.qrcode-popup-btn-primary {
+		width: 260px;
+	}
+
+	.qrcode-popup-cancel {
+		margin-top: 10px;
+		width: 260px;
+	}
+
+	.qrcode-popup-cancel-text {
+		text-align: center;
+		color: #666666;
+		font-size: 14px;
 	}
 
 	/* 二维码支付弹窗结束 */
@@ -1209,21 +1230,33 @@
 		background-color: #ffffff;
 		border-radius: 5px;
 		padding: 20px;
+	}
 
-		.pay-confirm-popup-title {
-			text-align: center;
-			padding: 10px 0;
-			margin-bottom: 15px;
-		}
+	.pay-confirm-popup-title {
+		text-align: center;
+		padding: 10px 0;
+		margin-bottom: 15px;
+	}
 
-		.pay-confirm-popup-refresh {
-			margin-top: 10px;
-		}
+	.pay-confirm-popup-title-text {
+		color: #333333;
+		font-size: 16px;
+		text-align: center;
+	}
 
-		.pay-confirm-popup-cancel {
-			margin-top: 10px;
-			text-align: center;
-		}
+	.pay-confirm-popup-refresh {
+		margin-top: 10px;
+	}
+
+	.pay-confirm-popup-cancel {
+		margin-top: 10px;
+		text-align: center;
+	}
+
+	.pay-confirm-popup-cancel-text {
+		color: #666666;
+		font-size: 14px;
+		text-align: center;
 	}
 
 	/* 外部浏览器H5支付弹窗确认结束 */
