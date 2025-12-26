@@ -1,23 +1,44 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>padding-bottom: 25px</text>
-      <view class="common" style="padding-bottom: 25px;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>padding-bottom: 25px</text>
+        <view class="common" style="padding-bottom: 25px;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
       </view>
-    </view>
 
-    <view style="width: 250px;">
-      <text>padding-bottom: 10%</text>
-      <view class="common" style="padding-bottom: 10%;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+      <view style="width: 250px;">
+        <text>padding-bottom: 10%</text>
+        <view class="common" style="padding-bottom: 10%;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 padding-bottom 测试</text>
+        <text>padding-bottom: {{paddingBottom}}</text>
+        <view ref="viewRef" class="common" style="padding-bottom: 25px;" @click="changePaddingBottom('50px')">
+          <view style="flex-grow: 1;background-color: red;"></view>
+          <text>点击修改 padding-bottom 为 50px</text>
+        </view>
       </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const paddingBottom = ref('25px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changePaddingBottom = (value: string) => {
+    paddingBottom.value = value
+    viewRef.value?.style.setProperty('padding-bottom', value)
+  }
 </script>
 
 <style>

@@ -58,14 +58,30 @@
           <view class="common" style="width: 150px;"></view>
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 margin 测试</text>
+        <text>margin: {{margin}}</text>
+        <view style="width: 250px;height: 100px;background-color: gray;">
+          <view ref="viewRef" class="common" style="width: 150px; margin: 0 auto;" @click="changeMargin('10px')">
+            <text>点击修改 margin 为 10px</text>
+          </view>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const margin = ref('0 auto')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeMargin = (value: string) => {
+    margin.value = value
+    viewRef.value?.style.setProperty('margin', value)
+  }
 </script>
 
 <style>

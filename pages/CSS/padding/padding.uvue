@@ -32,14 +32,29 @@
         <text>image组件: padding: 10%</text>
         <image class="image-padding-percent" style="padding: 10%;" src="/static/logo.png"></image>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 padding 测试</text>
+        <text>padding: {{padding}}</text>
+        <view ref="viewRef" class="common" style="padding: 25px;" @click="changePadding('50px')">
+          <view style="flex-grow: 1;background-color: red;"></view>
+          <text>点击修改 padding 为 50px</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const padding = ref('25px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changePadding = (value: string) => {
+    padding.value = value
+    viewRef.value?.style.setProperty('padding', value)
+  }
 </script>
 
 <style>

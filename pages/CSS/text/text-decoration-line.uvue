@@ -1,18 +1,38 @@
 <template>
-	<view style="flex-grow: 1;">
-		<view class="content">
-			<text class="common" style="text-decoration-line: underline;">text-decoration-line: underline</text>
-			<text class="common" style="text-decoration-line: line-through;">text-decoration-line: line-through</text>
-		</view>
-		<view class="content">
-			<text class="common" style="text-decoration-line: underline;color: blue;">text-decoration-line: underline</text>
-			<text class="common" style="text-decoration-line: line-through;color: blue;">text-decoration-line: line-through</text>
-		</view>
-	</view>
+  <!-- #ifdef APP -->
+  <scroll-view>
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view class="content">
+        <text class="common" style="text-decoration-line: underline;">text-decoration-line: underline</text>
+        <text class="common" style="text-decoration-line: line-through;">text-decoration-line: line-through</text>
+      </view>
+      <view class="content">
+        <text class="common" style="text-decoration-line: underline;color: blue;">text-decoration-line: underline</text>
+        <text class="common" style="text-decoration-line: line-through;color: blue;">text-decoration-line: line-through</text>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 text-decoration-line 测试</text>
+        <text>text-decoration-line: {{textDecorationLine}}</text>
+        <view class="content">
+          <text ref="viewRef" class="common" style="text-decoration-line: none;" @click="changeTextDecorationLine('underline')">点击修改 text-decoration-line 为 underline</text>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+	const textDecorationLine = ref('none')
+	const viewRef = ref(null as UniElement | null)
 
+	const changeTextDecorationLine = (value: string) => {
+		textDecorationLine.value = value
+		viewRef.value?.style.setProperty('text-decoration-line', value)
+	}
 </script>
 
 <style>

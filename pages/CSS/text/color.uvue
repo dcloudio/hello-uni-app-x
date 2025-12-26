@@ -7,11 +7,25 @@
       <text class="common" style="color: #f00;">color: #f00</text>
       <text class="common" style="color: red;">color: red</text>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 color 测试</text>
+      <text>color: {{color}}</text>
+      <view style="height: 100px;background-color: gray;justify-content: center;align-items: center;">
+        <text ref="viewRef" class="common" style="color: red;" @click="changeColor('blue')">点击修改 color 为 blue</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  const color = ref('red')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeColor = (value: string) => {
+    color.value = value
+    viewRef.value?.style.setProperty('color', value)
+  }
 </script>
 
 <style>

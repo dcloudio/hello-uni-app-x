@@ -19,8 +19,38 @@
         </view>
       </view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 flex-grow 测试</text>
+      <button @click="changeFlexGrow(2)">点击修改红色块 flex-grow 从 0 改为 2</button>
+      <text>红色块 flex-grow: {{flexGrow}}, 绿色块 flex-grow: 1</text>
+      <text style="font-size: 12px; color: #666;">flex-grow 决定如何分配剩余空间</text>
+      <view style="
+          width: 250px;
+          height: 150px;
+          background-color: gray;
+          flex-direction: row;
+        ">
+        <view ref="viewRef" style="width: 50px; height: 50px; background-color: red; flex-grow: 0; justify-content: center; align-items: center;">
+          <text style="color: white; font-weight: bold;">{{flexGrow}}</text>
+        </view>
+        <view style="width: 50px; height: 50px; background-color: green; flex-grow: 1; justify-content: center; align-items: center;">
+          <text style="color: white;">1</text>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
+
+<script setup lang="uts">
+  const flexGrow = ref(0)
+  const viewRef = ref(null as UniElement | null)
+
+  const changeFlexGrow = (value: number) => {
+    flexGrow.value = value
+    viewRef.value?.style.setProperty('flex-grow', value.toString())
+  }
+</script>
 
 <style>
   .common {

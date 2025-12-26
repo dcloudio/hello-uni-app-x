@@ -38,11 +38,32 @@
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 flex-direction 测试</text>
+        <button @click="changeFlexDirection('column')">点击修改为 column</button>
+        <text>flex-direction: {{flexDirection}}</text>
+        <view ref="viewRef" class="common" style="flex-direction: row;">
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup lang="uts">
+  const flexDirection = ref('row')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeFlexDirection = (value: string) => {
+    flexDirection.value = value
+    viewRef.value?.style.setProperty('flex-direction', value)
+  }
+</script>
 
 <style>
   .common {

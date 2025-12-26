@@ -1,27 +1,51 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>margin-bottom: 25px</text>
-      <view style="width: 250px;height: 250px;background-color: gray;">
-        <view class="common" style="background-color: red;"></view>
-        <view class="common" style="margin-bottom: 25px;"></view>
-        <view class="common" style="background-color: blue;"></view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>margin-bottom: 25px</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
+          <view class="common" style="margin-bottom: 25px;"></view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
       </view>
-    </view>
 
-    <view>
-      <text>margin-bottom: 10%</text>
-      <view style="width: 250px;height: 250px;background-color: gray;">
-        <view class="common" style="background-color: red;"></view>
-        <view class="common" style="margin-bottom: 10%;"></view>
-        <view class="common" style="background-color: blue;"></view>
+      <view>
+        <text>margin-bottom: 10%</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
+          <view class="common" style="margin-bottom: 10%;"></view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 margin-bottom 测试</text>
+        <text>margin-bottom: {{marginBottom}}</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
+          <view ref="viewRef" class="common" style="margin-bottom: 25px;" @click="changeMarginBottom('50px')">
+            <text>点击修改 margin-bottom 为 50px</text>
+          </view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
       </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const marginBottom = ref('25px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeMarginBottom = (value: string) => {
+    marginBottom.value = value
+    viewRef.value?.style.setProperty('margin-bottom', value)
+  }
 </script>
 
 <style>

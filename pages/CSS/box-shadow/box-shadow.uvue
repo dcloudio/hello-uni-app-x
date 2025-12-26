@@ -208,6 +208,15 @@
           <image class="image-shadow-circle" style="border-radius: 62px; box-shadow: 5px 5px black;" src="/static/logo.png"></image>
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 box-shadow 测试</text>
+        <text>box-shadow: {{boxShadow}}</text>
+        <view class="backgroundview" @click="changeBoxShadow('10px 10px 10px red')">
+          <view ref="viewRef" class="common" style="box-shadow: 5px 5px black;"></view>
+          <text>点击修改 box-shadow 为 10px 10px 10px red</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -227,6 +236,14 @@
 
   const changed = () => {
     disabled.value = !disabled.value
+  }
+
+  const boxShadow = ref('5px 5px black')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBoxShadow = (value: string) => {
+    boxShadow.value = value
+    viewRef.value?.style.setProperty('box-shadow', value)
   }
 </script>
 

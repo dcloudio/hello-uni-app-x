@@ -1,23 +1,43 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>padding-left: 25px</text>
-      <view class="common" style="padding-left: 25px;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+  <!-- #ifdef APP -->
+  <scroll-view>
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>padding-left: 25px</text>
+        <view class="common" style="padding-left: 25px;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
       </view>
-    </view>
 
-    <view style="width: 250px;">
-      <text>padding-left: 10%</text>
-      <view class="common" style="padding-left: 10%;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+      <view style="width: 250px;">
+        <text>padding-left: 10%</text>
+        <view class="common" style="padding-left: 10%;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 padding-left 测试</text>
+        <text>padding-left: {{paddingLeft}}</text>
+        <view ref="viewRef" class="common" style="padding-left: 25px;" @click="changePaddingLeft('50px')">
+          <view style="flex-grow: 1;background-color: red;"><text>点击修改 padding-left 为 50px</text></view>
+        </view>
       </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const paddingLeft = ref('25px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changePaddingLeft = (value: string) => {
+    paddingLeft.value = value
+    viewRef.value?.style.setProperty('padding-left', value)
+  }
 </script>
 
 <style>

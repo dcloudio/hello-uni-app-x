@@ -19,6 +19,14 @@
         <text>class 动态切换 background</text>
         <view @click='changeBgClass' class="common" :class='testClass'>{{testClass}}</view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 background-image 测试</text>
+        <text>background-image: {{backgroundImage}}</text>
+        <view ref="viewRef" class="common" style="background-image: linear-gradient(to right, red, yellow);" @click="changeBackgroundImage('linear-gradient(to bottom, blue, green)')">
+          <text style="color: white;">点击修改 background-image</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -64,6 +72,14 @@
     setBackgroundImage,
     changeBgClass
   })
+
+  const backgroundImage = ref('linear-gradient(to right, red, yellow)')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeBackgroundImage = (value: string) => {
+    backgroundImage.value = value
+    viewRef.value?.style.setProperty('background-image', value)
+  }
 
 </script>
 

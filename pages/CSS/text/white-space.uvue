@@ -6,13 +6,22 @@
     <scroll-view style="flex: 1">
       <view class="content">
         <enum-data :items="white_space" title="white-space" @change="radio_change"></enum-data>
+
+        <view class="uni-common-mt">
+          <text class="uni-title-text">style.setProperty 动态设置 white-space 测试</text>
+          <button  @click="changeWhiteSpace('nowrap')">点击修改 white-space 为 nowrap</button>
+          <text>white-space: {{whiteSpace}}</text>
+          <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
+            <text ref="viewRef" class="text" style="white-space: normal;">{{multiLineText}}</text>
+          </scroll-view>
+        </view>
       </view>
     </scroll-view>
   </view>
 </template>
 
 <script setup lang="uts">
- 
+
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const textStyle = ref("white-space: normal;")
@@ -36,6 +45,14 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
 
   const radio_change = (checked : number) => {
     textStyle.value = `white-space: ${white_space.value[checked].name};`
+  }
+
+  const whiteSpace = ref('normal')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeWhiteSpace = (value: string) => {
+    whiteSpace.value = value
+    viewRef.value?.style.setProperty('white-space', value)
   }
 </script>
 

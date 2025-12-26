@@ -7,8 +7,8 @@
       <button @click="start">start</button>
       <button @click="reset">reset</button>
 
-      <view style="margin-top: 20px;">
-        <text style="font-size: 18px; font-weight: bold;">text 组件 transition-duration 测试</text>
+      <view style="margin-top: 20px; margin-left: 10px;">
+        <text class="uni-title-text">text 组件 transition-duration 测试</text>
       </view>
       <view>
         <text :class="textClassValue">text transition-duration: 5s</text>
@@ -16,14 +16,23 @@
         <button @click="textReset">text reset</button>
       </view>
 
-      <view style="margin-top: 20px;">
-        <text style="font-size: 18px; font-weight: bold;">image 组件 transition-duration 测试</text>
+      <view style="margin-top: 20px; margin-left: 10px;">
+        <text class="uni-title-text">image 组件 transition-duration 测试</text>
       </view>
       <view>
         <image :class="imageClassValue" src="/static/test-image/logo.png"></image>
         <button @click="imageStart">image start</button>
         <button @click="imageReset">image reset</button>
       </view>
+
+      <view style="margin-top: 20px; margin-left: 10px;">
+        <text class="uni-title-text">style.setProperty 动态设置 transition-duration 测试</text>
+        <text>transition-duration: {{transitionDuration}}</text>
+      </view>
+      <view ref="viewRef" style="width: 100px; height: 100px; background-color: green; transition-duration: 2s;" @click="changeTransitionDuration('5s')">
+        <text style="color: white;">点击修改 transition-duration 为 5s</text>
+      </view>
+      <button @click="triggerTransition">触发过渡效果</button>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -72,6 +81,22 @@
 	  jest_start,
 	  jest_reset
 	})
+
+  const transitionDuration = ref('2s')
+  const viewRef = ref(null as UniElement | null)
+  const isExpanded = ref(false)
+
+  const changeTransitionDuration = (value: string) => {
+    transitionDuration.value = value
+    viewRef.value?.style.setProperty('transition-duration', value)
+  }
+
+  const triggerTransition = () => {
+    if (viewRef.value != null) {
+      isExpanded.value = !isExpanded.value
+      viewRef.value.style.setProperty('width', isExpanded.value ? '200px' : '100px')
+    }
+  }
 
 </script>
 

@@ -6,11 +6,25 @@
 			<text class="common2" style="text-align: center;">text-align: center</text>
 			<text class="common" style="text-align: right;">text-align: right</text>
 		</view>
+
+		<view class="uni-common-mt">
+			<text class="uni-title-text">style.setProperty 动态设置 text-align 测试</text>
+			<text>text-align: {{textAlign}}</text>
+			<view style="height: 100px;background-color: gray;justify-content: center;align-items: center;">
+				<text ref="viewRef" class="common" style="text-align: left;" @click="changeTextAlign('center')">点击修改 text-align 为 center</text>
+			</view>
+		</view>
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
+	const textAlign = ref('left')
+	const viewRef = ref(null as UniElement | null)
 
+	const changeTextAlign = (value: string) => {
+		textAlign.value = value
+		viewRef.value?.style.setProperty('text-align', value)
+	}
 </script>
 
 <style>

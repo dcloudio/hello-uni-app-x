@@ -6,11 +6,25 @@
       <text class="common" style="line-height: 3em;">line-height: 3em</text>
       <text class="common" style="line-height: 3;">line-height: 3\nline-height: 3\nline-height: 3</text>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 line-height 测试</text>
+      <text>line-height: {{lineHeight}}</text>
+      <view style="height: 150px;background-color: gray;justify-content: center;align-items: center;">
+        <text ref="viewRef" class="common" style="line-height: 75px;" @click="changeLineHeight('100px')">点击修改 line-height 为 100px</text>
+      </view>
+    </view>
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+  const lineHeight = ref('75px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeLineHeight = (value: string) => {
+    lineHeight.value = value
+    viewRef.value?.style.setProperty('line-height', value)
+  }
 </script>
 
 <style>

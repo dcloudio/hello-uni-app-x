@@ -5,11 +5,25 @@
 			<text class="common" style="letter-spacing: 5px;">letter-spacing: 5px</text>
 			<text class="common" style="letter-spacing: -2px;">letter-spacing: -2px</text>
 		</view>
+
+		<view class="uni-common-mt">
+			<text class="uni-title-text">style.setProperty 动态设置 letter-spacing 测试</text>
+			<text>letter-spacing: {{letterSpacing}}</text>
+			<view style="height: 100px;background-color: gray;justify-content: center;align-items: center;">
+				<text ref="viewRef" class="common" style="letter-spacing: 0px;" @click="changeLetterSpacing('5px')">点击修改 letter-spacing 为 5px</text>
+			</view>
+		</view>
 	</view>
 </template>
 
-<script>
+<script setup lang="uts">
+	const letterSpacing = ref('0px')
+	const viewRef = ref(null as UniElement | null)
 
+	const changeLetterSpacing = (value: string) => {
+		letterSpacing.value = value
+		viewRef.value?.style.setProperty('letter-spacing', value)
+	}
 </script>
 
 <style>

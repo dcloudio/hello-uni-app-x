@@ -1,23 +1,43 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>padding-top: 25px</text>
-      <view class="common" style="padding-top: 25px;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>padding-top: 25px</text>
+        <view class="common" style="padding-top: 25px;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
       </view>
-    </view>
 
-    <view style="width: 250px;">
-      <text>padding-top: 10%</text>
-      <view class="common" style="padding-top: 10%;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+      <view style="width: 250px;">
+        <text>padding-top: 10%</text>
+        <view class="common" style="padding-top: 10%;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 padding-top 测试</text>
+        <text>padding-top: {{paddingTop}}</text>
+        <view ref="viewRef" class="common" style="padding-top: 25px;" @click="changePaddingTop('50px')">
+          <view style="flex-grow: 1;background-color: red;"><text>点击修改 padding-top 为 50px</text></view>
+        </view>
       </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const paddingTop = ref('25px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changePaddingTop = (value: string) => {
+    paddingTop.value = value
+    viewRef.value?.style.setProperty('padding-top', value)
+  }
 </script>
 
 <style>

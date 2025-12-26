@@ -10,6 +10,13 @@
       <text class="name">{{item.name}}</text>
     </view>
   </view>
+
+  <view class="uni-common-mt" style="align-items: center;">
+    <text class="uni-title-text">style.setProperty 动态设置 font-family 测试</text>
+    <text>font-family: {{fontFamily}}</text>
+    <text ref="viewRef" style="font-family: uni-icon; font-size: 42px;" @click="changeFontFamily('cursive')">{{String.fromCharCode(parseInt('E601',16))}}</text>
+    <text>点击修改 font-family 为 cursive</text>
+  </view>
 </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -114,11 +121,19 @@
     fontWeight.value = 'bold'
     fontStyle.value = 'italic'
   }
-	
+
 	defineExpose({
 	  changeStyle
 	})
-	
+
+  const fontFamily = ref('uni-icon')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeFontFamily = (value: string) => {
+    fontFamily.value = value
+    viewRef.value?.style.setProperty('font-family', value)
+  }
+
 </script>
 
 <style>

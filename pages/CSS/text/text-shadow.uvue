@@ -7,11 +7,23 @@
     <text class="text" style="text-shadow: 5px 10px;">text-shadow: 5px 10px</text>
     <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);">text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
     <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);">text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 text-shadow 测试</text>
+      <text>text-shadow: {{textShadow}}</text>
+      <text ref="viewRef" class="text" style="text-shadow: 1px 1px 2px pink;" @click="changeTextShadow('5px 5px #558abb')">点击修改 text-shadow 为 5px 5px #558abb</text>
+    </view>
   </view>
 </template>
 
-<script setup>
+<script setup lang="uts">
+  const textShadow = ref('1px 1px 2px pink')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeTextShadow = (value: string) => {
+    textShadow.value = value
+    viewRef.value?.style.setProperty('text-shadow', value)
+  }
 </script>
 
 <style>
@@ -22,7 +34,7 @@
 
   .text {
     width: 100%;
-    height: 40px;
+    height: 50px;
     font-size: 20px;
     text-align: center;
   }

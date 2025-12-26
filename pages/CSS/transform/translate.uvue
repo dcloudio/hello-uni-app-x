@@ -27,11 +27,31 @@
       <text>translate(-50%,50%)</text>
       <text>转变后位置</text>
     </view>
-    <navigator style="top: 100px; width: 80%;" url="/pages/CSS/transform/transform-origin">
+
+    <view style="margin-top: 150px; margin-left: 10px;">
+      <text class="uni-title-text">style.setProperty 动态设置 transform (translate) 测试</text>
+      <text>transform: {{transformValue}}</text>
+    </view>
+
+    <view ref="viewRef" class="base transform" style="transform: translateX(0px);" @click="changeTransform('translateX(80px)')">
+      <text>点击修改 transform 为 translateX(80px)</text>
+    </view>
+
+    <navigator style="margin-top: 50px; width: 80%;" url="/pages/CSS/transform/transform-origin">
       <button type="primary">transform-origin</button>
     </navigator>
   </scroll-view>
 </template>
+
+<script setup lang="uts">
+  const transformValue = ref('translateX(0px)')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeTransform = (value: string) => {
+    transformValue.value = value
+    viewRef.value?.style.setProperty('transform', value)
+  }
+</script>
 
 <style>
   .page {

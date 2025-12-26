@@ -15,8 +15,34 @@
         <view style="width: 50px; height: 50px; background-color: blue"></view>
       </view>
     </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 flex-basis 测试</text>
+      <button @click="changeFlexBasis('100px')">点击修改为 100px</button>
+      <text>flex-basis: {{flexBasis}}</text>
+      <view style="
+          width: 250px;
+          height: 150px;
+          background-color: gray;
+          flex-direction: row;
+        ">
+        <view ref="viewRef" class="common" style="flex-basis: 150px"></view>
+        <view style="width: 50px; height: 50px; background-color: green"></view>
+        <view style="width: 50px; height: 50px; background-color: blue"></view>
+      </view>
+    </view>
   </view>
 </template>
+
+<script setup lang="uts">
+  const flexBasis = ref('150px')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeFlexBasis = (value: string) => {
+    flexBasis.value = value
+    viewRef.value?.style.setProperty('flex-basis', value)
+  }
+</script>
 
 <style>
   .common {

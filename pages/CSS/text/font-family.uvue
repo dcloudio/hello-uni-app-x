@@ -8,6 +8,12 @@
     <text style="font-family: UniFontFamily;">style 加载非 static 目录字体文件：{{uniIcon}}</text>
     <!--    <text class="common" style="font-family: AlimamaDaoLiTiWOFF">font-family: 阿里妈妈刀隶体-woff</text>
     <text class="common" style="font-family: AlimamaDaoLiTiWOFF2">font-family: 阿里妈妈刀隶体-woff2</text> -->
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">style.setProperty 动态设置 font-family 测试</text>
+      <text>font-family: {{fontFamily}}</text>
+      <text ref="viewRef" class="common" style="font-family: monospace" @click="changeFontFamily('cursive')">点击修改 font-family 为 cursive</text>
+    </view>
   </view>
   <!-- #ifdef APP -->
   <view style="margin: 24px 12px;">
@@ -22,6 +28,14 @@
     uni.navigateTo({
       url: '/pages/CSS/text/font-family-icon'
     })
+  }
+
+  const fontFamily = ref('monospace')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeFontFamily = (value: string) => {
+    fontFamily.value = value
+    viewRef.value?.style.setProperty('font-family', value)
   }
 </script>
 

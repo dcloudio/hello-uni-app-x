@@ -7,7 +7,15 @@
     <view class="content" :style="{display:display}">
       <text style="background-color: aquamarine;">展示display区域</text>
     </view>
-    <button @tap="switchDisplay">切换display属性</button>
+    <button @tap="switchDisplay" class="uni-common-mb">切换display属性</button>
+
+    <view style="align-items: center;">
+      <text class="uni-title-text">style.setProperty 动态设置 display 测试</text>
+      <text>display: {{displayProp}}</text>
+      <view ref="viewRef" class="content" style="display: flex;" @click="changeDisplay('none')">
+        <text>点击修改 display 为 none</text>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -18,10 +26,19 @@
   const switchDisplay = () => {
     display.value = ('flex' == display.value) ? 'none' : 'flex'
   }
+
+  const displayProp = ref('flex')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeDisplay = (value: string) => {
+    displayProp.value = value
+    viewRef.value?.style.setProperty('display', value)
+  }
 </script>
 
 <style>
   .page {
+    justify-content: center;
     align-items: center;
     height: 100%;
   }

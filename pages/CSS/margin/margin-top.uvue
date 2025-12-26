@@ -1,27 +1,51 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>margin-top: 25px</text>
-      <view style="width: 250px;height: 250px;background-color: gray;">
-        <view class="common" style="background-color: red;"></view>
-        <view class="common" style="margin-top: 25px;"></view>
-        <view class="common" style="background-color: blue;"></view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>margin-top: 25px</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
+          <view class="common" style="margin-top: 25px;"></view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
       </view>
-    </view>
 
-    <view>
-      <text>margin-top: 10%</text>
-      <view style="width: 250px;height: 250px;background-color: gray;">
-        <view class="common" style="background-color: red;"></view>
-        <view class="common" style="margin-top: 10%;"></view>
-        <view class="common" style="background-color: blue;"></view>
+      <view>
+        <text>margin-top: 10%</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
+          <view class="common" style="margin-top: 10%;"></view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 margin-top 测试</text>
+        <text>margin-top: {{marginTop}}</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
+          <view ref="viewRef" class="common" style="margin-top: 25px;" @click="changeMarginTop('50px')">
+            <text>点击修改 margin-top 为 50px</text>
+          </view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
       </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  const marginTop = ref('25px')
+  const viewRef = ref(null as UniElement | null)
 
+  const changeMarginTop = (value: string) => {
+    marginTop.value = value
+    viewRef.value?.style.setProperty('margin-top', value)
+  }
 </script>
 
 <style>

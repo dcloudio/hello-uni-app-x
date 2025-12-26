@@ -106,11 +106,32 @@
         <text class="image-label">rotateY(180deg) 绕 Y 轴旋转 180 度</text>
         <image class="image-base" style="transform: rotateY(180deg)" src="/static/test-image/logo.png"></image>
       </view>
+
+      <view style="margin-top: 20px; margin-left: 10px;">
+        <text class="uni-title-text">style.setProperty 动态设置 transform (rotate) 测试</text>
+        <text>transform: {{transformValue}}</text>
+      </view>
+
+      <view class="base image-base-box" style="padding-bottom: 50px;">
+        <view ref="viewRef" class="base transform" style="transform: rotate(0deg);" @click="changeTransform('rotate(45deg)')">
+          <text>点击修改 transform 为 rotate(45deg)</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup lang="uts">
+  const transformValue = ref('rotate(0deg)')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeTransform = (value: string) => {
+    transformValue.value = value
+    viewRef.value?.style.setProperty('transform', value)
+  }
+</script>
 
 <style>
   .pages {

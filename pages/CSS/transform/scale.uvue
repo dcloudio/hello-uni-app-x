@@ -96,11 +96,38 @@
         <text class="image-label">scaleY(-1) 垂直翻转</text>
         <image class="image-base" style="transform: scaleY(-1)" src="/static/test-image/logo.png"></image>
       </view>
+
+
+      <view class="base" style="width:auto">
+        <text>通过scaleY(0.5)实现0.5px的线</text>
+        <view style="width: 200px; height: 1px; background-color: #000; transform: scaleY(0.5)"></view>
+      </view>
+
+      <view style="margin-top: 20px; margin-left: 10px;">
+        <text class="uni-title-text">style.setProperty 动态设置 transform (scale) 测试</text>
+        <text>transform: {{transformValue}}</text>
+      </view>
+
+      <view class="base image-container">
+        <view ref="viewRef" class="base transform" style="transform: scale(1,1);" @click="changeTransform('scale(1.5,1.5)')">
+          <text>点击修改 transform 为 scale(1.5,1.5)</text>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup lang="uts">
+  const transformValue = ref('scale(1,1)')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeTransform = (value: string) => {
+    transformValue.value = value
+    viewRef.value?.style.setProperty('transform', value)
+  }
+</script>
 
 <style>
 

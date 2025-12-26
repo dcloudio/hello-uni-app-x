@@ -1,6 +1,6 @@
 <template>
   <view style="flex-grow: 1;">
-    <view style="height: 500px;padding: 0 30px; background-color: gray;justify-content: center;">
+    <view style="padding: 0 30px; background-color: gray;justify-content: center;">
       <view class="margin-bottom-10">
         <text class="font-weight-bold">text-overflow:clip white-space:nowrap</text>
         <text class="font-size-20" style="text-overflow: clip;white-space: nowrap;">{{multiLineText}}</text>
@@ -30,6 +30,13 @@
         <text class="font-size-20" style="text-overflow: ellipsis; lines: 1;">{{multiLineText}}</text>
       </view>
       <!-- #endif -->
+
+      <view class="margin-bottom-10 uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 text-overflow 测试</text>
+        <text>text-overflow: {{textOverflow}}</text>
+        <text @click="changeTextOverflow('ellipsis')">点击修改 text-overflow 为 ellipsis</text>
+        <text ref="viewRef" class="font-size-20" style="text-overflow: clip; white-space: nowrap; width: 300px;">{{multiLineText}}</text>
+      </view>
     </view>
   </view>
 </template>
@@ -38,6 +45,14 @@
 
   const multiLineText = ref('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言')
   const singleLineText = ref('uts，大一统语言（单行文本）')
+
+  const textOverflow = ref('clip')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeTextOverflow = (value: string) => {
+    textOverflow.value = value
+    viewRef.value?.style.setProperty('text-overflow', value)
+  }
 </script>
 
 <style>

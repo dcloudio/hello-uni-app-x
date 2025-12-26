@@ -170,11 +170,65 @@
             "></view>
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 flex-flow 测试</text>
+        <button  @click="changeFlexFlow('column wrap')">点击修改为 column wrap</button>
+        <text>flex-flow: {{flexFlow}}</text>
+        <view ref="viewRef" class="common" style="flex-flow: row wrap;">
+          <view style="
+              width: 50px;
+              height: 50px;
+              background-color: red;
+              flex-shrink: 0;
+            "></view>
+          <view style="
+              width: 50px;
+              height: 50px;
+              background-color: green;
+              flex-shrink: 0;
+            "></view>
+          <view style="
+              width: 50px;
+              height: 50px;
+              background-color: blue;
+              flex-shrink: 0;
+            "></view>
+          <view style="
+              width: 50px;
+              height: 50px;
+              background-color: red;
+              flex-shrink: 0;
+            "></view>
+          <view style="
+              width: 50px;
+              height: 50px;
+              background-color: green;
+              flex-shrink: 0;
+            "></view>
+          <view style="
+              width: 50px;
+              height: 50px;
+              background-color: blue;
+              flex-shrink: 0;
+            "></view>
+        </view>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
+
+<script setup lang="uts">
+  const flexFlow = ref('row wrap')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeFlexFlow = (value : string) => {
+    flexFlow.value = value
+    viewRef.value?.style.setProperty('flex-flow', value)
+  }
+</script>
 
 <style>
   .common {
