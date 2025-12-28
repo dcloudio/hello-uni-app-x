@@ -1,30 +1,31 @@
 <template>
-	<uni-tab-bar style="flex: 1" :active-index="activeIndex" @change="handleChange">
+	<uni-tab-bar style="flex: 1;height: 100%;" :active-index="activeIndex" @change="handleChange">
 		<!-- 内容区域 -->
-		<tab-content> <componentC /> </tab-content>
-		<tab-content> <api /> </tab-content>
-		<tab-content> <css /> </tab-content>
-		<tab-content> <templateC /> /> </tab-content>
-		<!-- <tab-content> <test /> </tab-content> -->
+    <!-- 注意tab的逻辑是：第一次使用v-if创建，创建之后不再使用v-if，而是设置visibility来隐藏和显示。不能设置tab的v-if为false，因为销毁再创建影响性能 -->
+		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==0?'visible':'hidden'),height: (tabContentHeight + 'px')}"
+     > <componenttab /> </view>
+		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==1?'visible':'hidden'),height: (tabContentHeight + 'px')}"
+    v-if="isTabInitArray[1]" > <apitab /> </view>
+		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==2?'visible':'hidden'),height: (tabContentHeight + 'px')}"
+    v-if="isTabInitArray[2]" > <csstab /> </view>
+		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==3?'visible':'hidden'),height: (tabContentHeight + 'px')}"
+    v-if="isTabInitArray[3]" > <templatetab /> </view>
 
 		<!-- 底部选项卡 -->
-		<tab-list @click="clickItem">
+		<tab-list @click="clickItem" :style="{height:(50+windowInfo.safeAreaInsets.bottom)+'px', paddingTop:(windowInfo.safeAreaInsetBottom>0?5:0)+'px'}">
 			<!-- 图标高度24，文字字号10px，文字高度是12~14px，角标不能在图标的正右上角，需要向下偏移1px，避免角标画出tab-list之外) -->
 			<tab-list-item>
 				<image :src="activeIndex == 0 ? '/static/componentHL.png' : '/static/component.png'" class="tab-icon-image" flatten></image>
 				<text class="tab-label" :class="activeIndex == 0 ? 'tab-label-active' : ''" flatten>组件</text>
 			</tab-list-item>
-
-			<tab-list-item>
+			<tab-list-item badge-text="99+">
 				<image :src="activeIndex == 1 ? '/static/apiHL.png' : '/static/api.png'" class="tab-icon-image" flatten></image>
 				<text class="tab-label" :class="activeIndex == 1 ? 'tab-label-active' : ''" flatten>API</text>
 			</tab-list-item>
-
 			<tab-list-item>
 				<image :src="activeIndex == 2 ? '/static/cssHL.png' : '/static/css.png'" class="tab-icon-image" flatten></image>
 				<text class="tab-label" :class="activeIndex == 2 ? 'tab-label-active' : ''" flatten>CSS</text>
 			</tab-list-item>
-
 			<tab-list-item>
 				<image :src="activeIndex == 3 ? '/static/templateHL.png' : '/static/template.png'" class="tab-icon-image" flatten></image>
 				<text class="tab-label" :class="activeIndex == 3 ? 'tab-label-active' : ''" flatten>模板</text>
@@ -41,17 +42,21 @@
 <script setup lang="uts">
 	import tabList from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/tab-list.uvue'
 	import tabListItem from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/tab-list-item.uvue'
-	import tabContent from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/tab-content.uvue'
-	import componentC from './component.uvue'
-	import api from './api.uvue'
-	import css from './css.uvue'
-	import templateC from './template.uvue'
+	// import tabContent from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/tab-content.uvue'
+	import componenttab from './component.uvue'
+	import apitab from './api.uvue'
+	import csstab from './css.uvue'
+	import templatetab from './template.uvue'
 	// import test from './test.uvue'
 
-	// 当前激活的索引
-	const activeIndex = ref<number>(0)
 	// 屏幕宽度
-	const windowWidth = uni.getWindowInfo().windowWidth
+	const windowInfo = uni.getWindowInfo()
+  // console.log(windowInfo.safeAreaInsets.bottom);
+	const windowWidth = windowInfo.windowWidth
+  const tabContentHeight = ref<number>(windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom)) // tab内容区域高度，减去tab-bar高度50和底部安全区高度
+  // 当前激活的索引
+  const activeIndex = ref<number>(0)
+  let isTabInitArray = ref<boolean[]>([true, false, false, false]) // 记录每个tab是否初始化过
 
 	// 在 tab-list 上统一监听点击，可以扩大点击范围，超过tab-list-item的范围也能点击切换tab；还可以避免在每个 tab-list-item 上单独监听，提升性能
 	function clickItem(e:UniPointerEvent) : void {
@@ -59,6 +64,22 @@
 		const index = Math.floor(e.clientX / windowWidth * 4) // 4是tab的个数，如果tab个数变化，这里也要变化
 		activeIndex.value = index
 		// console.log('点击了tab索引：', index)
+    switch (index) {
+      case 0:
+        uni.setNavigationBarTitle({ title: '组件' })
+        break
+      case 1:
+        uni.setNavigationBarTitle({ title: 'API' })
+        isTabInitArray.value[1] = true // 标记tab已初始化
+        break
+      case 2:
+        uni.setNavigationBarTitle({ title: 'CSS' })
+        isTabInitArray.value[2] = true // 标记tab已初始化
+        break
+      case 3:
+        uni.setNavigationBarTitle({ title: '模板' })
+        isTabInitArray.value[3] = true // 标记tab已初始化
+    }
 	}
 
 	// 处理 tab-bar 的切换
@@ -81,6 +102,7 @@
 
 	.tab-label {
 		font-size: 10px;
+    color: rgb(122, 126, 131);
 	}
 
 	.tab-label-active {
