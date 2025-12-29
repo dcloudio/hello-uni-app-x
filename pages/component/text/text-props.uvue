@@ -2,7 +2,8 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <view>
+    <view style="background-color: #EEE;">
+
       <page-head :title="title"></page-head>
 
       <view class="uni-padding-wrap uni-common-mt">
@@ -25,7 +26,13 @@
           <text>\\n 换行</text>
           <text>\\\n 换行</text>
           <text>\n 换行 \\n 换行 \\\n 换行 \\\\n 换行 \\\\\n 换行</text>
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
           <text space="nbsp">HBuilderX，轻巧、极速，极客编辑器;\nuni-app x，终极跨平台方案;</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>HBuilderX，轻巧、极速，极客编辑器;\nuni-app x，终极跨平台方案;</text>
+          <text class="harmony-unsupported-tip">（蒸汽模式下的鸿蒙暂不支持space属性，空格无法保留）</text>
+          <!-- #endif -->
         </view>
 
         <view class="uni-title">
@@ -50,7 +57,13 @@
           <text class="uni-subtitle-text">selectable</text>
         </view>
         <view class="text-box">
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
           <text :selectable="true">{{ singleLineText }}</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>{{ singleLineText }}</text>
+          <text class="harmony-unsupported-tip">（蒸汽模式下的鸿蒙暂不支持selectable属性，无法选中文本）</text>
+          <!-- #endif -->
         </view>
 
         <view class="uni-title">
@@ -58,9 +71,17 @@
           <text class="uni-subtitle-text">依次为nbsp ensp emsp效果</text>
         </view>
         <view class="text-box">
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
           <text space="nbsp">{{ singleLineText }}</text>
           <text space="ensp">{{ singleLineText }}</text>
           <text space="emsp">{{ singleLineText }}</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>{{ singleLineText }}</text>
+          <text>{{ singleLineText }}</text>
+          <text>{{ singleLineText }}</text>
+          <text class="harmony-unsupported-tip">（蒸汽模式下的鸿蒙暂不支持space属性，nbsp/ensp/emsp无法实现）</text>
+          <!-- #endif -->
         </view>
 
         <view class="uni-title">
@@ -68,10 +89,19 @@
           <text class="uni-subtitle-text">依次为lt gt amp apos nbsp ensp emsp效果</text>
         </view>
         <view class="text-box">
+          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
           <text :decode="true">{{ decodeStr }}</text>
           <text :decode="true">uni-app&nbsp;x，终极跨平台方案</text>
           <text :decode="true">uni-app&ensp;x，终极跨平台方案</text>
           <text :decode="true">uni-app&emsp;x，终极跨平台方案</text>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <text>{{ decodeStr }}</text>
+          <text>uni-app&nbsp;x，终极跨平台方案</text>
+          <text>uni-app&ensp;x，终极跨平台方案</text>
+          <text>uni-app&emsp;x，终极跨平台方案</text>
+          <text class="harmony-unsupported-tip">（蒸汽模式下的鸿蒙暂不支持decode属性，HTML实体无法解析）</text>
+          <!-- #endif -->
         </view>
 
         <view class="uni-title">
@@ -288,4 +318,13 @@ defineExpose({
     font-family: uni-icon;
     font-size: 100px;
   }
+
+  /* #ifdef VUE3-VAPOR && APP-HARMONY */
+  .harmony-unsupported-tip {
+    font-size: 12px;
+    color: #999999;
+    margin-top: 10px;
+    text-align: center;
+  }
+  /* #endif */
 </style>
