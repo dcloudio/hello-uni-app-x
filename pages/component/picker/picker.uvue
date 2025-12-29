@@ -3,23 +3,6 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <page-head :title="data.title"></page-head>
-    <text class="uni-title uni-common-pl">禁用选择器</text>
-    <view class="uni-list">
-      <view class="uni-list-cell">
-        <view class="uni-list-cell-left">当前选择</view>
-        <view class="uni-list-cell-db">
-          <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index" :range="data.selectorArray" range-key="name">
-            <!-- #ifndef VUE3-VAPOR -->
-            <view class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</view>
-            <!-- #endif -->
-            <!-- #ifdef VUE3-VAPOR -->
-            <text class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</text>
-            <!-- #endif -->
-          </picker>
-        </view>
-      </view>
-    </view>
-    <text class="uni-picker-tips">注：值与普通选择器同步，但不可选择</text>
     <text class="uni-title uni-common-pl">普通选择器</text>
     <view class="uni-list">
       <view class="uni-list-cell">
@@ -58,7 +41,7 @@
       </view>
     </view>
 
-    <text class="uni-title uni-common-pl">时间选择器</text>
+    <text class="uni-title uni-common-pl">time选择器</text>
     <view class="uni-list">
       <view class="uni-list-cell">
         <view class="uni-list-cell-left">当前选择</view>
@@ -76,7 +59,7 @@
     </view>
     <text class="uni-picker-tips">注：选择 09:01 ~ 21:01 之间的时间, 不在区间内不能选中</text>
 
-    <text class="uni-title uni-common-pl">日期选择器 fields = day</text>
+    <text class="uni-title uni-common-pl">date选择器 fields = day</text>
     <view class="uni-list">
       <view class="uni-list-cell">
         <text class="uni-list-cell-left">当前选择 </text>
@@ -92,7 +75,7 @@
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择当前时间 ±10 年之间的时间, 不在区间内不能选中</text>
+    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中</text>
 
     <text class="uni-title uni-common-pl">日期选择器 fields = month</text>
     <view class="uni-list">
@@ -110,7 +93,7 @@
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择当前时间 ±10 年之间的时间, 不在区间内不能选中，且日不可选</text>
+    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中。且只能选年和月</text>
 
     <text class="uni-title uni-common-pl">日期选择器 fields = year</text>
     <view class="uni-list">
@@ -128,7 +111,7 @@
         </view>
       </view>
     </view>
-    <text class="uni-picker-tips">注：选择当前时间 ±10 年之间的时间, 不在区间内不能选中，且只能选择年</text>
+    <text class="uni-picker-tips">注：选择当前时间往前90年和往后10年之间的时间, 不在区间内不能选中</text>
 
     <!-- #ifdef VUE3-VAPOR -->
     <text class="uni-title uni-common-pl">省市地区选择器</text>
@@ -144,7 +127,27 @@
         </view>
       </view>
     </view>
+    <text class="uni-picker-tips">注：省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
     <!-- #endif -->
+
+    <text class="uni-title uni-common-pl">已禁用的picker，点击无效</text>
+    <view class="uni-list">
+      <view class="uni-list-cell">
+        <view class="uni-list-cell-left">当前选择</view>
+        <view class="uni-list-cell-db">
+          <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index" :range="data.selectorArray" range-key="name">
+            <!-- #ifndef VUE3-VAPOR -->
+            <view class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</text>
+            <!-- #endif -->
+          </picker>
+        </view>
+      </view>
+    </view>
+    <text class="uni-picker-tips">注：值与普通选择器同步，但不可选择</text>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -184,7 +187,7 @@
     let day : string | number = date.getDate();
 
     if (type == 'start') {
-      year = year - 10;
+      year = year - 90;
     } else if (type == 'end') {
       year = year + 10;
     }
