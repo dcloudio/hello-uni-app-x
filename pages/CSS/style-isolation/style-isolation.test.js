@@ -17,13 +17,10 @@ describe('style-isolation', () => {
     const levelEl = await page.$('.level-child-class')
 		console.log('levelEl',levelEl)
 
-		const levelChildEl = await levelEl.$('.box')
-		console.log('levelChildEl',levelChildEl)
+		const levelElStyle = await levelEl.style('background-color')
+		console.log('levelElStyle',levelElStyle)
 
-		const levelChildStyle = await levelChildEl.style('background-color')
-		console.log('levelChildStyle',levelChildStyle)
-
-		expect(levelChildStyle).toBe('#00aaff!important')
+		expect(levelElStyle).toBe('rgb(0, 170, 255)')
 
   })
 });
