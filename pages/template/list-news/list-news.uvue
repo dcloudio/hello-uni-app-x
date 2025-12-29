@@ -1,12 +1,18 @@
 <template>
   <view :class="['uni-container', { 'flex-row': isWideScreen }, isDarkMode ? 'theme-dark' : 'theme-light']" style="flex: 1;padding: 0px;">
     <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
-    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled=true
-      @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top="true">
-      <list-item class="banner" @click="bannerClick(banner)" type=1>
+    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled
+      @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top>
+      <list-item class="banner" @click="bannerClick(banner)"
+        <!-- #ifndef VUE3-VAPOR -->
+        type=1
+        <!-- #endif -->
+      >
         <image class="banner-img" :src="banner.cover"></image>
         <text class="banner-title">{{ banner.title }}</text>
       </list-item>
+
+      <!-- #ifndef VUE3-VAPOR -->
       <sticky-section>
         <sticky-header>
           <view class="th-item">
@@ -15,13 +21,23 @@
             </text>
           </view>
         </sticky-header>
-        <list-item v-for="(value, index) in listData" :key="index" type=2>
+        <!-- #endif -->
+        <list-item v-for="(value, index) in listData" :key="index"
+          <!-- #ifndef VUE3-VAPOR -->
+          type=2
+          <!-- #endif -->
+        >
           <view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
             <view class="uni-media-list">
               <image v-if="isWideScreen" class="uni-media-list-logo" :src="value.cover"></image>
+              <!-- #ifdef VUE3-VAPOR -->
+              <image v-else class="uni-media-list-logo" :src="value.cover"></image>
+              <!-- #endif -->
+              <!-- #ifndef VUE3-VAPOR -->
               <share-element v-else :share-key="'image_'+index">
                 <image class="uni-media-list-logo" :src="value.cover"></image>
               </share-element>
+              <!-- #endif -->
               <view class="uni-media-list-body">
                 <text class="uni-media-list-text-top">{{ value.title }}</text>
                 <view class="uni-media-list-text-bottom">
@@ -32,7 +48,9 @@
             </view>
           </view>
         </list-item>
-      </sticky-section>
+        <!-- #ifndef VUE3-VAPOR -->
+        </sticky-section>
+        <!-- #endif -->
     </list-view>
 
     <!-- 详情区域：宽屏时，右侧显示-->
