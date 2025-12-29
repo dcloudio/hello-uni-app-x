@@ -1,15 +1,12 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isAndroid = platformInfo.startsWith('android')
-const isIos = platformInfo.startsWith('ios')
-const isHarmony = platformInfo.startsWith('harmony')
-const isApp = isAndroid || isIos || isHarmony
-const isWeb = platformInfo.startsWith('web')
-const isMP = platformInfo.startsWith('mp')
-const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-
 const PAGE_PATH = '/pages/CSS/style-isolation/style-isolation'
 
 describe('style-isolation', () => {
+  if (process.env.UNI_APP_X_DOM2 !== 'true') {
+    it('skip: DOM1 不支持', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
