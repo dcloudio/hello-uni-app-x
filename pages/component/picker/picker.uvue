@@ -9,7 +9,12 @@
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
           <picker class="picker-disabled--test" @change="bindPickerChange" disabled :value="data.index" :range="data.selectorArray" range-key="name">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input picker-disabled--value">{{data.selectorArray[data.index].name}}</text>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
@@ -21,7 +26,12 @@
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
           <picker class="picker-selector--test" @change="bindPickerChange" :value="data.index" :range="data.selectorArray" range-key="name">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input picker-selector--value">{{data.selectorArray[data.index].name}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <view class="uni-input picker-selector--value">{{data.selectorArray[data.index].name}}</view>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
@@ -33,9 +43,16 @@
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db">
           <picker class="picker-multi--test" mode="multiSelector" @columnchange="bindMultiPickerColumnChange" :value="data.multiIndex" :range="data.multiArray">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input picker-multi--value">
               {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
             </view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input picker-multi--value">
+              {{data.multiArray[0][data.multiIndex[0]]}}，{{data.multiArray[1][data.multiIndex[1]]}}，{{data.multiArray[2][data.multiIndex[2]]}}
+            </text>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
@@ -47,7 +64,12 @@
         <view class="uni-list-cell-left">当前选择</view>
         <view class="uni-list-cell-db">
           <picker class="picker-time--test" mode="time" :value="data.time" start="09:01" end="21:01" @change="bindTimeChange">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input">{{data.time}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input">{{data.time}}</text>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
@@ -60,7 +82,12 @@
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
           <picker class="picker-date-day--test" mode="date" :value="data.dayDate" :start="data.startDate" :end="data.endDate" @change="bindDayDateChange">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input">{{data.dayDate}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input">{{data.dayDate}}</text>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
@@ -73,7 +100,12 @@
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
           <picker class="picker-date-month--test" mode="date" fields="month" :value="data.monthDate" :start="data.startDate" :end="data.endDate" @change="bindMonthDateChange">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input">{{data.monthDate}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input">{{data.monthDate}}</text>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
@@ -86,19 +118,42 @@
         <text class="uni-list-cell-left">当前选择 </text>
         <view class="uni-list-cell-db">
           <picker class="picker-date-year--test" mode="date" fields="year" :value="data.yearDate" :start="data.startDate" :end="data.endDate" @change="bindYearDateChange">
+            <!-- #ifndef VUE3-VAPOR -->
             <view class="uni-input">{{data.yearDate}}</view>
+            <!-- #endif -->
+            <!-- #ifdef VUE3-VAPOR -->
+            <text class="uni-input">{{data.yearDate}}</text>
+            <!-- #endif -->
           </picker>
         </view>
       </view>
     </view>
     <text class="uni-picker-tips">注：选择当前时间 ±10 年之间的时间, 不在区间内不能选中，且只能选择年</text>
 
+    <!-- #ifdef VUE3-VAPOR -->
+    <text class="uni-title uni-common-pl">省市地区选择器</text>
+    <view class="uni-list" style="margin-bottom: 15px;">
+      <view class="uni-list-cell">
+        <text class="uni-list-cell-left">当前选择</text>
+        <view class="uni-list-cell-db" @click="initCityData">
+          <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
+            <text class="uni-input picker-city--value">
+              {{data.cityArray[0][data.cityIndex[0]]}}{{data.cityArray[1][data.cityIndex[1]] ? '，' : ''}}{{data.cityArray[1][data.cityIndex[1]]}}{{data.cityArray[2][data.cityIndex[2]] ? '，' : ''}}{{data.cityArray[2][data.cityIndex[2]]}}
+            </text>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 <script setup lang="uts">
   import { state, setEventCallbackNum } from '@/store/index.uts'
+  // #ifdef VUE3-VAPOR
+  import { cityData } from './city.uts'
+  // #endif
 
   type DataType = {
     name : string
@@ -110,6 +165,9 @@
     index: number;
     multiArray: Array<string[]>;
     multiIndex: number[];
+    cityArray: Array<string[]>;
+    allCityData: any[];
+    cityIndex: number[];
     dayDate: string;
     monthDate: string;
     yearDate: string;
@@ -151,6 +209,9 @@
       ['北京', '上海', '广州']
     ],
     multiIndex: [0, 0, 0],
+    cityArray: [[],[],[]],
+    allCityData: [],
+    cityIndex: [0, 0, 0],
     dayDate: getDate('day'),
     monthDate: getDate('month'),
     yearDate: getDate('year'),
@@ -158,6 +219,28 @@
     endDate: getDate('day', 'end'),
     time: '12:01'
   } as PageDataType)
+
+  // #ifdef VUE3-VAPOR
+  function initCityData() {
+    const cityDataList = JSON.parse(cityData)
+    data.allCityData = cityDataList
+    data.cityArray[0] = cityDataList.map(item => item.title)
+    // 使用当前选择的省份索引来初始化城市数据
+    const provinceIndex = data.cityIndex[0]
+    if (cityDataList[provinceIndex] && cityDataList[provinceIndex].children) {
+      data.cityArray[1] = cityDataList[provinceIndex].children.map(item => item.title)
+      const cityIndex = data.cityIndex[1]
+      if (cityDataList[provinceIndex].children[cityIndex] && cityDataList[provinceIndex].children[cityIndex].children) {
+        data.cityArray[2] = cityDataList[provinceIndex].children[cityIndex].children.map(item => item.title)
+      } else {
+        data.cityArray[2] = []
+      }
+    } else {
+      data.cityArray[1] = []
+      data.cityArray[2] = []
+    }
+  }
+  // #endif
 
   const bindPickerChange = (e : UniPickerChangeEvent) => {
     console.log('picker发送选择改变，携带值为：' + e.detail.value)
@@ -212,6 +295,38 @@
       // 强制更新视图
     })
   }
+
+  // #ifdef VUE3-VAPOR
+  const bindCityPickerColumnChange = (e : UniPickerColumnChangeEvent) => {
+    console.log('修改的列为：' + e.detail.column + '，值为：' + e.detail.value)
+    data.cityIndex[e.detail.column] = e.detail.value
+    switch (e.detail.column) {
+      case 0: //拖动第1列（省份）
+        const provinceIndex = data.cityIndex[0]
+        const cities = data.allCityData[provinceIndex].children
+        data.cityArray[1] = cities.map(item => item.title)
+        if (cities.length > 0) {
+          data.cityArray[2] = cities[0].children.map(item => item.title)
+        } else {
+          data.cityArray[2] = []
+        }
+        data.cityIndex.splice(1, 1, 0)
+        data.cityIndex.splice(2, 1, 0)
+        break
+      case 1: //拖动第2列（城市）
+        const cityIndex = data.cityIndex[1]
+        const province = data.allCityData[data.cityIndex[0]]
+        if (province && province.children && province.children[cityIndex]) {
+          const districts = province.children[cityIndex].children
+          data.cityArray[2] = districts.map(item => item.title)
+        } else {
+          data.cityArray[2] = []
+        }
+        data.cityIndex.splice(2, 1, 0)
+        break
+    }
+  }
+  // #endif
 
   const bindDayDateChange = (e : UniPickerChangeEvent) => {
     data.dayDate = e.detail.value as string
