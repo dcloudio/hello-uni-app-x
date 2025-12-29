@@ -1,0 +1,31 @@
+<template>
+  <text style="position: fixed;right: 10px;top: 10px;z-index: 999;font-size: 24px;color: green;">{{ fps }}</text>
+</template>
+
+<script setup lang="uts">
+  let animationId : number = -1
+  const fps = ref(0)
+  let frameCount = 0
+  let fpsUpdateTime = 0
+
+  let calculateFPS = (currentTime : number) => { }
+  calculateFPS = (currentTime : number) => {
+    frameCount++
+    if (Math.abs(currentTime - fpsUpdateTime) >= 1000) {
+      fps.value = Math.round(frameCount * 1000 / (currentTime - fpsUpdateTime))
+      frameCount = 0
+      fpsUpdateTime = currentTime
+    }
+    animationId = requestAnimationFrame(calculateFPS)
+  }
+
+  animationId = requestAnimationFrame(calculateFPS)
+
+  onBeforeUnmount(() => {
+    cancelAnimationFrame(animationId)
+  })
+</script>
+
+<style>
+
+</style>
