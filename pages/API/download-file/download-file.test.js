@@ -22,9 +22,6 @@ describe('ExtApi-DownloadFile', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
-    await page.callMethod('jest_downloadFile');
-    await waitCallbackTriggredOrTimeout()
-    res = await page.data('data.jest_result');
   });
 
   beforeEach(async () => {
@@ -37,6 +34,9 @@ describe('ExtApi-DownloadFile', () => {
   });
 
   it('Check ', async () => {
+    await page.callMethod('jest_downloadFile');
+    await waitCallbackTriggredOrTimeout()
+    res = await page.data('data.jest_result');
     expect(res).toBe(true);
   });
 
