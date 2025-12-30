@@ -100,7 +100,7 @@ describe('API-toast', () => {
   }
 
   it("position-toast-test", async () => {
-    if (isIOS) {
+    if (isIos) {
       const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
       if (
         platformInfo.indexOf('14.5') != -1 ||
