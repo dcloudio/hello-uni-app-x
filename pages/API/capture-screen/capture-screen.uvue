@@ -21,7 +21,7 @@ import { state, setAllowCapture } from '@/store/index.uts'
 const title = '截屏监听'
 const allowCapture = ref(state.allowCapture)
 const captureStatus = ref('未监听')
-const captureCallback = ref<((res: OnUserCaptureScreenCallbackResult) => void) | null>(null);
+let captureCallback: ((res: OnUserCaptureScreenCallbackResult) => void) | null = null;
 
 
 const toggleCaptureScreen = (checked: boolean) => {
@@ -39,18 +39,18 @@ const toggleCaptureScreen = (checked: boolean) => {
 }
 
 const startCaptureListener = () => {
-  captureCallback.value = (res: OnUserCaptureScreenCallbackResult) => {
+  captureCallback = (res: OnUserCaptureScreenCallbackResult) => {
     captureStatus.value = '检测到截屏'
     console.log('检测到用户截屏',res)
   }
-  uni.onUserCaptureScreen(captureCallback.value)
+  uni.onUserCaptureScreen(captureCallback)
   captureStatus.value = '正在监听'
   console.log('开始监听截屏')
 }
 
 const stopCaptureListener = () => {
-  if (captureCallback.value != null) {
-    uni.offUserCaptureScreen(captureCallback.value)
+  if (captureCallback != null) {
+    uni.offUserCaptureScreen(captureCallback)
     captureStatus.value = '未监听'
     console.log('停止监听截屏')
   }
