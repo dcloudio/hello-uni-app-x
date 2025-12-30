@@ -90,7 +90,7 @@
   const refresherTriggered = ref(false)
   const banner = ref({} as Banner)
   const listData = ref([] as Item[])
-  const last_id = ref('')
+  let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
   const currentIndex = ref(0) // 当前选中的列表项索引
   const post_id = ref('')
@@ -150,8 +150,8 @@
 
   function getList() {
     let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
-    /* if (last_id.value != "") {
-      const minId = parseInt((last_id.value))
+    /* if (last_id != "") {
+      const minId = parseInt((last_id))
       const time = new Date().getTime() + '';
       const pageSize = 10;
       url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
@@ -164,7 +164,7 @@
           const result = res.data
           //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
           // listData.value.push(...result)
-          // last_id.value = listData.value[0].id + "";
+          // last_id = listData.value[0].id + "";
           if (result != null) {
             listData.value = result
             // 宽屏模式下，自动选中并展示第一个新闻详情

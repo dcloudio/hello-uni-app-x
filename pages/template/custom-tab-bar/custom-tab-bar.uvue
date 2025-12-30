@@ -65,8 +65,8 @@ const tabList = ref([
 ] as TabItem[])
 const selectedIndex = ref(0)
 const displayArrow = ref(false)
-const lastTab1Top = ref(0)
-const tabViewHeight = ref(0)
+let lastTab1Top = 0
+let tabViewHeight = 0
 
 // Methods
 function setSelectedIndex(index : number) {
@@ -91,14 +91,14 @@ function onTabClick(index : number) {
     displayArrow.value = false
   }
   else if (index == 0 && selectedIndex.value !=0){
-    displayArrow.value = lastTab1Top.value > tabViewHeight.value
+    displayArrow.value = lastTab1Top > tabViewHeight
   }
   setSelectedIndex(index)
 }
 
 function onTabPageEvent(top : number) {
-  displayArrow.value = top > tabViewHeight.value
-  lastTab1Top.value = top
+  displayArrow.value = top > tabViewHeight
+  lastTab1Top = top
 }
 
 function onPlusClick() {
@@ -118,7 +118,7 @@ onReady(() => {
   const tabviewElement = tabview.value
   if (tabviewElement != null) {
     tabviewElement.getBoundingClientRectAsync()!.then((res : DOMRect) => {
-      tabViewHeight.value = res.height
+      tabViewHeight = res.height
     })
   }
 })

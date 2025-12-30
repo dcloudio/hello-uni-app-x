@@ -72,7 +72,7 @@
   const refresherTriggered = ref(false)
   const banner = ref({} as Banner)
   const listData = ref([] as Item[])
-  const last_id = ref('')
+  let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
   const currentIndex = ref(0) // 当前选中的列表项索引
   const post_id = ref('')
@@ -85,9 +85,9 @@
   const backRef = ref<UniElement | null>(null);
   const textRef = ref<UniElement | null>(null);
   const iconColor = ref('#999')
-  const navbarHeight = ref(0)
+  let navbarHeight = 0
   // const tabRef = ref<UniElement | null>(null);
-  const tabTop = ref(0)
+  let tabTop = 0
 
   function getBanner() {
     let data = {
@@ -122,7 +122,7 @@
           const result = res.data
           //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
           // listData.value.push(...result)
-          // last_id.value = listData.value[0].id + "";
+          // last_id = listData.value[0].id + "";
           if (result != null) {
             listData.value = result
             // 宽屏模式下，自动选中并展示第一个新闻详情
@@ -165,8 +165,8 @@
     navbar.value!.style.setProperty('background-color', `rgba(0, 122, 255,${transparent_count})`)
     backRef.value!.style.setProperty('background-color', `rgba(255, 255, 255,${1 - transparent_count})`)
     textRef.value!.style.setProperty('opacity', transparent_count.toString())
-    // if (tabTop.value <= top) {
-      // const stickyTran = top - tabTop.value
+    // if (tabTop <= top) {
+      // const stickyTran = top - tabTop
       // tabRef.value!.style.setProperty('transform', 'translateY(' + stickyTran + 'px)');
     // }
 
@@ -175,8 +175,8 @@
   /* async function calcStickyTop() {
     const stickyRect = await (tabRef.value! as UniElement).getBoundingClientRectAsync()!;
     const navbarRect = await (navbar.value! as UniElement).getBoundingClientRectAsync()!;
-    navbarHeight.value = navbarRect.height
-    tabTop.value = stickyRect.top - navbarHeight.value
+    navbarHeight = navbarRect.height
+    tabTop = stickyRect.top - navbarHeight
   } */
 
   const back = () => {
@@ -191,8 +191,8 @@
   })
   onReady(() => {
     // const top = tabRef.value!.getBoundingClientRect().top
-    // navbarHeight.value = navbar.value!.offsetHeight
-    // tabTop.value = top - navbarHeight.value
+    // navbarHeight = navbar.value!.offsetHeight
+    // tabTop = top - navbarHeight
     // calcStickyTop()
   })
 
