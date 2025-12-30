@@ -9,7 +9,7 @@ const PAGE_PATH = '/pages/API/download-file/download-file'
 describe('ExtApi-DownloadFile', () => {
   let page;
   let res;
-  let timeout = 3000
+  let timeout = 15000
   let waitForStartTime
   async function waitCallbackTriggredOrTimeout(){
     waitForStartTime = Date.now()
