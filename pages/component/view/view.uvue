@@ -5,6 +5,15 @@
       :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
     </view>
   </view>
+  <!-- #ifdef VUE3-VAPOR -->
+  <text class="uni-subtitle-text" style="text-align: center;">拍平测试</text>
+  <view id="view" class="main" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'" flatten>
+    <view id="view-child1" class="test-view" :class="isDarkMode ? 'theme-dark' : 'theme-light'" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
+      :hover-start-time="data.start_time" :hover-stay-time="data.stay_time" flatten>
+    </view>
+  </view>
+  <!-- #endif -->
+
   <scroll-view style="flex: 1">
     <view class="content">
       <boolean-data :defaultValue="false" title="是否指定按下去的样式类" @change="change_hover_class_boolean"></boolean-data>
@@ -70,9 +79,14 @@
     justify-content: center;
   }
   .test-view {
-    height: 200px;
-    width: 200px;
+    height: 100px;
+    width: 100px;
+    /* #ifdef VUE3-VAPOR */
+    background-color: #ffffff;
+    /* #endif */
+    /* #ifndef VUE3-VAPOR */
     background-color: var(--list-background-color,#ffffff);
+    /* #endif */
   }
   .is-hover {
     background-color: #179b16;
@@ -80,4 +94,5 @@
   .is-parent-hover {
     background-color: #aa0000;
   }
+
 </style>
