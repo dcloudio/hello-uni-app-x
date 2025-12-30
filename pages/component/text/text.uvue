@@ -9,7 +9,7 @@
       </view>
       <!-- #ifdef VUE3-VAPOR -->
       <text class="uni-subtitle-text">拍平测试</text>
-      <view class="text-box">
+      <view class="text-box" flatten>
         <text class="text" flatten>{{ text }}</text>
       </view>
       <!-- #endif -->
@@ -40,7 +40,7 @@
 
 <script setup lang="uts">
   const title = ref('text')
-  const texts = ref([
+  const texts: string[] = [
     'HBuilderX，轻巧、极速，极客编辑器',
     'uni-app x，终极跨平台方案',
     'uniCloud，js serverless云服务',
@@ -54,25 +54,25 @@
     'uni-im，开源、云端一体、全平台的im即时消息',
     'uni统计，开源、完善、全平台的统计报表',
     '......'
-  ] as string[])
+  ]
   const text = ref('')
   const canAdd = ref(true)
   const canRemove = ref(false)
-  const extraLine = ref([] as string[])
+  let extraLine: string[] = []
 
   const add = () => {
-    extraLine.value.push(texts.value[extraLine.value.length % 12])
-    text.value = extraLine.value.join('\n')
-    canAdd.value = extraLine.value.length < 12
-    canRemove.value = extraLine.value.length > 0
+    extraLine.push(texts[extraLine.length % 12])
+    text.value = extraLine.join('\n')
+    canAdd.value = extraLine.length < 12
+    canRemove.value = extraLine.length > 0
   }
 
   const remove = () => {
-    if (extraLine.value.length > 0) {
-      extraLine.value.pop()
-      text.value = extraLine.value.join('\n')
-      canAdd.value = extraLine.value.length < 12
-      canRemove.value = extraLine.value.length > 0
+    if (extraLine.length > 0) {
+      extraLine.pop()
+      text.value = extraLine.join('\n')
+      canAdd.value = extraLine.length < 12
+      canRemove.value = extraLine.length > 0
     }
   }
 

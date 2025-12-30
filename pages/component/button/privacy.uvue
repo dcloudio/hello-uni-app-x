@@ -39,9 +39,9 @@
   // Get page instance at component initialization
   const currentPage = getCurrentInstance()?.proxy?.$page
 
-  const number = ref(0)
-  const hrefLicense = ref('https://dcloud.io/license/DCloud.html')
-  const hrefPrivacy = ref('https://dcloud.io/license/hello-uni-app-x.html')
+  let number = 0
+  const hrefLicense = 'https://dcloud.io/license/DCloud.html'
+  const hrefPrivacy = 'https://dcloud.io/license/hello-uni-app-x.html'
 
   function agree() {
     if (currentPage != null) {
@@ -72,7 +72,7 @@
   }
 
   onLoad((_) => {
-    number.value = uni.onPrivacyAuthorizationChange((callback) => {
+    number = uni.onPrivacyAuthorizationChange((callback) => {
       uni.showToast({
         title: 'isPrivacyAgree:' + !callback.needAuthorization
       })
@@ -80,7 +80,7 @@
   })
 
   onUnmounted(() => {
-    uni.offPrivacyAuthorizationChange(number.value)
+    uni.offPrivacyAuthorizationChange(number)
   })
 </script>
 
