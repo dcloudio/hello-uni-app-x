@@ -255,15 +255,18 @@
       enable: true,
       pages: [] as Page[],
     },
-    // #ifdef APP
     {
       id: 'calendar',
+    // #ifdef APP && !VUE3-VAPOR
       url: 'calendar',
+    // #endif
+    // #ifdef WEB || MP || VUE3-VAPOR
+      url: 'calendar-vapor',
+    // #endif
       name: '日历',
       open: false,
       pages: [] as Page[],
     },
-    // #endif
     // #ifdef APP || WEB
     {
       id: 'schema',
@@ -338,7 +341,11 @@
     if (hasLeftWin.value) {
       uni.reLaunch({ url })
     } else {
-      uni.navigateTo({ url })
+      uni.navigateTo({ url
+      ,fail() {
+        console.log('页面跳转失败：' + url)
+      }
+      })
     }
   }
 

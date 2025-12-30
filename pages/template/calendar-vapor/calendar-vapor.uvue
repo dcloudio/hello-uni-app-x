@@ -50,18 +50,16 @@
 </template>
 
 <script setup lang="uts">
-	var startime = Date.now();
-	// #ifdef APP 
-	// #ifdef VUE3-VAPOR
+	var startTime = Date.now();
+	// #ifdef APP && VUE3-VAPOR
 	const insPage = getCurrentInstance().proxy.$page;
 	const renderChangeId = insPage.onRenderChange(({ duration }) => {
 		const endtime = Date.now();
 		uni.showToast({
-			title: `${endtime - startime}ms`,
+			title: `${endtime - startTime}ms`,
 		})
 		insPage.offRenderChange(renderChangeId)
 	});
-	// #endif
 	// #endif
 	type DayInfo = {
 		day: number
@@ -81,7 +79,7 @@
 
 	const weekdays = ['一', '二', '三', '四', '五', '六', '日']
 
-	// 中国法定节假日（2025年示例）
+	// 中国法定节假日（2025年示例。实际使用需自行装载节假日数据）
 	const holidays = [
 		'2025-01-01',
 		'2025-01-28', '2025-01-29', '2025-01-30', '2025-01-31',
@@ -293,27 +291,35 @@
 
 	// 日历点击事件（完全基于坐标计算，无需 data 属性）
 	function onCalendarClick(e : UniPointerEvent) {
-		// 获取屏幕宽度
+		const target = e.currentTarget as UniElement
+		// 获取容器宽度
+    const rect = target.getBoundingClientRect() // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
+    console.log(rect);
+    // TODO 鸿蒙dom2此处rect的left和x错误，明明应该是0，但实际返回了width的值。web是对的。这导致后面的col也错了，进而导致鸿蒙上点击串行
 		const screenWidth = uni.getWindowInfo().screenWidth
-		const cellWidth = screenWidth / 7
-		const cellHeight = 60
+		// const cellWidth2 = screenWidth / 7
+		const cellWidth = rect.width / 7
+    // console.log(cellWidth2);
+    // console.log(cellWidth);
+		const cellHeight = 60 //高度60在css中有重复定义，如需修改请同步修改。在不需要显示农历、假日名称等更多信息时，可以减少高度
 
 		// 计算点击的列（0-6）
-		const col = Math.floor(e.clientX / cellWidth)
+		const col2 = Math.floor(e.clientX / cellWidth)
+    const col = Math.floor((e.clientX - rect.left) / cellWidth)
+    console.log(col2);
+    console.log(col);
 
 		// 获取日历容器（calendar-grid）的顶部位置
-		// 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
-		const target = e.currentTarget as UniElement
-		const rect = target.getBoundingClientRect()
-
 		// 计算点击相对于容器顶部的位置
 		const clickY = e.clientY - rect.top
-
+    // console.log('clickY: ',clickY);
 		// 计算点击的行（0-5）
 		const row = Math.floor(clickY / cellHeight)
+    // console.log('row: ',row);
 
 		// 计算在 42 个格子中的索引
 		const index = row * 7 + col
+    console.log('index: ',index);
 
 		// 检查索引是否有效
 		if (index >= 0 && index < 42) {
