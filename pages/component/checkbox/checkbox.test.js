@@ -84,7 +84,7 @@ describe('Checkbox.uvue', () => {
   if(!isMP) {
     it('color', async () => {
       if (isHarmony && isDom2) {
-        console.log('Slider Harmony Dom2 not support props backgroundColor、activeColor、blockColor、activeBackgroundColor、foreColor')
+        console.log('Checkbox Harmony Dom2 not support props color、iconColor、fo reColor')
         expect(1).toBe(1)
         return
       }
@@ -96,7 +96,7 @@ describe('Checkbox.uvue', () => {
 
     it('icon color', async () => {
       if (isHarmony && isDom2) {
-        console.log('Slider Harmony Dom2 not support props backgroundColor、activeColor、blockColor、activeBackgroundColor、foreColor')
+        console.log('Checkbox Harmony Dom2 not support props color、iconColor、foreColor')
         expect(1).toBe(1)
         return
       }
@@ -107,7 +107,7 @@ describe('Checkbox.uvue', () => {
     })
     it('foreColor', async () => {
       if (isHarmony && isDom2) {
-        console.log('Slider Harmony Dom2 not support props backgroundColor、activeColor、blockColor、activeBackgroundColor、foreColor')
+        console.log('Checkbox Harmony Dom2 not support props color、iconColor、foreColor')
         expect(1).toBe(1)
         return
       }
