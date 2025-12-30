@@ -35,12 +35,11 @@ const list = ref([0, 1, 2])
 
 // Methods
 function addItem() {
-  let listNum: number | Int;
-  // #ifdef WEB
-  listNum = list.value.length;
+  // #ifdef APP-ANDROID
+  let listNum = list.value.length as Int; // Android 端要求Int类型
   // #endif
-  // #ifndef WEB
-  listNum = list.value.length as Int; // Android 端要求Int类型
+  // #ifndef APP-ANDROID
+  let listNum = list.value.length;
   // #endif
   list.value.push(listNum)
 }
