@@ -9,6 +9,7 @@ const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 let page;
 
 describe("onLoad", () => {
@@ -108,6 +109,8 @@ describe("onLoad", () => {
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
+  if (!isDom2) {
+  // dom2 目前 tabbar 是页面+组件实现，无法支持 switchTab 测试
   it("switchTab", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
@@ -116,6 +119,7 @@ describe("onLoad", () => {
     page = await program.currentPage();
     expect(page.path).toBe("pages/tabBar/component");
   });
+  }
   it("showToast", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor("view");

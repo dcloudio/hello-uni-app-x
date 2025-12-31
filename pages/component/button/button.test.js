@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const PAGE_PATH = '/pages/component/button/button'
 
@@ -17,31 +18,34 @@ describe('Button.uvue', () => {
 
   it('click', async () => {
     // TODO 待测试框架支持text的dispatchEvent
-    // const btn = await page.$('.btn')
-    // expect((await page.data())['count']).toEqual(0)
-    // await btn.tap()
-    // expect((await page.data())['count']).toEqual(1)
-    // await page.setData({
-    //   disabled_boolean: true,
-    // })
-    // await btn.tap()
-    // expect((await page.data())['count']).toEqual(1)
-    // await page.setData({
-    //   disabled_boolean: false,
-    // })
-    // await btn.tap()
-    // expect((await page.data())['count']).toEqual(2)
+    const btn = await page.$('.btn')
+    expect(await page.data('data.count')).toEqual(0)
+    await btn.tap()
+    expect(await page.data('data.count')).toEqual(1)
+    await setPageData({
+      disabled_boolean: true,
+    })
+    await btn.tap()
+    expect(await page.data('data.count')).toEqual(1)
+    await setPageData({
+      disabled_boolean: false,
+    })
+    await btn.tap()
+    expect(await page.data('data.count')).toEqual(2)
   })
   it('length', async () => {
     const elements = await page.$$('.btn')
     expect(elements.length).toBe(1)
   })
+  if (!isDom2) {
+  // @jbb
   it('text', async () => {
     const textBtn = await page.$('.btn')
     expect(await textBtn.text()).toEqual('uni-app-x')
     await setPageData({text: 'uni-app-x button'})
     expect(await textBtn.text()).toEqual('uni-app-x button')
   })
+  }
   it('type', async () => {
     const btn = await page.$('.btn')
     expect(await btn.property('type')).toBe('default')

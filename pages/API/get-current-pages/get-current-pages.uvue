@@ -148,14 +148,28 @@
     data.pages.length = 0
     const pages = getCurrentPages()
     data.pages.push(pages[0].route)
+    // #ifdef VUE3-VAPOR
+    if (data.pages[0].includes('/tabbar/') || data.pages[0] == '/') {
+      data.checked = true
+    }
+    // #endif
+    // #ifndef VUE3-VAPOR
     if (data.pages[0].includes('/tabBar/') || data.pages[0] == '/') {
       data.checked = true
     }
+    // #endif
     for (let i = 1; i < pages.length; i++) {
       data.pages.push(pages[i].route)
+      // #ifdef VUE3-VAPOR
+      if (pages[i].route.includes('/tabbar/')) {
+       data.checked = false
+      }
+      // #endif
+      // #ifndef VUE3-VAPOR
       if (pages[i].route.includes('/tabBar/')) {
         data.checked = false
       }
+      // #endif
     }
   }
 
