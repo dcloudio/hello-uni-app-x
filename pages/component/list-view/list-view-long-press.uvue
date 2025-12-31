@@ -19,8 +19,8 @@
           </view>
 
         </list-item>
-        <list-item type="3" class="loading">
-          <loading style="color: #999"></loading>
+        <list-item class="loading">
+          <loading v-show="load" style="width:34px;height: 34px;border-color:#999;"></loading>
         </list-item>
       </list-view>
     </scroll-view>
@@ -43,7 +43,7 @@
   const message = ref('')
   const showBottom = ref(false)
   const isFocus = ref(false)
-  const loading = ref(false)
+  const load = ref(false)
   const audio = ref(false)
   const recording = ref(false)
   const messageList = ref<MessageItem[]>([])
@@ -65,9 +65,9 @@
   }
 
   const loadData = () => {
-    loading.value = true
+    load.value = true
     setTimeout(() => {
-      loading.value = false
+      load.value = false
       let length = messageList.value.length
       for (let i = 0; i < 20; i++) {
         let item = {
