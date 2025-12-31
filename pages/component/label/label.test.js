@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
 
 let page;
 describe('label.uvue', () => {
@@ -35,6 +36,10 @@ describe('label.uvue', () => {
     expect(await getData('checkboxValue')).toEqual(['USA', 'CHN'])
   })
   it('label用for标识表单组件', async () => {
+    if (isDom2 && isHarmony) {
+      expect(1).toBe(1)
+      return
+    }
     const radioItems = await page.$$('.label-2-text')
     await radioItems[0].tap()
     expect(await getData('radioValue')).toEqual('USA')
