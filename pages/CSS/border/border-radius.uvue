@@ -80,9 +80,13 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 border-radius 测试</text>
-        <text>border-radius: {{borderRadius}}</text>
-        <view ref="viewRef" class="common" style="border-radius: 10px;" @click="changeBorderRadius('50px')">
-          <text>点击修改 border-radius</text>
+        <view ref="viewRef" class="common" :style="{ borderRadius: borderRadius }">
+          <text>当前 border-radius: {{borderRadius}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="borderRadiusEnum" title="border-radius 枚举值" @change="radioChangeBorderRadius"></enum-data>
+          <input-data :defaultValue="borderRadius" title="border-radius 自定义值" type="text" @confirm="inputChangeBorderRadius"></input-data>
         </view>
       </view>
     </view>
@@ -92,12 +96,33 @@
 </template>
 
 <script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const borderRadiusEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '5px' },
+    { value: 3, name: '10px' },
+    { value: 4, name: '50%' }
+  ]
+
   const borderRadius = ref('10px')
   const viewRef = ref(null as UniElement | null)
 
   const changeBorderRadius = (value: string) => {
     borderRadius.value = value
     viewRef.value?.style.setProperty('border-radius', value)
+  }
+
+  const radioChangeBorderRadius = (index: number) => {
+    const selectedItem = borderRadiusEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorderRadius(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorderRadius = (value: string) => {
+    changeBorderRadius(value)
   }
 </script>
 

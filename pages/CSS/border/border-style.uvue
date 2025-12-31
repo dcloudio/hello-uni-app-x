@@ -53,9 +53,13 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 border-style 测试</text>
-        <text>border-style: {{borderStyleValue}}</text>
-        <view ref="viewRef" class="common" style="border-width: 5px; border-style: solid;" @click="changeBorderStyleValue('dashed')">
-          <text>点击修改 border-style</text>
+        <view ref="viewRef" class="common" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }">
+          <text>当前 border-style: {{borderStyleValue}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="borderStyleEnum" title="border-style 枚举值" @change="radioChangeBorderStyle"></enum-data>
+          <input-data :defaultValue="borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
         </view>
       </view>
     </view>
@@ -65,6 +69,7 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   let isSolid = false
   const borderStyle = ref("border-style: none; border-width: 5px;")
@@ -76,12 +81,31 @@
     borderStyle.value = isSolid ? solid : none
   }
 
+  const borderStyleEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'none' },
+    { value: 2, name: 'solid' },
+    { value: 3, name: 'dashed' },
+    { value: 4, name: 'dotted' }
+  ]
+
   const borderStyleValue = ref('solid')
   const viewRef = ref(null as UniElement | null)
 
   const changeBorderStyleValue = (value: string) => {
     borderStyleValue.value = value
     viewRef.value?.style.setProperty('border-style', value)
+  }
+
+  const radioChangeBorderStyle = (index: number) => {
+    const selectedItem = borderStyleEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorderStyleValue(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorderStyle = (value: string) => {
+    changeBorderStyleValue(value)
   }
 </script>
 

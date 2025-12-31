@@ -55,9 +55,13 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 border 测试</text>
-        <text>border: {{border}}</text>
-        <view ref="viewRef" class="common" style="border: 5px solid red;" @click="changeBorder('10px dashed green')">
-          <text>点击修改 border</text>
+        <view ref="viewRef" class="common" :style="{ border: border }">
+          <text>当前 border: {{border}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="borderEnum" title="border 枚举值" @change="radioChangeBorder"></enum-data>
+          <input-data :defaultValue="border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
         </view>
       </view>
     </view>
@@ -67,10 +71,20 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const shown = ref(false)
   setTimeout(() => {
     shown.value = true
   }, 1000);
+
+  const borderEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'none' },
+    { value: 2, name: '1px solid red' },
+    { value: 3, name: '2px dashed blue' },
+    { value: 4, name: '3px dotted green' }
+  ]
 
   const border = ref('5px solid red')
   const viewRef = ref(null as UniElement | null)
@@ -78,6 +92,17 @@
   const changeBorder = (value: string) => {
     border.value = value
     viewRef.value?.style.setProperty('border', value)
+  }
+
+  const radioChangeBorder = (index: number) => {
+    const selectedItem = borderEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorder(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorder = (value: string) => {
+    changeBorder(value)
   }
 </script>
 

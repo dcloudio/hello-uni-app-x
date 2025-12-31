@@ -41,9 +41,13 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 border-width 测试</text>
-        <text>border-width: {{borderWidth}}</text>
-        <view ref="viewRef" class="common" style="border-width: 5px; border-style: solid;" @click="changeBorderWidth('10px')">
-          <text>点击修改 border-width</text>
+        <view ref="viewRef" class="common" :style="{ borderWidth: borderWidth, borderStyle: 'solid' }">
+          <text>当前 border-width: {{borderWidth}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="borderWidthEnum" title="border-width 枚举值" @change="radioChangeBorderWidth"></enum-data>
+          <input-data :defaultValue="borderWidth" title="border-width 自定义值" type="text" @confirm="inputChangeBorderWidth"></input-data>
         </view>
       </view>
     </view>
@@ -52,13 +56,36 @@
   <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const borderWidthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '1px' },
+    { value: 3, name: '5px' },
+    { value: 4, name: 'thin' },
+    { value: 5, name: 'medium' },
+    { value: 6, name: 'thick' }
+  ]
+
   const borderWidth = ref('5px')
   const viewRef = ref(null as UniElement | null)
 
   const changeBorderWidth = (value: string) => {
     borderWidth.value = value
     viewRef.value?.style.setProperty('border-width', value)
+  }
+
+  const radioChangeBorderWidth = (index: number) => {
+    const selectedItem = borderWidthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorderWidth(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorderWidth = (value: string) => {
+    changeBorderWidth(value)
   }
 </script>
 

@@ -8,7 +8,8 @@
         <view class="common" style="padding-right: 25px;">
           <view style="flex-grow: 1;background-color: red;"></view>
         </view>
-        <view class="common uni-common-mt" style="padding-right: 25px;" flatten>
+        <text>拍平测试</text>
+        <view class="common" style="padding-right: 25px;" flatten>
           <view style="flex-grow: 1;background-color: red;"></view>
         </view>
       </view>
@@ -18,7 +19,8 @@
         <view class="common" style="padding-right: 10%;">
           <view style="flex-grow: 1;background-color: red;"></view>
         </view>
-        <view class="common uni-common-mt" style="padding-right: 10%;" flatten>
+        <text>拍平测试</text>
+        <view class="common" style="padding-right: 10%;" flatten>
           <view style="flex-grow: 1;background-color: red;"></view>
         </view>
       </view>
@@ -26,8 +28,13 @@
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 padding-right 测试</text>
         <text>padding-right: {{paddingRight}}</text>
-        <view ref="viewRef" class="common" style="padding-right: 25px;" @click="changePaddingRight('50px')">
-          <view style="flex-grow: 1;background-color: red;"><text>点击修改 padding-right 为 50px</text></view>
+        <view ref="viewRef" class="common" :style="{ paddingRight: paddingRight }">
+          <view style="flex-grow: 1;background-color: red;"><text>当前 padding-right: {{paddingRight}}</text></view>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="paddingRightEnum" title="padding-right 枚举值" @change="radioChangePaddingRight"></enum-data>
+          <input-data :defaultValue="paddingRight" title="padding-right 自定义值" type="text" @confirm="inputChangePaddingRight"></input-data>
         </view>
       </view>
     </view>
@@ -37,12 +44,34 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const paddingRight = ref('25px')
   const viewRef = ref(null as UniElement | null)
+
+  const paddingRightEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '20px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '10%' }
+  ]
 
   const changePaddingRight = (value: string) => {
     paddingRight.value = value
     viewRef.value?.style.setProperty('padding-right', value)
+  }
+
+  const radioChangePaddingRight = (index: number) => {
+    const selectedItem = paddingRightEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changePaddingRight(selectedItem.name)
+    }
+  }
+
+  const inputChangePaddingRight = (value: string) => {
+    changePaddingRight(value)
   }
 </script>
 

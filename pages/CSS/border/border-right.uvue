@@ -8,21 +8,47 @@
 
     <view class="uni-common-mt">
       <text class="uni-title-text">style.setProperty 动态设置 border-right 测试</text>
-      <text>border-right: {{borderRight}}</text>
-      <view ref="viewRef" class="common" style="border-right: 5px solid red;" @click="changeBorderRight('10px dashed green')">
-        <text>点击修改 border-right</text>
+      <text>当前 border-right: {{borderRight}}</text>
+      <view ref="viewRef" class="common" :style="{ borderRight: borderRight }">
+        <text>当前 border-right: {{borderRight}}</text>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="borderRightEnum" title="border-right 枚举值" @change="radioChangeBorderRight"></enum-data>
+        <input-data :defaultValue="borderRight" title="border-right 自定义值" type="text" @confirm="inputChangeBorderRight"></input-data>
       </view>
     </view>
   </view>
 </template>
 
 <script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const borderRightEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'none' },
+    { value: 2, name: '1px solid red' },
+    { value: 3, name: '2px dashed blue' },
+    { value: 4, name: '3px dotted green' }
+  ]
+
   const borderRight = ref('5px solid red')
   const viewRef = ref(null as UniElement | null)
 
   const changeBorderRight = (value: string) => {
     borderRight.value = value
     viewRef.value?.style.setProperty('border-right', value)
+  }
+
+  const radioChangeBorderRight = (index: number) => {
+    const selectedItem = borderRightEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorderRight(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorderRight = (value: string) => {
+    changeBorderRight(value)
   }
 </script>
 

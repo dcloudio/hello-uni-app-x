@@ -8,6 +8,11 @@
         <view style="width: 250px;height: 250px;background-color: gray;">
           <view class="common" style="background-color: red;"></view>
           <view class="common" style="margin: 25px;"></view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
+        <text>拍平测试</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
           <view class="common" style="margin: 25px;" flatten></view>
           <view class="common" style="background-color: blue;"></view>
         </view>
@@ -18,6 +23,11 @@
         <view style="width: 250px;height: 250px;background-color: gray;">
           <view class="common" style="background-color: red;"></view>
           <view class="common" style="margin: 10%;"></view>
+          <view class="common" style="background-color: blue;"></view>
+        </view>
+        <text>拍平测试</text>
+        <view style="width: 250px;height: 250px;background-color: gray;">
+          <view class="common" style="background-color: red;"></view>
           <view class="common" style="margin: 10%;" flatten></view>
           <view class="common" style="background-color: blue;"></view>
         </view>
@@ -25,14 +35,19 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 margin 测试</text>
-        <text>margin: {{margin}}</text>
         <view style="width: 250px;height: 250px;background-color: gray;">
           <view class="common" style="background-color: red;"></view>
-          <view ref="viewRef" class="common" style="margin: 25px;" @click="changeMargin('50px')">
-            <text>点击修改 margin 为 50px</text>
+          <view ref="viewRef" class="common" :style="{ margin: margin }">
+            <text>当前 margin: {{margin}}</text>
           </view>
           <view class="common" style="background-color: blue;"></view>
         </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="marginEnum" title="margin 枚举值" @change="radioChangeMargin"></enum-data>
+        <input-data :defaultValue="margin" title="margin 自定义值" type="text" @confirm="inputChangeMargin"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -41,12 +56,35 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const margin = ref('25px')
   const viewRef = ref(null as UniElement | null)
+
+  const marginEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '20px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '10%' },
+    { value: 6, name: 'auto' }
+  ]
 
   const changeMargin = (value: string) => {
     margin.value = value
     viewRef.value?.style.setProperty('margin', value)
+  }
+
+  const radioChangeMargin = (index: number) => {
+    const selectedItem = marginEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMargin(selectedItem.name)
+    }
+  }
+
+  const inputChangeMargin = (value: string) => {
+    changeMargin(value)
   }
 </script>
 

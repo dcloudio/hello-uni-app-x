@@ -10,6 +10,7 @@
           <view class="common" style="margin-top: 25px;"></view>
           <view class="common" style="background-color: blue;"></view>
         </view>
+        <text>拍平测试</text>
         <view style="width: 250px;height: 250px;background-color: gray;">
           <view class="common" style="background-color: red;"></view>
           <view class="common" style="margin-top: 25px;" flatten></view>
@@ -24,6 +25,7 @@
           <view class="common" style="margin-top: 10%;"></view>
           <view class="common" style="background-color: blue;"></view>
         </view>
+        <text>拍平测试</text>
         <view style="width: 250px;height: 250px;background-color: gray;">
           <view class="common" style="background-color: red;"></view>
           <view class="common" style="margin-top: 10%;" flatten></view>
@@ -33,14 +35,18 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 margin-top 测试</text>
-        <text>margin-top: {{marginTop}}</text>
         <view style="width: 250px;height: 250px;background-color: gray;">
           <view class="common" style="background-color: red;"></view>
-          <view ref="viewRef" class="common" style="margin-top: 25px;" @click="changeMarginTop('50px')">
-            <text>点击修改 margin-top 为 50px</text>
+          <view ref="viewRef" class="common" :style="{ marginTop: marginTop }">
+            <text>当前 margin-top: {{marginTop}}</text>
           </view>
           <view class="common" style="background-color: blue;"></view>
         </view>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="marginTopEnum" title="margin-top 枚举值" @change="radioChangeMarginTop"></enum-data>
+        <input-data :defaultValue="marginTop" title="margin-top 自定义值" type="text" @confirm="inputChangeMarginTop"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -49,12 +55,35 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const marginTop = ref('25px')
   const viewRef = ref(null as UniElement | null)
+
+  const marginTopEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '20px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '10%' },
+    { value: 6, name: 'auto' }
+  ]
 
   const changeMarginTop = (value: string) => {
     marginTop.value = value
     viewRef.value?.style.setProperty('margin-top', value)
+  }
+
+  const radioChangeMarginTop = (index: number) => {
+    const selectedItem = marginTopEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMarginTop(selectedItem.name)
+    }
+  }
+
+  const inputChangeMarginTop = (value: string) => {
+    changeMarginTop(value)
   }
 </script>
 

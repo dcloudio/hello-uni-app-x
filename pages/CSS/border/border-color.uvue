@@ -57,9 +57,13 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 border-color 测试</text>
-        <text>border-color: {{borderColor}}</text>
-        <view ref="viewRef" class="common" style="border-width: 5px; border-color: red; border-style: solid;" @click="changeBorderColor('blue')">
-          <text>点击修改 border-color</text>
+        <view ref="viewRef" class="common" :style="{ borderWidth: '5px', borderColor: borderColor, borderStyle: 'solid' }">
+          <text>当前 border-color: {{borderColor}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="borderColorEnum" title="border-color 枚举值" @change="radioChangeBorderColor"></enum-data>
+          <input-data :defaultValue="borderColor" title="border-color 自定义值" type="text" @confirm="inputChangeBorderColor"></input-data>
         </view>
       </view>
     </view>
@@ -69,12 +73,34 @@
 </template>
 
 <script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const borderColorEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'red' },
+    { value: 2, name: '#ff0000' },
+    { value: 3, name: 'rgb(255, 0, 0)' },
+    { value: 4, name: 'rgba(255, 0, 0, 0.5)' },
+    { value: 5, name: 'transparent' }
+  ]
+
   const borderColor = ref('red')
   const viewRef = ref(null as UniElement | null)
 
   const changeBorderColor = (value: string) => {
     borderColor.value = value
     viewRef.value?.style.setProperty('border-color', value)
+  }
+
+  const radioChangeBorderColor = (index: number) => {
+    const selectedItem = borderColorEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBorderColor(selectedItem.name)
+    }
+  }
+
+  const inputChangeBorderColor = (value: string) => {
+    changeBorderColor(value)
   }
 </script>
 
