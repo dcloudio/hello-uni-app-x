@@ -294,20 +294,25 @@
 		const target = e.currentTarget as UniElement
 		// 获取容器宽度
     const rect = target.getBoundingClientRect() // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
+		// TODO 鸿蒙dom2此处rect的left和x错误，明明应该是0，但实际返回了width的值。web是对的。这导致后面的col也错了，进而导致鸿蒙上点击串行。目前看起来是swiper的问题
     console.log(rect);
-    // TODO 鸿蒙dom2此处rect的left和x错误，明明应该是0，但实际返回了width的值。web是对的。这导致后面的col也错了，进而导致鸿蒙上点击串行
-		const screenWidth = uni.getWindowInfo().screenWidth
-		const cellWidth = screenWidth / 7
-		// const cellWidth = rect.width / 7
+
+    // const screenWidth = uni.getWindowInfo().screenWidth
+    // const cellWidth = screenWidth / 7
+		const cellWidth = rect.width / 7
     // console.log(cellWidth2);
     // console.log(cellWidth);
 		const cellHeight = 60 //高度60在css中有重复定义，如需修改请同步修改。在不需要显示农历、假日名称等更多信息时，可以减少高度
 
 		// 计算点击的列（0-6）
-		const col2 = Math.floor(e.clientX / cellWidth)
+		// #ifdef APP-HARMONY
+    const col = Math.floor(e.clientX / cellWidth) // TODO 鸿蒙dom2下e.clientX是相对于屏幕的，需要减去rect.left，但目前rect.left有问题，先不减
+    // #endif
+    // #ifndef APP-HARMONY
     const col = Math.floor((e.clientX - rect.left) / cellWidth)
-    console.log(col2);
-    console.log(col);
+    // #endif
+    // console.log(col2);
+    // console.log(col);
 
 		// 获取日历容器（calendar-grid）的顶部位置
 		// 计算点击相对于容器顶部的位置
@@ -319,7 +324,7 @@
 
 		// 计算在 42 个格子中的索引
 		const index = row * 7 + col
-    console.log('index: ',index);
+    // console.log('index: ',index);
 
 		// 检查索引是否有效
 		if (index >= 0 && index < 42) {
