@@ -5,10 +5,10 @@
       refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
       @refresherrestore="onRefreshrestore" refresher-max-drag-distance="200px">
       <view style="height: 25px;"></view>
-      <view v-for="i in data.listCount" class="content-item">
+      <view v-for="i in listCount" class="content-item">
         <text class="text">item-{{i}}</text>
       </view>
-      <refresh-box slot="refresher" :state="state"></refresh-box>
+      <refresh-box ref="refreshBoxRef" slot="refresher" :state="state"></refresh-box>
     </scroll-view>
   </view>
 </template>
@@ -17,25 +17,19 @@
 
 import refreshBox from './refresh-box/refresh-box.uvue';
 
-type DataType = {
-  listCount: number,
-  triggered: boolean,
-}
-
-const data = reactive({
-  listCount: 20,
-  triggered: false,
-} as DataType)
-
+const listCount = ref(20)
 const refresherTriggered = ref(false)
 const pullingDistance = ref(0)
 const resetting = ref(false)
+const triggered = ref(false)
+const refreshBoxRef = ref<InstanceType<typeof refreshBox> | null>(null)
 
 const state = computed(() : number => {
   if (resetting.value) {
     return 3;
   }
   if (refresherTriggered.value) {
+		console.log("state应该return 2");
     return 2
   }
   if (pullingDistance.value > 45) {
@@ -47,11 +41,17 @@ const state = computed(() : number => {
 
 function onRefresherpulling(e : RefresherEvent) {
   pullingDistance.value = e.detail.dy;
-  data.triggered = true;
+  triggered.value = true;
+	resetting.value = false;
+	// 调用 refresh-box 组件的 setDY 方法
+	if (refreshBoxRef.value != null) {
+		refreshBoxRef.value.setDY(e.detail.dy);
+	}
 }
 
 function onRefresherrefresh() {
   refresherTriggered.value = true
+	console.log('refresherTriggered.value: ',refresherTriggered.value);
   setTimeout(() => {
     refresherTriggered.value = false
     resetting.value = true;
@@ -62,10 +62,6 @@ function onRefreshrestore() {
   pullingDistance.value = 0
   resetting.value = false;
 }
-
-defineExpose({
-  data
-})
 </script>
 
 <style>
@@ -73,7 +69,6 @@ defineExpose({
     padding: 15px;
     margin: 5px 0;
     background-color: #fff;
-    border-radius: 5px;
   }
 
   .text {
