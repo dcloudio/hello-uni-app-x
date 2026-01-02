@@ -61,7 +61,7 @@ describe('showActionSheet', () => {
       },
     };
 
-    page = await program.reLaunch(isDom2 ? '/pages/tabbar/tab-bar' : '/pages/tabBar/API');
+    page = await program.reLaunch(isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
     await page.waitFor('view');
 
     page = await program.navigateTo(PAGE_PATH)
