@@ -9,10 +9,13 @@
           <text class="uni-title-text">图片路径示例</text>
         </view>
         <view v-for="(item,index) in data" :key="index">
-          <text class="uni-subtitle-text">{{item.description}}</text>
+          <text class="uni-subtitle-text">{{item.description}}（右边为拍平测试）</text>
           <view class="uni-center" style="background:#FFFFFF;">
             <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
               @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+
+            <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+              @error="imageErrorEvent(index, $event as ImageErrorEvent)" flatten></image>
           </view>
         </view>
         <test-image-path />
@@ -20,6 +23,7 @@
           <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
           <view class="uni-center" style="background:#FFFFFF;">
             <image class="image" mode="widthFix" src="./logo.png"></image>
+            <image class="image" mode="widthFix" src="./logo.png" flatten></image>
           </view>
         </view>
       </view>
@@ -30,7 +34,7 @@
 </template>
 
 <script setup lang="uts">
-  
+
   import logo from './logo.png';
 
   const appid = uni.getAppBaseInfo().appId;

@@ -16,6 +16,10 @@ const props = defineProps({
   items: {
     type: Array as PropType<Array<ItemType>>,
     required: true
+  },
+  compact: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -38,18 +42,19 @@ function _change(e : RadioGroupChangeEvent) {
 </script>
 
 <template>
-  <view class="uni-padding-wrap" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="uni-padding-wrap" :class="[isDarkMode ? 'theme-dark' : 'theme-light']">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
-    <radio-group @change="_change">
-      <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
-        :class="index < items.length - 1 ? 'uni-list-cell-line' : ''"
-         :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
-        <text class="radio-text">{{ item.name }}</text>
-      </radio>
+  <view class="uni-list uni-common-pl" :class="[isDarkMode ? 'theme-dark' : 'theme-light']">
+    <radio-group @change="_change" class="uni-column" :class="[{'compact-container': compact}]">
+        <radio class="uni-list-cell uni-list-cell-pd"
+					:class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
+          v-for="(item, index) in items" :key="item.name"
+          :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
+          <text class="radio-text">{{ item.name }}</text>
+        </radio>
     </radio-group>
   </view>
 </template>
@@ -57,5 +62,26 @@ function _change(e : RadioGroupChangeEvent) {
 <style>
 .radio-text {
   color: var(--text-color, #333333);
+}
+
+/* 紧凑横排模式 */
+.compact-container {
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.compact-item {
+  margin: 6px;
+  padding: 4px 10px !important;
+  border-radius: 4px;
+  /* #ifndef VUE3-VAPOR */
+  background-color: var(--background-color, #f5f5f5);
+  border: 1px solid var(--border-color, #e0e0e0);
+  /* #endif */
+  /* #ifdef VUE3-VAPOR */
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  /* #endif */
 }
 </style>

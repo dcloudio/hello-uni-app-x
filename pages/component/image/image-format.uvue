@@ -9,37 +9,16 @@
         <text class="uni-title-text">支持的图片格式示例</text>
       </view> -->
       <view v-for="(item,index) in supportFormats" :key="index">
-        <text class="uni-subtitle-text">{{item.format}}</text>
+        <text class="uni-subtitle-text">{{item.format}}，右边为拍平测试</text>
         <view class="uni-center" style="background:#FFFFFF;">
           <!-- <image class="image" mode="widthFix" :src="item.src"></image> -->
           <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
             @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+
+          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+            @error="imageErrorEvent(index, $event as ImageErrorEvent)" flatten></image>
         </view>
       </view>
-
-      <!-- gif 动画拍平对比 -->
-      <text class="uni-subtitle-text">gif 动画</text>
-      <view class="uni-center" style="background:#FFFFFF;">
-        <image class="image" mode="widthFix" src="/static/test-image/animated.gif"></image>
-      </view>
-      <!-- #ifdef VUE3-VAPOR -->
-      <text class="uni-subtitle-text">gif 动画 - 拍平</text>
-      <view class="uni-center" style="background:#FFFFFF;">
-        <image class="image" mode="widthFix" src="/static/test-image/animated.gif" flatten></image>
-      </view>
-      <!-- #endif -->
-
-      <!-- webp 动画拍平对比 -->
-      <text class="uni-subtitle-text">webp 动画</text>
-      <view class="uni-center" style="background:#FFFFFF;">
-        <image class="image" mode="widthFix" src="/static/test-image/animated.webp"></image>
-      </view>
-      <!-- #ifdef VUE3-VAPOR -->
-      <text class="uni-subtitle-text">webp 动画 - 拍平</text>
-      <view class="uni-center" style="background:#FFFFFF;">
-        <image class="image" mode="widthFix" src="/static/test-image/animated.webp" flatten></image>
-      </view>
-      <!-- #endif -->
 
       <!-- <view class="uni-title">
         <text class="uni-title-text">暂不支持的格式</text>
@@ -76,6 +55,10 @@
       src: '/static/test-image/logo.gif'
     },
     {
+      format: 'gif 动画',
+      src: '/static/test-image/animated.gif'
+    },
+    {
       format: 'ico',
       src: '/static/test-image/logo.ico'
     },
@@ -90,6 +73,10 @@
     {
       format: 'webp',
       src: '/static/test-image/logo.webp'
+    },
+    {
+      format: 'webp 动画',
+      src: '/static/test-image/animated.webp'
     },
     {
       format: 'heic（Android10+）',
