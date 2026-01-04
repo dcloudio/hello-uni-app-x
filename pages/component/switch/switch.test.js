@@ -85,4 +85,14 @@ describe('switch', () => {
 
     // expect(testVerifyEvent).toBe(true)
   })
+
+  if (isDom2 && isHarmony) {
+    it('externalClasses', async () => {
+      const switchElement = await page.$('#darkChecked')
+      expect(await switchElement.attribute('switch-class')).toContain('dark-class')
+      expect(await switchElement.attribute('switch-active-class')).toContain('custom-switch-active')
+      expect(await switchElement.attribute('thumb-active-class')).toContain('custom-thumb-active1')
+      expect(await switchElement.attribute('thumb-class')).toContain('custom-thumb1')
+    })
+  }
 })
