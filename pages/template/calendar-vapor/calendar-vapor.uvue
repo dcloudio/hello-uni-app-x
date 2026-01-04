@@ -259,9 +259,14 @@
 			// 如果不在中间位置，立即重新生成items并重置到中间
 			if (current !== 1) {
 				initSwiperItems()
-				setTimeout(() => {
+				/* setTimeout(() => {
 					swiperCurrent.value = 1
-				}, 50)
+				}, 50) */
+        nextTick(() => {
+            setTimeout(() => {
+                swiperCurrent.value = 1
+            }, 16) // 一帧的时间
+        })
 			}
 		}
 	}
@@ -294,8 +299,7 @@
 		const target = e.currentTarget as UniElement
 		// 获取容器宽度
     const rect = target.getBoundingClientRect() // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
-		// TODO 鸿蒙dom2此处rect的left和x错误，明明应该是0，但实际返回了width的值。web是对的。这导致后面的col也错了，进而导致鸿蒙上点击串行。目前看起来是swiper的问题
-    console.log(rect);
+    console.log(rect); //TODO 鸿蒙上连续滑动超过初始化的3个item后，这个事件不再触发@徐同印
 
     // const screenWidth = uni.getWindowInfo().screenWidth
     // const cellWidth = screenWidth / 7
@@ -305,12 +309,7 @@
 		const cellHeight = 60 //高度60在css中有重复定义，如需修改请同步修改。在不需要显示农历、假日名称等更多信息时，可以减少高度
 
 		// 计算点击的列（0-6）
-		// #ifdef APP-HARMONY
-    const col = Math.floor(e.clientX / cellWidth) // TODO 鸿蒙dom2下e.clientX是相对于屏幕的，需要减去rect.left，但目前rect.left有问题，先不减
-    // #endif
-    // #ifndef APP-HARMONY
     const col = Math.floor((e.clientX - rect.left) / cellWidth)
-    // #endif
     // console.log(col2);
     // console.log(col);
 
@@ -409,7 +408,7 @@
 
 	.header-date-row {
 		flex-direction: row;
-		align-items: baseline;
+		/* align-items: baseline; */
 	}
 
 	.header-date {
