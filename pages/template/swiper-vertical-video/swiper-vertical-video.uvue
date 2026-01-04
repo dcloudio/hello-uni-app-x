@@ -207,6 +207,12 @@ uni.getNetworkType({
 // #endif
     list.value = getData()
     visibleList.value = list.value.slice(0, 3)
+    // #ifdef APP || MP
+    //  非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
+    setTimeout(() => {
+      doPlay(0)
+    }, 1000)
+    // #endif
 // #ifdef APP-HARMONY
   }
 })
@@ -214,8 +220,6 @@ uni.getNetworkType({
 
 onReady(() => {
   // #ifdef APP || MP
-  //  非web端，一启动完成，就播放第一个。因为 web端浏览器限制不支持自动播放
-  doPlay(0);
   //App端适配不同状态栏高度
   const backElement = backButton.value
   if (backElement != null) {
