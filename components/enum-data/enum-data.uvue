@@ -2,11 +2,9 @@
 import { ItemType } from './enum-data-types'
 import { state } from '@/store/index.uts'
 // 样式隔离配置，app-shared: 受全局样式影响
-// #ifdef VUE3-VAPOR
 defineOptions({
   styleIsolation: 'app-shared'
 })
-// #endif
 const emit = defineEmits(['change'])
 const props = defineProps({
   title: {
@@ -17,6 +15,7 @@ const props = defineProps({
     type: Array as PropType<Array<ItemType>>,
     required: true
   },
+  // 用于控制单选项的显示模式，为true时紧凑横排显示，自动换行。默认false，垂直列表布局，每个选项占一行
   compact: {
     type: Boolean,
     default: false
@@ -42,19 +41,22 @@ function _change(e : RadioGroupChangeEvent) {
 </script>
 
 <template>
-  <view class="uni-padding-wrap" :class="[isDarkMode ? 'theme-dark' : 'theme-light']">
+  <view class="uni-padding-wrap" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-list uni-common-pl" :class="[isDarkMode ? 'theme-dark' : 'theme-light']">
-    <radio-group @change="_change" class="uni-column" :class="[{'compact-container': compact}]">
-        <radio class="uni-list-cell uni-list-cell-pd"
-					:class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
-          v-for="(item, index) in items" :key="item.name"
-          :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
-          <text class="radio-text">{{ item.name }}</text>
-        </radio>
+  <!-- 组件套组件，目前影响不了子组件里的样式 ，临时加上条件编译 -->
+  <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+    <radio-group @change="_change" :class="[{'compact-container': compact}]">
+      <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
+        :class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
+        <!-- #ifdef APP -->
+        style="border-bottom: 1px solid #e0e0e0;"
+        <!-- #endif -->
+         :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
+        <text class="radio-text">{{ item.name }}</text>
+      </radio>
     </radio-group>
   </view>
 </template>
