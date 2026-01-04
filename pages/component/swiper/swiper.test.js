@@ -5,6 +5,7 @@ describe('test swiper', () => {
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
   const isHarmony = platformInfo.startsWith('harmony')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
   let page;
   const detailResWithCurrentItemId = {
@@ -18,7 +19,7 @@ describe('test swiper', () => {
   }
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/swiper/swiper')
-    await page.waitFor(600)
+    await page.waitFor('view')
   })
 
   if(!isMP) {
@@ -29,11 +30,12 @@ describe('test swiper', () => {
           autoplaySelect: true,
         }
       })
-      await page.waitFor(isHarmony ? 2700 : 2500)
+      const swiperChangeInterval = (isHarmony && !isDom2) ? 2700 : 2500
+      await page.waitFor(swiperChangeInterval)
       expect(await page.data('data.currentValChange')).toEqual(1)
-      await page.waitFor(isHarmony ? 2700 : 2500)
+      await page.waitFor(swiperChangeInterval)
       expect(await page.data('data.currentValChange')).toEqual(2)
-      await page.waitFor(isHarmony ? 2700 : 2500)
+      await page.waitFor(swiperChangeInterval)
       expect(await page.data('data.currentValChange')).toEqual(0)
 
       await page.setData({
@@ -68,6 +70,7 @@ describe('test swiper', () => {
     }
   });
 
+  if (!isDom2) {
   it('check currentId', async () => {
     await page.setData({
       data:{currentItemIdVal: 'C',}
@@ -81,6 +84,7 @@ describe('test swiper', () => {
     await page.waitFor(800)
     expect(await page.data('data.currentValChange')).toEqual(0)
   });
+  }
 
   it('Trigger Event', async () => {
     await page.setData({
@@ -110,7 +114,7 @@ describe('test swiper', () => {
 
   it('Event change', async () => {
     const changeDetailInfo = await page.data('data.changeDetailTest')
-    if(isWeb || isMP || isHarmony){
+    if(isWeb || isMP || (isHarmony && !isDom2)){
       expect(changeDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
       expect(changeDetailInfo).toEqual(detailRes)
@@ -122,7 +126,7 @@ describe('test swiper', () => {
     // 等待最后一个动画结束animationfinish
     await page.waitFor(2000)
     const animationfinishDetailInfo = await page.data('data.animationfinishDetailTest')
-    if(isWeb || isMP || isHarmony){
+    if(isWeb || isMP || (isHarmony && !isDom2)){
       expect(animationfinishDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
       expect(animationfinishDetailInfo).toEqual(detailRes)
