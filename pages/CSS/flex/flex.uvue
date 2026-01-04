@@ -101,7 +101,6 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 flex 测试</text>
-        <button @click="changeFlex(2)">点击修改红色块 flex 从 1 改为 2</button>
         <text>红色块 flex: {{flexProp}}, 绿色块 flex: 1</text>
         <text style="font-size: 12px; color: #666;">容器剩余空间按 flex 比例分配</text>
         <view style="
@@ -110,12 +109,17 @@
             background-color: gray;
             flex-direction: row;
           ">
-          <view ref="viewRef" class="box" style="background-color: red; flex: 1; ">
+          <view ref="viewRef" class="box" style="background-color: red;" :style="{ flex: flexProp }">
             <text style="color: white; font-weight: bold;">{{flexProp}}</text>
           </view>
           <view class="box" style="background-color: green; flex: 1;">
             <text style="color: white;">1</text>
           </view>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="flexEnum" title="flex 枚举值" @change="radioChangeFlex" :compact="true"></enum-data>
+          <input-data :defaultValue="flexProp" title="flex 自定义值" type="text" @confirm="inputChangeFlex"></input-data>
         </view>
       </view>
     </view>
@@ -125,12 +129,35 @@
 </template>
 
 <script setup lang="uts">
-  const flexProp = ref(1)
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '1' },
+    { value: 3, name: '2' },
+    { value: 4, name: 'auto' },
+    { value: 5, name: 'none' },
+    { value: 6, name: '1 1 auto' }
+  ]
+
+  const flexProp = ref('1')
   const viewRef = ref(null as UniElement | null)
 
-  const changeFlex = (value: number) => {
+  const changeFlex = (value: string) => {
     flexProp.value = value
-    viewRef.value?.style.setProperty('flex', value.toString())
+    viewRef.value?.style.setProperty('flex', value)
+  }
+
+  const radioChangeFlex = (index: number) => {
+    const selectedItem = flexEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlex(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlex = (value: string) => {
+    changeFlex(value)
   }
 </script>
 

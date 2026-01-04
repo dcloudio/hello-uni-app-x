@@ -18,9 +18,13 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 visibility 测试</text>
-        <text>visibility: {{visibilityValue}}</text>
-        <view ref="viewRef" class="common" style="visibility: visible;" @click="changeVisibilityProperty('hidden')">
-          <text>点击修改 visibility</text>
+        <view ref="viewRef" class="common" :style="{ visibility: visibilityValue }">
+          <text>当前 visibility: {{visibilityValue}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="visibilityEnum" title="visibility 枚举值" @change="radioChangeVisibility" :compact="true"></enum-data>
+          <input-data :defaultValue="visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
         </view>
       </view>
     </view>
@@ -30,6 +34,8 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const visibility = ref('visible')
   let flag = true
 
@@ -42,12 +48,29 @@
     }
   }
 
+  const visibilityEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'visible' },
+    { value: 2, name: 'hidden' }
+  ]
+
   const visibilityValue = ref('visible')
   const viewRef = ref(null as UniElement | null)
 
   const changeVisibilityProperty = (value: string) => {
     visibilityValue.value = value
     viewRef.value?.style.setProperty('visibility', value)
+  }
+
+  const radioChangeVisibility = (index: number) => {
+    const selectedItem = visibilityEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeVisibilityProperty(selectedItem.name)
+    }
+  }
+
+  const inputChangeVisibility = (value: string) => {
+    changeVisibilityProperty(value)
   }
 </script>
 

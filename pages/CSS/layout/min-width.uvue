@@ -8,16 +8,22 @@
         <view class="common" style="min-width: 250px;">
           <text>width: 50px</text>
         </view>
-        <view class="common uni-common-mt" style="min-width: 250px;" flatten>
+        <text>拍平测试</text>
+        <view class="common" style="min-width: 250px;" flatten>
           <text>width: 50px</text>
         </view>
       </view>
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 min-width 测试</text>
-        <text>min-width: {{minWidth}}</text>
-        <view ref="viewRef" class="common" style="min-width: 100px;" @click="changeMinWidth('300px')">
-          <text>点击修改 min-width</text>
+        <text>当前 width: 50px;</text>
+        <view ref="viewRef" class="common" :style="{ minWidth: minWidth }">
+          <text>当前 min-width: {{minWidth}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="minWidthEnum" title="min-width 枚举值" @change="radioChangeMinWidth" :compact="true"></enum-data>
+          <input-data :defaultValue="minWidth" title="min-width 自定义值" type="text" @confirm="inputChangeMinWidth"></input-data>
         </view>
       </view>
     </view>
@@ -27,12 +33,35 @@
 </template>
 
 <script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const minWidthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '200px' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '50%' }
+  ]
+
   const minWidth = ref('100px')
   const viewRef = ref(null as UniElement | null)
 
   const changeMinWidth = (value: string) => {
     minWidth.value = value
     viewRef.value?.style.setProperty('min-width', value)
+  }
+
+  const radioChangeMinWidth = (index: number) => {
+    const selectedItem = minWidthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMinWidth(selectedItem.name)
+    }
+  }
+
+  const inputChangeMinWidth = (value: string) => {
+    changeMinWidth(value)
   }
 </script>
 

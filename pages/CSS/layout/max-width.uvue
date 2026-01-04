@@ -8,16 +8,22 @@
         <view class="common" style="max-width: 200px;">
           <text>width: 400px</text>
         </view>
-        <view class="common uni-common-mt" style="max-width: 200px;" flatten>
+        <text>拍平测试</text>
+        <view class="common" style="max-width: 200px;" flatten>
           <text>width: 400px</text>
         </view>
       </view>
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 max-width 测试</text>
-        <text>max-width: {{maxWidth}}</text>
-        <view ref="viewRef" class="common" style="max-width: 250px;" @click="changeMaxWidth('300px')">
-          <text>点击修改 max-width</text>
+        <text>当前 width: 400px;</text>
+        <view ref="viewRef" class="common" :style="{ maxWidth: maxWidth }">
+          <text>当前 max-width: {{maxWidth}}</text>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="maxWidthEnum" title="max-width 枚举值" @change="radioChangeMaxWidth" :compact="true"></enum-data>
+          <input-data :defaultValue="maxWidth" title="max-width 自定义值" type="text" @confirm="inputChangeMaxWidth"></input-data>
         </view>
       </view>
     </view>
@@ -27,12 +33,36 @@
 </template>
 
 <script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const maxWidthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '200px' },
+    { value: 4, name: '300px' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '50%' },
+    { value: 7, name: 'none' }
+  ]
+
   const maxWidth = ref('250px')
   const viewRef = ref(null as UniElement | null)
 
   const changeMaxWidth = (value: string) => {
     maxWidth.value = value
     viewRef.value?.style.setProperty('max-width', value)
+  }
+
+  const radioChangeMaxWidth = (index: number) => {
+    const selectedItem = maxWidthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMaxWidth(selectedItem.name)
+    }
+  }
+
+  const inputChangeMaxWidth = (value: string) => {
+    changeMaxWidth(value)
   }
 </script>
 

@@ -131,15 +131,19 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 align-content 测试</text>
-        <button  @click="changeAlignContent('flex-start')">点击修改为 flex-start</button>
         <text>align-content: {{alignContent}}</text>
-        <view ref="viewRef" class="common" style="align-content: center;">
+        <view ref="viewRef" class="common" :style="{ alignContent: alignContent }">
           <view style="width: 50px; height: 50px; background-color: red"></view>
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
           <view style="width: 50px; height: 50px; background-color: red"></view>
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="alignContentEnum" title="align-content 枚举值" @change="radioChangeAlignContent" :compact="true"></enum-data>
+          <input-data :defaultValue="alignContent" title="align-content 自定义值" type="text" @confirm="inputChangeAlignContent"></input-data>
         </view>
       </view>
     </view>
@@ -149,12 +153,35 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const alignContentEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'flex-start' },
+    { value: 2, name: 'flex-end' },
+    { value: 3, name: 'center' },
+    { value: 4, name: 'space-between' },
+    { value: 5, name: 'space-around' },
+    { value: 6, name: 'stretch' }
+  ]
+
   const alignContent = ref('center')
   const viewRef = ref(null as UniElement | null)
 
   const changeAlignContent = (value: string) => {
     alignContent.value = value
     viewRef.value?.style.setProperty('align-content', value)
+  }
+
+  const radioChangeAlignContent = (index: number) => {
+    const selectedItem = alignContentEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeAlignContent(selectedItem.name)
+    }
+  }
+
+  const inputChangeAlignContent = (value: string) => {
+    changeAlignContent(value)
   }
 </script>
 

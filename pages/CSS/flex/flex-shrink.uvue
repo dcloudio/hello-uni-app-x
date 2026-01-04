@@ -38,7 +38,6 @@
 
     <view class="uni-common-mt">
       <text class="uni-title-text">style.setProperty 动态设置 flex-shrink 测试</text>
-      <button @click="changeFlexShrink(0)">点击修改红色块 flex-shrink 从 1 改为 0</button>
       <text>红色块 flex-shrink: {{flexShrink}}, 绿色块 flex-shrink: 1</text>
       <text style="font-size: 12px; color: #666;">容器200px，2块各150px=300px。flex-shrink: 0 不收缩</text>
       <view style="
@@ -47,24 +46,50 @@
           background-color: gray;
           flex-direction: row;
         ">
-        <view ref="viewRef" class="box" style="background-color: red; flex-shrink: 1;">
+        <view ref="viewRef" class="box" style="background-color: red;" :style="{ flexShrink: flexShrink }">
           <text style="color: white; font-weight: bold;">{{flexShrink}}</text>
         </view>
         <view class="box" style="background-color: green; flex-shrink: 1;">
           <text style="color: white;">1</text>
         </view>
       </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="flexShrinkEnum" title="flex-shrink 枚举值" @change="radioChangeFlexShrink" :compact="true"></enum-data>
+        <input-data :defaultValue="flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
-  const flexShrink = ref(1)
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexShrinkEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '1' },
+    { value: 3, name: '2' },
+    { value: 4, name: '3' }
+  ]
+
+  const flexShrink = ref('1')
   const viewRef = ref(null as UniElement | null)
 
-  const changeFlexShrink = (value: number) => {
+  const changeFlexShrink = (value: string) => {
     flexShrink.value = value
-    viewRef.value?.style.setProperty('flex-shrink', value.toString())
+    viewRef.value?.style.setProperty('flex-shrink', value)
+  }
+
+  const radioChangeFlexShrink = (index: number) => {
+    const selectedItem = flexShrinkEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexShrink(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexShrink = (value: string) => {
+    changeFlexShrink(value)
   }
 </script>
 

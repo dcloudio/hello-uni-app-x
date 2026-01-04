@@ -65,12 +65,16 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 align-items 测试</text>
-        <button @click="changeAlignItems('flex-start')">点击修改为 flex-start</button>
         <text>align-items: {{alignItems}}</text>
-        <view ref="viewRef" class="common" style="align-items: center;">
+        <view ref="viewRef" class="common" :style="{ alignItems: alignItems }">
           <view style="width: 50px; height: 50px; background-color: red"></view>
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="alignItemsEnum" title="align-items 枚举值" @change="radioChangeAlignItems" :compact="true"></enum-data>
+          <input-data :defaultValue="alignItems" title="align-items 自定义值" type="text" @confirm="inputChangeAlignItems"></input-data>
         </view>
       </view>
     </view>
@@ -80,12 +84,33 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const alignItemsEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'flex-start' },
+    { value: 2, name: 'flex-end' },
+    { value: 3, name: 'center' },
+    { value: 4, name: 'stretch' }
+  ]
+
   const alignItems = ref('center')
   const viewRef = ref(null as UniElement | null)
 
   const changeAlignItems = (value: string) => {
     alignItems.value = value
     viewRef.value?.style.setProperty('align-items', value)
+  }
+
+  const radioChangeAlignItems = (index: number) => {
+    const selectedItem = alignItemsEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeAlignItems(selectedItem.name)
+    }
+  }
+
+  const inputChangeAlignItems = (value: string) => {
+    changeAlignItems(value)
   }
 </script>
 

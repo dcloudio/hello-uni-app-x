@@ -31,7 +31,6 @@
 
     <view class="uni-common-mt">
       <text class="uni-title-text">style.setProperty 动态设置 flex-basis 测试</text>
-      <button @click="changeFlexBasis('100px')">点击修改为 100px</button>
       <text>flex-basis: {{flexBasis}}</text>
       <view style="
           width: 250px;
@@ -39,21 +38,51 @@
           background-color: gray;
           flex-direction: row;
         ">
-        <view ref="viewRef" class="common" style="flex-basis: 150px"></view>
+        <view ref="viewRef" class="common" :style="{ flexBasis: flexBasis }"></view>
         <view style="width: 50px; height: 50px; background-color: green"></view>
         <view style="width: 50px; height: 50px; background-color: blue"></view>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="flexBasisEnum" title="flex-basis 枚举值" @change="radioChangeFlexBasis" :compact="true"></enum-data>
+        <input-data :defaultValue="flexBasis" title="flex-basis 自定义值" type="text" @confirm="inputChangeFlexBasis"></input-data>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexBasisEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '100px' },
+    { value: 5, name: '150px' },
+    { value: 6, name: '0%' },
+    { value: 7, name: '50%' },
+    { value: 8, name: 'auto' }
+  ]
+
   const flexBasis = ref('150px')
   const viewRef = ref(null as UniElement | null)
 
   const changeFlexBasis = (value: string) => {
     flexBasis.value = value
     viewRef.value?.style.setProperty('flex-basis', value)
+  }
+
+  const radioChangeFlexBasis = (index: number) => {
+    const selectedItem = flexBasisEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexBasis(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexBasis = (value: string) => {
+    changeFlexBasis(value)
   }
 </script>
 
