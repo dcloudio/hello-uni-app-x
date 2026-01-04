@@ -99,4 +99,11 @@ describe('Radio.uvue', () => {
       expect(eventTest).toEqual(true)
     })
   }
+
+  if (isDom2 && isHarmony) {
+    it('externalClasses', async () => {
+      const radio = await page.$('#radio-vapor')
+      expect(await radio.attribute('radio-active-class')).toContain('radio-active')
+    })
+  }
 })
