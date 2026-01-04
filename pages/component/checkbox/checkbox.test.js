@@ -125,4 +125,11 @@ describe('Checkbox.uvue', () => {
       expect(testEvent).toBe(true)
     })
   }
+
+  if (isDom2 && isHarmony) {
+    it('external-class', async () => {
+      const checkbox = await page.$('#checkbox-vapor')
+      expect(await checkbox.attribute('checkbox-class')).toContain('custom-checkbox')
+    })
+  }
 })
