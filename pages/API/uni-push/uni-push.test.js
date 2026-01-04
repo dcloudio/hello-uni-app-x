@@ -13,12 +13,13 @@ describe('uni-push', () => {
   });
   // 获取cid | getPushClientId：值
   it('getPushClientId', async () => {
+    const jestResult = await page.data('jestResult')
+    if (isHarmony && !jestResult.hasGetuiAppId){
+      console.log('getPushClientId已跳过。鸿蒙端 Push 测试依赖配置：harmony-configs/entry/src/main/module.json5 → metadata → GETUI_APPID')
+      return
+    }
     await page.callMethod('handleGetClientId')
     await page.waitFor(2000);
-    const jestResult = await page.data('jestResult')
-    if (isHarmony && jestResult.clientId.length === 0){
-      console.log('请注意，鸿蒙端push自动化测试，需要单独配置harmony-configs/entry/src/main/module.json5-》metadata--》GETUI_APPID推送服务才能获取到')
-    }
     expect(jestResult.clientId.length).toBe(32);
   });
 
