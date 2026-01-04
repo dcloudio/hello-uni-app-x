@@ -5,6 +5,7 @@ describe('component-native-textarea', () => {
   const isMP = platformInfo.startsWith('mp')
   const isHarmony = platformInfo.startsWith('harmony')
   const isWeb = platformInfo.startsWith('web')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
   let page;
   let textarea;
@@ -87,46 +88,50 @@ describe('component-native-textarea', () => {
     })
 
     // 微信小程序自动化测试无法获取inputmode属性
-    it("inputmode", async () => {
-      const inputmodeEnum = await page.data("data.inputmode_enum")
-      for (var i = 0; i < inputmodeEnum.length; i++) {
-        var x = inputmodeEnum[i]
-        var selected = x['value'] - 1
-        if (i == inputmodeEnum.length - 1) {
-          selected = i
+    if (isWeb) {
+      it("inputmode", async () => {
+        const inputmodeEnum = await page.data("data.inputmode_enum")
+        for (var i = 0; i < inputmodeEnum.length; i++) {
+          var x = inputmodeEnum[i]
+          var selected = x['value'] - 1
+          if (i == inputmodeEnum.length - 1) {
+            selected = i
+          }
+          await page.callMethod("radio_change_inputmode_enum", selected);
+          await page.waitFor(500)
+          expect(await textarea.attribute("inputmode")).toEqual(x['name'])
+          await page.waitFor(500)
         }
-        await page.callMethod("radio_change_inputmode_enum", selected);
+      })
+    }
+  }
+  // TODO: dom2 harmony 暂时不支持 auto-height
+  if (!isDom2) {
+    it("auto-height", async () => {
+      await setPageData({
+        default_value: ""
+      })
+      await page.waitFor(500)
+      await setPageData({
+        auto_height_boolean: true
+      })
+      await page.waitFor(500)
+      let textareaSize = await textarea.size()
+      let textareaHeight = textareaSize.height
+      expect(textareaHeight).toBeLessThanOrEqual(150)
+      if (!isMP) {
+        // TODO 微信小程序auto-height由true切换成false时不会影响text-area高度
+        await setPageData({
+          default_value: "1\n2\n3\n4\n5\n6",
+          auto_height_boolean: false
+        })
         await page.waitFor(500)
-        expect(await textarea.attribute("inputmode")).toEqual(x['name'])
-        await page.waitFor(500)
+        textareaSize = await textarea.size()
+        textareaHeight = textareaSize.height
+        expect(textareaHeight).toEqual(200)
       }
     })
   }
-
-  it("auto-height", async () => {
-    await setPageData({
-      default_value: ""
-    })
-    await page.waitFor(500)
-    await setPageData({
-      auto_height_boolean: true
-    })
-    await page.waitFor(500)
-    let textareaSize = await textarea.size()
-    let textareaHeight = textareaSize.height
-    expect(textareaHeight).toBeLessThanOrEqual(150)
-    if (!isMP) {
-      // TODO 微信小程序auto-height由true切换成false时不会影响text-area高度
-      await setPageData({
-        default_value: "1\n2\n3\n4\n5\n6",
-        auto_height_boolean: false
-      })
-      await page.waitFor(500)
-      textareaSize = await textarea.size()
-      textareaHeight = textareaSize.height
-      expect(textareaHeight).toEqual(200)
-    }
-  })
 
   it("flex 1 height exception", async () => {
     const bottomTextarea = await page.$('#textarea-height-exception');
