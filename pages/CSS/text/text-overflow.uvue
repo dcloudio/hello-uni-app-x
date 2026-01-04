@@ -7,32 +7,40 @@
         <view class="margin-bottom-10">
           <text class="font-weight-bold">text-overflow:clip white-space:nowrap</text>
           <text class="font-size-20" style="text-overflow: clip;white-space: nowrap;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="text-overflow: clip;white-space: nowrap;" flatten>{{multiLineText}}</text>
         </view>
         <view class="margin-bottom-10">
           <text class="font-weight-bold">text-overflow:ellipsis white-space:nowrap</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;">{{singleLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;" flatten>{{singleLineText}}</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;" flatten>{{multiLineText}}</text>
         </view>
         <view class="margin-bottom-10">
           <text class="font-weight-bold">white-space:normal</text>
           <text class="font-size-20" style="white-space: normal;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="white-space: normal;" flatten>{{multiLineText}}</text>
         </view>
         <view class="margin-bottom-10" style="overflow: visible;">
           <text class="font-weight-bold">white-space: nowrap</text>
           <text class="font-size-20" style="white-space: nowrap;align-self: flex-start;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="white-space: nowrap;align-self: flex-start;" flatten>{{multiLineText}}</text>
         </view>
         <view class="margin-bottom-10">
           <text class="font-weight-bold">任意宽度截断（100px、200px、300px）</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 100px;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 100px;" flatten>{{multiLineText}}</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 200px;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 200px;" flatten>{{multiLineText}}</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 300px;">{{multiLineText}}</text>
+          <text style="color:#dbd9d9;">拍平测试</text>
           <text class="font-size-20" style="text-overflow: ellipsis;white-space: nowrap;width: 300px;" flatten>{{multiLineText}}</text>
         </view>
         <!-- #ifdef APP -->
@@ -46,8 +54,12 @@
         <view class="margin-bottom-10 uni-common-mt">
           <text class="uni-title-text">style.setProperty 动态设置 text-overflow 测试</text>
           <text>text-overflow: {{textOverflow}}</text>
-          <text @click="changeTextOverflow('ellipsis')">点击修改 text-overflow 为 ellipsis</text>
-          <text ref="viewRef" class="font-size-20" style="text-overflow: clip; white-space: nowrap; width: 300px;">{{multiLineText}}</text>
+          <text ref="viewRef" class="font-size-20" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '300px' }">{{multiLineText}}</text>
+          <view class="uni-common-mt uni-common-mb">
+            <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+            <enum-data :items="textOverflowEnum" title="text-overflow 枚举值" @change="radioChangeTextOverflow" :compact="true"></enum-data>
+            <input-data :defaultValue="textOverflow" title="text-overflow 自定义值" type="text" @confirm="inputChangeTextOverflow"></input-data>
+          </view>
         </view>
       </view>
     </view>
@@ -57,9 +69,16 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const multiLineText = ref('HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言')
   const singleLineText = ref('uts，大一统语言（单行文本）')
+
+  const textOverflowEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'clip' },
+    { value: 2, name: 'ellipsis' }
+  ]
 
   const textOverflow = ref('clip')
   const viewRef = ref(null as UniElement | null)
@@ -67,6 +86,17 @@
   const changeTextOverflow = (value: string) => {
     textOverflow.value = value
     viewRef.value?.style.setProperty('text-overflow', value)
+  }
+
+  const radioChangeTextOverflow = (index: number) => {
+    const selectedItem = textOverflowEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTextOverflow(selectedItem.name)
+    }
+  }
+
+  const inputChangeTextOverflow = (value: string) => {
+    changeTextOverflow(value)
   }
 </script>
 

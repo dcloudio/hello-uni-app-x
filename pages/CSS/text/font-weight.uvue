@@ -17,20 +17,48 @@
 		<view class="uni-common-mt">
 			<text class="uni-title-text">style.setProperty 动态设置 font-weight 测试</text>
 			<text>font-weight: {{fontWeight}}</text>
-			<view class="common" style="height:100px">
-				<text ref="viewRef" class="common-size" style="font-weight: normal;" @click="changeFontWeight('bold')">点击修改 font-weight 为 bold</text>
+			<view class="common" style="height:80px">
+				<text ref="viewRef" class="common-size" :style="{ fontWeight: fontWeight }">当前 font-weight: {{fontWeight}}</text>
+			</view>
+			<view class="uni-common-mt uni-common-mb">
+				<text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+				<enum-data :items="fontWeightEnum" title="font-weight 枚举值" @change="radioChangeFontWeight" :compact="true"></enum-data>
+				<input-data :defaultValue="fontWeight" title="font-weight 自定义值" type="text" @confirm="inputChangeFontWeight"></input-data>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup lang="uts">
+	import { ItemType } from '@/components/enum-data/enum-data-types'
+
+	const fontWeightEnum: ItemType[] = [
+		{ value: 0, name: '' },
+		{ value: 1, name: 'normal' },
+		{ value: 2, name: 'bold' },
+		{ value: 3, name: '100' },
+		{ value: 4, name: '400' },
+		{ value: 5, name: '700' },
+		{ value: 6, name: '900' }
+	]
+
 	const fontWeight = ref('normal')
 	const viewRef = ref(null as UniElement | null)
 
 	const changeFontWeight = (value: string) => {
 		fontWeight.value = value
 		viewRef.value?.style.setProperty('font-weight', value)
+	}
+
+	const radioChangeFontWeight = (index: number) => {
+		const selectedItem = fontWeightEnum.find((item): boolean => item.value === index)
+		if (selectedItem != null) {
+			changeFontWeight(selectedItem.name)
+		}
+	}
+
+	const inputChangeFontWeight = (value: string) => {
+		changeFontWeight(value)
 	}
 </script>
 

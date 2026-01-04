@@ -17,20 +17,45 @@
 		<view class="uni-common-mt">
 			<text class="uni-title-text">style.setProperty 动态设置 text-align 测试</text>
 			<text>text-align: {{textAlign}}</text>
-			<view class="box">
-				<text ref="viewRef" class="common" style="text-align: left;" @click="changeTextAlign('center')">点击修改 text-align 为 center</text>
+			<view class="box" style="height: 80px;">
+				<text ref="viewRef" class="common" :style="{ textAlign: textAlign }">当前 text-align: {{textAlign}}</text>
+			</view>
+			<view class="uni-common-mt uni-common-mb">
+				<text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+				<enum-data :items="textAlignEnum" title="text-align 枚举值" @change="radioChangeTextAlign" :compact="true"></enum-data>
+				<input-data :defaultValue="textAlign" title="text-align 自定义值" type="text" @confirm="inputChangeTextAlign"></input-data>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup lang="uts">
+	import { ItemType } from '@/components/enum-data/enum-data-types'
+
+	const textAlignEnum: ItemType[] = [
+		{ value: 0, name: '' },
+		{ value: 1, name: 'left' },
+		{ value: 2, name: 'center' },
+		{ value: 3, name: 'right' }
+	]
+
 	const textAlign = ref('left')
 	const viewRef = ref(null as UniElement | null)
 
 	const changeTextAlign = (value: string) => {
 		textAlign.value = value
 		viewRef.value?.style.setProperty('text-align', value)
+	}
+
+	const radioChangeTextAlign = (index: number) => {
+		const selectedItem = textAlignEnum.find((item): boolean => item.value === index)
+		if (selectedItem != null) {
+			changeTextAlign(selectedItem.name)
+		}
+	}
+
+	const inputChangeTextAlign = (value: string) => {
+		changeTextAlign(value)
 	}
 </script>
 

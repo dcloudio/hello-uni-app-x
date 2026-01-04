@@ -4,12 +4,22 @@
   <!-- #endif -->
     <view style="flex-grow: 1;">
       <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
-        <text class="text" :style="textStyle">{{multiLineText}}</text>
-        <text class="text" :style="textStyle" flatten>{{multiLineText}}</text>
+        <text class="text" :style="{ whiteSpace: whiteSpace }">{{multiLineText}}</text>
       </scroll-view>
+      <text>拍平测试</text>
+      <scroll-view style="padding: 10px 0px; background-color: gray;justify-content: center;" direction="horizontal">
+        <text class="text" :style="{ whiteSpace: whiteSpace }" flatten>{{multiLineText}}</text>
+      </scroll-view>
+
       <scroll-view style="flex: 1">
         <view class="content">
-          <enum-data :items="white_space" title="white-space" @change="radio_change"></enum-data>
+          <text class="uni-title-text">style.setProperty 动态设置 white-space 测试</text>
+          <text>white-space: {{whiteSpace}}</text>
+          <view class="uni-common-mt uni-common-mb">
+            <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+            <enum-data :items="whiteSpaceEnum" title="white-space 枚举值" @change="radioChangeWhiteSpace" :compact="true"></enum-data>
+            <input-data :defaultValue="whiteSpace" title="white-space 自定义值" type="text" @confirm="inputChangeWhiteSpace"></input-data>
+          </view>
         </view>
       </scroll-view>
     </view>
@@ -19,17 +29,18 @@
 </template>
 
 <script setup lang="uts">
-
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const textStyle = ref("white-space: normal;")
-  const white_space = ref([
-    { "value": 0, "name": "normal" },
-    { "value": 1, "name": "nowrap" },
-    { "value": 2, "name": "pre" },
-    { "value": 3, "name": "pre-wrap" },
-    { "value": 4, "name": "pre-line" },
-    { "value": 5, "name": "break-spaces" }] as ItemType[])
+  const whiteSpaceEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'normal' },
+    { value: 2, name: 'nowrap' },
+    { value: 3, name: 'pre' },
+    { value: 4, name: 'pre-wrap' },
+    { value: 5, name: 'pre-line' },
+    { value: 6, name: 'break-spaces' }
+  ]
+
   const multiLineText = ref(`HBuilderX，
 	轻巧、
 		极速，
@@ -41,8 +52,23 @@
 
 HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言`)
 
-  const radio_change = (checked : number) => {
-    textStyle.value = `white-space: ${white_space.value[checked].name};`
+  const whiteSpace = ref('normal')
+  const viewRef = ref(null as UniElement | null)
+
+  const changeWhiteSpace = (value: string) => {
+    whiteSpace.value = value
+    viewRef.value?.style.setProperty('white-space', value)
+  }
+
+  const radioChangeWhiteSpace = (index: number) => {
+    const selectedItem = whiteSpaceEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeWhiteSpace(selectedItem.name)
+    }
+  }
+
+  const inputChangeWhiteSpace = (value: string) => {
+    changeWhiteSpace(value)
   }
 </script>
 

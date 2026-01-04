@@ -19,20 +19,50 @@
     <view class="uni-common-mt">
       <text class="uni-title-text">style.setProperty 动态设置 color 测试</text>
       <text>color: {{color}}</text>
-      <view class="box" style="height: 100px;">
-        <text ref="viewRef" class="common" style="color: red;" @click="changeColor('blue')">点击修改 color 为 blue</text>
+      <view class="box" style="height: 50px;">
+        <text ref="viewRef" class="common" :style="{ color: color }">当前 color: {{color}}</text>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="colorEnum" title="color 枚举值" @change="radioChangeColor" :compact="true"></enum-data>
+        <input-data :defaultValue="color" title="color 自定义值" type="text" @confirm="inputChangeColor"></input-data>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const colorEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'red' },
+    { value: 2, name: 'blue' },
+    { value: 3, name: 'green' },
+    { value: 4, name: '#ff0000' },
+    { value: 5, name: '#00ff00' },
+    { value: 6, name: '#0000ff' },
+    { value: 7, name: 'rgb(255, 0, 0)' },
+    { value: 8, name: 'rgba(255, 0, 0, 0.5)' }
+  ]
+
   const color = ref('red')
   const viewRef = ref(null as UniElement | null)
 
   const changeColor = (value: string) => {
     color.value = value
     viewRef.value?.style.setProperty('color', value)
+  }
+
+  const radioChangeColor = (index: number) => {
+    const selectedItem = colorEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeColor(selectedItem.name)
+    }
+  }
+
+  const inputChangeColor = (value: string) => {
+    changeColor(value)
   }
 </script>
 

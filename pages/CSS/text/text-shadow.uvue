@@ -4,24 +4,31 @@
   <!-- #endif -->
     <view class="container">
       <text class="text" style="text-shadow: 1px 1px 2px pink;">text-shadow: 1px 1px 2px pink</text>
-      <text class="text" style="text-shadow: 1px 1px 2px pink;" flatten>text-shadow: 1px 1px 2px pink</text>
       <text class="text" style="text-shadow: #fc0 1px 0 10px;">text-shadow: #fc0 1px 0 10px</text>
-      <text class="text" style="text-shadow: #fc0 1px 0 10px;" flatten>text-shadow: #fc0 1px 0 10px</text>
       <text class="text" style="text-shadow: 5px 5px #558abb;">text-shadow: 5px 5px #558abb</text>
-      <text class="text" style="text-shadow: 5px 5px #558abb;" flatten>text-shadow: 5px 5px #558abb</text>
       <text class="text" style="text-shadow: red 2px 5px;">text-shadow: red 2px 5px</text>
-      <text class="text" style="text-shadow: red 2px 5px;" flatten>text-shadow: red 2px 5px</text>
       <text class="text" style="text-shadow: 5px 10px;">text-shadow: 5px 10px</text>
-      <text class="text" style="text-shadow: 5px 10px;" flatten>text-shadow: 5px 10px</text>
       <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);">text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
-      <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);" flatten>text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);">text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
+
+      <text class="uni-title-text">【拍平测试】</text>
+      <text class="text" style="text-shadow: 1px 1px 2px pink;" flatten>text-shadow: 1px 1px 2px pink</text>
+      <text class="text" style="text-shadow: #fc0 1px 0 10px;" flatten>text-shadow: #fc0 1px 0 10px</text>
+      <text class="text" style="text-shadow: 5px 5px #558abb;" flatten>text-shadow: 5px 5px #558abb</text>
+      <text class="text" style="text-shadow: red 2px 5px;" flatten>text-shadow: red 2px 5px</text>
+      <text class="text" style="text-shadow: 5px 10px;" flatten>text-shadow: 5px 10px</text>
+      <text class="text" style="text-shadow: 1px 2px 4px rgb(34, 202, 43);" flatten>text-shadow: 1px 2px 4px rgb(34, 202, 43)</text>
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);" flatten>text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
 
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 text-shadow 测试</text>
         <text>text-shadow: {{textShadow}}</text>
-        <text ref="viewRef" class="text" style="text-shadow: 1px 1px 2px pink;" @click="changeTextShadow('5px 5px #558abb')">点击修改 text-shadow 为 5px 5px #558abb</text>
+        <text ref="viewRef" class="text" :style="{ textShadow: textShadow }">当前 text-shadow: {{textShadow}}</text>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="textShadowEnum" title="text-shadow 枚举值" @change="radioChangeTextShadow" :compact="true"></enum-data>
+          <input-data :defaultValue="textShadow" title="text-shadow 自定义值" type="text" @confirm="inputChangeTextShadow"></input-data>
+        </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -30,12 +37,36 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const textShadowEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '1px 1px 2px pink' },
+    { value: 2, name: '#fc0 1px 0 10px' },
+    { value: 3, name: '5px 5px #558abb' },
+    { value: 4, name: 'red 2px 5px' },
+    { value: 5, name: '5px 10px' },
+    { value: 6, name: '1px 2px 4px rgb(34, 202, 43)' },
+    { value: 7, name: '2px 4px rgba(202, 207, 17, 0.5)' }
+  ]
+
   const textShadow = ref('1px 1px 2px pink')
   const viewRef = ref(null as UniElement | null)
 
   const changeTextShadow = (value: string) => {
     textShadow.value = value
     viewRef.value?.style.setProperty('text-shadow', value)
+  }
+
+  const radioChangeTextShadow = (index: number) => {
+    const selectedItem = textShadowEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTextShadow(selectedItem.name)
+    }
+  }
+
+  const inputChangeTextShadow = (value: string) => {
+    changeTextShadow(value)
   }
 </script>
 

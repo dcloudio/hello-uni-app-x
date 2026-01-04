@@ -14,19 +14,43 @@
       <text class="uni-title-text">style.setProperty 动态设置 font-style 测试</text>
       <text>font-style: {{fontStyle}}</text>
       <view class="common">
-        <text ref="viewRef" class="common-size" style="font-style: normal;" @click="changeFontStyle('italic')">点击修改 font-style 为 italic</text>
+        <text ref="viewRef" class="common-size" :style="{ fontStyle: fontStyle }">当前 font-style: {{fontStyle}}</text>
+      </view>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="fontStyleEnum" title="font-style 枚举值" @change="radioChangeFontStyle" :compact="true"></enum-data>
+        <input-data :defaultValue="fontStyle" title="font-style 自定义值" type="text" @confirm="inputChangeFontStyle"></input-data>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const fontStyleEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'normal' },
+    { value: 2, name: 'italic' }
+  ]
+
   const fontStyle = ref('normal')
   const viewRef = ref(null as UniElement | null)
 
   const changeFontStyle = (value: string) => {
     fontStyle.value = value
     viewRef.value?.style.setProperty('font-style', value)
+  }
+
+  const radioChangeFontStyle = (index: number) => {
+    const selectedItem = fontStyleEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFontStyle(selectedItem.name)
+    }
+  }
+
+  const inputChangeFontStyle = (value: string) => {
+    changeFontStyle(value)
   }
 </script>
 

@@ -21,7 +21,12 @@
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 font-family 测试</text>
         <text>font-family: {{fontFamily}}</text>
-        <text ref="viewRef" class="common" style="font-family: monospace" @click="changeFontFamily('cursive')">点击修改 font-family 为 cursive</text>
+        <text ref="viewRef" class="common" :style="{ fontFamily: fontFamily }">当前 font-family: {{fontFamily}}</text>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="fontFamilyEnum" title="font-family 枚举值" @change="radioChangeFontFamily" :compact="true"></enum-data>
+          <input-data :defaultValue="fontFamily" title="font-family 自定义值" type="text" @confirm="inputChangeFontFamily"></input-data>
+        </view>
       </view>
     </view>
     <!-- #ifdef APP -->
@@ -35,6 +40,8 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const uniIcon = ref('\ue100')
   const openUniIcon = () => {
     uni.navigateTo({
@@ -42,12 +49,32 @@
     })
   }
 
+  const fontFamilyEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'monospace' },
+    { value: 2, name: 'cursive' },
+    { value: 3, name: 'AlimamaDaoLiTiTTF' },
+    { value: 4, name: 'AlimamaDaoLiTiOTF' },
+    { value: 5, name: 'UniFontFamily' }
+  ]
+
   const fontFamily = ref('monospace')
   const viewRef = ref(null as UniElement | null)
 
   const changeFontFamily = (value: string) => {
     fontFamily.value = value
     viewRef.value?.style.setProperty('font-family', value)
+  }
+
+  const radioChangeFontFamily = (index: number) => {
+    const selectedItem = fontFamilyEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFontFamily(selectedItem.name)
+    }
+  }
+
+  const inputChangeFontFamily = (value: string) => {
+    changeFontFamily(value)
   }
 </script>
 
