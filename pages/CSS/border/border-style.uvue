@@ -52,15 +52,44 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 border-style 测试</text>
-        <view ref="viewRef" class="common" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }">
-          <text>当前 border-style: {{borderStyleValue}}</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border-style 测试</text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{borderStyleValue}}</text>
+          <text class="test-info">获取值: {{borderStyleActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }">
+              <text>view测试</text>
+            </view>
+          </view>
         </view>
-        <view class="uni-common-mt uni-common-mb">
-          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
-          <enum-data :items="borderStyleEnum" title="border-style 枚举值" @change="radioChangeBorderStyle" :compact="true"></enum-data>
-          <input-data :defaultValue="borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{borderStyleValue}}</text>
+          <text class="test-info">获取值: {{borderStyleActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }">text测试</text>
+          </view>
         </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{borderStyleValue}}</text>
+          <text class="test-info">获取值: {{borderStyleActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image" :style="{ borderWidth: '5px', borderStyle: borderStyleValue }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="borderStyleEnum" title="border-style 枚举值" @change="radioChangeBorderStyle" :compact="true"></enum-data>
+        <input-data :defaultValue="borderStyleValue" title="border-style 自定义值" type="text" @confirm="inputChangeBorderStyle"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -90,11 +119,27 @@
   ]
 
   const borderStyleValue = ref('solid')
+  const borderStyleActual = ref('')
+  const borderStyleActualText = ref('')
+  const borderStyleActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const changeBorderStyleValue = (value: string) => {
     borderStyleValue.value = value
+    // view 元素
     viewRef.value?.style.setProperty('border-style', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('border-style')
+    borderStyleActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('border-style', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('border-style')
+    borderStyleActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('border-style', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('border-style')
+    borderStyleActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangeBorderStyle = (index: number) => {
@@ -107,6 +152,19 @@
   const inputChangeBorderStyle = (value: string) => {
     changeBorderStyleValue(value)
   }
+
+  // 页面初次渲染完成后获取初始值
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('border-style')
+    borderStyleActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('border-style')
+    borderStyleActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('border-style')
+    borderStyleActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
@@ -114,5 +172,38 @@
     width: 150px;
     height: 100px;
     background-color: gray;
+  }
+
+  .common-dynamic {
+    height: 80px;
+    background-color: gray;
+  }
+
+  .common-image {
+    width: 80px;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 100px;
+    background-color: lightgray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>
