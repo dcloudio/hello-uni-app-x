@@ -1,111 +1,63 @@
 <template>
-  <view style="flex: 1;">
-    <scroll-view direction="horizontal" style="flex-direction: row;">
-      <button class="button_item" @click="delayShow">测试延时显示</button>
-      <button class="button_item" @click="switchItemContent">修改item子元素</button>
-    </scroll-view>
-    <list-view v-show="data.list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
-      <list-item v-for="index in item_count" :key="index" :id="'item_'+index" class="item" @click="itemClick(index)">
-        <view style="flex-direction: row;">
-          <text>item-------<text>{{index}}</text></text>
-          <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
-            <text>scroll-view{{index}}：</text>
-            <text class="tip_text" v-for="tab in 5">元素{{tab}}</text>
-          </scroll-view>
-        </view>
-        <text v-show="data.displayArrow">item-------<text>{{index}}</text></text>
-
-        <switch :checked="true"></switch>
+  <!-- #ifdef WEB -->
+  <view>
+  <!-- #endif -->
+    <list-view class="list" @scrolltolower="onScrollTolower">
+      <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
+        <text>第{{index + 1}}个视频</text>
+        <video class="video" :src="data.src" :controls="true" @pause="onPause"></video>
       </list-item>
     </list-view>
+  <!-- #ifdef WEB -->
   </view>
+  <!-- #endif -->
 </template>
 
 <script setup lang="uts">
 
-const item_count = ref(20)
-const listViewElement = ref(null as UniListViewElement | null)
-
 type DataType = {
-  list_show: boolean,
-  displayArrow: boolean,
+  item_count: number,
+  src: string,
+  isTesting: boolean,
 }
 
+// 使用reactive包装数据，便于自动化测试获取
 const data = reactive({
-  list_show: true,
-  displayArrow: false,
+  item_count: 10,
+  src: 'https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4',
+  isTesting: false,
 } as DataType)
+
+function onPause(e : UniEvent) {
+  console.log(JSON.stringify(e));
+}
 
 function onScrollTolower(event : ScrollToLowerEvent) {
   setTimeout(() => {
-    item_count.value += 20
+    if (data.isTesting && data.item_count >= 10) {
+      return
+    }
+    data.item_count += 10
   }, 300)
 }
 
-//用于自动化测试
-function listViewScrollByY(y : number) {
-  listViewElement.value?.scrollBy(0, y)
-}
-
-function itemClick(index : number) {
-  console.log("itemTextClick---" + index)
-}
-
-function delayShow() {
-  data.list_show = !data.list_show
-  item_count.value += 20
-  //延时显示list-view 测试list-item延时显示bug
-  setTimeout(() => {
-    data.list_show = !data.list_show
-  }, 400)
-}
-
-function modifyItemPadding(index: number) {
-  var element = uni.getElementById("item_"+index)
-  element?.style.setProperty("padding", "0px")
-}
-
-function switchItemContent() {
-  data.displayArrow = !data.displayArrow
-  modifyItemPadding(1)
-}
-
-onReady(() => {
-  listViewElement.value = uni.getElementById<UniListViewElement>('listview')
-})
-
 defineExpose({
-  data,
-  listViewScrollByY,
-  delayShow,
-  switchItemContent
+  data
 })
 </script>
 
 <style>
-  .item {
-    padding: 15px;
-    margin: 0 0 5px 0;
-    border: 1px solid #000000;
-    background-color: #fdfdfd;
-    border-radius: 5px;
-  }
-
-  .button_item {
-    width: 200px;
-  }
-
-  .scroll_item {
+  .list {
     flex: 1;
-    flex-direction: row;
-    overflow: hidden;
-    margin-left: 10px;
   }
 
-  .tip_text {
-    border-style: solid;
-    border-radius: 3px;
-    border-width: 1px;
-    margin: 0px 10px;
+  .list-item {
+    background-color: white;
+    margin-bottom: 30px;
+  }
+
+  .video {
+    width: 100%;
+    height: 200px;
   }
 </style>
