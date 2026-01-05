@@ -118,9 +118,16 @@
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 background-color 测试</text>
         <text>background-color: {{backgroundColor}}</text>
-        <view ref="viewRef" class="common" style="background-color: red;" @click="changeBackgroundColor('blue')">
-          <text>点击修改 background-color 为 blue</text>
+        <view ref="viewRef" class="common" :style="{ backgroundColor: backgroundColor }">
+          <text>当前 background-color: {{backgroundColor}}</text>
         </view>
+      </view>
+
+      <!-- 测试控制区域 -->
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :compact="true" :items="backgroundColorEnum" title="background-color 枚举值" @change="radioChangeBackgroundColor"></enum-data>
+        <input-data :defaultValue="backgroundColor" title="background-color 自定义值" type="text" @confirm="inputChangeBackgroundColor"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -129,12 +136,36 @@
 </template>
 
 <script setup>
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
   const backgroundColor = ref('red')
   const viewRef = ref(null as UniElement | null)
+
+  const backgroundColorEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'red' },
+    { value: 2, name: '#ff0000' },
+    { value: 3, name: 'rgb(255, 0, 0)' },
+    { value: 4, name: 'rgba(255, 0, 0, 0.5)' },
+    { value: 5, name: 'blue' },
+    { value: 6, name: 'rgba(0, 0, 255, 0.5)' },
+    { value: 7, name: 'transparent' }
+  ]
 
   const changeBackgroundColor = (color: string) => {
     backgroundColor.value = color
     viewRef.value?.style.setProperty('background-color', color)
+  }
+
+  const radioChangeBackgroundColor = (index: number) => {
+    const selectedItem = backgroundColorEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBackgroundColor(selectedItem.name)
+    }
+  }
+
+  const inputChangeBackgroundColor = (value: string) => {
+    changeBackgroundColor(value)
   }
 
   const jumpToCheckBoxWithBackgroundColor = () => {

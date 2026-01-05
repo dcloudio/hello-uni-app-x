@@ -23,9 +23,16 @@
       <view class="uni-common-mt">
         <text class="uni-title-text">style.setProperty 动态设置 background-image 测试</text>
         <text>background-image: {{backgroundImage}}</text>
-        <view ref="viewRef" class="common" style="background-image: linear-gradient(to right, red, yellow);" @click="changeBackgroundImage('linear-gradient(to bottom, blue, green)')">
-          <text style="color: white;">点击修改 background-image</text>
+        <view ref="viewRef" class="common" :style="{ backgroundImage: backgroundImage }">
+          <text style="color: white;">当前 background-image: {{backgroundImage}}</text>
         </view>
+      </view>
+
+      <!-- 测试控制区域 -->
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :compact="true" :items="backgroundImageEnum" title="background-image 枚举值" @change="radioChangeBackgroundImage"></enum-data>
+        <input-data :defaultValue="backgroundImage" title="background-image 自定义值" type="text" @confirm="inputChangeBackgroundImage"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -34,6 +41,7 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const backgroundSelect = ref(true)
   const directionData = ref(['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'])
@@ -76,9 +84,31 @@
   const backgroundImage = ref('linear-gradient(to right, red, yellow)')
   const viewRef = ref(null as UniElement | null)
 
+  const backgroundImageEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'linear-gradient(to right, red, yellow)' },
+    { value: 2, name: 'linear-gradient(to bottom, blue, green)' },
+    { value: 3, name: 'linear-gradient(to top, red, blue)' },
+    { value: 4, name: 'linear-gradient(45deg, red, yellow)' },
+    { value: 5, name: 'linear-gradient(to right, red, yellow, green)' },
+    { value: 6, name: '(to right, red 0%, yellow 50%, green 100%)' },
+    { value: 7, name: 'linear-gradient(to bottom left, red, yellow)' }
+  ]
+
   const changeBackgroundImage = (value: string) => {
     backgroundImage.value = value
     viewRef.value?.style.setProperty('background-image', value)
+  }
+
+  const radioChangeBackgroundImage = (index: number) => {
+    const selectedItem = backgroundImageEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBackgroundImage(selectedItem.name)
+    }
+  }
+
+  const inputChangeBackgroundImage = (value: string) => {
+    changeBackgroundImage(value)
   }
 
 </script>
