@@ -1,7 +1,6 @@
 <template>
     <view slot="refresher" class="refresh-box">
-      <!-- <loading v-if="state == 2" class="refresh-icon"></loading> -->
-      <loading ref="loadingRef" :paused="state != 2" class="refresh-icon"></loading>
+      <image v-if="state == 2" class="refresh-icon" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/refresh-box-run.gif" mode="widthFix"></image>
       <text class="tip-text">{{text[state]}}</text>
     </view>
 </template>
@@ -10,7 +9,7 @@
 
 
 // Props
-const props = defineProps({
+defineProps({
   state: {
     type: Number,
     default: 0
@@ -18,22 +17,7 @@ const props = defineProps({
 })
 
 // Data
-const text = ref(['下拉刷新', '松手刷新', '正在刷新', ""])
-const loadingRef = ref<UniElement | null>(null)
-
-// 暴露给父组件的方法
-defineExpose({
-  setDY: (dy: number) => {
-    if (loadingRef.value != null) {
-      // 根据下拉距离计算旋转角度
-      const maxDistance = 200; // 最大下拉距离
-      const maxRotation = 540; // 最大旋转角度
-      const rotation = Math.min((dy / maxDistance) * maxRotation, maxRotation);
-      // 使用 style.setProperty 设置 transform
-      loadingRef.value!.style.setProperty('transform', `rotate(${rotation}deg)`);
-    }
-  }
-})
+const text = ref(['继续下拉执行刷新', '释放立即刷新', '刷新中', ""])
 </script>
 
 <style>
