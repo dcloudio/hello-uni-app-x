@@ -34,13 +34,43 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 margin-bottom 测试</text>
-        <view style="width: 250px;height: 250px;background-color: gray;">
-          <view class="common" style="background-color: red;"></view>
-          <view ref="viewRef" class="common" :style="{ marginBottom: marginBottom }">
-            <text>当前 margin-bottom: {{marginBottom}}</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin-bottom 测试</text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{marginBottom}}</text>
+          <text class="test-info">获取值: {{marginBottomActual}}</text>
+          <view class="test-box">
+            <view class="common" style="background-color: red;"></view>
+            <view ref="viewRef" class="common" :style="{ marginBottom: marginBottom }">
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+            <view class="common" style="background-color: blue;"></view>
           </view>
-          <view class="common" style="background-color: blue;"></view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{marginBottom}}</text>
+          <text class="test-info">获取值: {{marginBottomActualText}}</text>
+          <view class="test-box">
+            <text class="common-text" style="background-color: red;">红色</text>
+            <text ref="textRef" class="common-text" :style="{ marginBottom: marginBottom }">text测试</text>
+            <text class="common-text" style="background-color: blue;">蓝色</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{marginBottom}}</text>
+          <text class="test-info">获取值: {{marginBottomActualImage}}</text>
+          <view class="test-box">
+            <image class="common-image" style="background-color: red;" src="/static/logo.png"></image>
+            <image ref="imageRef" class="common-image" :style="{ marginBottom: marginBottom }" src="/static/logo.png"></image>
+            <image class="common-image" style="background-color: blue;" src="/static/logo.png"></image>
+          </view>
         </view>
       </view>
       <view class="uni-common-mt uni-common-mb">
@@ -58,7 +88,12 @@
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const marginBottom = ref('25px')
+  const marginBottomActual = ref('')
+  const marginBottomActualText = ref('')
+  const marginBottomActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const marginBottomEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -72,7 +107,18 @@
 
   const changeMarginBottom = (value: string) => {
     marginBottom.value = value
+    // view 元素
     viewRef.value?.style.setProperty('margin-bottom', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('margin-bottom')
+    marginBottomActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('margin-bottom', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('margin-bottom')
+    marginBottomActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('margin-bottom', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('margin-bottom')
+    marginBottomActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangeMarginBottom = (index: number) => {
@@ -85,11 +131,59 @@
   const inputChangeMarginBottom = (value: string) => {
     changeMarginBottom(value)
   }
+
+  // 页面初次渲染完成后获取初始值
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('margin-bottom')
+    marginBottomActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('margin-bottom')
+    marginBottomActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('margin-bottom')
+    marginBottomActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
   .common {
     height: 50px;
     background-color: green;
+  }
+
+  .common-text {
+    height: 50px;
+    background-color: green;
+    font-size: 14px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 180px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

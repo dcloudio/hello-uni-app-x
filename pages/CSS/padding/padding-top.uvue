@@ -26,10 +26,38 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 padding-top 测试</text>
-        <text>padding-top: {{paddingTop}}</text>
-        <view ref="viewRef" class="common" :style="{ paddingTop: paddingTop }">
-          <view style="flex-grow: 1;background-color: red;"><text>当前 padding-top: {{paddingTop}}</text></view>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 padding-top 测试</text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{paddingTop}}</text>
+          <text class="test-info">获取值: {{paddingTopActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common" :style="{ paddingTop: paddingTop }">
+              <view style="flex-grow: 1;background-color: red;"></view>
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{paddingTop}}</text>
+          <text class="test-info">获取值: {{paddingTopActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-text" :style="{ paddingTop: paddingTop }">text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{paddingTop}}</text>
+          <text class="test-info">获取值: {{paddingTopActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image" :style="{ paddingTop: paddingTop }" src="/static/logo.png"></image>
+          </view>
         </view>
       </view>
 
@@ -48,7 +76,12 @@
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const paddingTop = ref('25px')
+  const paddingTopActual = ref('')
+  const paddingTopActualText = ref('')
+  const paddingTopActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const paddingTopEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -61,7 +94,18 @@
 
   const changePaddingTop = (value: string) => {
     paddingTop.value = value
+    // view 元素
     viewRef.value?.style.setProperty('padding-top', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('padding-top')
+    paddingTopActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('padding-top', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('padding-top')
+    paddingTopActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('padding-top', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('padding-top')
+    paddingTopActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangePaddingTop = (index: number) => {
@@ -74,17 +118,61 @@
   const inputChangePaddingTop = (value: string) => {
     changePaddingTop(value)
   }
+
+  // 页面初次渲染完成后获取初始值
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('padding-top')
+    paddingTopActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('padding-top')
+    paddingTopActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('padding-top')
+    paddingTopActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
   .common {
-    width: 250px;
-    height: 100px;
+    width: 100%;
+    height: 80px;
     background-color: gray;
   }
-  .tips{
+
+  .common-text {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
     font-size: 14px;
-    color:#a7a7a7;
-    background-color: #ffebbb;
+    color: white;
+  }
+
+  .common-image {
+    width: 80px;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: lightgray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

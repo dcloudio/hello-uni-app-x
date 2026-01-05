@@ -92,10 +92,36 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 margin 测试</text>
-        <view style="width: 250px;height: 100px;background-color: gray;">
-          <view ref="viewRef" class="common" style="width: 150px;" :style="{ margin: margin }">
-            <text>当前 margin: {{margin}}</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 margin 测试</text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{margin}}</text>
+          <text class="test-info">获取值: {{marginActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common" style="width: 100px;" :style="{ margin: margin }">
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{margin}}</text>
+          <text class="test-info">获取值: {{marginActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-text" style="width: 100px;" :style="{ margin: margin }">text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{margin}}</text>
+          <text class="test-info">获取值: {{marginActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image" :style="{ margin: margin }" src="/static/logo.png"></image>
           </view>
         </view>
       </view>
@@ -114,7 +140,12 @@
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const margin = ref('0 auto')
+  const marginActual = ref('')
+  const marginActualText = ref('')
+  const marginActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const marginAutoEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -126,7 +157,18 @@
 
   const changeMargin = (value: string) => {
     margin.value = value
+    // view 元素
     viewRef.value?.style.setProperty('margin', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('margin')
+    marginActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('margin', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('margin')
+    marginActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('margin', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('margin')
+    marginActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangeMargin = (index: number) => {
@@ -139,11 +181,59 @@
   const inputChangeMargin = (value: string) => {
     changeMargin(value)
   }
+
+  // 页面初次渲染完成后获取初始值
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('margin')
+    marginActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('margin')
+    marginActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('margin')
+    marginActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
   .common {
     height: 50px;
     background-color: green;
+  }
+
+  .common-text {
+    height: 50px;
+    background-color: green;
+    font-size: 14px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>
