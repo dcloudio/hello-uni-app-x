@@ -57,8 +57,8 @@ describe('component-native-web-view', () => {
   it('test touch event', async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
     await program.tap({
-      x: 1,
-      y: windowInfo.safeAreaInsets.top + 44 + 1
+      x: 10,
+      y: windowInfo.safeAreaInsets.top + 44 + 10
     });
     await page.waitFor(500);
     if (!isIOS && !isAndroid) {
