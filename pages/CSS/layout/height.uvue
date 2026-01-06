@@ -21,18 +21,44 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 height 测试</text>
-        <!-- 固定高度的父容器，避免设置百分比时占比过大，撑开页面或覆盖下方内容 -->
-        <view style="height: 200px;">
-          <view ref="viewRef" class="common" :style="{ height: height }">
-            <text>当前 height: {{height}}</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 height 测试</text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{height}}</text>
+          <text class="test-info">获取值: {{heightActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic" :style="{ height: height }">
+              <text>view测试</text>
+            </view>
           </view>
         </view>
-        <view class="uni-common-mt uni-common-mb">
-          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
-          <enum-data :items="heightEnum" title="height 枚举值" @change="radioChangeHeight" :compact="true"></enum-data>
-          <input-data :defaultValue="height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{height}}</text>
+          <text class="test-info">获取值: {{heightActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic" :style="{ height: height }">text测试</text>
+          </view>
         </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{height}}</text>
+          <text class="test-info">获取值: {{heightActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic" :style="{ height: height }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="heightEnum" title="height 枚举值" @change="radioChangeHeight" :compact="true"></enum-data>
+        <input-data :defaultValue="height" title="height 自定义值" type="text" @confirm="inputChangeHeight"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -40,7 +66,7 @@
   <!-- #endif -->
 </template>
 
-<script setup>
+<script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const heightEnum: ItemType[] = [
@@ -48,18 +74,34 @@
     { value: 1, name: '0' },
     { value: 2, name: '0px' },
     { value: 3, name: '50px' },
-    { value: 4, name: '200px' },
+    { value: 4, name: '150px' },
     { value: 5, name: '0%' },
     { value: 6, name: '50%' },
     { value: 7, name: 'auto' }
   ]
 
   const height = ref('100px')
+  const heightActual = ref('')
+  const heightActualText = ref('')
+  const heightActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const changeHeight = (value: string) => {
     height.value = value
+    // view 元素
     viewRef.value?.style.setProperty('height', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('height')
+    heightActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('height', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('height')
+    heightActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('height', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('height')
+    heightActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangeHeight = (index: number) => {
@@ -72,11 +114,50 @@
   const inputChangeHeight = (value: string) => {
     changeHeight(value)
   }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('height')
+    heightActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('height')
+    heightActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('height')
+    heightActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
   .common {
     width: 250px;
     background-color: red;
+  }
+
+  .common-dynamic {
+    width: 100px;
+    background-color: red;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 200px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>
