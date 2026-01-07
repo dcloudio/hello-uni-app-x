@@ -23,12 +23,12 @@ describe('Button.uvue', () => {
     await btn.tap()
     expect(await page.data('data.count')).toEqual(1)
     await setPageData({
-      disabled_boolean: true,
+      disabled_boolean: true
     })
     await btn.tap()
     expect(await page.data('data.count')).toEqual(1)
     await setPageData({
-      disabled_boolean: false,
+      disabled_boolean: false
     })
     await btn.tap()
     expect(await page.data('data.count')).toEqual(2)
@@ -72,6 +72,7 @@ describe('Button.uvue', () => {
   it('disabled', async () => {
     const btn = await page.$('.btn')
     // TODO
+    await setPageData({disabled_boolean: false})
     const newValue1 = await btn.property('disabled')
     expect(newValue1.toString()).toBe(false + '')
     await setPageData({disabled_boolean: true})
