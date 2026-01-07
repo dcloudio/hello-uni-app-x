@@ -37,27 +37,59 @@
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">style.setProperty 动态设置 flex-shrink 测试</text>
-      <text>红色块 flex-shrink: {{flexShrink}}, 绿色块 flex-shrink: 1</text>
-      <text style="font-size: 12px; color: #666;">容器200px，2块各150px=300px。flex-shrink: 0 不收缩</text>
-      <view style="
-          width: 200px;
-          height: 150px;
-          background-color: gray;
-          flex-direction: row;
-        ">
-        <view ref="viewRef" class="box" style="background-color: red;" :style="{ flexShrink: flexShrink }">
-          <text style="color: white; font-weight: bold;">{{flexShrink}}</text>
-        </view>
-        <view class="box" style="background-color: green; flex-shrink: 1;">
-          <text style="color: white;">1</text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-shrink 测试</text>
+    </view>
+
+    <view class="test-container">
+      <!-- view 组件测试 -->
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="test-info">设置值: {{flexShrink}}</text>
+        <text class="test-info">获取值: {{flexShrinkActual}}</text>
+        <view class="test-box">
+          <view class="test-flex-container">
+            <view class="common-image test-red"></view>
+            <view ref="viewRef" class="common-image test-green" :style="{ flexShrink: flexShrink }">
+              <text class="test-label">{{flexShrink}}</text>
+            </view>
+            <view class="common-image test-blue"></view>
+          </view>
         </view>
       </view>
-      <view class="uni-common-mt uni-common-mb">
-        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
-        <enum-data :items="flexShrinkEnum" title="flex-shrink 枚举值" @change="radioChangeFlexShrink" :compact="true"></enum-data>
-        <input-data :defaultValue="flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
+
+      <!-- text 组件测试 -->
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="test-info">设置值: {{flexShrink}}</text>
+        <text class="test-info">获取值: {{flexShrinkActualText}}</text>
+        <view class="test-box">
+          <view class="test-flex-container">
+            <text class="common-text test-red">红色</text>
+            <text ref="textRef" class="common-text test-green" :style="{ flexShrink: flexShrink }">text</text>
+            <text class="common-text test-blue">蓝色</text>
+          </view>
+        </view>
       </view>
+
+      <!-- image 组件测试 -->
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="test-info">设置值: {{flexShrink}}</text>
+        <text class="test-info">获取值: {{flexShrinkActualImage}}</text>
+        <view class="test-box">
+          <view class="test-flex-container">
+            <image class="common-image test-red" src="/static/logo.png"></image>
+            <image ref="imageRef" class="common-image test-green" :style="{ flexShrink: flexShrink }" src="/static/logo.png"></image>
+            <image class="common-image test-blue" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      <enum-data :items="flexShrinkEnum" title="flex-shrink 枚举值" @change="radioChangeFlexShrink" :compact="true"></enum-data>
+      <input-data :defaultValue="flexShrink" title="flex-shrink 自定义值" type="text" @confirm="inputChangeFlexShrink"></input-data>
     </view>
   </view>
 </template>
@@ -74,11 +106,27 @@
   ]
 
   const flexShrink = ref('1')
+  const flexShrinkActual = ref('')
+  const flexShrinkActualText = ref('')
+  const flexShrinkActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const changeFlexShrink = (value: string) => {
     flexShrink.value = value
+    // view 元素
     viewRef.value?.style.setProperty('flex-shrink', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('flex-shrink')
+    flexShrinkActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('flex-shrink', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('flex-shrink')
+    flexShrinkActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('flex-shrink', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('flex-shrink')
+    flexShrinkActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangeFlexShrink = (index: number) => {
@@ -91,6 +139,18 @@
   const inputChangeFlexShrink = (value: string) => {
     changeFlexShrink(value)
   }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('flex-shrink')
+    flexShrinkActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('flex-shrink')
+    flexShrinkActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('flex-shrink')
+    flexShrinkActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
@@ -100,10 +160,62 @@
     justify-content: center;
     align-items: center;
   }
-  .box{
-    width: 150px;
-    height: 50px;
-    justify-content: center;
-    align-items: center;
+
+  .common-text {
+    height: 30px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 30px;
+    height: 30px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+  }
+
+  .test-red {
+    background-color: red;
+  }
+
+  .test-blue {
+    background-color: blue;
+  }
+
+  .test-green {
+    background-color: green;
+  }
+
+  .test-label {
+    font-size: 12px;
+    color: white;
   }
 </style>

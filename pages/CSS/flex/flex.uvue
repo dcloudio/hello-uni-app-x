@@ -100,27 +100,59 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 flex 测试</text>
-        <text>红色块 flex: {{flexProp}}, 绿色块 flex: 1</text>
-        <text style="font-size: 12px; color: #666;">容器剩余空间按 flex 比例分配</text>
-        <view style="
-            width: 250px;
-            height: 150px;
-            background-color: gray;
-            flex-direction: row;
-          ">
-          <view ref="viewRef" class="box" style="background-color: red;" :style="{ flex: flexProp }">
-            <text style="color: white; font-weight: bold;">{{flexProp}}</text>
-          </view>
-          <view class="box" style="background-color: green; flex: 1;">
-            <text style="color: white;">1</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex 测试</text>
+      </view>
+
+      <view class="test-container">
+        <!-- view 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{flexProp}}</text>
+          <text class="test-info">获取值: {{flexActual}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-dynamic" style="background-color: red;"></view>
+              <view ref="viewRef" class="common-dynamic" style="background-color: green;" :style="{ flex: flexProp }">
+                <text class="text-flex">view测试</text>
+              </view>
+              <view class="common-dynamic" style="background-color: blue;"></view>
+            </view>
           </view>
         </view>
-        <view class="uni-common-mt uni-common-mb">
-          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
-          <enum-data :items="flexEnum" title="flex 枚举值" @change="radioChangeFlex" :compact="true"></enum-data>
-          <input-data :defaultValue="flexProp" title="flex 自定义值" type="text" @confirm="inputChangeFlex"></input-data>
+
+        <!-- text 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{flexProp}}</text>
+          <text class="test-info">获取值: {{flexActualText}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-dynamic text-flex" style="background-color: red;">红色</text>
+              <text ref="textRef" class="common-dynamic text-flex" style="background-color: green;" :style="{ flex: flexProp }">text测试</text>
+              <text class="common-dynamic text-flex" style="background-color: blue;">蓝色</text>
+            </view>
+          </view>
         </view>
+
+        <!-- image 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{flexProp}}</text>
+          <text class="test-info">获取值: {{flexActualImage}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image" style="background-color: red;" src="/static/logo.png"></image>
+              <image ref="imageRef" class="common-image" style="background-color: green;" :style="{ flex: flexProp }" src="/static/logo.png"></image>
+              <image class="common-image" style="background-color: blue;" src="/static/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="flexEnum" title="flex 枚举值" @change="radioChangeFlex" :compact="true"></enum-data>
+        <input-data :defaultValue="flexProp" title="flex 自定义值" type="text" @confirm="inputChangeFlex"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -142,11 +174,27 @@
   ]
 
   const flexProp = ref('1')
+  const flexActual = ref('')
+  const flexActualText = ref('')
+  const flexActualImage = ref('')
   const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
 
   const changeFlex = (value: string) => {
     flexProp.value = value
+    // view 元素
     viewRef.value?.style.setProperty('flex', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('flex')
+    flexActual.value = actualValue ?? ''
+    // text 元素
+    textRef.value?.style.setProperty('flex', value)
+    const actualValueText = textRef.value?.style.getPropertyValue('flex')
+    flexActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRef.value?.style.setProperty('flex', value)
+    const actualValueImage = imageRef.value?.style.getPropertyValue('flex')
+    flexActualImage.value = actualValueImage ?? ''
   }
 
   const radioChangeFlex = (index: number) => {
@@ -159,6 +207,18 @@
   const inputChangeFlex = (value: string) => {
     changeFlex(value)
   }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('flex')
+    flexActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('flex')
+    flexActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('flex')
+    flexActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
@@ -173,5 +233,50 @@
     height: 50px;
     justify-content: center;
     align-items: center;
+  }
+
+  .common-dynamic {
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .common-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  .text-flex {
+    font-size: 12px;
+    color: white;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 60px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
   }
 </style>
