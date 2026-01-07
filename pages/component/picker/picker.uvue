@@ -132,6 +132,13 @@
     name : string
   }
 
+  type CityItemData = {
+    title: string
+    id: string
+    disabled?: boolean
+    children: Array<CityItemData>
+  }
+
   type PageDataType = {
     title: string;
     selectorArray: DataType[];
@@ -139,7 +146,7 @@
     multiArray: Array<string[]>;
     multiIndex: number[];
     cityArray: Array<string[]>;
-    allCityData: any[];
+    allCityData: CityItemData[];
     cityIndex: number[];
     region: string[];
     dayDate: string;
@@ -197,7 +204,7 @@
 
   // #ifndef MP-WEIXIN
   function initCityData() {
-    const cityDataList = JSON.parse(cityData) as any[]
+    const cityDataList = JSON.parse(cityData) as CityItemData[]
     data.allCityData = cityDataList
     data.cityArray[0] = cityDataList.map(item => item.title)
     // 使用当前选择的省份索引来初始化城市数据
