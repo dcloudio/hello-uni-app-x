@@ -18,12 +18,22 @@
           <text class="video-info-text">容器：第 {{i}} 个</text>
           <text class="video-info-text">内容：{{item.content}}</text>
         </view>
+        <!-- 评论按钮 -->
+        <view class="comment-btn" @click="openCommentPanel">
+          <view class="comment-icon">
+            <text class="comment-icon-text">💬</text>
+          </view>
+          <text class="comment-count">{{commentCount}}</text>
+        </view>
       </swiper-item>
     </swiper>
     <view class="debug-info" v-if="showDebugInfo">
       <text class="status-text">debug-info 播放状态:</text>
       <text class="status-text" v-for="(value,index) in stateList">第{{index+1}}个:{{ value }}</text>
     </view>
+
+    <!-- 评论面板 -->
+    <comment-panel :show="showCommentPanel" @close="closeCommentPanel" @countChange="onCommentCountChange"></comment-panel>
   </view>
 </template>
 <script setup lang="uts">
@@ -33,6 +43,7 @@ let page : number = 0,
   currentPageIsShow : boolean = true;
 
 import { state, setNetless } from '@/store/index.uts'
+import CommentPanel from './comment-panel.uvue'
 
 // Template ref
 const backButton = ref<UniElement | null>(null)
@@ -44,6 +55,22 @@ const current = ref(0 as number)
 const index = ref(0)
 const stateList = ref(["pause", "unPlay", "unPlay"] as string[])
 const showDebugInfo = ref(false as boolean)
+
+// 评论相关
+const showCommentPanel = ref(false as boolean)
+const commentCount = ref(0 as number)
+
+function openCommentPanel() {
+  showCommentPanel.value = true
+}
+
+function closeCommentPanel() {
+  showCommentPanel.value = false
+}
+
+function onCommentCountChange(count : number) {
+  commentCount.value = count
+}
 
 function getVideoContext(idx : number) : VideoContext {
   const videoContextMap = $videoContextMap.value
@@ -319,5 +346,34 @@ onUnload(() => {
   .back-img {
     width: 18px;
     height: 18px;
+  }
+
+  /* 评论按钮 */
+  .comment-btn {
+    position: absolute;
+    right: 15px;
+    bottom: 80px;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .comment-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .comment-icon-text {
+    font-size: 20px;
+  }
+
+  .comment-count {
+    font-size: 12px;
+    color: #ffffff;
+    text-align: center;
   }
 </style>
