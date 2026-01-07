@@ -25,7 +25,7 @@
     </list-item type="20">
     <list-item class="loading">
       <!-- <uni-loading :loading="loading" color="#999" :text="loadingText"></uni-loading> -->
-      <loading v-if="loading" style="color: #999"></loading>
+      <loading v-if="loadingRef" style="color: #999"></loading>
       <text v-if="isEnded" style="color: #999">到底了</text>
     </list-item>
   </list-view>
@@ -57,14 +57,14 @@ const props = defineProps({
   id: { type: String, default: '' }
 })
 
-const loading = ref(false)
+const loadingRef = ref(false)
 const dataList = ref<ListItem[]>([])
 const isEnded = ref(false)
 const loadingError = ref('')
 const currentPage = ref(1)
 
 const loadingText = computed((): string => {
-  if (loading.value) {
+  if (loadingRef.value) {
     return "加载中..."
   } else if (isEnded.value) {
     return "没有更多了"
@@ -93,10 +93,10 @@ function convertToStarUnicode(score : number) : string {
 }
 
 function loadData(loadComplete : (() => void) | null) {
-  if (loading.value || isEnded.value) {
+  if (loadingRef.value || isEnded.value) {
     return
   }
-  loading.value = true
+  loadingRef.value = true
 
   uni.request<ResponseDataType>({
     url: SERVER_URL,
@@ -122,7 +122,7 @@ function loadData(loadComplete : (() => void) | null) {
       loadingError.value = err.errMsg
     },
     complete: () => {
-      loading.value = false
+      loadingRef.value = false
       if (loadComplete != null) {
         loadComplete()
       }
