@@ -63,6 +63,7 @@
         </view>
       </view>
 
+      <!-- 普通版本 -->
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-items 测试</text>
         <text class="test-info">设置值: {{alignItems}}</text>
@@ -74,11 +75,26 @@
             <view class="test-item-small" style="background-color: blue;"></view>
           </view>
         </view>
-        <view class="uni-common-mt uni-common-mb">
-          <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">测试拍平</text>
+        <text class="test-info">设置值: {{alignItems}}</text>
+        <text class="test-info">获取值: {{alignItemsActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="test-flex-container" :style="{ alignItems: alignItems }" flatten>
+            <view class="test-item-small" style="background-color: red;"></view>
+            <view class="test-item-small" style="background-color: green;"></view>
+            <view class="test-item-small" style="background-color: blue;"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
           <enum-data :items="alignItemsEnum" title="align-items 枚举值" @change="radioChangeAlignItems" :compact="true"></enum-data>
           <input-data :defaultValue="alignItems" title="align-items 自定义值" type="text" @confirm="inputChangeAlignItems"></input-data>
-        </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -99,13 +115,21 @@
 
   const alignItems = ref('center')
   const alignItemsActual = ref('')
+  const alignItemsActualFlat = ref('')
   const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
 
   const changeAlignItems = (value: string) => {
     alignItems.value = value
+    // 普通版本
     viewRef.value?.style.setProperty('align-items', value)
     const actualValue = viewRef.value?.style.getPropertyValue('align-items')
     alignItemsActual.value = actualValue ?? ''
+
+    // 拍平版本
+    viewRefFlat.value?.style.setProperty('align-items', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-items')
+    alignItemsActualFlat.value = actualValueFlat ?? ''
   }
 
   const radioChangeAlignItems = (index: number) => {
@@ -122,6 +146,9 @@
   onReady(() => {
     const actualValue = viewRef.value?.style.getPropertyValue('align-items')
     alignItemsActual.value = actualValue ?? ''
+
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-items')
+    alignItemsActualFlat.value = actualValueFlat ?? ''
   })
 </script>
 

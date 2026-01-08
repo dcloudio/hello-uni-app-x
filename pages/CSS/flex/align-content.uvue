@@ -129,12 +129,30 @@
         </view>
       </view>
 
+      <!-- 普通版本 -->
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 align-content 测试</text>
         <text class="test-info">设置值: {{alignContent}}</text>
         <text class="test-info">获取值: {{alignContentActual}}</text>
         <view class="test-box">
           <view ref="viewRef" class="test-flex-container" :style="{ alignContent: alignContent }">
+            <view class="test-item-small" style="background-color: red;"></view>
+            <view class="test-item-small" style="background-color: green;"></view>
+            <view class="test-item-small" style="background-color: blue;"></view>
+            <view class="test-item-small" style="background-color: red;"></view>
+            <view class="test-item-small" style="background-color: green;"></view>
+            <view class="test-item-small" style="background-color: blue;"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">测试拍平</text>
+        <text class="test-info">设置值: {{alignContent}}</text>
+        <text class="test-info">获取值: {{alignContentActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="test-flex-container" :style="{ alignContent: alignContent }" flatten>
             <view class="test-item-small" style="background-color: red;"></view>
             <view class="test-item-small" style="background-color: green;"></view>
             <view class="test-item-small" style="background-color: blue;"></view>
@@ -171,13 +189,21 @@
 
   const alignContent = ref('center')
   const alignContentActual = ref('')
+  const alignContentActualFlat = ref('')
   const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
 
   const changeAlignContent = (value: string) => {
     alignContent.value = value
+    // 普通版本
     viewRef.value?.style.setProperty('align-content', value)
     const actualValue = viewRef.value?.style.getPropertyValue('align-content')
     alignContentActual.value = actualValue ?? ''
+
+    // 拍平版本
+    viewRefFlat.value?.style.setProperty('align-content', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-content')
+    alignContentActualFlat.value = actualValueFlat ?? ''
   }
 
   const radioChangeAlignContent = (index: number) => {
@@ -194,6 +220,9 @@
   onReady(() => {
     const actualValue = viewRef.value?.style.getPropertyValue('align-content')
     alignContentActual.value = actualValue ?? ''
+
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-content')
+    alignContentActualFlat.value = actualValueFlat ?? ''
   })
 </script>
 

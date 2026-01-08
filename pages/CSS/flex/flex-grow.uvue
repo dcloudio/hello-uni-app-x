@@ -40,6 +40,7 @@
       <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-grow 测试</text>
     </view>
 
+    <!-- 普通版本 -->
     <view class="test-container">
       <!-- view 组件测试 -->
       <view class="test-item">
@@ -86,6 +87,53 @@
       </view>
     </view>
 
+    <!-- 拍平版本 -->
+    <view class="test-container">
+      <!-- view 组件拍平测试 -->
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="test-info">设置值: {{flexGrow}}</text>
+        <text class="test-info">获取值: {{flexGrowActualFlat}}</text>
+        <view class="test-box">
+          <view class="test-flex-container">
+            <view class="common-image test-red"></view>
+            <view ref="viewRefFlat" class="common-image test-green" :style="{ flexGrow: flexGrow }" flatten>
+              <text class="common-text">{{flexGrow}}</text>
+            </view>
+            <view class="common-image test-blue"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- text 组件拍平测试 -->
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="test-info">设置值: {{flexGrow}}</text>
+        <text class="test-info">获取值: {{flexGrowActualTextFlat}}</text>
+        <view class="test-box">
+          <view class="test-flex-container">
+            <text class="common-text test-red">红色</text>
+            <text ref="textRefFlat" class="common-text test-green" :style="{ flexGrow: flexGrow }" flatten>text</text>
+            <text class="common-text test-blue">蓝色</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- image 组件拍平测试 -->
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="test-info">设置值: {{flexGrow}}</text>
+        <text class="test-info">获取值: {{flexGrowActualImageFlat}}</text>
+        <view class="test-box">
+          <view class="test-flex-container">
+            <image class="common-image test-red" src="/static/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image test-green" :style="{ flexGrow: flexGrow }" flatten src="/static/logo.png"></image>
+            <image class="common-image test-blue" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <view class="uni-common-mt uni-common-mb">
       <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
       <enum-data :items="flexGrowEnum" title="flex-grow 枚举值" @change="radioChangeFlexGrow" :compact="true"></enum-data>
@@ -107,11 +155,17 @@
 
   const flexGrow = ref('0')
   const flexGrowActual = ref('')
+  const flexGrowActualFlat = ref('')
   const flexGrowActualText = ref('')
   const flexGrowActualImage = ref('')
+  const flexGrowActualTextFlat = ref('')
+  const flexGrowActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const changeFlexGrow = (value: string) => {
     flexGrow.value = value
@@ -119,14 +173,28 @@
     viewRef.value?.style.setProperty('flex-grow', value)
     const actualValue = viewRef.value?.style.getPropertyValue('flex-grow')
     flexGrowActual.value = actualValue ?? ''
+    // view 元素 拍平
+    viewRefFlat.value?.style.setProperty('flex-grow', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualFlat.value = actualValueFlat ?? ''
+
     // text 元素
     textRef.value?.style.setProperty('flex-grow', value)
     const actualValueText = textRef.value?.style.getPropertyValue('flex-grow')
     flexGrowActualText.value = actualValueText ?? ''
+    // text 元素 拍平
+    textRefFlat.value?.style.setProperty('flex-grow', value)
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualTextFlat.value = actualValueTextFlat ?? ''
+
     // image 元素
     imageRef.value?.style.setProperty('flex-grow', value)
     const actualValueImage = imageRef.value?.style.getPropertyValue('flex-grow')
     flexGrowActualImage.value = actualValueImage ?? ''
+    // image 元素 拍平
+    imageRefFlat.value?.style.setProperty('flex-grow', value)
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeFlexGrow = (index: number) => {
@@ -144,6 +212,10 @@
     // view 元素
     const actualValue = viewRef.value?.style.getPropertyValue('flex-grow')
     flexGrowActual.value = actualValue ?? ''
+    // view 元素 拍平
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualFlat.value = actualValueFlat ?? ''
+
     // text 元素
     const actualValueText = textRef.value?.style.getPropertyValue('flex-grow')
     flexGrowActualText.value = actualValueText ?? ''

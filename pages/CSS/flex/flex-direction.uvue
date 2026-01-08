@@ -59,12 +59,27 @@
         </view>
       </view>
 
+      <!-- 普通版本 -->
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-direction 测试</text>
         <text class="test-info">设置值: {{flexDirection}}</text>
         <text class="test-info">获取值: {{flexDirectionActual}}</text>
         <view class="test-box">
           <view ref="viewRef" class="test-flex-container" :style="{ flexDirection: flexDirection }">
+            <view class="test-item-small" style="background-color: red;"></view>
+            <view class="test-item-small" style="background-color: green;"></view>
+            <view class="test-item-small" style="background-color: blue;"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">测试拍平</text>
+        <text class="test-info">设置值: {{flexDirection}}</text>
+        <text class="test-info">获取值: {{flexDirectionActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="test-flex-container" :style="{ flexDirection: flexDirection }" flatten>
             <view class="test-item-small" style="background-color: red;"></view>
             <view class="test-item-small" style="background-color: green;"></view>
             <view class="test-item-small" style="background-color: blue;"></view>
@@ -96,13 +111,21 @@
 
   const flexDirection = ref('row')
   const flexDirectionActual = ref('')
+  const flexDirectionActualFlat = ref('')
   const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
 
   const changeFlexDirection = (value: string) => {
     flexDirection.value = value
+    // 普通版本
     viewRef.value?.style.setProperty('flex-direction', value)
     const actualValue = viewRef.value?.style.getPropertyValue('flex-direction')
     flexDirectionActual.value = actualValue ?? ''
+
+    // 拍平版本
+    viewRefFlat.value?.style.setProperty('flex-direction', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction')
+    flexDirectionActualFlat.value = actualValueFlat ?? ''
   }
 
   const radioChangeFlexDirection = (index: number) => {
@@ -119,6 +142,9 @@
   onReady(() => {
     const actualValue = viewRef.value?.style.getPropertyValue('flex-direction')
     flexDirectionActual.value = actualValue ?? ''
+
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction')
+    flexDirectionActualFlat.value = actualValueFlat ?? ''
   })
 </script>
 
