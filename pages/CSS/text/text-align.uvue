@@ -15,10 +15,11 @@
 		</view>
 
 		<view class="uni-common-mt">
-			<text class="uni-title-text">style.setProperty 动态设置 text-align 测试</text>
-			<text>text-align: {{textAlign}}</text>
+			<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-align 测试</text>
+			<text class="test-info">设置值: {{textAlign}}</text>
+			<text class="test-info">获取值: {{textAlignActual}}</text>
 			<view class="box" style="height: 80px;">
-				<text ref="viewRef" class="common" :style="{ textAlign: textAlign }">当前 text-align: {{textAlign}}</text>
+				<text ref="textRef" class="common" :style="{ textAlign: textAlign }">当前 text-align: {{textAlign}}</text>
 			</view>
 			<view class="uni-common-mt uni-common-mb">
 				<text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
@@ -40,11 +41,14 @@
 	]
 
 	const textAlign = ref('left')
-	const viewRef = ref(null as UniElement | null)
+	const textAlignActual = ref('')
+	const textRef = ref(null as UniTextElement | null)
 
 	const changeTextAlign = (value: string) => {
 		textAlign.value = value
-		viewRef.value?.style.setProperty('text-align', value)
+		textRef.value?.style.setProperty('text-align', value)
+		const actualValue = textRef.value?.style.getPropertyValue('text-align')
+		textAlignActual.value = actualValue ?? ''
 	}
 
 	const radioChangeTextAlign = (index: number) => {
@@ -57,6 +61,11 @@
 	const inputChangeTextAlign = (value: string) => {
 		changeTextAlign(value)
 	}
+
+	onReady(() => {
+		const actualValue = textRef.value?.style.getPropertyValue('text-align')
+		textAlignActual.value = actualValue ?? ''
+	})
 </script>
 
 <style>

@@ -11,10 +11,11 @@
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">style.setProperty 动态设置 font-style 测试</text>
-      <text>font-style: {{fontStyle}}</text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-style 测试</text>
+      <text class="test-info">设置值: {{fontStyle}}</text>
+      <text class="test-info">获取值: {{fontStyleActual}}</text>
       <view class="common">
-        <text ref="viewRef" class="common-size" :style="{ fontStyle: fontStyle }">当前 font-style: {{fontStyle}}</text>
+        <text ref="textRef" class="common-size" :style="{ fontStyle: fontStyle }">当前 font-style: {{fontStyle}}</text>
       </view>
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
@@ -35,11 +36,14 @@
   ]
 
   const fontStyle = ref('normal')
-  const viewRef = ref(null as UniElement | null)
+  const fontStyleActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeFontStyle = (value: string) => {
     fontStyle.value = value
-    viewRef.value?.style.setProperty('font-style', value)
+    textRef.value?.style.setProperty('font-style', value)
+    const actualValue = textRef.value?.style.getPropertyValue('font-style')
+    fontStyleActual.value = actualValue ?? ''
   }
 
   const radioChangeFontStyle = (index: number) => {
@@ -52,6 +56,11 @@
   const inputChangeFontStyle = (value: string) => {
     changeFontStyle(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('font-style')
+    fontStyleActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>

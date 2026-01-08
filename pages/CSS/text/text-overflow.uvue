@@ -52,9 +52,10 @@
         <!-- #endif -->
 
         <view class="margin-bottom-10 uni-common-mt">
-          <text class="uni-title-text">style.setProperty 动态设置 text-overflow 测试</text>
-          <text>text-overflow: {{textOverflow}}</text>
-          <text ref="viewRef" class="font-size-20" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '300px' }">{{multiLineText}}</text>
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-overflow 测试</text>
+          <text class="test-info">设置值: {{textOverflow}}</text>
+          <text class="test-info">获取值: {{textOverflowActual}}</text>
+          <text ref="textRef" class="font-size-20" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '300px' }">{{multiLineText}}</text>
           <view class="uni-common-mt uni-common-mb">
             <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
             <enum-data :items="textOverflowEnum" title="text-overflow 枚举值" @change="radioChangeTextOverflow" :compact="true"></enum-data>
@@ -81,11 +82,14 @@
   ]
 
   const textOverflow = ref('clip')
-  const viewRef = ref(null as UniElement | null)
+  const textOverflowActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeTextOverflow = (value: string) => {
     textOverflow.value = value
-    viewRef.value?.style.setProperty('text-overflow', value)
+    textRef.value?.style.setProperty('text-overflow', value)
+    const actualValue = textRef.value?.style.getPropertyValue('text-overflow')
+    textOverflowActual.value = actualValue ?? ''
   }
 
   const radioChangeTextOverflow = (index: number) => {
@@ -98,6 +102,11 @@
   const inputChangeTextOverflow = (value: string) => {
     changeTextOverflow(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('text-overflow')
+    textOverflowActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>

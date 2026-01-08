@@ -21,9 +21,10 @@
       <text class="text" style="text-shadow: 2px 4px rgba(202, 207, 17, 0.5);" flatten>text-shadow: 2px 4px rgba(202, 207, 17, 0.5)</text>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 text-shadow 测试</text>
-        <text>text-shadow: {{textShadow}}</text>
-        <text ref="viewRef" class="text" :style="{ textShadow: textShadow }">当前 text-shadow: {{textShadow}}</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-shadow 测试</text>
+        <text class="test-info">设置值: {{textShadow}}</text>
+        <text class="test-info">获取值: {{textShadowActual}}</text>
+        <text ref="textRef" class="text" :style="{ textShadow: textShadow }">当前 text-shadow: {{textShadow}}</text>
         <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
           <enum-data :items="textShadowEnum" title="text-shadow 枚举值" @change="radioChangeTextShadow" :compact="true"></enum-data>
@@ -51,11 +52,14 @@
   ]
 
   const textShadow = ref('1px 1px 2px pink')
-  const viewRef = ref(null as UniElement | null)
+  const textShadowActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeTextShadow = (value: string) => {
     textShadow.value = value
-    viewRef.value?.style.setProperty('text-shadow', value)
+    textRef.value?.style.setProperty('text-shadow', value)
+    const actualValue = textRef.value?.style.getPropertyValue('text-shadow')
+    textShadowActual.value = actualValue ?? ''
   }
 
   const radioChangeTextShadow = (index: number) => {
@@ -68,6 +72,11 @@
   const inputChangeTextShadow = (value: string) => {
     changeTextShadow(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('text-shadow')
+    textShadowActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>

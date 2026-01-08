@@ -15,10 +15,11 @@
 		</view>
 
 		<view class="uni-common-mt">
-			<text class="uni-title-text">style.setProperty 动态设置 font-weight 测试</text>
-			<text>font-weight: {{fontWeight}}</text>
+			<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-weight 测试</text>
+			<text class="test-info">设置值: {{fontWeight}}</text>
+			<text class="test-info">获取值: {{fontWeightActual}}</text>
 			<view class="common" style="height:80px">
-				<text ref="viewRef" class="common-size" :style="{ fontWeight: fontWeight }">当前 font-weight: {{fontWeight}}</text>
+				<text ref="textRef" class="common-size" :style="{ fontWeight: fontWeight }">当前 font-weight: {{fontWeight}}</text>
 			</view>
 			<view class="uni-common-mt uni-common-mb">
 				<text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
@@ -43,11 +44,14 @@
 	]
 
 	const fontWeight = ref('normal')
-	const viewRef = ref(null as UniElement | null)
+	const fontWeightActual = ref('')
+	const textRef = ref(null as UniTextElement | null)
 
 	const changeFontWeight = (value: string) => {
 		fontWeight.value = value
-		viewRef.value?.style.setProperty('font-weight', value)
+		textRef.value?.style.setProperty('font-weight', value)
+		const actualValue = textRef.value?.style.getPropertyValue('font-weight')
+		fontWeightActual.value = actualValue ?? ''
 	}
 
 	const radioChangeFontWeight = (index: number) => {
@@ -60,6 +64,11 @@
 	const inputChangeFontWeight = (value: string) => {
 		changeFontWeight(value)
 	}
+
+	onReady(() => {
+		const actualValue = textRef.value?.style.getPropertyValue('font-weight')
+		fontWeightActual.value = actualValue ?? ''
+	})
 </script>
 
 <style>

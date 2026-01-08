@@ -17,10 +17,11 @@
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">style.setProperty 动态设置 color 测试</text>
-      <text>color: {{color}}</text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 color 测试</text>
+      <text class="test-info">设置值: {{color}}</text>
+      <text class="test-info">获取值: {{colorActual}}</text>
       <view class="box" style="height: 50px;">
-        <text ref="viewRef" class="common" :style="{ color: color }">当前 color: {{color}}</text>
+        <text ref="textRef" class="common" :style="{ color: color }">当前 color: {{color}}</text>
       </view>
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
@@ -47,11 +48,14 @@
   ]
 
   const color = ref('red')
-  const viewRef = ref(null as UniElement | null)
+  const colorActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeColor = (value: string) => {
     color.value = value
-    viewRef.value?.style.setProperty('color', value)
+    textRef.value?.style.setProperty('color', value)
+    const actualValue = textRef.value?.style.getPropertyValue('color')
+    colorActual.value = actualValue ?? ''
   }
 
   const radioChangeColor = (index: number) => {
@@ -64,6 +68,11 @@
   const inputChangeColor = (value: string) => {
     changeColor(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('color')
+    colorActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>

@@ -21,10 +21,11 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 text-decoration-line 测试</text>
-        <text>text-decoration-line: {{textDecorationLine}}</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-decoration-line 测试</text>
+        <text class="test-info">设置值: {{textDecorationLine}}</text>
+        <text class="test-info">获取值: {{textDecorationLineActual}}</text>
         <view class="content">
-          <text ref="viewRef" class="common" :style="{ textDecorationLine: textDecorationLine }">当前 text-decoration-line: {{textDecorationLine}}</text>
+          <text ref="textRef" class="common" :style="{ textDecorationLine: textDecorationLine }">当前 text-decoration-line: {{textDecorationLine}}</text>
         </view>
         <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
@@ -49,11 +50,14 @@
 	]
 
 	const textDecorationLine = ref('none')
-	const viewRef = ref(null as UniElement | null)
+	const textDecorationLineActual = ref('')
+	const textRef = ref(null as UniTextElement | null)
 
 	const changeTextDecorationLine = (value: string) => {
 		textDecorationLine.value = value
-		viewRef.value?.style.setProperty('text-decoration-line', value)
+		textRef.value?.style.setProperty('text-decoration-line', value)
+		const actualValue = textRef.value?.style.getPropertyValue('text-decoration-line')
+		textDecorationLineActual.value = actualValue ?? ''
 	}
 
 	const radioChangeTextDecorationLine = (index: number) => {
@@ -66,6 +70,11 @@
 	const inputChangeTextDecorationLine = (value: string) => {
 		changeTextDecorationLine(value)
 	}
+
+	onReady(() => {
+		const actualValue = textRef.value?.style.getPropertyValue('text-decoration-line')
+		textDecorationLineActual.value = actualValue ?? ''
+	})
 </script>
 
 <style>

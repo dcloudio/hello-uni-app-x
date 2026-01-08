@@ -324,9 +324,11 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">style.setProperty 动态设置 flex-flow 测试</text>
-        <text>flex-flow: {{flexFlow}}</text>
-        <view ref="viewRef" class="common" :style="{ flexFlow: flexFlow }">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-flow 测试</text>
+        <text class="test-info">设置值: {{flexFlow}}</text>
+        <text class="test-info">获取值: {{flexFlowActual}}</text>
+        <view class="test-box">
+          <view ref="viewRef" class="test-flex-container" :style="{ flexFlow: flexFlow }">
           <view style="
               width: 50px;
               height: 50px;
@@ -363,12 +365,14 @@
               background-color: blue;
               flex-shrink: 0;
             "></view>
+          </view>
         </view>
-        <view class="uni-common-mt uni-common-mb">
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
           <enum-data :items="flexFlowEnum" title="flex-flow 枚举值" @change="radioChangeFlexFlow" :compact="true"></enum-data>
           <input-data :defaultValue="flexFlow" title="flex-flow 自定义值" type="text" @confirm="inputChangeFlexFlow"></input-data>
-        </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -390,11 +394,14 @@
   ]
 
   const flexFlow = ref('row wrap')
+  const flexFlowActual = ref('')
   const viewRef = ref(null as UniElement | null)
 
   const changeFlexFlow = (value : string) => {
     flexFlow.value = value
     viewRef.value?.style.setProperty('flex-flow', value)
+    const actualValue = viewRef.value?.style.getPropertyValue('flex-flow')
+    flexFlowActual.value = actualValue ?? ''
   }
 
   const radioChangeFlexFlow = (index: number) => {
@@ -407,12 +414,34 @@
   const inputChangeFlexFlow = (value: string) => {
     changeFlexFlow(value)
   }
+
+  onReady(() => {
+    const actualValue = viewRef.value?.style.getPropertyValue('flex-flow')
+    flexFlowActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>
   .common {
     width: 250px;
     height: 250px;
+    background-color: gray;
+  }
+
+  .test-box {
+    width: 250px;
+    height: 200px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
     background-color: gray;
   }
 </style>

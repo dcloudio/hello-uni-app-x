@@ -28,9 +28,10 @@
 
 
       <view class="uni-common-mt">
-        <text class="uni-title-text title-color">style.setProperty 动态设置 font-family 测试</text>
-        <text>font-family: {{fontFamily}}</text>
-        <text ref="viewRef" class="common" :style="{ fontFamily: fontFamily }">当前 font-family: {{fontFamily}}</text>
+        <text class="uni-title-text title-color">setProperty 设置与 getPropertyValue 获取 font-family 测试</text>
+        <text class="test-info">设置值: {{fontFamily}}</text>
+        <text class="test-info">获取值: {{fontFamilyActual}}</text>
+        <text ref="textRef" class="common" :style="{ fontFamily: fontFamily }">当前 font-family: {{fontFamily}}</text>
         <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
           <enum-data :items="fontFamilyEnum" title="font-family 枚举值" @change="radioChangeFontFamily" :compact="true"></enum-data>
@@ -68,11 +69,14 @@
   ]
 
   const fontFamily = ref('monospace')
-  const viewRef = ref(null as UniElement | null)
+  const fontFamilyActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeFontFamily = (value: string) => {
     fontFamily.value = value
-    viewRef.value?.style.setProperty('font-family', value)
+    textRef.value?.style.setProperty('font-family', value)
+    const actualValue = textRef.value?.style.getPropertyValue('font-family')
+    fontFamilyActual.value = actualValue ?? ''
   }
 
   const radioChangeFontFamily = (index: number) => {
@@ -85,6 +89,11 @@
   const inputChangeFontFamily = (value: string) => {
     changeFontFamily(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('font-family')
+    fontFamilyActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>

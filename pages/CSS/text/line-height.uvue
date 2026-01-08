@@ -17,10 +17,11 @@
     </view>
 
     <view class="uni-common-mt">
-      <text class="uni-title-text">style.setProperty 动态设置 line-height 测试</text>
-      <text>line-height: {{lineHeight}}</text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 line-height 测试</text>
+      <text class="test-info">设置值: {{lineHeight}}</text>
+      <text class="test-info">获取值: {{lineHeightActual}}</text>
       <view class="box" style="height:150px;">
-        <text ref="viewRef" class="common" :style="{ lineHeight: lineHeight }">当前 line-height: {{lineHeight}}</text>
+        <text ref="textRef" class="common" :style="{ lineHeight: lineHeight }">当前 line-height: {{lineHeight}}</text>
       </view>
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
@@ -50,11 +51,14 @@
   ]
 
   const lineHeight = ref('75px')
-  const viewRef = ref(null as UniElement | null)
+  const lineHeightActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeLineHeight = (value: string) => {
     lineHeight.value = value
-    viewRef.value?.style.setProperty('line-height', value)
+    textRef.value?.style.setProperty('line-height', value)
+    const actualValue = textRef.value?.style.getPropertyValue('line-height')
+    lineHeightActual.value = actualValue ?? ''
   }
 
   const radioChangeLineHeight = (index: number) => {
@@ -67,6 +71,11 @@
   const inputChangeLineHeight = (value: string) => {
     changeLineHeight(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('line-height')
+    lineHeightActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>

@@ -13,8 +13,9 @@
 
       <scroll-view style="flex: 1">
         <view class="content">
-          <text class="uni-title-text">style.setProperty 动态设置 white-space 测试</text>
-          <text>white-space: {{whiteSpace}}</text>
+          <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 white-space 测试</text>
+          <text class="test-info">设置值: {{whiteSpace}}</text>
+          <text class="test-info">获取值: {{whiteSpaceActual}}</text>
           <view class="uni-common-mt uni-common-mb">
             <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
             <enum-data :items="whiteSpaceEnum" title="white-space 枚举值" @change="radioChangeWhiteSpace" :compact="true"></enum-data>
@@ -53,11 +54,14 @@
 HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方案；uts，大一统语言`)
 
   const whiteSpace = ref('normal')
-  const viewRef = ref(null as UniElement | null)
+  const whiteSpaceActual = ref('')
+  const textRef = ref(null as UniTextElement | null)
 
   const changeWhiteSpace = (value: string) => {
     whiteSpace.value = value
-    viewRef.value?.style.setProperty('white-space', value)
+    textRef.value?.style.setProperty('white-space', value)
+    const actualValue = textRef.value?.style.getPropertyValue('white-space')
+    whiteSpaceActual.value = actualValue ?? ''
   }
 
   const radioChangeWhiteSpace = (index: number) => {
@@ -70,6 +74,11 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
   const inputChangeWhiteSpace = (value: string) => {
     changeWhiteSpace(value)
   }
+
+  onReady(() => {
+    const actualValue = textRef.value?.style.getPropertyValue('white-space')
+    whiteSpaceActual.value = actualValue ?? ''
+  })
 </script>
 
 <style>
