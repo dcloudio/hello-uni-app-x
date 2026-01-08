@@ -88,6 +88,35 @@
         </view>
       </view>
 
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{border}}</text>
+          <text class="test-info">获取值: {{borderActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ border: border }" flatten>
+              <text>view测试</text>
+            </view>
+          </view>
+        </view>
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{border}}</text>
+          <text class="test-info">获取值: {{borderActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic" :style="{ border: border }" flatten>text测试</text>
+          </view>
+        </view>
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{border}}</text>
+          <text class="test-info">获取值: {{borderActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-image" :style="{ border: border }" flatten src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="borderEnum" title="border 枚举值" @change="radioChangeBorder" :compact="true"></enum-data>
@@ -119,27 +148,45 @@
   const borderActual = ref('')
   const borderActualText = ref('')
   const borderActualImage = ref('')
+  const borderActualFlat = ref('')
+  const borderActualTextFlat = ref('')
+  const borderActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const changeBorder = (value: string) => {
     border.value = value
-    // view 元素
+    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border', value)
     const actualValue = viewRef.value?.style.getPropertyValue('border')
     console.log('actualValue',actualValue)
     borderActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('border', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border')
+    borderActualFlat.value = actualValueFlat ?? ''
+
+    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border', value)
     const actualValueText = textRef.value?.style.getPropertyValue('border')
-    console.log('actualValueText',actualValueText)
     borderActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('border', value)
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border')
+    borderActualTextFlat.value = actualValueTextFlat ?? ''
+
+    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border', value)
     const actualValueImage = imageRef.value?.style.getPropertyValue('border')
-    console.log('actualValueImage',actualValueImage)
     borderActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('border', value)
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border')
+    borderActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeBorder = (index: number) => {
@@ -155,15 +202,26 @@
 
   // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素
+    // view 元素 - 普通版本
     const actualValue = viewRef.value?.style.getPropertyValue('border')
     borderActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border')
+    borderActualFlat.value = actualValueFlat ?? ''
+
+    // text 元素 - 普通版本
     const actualValueText = textRef.value?.style.getPropertyValue('border')
     borderActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border')
+    borderActualTextFlat.value = actualValueTextFlat ?? ''
+
+    // image 元素 - 普通版本
     const actualValueImage = imageRef.value?.style.getPropertyValue('border')
     borderActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border')
+    borderActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 
