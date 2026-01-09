@@ -40,29 +40,113 @@
       <text>转变后位置</text>
     </view>
 
-    <view style="margin-top: 150px; margin-left: 10px;">
-      <text class="uni-title-text">style.setProperty 动态设置 transform (translate) 测试</text>
-      <text>transform: {{transformValue}}</text>
+    <view class="uni-common-mt" style="margin-top: 100px;">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform (translate) 测试</text>
     </view>
 
-    <view ref="viewRef" class="base transform" style="transform: translateX(0px);" @click="changeTransform('translateX(80px)')">
-      <text>点击修改 transform 为 translateX(80px)</text>
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="test-info">设置值: {{transformValueDynamic}}</text>
+        <text class="test-info">获取值: {{transformActual}}</text>
+        <view class="test-box">
+          <view ref="viewRefDynamic" class="common-image" :style="{ transform: transformValueDynamic }">
+            <text style="font-size: 12px;">view测试</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="test-info">设置值: {{transformValueDynamic}}</text>
+        <text class="test-info">获取值: {{transformActualText}}</text>
+        <view class="test-box">
+          <text ref="textRefDynamic" class="common-text" :style="{ transform: transformValueDynamic }">text测试</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="test-info">设置值: {{transformValueDynamic}}</text>
+        <text class="test-info">获取值: {{transformActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRefDynamic" class="common-image" :style="{ transform: transformValueDynamic }" src="/static/logo.png"></image>
+        </view>
+      </view>
     </view>
 
-    <navigator style="margin-top: 50px; width: 80%;" url="/pages/CSS/transform/transform-origin">
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      <enum-data :items="transformEnum" title="transform 枚举值" @change="radioChangeTransform" :compact="true"></enum-data>
+      <input-data :defaultValue="transformValueDynamic" title="transform 自定义值" type="text" @confirm="inputChangeTransform"></input-data>
+    </view>
+
+    <navigator style="width: 80%;" url="/pages/CSS/transform/transform-origin">
       <button type="primary">transform-origin</button>
     </navigator>
   </scroll-view>
 </template>
 
 <script setup lang="uts">
-  const transformValue = ref('translateX(0px)')
-  const viewRef = ref(null as UniElement | null)
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const changeTransform = (value: string) => {
-    transformValue.value = value
-    viewRef.value?.style.setProperty('transform', value)
+  const transformValueDynamic = ref('translateX(0px)')
+  const transformActual = ref('')
+  const transformActualText = ref('')
+  const transformActualImage = ref('')
+  const viewRefDynamic = ref(null as UniElement | null)
+  const textRefDynamic = ref(null as UniTextElement | null)
+  const imageRefDynamic = ref(null as UniImageElement | null)
+
+  const transformEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'translateX(0px)' },
+    { value: 2, name: 'translateX(50px)' },
+    { value: 3, name: 'translateY(50px)' },
+    { value: 4, name: 'translate(50px, 50px)' },
+    { value: 5, name: 'translateX(80%)' },
+    { value: 6, name: 'translateY(50%)' },
+    { value: 7, name: 'translate(-50%, 50%)' }
+  ]
+
+  const changeTransformDynamic = (value: string) => {
+    transformValueDynamic.value = value
+    // view 元素
+    viewRefDynamic.value?.style.setProperty('transform', value)
+    const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform')
+    transformActual.value = actualValue ?? ''
+    // text 元素
+    textRefDynamic.value?.style.setProperty('transform', value)
+    const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform')
+    transformActualText.value = actualValueText ?? ''
+    // image 元素
+    imageRefDynamic.value?.style.setProperty('transform', value)
+    const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform')
+    transformActualImage.value = actualValueImage ?? ''
   }
+
+  const radioChangeTransform = (index: number) => {
+    const selectedItem = transformEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTransformDynamic(selectedItem.name)
+    }
+  }
+
+  const inputChangeTransform = (value: string) => {
+    changeTransformDynamic(value)
+  }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform')
+    transformActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform')
+    transformActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform')
+    transformActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
@@ -99,5 +183,43 @@
   .transform {
     border: 1px solid #00F;
     background-color: rgba(0, 255, 255, 0.5);
+  }
+
+  .common-text {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 90%;
+    height: 120px;
+    padding: 10px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>
