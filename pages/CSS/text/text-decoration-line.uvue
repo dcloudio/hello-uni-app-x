@@ -22,11 +22,21 @@
 
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-decoration-line 测试</text>
+        
+        <!-- 普通版本 -->
         <text class="test-info">设置值: {{textDecorationLine}}</text>
         <text class="test-info">获取值: {{textDecorationLineActual}}</text>
         <view class="content">
           <text ref="textRef" class="common" :style="{ textDecorationLine: textDecorationLine }">当前 text-decoration-line: {{textDecorationLine}}</text>
         </view>
+        
+        <!-- 拍平版本 -->
+        <text class="test-info">设置值: {{textDecorationLine}}</text>
+        <text class="test-info">获取值: {{textDecorationLineActualFlat}}</text>
+        <view class="content">
+          <text ref="textRefFlat" class="common" :style="{ textDecorationLine: textDecorationLine }" flatten>当前 text-decoration-line: {{textDecorationLine}}</text>
+        </view>
+        
         <view class="uni-common-mt uni-common-mb">
           <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
           <enum-data :items="textDecorationLineEnum" title="text-decoration-line 枚举值" @change="radioChangeTextDecorationLine" :compact="true"></enum-data>
@@ -51,13 +61,20 @@
 
 	const textDecorationLine = ref('none')
 	const textDecorationLineActual = ref('')
+	const textDecorationLineActualFlat = ref('')
 	const textRef = ref(null as UniTextElement | null)
+	const textRefFlat = ref(null as UniTextElement | null)
 
 	const changeTextDecorationLine = (value: string) => {
 		textDecorationLine.value = value
+		// text 元素 - 普通版本
 		textRef.value?.style.setProperty('text-decoration-line', value)
 		const actualValue = textRef.value?.style.getPropertyValue('text-decoration-line')
 		textDecorationLineActual.value = actualValue ?? ''
+		// text 元素 - 拍平版本
+		textRefFlat.value?.style.setProperty('text-decoration-line', value)
+		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line')
+		textDecorationLineActualFlat.value = actualValueFlat ?? ''
 	}
 
 	const radioChangeTextDecorationLine = (index: number) => {
@@ -72,8 +89,12 @@
 	}
 
 	onReady(() => {
+		// text 元素 - 普通版本
 		const actualValue = textRef.value?.style.getPropertyValue('text-decoration-line')
 		textDecorationLineActual.value = actualValue ?? ''
+		// text 元素 - 拍平版本
+		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line')
+		textDecorationLineActualFlat.value = actualValueFlat ?? ''
 	})
 </script>
 

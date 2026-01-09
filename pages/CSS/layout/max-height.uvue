@@ -18,6 +18,7 @@
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 max-height 测试</text>
       </view>
 
+      <!-- 普通版本 -->
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
@@ -45,6 +46,38 @@
           <text class="test-info">获取值: {{maxHeightActualImage}}</text>
           <view class="test-box">
             <image ref="imageRef" class="common-dynamic" :style="{ maxHeight: maxHeight }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{maxHeight}}</text>
+          <text class="test-info">获取值: {{maxHeightActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ maxHeight: maxHeight }" flatten>
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{maxHeight}}</text>
+          <text class="test-info">获取值: {{maxHeightActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic" :style="{ maxHeight: maxHeight }" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{maxHeight}}</text>
+          <text class="test-info">获取值: {{maxHeightActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic" :style="{ maxHeight: maxHeight }" flatten src="/static/logo.png"></image>
           </view>
         </view>
       </view>
@@ -78,24 +111,42 @@
   const maxHeightActual = ref('')
   const maxHeightActualText = ref('')
   const maxHeightActualImage = ref('')
+  const maxHeightActualFlat = ref('')
+  const maxHeightActualTextFlat = ref('')
+  const maxHeightActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const changeMaxHeight = (value: string) => {
     maxHeight.value = value
-    // view 元素
+    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('max-height', value)
     const actualValue = viewRef.value?.style.getPropertyValue('max-height')
     maxHeightActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('max-height', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('max-height')
+    maxHeightActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     textRef.value?.style.setProperty('max-height', value)
     const actualValueText = textRef.value?.style.getPropertyValue('max-height')
     maxHeightActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('max-height', value)
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('max-height')
+    maxHeightActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('max-height', value)
     const actualValueImage = imageRef.value?.style.getPropertyValue('max-height')
     maxHeightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('max-height', value)
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('max-height')
+    maxHeightActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeMaxHeight = (index: number) => {
@@ -110,15 +161,24 @@
   }
 
   onReady(() => {
-    // view 元素
+    // view 元素 - 普通版本
     const actualValue = viewRef.value?.style.getPropertyValue('max-height')
     maxHeightActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('max-height')
+    maxHeightActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     const actualValueText = textRef.value?.style.getPropertyValue('max-height')
     maxHeightActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('max-height')
+    maxHeightActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     const actualValueImage = imageRef.value?.style.getPropertyValue('max-height')
     maxHeightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('max-height')
+    maxHeightActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 

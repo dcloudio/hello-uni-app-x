@@ -18,6 +18,7 @@
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 min-height 测试</text>
       </view>
 
+      <!-- 普通版本 -->
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
@@ -45,6 +46,38 @@
           <text class="test-info">获取值: {{minHeightActualImage}}</text>
           <view class="test-box">
             <image ref="imageRef" class="common-dynamic" :style="{ minHeight: minHeight }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{minHeight}}</text>
+          <text class="test-info">获取值: {{minHeightActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ minHeight: minHeight }" flatten>
+              <text>view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{minHeight}}</text>
+          <text class="test-info">获取值: {{minHeightActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic" :style="{ minHeight: minHeight }" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{minHeight}}</text>
+          <text class="test-info">获取值: {{minHeightActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic" :style="{ minHeight: minHeight }" flatten src="/static/logo.png"></image>
           </view>
         </view>
       </view>
@@ -77,24 +110,42 @@
   const minHeightActual = ref('')
   const minHeightActualText = ref('')
   const minHeightActualImage = ref('')
+  const minHeightActualFlat = ref('')
+  const minHeightActualTextFlat = ref('')
+  const minHeightActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const changeMinHeight = (value: string) => {
     minHeight.value = value
-    // view 元素
+    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('min-height', value)
     const actualValue = viewRef.value?.style.getPropertyValue('min-height')
     minHeightActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('min-height', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('min-height')
+    minHeightActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     textRef.value?.style.setProperty('min-height', value)
     const actualValueText = textRef.value?.style.getPropertyValue('min-height')
     minHeightActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('min-height', value)
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('min-height')
+    minHeightActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('min-height', value)
     const actualValueImage = imageRef.value?.style.getPropertyValue('min-height')
     minHeightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('min-height', value)
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('min-height')
+    minHeightActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeMinHeight = (index: number) => {
@@ -109,15 +160,24 @@
   }
 
   onReady(() => {
-    // view 元素
+    // view 元素 - 普通版本
     const actualValue = viewRef.value?.style.getPropertyValue('min-height')
     minHeightActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('min-height')
+    minHeightActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     const actualValueText = textRef.value?.style.getPropertyValue('min-height')
     minHeightActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('min-height')
+    minHeightActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     const actualValueImage = imageRef.value?.style.getPropertyValue('min-height')
     minHeightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('min-height')
+    minHeightActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 

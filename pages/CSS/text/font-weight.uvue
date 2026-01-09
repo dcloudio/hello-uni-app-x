@@ -16,11 +16,21 @@
 
 		<view class="uni-common-mt">
 			<text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 font-weight 测试</text>
+			
+			<!-- 普通版本 -->
 			<text class="test-info">设置值: {{fontWeight}}</text>
 			<text class="test-info">获取值: {{fontWeightActual}}</text>
 			<view class="common" style="height:80px">
 				<text ref="textRef" class="common-size" :style="{ fontWeight: fontWeight }">当前 font-weight: {{fontWeight}}</text>
 			</view>
+			
+			<!-- 拍平版本 -->
+			<text class="test-info">设置值: {{fontWeight}}</text>
+			<text class="test-info">获取值: {{fontWeightActualFlat}}</text>
+			<view class="common" style="height:80px">
+				<text ref="textRefFlat" class="common-size" :style="{ fontWeight: fontWeight }" flatten>当前 font-weight: {{fontWeight}}</text>
+			</view>
+			
 			<view class="uni-common-mt uni-common-mb">
 				<text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
 				<enum-data :items="fontWeightEnum" title="font-weight 枚举值" @change="radioChangeFontWeight" :compact="true"></enum-data>
@@ -45,13 +55,20 @@
 
 	const fontWeight = ref('normal')
 	const fontWeightActual = ref('')
+	const fontWeightActualFlat = ref('')
 	const textRef = ref(null as UniTextElement | null)
+	const textRefFlat = ref(null as UniTextElement | null)
 
 	const changeFontWeight = (value: string) => {
 		fontWeight.value = value
+		// text 元素 - 普通版本
 		textRef.value?.style.setProperty('font-weight', value)
 		const actualValue = textRef.value?.style.getPropertyValue('font-weight')
 		fontWeightActual.value = actualValue ?? ''
+		// text 元素 - 拍平版本
+		textRefFlat.value?.style.setProperty('font-weight', value)
+		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-weight')
+		fontWeightActualFlat.value = actualValueFlat ?? ''
 	}
 
 	const radioChangeFontWeight = (index: number) => {
@@ -66,8 +83,12 @@
 	}
 
 	onReady(() => {
+		// text 元素 - 普通版本
 		const actualValue = textRef.value?.style.getPropertyValue('font-weight')
 		fontWeightActual.value = actualValue ?? ''
+		// text 元素 - 拍平版本
+		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-weight')
+		fontWeightActualFlat.value = actualValueFlat ?? ''
 	})
 </script>
 

@@ -18,11 +18,21 @@
 
     <view class="uni-common-mt">
       <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 color 测试</text>
+      
+      <!-- 普通版本 -->
       <text class="test-info">设置值: {{color}}</text>
       <text class="test-info">获取值: {{colorActual}}</text>
       <view class="box" style="height: 50px;">
         <text ref="textRef" class="common" :style="{ color: color }">当前 color: {{color}}</text>
       </view>
+      
+      <!-- 拍平版本 -->
+      <text class="test-info">设置值: {{color}}</text>
+      <text class="test-info">获取值: {{colorActualFlat}}</text>
+      <view class="box" style="height: 50px;">
+        <text ref="textRefFlat" class="common" :style="{ color: color }" flatten>当前 color: {{color}}</text>
+      </view>
+      
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="colorEnum" title="color 枚举值" @change="radioChangeColor" :compact="true"></enum-data>
@@ -49,13 +59,20 @@
 
   const color = ref('red')
   const colorActual = ref('')
+  const colorActualFlat = ref('')
   const textRef = ref(null as UniTextElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
 
   const changeColor = (value: string) => {
     color.value = value
+    // text 元素 - 普通版本
     textRef.value?.style.setProperty('color', value)
     const actualValue = textRef.value?.style.getPropertyValue('color')
     colorActual.value = actualValue ?? ''
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('color', value)
+    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('color')
+    colorActualFlat.value = actualValueFlat ?? ''
   }
 
   const radioChangeColor = (index: number) => {
@@ -70,8 +87,12 @@
   }
 
   onReady(() => {
+    // text 元素 - 普通版本
     const actualValue = textRef.value?.style.getPropertyValue('color')
     colorActual.value = actualValue ?? ''
+    // text 元素 - 拍平版本
+    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('color')
+    colorActualFlat.value = actualValueFlat ?? ''
   })
 </script>
 
