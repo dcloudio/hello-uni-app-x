@@ -3,7 +3,7 @@
   <scroll-view>
   <!-- #endif -->
     <view style="flex-grow: 1;">
-      <view style="padding: 0 30px; background-color: gray;justify-content: center;">
+      <view style="padding: 0 10px; background-color: gray;justify-content: center;">
         <view class="margin-bottom-10">
           <text class="font-weight-bold">text-overflow:clip white-space:nowrap</text>
           <text class="font-size-20" style="text-overflow: clip;white-space: nowrap;">{{multiLineText}}</text>
@@ -53,22 +53,34 @@
 
         <view class="margin-bottom-10 uni-common-mt">
           <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 text-overflow 测试</text>
-          
+        </view>
+
+        <view class="common-box">
           <!-- 普通版本 -->
-          <text class="test-info">设置值: {{textOverflow}}</text>
-          <text class="test-info">获取值: {{textOverflowActual}}</text>
-          <text ref="textRef" class="font-size-20" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '300px' }">{{multiLineText}}</text>
-          
+          <view class="uni-common-mt">
+            <text class="uni-title-text">text-overflow</text>
+            <text class="test-info">设置值: {{textOverflow}}</text>
+            <text class="test-info">获取值: {{textOverflowActual}}</text>
+            <view class="test-box">
+              <text ref="textRef" class="font-size-14" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '150px' }">{{multiLineText}}</text>
+            </view>
+          </view>
+
           <!-- 拍平版本 -->
-          <text class="test-info">设置值: {{textOverflow}}</text>
-          <text class="test-info">获取值: {{textOverflowActualFlat}}</text>
-          <text ref="textRefFlat" class="font-size-20" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '300px' }" flatten>{{multiLineText}}</text>
-          
-          <view class="uni-common-mt uni-common-mb">
+          <view class="uni-common-mt">
+            <text class="uni-title-text">测试拍平</text>
+            <text class="test-info">设置值: {{textOverflow}}</text>
+            <text class="test-info">获取值: {{textOverflowActualFlat}}</text>
+            <view class="test-box">
+              <text ref="textRefFlat" class="font-size-14" :style="{ textOverflow: textOverflow, whiteSpace: 'nowrap', width: '150px' }" flatten>{{multiLineText}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="uni-common-mt uni-common-mb">
             <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
             <enum-data :items="textOverflowEnum" title="text-overflow 枚举值" @change="radioChangeTextOverflow" :compact="true"></enum-data>
             <input-data :defaultValue="textOverflow" title="text-overflow 自定义值" type="text" @confirm="inputChangeTextOverflow"></input-data>
-          </view>
         </view>
       </view>
     </view>
@@ -132,6 +144,9 @@
   .font-size-20 {
     font-size: 20px;
   }
+  .font-size-14{
+    font-size: 14px;
+  }
 
   .font-weight-bold {
     font-weight: bold;
@@ -139,5 +154,23 @@
 
   .margin-bottom-10 {
     margin-bottom: 10px;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 160px;
+    height: 80px;
+    background-color: #cccccc;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #cccccc;
   }
 </style>
