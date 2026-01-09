@@ -73,6 +73,43 @@
           </view>
         </view>
       </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{marginRight}}</text>
+          <text class="test-info">获取值: {{marginRightActualFlat}}</text>
+          <view class="test-box">
+            <view class="common" style="background-color: red;"></view>
+            <view ref="viewRefFlat" class="common" :style="{ marginRight: marginRight }" flatten>
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+            <view class="common" style="background-color: blue;"></view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{marginRight}}</text>
+          <text class="test-info">获取值: {{marginRightActualTextFlat}}</text>
+          <view class="test-box">
+            <text class="common-text" style="background-color: red;">红色</text>
+            <text ref="textRefFlat" class="common-text" :style="{ marginRight: marginRight }" flatten>text测试</text>
+            <text class="common-text" style="background-color: blue;">蓝色</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{marginRight}}</text>
+          <text class="test-info">获取值: {{marginRightActualImageFlat}}</text>
+          <view class="test-box">
+            <image class="common-image" style="background-color: red;" src="/static/logo.png"></image>
+            <image ref="imageRefFlat" class="common-image" :style="{ marginRight: marginRight }" flatten src="/static/logo.png"></image>
+            <image class="common-image" style="background-color: blue;" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="marginRightEnum" title="margin-right 枚举值" @change="radioChangeMarginRight" :compact="true"></enum-data>
@@ -91,9 +128,16 @@
   const marginRightActual = ref('')
   const marginRightActualText = ref('')
   const marginRightActualImage = ref('')
+  const marginRightActualFlat = ref('')
+  const marginRightActualTextFlat = ref('')
+  const marginRightActualImageFlat = ref('')
+
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const marginRightEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -111,14 +155,26 @@
     viewRef.value?.style.setProperty('margin-right', value)
     const actualValue = viewRef.value?.style.getPropertyValue('margin-right')
     marginRightActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('margin-right', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-right')
+    marginRightActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRef.value?.style.setProperty('margin-right', value)
     const actualValueText = textRef.value?.style.getPropertyValue('margin-right')
     marginRightActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('margin-right', value)
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-right')
+    marginRightActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRef.value?.style.setProperty('margin-right', value)
     const actualValueImage = imageRef.value?.style.getPropertyValue('margin-right')
     marginRightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('margin-right', value)
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-right')
+    marginRightActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeMarginRight = (index: number) => {
@@ -137,12 +193,21 @@
     // view 元素
     const actualValue = viewRef.value?.style.getPropertyValue('margin-right')
     marginRightActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-right')
+    marginRightActualFlat.value = actualValueFlat ?? ''
     // text 元素
     const actualValueText = textRef.value?.style.getPropertyValue('margin-right')
     marginRightActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-right')
+    marginRightActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     const actualValueImage = imageRef.value?.style.getPropertyValue('margin-right')
     marginRightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-right')
+    marginRightActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 

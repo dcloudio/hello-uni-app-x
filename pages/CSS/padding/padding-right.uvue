@@ -29,6 +29,7 @@
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 padding-right 测试</text>
       </view>
 
+      <!-- 普通版本 -->
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
@@ -60,6 +61,38 @@
         </view>
       </view>
 
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{paddingRight}}</text>
+          <text class="test-info">获取值: {{paddingRightActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-view" :style="{ paddingRight: paddingRight }" flatten>
+              <view style="flex-grow: 1;background-color: red;"><text>view测试</text></view>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{paddingRight}}</text>
+          <text class="test-info">获取值: {{paddingRightActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-text" :style="{ paddingRight: paddingRight }" flatten>当前为text组件测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{paddingRight}}</text>
+          <text class="test-info">获取值: {{paddingRightActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-image" :style="{ paddingRight: paddingRight }" flatten src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="paddingRightEnum" title="padding-right 枚举值" @change="radioChangePaddingRight" :compact="true"></enum-data>
@@ -78,9 +111,15 @@
   const paddingRightActual = ref('')
   const paddingRightActualText = ref('')
   const paddingRightActualImage = ref('')
+  const paddingRightActualFlat = ref('')
+  const paddingRightActualTextFlat = ref('')
+  const paddingRightActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const paddingRightEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -93,18 +132,30 @@
 
   const changePaddingRight = (value: string) => {
     paddingRight.value = value
-    // view 元素
+    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('padding-right', value)
     const actualValue = viewRef.value?.style.getPropertyValue('padding-right')
     paddingRightActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('padding-right', value)
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-right')
+    paddingRightActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     textRef.value?.style.setProperty('padding-right', value)
     const actualValueText = textRef.value?.style.getPropertyValue('padding-right')
     paddingRightActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('padding-right', value)
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-right')
+    paddingRightActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('padding-right', value)
     const actualValueImage = imageRef.value?.style.getPropertyValue('padding-right')
     paddingRightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('padding-right', value)
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-right')
+    paddingRightActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangePaddingRight = (index: number) => {
@@ -120,15 +171,24 @@
 
   // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素
+    // view 元素 - 普通版本
     const actualValue = viewRef.value?.style.getPropertyValue('padding-right')
     paddingRightActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-right')
+    paddingRightActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     const actualValueText = textRef.value?.style.getPropertyValue('padding-right')
     paddingRightActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-right')
+    paddingRightActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     const actualValueImage = imageRef.value?.style.getPropertyValue('padding-right')
     paddingRightActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-right')
+    paddingRightActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 
