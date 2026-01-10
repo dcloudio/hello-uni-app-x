@@ -14,8 +14,9 @@
           </scroll-view>
         </view>
         <text v-show="data.displayArrow">item-------<text>{{item.id}}</text></text>
-
-        <switch :checked="true" @change="switchChange(index)"></switch>
+        <checkbox-group @change="checkedChange(index)">
+            <checkbox :checked="item.checked" />
+        </checkbox-group>
       </list-item>
     </list-view>
   </view>
@@ -58,7 +59,6 @@ function onScrollTolower(event : ScrollToLowerEvent) {
 
 onMounted(() => {
   generateItems(20)
-  console.log(list.value)
 })
 
 //用于自动化测试
@@ -70,7 +70,7 @@ function itemClick(index : number) {
   console.log("itemTextClick---" + index)
 }
 
-function switchChange(index : number) {
+function checkedChange(index : number) {
   list.value[index].checked = !list.value[index].checked
 }
 
