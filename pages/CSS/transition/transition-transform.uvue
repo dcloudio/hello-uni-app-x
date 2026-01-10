@@ -39,6 +39,37 @@
         </view>
       </view>
 
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{transitionTransform}}</text>
+          <text class="test-info">获取值: {{transitionTransformActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamicFlat" class="common-image" @click="triggerTransitionDynamic" flatten>
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{transitionTransform}}</text>
+          <text class="test-info">获取值: {{transitionTransformActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamicFlat" class="common-text" @click="triggerTransitionTextDynamic" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{transitionTransform}}</text>
+          <text class="test-info">获取值: {{transitionTransformActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamicFlat" class="common-image" @click="triggerTransitionImageDynamic" src="/static/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="transitionTransformEnum" title="transition-property 枚举值" @change="radioChangeTransitionTransform" :compact="true"></enum-data>
@@ -103,9 +134,15 @@
 	const transitionTransformActual = ref('')
 	const transitionTransformActualText = ref('')
 	const transitionTransformActualImage = ref('')
+	const transitionTransformActualFlat = ref('')
+	const transitionTransformActualTextFlat = ref('')
+	const transitionTransformActualImageFlat = ref('')
 	const viewRefDynamic = ref(null as UniElement | null)
 	const textRefDynamic = ref(null as UniTextElement | null)
 	const imageRefDynamic = ref(null as UniImageElement | null)
+	const viewRefDynamicFlat = ref(null as UniElement | null)
+	const textRefDynamicFlat = ref(null as UniTextElement | null)
+	const imageRefDynamicFlat = ref(null as UniImageElement | null)
 	const isRotatedDynamic = ref(false)
 	const isRotatedDynamicText = ref(false)
 	const isRotatedDynamicImage = ref(false)
@@ -129,16 +166,31 @@
 		viewRefDynamic.value?.style.setProperty('transition-duration', '1s')
 		const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-property')
 		transitionTransformActual.value = actualValue ?? ''
+		// view 元素 - 拍平版本
+		viewRefDynamicFlat.value?.style.setProperty('transition-property', value)
+		viewRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+		transitionTransformActualFlat.value = actualValueFlat ?? ''
 		// text 元素
 		textRefDynamic.value?.style.setProperty('transition-property', value)
 		textRefDynamic.value?.style.setProperty('transition-duration', '1s')
 		const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-property')
 		transitionTransformActualText.value = actualValueText ?? ''
+		// text 元素 - 拍平版本
+		textRefDynamicFlat.value?.style.setProperty('transition-property', value)
+		textRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+		transitionTransformActualTextFlat.value = actualValueTextFlat ?? ''
 		// image 元素
 		imageRefDynamic.value?.style.setProperty('transition-property', value)
 		imageRefDynamic.value?.style.setProperty('transition-duration', '1s')
 		const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-property')
 		transitionTransformActualImage.value = actualValueImage ?? ''
+		// image 元素 - 拍平版本
+		imageRefDynamicFlat.value?.style.setProperty('transition-property', value)
+		imageRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+		transitionTransformActualImageFlat.value = actualValueImageFlat ?? ''
 
 		// 重置所有状态，确保初始值正确
 		resetAllStates()
@@ -159,17 +211,44 @@
 		// view 元素初始值
 		if (viewRefDynamic.value != null) {
 			viewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+			viewRefDynamic.value.style.getPropertyValue('transform')
 			viewRefDynamic.value.style.setProperty('opacity', '1')
+			viewRefDynamic.value.style.getPropertyValue('opacity')
+		}
+		// view 元素初始值 - 拍平版本
+		if (viewRefDynamicFlat.value != null) {
+			viewRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
+			viewRefDynamicFlat.value.style.getPropertyValue('transform')
+			viewRefDynamicFlat.value.style.setProperty('opacity', '1')
+			viewRefDynamicFlat.value.style.getPropertyValue('opacity')
 		}
 		// text 元素初始值
 		if (textRefDynamic.value != null) {
 			textRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+			textRefDynamic.value.style.getPropertyValue('transform')
 			textRefDynamic.value.style.setProperty('opacity', '1')
+			textRefDynamic.value.style.getPropertyValue('opacity')
+		}
+		// text 元素初始值 - 拍平版本
+		if (textRefDynamicFlat.value != null) {
+			textRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
+			textRefDynamicFlat.value.style.getPropertyValue('transform')
+			textRefDynamicFlat.value.style.setProperty('opacity', '1')
+			textRefDynamicFlat.value.style.getPropertyValue('opacity')
 		}
 		// image 元素初始值
 		if (imageRefDynamic.value != null) {
 			imageRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+			imageRefDynamic.value.style.getPropertyValue('transform')
 			imageRefDynamic.value.style.setProperty('opacity', '1')
+			imageRefDynamic.value.style.getPropertyValue('opacity')
+		}
+		// image 元素初始值 - 拍平版本
+		if (imageRefDynamicFlat.value != null) {
+			imageRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
+			imageRefDynamicFlat.value.style.getPropertyValue('transform')
+			imageRefDynamicFlat.value.style.setProperty('opacity', '1')
+			imageRefDynamicFlat.value.style.getPropertyValue('opacity')
 		}
 	}
 
@@ -185,44 +264,62 @@
 	}
 
 	const triggerTransitionDynamic = () => {
-		if (viewRefDynamic.value != null) {
-			const property = transitionTransform.value
-			if (property.includes('transform') || property === 'all') {
-				isRotatedDynamic.value = !isRotatedDynamic.value
-				viewRefDynamic.value.style.setProperty('transform', isRotatedDynamic.value ? 'rotate(45deg)' : 'rotate(0deg)')
-			}
-			if (property.includes('opacity') || property === 'all') {
-				isOpacityDynamic.value = !isOpacityDynamic.value
-				viewRefDynamic.value.style.setProperty('opacity', isOpacityDynamic.value ? '0.5' : '1')
-			}
+		const property = transitionTransform.value
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamic.value = !isRotatedDynamic.value
+			const transform = isRotatedDynamic.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			viewRefDynamic.value?.style.setProperty('transform', transform)
+			const transformActual = viewRefDynamic.value?.style.getPropertyValue('transform')
+			viewRefDynamicFlat.value?.style.setProperty('transform', transform)
+			const transformActualFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform')
+		}
+		if (property.includes('opacity') || property === 'all') {
+			isOpacityDynamic.value = !isOpacityDynamic.value
+			const opacity = isOpacityDynamic.value ? '0.5' : '1'
+			viewRefDynamic.value?.style.setProperty('opacity', opacity)
+			const opacityActual = viewRefDynamic.value?.style.getPropertyValue('opacity')
+			viewRefDynamicFlat.value?.style.setProperty('opacity', opacity)
+			const opacityActualFlat = viewRefDynamicFlat.value?.style.getPropertyValue('opacity')
 		}
 	}
 
 	const triggerTransitionTextDynamic = () => {
-		if (textRefDynamic.value != null) {
-			const property = transitionTransform.value
-			if (property.includes('transform') || property === 'all') {
-				isRotatedDynamicText.value = !isRotatedDynamicText.value
-				textRefDynamic.value.style.setProperty('transform', isRotatedDynamicText.value ? 'rotate(45deg)' : 'rotate(0deg)')
-			}
-			if (property.includes('opacity') || property === 'all') {
-				isOpacityDynamicText.value = !isOpacityDynamicText.value
-				textRefDynamic.value.style.setProperty('opacity', isOpacityDynamicText.value ? '0.5' : '1')
-			}
+		const property = transitionTransform.value
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicText.value = !isRotatedDynamicText.value
+			const transform = isRotatedDynamicText.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			textRefDynamic.value?.style.setProperty('transform', transform)
+			const transformActual = textRefDynamic.value?.style.getPropertyValue('transform')
+			textRefDynamicFlat.value?.style.setProperty('transform', transform)
+			const transformActualFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform')
+		}
+		if (property.includes('opacity') || property === 'all') {
+			isOpacityDynamicText.value = !isOpacityDynamicText.value
+			const opacity = isOpacityDynamicText.value ? '0.5' : '1'
+			textRefDynamic.value?.style.setProperty('opacity', opacity)
+			const opacityActual = textRefDynamic.value?.style.getPropertyValue('opacity')
+			textRefDynamicFlat.value?.style.setProperty('opacity', opacity)
+			const opacityActualFlat = textRefDynamicFlat.value?.style.getPropertyValue('opacity')
 		}
 	}
 
 	const triggerTransitionImageDynamic = () => {
-		if (imageRefDynamic.value != null) {
-			const property = transitionTransform.value
-			if (property.includes('transform') || property === 'all') {
-				isRotatedDynamicImage.value = !isRotatedDynamicImage.value
-				imageRefDynamic.value.style.setProperty('transform', isRotatedDynamicImage.value ? 'rotate(45deg)' : 'rotate(0deg)')
-			}
-			if (property.includes('opacity') || property === 'all') {
-				isOpacityDynamicImage.value = !isOpacityDynamicImage.value
-				imageRefDynamic.value.style.setProperty('opacity', isOpacityDynamicImage.value ? '0.5' : '1')
-			}
+		const property = transitionTransform.value
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicImage.value = !isRotatedDynamicImage.value
+			const transform = isRotatedDynamicImage.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			imageRefDynamic.value?.style.setProperty('transform', transform)
+			const transformActual = imageRefDynamic.value?.style.getPropertyValue('transform')
+			imageRefDynamicFlat.value?.style.setProperty('transform', transform)
+			const transformActualFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform')
+		}
+		if (property.includes('opacity') || property === 'all') {
+			isOpacityDynamicImage.value = !isOpacityDynamicImage.value
+			const opacity = isOpacityDynamicImage.value ? '0.5' : '1'
+			imageRefDynamic.value?.style.setProperty('opacity', opacity)
+			const opacityActual = imageRefDynamic.value?.style.getPropertyValue('opacity')
+			imageRefDynamicFlat.value?.style.setProperty('opacity', opacity)
+			const opacityActualFlat = imageRefDynamicFlat.value?.style.getPropertyValue('opacity')
 		}
 	}
 
@@ -230,27 +327,60 @@
 		// 设置初始的 transition-property 和 transition-duration
 		if (viewRefDynamic.value != null) {
 			viewRefDynamic.value.style.setProperty('transition-property', transitionTransform.value)
+			viewRefDynamic.value.style.getPropertyValue('transition-property')
 			viewRefDynamic.value.style.setProperty('transition-duration', '1s')
+			viewRefDynamic.value.style.getPropertyValue('transition-duration')
+		}
+		if (viewRefDynamicFlat.value != null) {
+			viewRefDynamicFlat.value.style.setProperty('transition-property', transitionTransform.value)
+			viewRefDynamicFlat.value.style.getPropertyValue('transition-property')
+			viewRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+			viewRefDynamicFlat.value.style.getPropertyValue('transition-duration')
 		}
 		if (textRefDynamic.value != null) {
 			textRefDynamic.value.style.setProperty('transition-property', transitionTransform.value)
+			textRefDynamic.value.style.getPropertyValue('transition-property')
 			textRefDynamic.value.style.setProperty('transition-duration', '1s')
+			textRefDynamic.value.style.getPropertyValue('transition-duration')
+		}
+		if (textRefDynamicFlat.value != null) {
+			textRefDynamicFlat.value.style.setProperty('transition-property', transitionTransform.value)
+			textRefDynamicFlat.value.style.getPropertyValue('transition-property')
+			textRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+			textRefDynamicFlat.value.style.getPropertyValue('transition-duration')
 		}
 		if (imageRefDynamic.value != null) {
 			imageRefDynamic.value.style.setProperty('transition-property', transitionTransform.value)
+			imageRefDynamic.value.style.getPropertyValue('transition-property')
 			imageRefDynamic.value.style.setProperty('transition-duration', '1s')
+			imageRefDynamic.value.style.getPropertyValue('transition-duration')
+		}
+		if (imageRefDynamicFlat.value != null) {
+			imageRefDynamicFlat.value.style.setProperty('transition-property', transitionTransform.value)
+			imageRefDynamicFlat.value.style.getPropertyValue('transition-property')
+			imageRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+			imageRefDynamicFlat.value.style.getPropertyValue('transition-duration')
 		}
 		// 设置初始值
 		setInitialValues()
 		// view 元素
 		const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-property')
 		transitionTransformActual.value = actualValue ?? ''
+		// view 元素 - 拍平版本
+		const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+		transitionTransformActualFlat.value = actualValueFlat ?? ''
 		// text 元素
 		const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-property')
 		transitionTransformActualText.value = actualValueText ?? ''
+		// text 元素 - 拍平版本
+		const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+		transitionTransformActualTextFlat.value = actualValueTextFlat ?? ''
 		// image 元素
 		const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-property')
 		transitionTransformActualImage.value = actualValueImage ?? ''
+		// image 元素 - 拍平版本
+		const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+		transitionTransformActualImageFlat.value = actualValueImageFlat ?? ''
 	})
 
 	defineExpose({

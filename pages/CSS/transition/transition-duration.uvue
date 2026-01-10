@@ -60,6 +60,37 @@
         </view>
       </view>
 
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{transitionDurationDynamic}}</text>
+          <text class="test-info">获取值: {{transitionDurationActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionDynamic" flatten>
+              <text style="font-size: 12px;">点击view</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{transitionDurationDynamic}}</text>
+          <text class="test-info">获取值: {{transitionDurationActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamicFlat" class="common-text" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionTextDynamic" flatten>点击text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{transitionDurationDynamic}}</text>
+          <text class="test-info">获取值: {{transitionDurationActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transitionDuration: transitionDurationDynamic, transitionProperty: 'width' }" @click="triggerTransitionImageDynamic" src="/static/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="transitionDurationEnum" title="transition-duration 枚举值" @change="radioChangeTransitionDuration" :compact="true"></enum-data>
@@ -120,9 +151,15 @@
   const transitionDurationActual = ref('')
   const transitionDurationActualText = ref('')
   const transitionDurationActualImage = ref('')
+  const transitionDurationActualFlat = ref('')
+  const transitionDurationActualTextFlat = ref('')
+  const transitionDurationActualImageFlat = ref('')
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
+  const viewRefDynamicFlat = ref(null as UniElement | null)
+  const textRefDynamicFlat = ref(null as UniTextElement | null)
+  const imageRefDynamicFlat = ref(null as UniImageElement | null)
   const isExpandedDynamic = ref(false)
   const isExpandedDynamicText = ref(false)
   const isExpandedDynamicImage = ref(false)
@@ -141,14 +178,28 @@
     viewRefDynamic.value?.style.setProperty('transition-duration', value)
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-duration')
     transitionDurationActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    viewRefDynamicFlat.value?.style.setProperty('transition-duration', value)
+    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+    transitionDurationActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRefDynamic.value?.style.setProperty('transition-duration', value)
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-duration')
+    console.log('actualValueText-------',actualValueText)
     transitionDurationActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    textRefDynamicFlat.value?.style.setProperty('transition-duration', value)
+    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+    console.log('actualValueTextFlat-------',actualValueTextFlat)
+    transitionDurationActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRefDynamic.value?.style.setProperty('transition-duration', value)
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-duration')
     transitionDurationActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefDynamicFlat.value?.style.setProperty('transition-duration', value)
+    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+    transitionDurationActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeTransitionDuration = (index: number) => {
@@ -163,36 +214,52 @@
   }
 
   const triggerTransitionDynamic = () => {
-    if (viewRefDynamic.value != null) {
-      isExpandedDynamic.value = !isExpandedDynamic.value
-      viewRefDynamic.value.style.setProperty('width', isExpandedDynamic.value ? '100px' : '50px')
-    }
+    isExpandedDynamic.value = !isExpandedDynamic.value
+    const width = isExpandedDynamic.value ? '100px' : '50px'
+    viewRefDynamic.value?.style.setProperty('width', width)
+    const widthActual = viewRefDynamic.value?.style.getPropertyValue('width')
+    viewRefDynamicFlat.value?.style.setProperty('width', width)
+    const widthActualFlat = viewRefDynamicFlat.value?.style.getPropertyValue('width')
   }
 
   const triggerTransitionTextDynamic = () => {
-    if (textRefDynamic.value != null) {
-      isExpandedDynamicText.value = !isExpandedDynamicText.value
-      textRefDynamic.value.style.setProperty('width', isExpandedDynamicText.value ? '100px' : '50px')
-    }
+    isExpandedDynamicText.value = !isExpandedDynamicText.value
+    const width = isExpandedDynamicText.value ? '100px' : '50px'
+    textRefDynamic.value?.style.setProperty('width', width)
+    const widthActual = textRefDynamic.value?.style.getPropertyValue('width')
+    textRefDynamicFlat.value?.style.setProperty('width', width)
+    const widthActualFlat = textRefDynamicFlat.value?.style.getPropertyValue('width')
+    transitionDurationActualTextFlat.value = widthActualFlat ?? ''
   }
 
   const triggerTransitionImageDynamic = () => {
-    if (imageRefDynamic.value != null) {
-      isExpandedDynamicImage.value = !isExpandedDynamicImage.value
-      imageRefDynamic.value.style.setProperty('width', isExpandedDynamicImage.value ? '100px' : '50px')
-    }
+    isExpandedDynamicImage.value = !isExpandedDynamicImage.value
+    const width = isExpandedDynamicImage.value ? '100px' : '50px'
+    imageRefDynamic.value?.style.setProperty('width', width)
+    const widthActual = imageRefDynamic.value?.style.getPropertyValue('width')
+    imageRefDynamicFlat.value?.style.setProperty('width', width)
+    const widthActualFlat = imageRefDynamicFlat.value?.style.getPropertyValue('width')
   }
 
   onReady(() => {
     // view 元素
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-duration')
     transitionDurationActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+    transitionDurationActualFlat.value = actualValueFlat ?? ''
     // text 元素
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-duration')
     transitionDurationActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+    transitionDurationActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-duration')
     transitionDurationActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+    transitionDurationActualImageFlat.value = actualValueImageFlat ?? ''
   })
 
 </script>

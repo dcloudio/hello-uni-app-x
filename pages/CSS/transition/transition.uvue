@@ -15,11 +15,6 @@
       <view class="base-style" style="transition-property: width; transition-duration: 1s;" id="widthOrHeightStyle"
         @click="changeWidthOrHeightStyle"></view>
     </view>
-    <view class="container">
-      <text class="text">点击修改宽度(通过style设置transition)开启flatten</text>
-      <view class="base-style" style="transition-property: width; transition-duration: 1s;" id="widthOrHeightStyle"
-        @click="changeWidthOrHeightStyle" flatten></view>
-    </view>
 
     <view class="container">
       <text class="text">点击修改Margin</text>
@@ -66,10 +61,6 @@
       <text class="text">点击修改Transform（含transform-origin）</text>
       <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin"></view>
     </view>
-    <view class="container" @click="changeTransformWithOrigin">
-      <text class="text">点击修改Transform（含transform-origin）开启flatten</text>
-      <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin" flatten></view>
-    </view>
 
     <view class="container">
       <text class="text">点击修改Border</text>
@@ -88,12 +79,6 @@
       <text class="text">仅指定transition-duration背影有动画为正常</text>
       <view style="width: 100%;height: 50px;" :style="changestyleTransitionDuration"
         @click="doChangeTransitionDuration">
-      </view>
-    </view>
-    <view class="container">
-      <text class="text">仅指定transition-duration背影有动画为正常 开启flatten</text>
-      <view style="width: 100%;height: 50px;" :style="changestyleTransitionDuration"
-        @click="doChangeTransitionDuration" flatten>
       </view>
     </view>
 
@@ -115,14 +100,6 @@
       <view style="width:100%;height: 100%;">
         <view class="base-style transition-transform-width" id="styleTransformTranslateScale"
           :style="{transform:`translateX(${lineLeft}px)`,width:`${lineWidth}px`}" @click="changeTransform61">
-        </view>
-      </view>
-    </view>
-    <view class="container">
-      <text class="text">测试在style中同时修改transform和width 开启flatten</text>
-      <view style="width:100%;height: 100%;">
-        <view class="base-style transition-transform-width" id="styleTransformTranslateScale"
-          :style="{transform:`translateX(${lineLeft}px)`,width:`${lineWidth}px`}" @click="changeTransform61" flatten>
         </view>
       </view>
     </view>
@@ -152,10 +129,6 @@
     <view class="container">
       <view class="text">重复修改width</view>
       <view class="base-style transition-width" id="changeWidthInEnd" style="transition-duration: 0.5s;" @transitionend="onChangeWidthEnd" @click="changeWidthInEndFun"></view>
-    </view>
-    <view class="container">
-      <view class="text">重复修改width 开启flatten</view>
-      <view class="base-style transition-width" id="changeWidthInEnd" style="transition-duration: 0.5s;" @transitionend="onChangeWidthEnd" @click="changeWidthInEndFun" flatten></view>
     </view>
 
     <view style="margin-top: 20px; margin-left: 7px;">
@@ -232,6 +205,37 @@
         <text class="test-info">获取值: {{transitionActualImage}}</text>
         <view class="test-box">
           <image ref="imageRefTransition" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionImage" src="/static/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionView" flatten>
+            <text style="font-size: 12px;">点击view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefTransitionFlat" class="common-text" :style="{ transition: transitionValue }" @click="triggerTransitionText" flatten>点击text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefTransitionFlat" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionImage" src="/static/logo.png" flatten></image>
         </view>
       </view>
     </view>
@@ -611,9 +615,15 @@
   const transitionActual = ref('')
   const transitionActualText = ref('')
   const transitionActualImage = ref('')
+  const transitionActualFlat = ref('')
+  const transitionActualTextFlat = ref('')
+  const transitionActualImageFlat = ref('')
   const viewRefTransition = ref(null as UniElement | null)
   const textRefTransition = ref(null as UniTextElement | null)
   const imageRefTransition = ref(null as UniImageElement | null)
+  const viewRefTransitionFlat = ref(null as UniElement | null)
+  const textRefTransitionFlat = ref(null as UniTextElement | null)
+  const imageRefTransitionFlat = ref(null as UniImageElement | null)
   const isExpandedTransition = ref(false)
   const isExpandedTransitionText = ref(false)
   const isExpandedTransitionImage = ref(false)
@@ -633,14 +643,26 @@
     viewRefTransition.value?.style.setProperty('transition', value)
     const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
     transitionActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    viewRefTransitionFlat.value?.style.setProperty('transition', value)
+    const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRefTransition.value?.style.setProperty('transition', value)
     const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
     transitionActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    textRefTransitionFlat.value?.style.setProperty('transition', value)
+    const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRefTransition.value?.style.setProperty('transition', value)
     const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
     transitionActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefTransitionFlat.value?.style.setProperty('transition', value)
+    const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeTransition = (index: number) => {
@@ -655,62 +677,110 @@
   }
 
   const triggerTransitionView = () => {
-    if (viewRefTransition.value != null) {
-      const transition = transitionValue.value
-      if (transition.includes('background-color')) {
-        isExpandedTransition.value = !isExpandedTransition.value
-        viewRefTransition.value.style.setProperty('background-color', isExpandedTransition.value ? 'red' : 'green')
-      } else if (transition.includes('width')) {
-        isExpandedTransition.value = !isExpandedTransition.value
-        viewRefTransition.value.style.setProperty('width', isExpandedTransition.value ? '100px' : '50px')
-      } else if (transition.includes('transform')) {
-        isExpandedTransition.value = !isExpandedTransition.value
-        viewRefTransition.value.style.setProperty('transform', isExpandedTransition.value ? 'rotate(45deg)' : 'rotate(0deg)')
-      } else if (transition.includes('all')) {
-        isExpandedTransition.value = !isExpandedTransition.value
-        viewRefTransition.value.style.setProperty('width', isExpandedTransition.value ? '100px' : '50px')
-        viewRefTransition.value.style.setProperty('background-color', isExpandedTransition.value ? 'red' : 'green')
-      }
+    const transition = transitionValue.value
+    isExpandedTransition.value = !isExpandedTransition.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransition.value ? 'red' : 'green'
+      viewRefTransition.value?.style.setProperty('background-color', color)
+      const bgColorActual = viewRefTransition.value?.style.getPropertyValue('background-color')
+      viewRefTransitionFlat.value?.style.setProperty('background-color', color)
+      const bgColorActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('background-color')
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransition.value ? '100px' : '50px'
+      viewRefTransition.value?.style.setProperty('width', width)
+      const widthActual = viewRefTransition.value?.style.getPropertyValue('width')
+      viewRefTransitionFlat.value?.style.setProperty('width', width)
+      const widthActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('width')
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransition.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      viewRefTransition.value?.style.setProperty('transform', transform)
+      const transformActual = viewRefTransition.value?.style.getPropertyValue('transform')
+      viewRefTransitionFlat.value?.style.setProperty('transform', transform)
+      const transformActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transform')
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransition.value ? '100px' : '50px'
+      const color = isExpandedTransition.value ? 'red' : 'green'
+      viewRefTransition.value?.style.setProperty('width', width)
+      const widthActual = viewRefTransition.value?.style.getPropertyValue('width')
+      viewRefTransition.value?.style.setProperty('background-color', color)
+      const bgColorActual = viewRefTransition.value?.style.getPropertyValue('background-color')
+      viewRefTransitionFlat.value?.style.setProperty('width', width)
+      const widthActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('width')
+      viewRefTransitionFlat.value?.style.setProperty('background-color', color)
+      const bgColorActualFlat = viewRefTransitionFlat.value?.style.getPropertyValue('background-color')
     }
   }
 
   const triggerTransitionText = () => {
-    if (textRefTransition.value != null) {
-      const transition = transitionValue.value
-      if (transition.includes('background-color')) {
-        isExpandedTransitionText.value = !isExpandedTransitionText.value
-        textRefTransition.value.style.setProperty('background-color', isExpandedTransitionText.value ? 'red' : 'green')
-      } else if (transition.includes('width')) {
-        isExpandedTransitionText.value = !isExpandedTransitionText.value
-        textRefTransition.value.style.setProperty('width', isExpandedTransitionText.value ? '100px' : '50px')
-      } else if (transition.includes('transform')) {
-        isExpandedTransitionText.value = !isExpandedTransitionText.value
-        textRefTransition.value.style.setProperty('transform', isExpandedTransitionText.value ? 'rotate(45deg)' : 'rotate(0deg)')
-      } else if (transition.includes('all')) {
-        isExpandedTransitionText.value = !isExpandedTransitionText.value
-        textRefTransition.value.style.setProperty('width', isExpandedTransitionText.value ? '100px' : '50px')
-        textRefTransition.value.style.setProperty('background-color', isExpandedTransitionText.value ? 'red' : 'green')
-      }
+    const transition = transitionValue.value
+    isExpandedTransitionText.value = !isExpandedTransitionText.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransitionText.value ? 'red' : 'green'
+      textRefTransition.value?.style.setProperty('background-color', color)
+      const bgColorActual = textRefTransition.value?.style.getPropertyValue('background-color')
+      textRefTransitionFlat.value?.style.setProperty('background-color', color)
+      const bgColorActualFlat = textRefTransitionFlat.value?.style.getPropertyValue('background-color')
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransitionText.value ? '100px' : '50px'
+      textRefTransition.value?.style.setProperty('width', width)
+      const widthActual = textRefTransition.value?.style.getPropertyValue('width')
+      textRefTransitionFlat.value?.style.setProperty('width', width)
+      const widthActualFlat = textRefTransitionFlat.value?.style.getPropertyValue('width')
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransitionText.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      textRefTransition.value?.style.setProperty('transform', transform)
+      const transformActual = textRefTransition.value?.style.getPropertyValue('transform')
+      textRefTransitionFlat.value?.style.setProperty('transform', transform)
+      const transformActualFlat = textRefTransitionFlat.value?.style.getPropertyValue('transform')
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransitionText.value ? '100px' : '50px'
+      const color = isExpandedTransitionText.value ? 'red' : 'green'
+      textRefTransition.value?.style.setProperty('width', width)
+      const widthActual = textRefTransition.value?.style.getPropertyValue('width')
+      textRefTransition.value?.style.setProperty('background-color', color)
+      const bgColorActual = textRefTransition.value?.style.getPropertyValue('background-color')
+      textRefTransitionFlat.value?.style.setProperty('width', width)
+      const widthActualFlat = textRefTransitionFlat.value?.style.getPropertyValue('width')
+      textRefTransitionFlat.value?.style.setProperty('background-color', color)
+      const bgColorActualFlat = textRefTransitionFlat.value?.style.getPropertyValue('background-color')
     }
   }
 
   const triggerTransitionImage = () => {
-    if (imageRefTransition.value != null) {
-      const transition = transitionValue.value
-      if (transition.includes('background-color')) {
-        isExpandedTransitionImage.value = !isExpandedTransitionImage.value
-        imageRefTransition.value.style.setProperty('background-color', isExpandedTransitionImage.value ? 'red' : 'green')
-      } else if (transition.includes('width')) {
-        isExpandedTransitionImage.value = !isExpandedTransitionImage.value
-        imageRefTransition.value.style.setProperty('width', isExpandedTransitionImage.value ? '100px' : '50px')
-      } else if (transition.includes('transform')) {
-        isExpandedTransitionImage.value = !isExpandedTransitionImage.value
-        imageRefTransition.value.style.setProperty('transform', isExpandedTransitionImage.value ? 'rotate(45deg)' : 'rotate(0deg)')
-      } else if (transition.includes('all')) {
-        isExpandedTransitionImage.value = !isExpandedTransitionImage.value
-        imageRefTransition.value.style.setProperty('width', isExpandedTransitionImage.value ? '100px' : '50px')
-        imageRefTransition.value.style.setProperty('background-color', isExpandedTransitionImage.value ? 'red' : 'green')
-      }
+    const transition = transitionValue.value
+    isExpandedTransitionImage.value = !isExpandedTransitionImage.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransitionImage.value ? 'red' : 'green'
+      imageRefTransition.value?.style.setProperty('background-color', color)
+      const bgColorActual = imageRefTransition.value?.style.getPropertyValue('background-color')
+      imageRefTransitionFlat.value?.style.setProperty('background-color', color)
+      const bgColorActualFlat = imageRefTransitionFlat.value?.style.getPropertyValue('background-color')
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransitionImage.value ? '100px' : '50px'
+      imageRefTransition.value?.style.setProperty('width', width)
+      const widthActual = imageRefTransition.value?.style.getPropertyValue('width')
+      imageRefTransitionFlat.value?.style.setProperty('width', width)
+      const widthActualFlat = imageRefTransitionFlat.value?.style.getPropertyValue('width')
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransitionImage.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      imageRefTransition.value?.style.setProperty('transform', transform)
+      const transformActual = imageRefTransition.value?.style.getPropertyValue('transform')
+      imageRefTransitionFlat.value?.style.setProperty('transform', transform)
+      const transformActualFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transform')
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransitionImage.value ? '100px' : '50px'
+      const color = isExpandedTransitionImage.value ? 'red' : 'green'
+      imageRefTransition.value?.style.setProperty('width', width)
+      const widthActual = imageRefTransition.value?.style.getPropertyValue('width')
+      imageRefTransition.value?.style.setProperty('background-color', color)
+      const bgColorActual = imageRefTransition.value?.style.getPropertyValue('background-color')
+      imageRefTransitionFlat.value?.style.setProperty('width', width)
+      const widthActualFlat = imageRefTransitionFlat.value?.style.getPropertyValue('width')
+      imageRefTransitionFlat.value?.style.setProperty('background-color', color)
+      const bgColorActualFlat = imageRefTransitionFlat.value?.style.getPropertyValue('background-color')
     }
   }
 
@@ -718,12 +788,21 @@
     // view 元素
     const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
     transitionActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualFlat.value = actualValueFlat ?? ''
     // text 元素
     const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
     transitionActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
     transitionActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualImageFlat.value = actualValueImageFlat ?? ''
   })
 
 	defineExpose({

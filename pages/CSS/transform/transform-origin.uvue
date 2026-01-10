@@ -52,6 +52,37 @@
         </view>
       </view>
 
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{transformOrigin}}</text>
+          <text class="test-info">获取值: {{transformOriginActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transformOrigin: transformOrigin, transform: 'rotate(45deg)' }" flatten>
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{transformOrigin}}</text>
+          <text class="test-info">获取值: {{transformOriginActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamicFlat" class="common-text" :style="{ transformOrigin: transformOrigin, transform: 'rotate(45deg)' }" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{transformOrigin}}</text>
+          <text class="test-info">获取值: {{transformOriginActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transformOrigin: transformOrigin, transform: 'rotate(45deg)' }" src="/static/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="transformOriginEnum" title="transform-origin 枚举值" @change="radioChangeTransformOrigin" :compact="true"></enum-data>
@@ -78,11 +109,15 @@
 
     if (count.value == 0) {
       element?.style.setProperty("transform-origin", "60px 60px")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "scale(1)")
+      const transformActual = element?.style.getPropertyValue("transform")
     }
     else if (count.value == 1) {
       element?.style.setProperty("transform-origin", "100% 0%")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "rotate(-20deg)")
+      const transformActual = element?.style.getPropertyValue("transform")
     }
 
     count.value++
@@ -93,15 +128,21 @@
 
     if (textCount.value == 0) {
       element?.style.setProperty("transform-origin", "60px 30px")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
+      const transformActual = element?.style.getPropertyValue("transform")
     }
     else if (textCount.value == 1) {
       element?.style.setProperty("transform-origin", "100% 0%")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "rotate(-20deg)")
+      const transformActual = element?.style.getPropertyValue("transform")
     }
     else {
       element?.style.setProperty("transform-origin", "10px 10px")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "scale(1)")
+      const transformActual = element?.style.getPropertyValue("transform")
       textCount.value = -1
     }
 
@@ -113,15 +154,21 @@
 
     if (imageCount.value == 0) {
       element?.style.setProperty("transform-origin", "60px 60px")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "translate(50px, 50px) scale(2)")
+      const transformActual = element?.style.getPropertyValue("transform")
     }
     else if (imageCount.value == 1) {
       element?.style.setProperty("transform-origin", "100% 0%")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "rotate(-20deg)")
+      const transformActual = element?.style.getPropertyValue("transform")
     }
     else {
       element?.style.setProperty("transform-origin", "10px 10px")
+      const originActual = element?.style.getPropertyValue("transform-origin")
       element?.style.setProperty("transform", "scale(1)")
+      const transformActual = element?.style.getPropertyValue("transform")
       imageCount.value = -1
     }
 
@@ -132,9 +179,15 @@
   const transformOriginActual = ref('')
   const transformOriginActualText = ref('')
   const transformOriginActualImage = ref('')
+  const transformOriginActualFlat = ref('')
+  const transformOriginActualTextFlat = ref('')
+  const transformOriginActualImageFlat = ref('')
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
+  const viewRefDynamicFlat = ref(null as UniElement | null)
+  const textRefDynamicFlat = ref(null as UniTextElement | null)
+  const imageRefDynamicFlat = ref(null as UniImageElement | null)
 
   const transformOriginEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -153,14 +206,26 @@
     viewRefDynamic.value?.style.setProperty('transform-origin', value)
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform-origin')
     transformOriginActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    viewRefDynamicFlat.value?.style.setProperty('transform-origin', value)
+    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
+    transformOriginActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRefDynamic.value?.style.setProperty('transform-origin', value)
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform-origin')
     transformOriginActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    textRefDynamicFlat.value?.style.setProperty('transform-origin', value)
+    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
+    transformOriginActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRefDynamic.value?.style.setProperty('transform-origin', value)
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform-origin')
     transformOriginActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefDynamicFlat.value?.style.setProperty('transform-origin', value)
+    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
+    transformOriginActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeTransformOrigin = (index: number) => {
@@ -178,12 +243,21 @@
     // view 元素
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform-origin')
     transformOriginActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
+    transformOriginActualFlat.value = actualValueFlat ?? ''
     // text 元素
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform-origin')
     transformOriginActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
+    transformOriginActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform-origin')
     transformOriginActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
+    transformOriginActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 

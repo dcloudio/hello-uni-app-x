@@ -206,6 +206,37 @@
         </view>
       </view>
 
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{transformValueDynamic}}</text>
+          <text class="test-info">获取值: {{transformActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transform: transformValueDynamic }" flatten>
+              <text style="font-size: 12px;">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{transformValueDynamic}}</text>
+          <text class="test-info">获取值: {{transformActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefDynamicFlat" class="common-text" :style="{ transform: transformValueDynamic }" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{transformValueDynamic}}</text>
+          <text class="test-info">获取值: {{transformActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transform: transformValueDynamic }" src="/static/logo.png" flatten></image>
+          </view>
+        </view>
+      </view>
+
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
         <enum-data :items="transformEnum" title="transform 枚举值" @change="radioChangeTransform" :compact="true"></enum-data>
@@ -224,9 +255,15 @@
   const transformActual = ref('')
   const transformActualText = ref('')
   const transformActualImage = ref('')
+  const transformActualFlat = ref('')
+  const transformActualTextFlat = ref('')
+  const transformActualImageFlat = ref('')
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
+  const viewRefDynamicFlat = ref(null as UniElement | null)
+  const textRefDynamicFlat = ref(null as UniTextElement | null)
+  const imageRefDynamicFlat = ref(null as UniImageElement | null)
 
   const transformEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -244,14 +281,26 @@
     viewRefDynamic.value?.style.setProperty('transform', value)
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform')
     transformActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    viewRefDynamicFlat.value?.style.setProperty('transform', value)
+    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform')
+    transformActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRefDynamic.value?.style.setProperty('transform', value)
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform')
     transformActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    textRefDynamicFlat.value?.style.setProperty('transform', value)
+    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform')
+    transformActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRefDynamic.value?.style.setProperty('transform', value)
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform')
     transformActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    imageRefDynamicFlat.value?.style.setProperty('transform', value)
+    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform')
+    transformActualImageFlat.value = actualValueImageFlat ?? ''
   }
 
   const radioChangeTransform = (index: number) => {
@@ -269,12 +318,21 @@
     // view 元素
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform')
     transformActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform')
+    transformActualFlat.value = actualValueFlat ?? ''
     // text 元素
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform')
     transformActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform')
+    transformActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform')
     transformActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform')
+    transformActualImageFlat.value = actualValueImageFlat ?? ''
   })
 </script>
 
