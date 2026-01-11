@@ -2,12 +2,16 @@
   <view style="flex-direction: column;background-color: #f5f5f5;">
     <fps />
 
+    <text style="margin-top: 2px;">计时器主线程一直占用，但loading圈不卡顿</text>
+    <view style="flex-direction: row;flex-wrap: wrap;align-items: center;">
+      <button size="mini" @click="toggleTimer" style="margin: 0px 4px;">停止/启动 计时器</button>
+      <text>{{datetime}}</text>
+    </view>
     <!-- 控制按钮区域 -->
     <view class="control-panel">
-      <button size="mini" @click="changePaused" class="control-btn">{{ paused ? '播放' : '暂停' }}</button>
-      <button size="mini" @click="changeSize" class="control-btn">尺寸：{{ sharedSize }}px</button>
-      <button size="mini" @click="changeBold" class="control-btn">加粗：{{ bold }}</button>
-      <button size="mini" @click="changeBorderColor" class="control-btn" :style="{ color: sharedBorderColor }">● 颜色</button>
+      <button size="mini" @click="changePaused">{{ paused ? '播放' : '暂停' }}</button>
+      <button size="mini" @click="changeSize">尺寸：{{ sharedSize }}px</button>
+      <button size="mini" @click="changeBorderColor" :style="{ color: sharedBorderColor }">● 颜色</button>
     </view>
 
     <!-- 100个loading组件 -->
@@ -23,7 +27,6 @@
               'border-width': 'thick'
             }"
             :paused="paused"
-            :bold="bold"
           />
           <text style="font-size: 8px;color: #666;">{{ index }}</text>
         </view>
@@ -37,8 +40,53 @@
   const sharedBorderColor = ref('blue')
   const paused = ref(false)
   const bold = ref(false)
+  const datetime = ref('')
 
-  const sizes = [20, 30, 40, 50]
+  let timerId : number | null = null
+  let timerRunning = false
+
+  function updateTime() {
+    const now = new Date()
+    const hours = now.getHours().toString().padStart(2, '0')
+    const minutes = now.getMinutes().toString().padStart(2, '0')
+    const seconds = now.getSeconds().toString().padStart(2, '0')
+    const milliseconds = now.getMilliseconds().toString()
+    datetime.value = `${hours}:${minutes}:${seconds}.${milliseconds}`
+  }
+
+  function startTimer() {
+    updateTime()
+    timerId = setInterval(() => {
+      updateTime()
+    }, 1)
+    timerRunning = true
+  }
+
+  function stopTimer() {
+    if (timerId !== null) {
+      clearInterval(timerId)
+      timerId = null
+    }
+    timerRunning = false
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      stopTimer()
+    } else {
+      startTimer()
+    }
+  }
+
+  onMounted(() => {
+    startTimer()
+  })
+
+  onUnmounted(() => {
+    stopTimer()
+  })
+
+  const sizes = [20, 30, 40]
   const borderColors = ['blue', 'red', 'green', '#FF6B6B', '#4ECDC4']
 
   let sizeIndex = 1
@@ -46,10 +94,6 @@
 
   function changePaused() {
     paused.value = !paused.value
-  }
-
-  function changeBold() {
-    bold.value = !bold.value
   }
 
   function changeSize() {
@@ -67,7 +111,7 @@
 
 <style>
   .control-panel {
-    padding: 0 12px;
+    padding: 4px;
     background-color: #ffffff;
     flex-direction: row;
     flex-wrap: wrap;
@@ -76,12 +120,4 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   }
 
-  .control-btn {
-    margin: 2px;
-    font-size: 12px;
-    border-radius: 6px;
-    background-color: #f0f0f0;
-    border-width: 1px;
-    border-color: #d0d0d0;
-  }
 </style>
