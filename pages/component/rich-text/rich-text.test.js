@@ -79,4 +79,67 @@ describe('rich-text-test', () => {
     const element2 = await page.$('#rich-text-str')
     expect(await element2.text()).toBe("true")
   })
+
+  it('test style font-size-12px', async () => {
+    await page.callMethod('changeFontSize')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+
+  it('test style font-size-16px', async () => {
+    await page.callMethod('changeFontSize')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+    // 重置为默认
+    await setPageData({
+      fontSizeIndex: 0,
+      currentFontSize: '默认',
+      richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
+    })
+    await page.waitFor(300)
+  })
+
+  it('test style line-height-1', async () => {
+    await page.callMethod('changeLineHeight')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+
+  it('test style line-height-1.5', async () => {
+    await page.callMethod('changeLineHeight')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+    // 重置为默认
+    await setPageData({
+      lineHeightIndex: 0,
+      currentLineHeight: '默认',
+      richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
+    })
+    await page.waitFor(300)
+  })
+
+  it('test style font-family-serif', async () => {
+    await page.callMethod('changeFontFamily')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+
+  it('test style font-family-sans-serif', async () => {
+    await page.callMethod('changeFontFamily')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+    // 重置为默认
+    await setPageData({
+      fontFamilyIndex: 0,
+      currentFontFamily: '默认',
+      richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
+    })
+    await page.waitFor(300)
+  })
 })
