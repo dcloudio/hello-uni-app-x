@@ -24,6 +24,10 @@
         @input="startTimeInput"></input>
       <boolean-data :defaultValue="false" title="是否自动开始播放" @change="setAutoplay"></boolean-data>
       <boolean-data :defaultValue="false" title="是否循环播放" @change="setLoop"></boolean-data>
+			<!-- #ifdef APP-IOS -->
+			<boolean-data :defaultValue="true" title="是否遵循系统静音开关" @change="setObeyMuteSwitch"></boolean-data>
+			<!-- #endif -->
+
       <text class="uni-subtitle-text uni-title"
         style="padding-left: 10px;padding-top: 10px;padding-right: 10px;">播放倍率(Web/HarmonyOS 不支持)</text>
       <radio-group class="uni-flex uni-row radio-group" @change="playbackRateChange"
@@ -158,6 +162,12 @@
     data._audioContext!.loop = !data._audioContext!.loop;
     console.log(data._audioContext!.loop, 'loop');
   }
+
+	const setObeyMuteSwitch = () => {
+	  data._audioContext!.obeyMuteSwitch = !data._audioContext!.obeyMuteSwitch;
+	  console.log(data._audioContext!.obeyMuteSwitch, 'obeyMuteSwitch');
+	}
+
 
   const onSeeking = () => {
     data._audioContext!.onSeeking(() => {
