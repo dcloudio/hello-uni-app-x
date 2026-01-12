@@ -1,0 +1,18 @@
+<template>
+  <!-- 旋转边框的view实现返回箭头。因需要扩大点击区域，外面多套了一层 -->
+  <view style="width: 44px;height: 44px;justify-content: center;align-items: center;" @click="handleClick">
+    <view style="width: 12px;height: 12px;transform: rotate(45deg);border-left: 2px solid; border-bottom: 2px solid;" :style="{borderLeftColor:foreColor,borderBottomColor:foreColor}"></view>
+  </view>
+</template>
+
+<script lang="uts" setup>
+  const props = defineProps({
+    foreColor: { type: String, default: "#000000" }
+  })
+  const emit = defineEmits(['click'])
+  const handleClick = () => {
+    emit('click')
+    // 默认行为：返回上一页
+    uni.navigateBack({})
+  }
+</script>
