@@ -26,9 +26,9 @@
 		<!-- 日历主体 - Swiper -->
 		<swiper
 			class="calendar-swiper"
+			:circular="true"
 			:current="swiperCurrent"
 			@change="onSwiperChange"
-			@animationfinish="onSwiperAnimationFinish"
 		>
 			<swiper-item v-for="(item, index) in swiperItems" :key="`${item.year}-${item.month}`">
 				<view class="calendar-grid" @click="onCalendarClick">
@@ -98,6 +98,8 @@
 
 	const swiperCurrent = ref(1)
 	const swiperItems = ref([] as SwiperItem[])
+
+	let lastItemIndex = 0;
 
 	// Picker的值
 	const pickerValue = computed(() : string => {
@@ -249,31 +251,53 @@
 	// Swiper切换事件
 	function onSwiperChange(e : UniSwiperChangeEvent) {
 		const current = e.detail.current
+		console.log('onSwiperChange - current:', current, 'lastItemIndex:', lastItemIndex);
 
-		// 根据当前显示的 swiper-item 更新年月
-		if (current >= 0 && current < swiperItems.value.length) {
-			const currentItem = swiperItems.value[current]
-			currentYear.value = currentItem.year
-			currentMonth.value = currentItem.month
-
-			// 如果不在中间位置，立即重新生成items并重置到中间
-			if (current !== 1) {
-				initSwiperItems()
-				/* setTimeout(() => {
-					swiperCurrent.value = 1
-				}, 50) */
-        nextTick(() => {
-            setTimeout(() => {
-                swiperCurrent.value = 1
-            }, 16) // 一帧的时间
-        })
-			}
+		// 避免重复触发
+		if (current === lastItemIndex) {
+			return
 		}
-	}
 
-	// Swiper动画完成事件
-	function onSwiperAnimationFinish(e : UniSwiperAnimationFinishEvent) {
-		// 动画完成后不需要做任何事情，所有逻辑都在 onSwiperChange 中处理
+		// 获取当前显示的item，这就是用户要查看的月份
+		const currentItem = swiperItems.value[current]
+		currentYear.value = currentItem.year
+		currentMonth.value = currentItem.month
+		console.log('切换到:', currentYear.value, '年', currentMonth.value, '月')
+
+		// 计算循环的前一个和后一个索引
+		const prevIndex = (current - 1 + 3) % 3  // 上个月的位置
+		const nextIndex = (current + 1) % 3      // 下个月的位置
+
+		// 计算上个月的年月
+		let prevYear = currentYear.value
+		let prevMonth = currentMonth.value - 1
+		if (prevMonth < 1) {
+			prevMonth = 12
+			prevYear--
+		}
+
+		// 计算下个月的年月
+		let nextYear = currentYear.value
+		let nextMonth = currentMonth.value + 1
+		if (nextMonth > 12) {
+			nextMonth = 1
+			nextYear++
+		}
+
+		// 更新上个月和下个月的数据
+		swiperItems.value[prevIndex] = {
+			year: prevYear,
+			month: prevMonth,
+			days: generateMonthDays(prevYear, prevMonth)
+		}
+
+		swiperItems.value[nextIndex] = {
+			year: nextYear,
+			month: nextMonth,
+			days: generateMonthDays(nextYear, nextMonth)
+		}
+
+		lastItemIndex = current
 	}
 
 	// 优化的更新选中状态（只更新变化的日期）
@@ -299,7 +323,7 @@
 		const target = e.currentTarget as UniElement
 		// 获取容器宽度
     const rect = target.getBoundingClientRect() // 由于点击事件绑定在 calendar-grid 上，e.currentTarget 就是该容器
-    console.log(rect); //TODO 鸿蒙上连续滑动超过初始化的3个item后，这个事件不再触发@徐同印
+    // console.log(rect); //TODO 鸿蒙上连续滑动超过初始化的3个item后，这个事件不再触发@徐同印
 
     // const screenWidth = uni.getWindowInfo().screenWidth
     // const cellWidth = screenWidth / 7
@@ -358,6 +382,7 @@
 
 	// 上一个月
 	function prevMonth() {
+		console.log('prevMonth');
 		let newYear = currentYear.value
 		let newMonth = currentMonth.value - 1
 		if (newMonth < 1) {
@@ -367,11 +392,12 @@
 		currentYear.value = newYear
 		currentMonth.value = newMonth
 		initSwiperItems()
-		swiperCurrent.value = 1
+		// swiperCurrent.value = 1
 	}
 
 	// 下一个月
 	function nextMonth() {
+		console.log('nextMonth');
 		let newYear = currentYear.value
 		let newMonth = currentMonth.value + 1
 		if (newMonth > 12) {
@@ -381,7 +407,7 @@
 		currentYear.value = newYear
 		currentMonth.value = newMonth
 		initSwiperItems()
-		swiperCurrent.value = 1
+		// swiperCurrent.value = 1
 	}
 
 	// 初始化
