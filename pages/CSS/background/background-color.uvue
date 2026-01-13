@@ -250,28 +250,38 @@
     backgroundColor.value = color
     // view 元素 - 普通版本
     viewRef.value?.style.setProperty('background-color', color)
-    const actualValue = viewRef.value?.style.getPropertyValue('background-color')
-    backgroundColorActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('background-color', color)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('background-color')
-    backgroundColorActualFlat.value = actualValueFlat ?? ''
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('background-color', color)
-    const actualValueText = textRef.value?.style.getPropertyValue('background-color')
-    backgroundColorActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('background-color', color)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('background-color')
-    backgroundColorActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素 - 普通版本
     imageRef.value?.style.setProperty('background-color', color)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('background-color')
-    backgroundColorActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('background-color', color)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('background-color')
-    backgroundColorActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('background-color')
+      backgroundColorActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('background-color')
+      backgroundColorActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('background-color')
+      backgroundColorActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('background-color')
+      backgroundColorActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('background-color')
+      backgroundColorActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('background-color')
+      backgroundColorActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeBackgroundColor = (index: number) => {

@@ -118,30 +118,38 @@
     borderRight.value = value
     // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-right', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('border-right')
-    borderRightActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-right', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-right')
-    borderRightActualFlat.value = actualValueFlat ?? ''
-
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-right', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('border-right')
-    borderRightActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-right', value)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-right')
-    borderRightActualTextFlat.value = actualValueTextFlat ?? ''
-
     // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-right', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-right')
-    borderRightActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-right', value)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-right')
-    borderRightActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('border-right')
+      borderRightActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-right')
+      borderRightActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('border-right')
+      borderRightActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-right')
+      borderRightActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('border-right')
+      borderRightActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-right')
+      borderRightActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeBorderRight = (index: number) => {

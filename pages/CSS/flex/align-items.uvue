@@ -129,13 +129,18 @@
     alignItems.value = value
     // 普通版本
     viewRef.value?.style.setProperty('align-items', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('align-items')
-    alignItemsActual.value = actualValue ?? ''
-
     // 拍平版本
     viewRefFlat.value?.style.setProperty('align-items', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-items')
-    alignItemsActualFlat.value = actualValueFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('align-items')
+      alignItemsActual.value = actualValue ?? ''
+      // 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-items')
+      alignItemsActualFlat.value = actualValueFlat ?? ''
+    })
   }
 
   const radioChangeAlignItems = (index: number) => {

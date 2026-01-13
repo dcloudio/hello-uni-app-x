@@ -243,30 +243,38 @@
     flexProp.value = value
     // view 元素
     viewRef.value?.style.setProperty('flex', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('flex')
-    flexActual.value = actualValue ?? ''
     // view 元素 拍平
     viewRefFlat.value?.style.setProperty('flex', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex')
-    flexActualFlat.value = actualValueFlat ?? ''
-
     // text 元素
     textRef.value?.style.setProperty('flex', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('flex')
-    flexActualText.value = actualValueText ?? ''
     // text 元素 拍平
     textRefFlat.value?.style.setProperty('flex', value)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex')
-    flexActualTextFlat.value = actualValueTextFlat ?? ''
-
     // image 元素
     imageRef.value?.style.setProperty('flex', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('flex')
-    flexActualImage.value = actualValueImage ?? ''
     // image 元素 拍平
     imageRefFlat.value?.style.setProperty('flex', value)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex')
-    flexActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('flex')
+      flexActual.value = actualValue ?? ''
+      // view 元素 拍平
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex')
+      flexActualFlat.value = actualValueFlat ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('flex')
+      flexActualText.value = actualValueText ?? ''
+      // text 元素 拍平
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex')
+      flexActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('flex')
+      flexActualImage.value = actualValueImage ?? ''
+      // image 元素 拍平
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex')
+      flexActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeFlex = (index: number) => {
