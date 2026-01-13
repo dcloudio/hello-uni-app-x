@@ -1,24 +1,21 @@
 <template>
   <!-- 带圆圈的返回箭头组件。旋转边框的view实现返回箭头。因需要扩大点击区域,外面多套了一层 -->
-  <view class="back-circle" @click="handleClick" :class="props.backCircleClass">
+  <view class="back-circle" @click="handleClick">
     <view class="back-arrow" :class="props.arrowClass"></view>
   </view>
 </template>
 
 <script lang="uts" setup>
   defineOptions({
-    inheritAttrs: false,
-    externalClasses: ['arrow-class','back-circle-class']
+    externalClasses: ['arrow-class']
   })
 
   type Props = {
-    arrowClass? : string.ClassString,
-    backCircleClass? : string.ClassString
+    arrowClass? : string.ClassString
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    arrowClass: '',
-    backCircleClass:''
+    arrowClass: ''
   })
 
   const emit = defineEmits(['click'])
@@ -32,22 +29,14 @@
 
 <style>
   .back-circle {
-    position: absolute;
-    /* #ifdef APP || MP */
-    top: var(--status-bar-height);
-    /* #endif */
-    /* #ifdef WEB */
-    top: 10px;
-    /* #endif */
-    left: 6px;
-    width: 32px;
-    height: 32px;
-    background-color: rgba(220, 220, 220, 0.8);
-    border-radius: 100px;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    background-color: rgba(220, 220, 220, 0.3);
     justify-content: center;
     align-items: center;
+    margin: 6px;
     padding-left: 4px;
-    z-index: 10;
   }
 
   .back-arrow {
