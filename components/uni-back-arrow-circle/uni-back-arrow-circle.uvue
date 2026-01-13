@@ -1,7 +1,7 @@
 <template>
   <!-- 带圆圈的返回箭头组件。旋转边框的view实现返回箭头。因需要扩大点击区域,外面多套了一层 -->
-  <view class="back-circle" @click="handleClick">
-    <view class="back-arrow" :class="props.arrowClass"></view>
+  <view class="back-circle" :style="{backgroundColor:backgroundColor}" @click="handleClick">
+    <view class="back-arrow" :style="arrowClor" :class="props.arrowClass"></view>
   </view>
 </template>
 
@@ -11,12 +11,18 @@
   })
 
   type Props = {
-    arrowClass? : string.ClassString
+    arrowClass ?: string.ClassString
+    backgroundColor ?: string.ClassString
+    color ?: string.ClassString
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    arrowClass: ''
+    arrowClass: '',
+    backgroundColor: 'rgba(220, 220, 220, 0.3)',
+    color: '#000'
   })
+
+  let arrowClor = computed(() => `border-left: 2px solid ${props.color};border-bottom: 2px solid ${props.color};`)
 
   const emit = defineEmits(['click'])
 
