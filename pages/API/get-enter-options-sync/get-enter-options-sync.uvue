@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="uts">
+import { state } from '@/store/index.uts'
 
 type DataType = {
   enterOptionsString: string,
@@ -23,11 +24,10 @@ const data = reactive({
 
 // Lifecycle
 onReady(() => {
-  const app = getApp()
-  const appOnShow = app.globalData.onShowOption
-  const onShowOption = uni.getEnterOptionsSync()
-  data.enterOptionsString = JSON.stringify(onShowOption, null, 2)
-  data.testResult = (onShowOption.path == appOnShow.path && onShowOption.appScheme == appOnShow.appScheme && onShowOption.appLink == appOnShow.appLink)
+  const appShowOptions = state.globalData.showOptions
+  const enterOptions = uni.getEnterOptionsSync()
+  data.enterOptionsString = JSON.stringify(enterOptions, null, 2)
+  data.testResult = (enterOptions.path == appShowOptions.path && enterOptions.appScheme == appShowOptions.appScheme && enterOptions.appLink == appShowOptions.appLink)
 })
 
 defineExpose({

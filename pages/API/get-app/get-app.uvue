@@ -14,9 +14,9 @@
           <text class="uni-common-mt">globalData object: {{ data.originGlobalData.obj }}</text>
           <text class="uni-common-mt">globalData null: {{ data.originGlobalData.null }}</text>
           <text class="uni-common-mt">globalData array: {{ data.originGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ data.originGlobalData.mySet }}</text>
-          <text class="uni-common-mt">globalData Map: {{ data.originGlobalData.myMap }}</text>
-          <text class="uni-common-mt">globalData func 返回值: {{ data.originGlobalDataFuncRes }}</text>
+          <text class="uni-common-mt">globalData Set: {{ data.originGlobalData.set }}</text>
+          <text class="uni-common-mt">globalData Map: {{ data.originGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData fun 返回值: {{ data.originGlobalDataFuncRes }}</text>
         </template>
         <button @click="setGlobalData" class="uni-common-mt">
           set globalData
@@ -29,9 +29,9 @@
           <text class="uni-common-mt">globalData object: {{ data.newGlobalData.obj }}</text>
           <text class="uni-common-mt">globalData null: {{ data.newGlobalData.null }}</text>
           <text class="uni-common-mt">globalData array: {{ data.newGlobalData.arr }}</text>
-          <text class="uni-common-mt">globalData Set: {{ data.newGlobalData.mySet }}</text>
-          <text class="uni-common-mt">globalData Map: {{ data.newGlobalData.myMap }}</text>
-          <text class="uni-common-mt">globalData func 返回值: {{ data.newGlobalDataFuncRes }}</text>
+          <text class="uni-common-mt">globalData Set: {{ data.newGlobalData.set }}</text>
+          <text class="uni-common-mt">globalData Map: {{ data.newGlobalData.map }}</text>
+          <text class="uni-common-mt">globalData fun 返回值: {{ data.newGlobalDataFuncRes }}</text>
         </template>
         <text class="uni-common-mt">点击按钮调用 App.uvue methods</text>
         <text class="uni-common-mt">increaseLifeCycleNum 方法</text>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="uts">
-  import { state, setLifeCycleNum } from '@/store/index.uts'
+  import { state, setLifeCycleNum, updateGlobalData } from '@/store/index.uts'
 
   type MyGlobalData = {
     str : string,
@@ -62,9 +62,9 @@
     obj : UTSJSONObject,
     null : string | null,
     arr : number[],
-    mySet : string[],
-    myMap : UTSJSONObject,
-    func : () => string
+    set : string[],
+    map : UTSJSONObject,
+    fun : () => string
   }
 
   type DataType = {
@@ -88,9 +88,9 @@
       },
       null: null,
       arr: [] as number[],
-      mySet: [] as string[],
-      myMap: {},
-      func: () : string => ''
+      set: [] as string[],
+      map: {},
+      fun: () : string => ''
     },
     originGlobalDataFuncRes: '',
     newGlobalData: {
@@ -104,9 +104,9 @@
       },
       null: null,
       arr: [] as number[],
-      mySet: [] as string[],
-      myMap: {},
-      func: () : string => ''
+      set: [] as string[],
+      map: {},
+      fun: () : string => ''
     },
     newGlobalDataFuncRes: '',
     lifeCycleNum: 0,
@@ -114,61 +114,59 @@
   } as DataType)
 
   const getGlobalData = () => {
-    const app = getApp()
-
-    data.originGlobalData.str = app.globalData.str
-    data.originGlobalData.num = app.globalData.num
-    data.originGlobalData.bool = app.globalData.bool
-    data.originGlobalData.obj = app.globalData.obj
-    data.originGlobalData.null = app.globalData.null
-    data.originGlobalData.arr = app.globalData.arr
-    app.globalData.mySet.forEach((value : string) => {
-      data.originGlobalData.mySet.push(value)
+    data.originGlobalData.str = state.globalData.str
+    data.originGlobalData.num = state.globalData.num
+    data.originGlobalData.bool = state.globalData.bool
+    data.originGlobalData.obj = state.globalData.obj
+    data.originGlobalData.null = state.globalData.null
+    data.originGlobalData.arr = state.globalData.arr
+    state.globalData.set.forEach((value : string) => {
+      data.originGlobalData.set.push(value)
     })
-    app.globalData.myMap.forEach((value : any, key : string) => {
-      data.originGlobalData.myMap[key] = value
+    state.globalData.map.forEach((value : any, key : string) => {
+      data.originGlobalData.map[key] = value
     })
-    data.originGlobalData.func = app.globalData.func
-    data.originGlobalDataFuncRes = data.originGlobalData.func()
+    data.originGlobalData.fun = state.globalData.fun
+    data.originGlobalDataFuncRes = data.originGlobalData.fun()
   }
 
   const setGlobalData = () => {
-    const app = getApp()
-
-    app.globalData.str = 'new globalData str'
-    app.globalData.num = 100
-    app.globalData.bool = true
-    app.globalData.obj = {
+    updateGlobalData('str', 'new globalData str')
+    updateGlobalData('num', 100)
+    updateGlobalData('bool', true)
+    updateGlobalData('obj',{
       str: 'new globalData obj str',
       num: 200,
       bool: true
-    }
-    app.globalData.null = 'not null'
-    app.globalData.arr = [1, 2, 3]
-    app.globalData.mySet = new Set(['a', 'b', 'c'])
-    app.globalData.myMap = new Map([
+    })
+    updateGlobalData('null', 'not null')
+    updateGlobalData('arr', [1, 2, 3])
+    updateGlobalData('set', new Set(['a', 'b', 'c']))
+    updateGlobalData('map', new Map<string, any>([
       ['a', 1],
       ['b', 2],
       ['c', 3]
-    ])
-    app.globalData.func = () : string => {
-      return 'new globalData func'
-    }
+    ]))
+    updateGlobalData('fun', () : string => {
+      return 'new globalData fun'
+    })
 
-    data.newGlobalData.str = app.globalData.str
-    data.newGlobalData.num = app.globalData.num
-    data.newGlobalData.bool = app.globalData.bool
-    data.newGlobalData.obj = app.globalData.obj
-    data.newGlobalData.null = app.globalData.null
-    data.newGlobalData.arr = app.globalData.arr
-    app.globalData.mySet.forEach((value : string) => {
-      data.newGlobalData.mySet.push(value)
+    data.newGlobalData.str = state.globalData.str
+    data.newGlobalData.num = state.globalData.num
+    data.newGlobalData.bool = state.globalData.bool
+    data.newGlobalData.obj = state.globalData.obj
+    data.newGlobalData.null = state.globalData.null
+    data.newGlobalData.arr = state.globalData.arr
+    console.log('state.globalData.arr',state.globalData.arr)
+    console.log('state.globalData.set',state.globalData.set)
+    state.globalData.set.forEach((value : string) => {
+      data.newGlobalData.set.push(value)
     })
-    app.globalData.myMap.forEach((value : any, key : string) => {
-      data.newGlobalData.myMap[key] = value
+    state.globalData.map.forEach((value : any, key : string) => {
+      data.newGlobalData.map[key] = value
     })
-    data.newGlobalData.func = app.globalData.func
-    data.newGlobalDataFuncRes = data.newGlobalData.func()
+    data.newGlobalData.fun = state.globalData.fun
+    data.newGlobalDataFuncRes = data.newGlobalData.fun()
   }
 
   const _increaseLifeCycleNum = () => {
