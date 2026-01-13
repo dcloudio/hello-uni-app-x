@@ -58,7 +58,7 @@
       title: '下载中'
     })
     data.task = uni.downloadFile({
-      url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/uni-app.png",
       success: (res) => {
         console.log('downloadFile success, res is', res.tempFilePath)
         data.imageSrc = res.tempFilePath;
@@ -77,7 +77,7 @@
   }
 
   const downloadErrorFilename = () => {
-    uni.downloadFile({
+    data.task = uni.downloadFile({
       url:"https://qiniu-web-assets.dcloud.net.cn/uni-app-x/static/file/test9.txt",
       success: (res) => {
         console.log('downloadFile success, res is', res.tempFilePath)
@@ -88,10 +88,13 @@
     })
   }
 
+
+
+
   //自动化测试例专用
   const jest_downloadFile = () => {
-    uni.downloadFile({
-      url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/uni-app.png",
       success: () => {
         data.jest_result = true
         data.jest_callback_triggred = true
@@ -104,8 +107,8 @@
   }
 
   const jest_downloadFile_with_uni_env = () => {
-    uni.downloadFile({
-      url: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png",
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/uni-app.png",
       filePath: `${uni.env.CACHE_PATH}/a/b/`,
       success: () => {
         data.jest_result = true
@@ -119,7 +122,7 @@
   }
 
   const jest_cookie_download = (needCookie : boolean) => {
-    uni.downloadFile({
+    data.task = uni.downloadFile({
       url: "https://request.dcloud.net.cn/api/http/header/download",
       success: () => {
         data.jest_result = needCookie ? true : false;
@@ -183,9 +186,9 @@
   }
 
   const jest_special_characters_download = () => {
-    uni.downloadFile({
-      url: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
-      success: (res : DownloadFileSuccess) => {
+    data.task = uni.downloadFile({
+      url: "https://web-assets.dcloud.net.cn/hello-uni-app-x/1789834995055525889-你好%23你好.png",
+      success: () => {
         data.jest_result = true;
         data.jest_callback_triggred = true
       },
@@ -197,7 +200,7 @@
   }
 
   const jest_download_call_timeout = () => {
-    uni.downloadFile({
+    data.task = uni.downloadFile({
       url: "https://web-assets.dcloud.net.cn/video/sample/2minute-demo-10k.mp4",
       timeout: 3000,
       fail: () => {
