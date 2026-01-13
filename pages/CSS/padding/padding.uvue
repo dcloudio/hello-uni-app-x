@@ -189,32 +189,43 @@
     padding.value = value
     // view 元素 - 普通版本
     viewRef.value?.style.setProperty('padding', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('padding')
-    paddingActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('padding', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding')
-    paddingActualFlat.value = actualValueFlat ?? ''
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('padding', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('padding')
-    paddingActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('padding', value)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding')
-    paddingActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素 - 普通版本
     imageRef.value?.style.setProperty('padding', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('padding')
-    paddingActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('padding', value)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding')
-    paddingActualImageFlat.value = actualValueImageFlat ?? ''
     // scroll-view 元素
     scrollViewRef.value?.style.setProperty('padding', value)
-    const actualValueScrollView = scrollViewRef.value?.style.getPropertyValue('padding')
-    paddingActualScrollView.value = actualValueScrollView ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('padding')
+      paddingActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding')
+      paddingActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('padding')
+      paddingActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding')
+      paddingActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('padding')
+      paddingActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding')
+      paddingActualImageFlat.value = actualValueImageFlat ?? ''
+      // scroll-view 元素
+      const actualValueScrollView = scrollViewRef.value?.style.getPropertyValue('padding')
+      paddingActualScrollView.value = actualValueScrollView ?? ''
+    })
   }
 
   const radioChangePadding = (index: number) => {

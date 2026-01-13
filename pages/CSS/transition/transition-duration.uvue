@@ -176,30 +176,40 @@
     transitionDurationDynamic.value = value
     // view 元素
     viewRefDynamic.value?.style.setProperty('transition-duration', value)
-    const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-duration')
-    transitionDurationActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefDynamicFlat.value?.style.setProperty('transition-duration', value)
-    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
-    transitionDurationActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRefDynamic.value?.style.setProperty('transition-duration', value)
-    const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-duration')
-    console.log('actualValueText-------',actualValueText)
-    transitionDurationActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefDynamicFlat.value?.style.setProperty('transition-duration', value)
-    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
-    console.log('actualValueTextFlat-------',actualValueTextFlat)
-    transitionDurationActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRefDynamic.value?.style.setProperty('transition-duration', value)
-    const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-duration')
-    transitionDurationActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefDynamicFlat.value?.style.setProperty('transition-duration', value)
-    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
-    transitionDurationActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-duration')
+      transitionDurationActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+      transitionDurationActualFlat.value = actualValueFlat ?? ''
+      // text 元素
+      const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-duration')
+      console.log('actualValueText-------',actualValueText)
+      transitionDurationActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+      console.log('actualValueTextFlat-------',actualValueTextFlat)
+      transitionDurationActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素
+      const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-duration')
+      transitionDurationActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-duration')
+      transitionDurationActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeTransitionDuration = (index: number) => {

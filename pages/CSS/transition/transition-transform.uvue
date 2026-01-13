@@ -164,38 +164,48 @@
 		// view 元素
 		viewRefDynamic.value?.style.setProperty('transition-property', value)
 		viewRefDynamic.value?.style.setProperty('transition-duration', '1s')
-		const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-property')
-		transitionTransformActual.value = actualValue ?? ''
 		// view 元素 - 拍平版本
 		viewRefDynamicFlat.value?.style.setProperty('transition-property', value)
 		viewRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
-		const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-property')
-		transitionTransformActualFlat.value = actualValueFlat ?? ''
 		// text 元素
 		textRefDynamic.value?.style.setProperty('transition-property', value)
 		textRefDynamic.value?.style.setProperty('transition-duration', '1s')
-		const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-property')
-		transitionTransformActualText.value = actualValueText ?? ''
 		// text 元素 - 拍平版本
 		textRefDynamicFlat.value?.style.setProperty('transition-property', value)
 		textRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
-		const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-property')
-		transitionTransformActualTextFlat.value = actualValueTextFlat ?? ''
 		// image 元素
 		imageRefDynamic.value?.style.setProperty('transition-property', value)
 		imageRefDynamic.value?.style.setProperty('transition-duration', '1s')
-		const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-property')
-		transitionTransformActualImage.value = actualValueImage ?? ''
 		// image 元素 - 拍平版本
 		imageRefDynamicFlat.value?.style.setProperty('transition-property', value)
 		imageRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
-		const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-property')
-		transitionTransformActualImageFlat.value = actualValueImageFlat ?? ''
 
 		// 重置所有状态，确保初始值正确
 		resetAllStates()
 		// 设置初始值
 		setInitialValues()
+
+		// 使用 nextTick 确保样式已应用后再获取值
+		nextTick(() => {
+			// view 元素
+			const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-property')
+			transitionTransformActual.value = actualValue ?? ''
+			// view 元素 - 拍平版本
+			const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+			transitionTransformActualFlat.value = actualValueFlat ?? ''
+			// text 元素
+			const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-property')
+			transitionTransformActualText.value = actualValueText ?? ''
+			// text 元素 - 拍平版本
+			const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+			transitionTransformActualTextFlat.value = actualValueTextFlat ?? ''
+			// image 元素
+			const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-property')
+			transitionTransformActualImage.value = actualValueImage ?? ''
+			// image 元素 - 拍平版本
+			const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-property')
+			transitionTransformActualImageFlat.value = actualValueImageFlat ?? ''
+		})
 	}
 
 	const resetAllStates = () => {

@@ -134,28 +134,38 @@
     paddingLeft.value = value
     // view 元素 - 普通版本
     viewRef.value?.style.setProperty('padding-left', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('padding-left')
-    paddingLeftActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('padding-left', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualFlat.value = actualValueFlat ?? ''
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('padding-left', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('padding-left', value)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素 - 普通版本
     imageRef.value?.style.setProperty('padding-left', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('padding-left', value)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('padding-left')
+      paddingLeftActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-left')
+      paddingLeftActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('padding-left')
+      paddingLeftActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-left')
+      paddingLeftActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('padding-left')
+      paddingLeftActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-left')
+      paddingLeftActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangePaddingLeft = (index: number) => {

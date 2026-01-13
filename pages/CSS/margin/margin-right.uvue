@@ -153,28 +153,38 @@
     marginRight.value = value
     // view 元素
     viewRef.value?.style.setProperty('margin-right', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('margin-right')
-    marginRightActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('margin-right', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-right')
-    marginRightActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRef.value?.style.setProperty('margin-right', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('margin-right')
-    marginRightActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('margin-right', value)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-right')
-    marginRightActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRef.value?.style.setProperty('margin-right', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('margin-right')
-    marginRightActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('margin-right', value)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-right')
-    marginRightActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('margin-right')
+      marginRightActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-right')
+      marginRightActualFlat.value = actualValueFlat ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('margin-right')
+      marginRightActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-right')
+      marginRightActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('margin-right')
+      marginRightActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-right')
+      marginRightActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeMarginRight = (index: number) => {

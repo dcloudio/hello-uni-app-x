@@ -641,28 +641,38 @@
     transitionValue.value = value
     // view 元素
     viewRefTransition.value?.style.setProperty('transition', value)
-    const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
-    transitionActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefTransitionFlat.value?.style.setProperty('transition', value)
-    const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
-    transitionActualFlat.value = actualValueFlat ?? ''
     // text 元素
     textRefTransition.value?.style.setProperty('transition', value)
-    const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
-    transitionActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefTransitionFlat.value?.style.setProperty('transition', value)
-    const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
-    transitionActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     imageRefTransition.value?.style.setProperty('transition', value)
-    const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
-    transitionActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefTransitionFlat.value?.style.setProperty('transition', value)
-    const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
-    transitionActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
+      transitionActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
+      transitionActualFlat.value = actualValueFlat ?? ''
+      // text 元素
+      const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
+      transitionActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
+      transitionActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素
+      const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
+      transitionActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
+      transitionActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeTransition = (index: number) => {
