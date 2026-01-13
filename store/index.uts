@@ -14,10 +14,26 @@ export type UserInfo = {
   avatarUrl?: string
 }
 
+export type GlobalData = {
+  str: string
+  num: number
+  bool: boolean
+  obj: UTSJSONObject
+  null: string | null
+  arr: number[]
+  set: Set<string>
+  map: Map<string, any>
+  fun: () => string
+  launchOptions: OnLaunchOptions
+  showOptions: OnShowOptions
+}
+
 type State = {
-  lifeCycleNum : number,
+  // app global data 兼容 dom2
+  globalData: GlobalData
+  lifeCycleNum: number
   // 状态栏高度
-  statusBarHeight : number,
+  statusBarHeight: number
   safeArea : SafeArea
   // 设备像素比
   devicePixelRatio : number
@@ -52,6 +68,29 @@ const getAgreePrivacy = () => {
 }
 
 export const state = reactive({
+  globalData: {
+    str: 'default globalData str',
+    num: 0,
+    bool: false,
+    obj: {
+      str: 'default globalData obj str',
+      num: 0,
+      bool: false,
+    } as UTSJSONObject,
+    null: null as string | null,
+    arr: [] as number[],
+    set: new Set<string>(),
+    map: new Map<string, any>(),
+    fun: (): string => {
+      return 'globalData fun'
+    },
+    launchOptions: {
+      path: '',
+    } as OnLaunchOptions,
+    showOptions: {
+      path: ''
+    } as OnShowOptions
+  } as GlobalData,
   lifeCycleNum: 0,
   statusBarHeight: 0,
   devicePixelRatio: 1,
@@ -144,4 +183,42 @@ export const checkSystemTheme = () => {
 
 export const setNetless = (netless: boolean) => {
   state.netless = netless
+}
+
+export const updateGlobalData = (key: string, value: any) => {
+  switch (key) {
+    case 'str':
+      state.globalData.str = value as string
+      break
+    case 'num':
+      state.globalData.num = value as number
+      break
+    case 'bool':
+      state.globalData.bool = value as boolean
+      break
+    case 'obj':
+      state.globalData.obj = value as UTSJSONObject
+      break
+    case 'null':
+      state.globalData.null = value as string | null
+      break
+    case 'arr':
+      state.globalData.arr = value as number[]
+      break
+    case 'set':
+      state.globalData.set = value as Set<string>
+      break
+    case 'map':
+      state.globalData.map = value as Map<string, any>
+      break
+    case 'fun':
+      state.globalData.fun = value as () => string
+      break
+    case 'launchOptions':
+      state.globalData.launchOptions = value as OnLaunchOptions
+      break
+    case 'showOptions':
+      state.globalData.showOptions = value! as OnShowOptions
+      break
+  }
 }

@@ -21,9 +21,9 @@ describe('getApp', () => {
       str: 'default globalData obj str',
     })
     expect(data.originGlobalData.arr).toEqual([])
-    expect(data.originGlobalData.mySet).toEqual([])
-    expect(data.originGlobalData.myMap).toEqual({})
-    expect(data.originGlobalDataFuncRes).toBe('globalData func')
+    expect(data.originGlobalData.set).toEqual([])
+    expect(data.originGlobalData.map).toEqual({})
+    expect(data.originGlobalDataFuncRes).toBe('globalData fun')
     await page.callMethod('setGlobalData')
     data = await page.data('data')
     expect(data.newGlobalData.str).toBe('new globalData str')
@@ -35,13 +35,13 @@ describe('getApp', () => {
       str: 'new globalData obj str',
     })
     expect(data.newGlobalData.arr).toEqual([1, 2, 3])
-    expect(data.newGlobalData.mySet).toEqual(['a', 'b', 'c'])
-    expect(data.newGlobalData.myMap).toEqual({
+    expect(data.newGlobalData.set).toEqual(['a', 'b', 'c'])
+    expect(data.newGlobalData.map).toEqual({
       a: 1,
       b: 2,
       c: 3
     })
-    expect(data.newGlobalDataFuncRes).toBe('new globalData func')
+    expect(data.newGlobalDataFuncRes).toBe('new globalData fun')
   })
   it('method', async () => {
     const oldLifeCycleNum = await page.data('data.lifeCycleNum')
