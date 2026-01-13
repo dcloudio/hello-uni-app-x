@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <uni-back-arrow-circle arrow-class="white-arrow"></uni-back-arrow-circle>
+    <uni-back-arrow-circle class="back" arrow-class="arrow"></uni-back-arrow-circle>
     <swiper class="swiper" :current="current" :circular="index != 0" :vertical="true" @change="onSwiperChange"
       @transition="onTransition">
       <swiper-item class="swiper-item" v-for="(item,i) in visibleList" :key="i">
@@ -298,8 +298,20 @@ onUnload(() => {
     color: red;
     padding: 15px;
   }
+
+  .back{
+    position: absolute;
+    /* #ifdef APP || MP */
+    top: var(--status-bar-height);
+    /* #endif */
+    /* #ifdef WEB */
+    top: 10px;
+    /* #endif */
+    z-index: 10;
+  }
+
   /* uni-back-arrow-circle组件 自定义样式 */
-  .white-arrow {
+  .arrow {
     border-left-color: #FFFFFF !important;
     border-bottom-color: #FFFFFF !important;
   }
