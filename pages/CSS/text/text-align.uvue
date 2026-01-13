@@ -68,12 +68,18 @@
 		textAlign.value = value
 		// text 元素 - 普通版本
 		textRef.value?.style.setProperty('text-align', value)
-		const actualValue = textRef.value?.style.getPropertyValue('text-align')
-		textAlignActual.value = actualValue ?? ''
 		// text 元素 - 拍平版本
 		textRefFlat.value?.style.setProperty('text-align', value)
-		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-align')
-		textAlignActualFlat.value = actualValueFlat ?? ''
+
+		// 使用 nextTick 确保样式已应用后再获取值
+		nextTick(() => {
+			// text 元素 - 普通版本
+			const actualValue = textRef.value?.style.getPropertyValue('text-align')
+			textAlignActual.value = actualValue ?? ''
+			// text 元素 - 拍平版本
+			const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-align')
+			textAlignActualFlat.value = actualValueFlat ?? ''
+		})
 	}
 
 	const radioChangeTextAlign = (index: number) => {

@@ -81,12 +81,18 @@
     textShadow.value = value
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('text-shadow', value)
-    const actualValue = textRef.value?.style.getPropertyValue('text-shadow')
-    textShadowActual.value = actualValue ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('text-shadow', value)
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-shadow')
-    textShadowActualFlat.value = actualValueFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // text 元素 - 普通版本
+      const actualValue = textRef.value?.style.getPropertyValue('text-shadow')
+      textShadowActual.value = actualValue ?? ''
+      // text 元素 - 拍平版本
+      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-shadow')
+      textShadowActualFlat.value = actualValueFlat ?? ''
+    })
   }
 
   const radioChangeTextShadow = (index: number) => {

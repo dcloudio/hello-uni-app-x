@@ -83,12 +83,18 @@
     fontSizeProp.value = value
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('font-size', value)
-    const actualValue = textRef.value?.style.getPropertyValue('font-size')
-    fontSizeActual.value = actualValue ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('font-size', value)
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-size')
-    fontSizeActualFlat.value = actualValueFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // text 元素 - 普通版本
+      const actualValue = textRef.value?.style.getPropertyValue('font-size')
+      fontSizeActual.value = actualValue ?? ''
+      // text 元素 - 拍平版本
+      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-size')
+      fontSizeActualFlat.value = actualValueFlat ?? ''
+    })
   }
 
   const radioChangeFontSize = (index: number) => {

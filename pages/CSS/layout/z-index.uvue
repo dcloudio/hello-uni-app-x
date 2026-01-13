@@ -155,16 +155,23 @@
     zIndexValue.value = value
     // view 元素
     viewRef.value?.style.setProperty('z-index', value.toString())
-    const actualValue = viewRef.value?.style.getPropertyValue('z-index')
-    zIndexActual.value = actualValue ?? ''
     // text 元素
     textRef.value?.style.setProperty('z-index', value.toString())
-    const actualValueText = textRef.value?.style.getPropertyValue('z-index')
-    zIndexActualText.value = actualValueText ?? ''
     // image 元素
     imageRef.value?.style.setProperty('z-index', value.toString())
-    const actualValueImage = imageRef.value?.style.getPropertyValue('z-index')
-    zIndexActualImage.value = actualValueImage ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('z-index')
+      zIndexActual.value = actualValue ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('z-index')
+      zIndexActualText.value = actualValueText ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('z-index')
+      zIndexActualImage.value = actualValueImage ?? ''
+    })
   }
 
   const radioChangeZIndex = (index: number) => {

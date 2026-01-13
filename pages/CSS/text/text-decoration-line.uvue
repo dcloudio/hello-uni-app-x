@@ -77,12 +77,18 @@
 		textDecorationLine.value = value
 		// text 元素 - 普通版本
 		textRef.value?.style.setProperty('text-decoration-line', value)
-		const actualValue = textRef.value?.style.getPropertyValue('text-decoration-line')
-		textDecorationLineActual.value = actualValue ?? ''
 		// text 元素 - 拍平版本
 		textRefFlat.value?.style.setProperty('text-decoration-line', value)
-		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line')
-		textDecorationLineActualFlat.value = actualValueFlat ?? ''
+
+		// 使用 nextTick 确保样式已应用后再获取值
+		nextTick(() => {
+			// text 元素 - 普通版本
+			const actualValue = textRef.value?.style.getPropertyValue('text-decoration-line')
+			textDecorationLineActual.value = actualValue ?? ''
+			// text 元素 - 拍平版本
+			const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-decoration-line')
+			textDecorationLineActualFlat.value = actualValueFlat ?? ''
+		})
 	}
 
 	const radioChangeTextDecorationLine = (index: number) => {

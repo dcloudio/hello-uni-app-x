@@ -124,28 +124,38 @@
     minWidth.value = value
     // view 元素 - 普通版本
     viewRef.value?.style.setProperty('min-width', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('min-width')
-    minWidthActual.value = actualValue ?? ''
     // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('min-width', value)
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('min-width')
-    minWidthActualFlat.value = actualValueFlat ?? ''
     // text 元素 - 普通版本
     textRef.value?.style.setProperty('min-width', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('min-width')
-    minWidthActualText.value = actualValueText ?? ''
     // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('min-width', value)
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('min-width')
-    minWidthActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素 - 普通版本
     imageRef.value?.style.setProperty('min-width', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('min-width')
-    minWidthActualImage.value = actualValueImage ?? ''
     // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('min-width', value)
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('min-width')
-    minWidthActualImageFlat.value = actualValueImageFlat ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('min-width')
+      minWidthActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('min-width')
+      minWidthActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('min-width')
+      minWidthActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('min-width')
+      minWidthActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('min-width')
+      minWidthActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('min-width')
+      minWidthActualImageFlat.value = actualValueImageFlat ?? ''
+    })
   }
 
   const radioChangeMinWidth = (index: number) => {

@@ -95,16 +95,23 @@
     visibilityValue.value = value
     // view 元素
     viewRef.value?.style.setProperty('visibility', value)
-    const actualValue = viewRef.value?.style.getPropertyValue('visibility')
-    visibilityActual.value = actualValue ?? ''
     // text 元素
     textRef.value?.style.setProperty('visibility', value)
-    const actualValueText = textRef.value?.style.getPropertyValue('visibility')
-    visibilityActualText.value = actualValueText ?? ''
     // image 元素
     imageRef.value?.style.setProperty('visibility', value)
-    const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
-    visibilityActualImage.value = actualValueImage ?? ''
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('visibility')
+      visibilityActual.value = actualValue ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('visibility')
+      visibilityActualText.value = actualValueText ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
+      visibilityActualImage.value = actualValueImage ?? ''
+    })
   }
 
   const radioChangeVisibility = (index: number) => {
