@@ -15,8 +15,8 @@
           <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
             @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
 
-          <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
-            @error="imageErrorEvent(index, $event as ImageErrorEvent)" flatten></image>
+          <image class="image" mode="widthFix" :src="item.errorImageFlatten == null ? item.src : item.errorImageFlatten"
+            @error="imageErrorEventFlatten(index, $event as ImageErrorEvent)" flatten></image>
         </view>
       </view>
 
@@ -42,6 +42,7 @@
     format : string
     src : string.ImageURIString
     errorImage ?: string.ImageURIString | null
+    errorImageFlatten ?: string.ImageURIString | null
   }
 
   const title = ref('image-format')
@@ -114,6 +115,11 @@
     console.log("图片加载错误", e.detail);
     // 图片加载失败，加载本地占位图
     supportFormats.value[index].errorImage = '/static/template/drop-card/dislike.png'
+  }
+  function imageErrorEventFlatten(index : number, e : ImageErrorEvent) {
+    console.log("拍平图片加载错误", e.detail);
+    // 图片加载失败，加载本地占位图
+    supportFormats.value[index].errorImageFlatten = '/static/template/drop-card/dislike.png'
   }
 </script>
 
