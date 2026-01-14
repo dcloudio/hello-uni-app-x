@@ -8,15 +8,8 @@
       <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
       <!-- #endif -->
       <view class="custom-navbar-inner">
-        <!-- 自定义返回箭头 -->
-        <!-- <view class="left-content">
-          <view ref="backRef" class="left-content-inner" @click="back">
-            <uni-icons style="margin-left: -1px;" type="back" ></uni-icons>
-            <text :style="'font-family: uni-icon;color:'+iconColor">{{'\uE601'}}</text>
-          </view>
-        </view> -->
         <!-- uni-back-arrow-circle组件：旋转边框的view实现返回箭头 -->
-        <uni-back-arrow-circle :backgroundColor="backBackgroundColor" :color="iconColor"></uni-back-arrow-circle>
+        <uni-back-arrow-circle :style="{backgroundColor:backBackgroundColor}" :arrow-class="arrowClass"></uni-back-arrow-circle>
         <view class="custom-navbar-content">
           <text ref="textRef" class="content-inner-text">
             标题
@@ -86,10 +79,9 @@
   // 导航栏相关
   const navbar = ref<UniElement | null>(null);
   let backBackgroundColor = ref<string>('rgba(255, 255, 255, 1)')
-  // const backRef = ref<UniElement | null>(null);
-  // const backRef = ref<ComponentPublicInstance | null>(null)
   const textRef = ref<UniElement | null>(null);
-  const iconColor = ref('#999')
+  // 自定义返回箭头样式
+  const arrowClass = ref('arrow-gray')
   let navbarHeight = 0
   // const tabRef = ref<UniElement | null>(null);
   let tabTop = 0
@@ -162,13 +154,12 @@
     if (transparent_count >= 1) {
       transparent_count = 1
       // TODO 这不停的改响应式变量不对，性能低，效果差，应该也是渐变@wuhao
-      iconColor.value = '#fff'
+      arrowClass.value = 'arrow-white'
     } else {
-      iconColor.value = '#999'
+      arrowClass.value = 'arrow-gray'
     }
 
     navbar.value!.style.setProperty('background-color', `rgba(0, 122, 255,${transparent_count})`)
-    // backRef.value!.style.setProperty('background-color', `rgba(255, 255, 255,${1 - transparent_count})`)
     backBackgroundColor.value = `rgba(255, 255, 255,${1 - transparent_count})`
     textRef.value!.style.setProperty('opacity', transparent_count.toString())
     // if (tabTop <= top) {
@@ -185,9 +176,6 @@
     tabTop = stickyRect.top - navbarHeight
   } */
 
-  const back = () => {
-    uni.navigateBack({});
-  }
 
   const isDarkMode = computed(() => state.isDarkMode)
 
@@ -310,29 +298,16 @@
     justify-content: space-between;
     height: 45px;
   }
+
   /* uni-back-arrow-circle组件 自定义样式 */
-  .back-class{
-    /* 页面中已适配状态栏顶部安全区，此处调整组件内的top安全区 */
-    top:5px;
+  .arrow-gray {
+    border-left-color: #999999 !important;
+    border-bottom-color: #999999 !important;
   }
 
-  .left-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 100%;
-  }
-
-  .left-content-inner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 28px;
-    height: 28px;
-    background-color: #fff;
-    border-radius: 40px;
-    padding-left: 3px;
+  .arrow-white {
+    border-left-color: #FFFFFF !important;
+    border-bottom-color: #FFFFFF !important;
   }
 
   .custom-navbar-content {
