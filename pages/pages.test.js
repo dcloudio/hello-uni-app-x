@@ -323,7 +323,6 @@ if(!isMP) {
 if (!isAppWebView) {
   if (isApp) {
     pages.push(
-      '/pages/template/custom-refresher/custom-refresher',
       '/pages/API/get-file-system-manager/get-file-system-manager',
       '/pages/API/get-system-setting/get-system-setting',
       '/pages/API/element-takesnapshot/element-takesnapshot',
@@ -417,9 +416,6 @@ function getWaitForTagName(pagePath) {
   }
   if (pagePath === '/pages/API/get-file-system-manager/get-file-system-manager') {
     return 'button'
-  }
-  if (pagePath === '/pages/template/custom-refresher/custom-refresher') {
-    return 'list-view'
   }
   return 'view'
 }
