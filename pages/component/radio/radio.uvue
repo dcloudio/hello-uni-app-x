@@ -172,6 +172,7 @@
       <page-head title="组件属性"></page-head>
       <boolean-data :defaultValue="false" title="<radio/> 当前是否选中" @change="change_checked_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <!-- #ifndef VUE3-VAPOR -->
       <input-data defaultValue="#007AFF" title="radio的颜色" type="text" @confirm="confirm_color_input"></input-data>
       <input-data defaultValue="#ffffff" title="radio默认的背景颜色" type="text"
         @confirm="confirm_backgroundColor_input"></input-data>
@@ -182,6 +183,7 @@
       <input-data defaultValue="" title="radio选中时的边框颜色" type="text"
         @confirm="confirm_activeBorderColor_input"></input-data>
       <input-data defaultValue="#ffffff" title="radio的图标颜色" type="text" @confirm="confirm_iconColor_input"></input-data>
+      <!-- #endif -->
     </view>
 
     <view>
@@ -209,10 +211,18 @@
           <text class="uni-title-text"> 不同颜色和尺寸的radio </text>
         </view>
         <radio-group class="uni-flex uni-row radio-group">
+          <!-- #ifndef VUE3-VAPOR -->
           <radio value="r1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
             class="radio">选中
           </radio>
           <radio value="r2" color="#FFCC33" style="transform: scale(0.7)" class="radio">未选中</radio>
+          <!-- #endif -->
+          <!-- #ifdef VUE3-VAPOR -->
+          <radio value="r1" :checked="true" radio-active-class="radio-active" style="transform: scale(0.7); margin-right: 15px"
+            class="radio">选中
+          </radio>
+          <radio value="r2" id="radio-vapor" radio-active-class="radio-active" style="transform: scale(0.7)" class="radio">未选中</radio>
+          <!-- #endif -->
         </radio-group>
       </view>
 
@@ -241,6 +251,10 @@
         </radio-group>
       </view>
     </view>
+
+    <navigator class="uni-common-mb" url="/pages/template/radio-200/radio-200">
+      <button>组件性能测试</button>
+    </navigator>
   </scroll-view>
 </template>
 
@@ -261,4 +275,11 @@
     width: 100%;
     justify-content: space-between;
   }
+
+  /* #ifdef VUE3-VAPOR */
+  .radio-active {
+    background-color: #FFCC33;
+    border-color: #FFCC33;
+  }
+  /* #endif */
 </style>

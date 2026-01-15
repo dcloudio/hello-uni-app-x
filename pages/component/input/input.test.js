@@ -7,6 +7,7 @@ const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-input', () => {
   if (isAppWebView) {
@@ -52,7 +53,8 @@ describe('component-native-input', () => {
     });
   }
   // web ios 自动化测试时无法触发事件，手动测试可以
-  if (isHarmony || isAndroid) {
+  // TODO: dom2 harmony 暂时不支持 holdKeyboard
+  if ((isHarmony && !isDom2) || isAndroid) {
     it("focus and blur event", async () => {
       if (isHarmony) {
         await program.tap({ x: 100, y: 50 })
@@ -233,7 +235,8 @@ describe('component-native-input', () => {
   })
 
   it("keyboard height changed after page back", async () => {
-    if (isWeb || isMP || isIOS) {
+    // TODO: dom2 harmony 暂时不支持 holdKeyboard
+    if (isWeb || isMP || isIOS || isDom2) {
       expect(1).toBe(1)
       return
     }

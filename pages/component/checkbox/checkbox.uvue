@@ -187,6 +187,7 @@
       <page-head title="组件属性"></page-head>
       <boolean-data :defaultValue="false" title="当前是否选中，可用来设置默认选中" @change="change_checked_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
+      <!-- #ifndef VUE3-VAPOR -->
       <input-data defaultValue="#007aff" title="checkbox的颜色" type="text" @confirm="confirm_color_input"></input-data>
       <input-data defaultValue="#ffffff" title="checkbox默认的背景颜色" type="text"
         @confirm="confirm_backgroundColor_input"></input-data>
@@ -200,6 +201,7 @@
         @confirm="confirm_iconColor_input"></input-data>
       <input-data defaultValue="#ff0000" title="foreColor: checkbox的图标颜色，优先级大于color属性" type="text"
         @confirm="confirm_foreColor_input"></input-data>
+      <!-- #endif -->
     </view>
 
     <view>
@@ -225,10 +227,19 @@
         </view>
         <view>
           <checkbox-group class="uni-flex uni-row checkbox-group">
+            <!-- #ifndef VUE3-VAPOR -->
             <checkbox value="cb1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
               class="checkbox">选中
             </checkbox>
             <checkbox value="cb" color="#FFCC33" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
+            <!-- #endif -->
+
+            <!-- #ifdef VUE3-VAPOR -->
+            <checkbox value="cb1" :checked="true" icon-class="custom-icon" style="transform: scale(0.7); margin-right: 15px"
+              class="checkbox">选中
+            </checkbox>
+            <checkbox value="cb" icon-class="custom-icon" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
+            <!-- #endif -->
           </checkbox-group>
         </view>
         <view class="uni-title uni-common-mt">
@@ -240,6 +251,17 @@
           </checkbox-group>
         </view>
       </view>
+
+      <!-- #ifdef VUE3-VAPOR -->
+      <view class="uni-padding-wrap">
+        <view class="uni-title uni-common-mt">
+          <text class="uni-title-text"> 自定义 checkbox </text>
+        </view>
+        <checkbox-group class="uni-flex uni-row checkbox-group">
+          <checkbox checkbox-class="custom-checkbox" id="checkbox-vapor"> 自定义 checkbox </checkbox>
+        </checkbox-group>
+      </view>
+      <!-- #endif -->
 
       <view class="uni-padding-wrap">
         <view class="uni-title uni-common-mt">
@@ -258,6 +280,10 @@
         </checkbox-group>
       </view>
     </view>
+
+    <navigator class="uni-common-mb" url="/pages/template/checkbox-200/checkbox-200">
+      <button>组件性能测试</button>
+    </navigator>
   </scroll-view>
 </template>
 
@@ -270,12 +296,6 @@
     justify-content: center;
   }
 
-  .main .list-item {
-    width: 100%;
-    height: 100px;
-    border: 1px solid #666;
-  }
-
   .uni-list-cell {
     justify-content: flex-start;
   }
@@ -284,4 +304,15 @@
     width: 100%;
     justify-content: space-between;
   }
+
+  /* #ifdef VUE3-VAPOR */
+  .custom-icon {
+    color: #FFCC33;
+  }
+
+  .custom-checkbox {
+    background-color: #e1e1e180;
+    border-color: #ffffff;
+  }
+  /* #endif */
 </style>

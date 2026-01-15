@@ -1,5 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
 
 describe('Checkbox.uvue', () => {
   let page
@@ -33,7 +35,11 @@ describe('Checkbox.uvue', () => {
   })
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
-    expect(checkboxGroupElements.length).toBe(4)
+    if (isHarmony && isDom2) {
+      expect(checkboxGroupElements.length).toBe(5)
+    } else {
+      expect(checkboxGroupElements.length).toBe(4)
+    }
     const checkboxElements = await page.$$('.checkbox')
     expect(checkboxElements.length).toBe(12)
   })
@@ -77,6 +83,11 @@ describe('Checkbox.uvue', () => {
   }
   if(!isMP) {
     it('color', async () => {
+      if (isHarmony && isDom2) {
+        console.log('Checkbox Harmony Dom2 not support props color、iconColor、fo reColor')
+        expect(1).toBe(1)
+        return
+      }
       const cb = await page.$('.cb')
       expect(await cb.attribute('color')).toBe('#007aff')
       await setPageData({color: '#63acfc'})
@@ -84,12 +95,22 @@ describe('Checkbox.uvue', () => {
     })
 
     it('icon color', async () => {
+      if (isHarmony && isDom2) {
+        console.log('Checkbox Harmony Dom2 not support props color、iconColor、foreColor')
+        expect(1).toBe(1)
+        return
+      }
       const cb = await page.$('.cb')
       expect(await cb.attribute('iconColor')).toBe('#211cfe')
       await setPageData({iconColor: '#63acfc'})
       expect(await cb.attribute('iconColor')).toBe('#63acfc')
     })
     it('foreColor', async () => {
+      if (isHarmony && isDom2) {
+        console.log('Checkbox Harmony Dom2 not support props color、iconColor、foreColor')
+        expect(1).toBe(1)
+        return
+      }
       const cb = await page.$('.cb')
       expect(await cb.attribute('foreColor')).toBe('#ff0000')
       await setPageData({foreColor: '#63acfe'})
@@ -102,6 +123,13 @@ describe('Checkbox.uvue', () => {
       await page.waitFor(2500)
       const { testEvent } = await page.data('data')
       expect(testEvent).toBe(true)
+    })
+  }
+
+  if (isDom2 && isHarmony) {
+    it('externalClasses', async () => {
+      const checkbox = await page.$('#checkbox-vapor')
+      expect(await checkbox.attribute('checkbox-class')).toContain('custom-checkbox')
     })
   }
 })

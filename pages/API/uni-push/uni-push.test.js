@@ -2,6 +2,7 @@ jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
 describe('uni-push', () => {
   let page;
   beforeAll(async () => {
@@ -12,9 +13,13 @@ describe('uni-push', () => {
   });
   // 获取cid | getPushClientId：值
   it('getPushClientId', async () => {
+    const jestResult = await page.data('jestResult')
+    if (isHarmony && !jestResult.hasGetuiAppId){
+      console.log('getPushClientId已跳过。鸿蒙端 Push 测试依赖配置：harmony-configs/entry/src/main/module.json5 → metadata → GETUI_APPID')
+      return
+    }
     await page.callMethod('handleGetClientId')
     await page.waitFor(2000);
-    const jestResult = await page.data('jestResult')
     expect(jestResult.clientId.length).toBe(32);
   });
 

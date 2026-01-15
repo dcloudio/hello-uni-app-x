@@ -82,6 +82,14 @@
         </button>
       </view>
 
+      <!-- #ifdef VUE3-VAPOR -->
+      <view class="container">
+        <button style="margin: 10px;color: #28cc1c;font-size: 20px;" :disabled="disabled_boolean" loading loading-class="custom-loading" :plain="false">
+          自定义 loading 状态
+        </button>
+      </view>
+      <!-- #endif -->
+
     </view>
     <view class="container">
       <button style="margin: 10px;position: relative;text-align:left;padding:5px;color: #ffffff;background-color: #1AAD19;
@@ -92,14 +100,9 @@
         font-size: 10px;line-height: 2;" :plain="true" :disabled="disabled_boolean" hover-class="is-hover">
         custom-btn
       </button>
-      <button style="margin: 10px;position: relative;text-align:left;padding:5px;color: #ffffff;background-color: #1AAD19;
-        font-size: 10px;line-height: 2;border-radius: 5px;border-width: 1px;border-color: #353535;border-style: solid;" :disabled="disabled_boolean" hover-class="is-hover">
-        custom-btn
-      </button>
     </view>
     <view class="container">
-      <button style="margin: 10px;
-           font-size: 15px;color: red;" type="warn" plain="true" :disabled="disabled_boolean">
+      <button style="margin: 10px;font-size: 15px;color: red;" type="warn" :plain="true" :disabled="disabled_boolean">
         custom-btn-plain-warn
       </button>
     </view>
@@ -138,7 +141,7 @@
 </template>
 
 <script setup lang="uts">
-  
+
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const plain_boolean = ref(false)
@@ -148,12 +151,12 @@
   const size_enum_current = ref(0)
   const type_enum = ref([{ "value": 0, "name": "default" }, { "value": 1, "name": "primary" }, { "value": 2, "name": "warn" }] as ItemType[])
   const type_enum_current = ref(0)
-  const count = ref(0)
-  const text = ref('uni-app-x')
+  let count = 0
+  let text = 'uni-app-x'
 
   function button_click() {
     console.log("组件被点击时触发")
-    count.value++
+    count++
   }
 
   function button_touchstart() { console.log("手指触摸动作开始") }
@@ -167,7 +170,7 @@
   function change_default_style(checked : boolean) { default_style.value = checked }
   function radio_change_size_enum(checked : number) { size_enum_current.value = checked }
   function radio_change_type_enum(checked : number) { type_enum_current.value = checked }
-  function confirm_text_input(value : string) { text.value = value }
+  function confirm_text_input(value : string) { text = value }
 </script>
 
 <style>
@@ -176,12 +179,6 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     flex-direction: column;
     justify-content: center;
-  }
-
-  .main .list-item {
-    width: 100%;
-    height: 100px;
-    border: 1px solid #666;
   }
 
   .custom-btn {
@@ -208,4 +205,12 @@
     background-color: #179b16;
     border-color: #179b16;
   }
+
+  /* #ifdef VUE3-VAPOR */
+  .custom-loading {
+    border-color: #28cc1c;
+    width: 20px;
+    height: 20px;
+  }
+  /* #endif */
 </style>

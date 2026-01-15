@@ -216,15 +216,33 @@
   }
 
   const sendH3Request = () => {
-    uni.request({
+    uni.showLoading({
+      title: "请求中..."
+    })
+    uni.request<string>({
       url:h3url,
-      // #ifdef APP-ANDROID || APP-IOS
+      // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
       enableQuic:true,
       // #endif
+      dataType: 'text',
       success:(res) => {
+        data.res = JSON.stringify(res)
+        uni.hideLoading();
+        uni.showToast({
+          title: '请求成功',
+          icon: 'success',
+          duration: duration
+        })
         console.log("res: ", res);
       },
       fail:(e) => {
+        data.res = e.errMsg
+        uni.hideLoading();
+        uni.showToast({
+          title: '请求失败',
+          icon: 'error',
+          duration: duration
+        })
         console.log("error: ", e);
       }
     })

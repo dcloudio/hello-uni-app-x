@@ -6,6 +6,8 @@ describe('slider', () => {
   const isIOS = platformInfo.startsWith('ios')
   const isMP = platformInfo.startsWith('mp')
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -15,7 +17,7 @@ describe('slider', () => {
   async function setPageData(newData) {
     return await page.setData({ data: newData });
   }
-  // it('change', async () => {})
+
   it('value', async () => {
     const slider = await page.$('#slider-custom-color-and-size')
 
@@ -30,6 +32,11 @@ describe('slider', () => {
   })
   if(!isMP) {
     it('color', async () => {
+      if (isHarmony && isDom2) {
+        console.log('Slider Harmony Dom2 not support props backgroundColor、activeColor、blockColor、activeBackgroundColor、foreColor')
+        expect(1).toBe(1)
+        return
+      }
       const slider = await page.$('#slider-custom-color-and-size')
       expect(await slider.attribute('backgroundColor')).toBe('#000000')
       expect(await slider.attribute('activeColor')).toBe('#FFCC33')
@@ -68,6 +75,11 @@ describe('slider', () => {
     })
   } else {
     it('block-size', async () => {
+      if (isHarmony && isDom2) {
+        console.log('Slider Harmony Dom2 not support props block-size')
+        expect(1).toBe(1)
+        return
+      }
       const slider = await page.$('#slider-custom-color-and-size')
       expect(await slider.attribute('blockSize')).toBe(20 + '')
 

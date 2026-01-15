@@ -3,12 +3,11 @@ const PAGE_PATH = '/pages/component/view/view'
 // 此用例仅用于模拟点击关闭iOS弹窗逻辑，无实际意义
 describe('view-test', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isAndroid = platformInfo.startsWith('android')
-  const isMP = platformInfo.startsWith('mp')
-  const isWeb = platformInfo.startsWith('web')
-  const isHarmony = platformInfo.startsWith('harmony')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
-  if (isAndroid || isWeb || isMP) {
+  if (!isIos && !isHarmony) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -18,33 +17,34 @@ describe('view-test', () => {
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(1000);
+    await page.waitFor('view');
   })
 
+  if (isIos) {
+    it('itemclick-event', async () => {
+      // 关闭弹窗 iPhone Pro 机型
+      await program.tap({
+        x: 220,
+        y: 516,
+        duration: 100
+      })
 
-  it('itemclick-event', async () => {
-    // 关闭弹窗 iPhone Pro 机型
-    await program.tap({
-      x: 220,
-      y: 516,
-      duration: 100
-    })
+      // 关闭弹窗 iPhone ProMax 机型
+      await program.tap({
+        x: 220,
+        y: 546,
+        duration: 100
+      })
 
-    // 关闭弹窗 iPhone ProMax 机型
-    await program.tap({
-      x: 220,
-      y: 546,
-      duration: 100
+      // 关闭弹窗 iPhone mini 机型
+      await program.tap({
+        x: 186,
+        y: 463,
+        duration: 100
+      })
+      expect(1).toBe(1)
     })
-
-    // 关闭弹窗 iPhone mini 机型
-    await program.tap({
-      x: 186,
-      y: 463,
-      duration: 100
-    })
-    expect(1).toBe(1)
-  })
+  }
 
   if (isHarmony) {
     it('hover-class', async () => {
@@ -70,7 +70,7 @@ describe('view-test', () => {
 
       // 通过检查样式来判断 hover-class 是否生效
       const viewChild1 = await page.$('#view-child1')
-      expect(await viewChild1.style('background-color')).toBe('#179b16')
+      expect(await viewChild1.style('background-color')).toBe(isDom2 ? '#179b16ff' : '#179b16')
     })
   }
 })

@@ -11,6 +11,7 @@
     type_enum_current: number;
     count: number;
     text: string;
+    loading: boolean;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -22,7 +23,8 @@
     type_enum: [{ "value": 0, "name": "default" }, { "value": 1, "name": "primary" }, { "value": 2, "name": "warn" }],
     type_enum_current: 0,
     count: 0,
-    text: ''
+    text: '',
+    loading: false,
   } as DataType)
 
   onReady(() => {
@@ -60,6 +62,10 @@
 
   const change_plain_boolean = (checked: boolean) => {
     data.plain_boolean = checked
+  }
+
+  const change_loading = (checked: boolean) => {
+    data.loading = checked
   }
 
   const change_disabled_boolean = (checked: boolean) => {
@@ -111,7 +117,7 @@
 
 <template>
   <view class="main">
-    <button id="testButton" :disabled="data.disabled_boolean" :size="data.size_enum[data.size_enum_current].name"
+    <button id="testButton" :loading="data.loading" :disabled="data.disabled_boolean" :size="data.size_enum[data.size_enum_current].name"
       :type="data.type_enum[data.type_enum_current].name" :plain="data.plain_boolean" @click="button_click"
       @touchstart="button_touchstart" @touchmove="button_touchmove" @touchcancel="button_touchcancel"
       @touchend="button_touchend" @tap="button_tap" @longpress="button_longpress" class="btn"
@@ -125,6 +131,7 @@
       <boolean-data :defaultValue="false" title="按钮是否镂空，背景色透明" @change="change_plain_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否禁用" @change="change_disabled_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="修改默认样式和点击效果(高优先)" @change="change_default_style"></boolean-data>
+      <boolean-data :defaultValue="false" title="名称前是否带 loading 图标" @change="change_loading"></boolean-data>
       <enum-data :items="data.size_enum" title="按钮的大小" @change="radio_change_size_enum"></enum-data>
       <enum-data :items="data.type_enum" title="按钮的类型" @change="radio_change_type_enum"></enum-data>
       <input-data :defaultValue="data.text" title="按钮的文案" type="text" @confirm="confirm_text_input"></input-data>
@@ -136,6 +143,10 @@
       <view style="height: 10px;"></view>
       <!-- #endif -->
     </view>
+
+    <navigator url="/pages/template/button-100/button-100">
+      <button>组件性能测试</button>
+    </navigator>
   </scroll-view>
 </template>
 

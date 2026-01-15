@@ -14,15 +14,19 @@
         </radio-group>
       </view>
       <view>
-        <checkbox-group @change="onCheckboxChange" style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
+        <checkbox-group @change="onCheckboxChange" style="margin-top: 16px; margin-left: 8px">
           <checkbox :disabled="isWeb" :checked="isLoop" style="margin-right: 15px">循环播放</checkbox>
         </checkbox-group>
       </view>
       <view>
-        <checkbox-group @change="onLongPressCheckboxChange"
-          style="margin-top: 16px; margin-bottom: 16px; margin-left: 8px">
-          <checkbox :disabled="isWeb" :checked="isLongPress" style="margin-right: 15px">支持长按事件</checkbox>
-        </checkbox-group>
+        <text class="text-desc">长按行为</text>
+        <radio-group class="cell-ct" style="background-color: white; margin-bottom: 16px;" @change="onLongPressCheckboxChange">
+          <view class="indicator-it" v-for="(item, index) in longPressAction" :key="item.value">
+            <radio :disabled="isWeb" :checked="index == 1" :value="item.value">{{
+              item.name
+            }}</radio>
+          </view>
+        </radio-group>
       </view>
       <view style="background-color: white">
         <text class="text-desc">点击图片开始预览</text>
@@ -51,9 +55,8 @@
 </template>
 
 <script setup lang="uts">
-  type Indicator = "number" | "default" | "none"
   type ItemType = {
-    value : Indicator,
+    value : string,
     name : string
   }
 
@@ -82,7 +85,15 @@
     name: "不显示"
   }] as ItemType[])
 
-  const currentIndicator = ref("default" as Indicator)
+  const longPressAction = ref([{
+    value: "0",
+    name: "默认长按行为"
+  }, {
+    value: "1",
+    name: "自定义长按行为"
+  }] as ItemType[])
+
+  const currentIndicator = ref("default")
 
   // #ifdef WEB
   const isWeb = ref(true)
@@ -144,15 +155,15 @@
   }
 
   const onIndicatorChanged = (e : UniRadioGroupChangeEvent) => {
-    currentIndicator.value = e.detail.value as Indicator
+    currentIndicator.value = e.detail.value
   }
 
   const onCheckboxChange = (_ : UniCheckboxGroupChangeEvent) => {
     isLoop.value = !isLoop.value
   }
 
-  const onLongPressCheckboxChange = () => {
-    isLongPress.value = !isLongPress.value
+  const onLongPressCheckboxChange = (e: UniRadioGroupChangeEvent) => {
+    isLongPress.value = (e.detail.value == "1")
   }
 
   const onImageLoadError = (index : number, error : UniImageErrorEvent) => {

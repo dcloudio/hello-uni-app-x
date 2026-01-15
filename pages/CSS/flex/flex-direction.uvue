@@ -10,11 +10,23 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="flex-direction: row" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
       </view>
 
       <view>
         <text>flex-direction: row-reverse</text>
         <view class="common" style="flex-direction: row-reverse">
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+        <text>拍平测试</text>
+        <view class="common" style="flex-direction: row-reverse" flatten>
           <view style="width: 50px; height: 50px; background-color: red"></view>
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
@@ -28,6 +40,12 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="flex-direction: column" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
       </view>
 
       <view>
@@ -37,6 +55,52 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="flex-direction: column-reverse" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-direction 测试</text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">flex-direction</text>
+          <text class="test-info">设置值: {{flexDirection}}</text>
+          <text class="test-info">获取值: {{flexDirectionActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="test-flex-container" :style="{ flexDirection: flexDirection }">
+              <view class="test-item-small" style="background-color: red;"></view>
+              <view class="test-item-small" style="background-color: green;"></view>
+              <view class="test-item-small" style="background-color: blue;"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">测试拍平</text>
+          <text class="test-info">设置值: {{flexDirection}}</text>
+          <text class="test-info">获取值: {{flexDirectionActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="test-flex-container" :style="{ flexDirection: flexDirection }" flatten>
+              <view class="test-item-small" style="background-color: red;"></view>
+              <view class="test-item-small" style="background-color: green;"></view>
+              <view class="test-item-small" style="background-color: blue;"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="flexDirectionEnum" title="flex-direction 枚举值" @change="radioChangeFlexDirection" :compact="true"></enum-data>
+        <input-data :defaultValue="flexDirection" title="flex-direction 自定义值" type="text" @confirm="inputChangeFlexDirection"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -44,10 +108,91 @@
   <!-- #endif -->
 </template>
 
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexDirectionEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'row' },
+    { value: 2, name: 'row-reverse' },
+    { value: 3, name: 'column' },
+    { value: 4, name: 'column-reverse' }
+  ]
+
+  const flexDirection = ref('row')
+  const flexDirectionActual = ref('')
+  const flexDirectionActualFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+
+  const changeFlexDirection = (value: string) => {
+    flexDirection.value = value
+    // 普通版本
+    viewRef.value?.style.setProperty('flex-direction', value)
+    // 拍平版本
+    viewRefFlat.value?.style.setProperty('flex-direction', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('flex-direction')
+      flexDirectionActual.value = actualValue ?? ''
+      // 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction')
+      flexDirectionActualFlat.value = actualValueFlat ?? ''
+    })
+  }
+
+  const radioChangeFlexDirection = (index: number) => {
+    const selectedItem = flexDirectionEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexDirection(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexDirection = (value: string) => {
+    changeFlexDirection(value)
+  }
+
+  onReady(() => {
+    const actualValue = viewRef.value?.style.getPropertyValue('flex-direction')
+    flexDirectionActual.value = actualValue ?? ''
+
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction')
+    flexDirectionActualFlat.value = actualValueFlat ?? ''
+  })
+</script>
+
 <style>
   .common {
     width: 250px;
     height: 250px;
     background-color: gray;
+  }
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 150px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+  }
+
+  .test-item-small {
+    width: 30px;
+    height: 30px;
   }
 </style>

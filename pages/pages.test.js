@@ -73,6 +73,7 @@ const pages = [
   // '/pages/component/image/image-path',
   // 截图过大
   // '/pages/component/image/image-large',
+  '/pages/component/image/image-orientation',
   // 动态内容（视频封面）
   // '/pages/component/video/video',
   // 单独测试例截图

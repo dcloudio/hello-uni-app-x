@@ -7,6 +7,8 @@ describe('test element-get-attribute', () => {
   const isApp = isAndroid || isIos
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/element-get-attribute/element-get-attribute')
     await page.waitFor(3000);
@@ -26,7 +28,7 @@ describe('test element-get-attribute', () => {
   it('check getPropertyValue', async () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
-    const propertyValue = isWeb?'rgb(255, 240, 0)':'#FFF000'
+    const propertyValue = isWeb?'rgb(255, 240, 0)': isDom2 ? '#fff000ff' : '#FFF000'
     expect(await page.data('data.propertyValue')).toEqual(propertyValue);
   });
 

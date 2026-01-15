@@ -16,9 +16,7 @@
 
     <view ref="navigatorbarRef" class="navigatorbar">
       <view class="titlebar">
-        <view class="backview" @tap="back">
-          <image class="back" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
-        </view>
+        <uni-back-arrow-circle style="background-color: transparent;" arrow-class="arrow"></uni-back-arrow-circle>
         <text ref="titleRef" class="title">DCloud 为开发者而生</text>
       </view>
       <view ref="searchbarRef" class="searchbar" @tap="search">
@@ -50,10 +48,6 @@ function onScroll(e : ScrollEvent) {
   navigatorbarRef.value?.style?.setProperty('height', (nviBarHeight.value -offset)+'px');
   titleRef.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
   searchbarRef.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
-}
-
-function back() {
-  uni.navigateBack();
 }
 
 function search() {
@@ -114,15 +108,13 @@ onResize((event : OnResizeOptions) => {
   align-items: center;
   height: 44px;
 }
-.backview {
-  width: 44px;
-  height: 44px;
-  justify-content: center;
-  align-items: center;
+
+/* uni-back-arrow-circle组件 自定义样式 */
+.arrow {
+  border-left: 2px solid #555!important;
+  border-bottom: 2px solid #555!important;
 }
-.back {
-  width: 20px;
-}
+
 .title {
   margin: 0px 2px;
 }

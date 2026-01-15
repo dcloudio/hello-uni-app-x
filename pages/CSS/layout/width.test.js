@@ -8,10 +8,15 @@ describe('/pages/CSS/layout/width.uvue', () => {
     await page.waitFor('view');
     const element = await page.$('.child_box');
 
-    console.log('element',element)
+    console.log('element', element)
     const size = await element.size()
+    if (process.env.UNI_APP_X_DOM2 === "true") {
+      expect(size.width).toBe(100)
+      expect(size.height).toBe(100)
+    } else {
+      expect(size.width).toBe(150)
+      expect(size.height).toBe(150)
+    }
 
-    expect(size.width).toBe(150)
-    expect(size.height).toBe(150)
   })
 });

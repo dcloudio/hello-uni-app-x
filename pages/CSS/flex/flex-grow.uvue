@@ -1,26 +1,244 @@
 <template>
-  <view style="flex-grow: 1">
-    <view>
-      <text>flex-grow</text>
-      <view style="
-          width: 250px;
-          height: 150px;
-          background-color: gray;
-          flex-direction: row;
-        ">
-        <view class="common" style="background-color: red; flex-grow: 0.5">
-          <text>0.5</text>
+  <!-- #ifdef APP -->
+  <scroll-view>
+  <!-- #endif -->
+    <view style="flex-grow: 1">
+      <view>
+        <text>flex-grow</text>
+        <view style="
+            width: 250px;
+            height: 150px;
+            background-color: gray;
+            flex-direction: row;
+          ">
+          <view class="common" style="background-color: red; flex-grow: 0.5">
+            <text>0.5</text>
+          </view>
+          <view class="common" style="background-color: green; flex-grow: 1">
+            <text>1</text>
+          </view>
+          <view class="common" style="background-color: blue; flex-grow: 2">
+            <text>2</text>
+          </view>
         </view>
-        <view class="common" style="background-color: green; flex-grow: 1">
-          <text>1</text>
-        </view>
-        <view class="common" style="background-color: blue; flex-grow: 2">
-          <text>2</text>
+        <text>拍平测试</text>
+        <view style="
+            width: 250px;
+            height: 150px;
+            background-color: gray;
+            flex-direction: row;
+          ">
+          <view class="common" style="background-color: red; flex-grow: 0.5" flatten>
+            <text>0.5</text>
+          </view>
+          <view class="common" style="background-color: green; flex-grow: 1" flatten>
+            <text>1</text>
+          </view>
+          <view class="common" style="background-color: blue; flex-grow: 2" flatten>
+            <text>2</text>
+          </view>
         </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 flex-grow 测试</text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <!-- view 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{flexGrow}}</text>
+          <text class="test-info">获取值: {{flexGrowActual}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-image test-red"></view>
+              <view ref="viewRef" class="common-image test-green" :style="{ flexGrow: flexGrow }">
+                <text class="common-text">{{flexGrow}}</text>
+              </view>
+              <view class="common-image test-blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{flexGrow}}</text>
+          <text class="test-info">获取值: {{flexGrowActualText}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-text test-red">红色</text>
+              <text ref="textRef" class="common-text test-green" :style="{ flexGrow: flexGrow }">text</text>
+              <text class="common-text test-blue">蓝色</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- image 组件测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{flexGrow}}</text>
+          <text class="test-info">获取值: {{flexGrowActualImage}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image test-red" src="/static/logo.png"></image>
+              <image ref="imageRef" class="common-image test-green" :style="{ flexGrow: flexGrow }" src="/static/logo.png"></image>
+              <image class="common-image test-blue" src="/static/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <!-- view 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{flexGrow}}</text>
+          <text class="test-info">获取值: {{flexGrowActualFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <view class="common-image test-red"></view>
+              <view ref="viewRefFlat" class="common-image test-green" :style="{ flexGrow: flexGrow }" flatten>
+                <text class="common-text">{{flexGrow}}</text>
+              </view>
+              <view class="common-image test-blue"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- text 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{flexGrow}}</text>
+          <text class="test-info">获取值: {{flexGrowActualTextFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <text class="common-text test-red">红色</text>
+              <text ref="textRefFlat" class="common-text test-green" :style="{ flexGrow: flexGrow }" flatten>text</text>
+              <text class="common-text test-blue">蓝色</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- image 组件拍平测试 -->
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{flexGrow}}</text>
+          <text class="test-info">获取值: {{flexGrowActualImageFlat}}</text>
+          <view class="test-box">
+            <view class="test-flex-container">
+              <image class="common-image test-red" src="/static/logo.png"></image>
+              <image ref="imageRefFlat" class="common-image test-green" :style="{ flexGrow: flexGrow }" flatten src="/static/logo.png"></image>
+              <image class="common-image test-blue" src="/static/logo.png"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="flexGrowEnum" title="flex-grow 枚举值" @change="radioChangeFlexGrow" :compact="true"></enum-data>
+        <input-data :defaultValue="flexGrow" title="flex-grow 自定义值" type="text" @confirm="inputChangeFlexGrow"></input-data>
+      </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const flexGrowEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0.5' },
+    { value: 3, name: '1' },
+    { value: 4, name: '2' },
+  ]
+
+  const flexGrow = ref('0')
+  const flexGrowActual = ref('')
+  const flexGrowActualFlat = ref('')
+  const flexGrowActualText = ref('')
+  const flexGrowActualImage = ref('')
+  const flexGrowActualTextFlat = ref('')
+  const flexGrowActualImageFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const changeFlexGrow = (value: string) => {
+    flexGrow.value = value
+    // view 元素
+    viewRef.value?.style.setProperty('flex-grow', value)
+    // view 元素 拍平
+    viewRefFlat.value?.style.setProperty('flex-grow', value)
+    // text 元素
+    textRef.value?.style.setProperty('flex-grow', value)
+    // text 元素 拍平
+    textRefFlat.value?.style.setProperty('flex-grow', value)
+    // image 元素
+    imageRef.value?.style.setProperty('flex-grow', value)
+    // image 元素 拍平
+    imageRefFlat.value?.style.setProperty('flex-grow', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('flex-grow')
+      flexGrowActual.value = actualValue ?? ''
+      // view 元素 拍平
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow')
+      flexGrowActualFlat.value = actualValueFlat ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('flex-grow')
+      flexGrowActualText.value = actualValueText ?? ''
+      // text 元素 拍平
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex-grow')
+      flexGrowActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('flex-grow')
+      flexGrowActualImage.value = actualValueImage ?? ''
+      // image 元素 拍平
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-grow')
+      flexGrowActualImageFlat.value = actualValueImageFlat ?? ''
+    })
+  }
+
+  const radioChangeFlexGrow = (index: number) => {
+    const selectedItem = flexGrowEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeFlexGrow(selectedItem.name)
+    }
+  }
+
+  const inputChangeFlexGrow = (value: string) => {
+    changeFlexGrow(value)
+  }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('flex-grow')
+    flexGrowActual.value = actualValue ?? ''
+    // view 元素 拍平
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualFlat.value = actualValueFlat ?? ''
+
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('flex-grow')
+    flexGrowActualImage.value = actualValueImage ?? ''
+  })
+</script>
 
 <style>
   .common {
@@ -29,4 +247,58 @@
     justify-content: center;
     align-items: center;
   }
+
+  .common-text {
+    height: 30px;
+    background-color: green;
+    font-size: 14px;
+    color: white;
+  }
+
+  .common-image {
+    width: 30px;
+    height: 30px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 50px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+  }
+
+  .test-red {
+    background-color: red;
+  }
+
+  .test-blue {
+    background-color: blue;
+  }
+
+  .test-green {
+    background-color: green;
+  }
+
 </style>

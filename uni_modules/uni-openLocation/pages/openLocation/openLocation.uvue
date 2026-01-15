@@ -1,32 +1,34 @@
 <template>
-  <view class="uni-open-location" :class="classCom">
+  <view class="uni-open-location">
     <view class="uni-open-location-map-box">
       <map class="uni-open-location-map" :id="mapId" :ref="mapId" :latitude="latitude" :longitude="longitude" :scale="openLocationOptions.scale" :markers="markers"
         :layer-style="theme == 'dark' ? '2' : '1'" :show-compass="false" :enable-zoom="true" :enable-scroll="true" :enable-rotate="false" :enable-poi="true" :show-location="true">
       </map>
-      <view class="uni-open-location-map-reset" @click="mapReset">
-        <text class="uni-open-location-icons uni-open-location-map-reset-icon">{{ icon.position }}</text>
+      <view class="uni-open-location-map-reset" :class="[darkClassCom]" @click="mapReset">
+        <text class="uni-open-location-icons uni-open-location-map-reset-icon" :class="[darkClassCom]">{{ icon.position }}</text>
       </view>
     </view>
     <view class="uni-open-location-nav" :style="'height:' + (60 + safeArea.top) + 'px;'">
-      <view class="uni-open-location-nav-btn uni-open-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''"><text
-          class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons" @click="back">{{ icon.back }}</text></view>
+      <view class="uni-open-location-nav-btn uni-open-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''">
+        <view class="uni-open-location-nav-btn-bg"></view>
+        <text class="uni-open-location-nav-text uni-open-location-nav-back-text uni-open-location-icons" @click="back">{{ icon.back }}</text>
+      </view>
     </view>
-    <view class="uni-open-location-footer">
+    <view class="uni-open-location-footer" :class="[darkClassCom]">
       <view class="uni-open-location-address">
-        <text class="uni-open-location-name-text">
+        <text class="uni-open-location-name-text" :class="[darkClassCom]">
           {{ openLocationOptions.name }}
         </text>
-        <text class="uni-open-location-address-text">
+        <text class="uni-open-location-address-text" :class="[darkClassCom]">
           {{ openLocationOptions.address }}
         </text>
       </view>
       <view class="uni-open-location-footer-icon-btns">
         <view class="uni-open-location-footer-icon-btns-item" @click="navigation">
-          <view class="uni-open-location-footer-icon-box">
-            <text class="uni-open-location-icons">{{ icon.navigation }}</text>
+          <view class="uni-open-location-footer-icon-box" :class="[darkClassCom]">
+            <text class="uni-open-location-icons uni-open-location-navigation">{{ icon.navigation }}</text>
           </view>
-          <text class="uni-open-location-footer-btn-text">{{ languageCom['navigation'] }}</text>
+          <text class="uni-open-location-footer-btn-text" :class="[darkClassCom]">{{ languageCom['navigation'] }}</text>
         </view>
       </view>
     </view>
@@ -110,15 +112,9 @@
     return textInfo;
   });
 
-  const classCom = computed(() => {
-    let list = [] as Array<string>;
-    if (theme.value == 'dark') {
-      list.push('uni-open-location-dark');
-    } else {
-      list.push('uni-open-location-light');
-    }
-    return list.join(' ');
-  });
+  const darkClassCom = computed(() : string => {
+    return theme.value == 'dark' ? 'uni-open-location-dark' : 'uni-open-location-light';
+  })
 
   const landscapeClassCom = computed(() => {
     return isLandscape.value ? 'uni-open-location-landscape' : '';
@@ -398,17 +394,17 @@
     flex-direction: column;
   }
 
-  .uni-open-location .uni-open-location-map-box {
+  .uni-open-location-map-box {
     width: 100%;
     flex: 1;
   }
 
-  .uni-open-location .uni-open-location-map {
+  .uni-open-location-map {
     width: 100%;
     height: 100%;
   }
 
-  .uni-open-location .uni-open-location-map-reset {
+  .uni-open-location-map-reset {
     position: absolute;
     left: 20px;
     bottom: 40px;
@@ -425,13 +421,13 @@
     align-items: center;
   }
 
-  .uni-open-location .uni-open-location-map-reset .uni-open-location-map-reset-icon {
+  .uni-open-location-map-reset-icon {
     font-size: 26px;
     text-align: center;
     line-height: 40px;
   }
 
-  .uni-open-location .uni-open-location-nav {
+  .uni-open-location-nav {
     position: absolute;
     top: 0;
     left: 0;
@@ -441,7 +437,7 @@
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0));
   }
 
-  .uni-open-location .uni-open-location-nav .uni-open-location-nav-btn {
+  .uni-open-location-nav-btn {
     position: absolute;
     top: 5px;
     left: 5px;
@@ -452,12 +448,21 @@
     align-items: center;
   }
 
-  .uni-open-location .uni-open-location-nav .uni-open-location-nav-btn.uni-open-location-nav-back-btn .uni-open-location-nav-back-text {
+  .uni-open-location-nav-btn-bg {
+    width: 20px;
+    height: 20px;
+    background-color: #cbcbcb;
+    border-radius: 10px;
+    overflow: hidden;
+    position: absolute;
+  }
+
+  .uni-open-location-nav-back-text {
     color: #fff;
     font-size: 26px;
   }
 
-  .uni-open-location .uni-open-location-footer {
+  .uni-open-location-footer {
     height: 150px;
     border-radius: 10px 10px 0px 0px;
     overflow: hidden;
@@ -469,13 +474,13 @@
     padding: 0px 20px;
   }
 
-  .uni-open-location .uni-open-location-footer .uni-open-location-address {
+  .uni-open-location-address {
     display: flex;
     flex-direction: column;
     flex: 1;
   }
 
-  .uni-open-location .uni-open-location-footer .uni-open-location-name-text {
+  .uni-open-location-name-text {
     font-size: 18px;
     font-weight: bold;
     overflow: hidden;
@@ -483,7 +488,7 @@
     white-space: nowrap;
   }
 
-  .uni-open-location .uni-open-location-footer .uni-open-location-address-text {
+  .uni-open-location-address-text {
     font-size: 16px;
     margin-top: 10px;
     overflow: hidden;
@@ -491,20 +496,20 @@
     white-space: nowrap;
   }
 
-  .uni-open-location .uni-open-location-footer-icon-btns {
+  .uni-open-location-footer-icon-btns {
     width: 100px;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
   }
 
-  .uni-open-location .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item {
+  .uni-open-location-footer-icon-btns-item {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .uni-open-location .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item .uni-open-location-footer-icon-box {
+  .uni-open-location-footer-icon-box {
     background-color: #f8f8f8;
     width: 40px;
     height: 40px;
@@ -515,45 +520,48 @@
     margin-bottom: 6px;
   }
 
-  .uni-open-location .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item .uni-open-location-footer-icon-box .uni-open-location-icons {
+  .uni-open-location-navigation.uni-open-location-icons {
     color: #007aff;
     font-size: 24px;
   }
 
-  .uni-open-location .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item .uni-open-location-footer-btn-text {
+  .uni-open-location-footer-btn-text {
     font-size: 12px;
     text-align: center;
   }
 
-  .uni-open-location .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item:active {
+  /* #ifndef VUE3_VAPOR */
+  .uni-open-location-footer-icon-btns-item:active {
     opacity: 0.6;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-map-reset {
+  /* #endif */
+
+  .uni-open-location-dark.uni-open-location-map-reset {
     background-color: #111111;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-map-reset .uni-open-location-map-reset-icon {
+  .uni-open-location-dark.uni-open-location-map-reset-icon {
     color: #d1d1d1;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-footer {
+  .uni-open-location-dark.uni-open-location-footer {
     background-color: #181818;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-footer .uni-open-location-name-text {
+  .uni-open-location-dark.uni-open-location-name-text {
     color: #fafafa;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-footer .uni-open-location-address-text {
+  .uni-open-location-dark.uni-open-location-address-text {
     color: #fafafa;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item .uni-open-location-footer-icon-box {
+  .uni-open-location-dark.uni-open-location-footer-icon-box {
     background-color: #393939;
   }
 
-  .uni-open-location.uni-open-location-dark .uni-open-location-footer-icon-btns .uni-open-location-footer-icon-btns-item .uni-open-location-footer-btn-text {
+  .uni-open-location-dark.uni-open-location-footer-btn-text {
     color: #909090;
   }
 </style>

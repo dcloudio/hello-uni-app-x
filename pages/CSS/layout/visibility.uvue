@@ -9,11 +9,52 @@
       </view>
       <view @click="changeVisibility">
         <text>text组件: visibility: {{visibility}}（点击切换）</text>
-        <text class="text-visibility" :style="{'visibility': visibility}">测试文本</text>
+        <text class="common" :style="{'visibility': visibility}">测试文本</text>
       </view>
       <view @click="changeVisibility">
         <text>image组件: visibility: {{visibility}}（点击切换）</text>
-        <image class="image-visibility" :style="{'visibility': visibility}" src="/static/logo.png"></image>
+        <image class="common" :style="{'visibility': visibility}" src="/static/logo.png"></image>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 visibility 测试</text>
+      </view>
+
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{visibilityValue}}</text>
+          <text class="test-info">获取值: {{visibilityActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic" :style="{ visibility: visibilityValue }">
+              <text>view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{visibilityValue}}</text>
+          <text class="test-info">获取值: {{visibilityActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic" :style="{ visibility: visibilityValue }">text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{visibilityValue}}</text>
+          <text class="test-info">获取值: {{visibilityActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic" :style="{ visibility: visibilityValue }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="visibilityEnum" title="visibility 枚举值" @change="radioChangeVisibility" :compact="true"></enum-data>
+        <input-data :defaultValue="visibilityValue" title="visibility 自定义值" type="text" @confirm="inputChangeVisibility"></input-data>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -22,38 +63,115 @@
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const visibility = ref('visible')
-  const flag = ref(true)
+  let flag = true
 
   const changeVisibility = () => {
-    flag.value = !flag.value
-    if (flag.value) {
+    flag = !flag
+    if (flag) {
       visibility.value = 'visible'
     } else {
       visibility.value = 'hidden'
     }
   }
+
+  const visibilityEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'visible' },
+    { value: 2, name: 'hidden' }
+  ]
+
+  const visibilityValue = ref('visible')
+  const visibilityActual = ref('')
+  const visibilityActualText = ref('')
+  const visibilityActualImage = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+
+  const changeVisibilityProperty = (value: string) => {
+    visibilityValue.value = value
+    // view 元素
+    viewRef.value?.style.setProperty('visibility', value)
+    // text 元素
+    textRef.value?.style.setProperty('visibility', value)
+    // image 元素
+    imageRef.value?.style.setProperty('visibility', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('visibility')
+      visibilityActual.value = actualValue ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('visibility')
+      visibilityActualText.value = actualValueText ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
+      visibilityActualImage.value = actualValueImage ?? ''
+    })
+  }
+
+  const radioChangeVisibility = (index: number) => {
+    const selectedItem = visibilityEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeVisibilityProperty(selectedItem.name)
+    }
+  }
+
+  const inputChangeVisibility = (value: string) => {
+    changeVisibilityProperty(value)
+  }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('visibility')
+    visibilityActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('visibility')
+    visibilityActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
+    visibilityActualImage.value = actualValueImage ?? ''
+  })
 </script>
 
 <style>
   .common {
-    width: 250px;
-    height: 250px;
+    width: 150px;
+    height: 150px;
     background-color: red;
   }
 
-  .text-visibility {
-    width: 250px;
-    height: 250px;
+  .common-dynamic {
+    width: 100px;
+    height: 100px;
     background-color: red;
-    font-size: 16px;
-    color: white;
   }
 
-  .image-visibility {
-    width: 250px;
-    height: 250px;
-    background-color: red;
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 100px;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

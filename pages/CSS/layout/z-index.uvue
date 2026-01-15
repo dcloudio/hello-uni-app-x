@@ -43,7 +43,7 @@
     <view style="z-index: 1;position: fixed;">111</view>
     <view style="width: 750rpx;">222</view>
   </view>
-  <view style="top: 500px;">
+  <view style="top: 200px;">
     <view class="common" style="background-color: red;z-index: 10;">
       <text>text组件: z-index: 10</text>
     </view>
@@ -54,7 +54,7 @@
       <text>text组件: z-index: 0</text>
     </view>
   </view>
-  <view style="top: 750px;">
+  <view style="top: 200px;">
     <view class="common" style="background-color: red;z-index: 10;">
       <image class="image-zindex" src="/static/logo.png"></image>
     </view>
@@ -65,12 +65,58 @@
       <image class="image-zindex" src="/static/logo.png"></image>
     </view>
   </view>
+  <view class="uni-common-mt" style="top:300px;">
+    <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 z-index 测试</text>
+  </view>
+
+  <view class="test-container" style="top:300px;">
+    <view class="test-item">
+      <text class="uni-subtitle-text">view 组件</text>
+      <text class="test-info">设置值: {{zIndexValue}}</text>
+      <text class="test-info">获取值: {{zIndexActual}}</text>
+      <view class="test-box">
+        <view class="common-bg" style="background-color: blue; z-index: 1;">
+          <text class="common-text-bg">蓝色view</text>
+        </view>
+        <view ref="viewRef" class="common-dynamic" style="background-color: red;" :style="{ zIndex: zIndexValue }">
+          <text class="common-text-bg">红色view</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="test-item">
+      <text class="uni-subtitle-text">text 组件</text>
+      <text class="test-info">设置值: {{zIndexValue}}</text>
+      <text class="test-info">获取值: {{zIndexActualText}}</text>
+      <view class="test-box">
+        <text class="common-bg common-text-bg" style="background-color: blue; z-index: 1;">蓝色text</text>
+        <text ref="textRef" class="common-dynamic common-text-bg" style="background-color: red;" :style="{ zIndex: zIndexValue }">红色text</text>
+      </view>
+    </view>
+
+    <view class="test-item">
+      <text class="uni-subtitle-text">image 组件</text>
+      <text class="test-info">设置值: {{zIndexValue}}</text>
+      <text class="test-info">获取值: {{zIndexActualImage}}</text>
+      <view class="test-box">
+        <image class="common-bg common-image-bg" style="z-index: 1;" src="/static/logo.png"></image>
+        <image ref="imageRef" class="common-dynamic common-image-bg" :style="{ zIndex: zIndexValue }" src="/static/test-image/logo.png"></image>
+      </view>
+    </view>
+  </view>
+
+  <view class="uni-common-mt uni-common-mb" style="top:300px;">
+    <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+    <enum-data :items="zIndexEnum" title="z-index 枚举值" @change="radioChangeZIndex" :compact="true"></enum-data>
+    <input-data :defaultValue="zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
+  </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   type DataType = {
     zIndex: number
@@ -88,6 +134,72 @@
     data.zIndex = 20
     view.value?.style.setProperty('z-index', zIndexValue)
   }
+
+  const zIndexEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '-1' },
+    { value: 2, name: '0' },
+    { value: 3, name: '1' },
+    { value: 4, name: '10' },
+  ]
+
+  const zIndexValue = ref(5)
+  const zIndexActual = ref('')
+  const zIndexActualText = ref('')
+  const zIndexActualImage = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+
+  const changeZIndexProperty = (value: number) => {
+    zIndexValue.value = value
+    // view 元素
+    viewRef.value?.style.setProperty('z-index', value)
+    // text 元素
+    textRef.value?.style.setProperty('z-index', value.toString())
+    // image 元素
+    imageRef.value?.style.setProperty('z-index', value.toString())
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRef.value?.style.getPropertyValue('z-index')
+      zIndexActual.value = actualValue ?? ''
+      // text 元素
+      const actualValueText = textRef.value?.style.getPropertyValue('z-index')
+      zIndexActualText.value = actualValueText ?? ''
+      // image 元素
+      const actualValueImage = imageRef.value?.style.getPropertyValue('z-index')
+      zIndexActualImage.value = actualValueImage ?? ''
+    })
+  }
+
+  const radioChangeZIndex = (index: number) => {
+    const selectedItem = zIndexEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      const value = selectedItem.name === '' ? 0 : parseInt(selectedItem.name)
+      changeZIndexProperty(value)
+    }
+  }
+
+  const inputChangeZIndex = (value: string) => {
+    const numValue = parseInt(value)
+    if (!isNaN(numValue)) {
+      changeZIndexProperty(numValue)
+    }
+  }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRef.value?.style.getPropertyValue('z-index')
+    zIndexActual.value = actualValue ?? ''
+    // text 元素
+    const actualValueText = textRef.value?.style.getPropertyValue('z-index')
+    zIndexActualText.value = actualValueText ?? ''
+    // image 元素
+    const actualValueImage = imageRef.value?.style.getPropertyValue('z-index')
+    zIndexActualImage.value = actualValueImage ?? ''
+  })
 
   defineExpose({
     data,
@@ -156,5 +268,55 @@
     width: 125px;
     height: 125px;
     background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .common-dynamic {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+
+  .common-bg {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .common-text-bg {
+    color: white;
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  .common-image-bg {
+    width: 80px;
+    height: 80px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+    position: relative;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

@@ -5,17 +5,18 @@
       <button class="button_item" @click="switchItemContent">修改item子元素</button>
     </scroll-view>
     <list-view v-show="data.list_show" id="listview" style="flex: 1;" show-scrollbar=false @scrolltolower="onScrollTolower">
-      <list-item v-for="index in item_count" :id="'item_'+index" class="item" @click="itemClick(index)">
+      <list-item v-for="(item,index) in list" :key="item.id" :id="'item_'+item.id" class="item" @click="itemClick(item.id)">
         <view style="flex-direction: row;">
-          <text>item-------<text>{{index}}</text></text>
+          <text>item-------<text>{{item.id}}</text></text>
           <scroll-view direction="horizontal" show-scrollbar="false" class="scroll_item">
-            <text>scroll-view{{index}}：</text>
+            <text>scroll-view{{item.id}}：</text>
             <text class="tip_text" v-for="tab in 5">元素{{tab}}</text>
           </scroll-view>
         </view>
-        <text v-show="data.displayArrow">item-------<text>{{index}}</text></text>
-
-        <switch :checked="true"></switch>
+        <text v-show="data.displayArrow">item-------<text>{{item.id}}</text></text>
+        <checkbox-group @change="checkedChange(index)">
+            <checkbox :checked="item.checked" />
+        </checkbox-group>
       </list-item>
     </list-view>
   </view>
@@ -23,7 +24,11 @@
 
 <script setup lang="uts">
 
-const item_count = ref(20)
+type Item = {
+  id: number
+  checked: boolean
+}
+const list = ref<Item[]>([])
 const listViewElement = ref(null as UniListViewElement | null)
 
 type DataType = {
@@ -36,11 +41,25 @@ const data = reactive({
   displayArrow: false,
 } as DataType)
 
+function generateItems(count: number) {
+  const startIndex = list.value.length
+  for (let i = 0; i < count; i++) {
+    list.value.push({
+      id: startIndex + i + 1,
+      checked: false,
+    })
+  }
+}
+
 function onScrollTolower(event : ScrollToLowerEvent) {
   setTimeout(() => {
-    item_count.value += 20
+    generateItems(20)
   }, 300)
 }
+
+onMounted(() => {
+  generateItems(20)
+})
 
 //用于自动化测试
 function listViewScrollByY(y : number) {
@@ -51,9 +70,12 @@ function itemClick(index : number) {
   console.log("itemTextClick---" + index)
 }
 
+function checkedChange(index : number) {
+  list.value[index].checked = !list.value[index].checked
+}
+
 function delayShow() {
   data.list_show = !data.list_show
-  item_count.value += 20
   //延时显示list-view 测试list-item延时显示bug
   setTimeout(() => {
     data.list_show = !data.list_show

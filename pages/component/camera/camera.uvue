@@ -73,17 +73,17 @@
 	const devicePosition = ref("back")
 	const flash = ref("off")
 	const frameSize = ref("medium")
-	const listener = ref(null as CameraContextCameraFrameListener | null)
+	let listener: CameraContextCameraFrameListener | null = null
 	const maxZoom = ref(0)
 	const imageSrc = ref("")
-	const quality = ref("normal")
+	let quality = "normal"
 	const timeout = ref(30)
-	const compressed = ref(false)
+	let compressed = false
 	const videoSrc = ref("")
 	const startRecordStatus = ref(false)
 	const remain = ref(0)
-	const intervalId = ref(-1)
-	const timeoutStr = ref('30')
+	let intervalId = -1
+	let timeoutStr = '30'
 
 	const handleScanCode = () => {
 		uni.navigateTo({
@@ -126,7 +126,7 @@
 	const handleTakePhoto = () => {
 		const context = uni.createCameraContext();
 		context?.takePhoto({
-			quality: quality.value,
+			quality: quality,
 			selfieMirror: false,
 			success: (res : CameraContextTakePhotoResult) => {
 				console.log("res.tempImagePath", res.tempImagePath);
@@ -139,19 +139,19 @@
 	}
 
 	const takePhotoQualityChange = (event : UniRadioGroupChangeEvent) => {
-		quality.value = event.detail.value
-		console.log("quality", quality.value);
+		quality = event.detail.value
+		console.log("quality", quality);
 	}
 
 	const setOnFrameListener = () => {
 		const context = uni.createCameraContext();
-		listener.value = context?.onCameraFrame((frame : CameraContextOnCameraFrame) => {
+		listener = context?.onCameraFrame((frame : CameraContextOnCameraFrame) => {
 			console.log("OnFrame :", frame);
 		})
 	}
 
 	const startFrameListener = () => {
-		listener.value?.start({
+		listener?.start({
 			success: (res : any) => {
 				console.log("startFrameListener success", res);
 			}
@@ -159,7 +159,7 @@
 	}
 
 	const stopFrameListener = () => {
-		listener.value?.stop({
+		listener?.stop({
 			success: (res : any) => {
 				console.log("stopFrameListener success", res);
 			}
@@ -167,7 +167,7 @@
 	}
 
   const getTimeout = () : number => {
-  	let value = parseInt(timeoutStr.value)
+  	let value = parseInt(timeoutStr)
   	if (Number.isNaN(value)) {
   		return 30
   	} else {
@@ -195,15 +195,15 @@
 					const result = res as CameraContextStartRecordTimeoutResult
 					videoSrc.value = result.tempVideoPath ?? ''
 				}
-				clearInterval(intervalId.value)
+				clearInterval(intervalId)
 			},
 			success: (res : any) => {
 				startRecordStatus.value = true
 				console.log("start record success", res);
 				remain.value = timeoutValue
-				intervalId.value = setInterval(() => {
+				intervalId = setInterval(() => {
 					if (remain.value <= 0) {
-						clearInterval(intervalId.value)
+						clearInterval(intervalId)
 					} else {
 						remain.value--
 					}
@@ -213,7 +213,7 @@
 				console.log("start record fail", res);
 				startRecordStatus.value = false
 				remain.value = 0
-				clearInterval(intervalId.value)
+				clearInterval(intervalId)
 			}
 		} as CameraContextStartRecordOptions)
 	}
@@ -222,7 +222,7 @@
 		startRecordStatus.value = false
 		const context = uni.createCameraContext();
 		context?.stopRecord({
-			compressed: compressed.value,
+			compressed: compressed,
 			success: (res : CameraContextStopRecordResult) => {
 				console.log("stop record success", res);
 				videoSrc.value = res.tempVideoPath ?? ''
@@ -231,16 +231,16 @@
 				console.log("stop record fail", res);
 			}
 		} as CameraContextStopRecordOptions)
-		clearInterval(intervalId.value)
+		clearInterval(intervalId)
 		remain.value = 0
 	}
 
 	const startRecordCompressChange = (event : UniRadioGroupChangeEvent) => {
-		compressed.value = parseInt(event.detail.value) == 1
+		compressed = parseInt(event.detail.value) == 1
 	}
 
 	const timeoutInput = (event : UniInputEvent) => {
-		timeoutStr.value = event.detail.value
+		timeoutStr = event.detail.value
 	}
 
 </script>

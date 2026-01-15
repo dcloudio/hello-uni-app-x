@@ -1,14 +1,56 @@
 <template>
   <scroll-view class="container">
-    <!-- 标题 -->
-    <view class="header">
-      <text class="title">loading 样式测试页</text>
-      <text class="subtitle">class / style / 动态 style 对比</text>
+    <page-head title="loading组件"></page-head>
+
+    <view class="section">
+      <view class="row">
+        <view class="item">
+          <text class="label">默认样式</text>
+          <loading/>
+        </view>
+        <view class="item">
+          <text class="label">paused为true</text>
+          <loading paused/>
+        </view>
+        <view class="item">
+          <text class="label">bold为true</text>
+          <loading bold/>
+        </view>
+        <view class="item">
+          <text class="label">背景圈黑色，前景白色</text>
+          <view style="width: 16px;height: 16px;border-radius: 8px;border: black 0.5px solid;align-items: center;justify-content: center;overflow: visible;">
+            <loading style="border-color: white;" bold />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 动态 style 控制 -->
+    <view class="section">
+      <text class="section-title">动态 style</text>
+      <view class="controls">
+        <button size="mini" @click="decreaseSize">-10px</button>
+        <button size="mini" @click="increaseSize">+10px</button>
+        <button size="mini" @click="toggleBold">bold 属性: {{ isBold }}</button>
+        <button size="mini" @click="nextColor">color style: {{ borderColor }}</button>
+        <button size="mini" @click="setPaused">paused 属性：{{ paused }}</button>
+        <button size="mini" @click="reset">reset</button>
+      </view>
+
+      <view class="row">
+        <view class="item">
+          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / bold: {{ isBold }}</text>
+          <view class="box">
+             <!-- :paused 如果报错，就remove，应该是基座中还没包含 -->
+            <loading :bold=isBold :paused="paused" :style="dynamicStyle" />
+          </view>
+        </view>
+      </view>
     </view>
 
     <!-- 一、Class 实现 -->
     <view class="section">
-      <text class="section-title">Class 实现</text>
+      <text class="section-title">Class 自定义样式</text>
       <view class="row">
         <view class="item">
           <text class="label">100×100 / blue / bold=false</text>
@@ -45,7 +87,7 @@
 
     <!-- 二、Style 实现 -->
     <view class="section">
-      <text class="section-title">Style 实现</text>
+      <text class="section-title">Style 自定义样式</text>
       <view class="row">
         <view class="item">
           <text class="label">80×80 / red / bold=true</text>
@@ -63,34 +105,13 @@
       </view>
     </view>
 
-    <!-- 三、动态 style 控制 -->
-    <view class="section">
-      <text class="section-title">动态 style</text>
-      <view class="controls">
-        <button @click="decreaseSize">-10px</button>
-        <button @click="increaseSize">+10px</button>
-        <button @click="toggleBold">bold 属性: {{ isBold }}</button>
-        <button @click="nextColor">color style: {{ borderColor }}</button>
-        <button @click="setPaused">paused 属性：{{ paused }}</button>
-        <button @click="reset">reset</button>
-      </view>
-
-      <view class="row">
-        <view class="item">
-          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / bold: {{ isBold }}</text>
-          <view class="box">
-             <!-- :paused 如果报错，就remove，应该是基座中还没包含 -->
-            <loading :bold=isBold :paused="paused" :style="dynamicStyle" />
-          </view>
-        </view>
-      </view>
-    </view>
+    <navigator class="uni-common-mb" url="/pages/template/loading-100/loading-100">
+      <button>组件性能测试</button>
+    </navigator>
   </scroll-view>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue'
-
+<script setup lang="uts">
 const widthPx = ref(100)
 const heightPx = ref(100)
 const borderColor = ref('blue')
@@ -195,7 +216,6 @@ const setPaused = () => {
 .item {
   align-items: center;
   margin: 8px 4px;
-  min-width: 140px;
 }
 
 .label {
@@ -210,6 +230,8 @@ const setPaused = () => {
 }
 
 /* NOTE mp-weixin 类名需要加上父级以提高优先级，否则 class 样式无法生效 */
+
+/* #ifdef MP-WEIXIN */
 .item .size-80 { width: 80px; height: 80px; }
 .item .size-100 { width: 100px; height: 100px; }
 .item .size-140 { width: 140px; height: 140px; }
@@ -218,5 +240,17 @@ const setPaused = () => {
 .item .bc-red { border-color: red; }
 .item .bc-green { border-color: green; }
 .item .bc-yellow { border-color: yellow; }
+/* #endif */
+
+/* #ifndef MP-WEIXIN */
+.size-80 { width: 80px; height: 80px; }
+.size-100 { width: 100px; height: 100px; }
+.size-140 { width: 140px; height: 140px; }
+
+.bc-blue { border-color: blue; }
+.bc-red { border-color: red; }
+.bc-green { border-color: green; }
+.bc-yellow { border-color: yellow; }
+/* #endif */
 
 </style>

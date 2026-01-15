@@ -109,13 +109,11 @@
 </template>
 
 <script setup lang="uts">
-  
-
-  const mainView = ref(null as UniElement | null)
-  const animation = ref(null as UniAnimation | null)
+  let mainView: UniElement | null = null
+  let animation: UniAnimation | null = null
 
   function startAnimate() {
-    animation.value = mainView.value!.animate([
+    animation = mainView!.animate([
       {
         transform: "scale(1)",
         transformOrigin: "0px 0px"
@@ -132,12 +130,12 @@
       duration: 5000,
 
     })
-    animation.value!.oncancel = (_ : UniAnimationPlaybackEvent) => {
+    animation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
       uni.showToast({
         title: "动画被取消了"
       })
     }
-    animation.value!.onfinish = (_ : UniAnimationPlaybackEvent) => {
+    animation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
       uni.showToast({
         title: "动画播放完成"
       })
@@ -145,15 +143,15 @@
   }
 
   function pauseAnimate() {
-    animation.value?.pause()
+    animation?.pause()
   }
 
   function resumeAnimate() {
-    animation.value?.play()
+    animation?.play()
   }
 
   function cancelAnimate() {
-    animation.value?.cancel()
+    animation?.cancel()
   }
 
   function widthProperty(e : UniPointerEvent) {
@@ -364,7 +362,7 @@
   }
 
   onReady(() => {
-    mainView.value = uni.getElementById("main")
+    mainView = uni.getElementById("main")
     var roll = uni.getElementById("roll")
     roll!.animate([
       { transform: "translateX(0) rotate(0)" },

@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="uts">
+  import { state } from '@/store/index.uts'
+
   type DataType = {
     checked: boolean;
     homePagePath: string;
@@ -24,7 +26,12 @@
 
   const data = reactive({
     checked: false,
+    // #ifdef VUE3-VAPOR
+    homePagePath: 'pages/tabBar/tab-bar',
+    // #endif
+    // #ifndef VUE3-VAPOR
     homePagePath: 'pages/tabBar/component',
+    // #endif
     launchOptionsPath: '',
     launchOptionsString: '',
     testResult: false
@@ -34,12 +41,11 @@
     const launchOptions = uni.getLaunchOptionsSync();
     data.launchOptionsString = JSON.stringify(launchOptions, null, 2)
 
-    const app = getApp()
-    const appOnLaunch = app.globalData.launchOptions
+    const appLaunchOptions = state.globalData.launchOptions
 
-    const isPathSame = launchOptions.path == appOnLaunch.path
-    const isAppSchemeSame = launchOptions.appScheme == appOnLaunch.appScheme
-    const isAppLinkSame = launchOptions.appLink == appOnLaunch.appLink
+    const isPathSame = launchOptions.path == appLaunchOptions.path
+    const isAppSchemeSame = launchOptions.appScheme == appLaunchOptions.appScheme
+    const isAppLinkSame = launchOptions.appLink == appLaunchOptions.appLink
     data.testResult = isPathSame && isAppSchemeSame && isAppLinkSame
   }
 

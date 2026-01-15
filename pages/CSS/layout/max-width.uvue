@@ -1,24 +1,235 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>max-width: 250px</text>
-      <view class="common" style="max-width: 250px;">
-        <text>width: 500px</text>
+  <!-- #ifdef APP -->
+  <scroll-view>
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>max-width: 200px</text>
+        <view class="common" style="max-width: 200px;">
+          <text>width: 400px</text>
+        </view>
+        <text>拍平测试</text>
+        <view class="common" style="max-width: 200px;" flatten>
+          <text>width: 400px</text>
+        </view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 max-width 测试</text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{maxWidth}}</text>
+          <text class="test-info">获取值: {{maxWidthActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-dynamic" :style="{ maxWidth: maxWidth }">
+              <text>view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{maxWidth}}</text>
+          <text class="test-info">获取值: {{maxWidthActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-dynamic" :style="{ maxWidth: maxWidth }">text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{maxWidth}}</text>
+          <text class="test-info">获取值: {{maxWidthActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-dynamic" :style="{ maxWidth: maxWidth }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{maxWidth}}</text>
+          <text class="test-info">获取值: {{maxWidthActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic" :style="{ maxWidth: maxWidth }" flatten>
+              <text class="common-text">view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{maxWidth}}</text>
+          <text class="test-info">获取值: {{maxWidthActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic" :style="{ maxWidth: maxWidth }" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{maxWidth}}</text>
+          <text class="test-info">获取值: {{maxWidthActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic" :style="{ maxWidth: maxWidth }" flatten src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="maxWidthEnum" title="max-width 枚举值" @change="radioChangeMaxWidth" :compact="true"></enum-data>
+        <input-data :defaultValue="maxWidth" title="max-width 自定义值" type="text" @confirm="inputChangeMaxWidth"></input-data>
+      </view>
+
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
+  const maxWidthEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '50px' },
+    { value: 4, name: '120px' },
+    { value: 5, name: '80rpx' },
+    { value: 6, name: 'none' }
+  ]
+
+  const maxWidth = ref('100px')
+  const maxWidthActual = ref('')
+  const maxWidthActualText = ref('')
+  const maxWidthActualImage = ref('')
+  const maxWidthActualFlat = ref('')
+  const maxWidthActualTextFlat = ref('')
+  const maxWidthActualImageFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const changeMaxWidth = (value: string) => {
+    maxWidth.value = value
+    // view 元素 - 普通版本
+    viewRef.value?.style.setProperty('max-width', value)
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('max-width', value)
+    // text 元素 - 普通版本
+    textRef.value?.style.setProperty('max-width', value)
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('max-width', value)
+    // image 元素 - 普通版本
+    imageRef.value?.style.setProperty('max-width', value)
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('max-width', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('max-width')
+      maxWidthActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('max-width')
+      maxWidthActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('max-width')
+      maxWidthActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('max-width')
+      maxWidthActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('max-width')
+      maxWidthActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('max-width')
+      maxWidthActualImageFlat.value = actualValueImageFlat ?? ''
+    })
+  }
+
+  const radioChangeMaxWidth = (index: number) => {
+    const selectedItem = maxWidthEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeMaxWidth(selectedItem.name)
+    }
+  }
+
+  function inputChangeMaxWidth(value: string) {
+    changeMaxWidth(value)
+  }
+
+  onReady(() => {
+    // view 元素 - 普通版本
+    const actualValue = viewRef.value?.style.getPropertyValue('max-width')
+    maxWidthActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('max-width')
+    maxWidthActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
+    const actualValueText = textRef.value?.style.getPropertyValue('max-width')
+    maxWidthActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('max-width')
+    maxWidthActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
+    const actualValueImage = imageRef.value?.style.getPropertyValue('max-width')
+    maxWidthActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('max-width')
+    maxWidthActualImageFlat.value = actualValueImageFlat ?? ''
+  })
 </script>
 
 <style>
   .common {
-    width: 500px;
-    height: 250px;
+    width: 400px;
+    height: 80px;
     background-color: red;
     justify-content: center;
     align-items: center;
+  }
+
+  .common-text{
+    width: 50px;
+  }
+
+  .common-dynamic {
+    width: 100px;
+    height: 80px;
+    background-color: red;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

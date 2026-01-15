@@ -8,7 +8,7 @@
       </view>
       <view v-if="!hasLeftWin" class="uni-text-box">
         <text class="hello-text">以下是部分模板示例，更多模板见插件市场：</text>
-        <u-link href="https://ext.dcloud.net.cn" :text="'https://ext.dcloud.net.cn'" :inWhiteList="true"></u-link>
+        <u-link class="hello-text" href="https://ext.dcloud.net.cn" :text="'https://ext.dcloud.net.cn'" :inWhiteList="true"></u-link>
       </view>
       <view class="uni-panel" v-for="(item, index) in list" :key="item.id">
         <view hover-class="is--active" class="uni-panel-h" @click="triggerCollapse(index, item)">
@@ -65,13 +65,22 @@
   import { state } from '@/store/index.uts'
 
   const list = ref<ListItem[]>([
+    // #ifdef APP && VUE3-VAPOR
     {
-      id: 'slider-100',
-      url: 'slider-100',
-      name: 'slider-100',
+      id: '4050',
+      url: '4050',
+      name: 'view和text性能测试',
       open: false,
       pages: [] as Page[],
     },
+    {
+      id: '2000-image',
+      url: '2000-image',
+      name: 'image性能测试',
+      open: false,
+      pages: [] as Page[],
+    },
+    // #endif
     {
       id: 'long-list',
       url: 'long-list',
@@ -107,6 +116,13 @@
       id: 'list-news',
       url: 'list-news',
       name: '列表到详情（吸顶）',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'long-list-deleteable',
+      url: 'long-list-deleteable',
+      name: '带删除的不等高长列表',
       open: false,
       pages: [] as Page[],
     },
@@ -149,13 +165,6 @@
     },
     // #ifdef APP
     {
-      id: 'custom-refresher',
-      url: 'custom-refresher',
-      name: '自定义下拉刷新',
-      open: false,
-      pages: [] as Page[],
-    },
-    {
       id: 'pull-zoom-image',
       url: 'pull-zoom-image',
       name: '下拉缩放顶部封面图',
@@ -174,6 +183,13 @@
       id: 'swiper-vertical-video',
       url: 'swiper-vertical-video',
       name: '竖滑视频',
+      open: false,
+      pages: [] as Page[],
+    },
+    {
+      id: 'im',
+      url: 'im',
+      name: 'im聊天示例',
       open: false,
       pages: [] as Page[],
     },
@@ -213,15 +229,18 @@
       enable: true,
       pages: [] as Page[],
     },
-    // #ifdef APP
     {
       id: 'calendar',
+    // #ifdef APP && !VUE3-VAPOR
       url: 'calendar',
+    // #endif
+    // #ifdef WEB || MP || VUE3-VAPOR
+      url: 'calendar-vapor',
+    // #endif
       name: '日历',
       open: false,
       pages: [] as Page[],
     },
-    // #endif
     // #ifdef APP || WEB
     {
       id: 'schema',
@@ -296,7 +315,11 @@
     if (hasLeftWin.value) {
       uni.reLaunch({ url })
     } else {
-      uni.navigateTo({ url })
+      uni.navigateTo({ url
+      ,fail() {
+        console.log('页面跳转失败：' + url)
+      }
+      })
     }
   }
 

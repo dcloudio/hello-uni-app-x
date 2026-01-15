@@ -141,7 +141,6 @@
     // #ifdef APP
     const x = indicator_line_x + indicator_line_w / 2
     indicator.value?.style?.setProperty('transform', `translateX(${x}px) scaleX(${indicator_line_w})`)
-    initSwiperItemData(current_index)
     // #endif
     // #ifdef WEB || MP
     // TODO chrome windows系统 transform scaleX渲染bug
@@ -208,10 +207,9 @@
     // 通知更新指示线
     if (current_index != move_to_index) {
       updateTabIndicator(current_index, move_to_index, percentage)
+      // 首次可见时初始化数据
+      initSwiperItemData(move_to_index)
     }
-
-    // 首次可见时初始化数据
-    initSwiperItemData(move_to_index)
   }
 
   function onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {

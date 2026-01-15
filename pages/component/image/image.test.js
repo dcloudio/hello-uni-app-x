@@ -148,4 +148,29 @@ describe('component-native-image', () => {
     const image = await program.screenshot(screenshotParams)
     expect(image).toSaveImageSnapshot()
   })
+
+  it('test all button clicks', async () => {
+    page = await program.reLaunch('/pages/component/image/image');
+    await page.waitFor('view');
+    await page.waitFor(isWeb ? 4000 : 100);
+    // 获取所有按钮元素
+    const buttons = await page.$$('.uni-btn');
+    const buttonCount = buttons.length;
+    console.log('buttonCount',buttonCount)
+    // 循环点击每个按钮
+    for (let i = 0; i < buttonCount; i++) {
+      // 重新获取按钮（因为返回后页面可能重新渲染）
+      const currentButtons = await page.$$('.uni-btn');
+      const button = currentButtons[i];
+      console.log('button',button)
+      // 点击按钮
+      await button.tap();
+      // 等待页面跳转完成,返回上一页
+      await page.waitFor(isWeb ? 1000 : 500);
+      await program.navigateBack();
+      await page.waitFor(300);
+    }
+    // 验证所有按钮都点击成功（通过没有抛出异常来验证）
+    expect(buttonCount).toBeGreaterThan(0);
+  });
 });

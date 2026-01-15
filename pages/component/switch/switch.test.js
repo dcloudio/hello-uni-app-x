@@ -1,6 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
 const PAGE_PATH = '/pages/component/switch/switch'
 
 describe('switch', () => {
@@ -32,6 +34,11 @@ describe('switch', () => {
     expect(newValue2.toString()).toBe(true + '')
   })
   it('color', async () => {
+    if (isHarmony && isDom2) {
+      console.log('Switch Harmony Dom2 not support props color')
+      expect(1).toBe(1)
+      return
+    }
     const switch_element = await page.$('.switch-color')
     expect(await switch_element.attribute('color')).toBe('#FFCC33')
     const color = '#00ff00'
@@ -43,6 +50,11 @@ describe('switch', () => {
   })
   if(!isMP) {
     it('dark', async () => {
+      if (isHarmony && isDom2) {
+        console.log('Switch Harmony Dom2 not support props background-color、fore-color、active-background-color、active-fore-color')
+        expect(1).toBe(1)
+        return
+      }
       const dark = await page.$('#dark')
       const darkChecked = await page.$('#darkChecked')
       expect(await dark.attribute('background-color')).toBe('#1f1f1f')
@@ -73,4 +85,13 @@ describe('switch', () => {
 
     // expect(testVerifyEvent).toBe(true)
   })
+
+  if (isDom2 && isHarmony) {
+    it('externalClasses', async () => {
+      const switchElement = await page.$('#darkChecked')
+      expect(await switchElement.attribute('switch-active-class')).toContain('custom-switch-active')
+      expect(await switchElement.attribute('thumb-active-class')).toContain('custom-thumb-active1')
+      expect(await switchElement.attribute('thumb-class')).toContain('custom-thumb1')
+    })
+  }
 })

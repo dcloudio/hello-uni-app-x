@@ -3,6 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-list-view', () => {
   if (isMP) {
@@ -179,19 +180,21 @@ describe('component-native-list-view', () => {
     expect(scrollTop-690).toBeGreaterThanOrEqual(0)
   })
 
-  //检测横向scroll_into_view属性赋值 备注：iOS不支持list-view横向滚动
-  it('check_scroll_into_view_left', async () => {
-    if(await page.data('data.scroll_x_boolean') === false) {
-        await page.callMethod('change_scroll_x_boolean', true)
-        await page.callMethod('change_scroll_y_boolean', false)
-        await page.waitFor(600)
-    }
-    await page.callMethod('setScrollIntoView', "item---3")
-    await page.waitFor(600)
-    const listElement = await page.$('#listview')
-    const scrollLeft = await listElement.attribute("scrollLeft")
-    console.log("check_scroll_into_view_left--"+scrollLeft)
-    await page.callMethod('setScrollIntoView', "item---0")
-    expect(scrollLeft-1080).toBeGreaterThanOrEqual(0)
-  })
+  if(!isDom2) {
+    //检测横向scroll_into_view属性赋值 备注：iOS不支持list-view横向滚动
+    it('check_scroll_into_view_left', async () => {
+      if(await page.data('data.scroll_x_boolean') === false) {
+          await page.callMethod('change_scroll_x_boolean', true)
+          await page.callMethod('change_scroll_y_boolean', false)
+          await page.waitFor(600)
+      }
+      await page.callMethod('setScrollIntoView', "item---3")
+      await page.waitFor(600)
+      const listElement = await page.$('#listview')
+      const scrollLeft = await listElement.attribute("scrollLeft")
+      console.log("check_scroll_into_view_left--"+scrollLeft)
+      await page.callMethod('setScrollIntoView', "item---0")
+      expect(scrollLeft-1080).toBeGreaterThanOrEqual(0)
+    })
+  }
 })

@@ -15,8 +15,8 @@
   const orientation_enum = ref([{ "value": 0, "name": "auto" }, { "value": 1, "name": "landscape" }, { "value": 2, "name": "landscape-primary" }, { "value": 3, "name": "landscape-secondary" }, { "value": 4, "name": "portrait" }] as ItemType[])
   const navigationUI_enum = ref([{ "value": 0, "name": "auto" }, { "value": 1, "name": "hide" }, { "value": 2, "name": "show" }] as ItemType[])
   const text = ref("点击进入全屏")
-  const fullscreenElement = ref(null as UniElement | null)
-  const isFullscreen = ref(false)
+  let fullscreenElement: UniElement | null = null
+  let isFullscreen = false
   const orientation = ref("landscape")
   const navigationUI = ref("hide")
 
@@ -38,7 +38,7 @@
   }
 
   function fullscreen() {
-    if (isFullscreen.value) {
+    if (isFullscreen) {
       // 重置退出全屏回调状态
       let status1 = false
       const page = getCurrentPage()
@@ -59,7 +59,7 @@
     } else {
       // 重置进入全屏回调状态
       let status1 = false
-      fullscreenElement.value?.requestFullscreen({
+      fullscreenElement?.requestFullscreen({
         navigationUI: navigationUI.value,
         orientation: orientation.value,
         success: () => {
@@ -77,7 +77,7 @@
       })
     }
 
-    isFullscreen.value = !isFullscreen.value
+    isFullscreen = !isFullscreen
   }
 
   function fullscreenchange(e : UniEvent) {
@@ -101,7 +101,7 @@
   }
 
   onReady(() => {
-    fullscreenElement.value = uni.getElementById('fullscreen') as UniElement
+    fullscreenElement = uni.getElementById('fullscreen') as UniElement
   })
 
   defineExpose({

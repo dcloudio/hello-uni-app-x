@@ -20,30 +20,28 @@
 </template>
 
 <script setup lang="uts">
-
 import { createNativeButtonContext } from "@/uni_modules/native-button";
 
-const title = ref('Hello')
 const buttonText = ref("native-button")
-const isLoad = ref(false)
-const clickCount = ref(0)
+let isLoad = false
+let clickCount = 0
 
 function ontap(e : UniNativeViewEvent) {
   uni.showToast({
     title: "按钮被点击了"
   })
-  clickCount.value ++
-  buttonText.value = "native-button"+clickCount.value
+  clickCount ++
+  buttonText.value = "native-button"+clickCount
 }
 
 function onload() {
   //标记已初始化 用于自动化测试
-  isLoad.value = true
+  isLoad = true
 }
 
 //用于自动化测试
 function getIsLoadTest():boolean {
-  return isLoad.value
+  return isLoad
 }
 
 function testCallMethod() {

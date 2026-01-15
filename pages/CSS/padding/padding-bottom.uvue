@@ -1,29 +1,250 @@
 <template>
-  <view style="flex-grow: 1;">
-    <view>
-      <text>padding-bottom: 25px</text>
-      <view class="common" style="padding-bottom: 25px;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view style="flex-grow: 1;">
+      <view>
+        <text>padding-bottom: 25px</text>
+        <view class="common" style="padding-bottom: 25px;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
+        <text>拍平测试</text>
+        <view class="common" style="padding-bottom: 25px;" flatten>
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
       </view>
-    </view>
 
-    <view style="width: 250px;">
-      <text>padding-bottom: 10%</text>
-      <view class="common" style="padding-bottom: 10%;">
-        <view style="flex-grow: 1;background-color: red;"></view>
+      <view style="width: 250px;">
+        <text>padding-bottom: 10%</text>
+        <view class="common" style="padding-bottom: 10%;">
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
+        <text>拍平测试</text>
+        <view class="common" style="padding-bottom: 10%;" flatten>
+          <view style="flex-grow: 1;background-color: red;"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 padding-bottom 测试</text>
+      </view>
+
+      <!-- 普通版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="test-info">设置值: {{paddingBottom}}</text>
+          <text class="test-info">获取值: {{paddingBottomActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="common-view" :style="{ paddingBottom: paddingBottom }">
+              <view style="flex-grow: 1;background-color: red;"><text>view测试</text></view>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="test-info">设置值: {{paddingBottom}}</text>
+          <text class="test-info">获取值: {{paddingBottomActualText}}</text>
+          <view class="test-box">
+            <text ref="textRef" class="common-text" :style="{ paddingBottom: paddingBottom }">当前为text组件测试测试测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="test-info">设置值: {{paddingBottom}}</text>
+          <text class="test-info">获取值: {{paddingBottomActualImage}}</text>
+          <view class="test-box">
+            <image ref="imageRef" class="common-image" :style="{ paddingBottom: paddingBottom }" src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{paddingBottom}}</text>
+          <text class="test-info">获取值: {{paddingBottomActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-view" :style="{ paddingBottom: paddingBottom }" flatten>
+              <view style="flex-grow: 1;background-color: red;"><text>view测试</text></view>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{paddingBottom}}</text>
+          <text class="test-info">获取值: {{paddingBottomActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-text" :style="{ paddingBottom: paddingBottom }" flatten>当前为text组件测试测试测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{paddingBottom}}</text>
+          <text class="test-info">获取值: {{paddingBottomActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-image" :style="{ paddingBottom: paddingBottom }" flatten src="/static/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+        <enum-data :items="paddingBottomEnum" title="padding-bottom 枚举值" @change="radioChangePaddingBottom" :compact="true"></enum-data>
+        <input-data :defaultValue="paddingBottom" title="padding-bottom 自定义值" type="text" @confirm="inputChangePaddingBottom"></input-data>
       </view>
     </view>
-  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
+  const paddingBottom = ref('25px')
+  const paddingBottomActual = ref('')
+  const paddingBottomActualText = ref('')
+  const paddingBottomActualImage = ref('')
+  const paddingBottomActualFlat = ref('')
+  const paddingBottomActualTextFlat = ref('')
+  const paddingBottomActualImageFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const paddingBottomEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '40px' },
+    { value: 4, name: '0%' },
+    { value: 5, name: '20%' }
+  ]
+
+  const changePaddingBottom = (value: string) => {
+    paddingBottom.value = value
+    // view 元素 - 普通版本
+    viewRef.value?.style.setProperty('padding-bottom', value)
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('padding-bottom', value)
+    // text 元素 - 普通版本
+    textRef.value?.style.setProperty('padding-bottom', value)
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('padding-bottom', value)
+    // image 元素 - 普通版本
+    imageRef.value?.style.setProperty('padding-bottom', value)
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('padding-bottom', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('padding-bottom')
+      paddingBottomActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-bottom')
+      paddingBottomActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('padding-bottom')
+      paddingBottomActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-bottom')
+      paddingBottomActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('padding-bottom')
+      paddingBottomActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-bottom')
+      paddingBottomActualImageFlat.value = actualValueImageFlat ?? ''
+    })
+  }
+
+  const radioChangePaddingBottom = (index: number) => {
+    const selectedItem = paddingBottomEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changePaddingBottom(selectedItem.name)
+    }
+  }
+
+  const inputChangePaddingBottom = (value: string) => {
+    changePaddingBottom(value)
+  }
+
+  // 页面初次渲染完成后获取初始值
+  onReady(() => {
+    // view 元素 - 普通版本
+    const actualValue = viewRef.value?.style.getPropertyValue('padding-bottom')
+    paddingBottomActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-bottom')
+    paddingBottomActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
+    const actualValueText = textRef.value?.style.getPropertyValue('padding-bottom')
+    paddingBottomActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-bottom')
+    paddingBottomActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
+    const actualValueImage = imageRef.value?.style.getPropertyValue('padding-bottom')
+    paddingBottomActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-bottom')
+    paddingBottomActualImageFlat.value = actualValueImageFlat ?? ''
+  })
 </script>
 
 <style>
   .common {
     width: 250px;
-    height: 250px;
+    height: 100px;
     background-color: gray;
+  }
+
+  .common-view {
+    height: 80px;
+    background-color: gray;
+  }
+
+  .common-text {
+    /* 为了加强视觉效果 */
+    min-height: 40px;
+    background-color: gray;
+  }
+
+  .common-image {
+    width: 80px;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: lightgray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

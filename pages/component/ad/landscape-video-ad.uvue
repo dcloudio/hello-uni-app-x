@@ -11,14 +11,9 @@
 </template>
 
 <script setup lang="uts">
-	
-
-	const title = ref('广告演示')
 	const src = ref("https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4")
-	const showAd = ref(false)
+	let showAd: boolean = false
 	const adVisible = ref(false)
-	const countdown = ref(10)
-	const adTimer = ref(null as any)
 
 	function setfs(){
 		const videoContext = uni.createVideoContext('myVideo2');
@@ -27,10 +22,10 @@
 	}
 
 	function onVideoPlay() {
-		if (!showAd.value) {
+		if (!showAd) {
 			const videoContext = uni.createVideoContext('myVideo2')
 			videoContext!.stop();
-			showAd.value = true;
+			showAd = true;
 			const direction : RequestFullScreenOptions = {direction:90} as RequestFullScreenOptions;
 			videoContext!.requestFullScreen(direction);
 			adVisible.value = true;

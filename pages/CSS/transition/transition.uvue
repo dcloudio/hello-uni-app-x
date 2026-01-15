@@ -15,6 +15,7 @@
       <view class="base-style" style="transition-property: width; transition-duration: 1s;" id="widthOrHeightStyle"
         @click="changeWidthOrHeightStyle"></view>
     </view>
+
     <view class="container">
       <text class="text">点击修改Margin</text>
       <view class="base-style transition-margin" id="styleMargin" @click="changeMargin"></view>
@@ -60,6 +61,7 @@
       <text class="text">点击修改Transform（含transform-origin）</text>
       <view class="base-style transition-transform" style="transform-origin: 0 0;" id="styleTransformWithOrigin"></view>
     </view>
+
     <view class="container">
       <text class="text">点击修改Border</text>
       <view class="base-style transition-border" id="styleBorder" @click="changeBorder"></view>
@@ -111,6 +113,13 @@
       </navigator>
     </view>
     <!-- #endif -->
+    <view style="margin: 7px; height: 60px;">
+      <navigator url="/pages/CSS/transition/transition-duration" hover-class="none">
+        <button type="primary">
+          transition-duration 示例
+        </button>
+      </navigator>
+    </view>
 
     <view class="container">
       <text class="text">点击修改宽度(值为auto有无动画交替出现)</text>
@@ -165,12 +174,85 @@
       <view class="base-style transition-border-background" id="borderAndBackgroundColor" @click="changeBorderAndBackgroundColor"></view>
     </view>
 
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition 测试</text>
+    </view>
+
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActual}}</text>
+        <view class="test-box">
+          <view ref="viewRefTransition" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionView">
+            <text style="font-size: 12px;">点击view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualText}}</text>
+        <view class="test-box">
+          <text ref="textRefTransition" class="common-text" :style="{ transition: transitionValue }" @click="triggerTransitionText">点击text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRefTransition" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionImage" src="/static/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefTransitionFlat" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionView" flatten>
+            <text style="font-size: 12px;">点击view</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefTransitionFlat" class="common-text" :style="{ transition: transitionValue }" @click="triggerTransitionText" flatten>点击text</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="test-info">设置值: {{transitionValue}}</text>
+        <text class="test-info">获取值: {{transitionActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefTransitionFlat" class="common-image" :style="{ transition: transitionValue }" @click="triggerTransitionImage" src="/static/logo.png" flatten></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      <enum-data :items="transitionEnum" title="transition 枚举值" @change="radioChangeTransition" :compact="true"></enum-data>
+      <input-data :defaultValue="transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
+    </view>
+
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
 <script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
 
   const isTranstionWidthOrHeight = ref(false)
   const isTranstionWidthAuto = ref(false)
@@ -529,6 +611,180 @@
     isChangeBorderAndBackgroundColor.value = !isChangeBorderAndBackgroundColor.value
   }
 
+  const transitionValue = ref('width 1s')
+  const transitionActual = ref('')
+  const transitionActualText = ref('')
+  const transitionActualImage = ref('')
+  const transitionActualFlat = ref('')
+  const transitionActualTextFlat = ref('')
+  const transitionActualImageFlat = ref('')
+  const viewRefTransition = ref(null as UniElement | null)
+  const textRefTransition = ref(null as UniTextElement | null)
+  const imageRefTransition = ref(null as UniImageElement | null)
+  const viewRefTransitionFlat = ref(null as UniElement | null)
+  const textRefTransitionFlat = ref(null as UniTextElement | null)
+  const imageRefTransitionFlat = ref(null as UniImageElement | null)
+  const isExpandedTransition = ref(false)
+  const isExpandedTransitionText = ref(false)
+  const isExpandedTransitionImage = ref(false)
+
+  const transitionEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'width 2s' },
+    { value: 2, name: 'background-color 1s' },
+    { value: 3, name: 'transform 1s' },
+    { value: 4, name: 'all 1s' },
+    { value: 5, name: 'width 1s, background-color 1s' }
+  ]
+
+  const changeTransition = (value: string) => {
+    transitionValue.value = value
+    // view 元素
+    viewRefTransition.value?.style.setProperty('transition', value)
+    // view 元素 - 拍平版本
+    viewRefTransitionFlat.value?.style.setProperty('transition', value)
+    // text 元素
+    textRefTransition.value?.style.setProperty('transition', value)
+    // text 元素 - 拍平版本
+    textRefTransitionFlat.value?.style.setProperty('transition', value)
+    // image 元素
+    imageRefTransition.value?.style.setProperty('transition', value)
+    // image 元素 - 拍平版本
+    imageRefTransitionFlat.value?.style.setProperty('transition', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素
+      const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
+      transitionActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
+      transitionActualFlat.value = actualValueFlat ?? ''
+      // text 元素
+      const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
+      transitionActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
+      transitionActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素
+      const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
+      transitionActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
+      transitionActualImageFlat.value = actualValueImageFlat ?? ''
+    })
+  }
+
+  const radioChangeTransition = (index: number) => {
+    const selectedItem = transitionEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeTransition(selectedItem.name)
+    }
+  }
+
+  const inputChangeTransition = (value: string) => {
+    changeTransition(value)
+  }
+
+  const triggerTransitionView = () => {
+    const transition = transitionValue.value
+    isExpandedTransition.value = !isExpandedTransition.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransition.value ? 'red' : 'green'
+      viewRefTransition.value?.style.setProperty('background-color', color)
+      viewRefTransitionFlat.value?.style.setProperty('background-color', color)
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransition.value ? '100px' : '50px'
+      viewRefTransition.value?.style.setProperty('width', width)
+      viewRefTransitionFlat.value?.style.setProperty('width', width)
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransition.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      viewRefTransition.value?.style.setProperty('transform', transform)
+      viewRefTransitionFlat.value?.style.setProperty('transform', transform)
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransition.value ? '100px' : '50px'
+      const color = isExpandedTransition.value ? 'red' : 'green'
+      viewRefTransition.value?.style.setProperty('width', width)
+      viewRefTransition.value?.style.setProperty('background-color', color)
+      viewRefTransitionFlat.value?.style.setProperty('width', width)
+      viewRefTransitionFlat.value?.style.setProperty('background-color', color)
+    }
+  }
+
+  const triggerTransitionText = () => {
+    const transition = transitionValue.value
+    isExpandedTransitionText.value = !isExpandedTransitionText.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransitionText.value ? 'red' : 'green'
+      textRefTransition.value?.style.setProperty('background-color', color)
+      textRefTransitionFlat.value?.style.setProperty('background-color', color)
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransitionText.value ? '100px' : '50px'
+      textRefTransition.value?.style.setProperty('width', width)
+      textRefTransitionFlat.value?.style.setProperty('width', width)
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransitionText.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      textRefTransition.value?.style.setProperty('transform', transform)
+      textRefTransitionFlat.value?.style.setProperty('transform', transform)
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransitionText.value ? '100px' : '50px'
+      const color = isExpandedTransitionText.value ? 'red' : 'green'
+      textRefTransition.value?.style.setProperty('width', width)
+      textRefTransition.value?.style.setProperty('background-color', color)
+      textRefTransitionFlat.value?.style.setProperty('width', width)
+      textRefTransitionFlat.value?.style.setProperty('background-color', color)
+    }
+  }
+
+  const triggerTransitionImage = () => {
+    const transition = transitionValue.value
+    isExpandedTransitionImage.value = !isExpandedTransitionImage.value
+
+    if (transition.includes('background-color')) {
+      const color = isExpandedTransitionImage.value ? 'red' : 'green'
+      imageRefTransition.value?.style.setProperty('background-color', color)
+      imageRefTransitionFlat.value?.style.setProperty('background-color', color)
+    } else if (transition.includes('width')) {
+      const width = isExpandedTransitionImage.value ? '100px' : '50px'
+      imageRefTransition.value?.style.setProperty('width', width)
+      imageRefTransitionFlat.value?.style.setProperty('width', width)
+    } else if (transition.includes('transform')) {
+      const transform = isExpandedTransitionImage.value ? 'rotate(45deg)' : 'rotate(0deg)'
+      imageRefTransition.value?.style.setProperty('transform', transform)
+      imageRefTransitionFlat.value?.style.setProperty('transform', transform)
+    } else if (transition.includes('all')) {
+      const width = isExpandedTransitionImage.value ? '100px' : '50px'
+      const color = isExpandedTransitionImage.value ? 'red' : 'green'
+      imageRefTransition.value?.style.setProperty('width', width)
+      imageRefTransition.value?.style.setProperty('background-color', color)
+      imageRefTransitionFlat.value?.style.setProperty('width', width)
+      imageRefTransitionFlat.value?.style.setProperty('background-color', color)
+    }
+  }
+
+  onReady(() => {
+    // view 元素
+    const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
+    transitionActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualFlat.value = actualValueFlat ?? ''
+    // text 元素
+    const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
+    transitionActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素
+    const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
+    transitionActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
+    transitionActualImageFlat.value = actualValueImageFlat ?? ''
+  })
+
 	defineExpose({
 	  changeWidthOrHeight,
 	  changeWidthProgress,
@@ -564,14 +820,14 @@
   }
 
   .base-style {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     background-color: brown;
   }
 
   .width-progress {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     background-color: brown;
   }
 
@@ -643,13 +899,11 @@
     font-size: 16px;
     text-align: center;
     background-color: lightblue;
-    justify-content: center;
-    align-items: center;
   }
 
   .image-base-style {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
   }
   .transition-border-background {
     box-shadow: 8px 8px 8px rgba(0, 255, 0, 1);
@@ -658,5 +912,41 @@
     border-style: solid;
     transition-property: border-color, background-color;
     transition-duration: 1s;
+  }
+
+  .common-text {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    font-size: 12px;
+    color: white;
+  }
+
+  .common-image {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 120px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
   }
 </style>

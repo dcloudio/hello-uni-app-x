@@ -10,11 +10,23 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="justify-content: center" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
       </view>
 
       <view>
         <text>justify-content: flex-start</text>
         <view class="common" style="justify-content: flex-start">
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+        <text>拍平测试</text>
+        <view class="common" style="justify-content: flex-start" flatten>
           <view style="width: 50px; height: 50px; background-color: red"></view>
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
@@ -28,11 +40,23 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="justify-content: flex-end" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
       </view>
 
       <view>
         <text>justify-content: space-between</text>
         <view class="common" style="justify-content: space-between">
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+        <text>拍平测试</text>
+        <view class="common" style="justify-content: space-between" flatten>
           <view style="width: 50px; height: 50px; background-color: red"></view>
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
@@ -46,6 +70,12 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="justify-content: space-around" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
       </view>
 
       <view>
@@ -55,6 +85,52 @@
           <view style="width: 50px; height: 50px; background-color: green"></view>
           <view style="width: 50px; height: 50px; background-color: blue"></view>
         </view>
+        <text>拍平测试</text>
+        <view class="common" style="justify-content: space-evenly" flatten>
+          <view style="width: 50px; height: 50px; background-color: red"></view>
+          <view style="width: 50px; height: 50px; background-color: green"></view>
+          <view style="width: 50px; height: 50px; background-color: blue"></view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 justify-content 测试</text>
+      </view>
+
+      <view class="common-box">
+        <!-- 普通版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">justify-content</text>
+          <text class="test-info">设置值: {{justifyContent}}</text>
+          <text class="test-info">获取值: {{justifyContentActual}}</text>
+          <view class="test-box">
+            <view ref="viewRef" class="test-flex-container" :style="{ justifyContent: justifyContent }">
+              <view class="test-item-small" style="background-color: red;"></view>
+              <view class="test-item-small" style="background-color: green;"></view>
+              <view class="test-item-small" style="background-color: blue;"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拍平版本 -->
+        <view class="uni-common-mt">
+          <text class="uni-title-text">测试拍平</text>
+          <text class="test-info">设置值: {{justifyContent}}</text>
+          <text class="test-info">获取值: {{justifyContentActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="test-flex-container" :style="{ justifyContent: justifyContent }" flatten>
+              <view class="test-item-small" style="background-color: red;"></view>
+              <view class="test-item-small" style="background-color: green;"></view>
+              <view class="test-item-small" style="background-color: blue;"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+          <enum-data :items="justifyContentEnum" title="justify-content 枚举值" @change="radioChangeJustifyContent" :compact="true"></enum-data>
+        <input-data :defaultValue="justifyContent" title="justify-content 自定义值" type="text" @confirm="inputChangeJustifyContent"></input-data>
       </view>
 
     </view>
@@ -63,11 +139,96 @@
   <!-- #endif -->
 </template>
 
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const justifyContentEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'flex-start' },
+    { value: 2, name: 'flex-end' },
+    { value: 3, name: 'center' },
+    { value: 4, name: 'space-between' },
+    { value: 5, name: 'space-around' },
+    { value: 6, name: 'space-evenly' }
+  ]
+
+  const justifyContent = ref('center')
+  const justifyContentActual = ref('')
+  const justifyContentActualFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+
+  const changeJustifyContent = (value: string) => {
+    justifyContent.value = value
+    // 普通版本
+    viewRef.value?.style.setProperty('justify-content', value)
+    // 拍平版本
+    viewRefFlat.value?.style.setProperty('justify-content', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('justify-content')
+      justifyContentActual.value = actualValue ?? ''
+      // 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('justify-content')
+      justifyContentActualFlat.value = actualValueFlat ?? ''
+    })
+  }
+
+  const radioChangeJustifyContent = (index: number) => {
+    const selectedItem = justifyContentEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeJustifyContent(selectedItem.name)
+    }
+  }
+
+  const inputChangeJustifyContent = (value: string) => {
+    changeJustifyContent(value)
+  }
+
+  onReady(() => {
+    const actualValue = viewRef.value?.style.getPropertyValue('justify-content')
+    justifyContentActual.value = actualValue ?? ''
+
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('justify-content')
+    justifyContentActualFlat.value = actualValueFlat ?? ''
+  })
+</script>
+
 <style>
   .common {
     width: 250px;
-    height: 250px;
+    height: 150px;
     background-color: gray;
     flex-direction: row;
+  }
+
+  .common-box{
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .test-box {
+    width: 180px;
+    height: 100px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .test-flex-container {
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+    flex-direction: row;
+  }
+
+  .test-item-small {
+    width: 30px;
+    height: 30px;
   }
 </style>
