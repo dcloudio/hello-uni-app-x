@@ -2,14 +2,14 @@
   <view class="container">
     <list-view class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
       <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
-        :style="{ backgroundColor: item.bgColor, transform: getItemVerticalTransform(index) }"
+        :style="{ backgroundColor: item.bgColor, transform: getItemVerticalTransform(index), zIndex: getItemZIndex(index) }"
         @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
         @touchcancel="onTouchEnd" @longpress="onLongPress">
         <!-- 多选模式下显示 checkbox -->
         <checkbox v-if="isMultiSelectMode" style="margin-left: 10px;" :checked="selectedIds.includes(item.id)"
           @click="toggleSelect(item.id)" />
         <view class="item-content" :style="{ height: item.height + 'px', transform: getItemTransform(index) }">
-          <text class="item-text">Item {{ index + 1 }}</text>
+          <text class="item-text">Item {{ item.id + 1 }}</text>
           <text class="item-info">高度: {{ item.height }}px</text>
           <view class="item-sub-items">
             <view v-for="subItem in item.subItems" :key="subItem.index" :style="{ backgroundColor: subItem.bgColor }">
@@ -196,6 +196,7 @@
     return 'translateX(0px)'
   }
 
+  // TODO 优化这批函数触发响应式时的性能。目前蒸汽模式下list-item vue实例也会回收，这些函数卡顿不明显。但是在非蒸汽模式下会比较影响性能
   // 获取列表项的垂直 transform（删除动画）
   const getItemVerticalTransform = (index : number) : string => {
     // 删除动画：被删除项下方的项向上移动
@@ -203,6 +204,14 @@
       return `translateY(${-deleteAnimationOffset.value}px)`
     }
     return 'translateY(0px)'
+  }
+
+  const getItemZIndex = (index : number) : number => {
+    // 用于处理被删除项和其后一项的层级问题，蒸汽模式app端list-item复用时不会确保层级正确
+    if (deletingIndex.value != -1 && deletingIndex.value + 1 == index) {
+      return 1
+    }
+    return 0
   }
 
   // 查找列表项元素（兼容 APP 和 WEB）
