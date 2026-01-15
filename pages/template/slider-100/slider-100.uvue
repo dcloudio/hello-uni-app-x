@@ -6,18 +6,16 @@
     <page-head :title="title"></page-head>
     <view class="grid-view">
       <slider ref="sliderRef" class="slider" v-for="(_, index) in 100" :key="index" @changing="sliderChanging"
-        @change="sliderChange" :value="sliderValue" :block-size="20" :show-value="true" thumb-class="thumbclass"/>
+        @change="sliderChange" :value="sliderValue" :show-value="true" :block-size="20"  thumb-class="thumbclass"/>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
-  <view :style="{'height': safeAreaInsetsBottom}"></view>
 </template>
 
 <script setup lang="uts">
 const title = ref('sliderx100通信性能测试(小程序卡为正常)')
 const sliderValue = ref(50)
-const safeAreaInsetsBottom = ref(0)
 const sliderRef = ref<UniSliderElement[]>([])
 
 
@@ -42,10 +40,6 @@ function sliderChanging(e: UniSliderChangeEvent) {
   updateSliderValue(e.detail.value)
 }
 
-onReady(() => {
-  safeAreaInsetsBottom.value = uni.getWindowInfo().safeAreaInsets.bottom
-})
-
 // 自动化测试
 const updateSliderValueTest = (value : number) => {
   sliderValue.value = value
@@ -56,6 +50,7 @@ defineExpose({updateSliderValueTest})
 <style>
   .page {
     flex: 1;
+    margin-bottom: var(--uni-safe-area-inset-bottom);
   }
 
   .grid-view {
@@ -65,10 +60,7 @@ defineExpose({updateSliderValueTest})
 
   .slider {
     width: 25%;
-    margin-top: 1px;
-    margin-left:0;
-    margin-right: 0;
-    margin-bottom: 1px;
+    margin: 1px 0px;
   }
 
   .thumbclass {

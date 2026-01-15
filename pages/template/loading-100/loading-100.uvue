@@ -1,45 +1,24 @@
 <template>
-  <view style="flex-direction: column;background-color: #f5f5f5;">
+  <view style="flex-direction: column;background-color: #f5f5f5;padding: 3px;">
     <fps />
 
-    <text style="margin-top: 2px;">计时器主线程一直占用，但loading圈不卡顿</text>
-    <view style="flex-direction: row;flex-wrap: wrap;align-items: center;">
-      <button size="mini" @click="toggleTimer" style="margin: 0px 4px;">停止/启动 计时器</button>
+    <view style="flex-direction: row;flex-wrap: wrap;align-items: center;margin-top: 40px;">
+      <button size="mini" @click="toggleTimer" style="margin-right:4px;">停止/启动 计时</button>
       <text>{{datetime}}</text>
     </view>
+    <text style="">计时器主线程一直占用绘制文字，但100个loading圈不卡顿</text>
     <!-- 控制按钮区域 -->
-    <view class="control-panel">
-      <button size="mini" @click="changePaused">{{ paused ? '播放' : '暂停' }}</button>
-      <button size="mini" @click="changeSize">尺寸：{{ sharedSize }}px</button>
-      <button size="mini" @click="changeBorderColor" :style="{ color: sharedBorderColor }">● 颜色</button>
-    </view>
+    <button size="mini" @click="changePaused">{{ paused ? '旋转' : '暂停' }}</button>
 
     <!-- 100个loading组件 -->
-    <view style="flex-direction: row;flex-wrap: wrap;padding: 2px;justify-content: space-around;">
-      <template v-for="index in 100" :key="index">
-        <view style="width: 12%;margin: 4rpx;align-items: center;">
-          <loading
-            :style="{
-              width: sharedSize + 'px',
-              height: sharedSize + 'px',
-              'border-color': sharedBorderColor,
-              // NOTE: 测试 bold 属性，此处 border-width 设置无效
-              'border-width': 'thick'
-            }"
-            :paused="paused"
-          />
-          <text style="font-size: 8px;color: #666;">{{ index }}</text>
-        </view>
-      </template>
+    <view style="flex-direction: row;flex-wrap: wrap;padding">
+      <loading v-for="index in 100" :key="index" :paused="paused" style="padding: 10px;"/>
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
-  const sharedSize = ref(30)
-  const sharedBorderColor = ref('blue')
   const paused = ref(false)
-  const bold = ref(false)
   const datetime = ref('')
 
   let timerId : number | null = null
@@ -86,38 +65,12 @@
     stopTimer()
   })
 
-  const sizes = [20, 30, 40]
-  const borderColors = ['blue', 'red', 'green', '#FF6B6B', '#4ECDC4']
-
-  let sizeIndex = 1
-  let borderColorIndex = 0
-
   function changePaused() {
     paused.value = !paused.value
   }
 
-  function changeSize() {
-    sizeIndex = (sizeIndex + 1) % sizes.length
-    sharedSize.value = sizes[sizeIndex]
-    console.log('size:', sharedSize.value)
-  }
-
-  function changeBorderColor() {
-    borderColorIndex = (borderColorIndex + 1) % borderColors.length
-    sharedBorderColor.value = borderColors[borderColorIndex]
-    console.log('border-color:', sharedBorderColor.value)
-  }
 </script>
 
 <style>
-  .control-panel {
-    padding: 4px;
-    background-color: #ffffff;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-around;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  }
 
 </style>
