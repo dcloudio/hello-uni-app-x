@@ -482,6 +482,7 @@
 	// 删除动画完成处理
 	const finishDeleteAnimation = () => {
 		// 重置动画状态
+    deleteAnimationOffset.value = 0
 		deletingIndex.value = -1
 		deletedItemHeight.value = 0
 		deleteItemOffsetX.value = 0
@@ -489,13 +490,12 @@
 		isDeleteAnimating.value = false
 		menuShowWidth.value = 0
 		currentListItemElement = null
-		deleteAnimationIndexToDelete = -1
 
     // 延迟更新transform、删除元素减少闪烁
     nextTick(() => {
-      deleteAnimationOffset.value = 0
       // 动画结束，执行删除
       items.value.splice(deleteAnimationIndexToDelete, 1)
+      deleteAnimationIndexToDelete = -1
     })
 	}
 
