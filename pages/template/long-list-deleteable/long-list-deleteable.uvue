@@ -481,11 +481,8 @@
 
 	// 删除动画完成处理
 	const finishDeleteAnimation = () => {
-		// 动画结束，执行删除
-		items.value.splice(deleteAnimationIndexToDelete, 1)
 		// 重置动画状态
 		deletingIndex.value = -1
-		deleteAnimationOffset.value = 0
 		deletedItemHeight.value = 0
 		deleteItemOffsetX.value = 0
 		isDeleting = false
@@ -493,6 +490,13 @@
 		menuShowWidth.value = 0
 		currentListItemElement = null
 		deleteAnimationIndexToDelete = -1
+
+    // 延迟更新transform、删除元素减少闪烁
+    nextTick(() => {
+      deleteAnimationOffset.value = 0
+      // 动画结束，执行删除
+      items.value.splice(deleteAnimationIndexToDelete, 1)
+    })
 	}
 
 	// 先声明函数变量并初始化，然后重新赋值（UTS递归调用的解决方案）
