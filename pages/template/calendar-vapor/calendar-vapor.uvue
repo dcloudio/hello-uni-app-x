@@ -99,7 +99,7 @@
 	const swiperCurrent = ref(1)
 	const swiperItems = ref([] as SwiperItem[])
 
-	let lastItemIndex = 0;
+	let lastItemIndex = 1;  // 初始显示的是 index 1
 
 	// Picker的值
 	const pickerValue = computed(() : string => {
@@ -248,43 +248,39 @@
 		swiperItems.value = items
 	}
 
-	// Swiper切换事件
-	function onSwiperChange(e : UniSwiperChangeEvent) {
-		const current = e.detail.current
-		console.log('onSwiperChange - current:', current, 'lastItemIndex:', lastItemIndex);
+	// 切换到指定月份，并更新 swiper 数据
+	function switchToMonth(targetYear : number, targetMonth : number, targetIndex : number) {
+		// 更新当前年月
+		currentYear.value = targetYear
+		currentMonth.value = targetMonth
 
-		// 避免重复触发
-		if (current === lastItemIndex) {
-			return
+		// 更新目标位置的数据
+		swiperItems.value[targetIndex] = {
+			year: targetYear,
+			month: targetMonth,
+			days: generateMonthDays(targetYear, targetMonth)
 		}
 
-		// 获取当前显示的item，这就是用户要查看的月份
-		const currentItem = swiperItems.value[current]
-		currentYear.value = currentItem.year
-		currentMonth.value = currentItem.month
-		console.log('切换到:', currentYear.value, '年', currentMonth.value, '月')
+		// 更新目标位置的前后两个位置
+		const prevIndex = (targetIndex - 1 + 3) % 3
+		const nextIndex = (targetIndex + 1) % 3
 
-		// 计算循环的前一个和后一个索引
-		const prevIndex = (current - 1 + 3) % 3  // 上个月的位置
-		const nextIndex = (current + 1) % 3      // 下个月的位置
-
-		// 计算上个月的年月
-		let prevYear = currentYear.value
-		let prevMonth = currentMonth.value - 1
+		// 计算上个月
+		let prevYear = targetYear
+		let prevMonth = targetMonth - 1
 		if (prevMonth < 1) {
 			prevMonth = 12
 			prevYear--
 		}
 
-		// 计算下个月的年月
-		let nextYear = currentYear.value
-		let nextMonth = currentMonth.value + 1
+		// 计算下个月
+		let nextYear = targetYear
+		let nextMonth = targetMonth + 1
 		if (nextMonth > 12) {
 			nextMonth = 1
 			nextYear++
 		}
 
-		// 更新上个月和下个月的数据
 		swiperItems.value[prevIndex] = {
 			year: prevYear,
 			month: prevMonth,
@@ -297,7 +293,23 @@
 			days: generateMonthDays(nextYear, nextMonth)
 		}
 
-		lastItemIndex = current
+		lastItemIndex = targetIndex
+	}
+
+	// Swiper切换事件
+	function onSwiperChange(e : UniSwiperChangeEvent) {
+		const current = e.detail.current
+
+		// 避免重复触发
+		if (current === lastItemIndex) {
+			return
+		}
+
+		const currentItem = swiperItems.value[current]
+		const targetYear = currentItem.year
+		const targetMonth = currentItem.month
+
+		switchToMonth(targetYear, targetMonth, current)
 	}
 
 	// 优化的更新选中状态（只更新变化的日期）
@@ -369,7 +381,7 @@
 	// Picker选择事件
 	function onPickerChange(e : UniPickerViewChangeEvent) {
 		const value = e.detail.value
-		if (typeof value === 'string' && value.length > 0) {
+		if (typeof value === 'string' && value > 0) {
 			const parts = (value as string).split('-')
 			if (parts.length >= 2) {
 				currentYear.value = parseInt(parts[0])
@@ -382,32 +394,42 @@
 
 	// 上一个月
 	function prevMonth() {
-		console.log('prevMonth');
-		let newYear = currentYear.value
-		let newMonth = currentMonth.value - 1
-		if (newMonth < 1) {
-			newMonth = 12
-			newYear--
+		// 计算上个月的年月
+		let targetYear = currentYear.value
+		let targetMonth = currentMonth.value - 1
+		if (targetMonth < 1) {
+			targetMonth = 12
+			targetYear--
 		}
-		currentYear.value = newYear
-		currentMonth.value = newMonth
-		initSwiperItems()
-		// swiperCurrent.value = 1
+
+		// 计算切换到哪个 index
+		const targetIndex = (swiperCurrent.value - 1 + 3) % 3
+
+		// 调用公共方法更新数据
+		switchToMonth(targetYear, targetMonth, targetIndex)
+
+		// 触发 swiper 切换
+		swiperCurrent.value = targetIndex
 	}
 
 	// 下一个月
 	function nextMonth() {
-		console.log('nextMonth');
-		let newYear = currentYear.value
-		let newMonth = currentMonth.value + 1
-		if (newMonth > 12) {
-			newMonth = 1
-			newYear++
+		// 计算下个月的年月
+		let targetYear = currentYear.value
+		let targetMonth = currentMonth.value + 1
+		if (targetMonth > 12) {
+			targetMonth = 1
+			targetYear++
 		}
-		currentYear.value = newYear
-		currentMonth.value = newMonth
-		initSwiperItems()
-		// swiperCurrent.value = 1
+
+		// 计算切换到哪个 index
+		const targetIndex = (swiperCurrent.value + 1) % 3
+
+		// 调用公共方法更新数据
+		switchToMonth(targetYear, targetMonth, targetIndex)
+
+		// 触发 swiper 切换
+		swiperCurrent.value = targetIndex
 	}
 
 	// 初始化
