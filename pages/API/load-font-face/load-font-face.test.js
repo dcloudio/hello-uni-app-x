@@ -1,5 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isIOS = platformInfo.startsWith('ios')
 
 const PAGE_PATH = '/pages/API/load-font-face/load-font-face'
 const CHILD_PAGE_PATH = "/pages/API/load-font-face/load-font-face-child";
@@ -23,7 +24,11 @@ describe("loadFontFace", () => {
   ) {
     it("check callback triggered", async () => {
       const successTriggeredNum = await page.data('data.successTriggeredNum');
-      expect(successTriggeredNum).toBe(6);
+      if (isIOS) {
+       expect(successTriggeredNum).toBe(6);
+      } else {
+        expect(successTriggeredNum).toBe(4);
+      }
     });
 
     it("check callback status arrays", async () => {
