@@ -20,22 +20,16 @@
       <view class="test-group">
         <view class="test-buttons">
           <button class="btn-small" @click="takeViewSnapshot">View</button>
-          <button class="btn-small" @click="takeViewSnapshotFlat">View(拍平测试)</button>
         </view>
         <view class="test-elements">
           <view id="snapshot-test-view" class="snapshot-test-small"></view>
-          <view id="snapshot-test-view-flat" class="snapshot-test-small" flatten></view>
         </view>
       </view>
       <!-- View 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null || snapshotData.viewSnapshotFlat != null">
-        <view class="snapshot-data-col" v-if="snapshotData.viewSnapshot != null">
+      <view class="snapshot-row" v-if="snapshotData.viewSnapshot != null">
+        <view class="snapshot-data-col">
           <text class="snapshot-data-subtitle">截图结果</text>
           <image class="snapshot-preview" :src="snapshotData.viewSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-        <view class="snapshot-data-col" v-if="snapshotData.viewSnapshotFlat != null">
-          <text class="snapshot-data-subtitle">拍平-截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.viewSnapshotFlat" mode="aspectFit" @longpress="saveToAlbum"></image>
         </view>
       </view>
 
@@ -43,22 +37,16 @@
       <view class="test-group">
         <view class="test-buttons">
           <button class="btn-small" @click="takeTextSnapshot">Text</button>
-          <button class="btn-small" @click="takeTextSnapshotFlat">Text(拍平测试)</button>
         </view>
         <view class="test-elements">
           <text id="snapshot-test-text" class="snapshot-test-text-small">测试文本</text>
-          <text id="snapshot-test-text-flat" class="snapshot-test-text-small" flatten>测试文本拍平</text>
         </view>
       </view>
       <!-- Text 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.textSnapshot != null || snapshotData.textSnapshotFlat != null">
-        <view class="snapshot-data-col" v-if="snapshotData.textSnapshot != null">
+      <view class="snapshot-row" v-if="snapshotData.textSnapshot != null">
+        <view class="snapshot-data-col">
           <text class="snapshot-data-subtitle">截图结果</text>
           <image class="snapshot-preview" :src="snapshotData.textSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-        <view class="snapshot-data-col" v-if="snapshotData.textSnapshotFlat != null">
-          <text class="snapshot-data-subtitle">拍平-截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.textSnapshotFlat" mode="aspectFit" @longpress="saveToAlbum"></image>
         </view>
       </view>
 
@@ -66,22 +54,16 @@
       <view class="test-group">
         <view class="test-buttons">
           <button class="btn-small" @click="takeImageSnapshot">Image</button>
-          <button class="btn-small" @click="takeImageSnapshotFlat">Image(拍平测试)</button>
         </view>
         <view class="test-elements">
           <image id="snapshot-test-image" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit"></image>
-          <image id="snapshot-test-image-flat" class="snapshot-test-image-small" src="/static/test-image/logo.png" mode="aspectFit" flatten></image>
         </view>
       </view>
       <!-- Image 截图展示 -->
-      <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null || snapshotData.imageSnapshotFlat != null">
-        <view class="snapshot-data-col" v-if="snapshotData.imageSnapshot != null">
+      <view class="snapshot-row" v-if="snapshotData.imageSnapshot != null">
+        <view class="snapshot-data-col">
           <text class="snapshot-data-subtitle">截图结果</text>
           <image class="snapshot-preview" :src="snapshotData.imageSnapshot" mode="aspectFit" @longpress="saveToAlbum"></image>
-        </view>
-        <view class="snapshot-data-col" v-if="snapshotData.imageSnapshotFlat != null">
-          <text class="snapshot-data-subtitle">拍平-截图结果</text>
-          <image class="snapshot-preview" :src="snapshotData.imageSnapshotFlat" mode="aspectFit" @longpress="saveToAlbum"></image>
         </view>
       </view>
 
@@ -124,9 +106,6 @@
     viewSnapshot: string,
     textSnapshot: string,
     imageSnapshot: string,
-    viewSnapshotFlat: string,
-    textSnapshotFlat: string,
-    imageSnapshotFlat: string,
     scrollViewSnapshot: string,
     customComponentSnapshot: string,
   }
@@ -141,9 +120,6 @@
     viewSnapshot: '',
     textSnapshot: '',
     imageSnapshot: '',
-    viewSnapshotFlat: '',
-    textSnapshotFlat: '',
-    imageSnapshotFlat: '',
     scrollViewSnapshot: '',
     customComponentSnapshot: '',
   } as SnapshotDataType)
@@ -210,7 +186,7 @@
     const element = uni.getElementById(elementId)!
     element.takeSnapshot({
       success: (res) => {
-        console.log('takeSnapshot success', elementId, res.tempFilePath)
+        // console.log('takeSnapshot success', elementId, res.tempFilePath)
         snapshotData[dataKey] = res.tempFilePath
         uni.showToast({
           title: '截图成功',
@@ -218,14 +194,11 @@
         })
       },
       fail: (res) => {
-        console.log('takeSnapshot fail', elementId, res)
+        // console.log('takeSnapshot fail', elementId, res)
         uni.showToast({
           icon: 'error',
           title: '截图失败'
         })
-      },
-      complete: (res) => {
-        console.log('takeSnapshot complete', res)
       }
     })
   }
@@ -240,18 +213,6 @@
 
   function takeImageSnapshot() {
     takeSnapshotForElement('snapshot-test-image', 'imageSnapshot')
-  }
-
-  function takeViewSnapshotFlat() {
-    takeSnapshotForElement('snapshot-test-view-flat', 'viewSnapshotFlat')
-  }
-
-  function takeTextSnapshotFlat() {
-    takeSnapshotForElement('snapshot-test-text-flat', 'textSnapshotFlat')
-  }
-
-  function takeImageSnapshotFlat() {
-    takeSnapshotForElement('snapshot-test-image-flat', 'imageSnapshotFlat')
   }
 
   function takeScrollViewSnapshot() {
@@ -269,9 +230,6 @@
     takeViewSnapshot,
     takeTextSnapshot,
     takeImageSnapshot,
-    takeViewSnapshotFlat,
-    takeTextSnapshotFlat,
-    takeImageSnapshotFlat,
     takeScrollViewSnapshot,
     takeCustomComponentSnapshot
   })
@@ -314,17 +272,17 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 20px;
   }
 
   .snapshot-test-small {
-    width: 45%;
+    width: 80%;
     height: 60px;
     background-color: dodgerblue;
   }
 
   .snapshot-test-text-small {
-    width: 45%;
+    width: 80%;
     padding: 8px;
     font-size: 14px;
     color: #fff;
@@ -332,7 +290,7 @@
   }
 
   .snapshot-test-image-small {
-    width: 45%;
+    width: 80%;
     height: 60px;
     background-color: #f0f0f0;
   }
