@@ -1,0 +1,111 @@
+<template>
+  <view style="flex: 1;">
+    <fps></fps>
+    <list-view style="flex: 1;">
+      <list-item :ref="listItemRefs" v-for="item in list" :key="item.name" :type="item.type">
+        <view v-if="item.type == 0">
+          <ListItemPerfType0Comp :item="item"></ListItemPerfType0Comp>
+        </view>
+        <view v-else-if="item.type == 1">
+          <ListItemPerfType1Comp :item="item"></ListItemPerfType1Comp>
+        </view>
+        <view v-else-if="item.type == 2">
+          <ListItemPerfType2Comp :item="item"></ListItemPerfType2Comp>
+        </view>
+      </list-item>
+    </list-view>
+  </view>
+</template>
+
+<script setup>
+  import ListItemPerfType0Comp from './ListItemPerfType0Comp.uvue'
+  import ListItemPerfType1Comp from './ListItemPerfType1Comp.uvue'
+  import ListItemPerfType2Comp from './ListItemPerfType2Comp.uvue'
+  import { Item } from './types.uts'
+  const list = ref<Item[]>([])
+  const listItemRefs = ref<Array<UniListViewElement>>([])
+
+  let chineseCharacterIndex = 0
+  // 常用中文字符Unicode范围: 0x4E00 - 0x9FFF
+  const minCode = 0x4E00;
+  const maxCode = 0x9FFF;
+  function generateRandomChineseString(length: number) {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomCode = minCode + chineseCharacterIndex;
+      result += String.fromCharCode(randomCode);
+      chineseCharacterIndex++;
+      if (chineseCharacterIndex > (maxCode - minCode)) {
+        chineseCharacterIndex = 0; // 重置索引
+      }
+    }
+    return result;
+  }
+
+  function loadData() {
+    const tempList: Item[] = []
+    let startIndex = list.value.length
+    for (var i = 0; i < 200; i++) {
+      const id = startIndex + i
+      const tags : string[] = []
+      for (let j = 0; j < 10; j++) {
+        tags.push(generateRandomChineseString(1))
+      }
+      const type = id % 3
+      const imgUrl = `https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-${type + 1}.jpg`
+      const imgLength = type + 3
+      const imgs = new Array<string>()
+      for (let k = 0; k < imgLength; k++) {
+        imgs.push(imgUrl)
+      }
+      tempList.push({
+        id,
+        imgs,
+        name: 'Name_' + id,
+        info: generateRandomChineseString(50),
+        tags,
+        type
+      } as Item)
+    }
+    list.value.push(...tempList)
+  }
+  
+  function walkEle(root: UniElement, callback: (ele: UniElement) => void) {
+    if (root == null) return
+    callback(root)
+    const children = root.children ?? []
+    for (let i = 0; i < children.length; i++) {
+      walkEle(children[i], callback)
+    }
+  }
+
+  onMounted(() => {
+    loadData()
+    // #ifdef VUE3-VAPOR && APP-HARMONY
+    nextTick(() => {
+      setTimeout(() => {
+        if (listItemRefs.value.length < 3) {
+          console.warn('ListItem references are less than 3, cannot count child elements.')
+          return
+        }
+        const childCount: number[] = [0, 0, 0]
+        walkEle(listItemRefs.value[0], (ele) => {
+          childCount[0] += 1
+        })
+        walkEle(listItemRefs.value[1], (ele) => {
+          childCount[1] += 1
+        })
+        walkEle(listItemRefs.value[2], (ele) => {
+          childCount[2] += 1
+        })
+        console.log('ListItem Type 0 Child Count:', childCount[0])
+        console.log('ListItem Type 1 Child Count:', childCount[1])
+        console.log('ListItem Type 2 Child Count:', childCount[2])
+      }, 300)
+    })
+    // #endif
+  })
+</script>
+
+<style>
+</style>
