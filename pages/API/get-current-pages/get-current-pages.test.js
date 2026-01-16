@@ -166,6 +166,14 @@ describe('getCurrentPages', () => {
     const res = await page.callMethod('checkGetHTMLElement')
     expect(res).toBe(isWeb)
   })
+  it('querySelector', async () => {
+    const res = await page.callMethod('checkQuerySelector')
+    expect(res).toBe(true)
+  })
+  it('querySelectorAll', async () => {
+    const res = await page.callMethod('checkQuerySelectorAll')
+    expect(res).toBe(true)
+  })
 
   if(isAndroid) {
     it('getAndroidActivity', async () => {
