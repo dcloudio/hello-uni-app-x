@@ -1,8 +1,7 @@
 <template>
   <scroll-view class="container">
-    <page-head title="loading组件"></page-head>
-
-    <view class="section">
+   <page-head title="loading组件"></page-head>
+   <view class="section">
       <view class="row">
         <view class="item">
           <text class="label">默认样式</text>
@@ -34,22 +33,23 @@
         <button size="mini" @click="toggleBold">bold 属性: {{ isBold }}</button>
         <button size="mini" @click="nextColor">color style: {{ borderColor }}</button>
         <button size="mini" @click="setPaused">paused 属性：{{ paused }}</button>
+				<button size="mini" @click="setIOSSnow">ios-snow 属性：{{ iosSnow }}</button>
         <button size="mini" @click="reset">reset</button>
       </view>
 
       <view class="row">
         <view class="item">
-          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / bold: {{ isBold }}</text>
+          <text class="label">{{ widthPx }}×{{ heightPx }} / {{ borderColor }} / bold: {{ isBold }} / paused: {{ paused }} / ios-snow: {{ iosSnow }}</text>
           <view class="box">
              <!-- :paused 如果报错，就remove，应该是基座中还没包含 -->
-            <loading :bold=isBold :paused="paused" :style="dynamicStyle" />
+            <loading :bold=isBold :paused="paused" :ios-snow="iosSnow" :style="dynamicStyle" />
           </view>
         </view>
       </view>
     </view>
 
     <!-- 一、Class 实现 -->
-    <view class="section">
+   <view class="section">
       <text class="section-title">Class 自定义样式</text>
       <view class="row">
         <view class="item">
@@ -86,7 +86,7 @@
     </view>
 
     <!-- 二、Style 实现 -->
-    <view class="section">
+   <view class="section">
       <text class="section-title">Style 自定义样式</text>
       <view class="row">
         <view class="item">
@@ -105,7 +105,7 @@
       </view>
     </view>
 
-    <navigator class="uni-common-mb" url="/pages/template/loading-100/loading-100">
+   <navigator class="uni-common-mb" url="/pages/template/loading-100/loading-100">
       <button>组件性能测试</button>
     </navigator>
   </scroll-view>
@@ -119,6 +119,7 @@ const isBold = ref(false)
 const colors = ['blue', 'red', 'green', 'yellow']
 const colorIndex = ref(0)
 const paused = ref(false)
+const iosSnow = ref(false)
 
 const dynamicStyle = computed(() => {
   return {
@@ -153,12 +154,17 @@ const reset = () => {
   heightPx.value = 100
   borderColor.value = 'blue'
   isBold.value = false
+  iosSnow.value = false
   colorIndex.value = 0
   paused.value = false
 }
 
 const setPaused = () => {
   paused.value = !paused.value
+}
+
+const setIOSSnow = () => {
+  iosSnow.value = !iosSnow.value
 }
 </script>
 
