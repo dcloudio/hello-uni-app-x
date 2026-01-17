@@ -2,7 +2,7 @@
   <view class="swiper-list">
     <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
       <view class="flex-row">
-        <text ref="swipertab" class="swiper-tabs-item"
+        <text ref="swipertab" class="swiper-tabs-item" :style="textSpace"
           :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
           @click="onTabClick(index)">
           {{item.title}}
@@ -21,6 +21,9 @@
 </template>
 
 <script setup lang="ts">
+  // TODO 目前仅支态绑定时 white-space: pre; 才生效
+  const textSpace = ref('white-space: pre;')
+
 type SwiperTabsItem = {
   x : number,
   w : number
@@ -138,7 +141,7 @@ async function cacheTabItemsSize() {
 
 onLoad(() => {
   for (let i = 0; i < 8; i++) {
-    const space = "　".repeat(i)
+    const space = " ".repeat(i)
     swiperList.value.push({
       title: "Tab " + space + i
     } as SwiperViewItem)
