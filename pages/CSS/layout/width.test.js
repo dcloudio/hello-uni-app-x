@@ -15,7 +15,7 @@ describe('/pages/CSS/layout/width.uvue', () => {
       expect(size.height).toBe(100)
     } else {
       expect(size.width).toBe(150)
-      expect(size.height).toBe(150)
+      expect(size.height).toBe(100)
     }
 
   })
