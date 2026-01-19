@@ -209,6 +209,8 @@ describe('showActionSheet', () => {
     });
   }
   afterAll(async () => {
+    await page.callMethod('hideActionSheet')
+    await page.waitFor(1000);
     await page.callMethod('setLifeCycleNumFunc', 1100);
     if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')

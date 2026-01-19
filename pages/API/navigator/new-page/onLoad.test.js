@@ -165,6 +165,8 @@ describe("onLoad", () => {
       failureThreshold: 0.05,
       failureThresholdType: "percent",
     });
+    await program.callUniMethod('hideActionSheet');
+    await page.waitFor(1000);
   });
   it('onLoad 参数 decode', async () => {
     page = await program.reLaunch(PAGE_PATH);
