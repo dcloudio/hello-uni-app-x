@@ -84,6 +84,32 @@
         </view>
       </view>
 
+      <view class="section">
+        <text class="section-title">6. styleIsolation配置测试</text>
+        <text class="section-desc">测试isolated、app、app-and-page三种样式隔离模式的优先级关系</text>
+
+        <view class="test-item">
+          <text class="label">6.1 isolated模式 - 全隔离</text>
+          <text class="section-desc">只受组件自身样式影响（除externalClasses、组件根节点、v-deep以外），不受全局样式和页面样式影响</text>
+          <comp-isolated class="global-box"></comp-isolated>
+          <text class="section-desc">预期：.global-box不会应用全局样式（蓝色），.page-box不会应用页面样式（绿色），只显示组件自身样式（紫色）</text>
+        </view>
+
+        <view class="test-item">
+          <text class="label">6.2 app模式 - 受全局样式影响</text>
+          <text class="section-desc">优先级：全局样式 < 自身样式</text>
+          <comp-app></comp-app>
+          <text class="section-desc">预期：.global-box会应用全局样式（蓝色），.page-box不会应用页面样式（绿色），组件自身样式优先级最高（紫色）</text>
+        </view>
+
+        <view class="test-item">
+          <text class="label">6.3 app-and-page模式 - 受全局和页面样式影响</text>
+          <text class="section-desc">优先级：全局样式 &lt; 页面样式 &lt; 组件自身样式</text>
+          <comp-app-and-page></comp-app-and-page>
+          <text class="section-desc">预期：.global-box会应用全局样式（蓝色），.page-box会应用页面样式（绿色），组件自身样式优先级最高（紫色）</text>
+        </view>
+      </view>
+
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -95,6 +121,9 @@
   import childExternal from './child-external-classes.uvue'
   import childMultiTag from './child-multi-tag.uvue'
   import level from './level.uvue'
+  import compIsolated from './comp-isolated.uvue'
+  import compApp from './comp-app.uvue'
+  import compAppAndPage from './comp-app-and-page.uvue'
 </script>
 
 <style>
@@ -121,8 +150,7 @@
   .section-desc {
     font-size: 13px;
     color: #666;
-    margin-bottom: 15px;
-    line-height: 18px;
+    margin: 10px;
   }
 
   .test-item {
@@ -133,7 +161,7 @@
   }
 
   .label {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
     margin-bottom: 8px;
   }
@@ -164,4 +192,14 @@
   .level-child-class {
     background-color: #00aaff !important;
   }
+
+  /* 页面样式 - 用于测试app-and-page样式隔离优先级 */
+  .page-box {
+    background-color: #e8f5e9;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    border: 2px solid #4caf50;
+  }
+
 </style>
