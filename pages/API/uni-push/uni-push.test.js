@@ -19,8 +19,8 @@ describe('uni-push', () => {
       return
     }
     await page.callMethod('handleGetClientId')
-    jestResult = await page.data('jestResult')
     await page.waitFor(2000);
+    jestResult = await page.data('jestResult')
     expect(jestResult.clientId.length).toBe(32);
   });
 
