@@ -232,8 +232,6 @@
         data.testCanvasContext = true
       }
     })
-
-    uni.$on('canvasChildReady', onChildReady)
   })
 
   onReady(() => {
@@ -244,6 +242,11 @@
     // data.canvas = canvas;
     // data.canvasWidth = canvas.width;
     // data.canvasHeight = canvas.height;
+  })
+
+  onLoad(() => {
+    //监听canvasChildReady从onReady调整到onLoad，避免监听时机过晚导致无法收到此事件
+    uni.$on('canvasChildReady', onChildReady)
   })
 
   onUnload(() => {
