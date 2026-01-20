@@ -13,13 +13,14 @@ describe('uni-push', () => {
   });
   // 获取cid | getPushClientId：值
   it('getPushClientId', async () => {
-    const jestResult = await page.data('jestResult')
+    let jestResult = await page.data('jestResult')
     if (isHarmony && !jestResult.hasGetuiAppId){
       console.log('getPushClientId已跳过。鸿蒙端 Push 测试依赖配置：harmony-configs/entry/src/main/module.json5 → metadata → GETUI_APPID')
       return
     }
     await page.callMethod('handleGetClientId')
     await page.waitFor(2000);
+    jestResult = await page.data('jestResult')
     expect(jestResult.clientId.length).toBe(32);
   });
 

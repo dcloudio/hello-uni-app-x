@@ -55,8 +55,9 @@
 </template>
 
 <script setup lang="uts">
+  type Indicator = "number" | "default" | "none"
   type ItemType = {
-    value : string,
+    value : Indicator,
     name : string
   }
 
@@ -65,9 +66,14 @@
     error : boolean
   }
 
+  type LongPressType = {
+    value : string,
+    name : string
+  }
+
   const imageList = ref([
     { src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false },
-    { src: "/static/uni.png", error: false },
+    { src: "/static/test-image/logo.png", error: false },
     { src: "/static/test-image/logo.svg", error: false },
     // #ifdef APP
     { src: "/static/uni2.png", error: false },
@@ -91,9 +97,9 @@
   }, {
     value: "1",
     name: "自定义长按行为"
-  }] as ItemType[])
+  }] as LongPressType[])
 
-  const currentIndicator = ref("default")
+  const currentIndicator = ref("default"  as Indicator)
 
   // #ifdef WEB
   const isWeb = ref(true)
@@ -155,7 +161,7 @@
   }
 
   const onIndicatorChanged = (e : UniRadioGroupChangeEvent) => {
-    currentIndicator.value = e.detail.value
+    currentIndicator.value = e.detail.value as Indicator
   }
 
   const onCheckboxChange = (_ : UniCheckboxGroupChangeEvent) => {

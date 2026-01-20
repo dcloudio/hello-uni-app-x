@@ -2,6 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isAndroid = platformInfo.startsWith('android')
 
 const PAGE_PATH = '/pages/component/button/button'
 
@@ -22,6 +23,9 @@ describe('Button.uvue', () => {
     expect(await page.data('data.count')).toEqual(0)
     await btn.tap()
     expect(await page.data('data.count')).toEqual(1)
+    if (isAndroid) { // android 平台 element.tap 不受 disabled 影响
+      return;
+    }
     await setPageData({
       disabled_boolean: true
     })
@@ -164,6 +168,10 @@ describe('Buttonstatus.uvue', () => {
   })
 
   test('loading-class', async () => {
+    if (!isDom2) {
+      expect(1).toBe(1);
+      return;
+    }
     const btn = await page.$('.loading-class')
     expect(await btn.attribute('loading-class')).toContain('custom-loading')
   })

@@ -128,7 +128,7 @@
   const onCreateImage = () => {
     data.renderingContext!.clearRect(0, 0, data.canvasWidth, data.canvasHeight)
     let image = data.canvasContext!.createImage();
-    image.src = "/static/logo.png"
+    image.src = "/static/test-image/logo.png"
     image.onload = () => {
       data.testCreateImage = true
       data.renderingContext?.drawImage(image, 0, 0, 100, 100);
@@ -232,8 +232,6 @@
         data.testCanvasContext = true
       }
     })
-
-    uni.$on('canvasChildReady', onChildReady)
   })
 
   onReady(() => {
@@ -244,6 +242,11 @@
     // data.canvas = canvas;
     // data.canvasWidth = canvas.width;
     // data.canvasHeight = canvas.height;
+  })
+
+  onLoad(() => {
+    //监听canvasChildReady从onReady调整到onLoad，避免监听时机过晚导致无法收到此事件
+    uni.$on('canvasChildReady', onChildReady)
   })
 
   onUnload(() => {

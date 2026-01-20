@@ -1,0 +1,279 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view style="flex-grow: 1;">
+    <view class="demo-row">
+      <view class="demo-item">
+        <text>opacity: 1 (默认值)</text>
+        <view class="common" style="opacity: 1;"></view>
+      </view>
+      <view class="demo-item">
+        <text>拍平测试</text>
+        <view class="common" style="opacity: 1;" flatten></view>
+      </view>
+    </view>
+
+    <view class="demo-row uni-common-mt">
+      <view class="demo-item">
+        <text>opacity: 0.8</text>
+        <view class="common" style="opacity: 0.8;"></view>
+      </view>
+      <view class="demo-item">
+        <text>拍平测试</text>
+        <view class="common" style="opacity: 0.8;" flatten></view>
+      </view>
+    </view>
+
+    <view class="demo-row uni-common-mt">
+      <view class="demo-item">
+        <text>opacity: 0.5</text>
+        <view class="common" style="opacity: 0.5;"></view>
+      </view>
+      <view class="demo-item">
+        <text>拍平测试</text>
+        <view class="common" style="opacity: 0.5;" flatten></view>
+      </view>
+    </view>
+
+    <view class="demo-row uni-common-mt">
+      <view class="demo-item">
+        <text>opacity: 0.2</text>
+        <view class="common" style="opacity: 0.2;"></view>
+      </view>
+      <view class="demo-item">
+        <text>拍平测试</text>
+        <view class="common" style="opacity: 0.2;" flatten></view>
+      </view>
+    </view>
+
+    <view class="demo-row uni-common-mt">
+      <view class="demo-item">
+        <text>opacity: 0</text>
+        <view class="common" style="opacity: 0;"></view>
+      </view>
+      <view class="demo-item">
+        <text>拍平测试</text>
+        <view class="common" style="opacity: 0;" flatten></view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 opacity 测试</text>
+    </view>
+
+    <!-- 普通版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="test-info">设置值: {{opacity}}</text>
+        <text class="test-info">获取值: {{opacityActual}}</text>
+        <view class="test-box">
+          <view ref="viewRef" class="common" :style="{ opacity: opacity }">
+            <text class="common-text">view测试</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="test-info">设置值: {{opacity}}</text>
+        <text class="test-info">获取值: {{opacityActualText}}</text>
+        <view class="test-box">
+          <text ref="textRef" class="common" :style="{ opacity: opacity }">text测试</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="test-info">设置值: {{opacity}}</text>
+        <text class="test-info">获取值: {{opacityActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRef" class="common" :style="{ opacity: opacity }" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 拍平版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="test-info">设置值: {{opacity}}</text>
+        <text class="test-info">获取值: {{opacityActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="common" :style="{ opacity: opacity }" flatten>
+            <text class="common-text">view测试</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="test-info">设置值: {{opacity}}</text>
+        <text class="test-info">获取值: {{opacityActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefFlat" class="common" :style="{ opacity: opacity }" flatten>text测试</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="test-info">设置值: {{opacity}}</text>
+        <text class="test-info">获取值: {{opacityActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefFlat" class="common" :style="{ opacity: opacity }" flatten src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      <enum-data :items="opacityEnum" title="opacity 枚举值" @change="radioChangeOpacity" :compact="true"></enum-data>
+      <input-data :defaultValue="opacity" title="opacity 自定义值" type="text" @confirm="inputChangeOpacity"></input-data>
+    </view>
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const opacityEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0.2' },
+    { value: 3, name: '0.5' },
+    { value: 4, name: '0.8' },
+    { value: 5, name: '1' }
+  ]
+
+  const opacity = ref('1')
+  const opacityActual = ref('')
+  const opacityActualText = ref('')
+  const opacityActualImage = ref('')
+  const opacityActualFlat = ref('')
+  const opacityActualTextFlat = ref('')
+  const opacityActualImageFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const changeOpacity = (value: string) => {
+    opacity.value = value
+    // view 元素 - 普通版本
+    viewRef.value?.style.setProperty('opacity', value)
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('opacity', value)
+    // text 元素 - 普通版本
+    textRef.value?.style.setProperty('opacity', value)
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('opacity', value)
+    // image 元素 - 普通版本
+    imageRef.value?.style.setProperty('opacity', value)
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('opacity', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('opacity')
+      opacityActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('opacity')
+      opacityActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('opacity')
+      opacityActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('opacity')
+      opacityActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('opacity')
+      opacityActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('opacity')
+      opacityActualImageFlat.value = actualValueImageFlat ?? ''
+    })
+  }
+
+  const radioChangeOpacity = (index: number) => {
+    const selectedItem = opacityEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeOpacity(selectedItem.name)
+    }
+  }
+
+  const inputChangeOpacity = (value: string) => {
+    changeOpacity(value)
+  }
+
+  onReady(() => {
+    // view 元素 - 普通版本
+    const actualValue = viewRef.value?.style.getPropertyValue('opacity')
+    opacityActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('opacity')
+    opacityActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
+    const actualValueText = textRef.value?.style.getPropertyValue('opacity')
+    opacityActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('opacity')
+    opacityActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
+    const actualValueImage = imageRef.value?.style.getPropertyValue('opacity')
+    opacityActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('opacity')
+    opacityActualImageFlat.value = actualValueImageFlat ?? ''
+  })
+</script>
+
+<style>
+  .demo-row {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .demo-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .common {
+    width: 80px;
+    height: 80px;
+    background-color: red;
+  }
+
+  .common-text {
+    width: 50px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    width: 100%;
+    height: 80px;
+    background-color: gray;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+</style>
