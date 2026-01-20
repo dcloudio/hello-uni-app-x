@@ -41,7 +41,7 @@ describe('component-native-image', () => {
     it('check_qurey_url', async () => {
       await setPageData({
         loadError: false,
-        imageSrc: '/static/logo.png?t=11234'
+        imageSrc: '/static/test-image/logo.png?t=11234'
       })
       await page.waitFor(300);
       expect(await page.data('data.loadError')).toBe(false)
