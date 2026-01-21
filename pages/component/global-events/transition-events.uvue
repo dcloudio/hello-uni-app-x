@@ -16,9 +16,9 @@ type DataType = {
   onTransitionEndTriggr: boolean,
 }
 
-const times = ref(0)
-const element = ref(null as UniElement | null)
-const isStart = ref(false)
+let times = 0
+let element: UniElement | null = null
+let isStart = false
 const buttonValue = ref("开启图片旋转")
 const data = reactive({
   onTransitionEndTriggr: false,
@@ -26,30 +26,30 @@ const data = reactive({
 const isShow = ref(false)
 
 function switchBtn() {
-  if (!isStart.value) {
-    if (element.value == null) {
-      element.value = uni.getElementById('transition-transform')
+  if (!isStart) {
+    if (element == null) {
+      element = uni.getElementById('transition-transform')
     }
     buttonValue.value = "关闭图片旋转"
-    times.value = times.value + 1
-    element.value!.style.setProperty('transition-duration', '2000ms')
-    element.value!.style.setProperty('transform', 'rotate(' + times.value * 360 + 'deg)')
-    isStart.value = true
+    times = times + 1
+    element!.style.setProperty('transition-duration', '2000ms')
+    element!.style.setProperty('transform', 'rotate(' + times * 360 + 'deg)')
+    isStart = true
   } else {
-    isStart.value = false
-    times.value = 0
+    isStart = false
+    times = 0
     data.onTransitionEndTriggr = false
     buttonValue.value = "开启图片旋转"
-    element.value!.style.setProperty('transition-duration', '0ms')
-    element.value!.style.setProperty('transform', 'rotate(0deg)')
+    element!.style.setProperty('transition-duration', '0ms')
+    element!.style.setProperty('transform', 'rotate(0deg)')
   }
 }
 
 function onEnd() {
   console.log('transform transitionend')
-  if (isStart.value) {
-    times.value = times.value + 1
-    element.value!.style.setProperty('transform', 'rotate(' + times.value * 360 + 'deg)')
+  if (isStart) {
+    times = times + 1
+    element!.style.setProperty('transform', 'rotate(' + times * 360 + 'deg)')
     data.onTransitionEndTriggr = true
   }
 }
