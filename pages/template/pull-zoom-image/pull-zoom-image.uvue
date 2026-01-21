@@ -24,7 +24,7 @@
 
       <!--#ifdef APP -->
 			<view slot="refresher" class="header-pull-wrapper">
-				<image class="header-pull-img" ref="headerPullImg" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
+        <image class="header-pull-img" ref="headerPullImg" src="https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/pull-zoom-image-head-img.jpg" mode="scaleToFill"></image>
 			</view>
       <!--#endif-->
 
@@ -98,6 +98,16 @@
     background: #5788cd;
     height: 300px;
   }
+  /* #ifdef APP-IOS || APP-HARMONY */
+  /** * TODO: 临时方案。
+   * 兼容性问题：在 iOS 及鸿蒙端，当 slot="refresher" 的元素设置为 position: relative 时，
+   * 渲染引擎仍会保留其在文档流中的物理占位，导致 scroll-view 内容底部出现多余空白。
+   * 此处通过负 margin 抵消占位高度，以保证滚动区域计算正确。
+   */
+  .header-pull-wrapper {
+      margin-bottom: -300px;
+    }
+  /* #endif */
 
   .header-pull-img,
   .header-img
