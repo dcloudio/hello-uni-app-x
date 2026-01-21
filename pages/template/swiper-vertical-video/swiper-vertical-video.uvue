@@ -43,7 +43,7 @@ let page : number = 0,
 import { state, setNetless } from '@/store/index.uts'
 import CommentPanel from './comment-panel.uvue'
 
-const $videoContextMap = ref(new Map<string, VideoContext>())
+const $videoContextMap = new Map<string, VideoContext>()
 const list = ref([] as ListItem[])
 const visibleList = ref([] as ListItem[])// 提高性能 可见的只有3个
 const current = ref(0 as number)
@@ -68,11 +68,10 @@ function onCommentCountChange(count : number) {
 }
 
 function getVideoContext(idx : number) : VideoContext {
-  const videoContextMap = $videoContextMap.value
-  let videoContext : VideoContext | null = videoContextMap.get('video-' + idx)
+  let videoContext : VideoContext | null = $videoContextMap.get('video-' + idx)
   if (videoContext == null) {
     videoContext = uni.createVideoContext('video-' + idx) as VideoContext
-    videoContextMap.set('video-' + idx, videoContext)
+    $videoContextMap.set('video-' + idx, videoContext)
   }
   return videoContext
 }

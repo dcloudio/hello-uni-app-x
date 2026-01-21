@@ -39,11 +39,11 @@
   const userInfo = ref<UniElement | null>(null)
   const headerWrapper = ref<UniElement | null>(null)
 
-  const $elementMap = ref(new Map<string, UniElement>())
+  const $elementMap = new Map<string, UniElement>()
 
   // 工具方法，用于快速设置 Element 的 style
   function setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-    let element : UniElement | null = $elementMap.value.get(refName)
+    let element : UniElement | null = $elementMap.get(refName)
     if (element == null) {
       // Map ref name to corresponding ref variable
       if (refName == 'header-pull-img') {
@@ -57,7 +57,7 @@
       }
 
       if (element != null) {
-        $elementMap.value.set(refName, element)
+        $elementMap.set(refName, element)
       }
     }
 
