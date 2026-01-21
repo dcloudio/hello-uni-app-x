@@ -327,10 +327,11 @@
       <view>
         <view class="uni-title">
           <text class="uni-title-text">focus时type是none，键盘是否弹出</text>
+          <boolean-data :defaultValue="false" title="显示<input />示例" @change="changeCheckedTypeNoneAndFocusCase"></boolean-data>
         </view>
-        <!-- <view class="input-wrapper">
+        <view v-if="data.showTypeNoneAndFocusCase" class="input-wrapper">
           <input class="uni-input" focus="true" type="none"/>
-        </view> -->
+        </view>
       </view>
 
       <!-- 保证这个示例在页面底部，添加新的示例时请放在上面 -->
@@ -395,6 +396,7 @@
     syncDisplayValue: string;
     triggerFocus: boolean;
     triggerBlur: boolean;
+    showTypeNoneAndFocusCase: boolean;
   }
 
   // 使用reactive避免ref数据在自动化测试中无法访问
@@ -436,6 +438,7 @@
     syncDisplayValue: '',
     triggerFocus: false,
     triggerBlur: false,
+    showTypeNoneAndFocusCase: false
   } as DataType)
 
   const inputFocusKeyBoardChange = (e : UniInputKeyboardHeightChangeEvent) => {
@@ -559,6 +562,11 @@
       data.triggerBlur = false
       input.focus()
     }
+  }
+
+
+  const changeCheckedTypeNoneAndFocusCase = (checked : boolean) => {
+    data.showTypeNoneAndFocusCase = checked
   }
 
   defineExpose({
