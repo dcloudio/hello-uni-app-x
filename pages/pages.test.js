@@ -202,11 +202,13 @@ const pages = [
   // 单独测试例中截图
   // '/pages/CSS/border/dynamic-border',
   '/pages/CSS/box-shadow/box-shadow',
+  '/pages/CSS/box-sizing/box-sizing',
   '/pages/CSS/display/flex',
   '/pages/CSS/display/none',
   '/pages/CSS/flex/flex',
   '/pages/CSS/flex/align-content',
   '/pages/CSS/flex/align-items',
+  '/pages/CSS/flex/align-self',
   '/pages/CSS/flex/flex-basis',
   '/pages/CSS/flex/flex-direction',
   '/pages/CSS/flex/flex-flow',
@@ -220,6 +222,7 @@ const pages = [
   '/pages/CSS/layout/max-width',
   '/pages/CSS/layout/position',
   '/pages/CSS/layout/width',
+  '/pages/CSS/layout/opacity',
   // 单独测试例中截图
   // '/pages/CSS/layout/z-index',
   '/pages/CSS/layout/visibility',
