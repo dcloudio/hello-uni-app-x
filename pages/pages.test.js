@@ -214,6 +214,7 @@ const pages = [
   '/pages/CSS/flex/flex-flow',
   '/pages/CSS/flex/flex-grow',
   '/pages/CSS/flex/flex-shrink',
+  '/pages/CSS/flex/flex-wrap',
   '/pages/CSS/flex/justify-content',
   '/pages/CSS/layout/height',
   '/pages/CSS/layout/min-height',
