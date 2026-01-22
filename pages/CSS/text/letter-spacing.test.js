@@ -1,6 +1,6 @@
-const PAGE_PATH = '/pages/component/text/issues22636'
+const PAGE_PATH = '/pages/CSS/text/letter-spacing'
 
-describe('text-dynamic-lineHeight-letterSpacing', () => {
+describe('text-dynamic-letterSpacing', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isHarmony = platformInfo.startsWith('harmony')
 
@@ -12,19 +12,25 @@ describe('text-dynamic-lineHeight-letterSpacing', () => {
   }
 
   let page
+
+  // 添加辅助函数来简化数据设置
+  async function setPageData(newData) {
+    return await page.setData({ autoTestData: newData });
+  }
+
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(500);
+    await setPageData({
+      begin: true
+    })
   })
 
-  it('text-dynamic-lineHeight', async () => {
-    let h1 = await page.callMethod('getLineHeight')
-    await page.callMethod('plusLineHeight')
-    await page.callMethod('plusLineHeight')
-    let h2 = await page.callMethod('getLineHeight')
-
-    expect(h2).toBeGreaterThan(h1)
-  })
+  afterAll( async () => {
+    await setPageData({
+      begin: false
+    })
+  });
 
   it('text-dynamic-letterSpacing', async () => {
     let h1 = await page.callMethod('getLetterSpacing')
@@ -35,7 +41,7 @@ describe('text-dynamic-lineHeight-letterSpacing', () => {
     expect(h2).toBeGreaterThan(h1)
   })
 
-  it('text-dynamic-lineHeight-letterSpacing-snapshot', async () => {
+  it('text-dynamic-letterSpacing-snapshot', async () => {
     const image = await program.screenshot();
     expect(image).toSaveImageSnapshot();
   })
