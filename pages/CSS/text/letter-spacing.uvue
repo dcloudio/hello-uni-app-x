@@ -2,6 +2,18 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
+    <template v-if="autoTestData.begin">
+      <view>
+        <text id="testText"
+          :style="`letter-spacing:${letterSpacing_mix}px;`">
+          uni-app 是一个使用 Vue.js
+          开发所有前端应用的框架，开发者编写一套代码，可发布到iOS、Android、鸿蒙Next、Web（响应式）、以及各种小程序（微信/支付宝/百度/抖音/飞书/QQ/快手/钉钉/淘宝/京东/小红书）、快应用、鸿蒙元服务等多个平台。</text>
+        <view style="flex-direction: row;">
+          <button @click="plusLetterSpacing">+字宽</button>
+          <button @click="minusLetterSpacing">-字宽</button>
+        </view>
+      </view>
+    </template>
     <view style="flex-grow: 1;">
       <view class="box">
         <text class="common">letter-spacing</text>
@@ -99,6 +111,46 @@
 	const inputChangeLetterSpacing = (value: string) => {
 		changeLetterSpacing(value)
 	}
+
+  /**
+   * * * * * * * * * * * * * *
+   * 自动化测试
+   * * * * * * * * * * * * * *
+   */
+  type AutoTextData = {
+    begin: boolean
+  }
+  const autoTestData = reactive<AutoTextData>({
+    begin: false
+  } as AutoTextData)
+
+  const letterSpacing_mix = ref(1)
+
+  function plusLetterSpacing() {
+    letterSpacing_mix.value += 0.2
+  }
+  function minusLetterSpacing() {
+    letterSpacing_mix.value -= 0.2
+  }
+  function getLetterSpacing() {
+    const testText = uni.getElementById('testText')
+    if (testText) {
+      return parseFloat(testText.style.getPropertyValue('letter-spacing'))
+    }
+    return 0
+  }
+
+  defineExpose({
+    autoTestData,
+    getLetterSpacing,
+    plusLetterSpacing,
+    minusLetterSpacing
+  })
+  /**
+   * * * * * * * * * * * * * *
+   * 自动化测试 END
+   * * * * * * * * * * * * * *
+   */
 
 	onReady(() => {
 		// text 元素 - 普通版本
