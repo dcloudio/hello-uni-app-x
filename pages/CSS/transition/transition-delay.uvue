@@ -4,14 +4,14 @@
   <!-- #endif -->
     <view>
       <view style="margin-top: 20px; margin-left: 10px;">
-        <text class="uni-title-text">view 组件 transition-delay 测试</text>
+        <text class="uni-title-text">view 组件 transition-delay 测试 1s</text>
       </view>
       <view :class="classValue"></view>
       <button @click="start">start</button>
       <button @click="reset">reset</button>
 
       <view style="margin-top: 20px; margin-left: 10px;">
-        <text class="uni-title-text">text 组件 transition-delay 测试</text>
+        <text class="uni-title-text">text 组件 transition-delay 测试 2s</text>
       </view>
       <view>
         <text :class="textClassValue">text transition-delay: 2s</text>
@@ -20,7 +20,7 @@
       </view>
 
       <view style="margin-top: 20px; margin-left: 10px;">
-        <text class="uni-title-text">image 组件 transition-delay 测试</text>
+        <text class="uni-title-text">image 组件 transition-delay 测试 1s</text>
       </view>
       <view>
         <image :class="imageClassValue" src="/static/test-image/logo.png"></image>
@@ -59,37 +59,6 @@
           <text class="test-info">获取值: {{transitionDelayActualImage}}</text>
           <view class="test-box">
             <image ref="imageRefDynamic" class="common-image" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png"></image>
-          </view>
-        </view>
-      </view>
-
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="test-info">设置值: {{transitionDelayDynamic}}</text>
-          <text class="test-info">获取值: {{transitionDelayActualFlat}}</text>
-          <view class="test-box">
-            <view ref="viewRefDynamicFlat" class="common-image" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionDynamic" flatten>
-              <text style="font-size: 12px;" flatten>点击view</text>
-            </view>
-          </view>
-        </view>
-
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="test-info">设置值: {{transitionDelayDynamic}}</text>
-          <text class="test-info">获取值: {{transitionDelayActualTextFlat}}</text>
-          <view class="test-box">
-            <text ref="textRefDynamicFlat" class="common-text" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionTextDynamic" flatten>点击text</text>
-          </view>
-        </view>
-
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="test-info">设置值: {{transitionDelayDynamic}}</text>
-          <text class="test-info">获取值: {{transitionDelayActualImageFlat}}</text>
-          <view class="test-box">
-            <image ref="imageRefDynamicFlat" class="common-image" :style="{ transitionDelay: transitionDelayDynamic, transitionProperty: 'width', transitionDuration: '1s' }" @click="triggerTransitionImageDynamic" src="/static/test-image/logo.png" flatten></image>
           </view>
         </view>
       </view>
@@ -154,15 +123,9 @@
   const transitionDelayActual = ref('')
   const transitionDelayActualText = ref('')
   const transitionDelayActualImage = ref('')
-  const transitionDelayActualFlat = ref('')
-  const transitionDelayActualTextFlat = ref('')
-  const transitionDelayActualImageFlat = ref('')
   const viewRefDynamic = ref(null as UniElement | null)
   const textRefDynamic = ref(null as UniTextElement | null)
   const imageRefDynamic = ref(null as UniImageElement | null)
-  const viewRefDynamicFlat = ref(null as UniElement | null)
-  const textRefDynamicFlat = ref(null as UniTextElement | null)
-  const imageRefDynamicFlat = ref(null as UniImageElement | null)
   const isExpandedDynamic = ref(false)
   const isExpandedDynamicText = ref(false)
   const isExpandedDynamicImage = ref(false)
@@ -179,37 +142,22 @@
     transitionDelayDynamic.value = value
     // view 元素
     viewRefDynamic.value?.style.setProperty('transition-delay', value)
-    // view 元素 - 拍平版本
-    viewRefDynamicFlat.value?.style.setProperty('transition-delay', value)
     // text 元素
     textRefDynamic.value?.style.setProperty('transition-delay', value)
-    // text 元素 - 拍平版本
-    textRefDynamicFlat.value?.style.setProperty('transition-delay', value)
     // image 元素
     imageRefDynamic.value?.style.setProperty('transition-delay', value)
-    // image 元素 - 拍平版本
-    imageRefDynamicFlat.value?.style.setProperty('transition-delay', value)
 
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       // view 元素
       const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-delay')
       transitionDelayActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-delay')
-      transitionDelayActualFlat.value = actualValueFlat ?? ''
       // text 元素
       const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-delay')
       transitionDelayActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-delay')
-      transitionDelayActualTextFlat.value = actualValueTextFlat ?? ''
       // image 元素
       const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-delay')
       transitionDelayActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-delay')
-      transitionDelayActualImageFlat.value = actualValueImageFlat ?? ''
     })
   }
 
@@ -228,42 +176,30 @@
     isExpandedDynamic.value = !isExpandedDynamic.value
     const width = isExpandedDynamic.value ? '100px' : '50px'
     viewRefDynamic.value?.style.setProperty('width', width)
-    viewRefDynamicFlat.value?.style.setProperty('width', width)
   }
 
   const triggerTransitionTextDynamic = () => {
     isExpandedDynamicText.value = !isExpandedDynamicText.value
     const width = isExpandedDynamicText.value ? '100px' : '50px'
     textRefDynamic.value?.style.setProperty('width', width)
-    textRefDynamicFlat.value?.style.setProperty('width', width)
   }
 
   const triggerTransitionImageDynamic = () => {
     isExpandedDynamicImage.value = !isExpandedDynamicImage.value
     const width = isExpandedDynamicImage.value ? '100px' : '50px'
     imageRefDynamic.value?.style.setProperty('width', width)
-    imageRefDynamicFlat.value?.style.setProperty('width', width)
   }
 
   onReady(() => {
     // view 元素
     const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-delay')
     transitionDelayActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transition-delay')
-    transitionDelayActualFlat.value = actualValueFlat ?? ''
     // text 元素
     const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-delay')
     transitionDelayActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transition-delay')
-    transitionDelayActualTextFlat.value = actualValueTextFlat ?? ''
     // image 元素
     const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-delay')
     transitionDelayActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transition-delay')
-    transitionDelayActualImageFlat.value = actualValueImageFlat ?? ''
   })
 
 </script>
