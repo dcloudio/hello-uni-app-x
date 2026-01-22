@@ -11,12 +11,12 @@ describe('/pages/CSS/transition/transition-duration.uvue', () => {
 
   it("snap transition finish", async () => {
     await page.callMethod('jest_start');
-    await page.waitFor(7000);
+    await page.waitFor(2000);
     const image = await program.screenshot({
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
-    await page.waitFor(1000);
+    await page.waitFor(500);
     await page.callMethod('jest_reset');
   })
 });
