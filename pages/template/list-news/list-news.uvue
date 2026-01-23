@@ -70,11 +70,6 @@
 
 <script setup lang="uts">
   import { state } from '@/store/index.uts'
-  type Banner = {
-    cover : string | null,
-    title : string | null,
-    post_id : string | null
-  }
   type Item = {
     author_name : string,
     cover : string,
@@ -88,7 +83,7 @@
 
   const th_item = ref(["排序", "筛选"])
   const refresherTriggered = ref(false)
-  const banner = ref({} as Banner)
+  let banner = {} as UTSJSONObject
   const listData = ref([] as Item[])
   let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
@@ -113,18 +108,17 @@
 
   function getBanner() {
     let data = {
-      column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
+      column: 'post_id,title,cover' //需要的字段名
     };
-    uni.request<Banner>({
+    uni.request({
       url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
       data: data,
       success: data => {
         refresherTriggered.value = false
         if (data.statusCode == 200) {
-          const result = data.data
-          if (result != null) {
-            banner.value = result;
-          }
+          // banner.value = data.data as UTSJSONObject
+          banner = data.data as UTSJSONObject
+          // console.log(banner.title)
         }
       },
       fail: (e) => {
@@ -195,14 +189,14 @@
     });
   }
 
-  function bannerClick(e: Banner) {
-    const detail = e;
-    const post_id_val = detail.post_id;
-    let cover_val = detail.cover ?? "";
+  function bannerClick(e:UTSJSONObject) {
+    // const detail = e;
+    const post_id_val = e.post_id as string;
+    let cover_val = e.cover as string;
     // #ifdef APP-ANDROID
     cover_val = btoa(cover_val);
     // #endif
-    const title_val = detail.title;
+    const title_val = e.title;
     uni.navigateTo({
       url: '/pages/template/list-news/detail/detail?post_id=' + post_id_val + "&cover=" + cover_val + "&title=" + title_val
     });
