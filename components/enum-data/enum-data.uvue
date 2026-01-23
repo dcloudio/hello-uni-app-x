@@ -1,7 +1,7 @@
 <script setup lang="uts">
 import { ItemType } from './enum-data-types'
 import { state } from '@/store/index.uts'
-// 样式隔离配置，app-shared: 受全局样式影响
+// 样式隔离配置，app: 受全局样式影响
 defineOptions({
   styleIsolation: 'app'
 })
@@ -46,14 +46,10 @@ function _change(e : RadioGroupChangeEvent) {
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <!-- 组件套组件，目前影响不了子组件里的样式 ，临时加上条件编译 -->
   <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <radio-group @change="_change" :class="[{'compact-container': compact}]">
       <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
         :class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
-        <!-- #ifdef APP -->
-        style="border-bottom: 1px solid #e0e0e0;"
-        <!-- #endif -->
          :value="item.value + ''" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
         <text class="radio-text">{{ item.name }}</text>
       </radio>
