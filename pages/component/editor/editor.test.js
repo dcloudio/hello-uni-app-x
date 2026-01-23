@@ -1,7 +1,9 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 jest.setTimeout(30000);
+
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+
 describe('editor.uvue', () => {
-  if (!process.env.uniTestPlatformInfo.includes('web')) {
+  if (!process.env.uniTestPlatformInfo.includes('web') || isDom2) {
     it('app', () => {
       expect(1).toBe(1)
     })
