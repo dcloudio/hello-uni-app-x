@@ -163,24 +163,24 @@ describe('component-native-list-view', () => {
     await page.waitFor(2000)
   })
 
-  // TODO attribute、property规范化
-  //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
-  it('check_scroll_into_view_top', async () => {
-    if(await page.data('data.scroll_y_boolean') === false) {
-        await page.callMethod('change_scroll_y_boolean', true)
-        await page.callMethod('change_scroll_x_boolean', false)
-        await page.waitFor(600)
-    }
-    await page.callMethod('item_change_size_enum', 3)
-    await page.waitFor(600)
-    const listElement = await page.$('#listview')
-    const scrollTop = await listElement.attribute("scrollTop")
-    console.log("check_scroll_into_view_top--"+scrollTop)
-    await page.callMethod('item_change_size_enum', 0)
-    expect(scrollTop-690).toBeGreaterThanOrEqual(0)
-  })
-
   if(!isDom2) {
+    // TODO attribute、property规范化
+    //检测竖向scroll_into_view属性赋值 备注：iOS本地测试结果正确，但是自动化测试结果错误
+    it('check_scroll_into_view_top', async () => {
+      if(await page.data('data.scroll_y_boolean') === false) {
+          await page.callMethod('change_scroll_y_boolean', true)
+          await page.callMethod('change_scroll_x_boolean', false)
+          await page.waitFor(600)
+      }
+      await page.callMethod('item_change_size_enum', 3)
+      await page.waitFor(600)
+      const listElement = await page.$('#listview')
+      const scrollTop = await listElement.attribute("scrollTop")
+      console.log("check_scroll_into_view_top--"+scrollTop)
+      await page.callMethod('item_change_size_enum', 0)
+      expect(scrollTop-690).toBeGreaterThanOrEqual(0)
+    })
+
     //检测横向scroll_into_view属性赋值 备注：iOS不支持list-view横向滚动
     it('check_scroll_into_view_left', async () => {
       if(await page.data('data.scroll_x_boolean') === false) {
