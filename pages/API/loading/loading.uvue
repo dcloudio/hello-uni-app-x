@@ -17,6 +17,12 @@
 				</radio-group>
 			</view>
 		</view>
+    <!-- #ifdef APP-IOS -->
+		<view class="uni-padding-wrap uni-common-mt" style="flex-direction: row; justify-content: space-between; align-items: center;">
+			<text class="uni-title-text"> iOS 雪花样式 </text>
+			<switch :checked="data.iosSnow" @change="iosSnowChange" />
+		</view>
+    <!-- #endif -->
 		<view class="uni-padding-wrap">
 			<view class="uni-btn-v">
 				<button class="uni-btn-v" type="primary" @click="showLoading">显示 loading 提示框</button>
@@ -45,6 +51,7 @@
 		current : number;
 		callbackText : string[];
 		titleSelect : string;
+		iosSnow : boolean;
 	}
 
 	const data = reactive({
@@ -65,7 +72,8 @@
 		],
 		callbackText: [] as Array<string>,
 		current: 0,
-		titleSelect: "null"
+		titleSelect: "null",
+		iosSnow: false
 	} as DataType)
 
 	const jest_getWindowInfo = () : GetWindowInfoResult => {
@@ -79,6 +87,10 @@
 		if (selected != null) {
 			data.titleSelect = selected.value
 		}
+	}
+
+	const iosSnowChange = (e : UniSwitchChangeEvent) => {
+		data.iosSnow = e.detail.value
 	}
 
 	const hideLoading = () => {
@@ -179,10 +191,12 @@
 		if (data.titleSelect == "null") {
 			uni.showLoading({
 				title: "",
+				iosSnow: data.iosSnow,
 			});
 		} else {
 			uni.showLoading({
 				title: data.titleSelect,
+				iosSnow: data.iosSnow,
 			});
 		}
 		setTimeout(() => {
@@ -191,10 +205,10 @@
 	}
 
 	onLoad(() => {
-		uni.showLoading()
-		setTimeout(() => {
-			uni.hideLoading()
-		}, 2000);
+		// uni.showLoading()
+		// setTimeout(() => {
+		// 	uni.hideLoading()
+		// }, 2000);
 	})
 
 	defineExpose({
