@@ -99,14 +99,16 @@
   const firstDetailContent = ref('') // 并行预加载的第一个详情内容
 
   function checkScreenWidth() {
-    const deviceType = uni.getDeviceInfo().deviceType
     const { windowWidth } = uni.getWindowInfo()
     // 只要是pad/pc，或者宽度大于700，都算宽屏
-    isWideScreen.value = (
-      deviceType === 'pad' ||
-      deviceType === 'pc' ||
-      windowWidth > 700
-    )
+    // #ifdef WEB
+    // WEB 端切换设备模拟器时 deviceType 不会改变，只依赖 windowWidth 判断
+    isWideScreen.value = windowWidth > 700
+    // #endif
+    // #ifndef WEB
+    const deviceType = uni.getDeviceInfo().deviceType
+    isWideScreen.value = deviceType === 'pad' || windowWidth > 700
+    // #endif
   }
 
   function getBanner() {
