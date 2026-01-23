@@ -379,15 +379,18 @@
 	}
 
 	// Picker选择事件
-	function onPickerChange(e : UniPickerViewChangeEvent) {
+	function onPickerChange(e : UniPickerChangeEvent) {
 		const value = e.detail.value
-		if (typeof value === 'string' && value.length > 2) {
-			const parts = (value as string).split('-')
+		if (typeof value !== 'string') {
+			return
+		}
+		const valueAsString = value as string
+		if (valueAsString.length > 2) {
+			const parts = valueAsString.split('-')
 			if (parts.length >= 2) {
 				currentYear.value = parseInt(parts[0])
 				currentMonth.value = parseInt(parts[1])
-				initSwiperItems()
-				swiperCurrent.value = 1
+				switchToMonth(currentYear.value, currentMonth.value, 1)
 			}
 		}
 	}
