@@ -1,10 +1,12 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+
 const PAGE_PATH = '/pages/template/calendar/calendar'
 
 describe('calendar', () => {
-  const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-  const isWeb = platformInfo.startsWith('web')
-  const isMP = platformInfo.startsWith('mp')
-  if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true') {
+  if (isWeb || isMP || process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true' || isDom2) {
     it('not support', () => {
       expect(1).toBe(1)
     })

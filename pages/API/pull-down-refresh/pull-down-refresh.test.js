@@ -4,9 +4,10 @@ const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe("payment", () => {
-  if (isWeb || isAppWebView || isMP) {
+  if (isWeb || isAppWebView || isMP || isDom2) {
     it('not support', () => {
       expect(1).toBe(1)
     })
