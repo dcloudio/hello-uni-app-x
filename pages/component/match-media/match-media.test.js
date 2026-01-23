@@ -5,8 +5,8 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isIos = platformInfo.startsWith('ios')
 
 describe('match-media', () => {
-  const isSupportted = isMP || isAndroid || isHarmony || isIos;
-  if (!isSupportted) {
+  const isSupported = isMP || isAndroid || isHarmony || isIos;
+  if (!isSupported) {
     it('not support', () => {
       expect(1).toBe(1);
     });
