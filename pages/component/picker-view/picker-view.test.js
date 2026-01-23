@@ -104,6 +104,8 @@ describe('PickerView.uvue', () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
       const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
+
+      // 第一次激活：设置黄色渐变
       await page.callMethod('setMaskTopStyle',true)
       await page.callMethod('setMaskBottomStyle',true)
       await page.waitFor(500)
@@ -111,6 +113,15 @@ describe('PickerView.uvue', () => {
       expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)
       await page.waitFor(2000)
       await toScreenshot('picker-view-app-mask-top-bottom-style')
+
+      // 第二次点击：切换回原始状态
+      await page.callMethod('setMaskTopStyle',false)
+      await page.callMethod('setMaskBottomStyle',false)
+      await page.waitFor(500)
+      expect(await pickerViewEl.attribute('mask-top-style')).toBe('')
+      expect(await pickerViewEl.attribute('mask-bottom-style')).toBe('')
+      await page.waitFor(1000)
+      await toScreenshot('picker-view-app-mask-top-bottom-style-cleared')
     })
 
     it('reopen-picker-view-page', async () => {
