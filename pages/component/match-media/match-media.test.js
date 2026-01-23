@@ -2,9 +2,10 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
+const isIos = platformInfo.startsWith('ios')
 
 describe('match-media', () => {
-  const isSupportted = isMP || isAndroid || isHarmony;
+  const isSupportted = isMP || isAndroid || isHarmony || isIos;
   if (!isSupportted) {
     it('not support', () => {
       expect(1).toBe(1);
