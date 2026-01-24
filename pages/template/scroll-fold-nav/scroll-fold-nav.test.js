@@ -34,7 +34,7 @@ describe('scroll-fold-nav', () => {
         // mate 60
         // topSafeArea = 33
         // mate 60 pro
-        topSafeArea = 38``
+        topSafeArea = 38
       }
     }
     deviceShotOptions.area.y = topSafeArea
@@ -43,7 +43,7 @@ describe('scroll-fold-nav', () => {
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
   });
-  it('screenshot before scroll', async () => {
+  it('screenshot after scroll', async () => {
     await program.pageScrollTo(400)
     await page.waitFor(1000)
     const image = await program.screenshot(deviceShotOptions);
