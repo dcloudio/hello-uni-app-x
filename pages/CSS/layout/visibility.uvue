@@ -20,13 +20,14 @@
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 visibility 测试</text>
       </view>
 
+      <!-- 普通版本 -->
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
           <text class="test-info">设置值: {{visibilityValue}}</text>
           <text class="test-info">获取值: {{visibilityActual}}</text>
           <view class="test-box">
-            <view ref="viewRef" class="common-dynamic" :style="{ visibility: visibilityValue }">
+            <view ref="viewRef" class="common-dynamic test-view" :style="{ visibility: visibilityValue }">
               <text>view测试</text>
             </view>
           </view>
@@ -37,7 +38,7 @@
           <text class="test-info">设置值: {{visibilityValue}}</text>
           <text class="test-info">获取值: {{visibilityActualText}}</text>
           <view class="test-box">
-            <text ref="textRef" class="common-dynamic" :style="{ visibility: visibilityValue }">text测试</text>
+            <text ref="textRef" class="common-dynamic test-text" :style="{ visibility: visibilityValue }">text测试</text>
           </view>
         </view>
 
@@ -46,7 +47,39 @@
           <text class="test-info">设置值: {{visibilityValue}}</text>
           <text class="test-info">获取值: {{visibilityActualImage}}</text>
           <view class="test-box">
-            <image ref="imageRef" class="common-dynamic" :style="{ visibility: visibilityValue }" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic test-image" :style="{ visibility: visibilityValue }" src="/static/test-image/logo.png"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 拍平版本 -->
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件拍平</text>
+          <text class="test-info">设置值: {{visibilityValue}}</text>
+          <text class="test-info">获取值: {{visibilityActualFlat}}</text>
+          <view class="test-box">
+            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ visibility: visibilityValue }" flatten>
+              <text>view测试</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件拍平</text>
+          <text class="test-info">设置值: {{visibilityValue}}</text>
+          <text class="test-info">获取值: {{visibilityActualTextFlat}}</text>
+          <view class="test-box">
+            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ visibility: visibilityValue }" flatten>text测试</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件拍平</text>
+          <text class="test-info">设置值: {{visibilityValue}}</text>
+          <text class="test-info">获取值: {{visibilityActualImageFlat}}</text>
+          <view class="test-box">
+            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ visibility: visibilityValue }" flatten src="/static/test-image/logo.png"></image>
           </view>
         </view>
       </view>
@@ -87,30 +120,51 @@
   const visibilityActual = ref('')
   const visibilityActualText = ref('')
   const visibilityActualImage = ref('')
+  const visibilityActualFlat = ref('')
+  const visibilityActualTextFlat = ref('')
+  const visibilityActualImageFlat = ref('')
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
 
   const changeVisibilityProperty = (value: string) => {
     visibilityValue.value = value
-    // view 元素
+    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('visibility', value)
-    // text 元素
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('visibility', value)
+    // text 元素 - 普通版本
     textRef.value?.style.setProperty('visibility', value)
-    // image 元素
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('visibility', value)
+    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('visibility', value)
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('visibility', value)
 
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
+      // view 元素 - 普通版本
       const actualValue = viewRef.value?.style.getPropertyValue('visibility')
       visibilityActual.value = actualValue ?? ''
-      // text 元素
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('visibility')
+      visibilityActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
       const actualValueText = textRef.value?.style.getPropertyValue('visibility')
       visibilityActualText.value = actualValueText ?? ''
-      // image 元素
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('visibility')
+      visibilityActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
       const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
       visibilityActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('visibility')
+      visibilityActualImageFlat.value = actualValueImageFlat ?? ''
     })
   }
 
@@ -126,15 +180,28 @@
   }
 
   onReady(() => {
-    // view 元素
+    // view 元素 - 普通版本
     const actualValue = viewRef.value?.style.getPropertyValue('visibility')
     visibilityActual.value = actualValue ?? ''
-    // text 元素
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('visibility')
+    visibilityActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
     const actualValueText = textRef.value?.style.getPropertyValue('visibility')
     visibilityActualText.value = actualValueText ?? ''
-    // image 元素
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('visibility')
+    visibilityActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
     const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
     visibilityActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('visibility')
+    visibilityActualImageFlat.value = actualValueImageFlat ?? ''
+  })
+
+  defineExpose({
+    radioChangeVisibility
   })
 </script>
 
