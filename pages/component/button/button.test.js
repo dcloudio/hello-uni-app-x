@@ -160,19 +160,17 @@ describe('Button.uvue', () => {
   })
 })
 
-describe('Buttonstatus.uvue', () => {
-  let page
-  beforeAll(async () => {
-    page = await program.reLaunch('/pages/component/button/buttonstatus')
-    await page.waitFor('view')
-  })
+if (isDom2) {
+  describe('Buttonstatus.uvue', () => {
+    let page
+    beforeAll(async () => {
+      page = await program.reLaunch('/pages/component/button/buttonstatus')
+      await page.waitFor('button')
+    })
 
-  test('loading-class', async () => {
-    if (!isDom2) {
-      expect(1).toBe(1);
-      return;
-    }
-    const btn = await page.$('.loading-class')
-    expect(await btn.attribute('loading-class')).toContain('custom-loading')
+    test('loading-class', async () => {
+      const btn = await page.$('.loading-class')
+      expect(await btn.attribute('loading-class')).toContain('custom-loading')
+    })
   })
-})
+}
