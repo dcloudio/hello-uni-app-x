@@ -26,12 +26,6 @@ describe('text-dynamic-lineHeight', () => {
     })
   })
 
-  afterAll( async () => {
-    await setPageData({
-      begin: false
-    })
-  });
-
   it('text-dynamic-lineHeight', async () => {
     let h1 = await page.callMethod('getLineHeight')
     await page.callMethod('plusLineHeight')
@@ -39,6 +33,9 @@ describe('text-dynamic-lineHeight', () => {
     let h2 = await page.callMethod('getLineHeight')
 
     expect(h2).toBeGreaterThan(h1)
+    await setPageData({
+      begin: false
+    })
   })
 
   it('text-dynamic-lineHeight-snapshot', async () => {
