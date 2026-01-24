@@ -111,12 +111,14 @@ const pages = [
   // '/pages/component/list-view/issue-2199',
 
   // API
-  '/pages/API/get-app/get-app',
+  // 非 UI 相关不截图
+  // '/pages/API/get-app/get-app',
   // 单独测试例截图
   // '/pages/API/get-current-pages/get-current-pages',
   // 单独测试例截图
   // '/pages/API/get-current-pages/set-page-style-disable-pull-down-refresh',
-  '/pages/API/get-launch-options-sync/get-launch-options-sync',
+  // 非 UI 相关不截图
+  // '/pages/API/get-launch-options-sync/get-launch-options-sync',
   // 动态时间戳
   // '/pages/API/navigator/navigator',
   // 单独测试例截图
@@ -127,7 +129,8 @@ const pages = [
   // '/pages/API/set-page-backgroundColorContent/set-page-backgroundColorContent',
   // 单独测试例截图
   // '/pages/API/navigator/new-page/new-page-1',
-  '/pages/API/navigator/new-page/new-page-3',
+  // 非 UI 相关不截图
+  // '/pages/API/navigator/new-page/new-page-3',
   '/pages/API/navigator/new-page/onLoad',
   // 单独测试例截图
   // '/pages/API/pull-down-refresh/pull-down-refresh',
@@ -150,36 +153,55 @@ const pages = [
   // '/pages/API/load-font-face/load-font-face',
   // 单独测试例截图
   // '/pages/API/load-font-face/load-font-face-child',
-  '/pages/API/interceptor/interceptor',
-  '/pages/API/interceptor/page1',
-  '/pages/API/interceptor/page2',
-  '/pages/API/request/request',
-  '/pages/API/upload-file/upload-file',
-  '/pages/API/download-file/download-file',
-  '/pages/API/websocket/socketTask',
+  // 非 UI 相关不截图
+  // '/pages/API/interceptor/interceptor',
+  // 非 UI 相关不截图
+  // '/pages/API/interceptor/page1',
+  // 非 UI 相关不截图
+  // '/pages/API/interceptor/page2',
+  // 非 UI 相关不截图
+  // '/pages/API/request/request',
+  // 非 UI 相关不截图
+  // '/pages/API/upload-file/upload-file',
+  // 非 UI 相关不截图
+  // '/pages/API/download-file/download-file',
+  // 非 UI 相关不截图
+  // '/pages/API/websocket/socketTask',
   // 页面销毁时会关闭socket连接，所以规避
   // '/pages/API/websocket/websocket',
   // 页面只是按钮，且平台间存在差异
   // '/pages/API/unicloud/unicloud/cloud-function',
-  '/pages/API/unicloud/unicloud/cloud-object',
-  '/pages/API/unicloud/unicloud/database',
-  '/pages/API/unicloud/unicloud/cloud-storage',
-  '/pages/API/get-system-info/get-system-info',
-  '/pages/API/get-device-info/get-device-info',
-  '/pages/API/get-app-base-info/get-app-base-info',
+  // 非 UI 相关不截图
+  // '/pages/API/unicloud/unicloud/cloud-object',
+  // 非 UI 相关不截图
+  // '/pages/API/unicloud/unicloud/database',
+  // 非 UI 相关不截图
+  // '/pages/API/unicloud/unicloud/cloud-storage',
+  // 非 UI 相关不截图
+  // '/pages/API/get-system-info/get-system-info',
+  // 非 UI 相关不截图
+  // '/pages/API/get-device-info/get-device-info',
+  // 非 UI 相关不截图
+  // '/pages/API/get-app-base-info/get-app-base-info',
   // 单独测试例截图
   // '/pages/API/preview-image/preview-image',
   // 单独测试例截图
   // '/pages/API/choose-image/choose-image',
   // 单独测试例截图
   // '/pages/API/choose-video/choose-video',
-  '/pages/API/get-network-type/get-network-type',
-  '/pages/API/page-scroll-to/page-scroll-to',
-  '/pages/API/event-bus/event-bus',
+  // 非 UI 相关不截图
+  // '/pages/API/get-network-type/get-network-type',
+  // 非 UI 相关不截图
+  // '/pages/API/page-scroll-to/page-scroll-to',
+  // 非 UI 相关不截图
+  // '/pages/API/event-bus/event-bus',
   // '/pages/API/get-battery-info/get-battery-info',
-  '/pages/API/get-window-info/get-window-info',
-  '/pages/API/rpx2px/rpx2px',
-  '/pages/API/request-payment/request-payment/order-detail',
+  // 非 UI 相关不截图
+  // '/pages/API/get-window-info/get-window-info',
+  // 非 UI 相关不截图
+  // '/pages/API/rpx2px/rpx2px',
+  // 非 UI 相关不截图
+  // '/pages/API/request-payment/request-payment/order-detail',
   // 单独测试例截图
   // '/pages/API/resize-observer/resize-observer',
   // 单独测试例截图
@@ -202,16 +224,19 @@ const pages = [
   // 单独测试例中截图
   // '/pages/CSS/border/dynamic-border',
   '/pages/CSS/box-shadow/box-shadow',
+  '/pages/CSS/box-sizing/box-sizing',
   '/pages/CSS/display/flex',
   '/pages/CSS/display/none',
   '/pages/CSS/flex/flex',
   '/pages/CSS/flex/align-content',
   '/pages/CSS/flex/align-items',
+  '/pages/CSS/flex/align-self',
   '/pages/CSS/flex/flex-basis',
   '/pages/CSS/flex/flex-direction',
   '/pages/CSS/flex/flex-flow',
   '/pages/CSS/flex/flex-grow',
   '/pages/CSS/flex/flex-shrink',
+  '/pages/CSS/flex/flex-wrap',
   '/pages/CSS/flex/justify-content',
   '/pages/CSS/layout/height',
   '/pages/CSS/layout/min-height',
@@ -220,6 +245,7 @@ const pages = [
   '/pages/CSS/layout/max-width',
   '/pages/CSS/layout/position',
   '/pages/CSS/layout/width',
+  '/pages/CSS/layout/opacity',
   // 单独测试例中截图
   // '/pages/CSS/layout/z-index',
   '/pages/CSS/layout/visibility',
@@ -302,19 +328,22 @@ const pages = [
   // '/pages/template/long-list-nested/long-list-nested',
 ]
 
-if (!isIos) {
-  pages.push(
-    '/pages/API/get-battery-info/get-battery-info',
-  )
-}
+// if (!isIos) {
+//   // 非 UI 相关不截图
+//   pages.push(
+//     '/pages/API/get-battery-info/get-battery-info',
+//   )
+// }
 
 if(!isMP) {
-  pages.push(
-  // 单独测试例截图
-    // '/pages/component/list-view/list-view-children-in-slot',
-    '/uni_modules/uni-pay-x/pages/success/success',
-    '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
-  )
+//   pages.push(
+//     // 单独测试例截图
+//     // '/pages/component/list-view/list-view-children-in-slot',
+//     // 非 UI 相关不截图
+//     // '/uni_modules/uni-pay-x/pages/success/success',
+//     // 非 UI 相关不截图
+//     // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk'
+//   )
   if (!isAppWebView) {
     pages.push(
       '/pages/component/list-view/list-view',
@@ -325,48 +354,65 @@ if(!isMP) {
 if (!isAppWebView) {
   if (isApp) {
     pages.push(
-      '/pages/API/get-file-system-manager/get-file-system-manager',
-      '/pages/API/get-system-setting/get-system-setting',
-      '/pages/API/element-takesnapshot/element-takesnapshot',
-      '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
-      '/pages/API/get-uni-verify-manager/get-uni-verify-manager',
-      '/pages/API/request-payment/request-payment',
+      // 非 UI 相关不截图
+      // '/pages/API/get-file-system-manager/get-file-system-manager',
+      // 非 UI 相关不截图
+      // '/pages/API/get-system-setting/get-system-setting',
+      // 非 UI 相关不截图
+      // '/pages/API/element-takesnapshot/element-takesnapshot',
+      // 非 UI 相关不截图
+      // '/pages/API/get-app-authorize-setting/get-app-authorize-setting',
+      // 非 UI 相关不截图
+      // '/pages/API/get-uni-verify-manager/get-uni-verify-manager',
+      // 非 UI 相关不截图
+      // '/pages/API/request-payment/request-payment',
       '/pages/template/scroll-sticky/scroll-sticky',
     )
   }
   if(isIos || isAndroid){
     pages.push(
-      '/pages/API/theme-change/theme-change',
-      '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
-      '/pages/API/env/env',
-      '/pages/API/element-draw/element-draw',
+      // 非 UI 相关不截图
+      // '/pages/API/theme-change/theme-change',
+      // 非 UI 相关不截图
+      // '/pages/API/facial-recognition-meta-info/facial-recognition-meta-info',
+      // 非 UI 相关不截图
+      // '/pages/API/env/env',
+      // 非 UI 相关不截图
+      // '/pages/API/element-draw/element-draw',
       // 动态内容
       // '/pages/component/waterflow/waterflow-fit-height',
-      '/pages/API/share-with-system/share-with-system',
+      // 非 UI 相关不截图
+      // '/pages/API/share-with-system/share-with-system',
       '/pages/template/test-uts-button/test-uts-button',
       '/pages/component/loading/loading',
     )
   }
-  pages.push(
-    '/pages/API/request-payment/request-payment/request-payment-uni-pay',
-    '/pages/API/get-location/get-location',
-  )
+  // pages.push(
+  //     // 非 UI 相关不截图
+  //   // '/pages/API/request-payment/request-payment/request-payment-uni-pay',
+  //     // 非 UI 相关不截图
+  //   // '/pages/API/get-location/get-location',
+  // )
 }
 
-if (isAndroid && !isAppWebView) {
-  pages.push(
-    '/pages/API/exit/exit',
-    '/pages/API/install-apk/install-apk',
-    // 动态内容，单独测试例截图
-    // '/pages/API/get-image-info/get-image-info',
-    // 动态内容，不需要截图
-    // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
-    '/pages/API/create-request-permission-listener/create-request-permission-listener',
-    '/pages/API/compress-image/compress-image',
-    // 单独测试例截图
-    // '/pages/API/compress-video/compress-video',
-  )
-}
+// if (isAndroid && !isAppWebView) {
+//   pages.push(
+//     // 非 UI 相关不截图
+//     // '/pages/API/exit/exit',
+//     // 非 UI 相关不截图
+//     // '/pages/API/install-apk/install-apk',
+//     // 动态内容，单独测试例截图
+//     // '/pages/API/get-image-info/get-image-info',
+//     // 动态内容，不需要截图
+//     // '/pages/API/create-rewarded-video-ad/create-rewarded-video-ad',
+//     // 非 UI 相关不截图
+//     // '/pages/API/create-request-permission-listener/create-request-permission-listener',
+//     // 非 UI 相关不截图
+//     // '/pages/API/compress-image/compress-image',
+//     // 单独测试例截图
+//     // '/pages/API/compress-video/compress-video',
+//   )
+// }
 
 
 if (isWeb) {
@@ -376,7 +422,8 @@ if (isWeb) {
     '/pages/component/picker/picker',
     // 单独测试例截图
     // '/pages/API/get-image-info/get-image-info',
-    '/pages/API/make-phone-call/make-phone-call',
+    // 非 UI 相关不截图
+    // '/pages/API/make-phone-call/make-phone-call',
     // 单独测试例截图
     // '/pages/API/create-inner-audio-context/create-inner-audio-context',
     // 单独测试例截图

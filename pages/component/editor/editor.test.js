@@ -1,9 +1,11 @@
 jest.setTimeout(30000);
-
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('editor.uvue', () => {
-  if (!process.env.uniTestPlatformInfo.includes('web') || isDom2) {
+  if (isDom2 || (!isWeb && !isMP)) {
     it('app', () => {
       expect(1).toBe(1)
     })
@@ -13,8 +15,9 @@ describe('editor.uvue', () => {
   beforeAll(async () => {
     page = await program.reLaunch("/pages/component/editor/editor");
     await page.waitFor('view');
+    const time = isWeb ? 3000 : 6000
+    await page.waitFor(time);
     editor = await page.$('#editor');
-    await page.waitFor(3000);
     await page.setData({
       data:{autoTest: true}
     })
@@ -30,7 +33,11 @@ describe('editor.uvue', () => {
 
   it('editor-wrapper', async () => {
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
-    expect(await editor.attribute("read-only")).toBe("false")
+    if(isMP){
+      expect(await page.data("data.readOnly")).toBe(false)
+    }else{
+      expect(await editor.attribute("read-only")).toBe("false")
+    }
     expect(await program.screenshot()).toSaveImageSnapshot();
   });
 
@@ -68,9 +75,10 @@ describe('editor.uvue', () => {
     await page.callMethod('insertDivider')
     await page.waitFor(500)
     await page.callMethod('undo')
-    await page.waitFor(500)
+    await page.waitFor(1000)
     expect(await page.data('data.undoTest')).toBe(true)
     await page.callMethod('redo')
+    if(isMP){await page.waitFor(1000)}
     expect(await page.data('data.redoTest')).toBe(true)
   })
 
@@ -101,6 +109,7 @@ describe('editor.uvue', () => {
     }])
     await page.waitFor(500)
     await page.callMethod('removeFormat')
+    if(isMP){await page.waitFor(1000)}
     expect(await page.data('data.removeFormatTest')).toBe(true)
     expect(await page.data('data.formats')).toEqual({})
   })

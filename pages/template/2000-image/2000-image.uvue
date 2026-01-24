@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+    var isBackPress = false;
     const show = ref(false);
     var startime = Date.now();
     const ShowEvent = (() => {
@@ -29,6 +30,7 @@
 		// #ifdef APP
     const insPage = getCurrentInstance().proxy.$page;
     insPage.onRenderChange(({ duration }) => {
+      if(isBackPress){return}
 			const endtime = Date.now();
 			uni.showToast({
 				title: `${endtime - startime}ms`,
@@ -37,6 +39,7 @@
     });
 		// #endif
 		onBackPress(() => {
+      isBackPress = true
 			show.value = false
 		});
 

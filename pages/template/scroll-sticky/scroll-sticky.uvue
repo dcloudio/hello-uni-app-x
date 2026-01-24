@@ -29,22 +29,22 @@
 <script setup lang="uts">
 
   const list = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'])
-  const stickyTop = ref(0)
-  const stickyTran = ref(0)
+  let stickyTop = 0
+  let stickyTran = 0
   const scrollTop = ref(0)
   const sticky = ref<UniElement | null>(null)
   const scroll = ref<UniElement | null>(null)
 
   function onScroll(e : ScrollEvent) {
-    if (e.detail.scrollTop > stickyTop.value) {
-      let stickyTran_ = e.detail.scrollTop - stickyTop.value;
-      if (stickyTran_ != stickyTran.value) {
+    if (e.detail.scrollTop > stickyTop) {
+      let stickyTran_ = e.detail.scrollTop - stickyTop;
+      if (stickyTran_ != stickyTran) {
         sticky.value?.style?.setProperty('transform', 'translateY(' + stickyTran_ + 'px)');
       }
-      stickyTran.value = stickyTran_;
+      stickyTran = stickyTran_;
     } else {
       sticky.value?.style?.setProperty('transform', '');
-      stickyTran.value = 0;
+      stickyTran = 0;
     }
   }
   function back() {
@@ -64,7 +64,7 @@
     if (sticky.value != null && scroll.value != null) {
       const stickyRect = await sticky.value!.getBoundingClientRectAsync()!;
       const scrollRect = await scroll.value!.getBoundingClientRectAsync()!;
-      stickyTop.value = stickyRect.top - scrollRect.top;
+      stickyTop = stickyRect.top - scrollRect.top;
       console.log(stickyRect, scrollRect);
     }
   }

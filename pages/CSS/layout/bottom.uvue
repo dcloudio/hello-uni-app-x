@@ -1,0 +1,276 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+  <view style="flex-grow: 1;">
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: 20px (距离底部 20px) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: 20px;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: 20px;" flatten></view>
+        </view>
+      </view>
+    </view>
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: 20rpx (距离底部 20rpx) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: 20rpx;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: 20rpx;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: 20% (距离底部 20%) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: 20%;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: 20%;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mb">
+      <text class="uni-title-text">bottom: auto (自动，默认顶部对齐) - 右侧：拍平</text>
+      <view class="test-container">
+        <view class="example-box">
+          <view class="common" style="bottom: auto;"></view>
+        </view>
+        <view class="example-box">
+          <view class="common" style="bottom: auto;" flatten></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 bottom 测试</text>
+    </view>
+
+    <!-- 普通版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件</text>
+        <text class="test-info">设置值: {{bottom}}</text>
+        <text class="test-info">获取值: {{bottomActual}}</text>
+        <view class="test-box">
+          <view ref="viewRef" class="common" :style="{ bottom: bottom }">
+            <text class="common-text">view测试</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件</text>
+        <text class="test-info">设置值: {{bottom}}</text>
+        <text class="test-info">获取值: {{bottomActualText}}</text>
+        <view class="test-box">
+          <text ref="textRef" class="common" :style="{ bottom: bottom }">text测试</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件</text>
+        <text class="test-info">设置值: {{bottom}}</text>
+        <text class="test-info">获取值: {{bottomActualImage}}</text>
+        <view class="test-box">
+          <image ref="imageRef" class="common" :style="{ bottom: bottom }" src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <!-- 拍平版本 -->
+    <view class="test-container">
+      <view class="test-item">
+        <text class="uni-subtitle-text">view 组件拍平</text>
+        <text class="test-info">设置值: {{bottom}}</text>
+        <text class="test-info">获取值: {{bottomActualFlat}}</text>
+        <view class="test-box">
+          <view ref="viewRefFlat" class="common" :style="{ bottom: bottom }" flatten>
+            <text class="common-text">view测试</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">text 组件拍平</text>
+        <text class="test-info">设置值: {{bottom}}</text>
+        <text class="test-info">获取值: {{bottomActualTextFlat}}</text>
+        <view class="test-box">
+          <text ref="textRefFlat" class="common" :style="{ bottom: bottom }" flatten>text测试</text>
+        </view>
+      </view>
+
+      <view class="test-item">
+        <text class="uni-subtitle-text">image 组件拍平</text>
+        <text class="test-info">设置值: {{bottom}}</text>
+        <text class="test-info">获取值: {{bottomActualImageFlat}}</text>
+        <view class="test-box">
+          <image ref="imageRefFlat" class="common" :style="{ bottom: bottom }" flatten src="/static/test-image/logo.png"></image>
+        </view>
+      </view>
+    </view>
+
+    <view class="uni-common-mt uni-common-mb">
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      <enum-data :items="bottomEnum" title="bottom 枚举值" @change="radioChangeBottom" :compact="true"></enum-data>
+      <input-data :defaultValue="bottom" title="bottom 自定义值" type="text" @confirm="inputChangeBottom"></input-data>
+    </view>
+  </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const bottomEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: '0' },
+    { value: 2, name: '0px' },
+    { value: 3, name: '10px' },
+    { value: 4, name: '20rpx' },
+    { value: 5, name: '0%' },
+    { value: 6, name: '20%' },
+    { value: 7, name: 'auto' }
+  ]
+
+  const bottom = ref('10px')
+  const bottomActual = ref('')
+  const bottomActualText = ref('')
+  const bottomActualImage = ref('')
+  const bottomActualFlat = ref('')
+  const bottomActualTextFlat = ref('')
+  const bottomActualImageFlat = ref('')
+  const viewRef = ref(null as UniElement | null)
+  const textRef = ref(null as UniTextElement | null)
+  const imageRef = ref(null as UniImageElement | null)
+  const viewRefFlat = ref(null as UniElement | null)
+  const textRefFlat = ref(null as UniTextElement | null)
+  const imageRefFlat = ref(null as UniImageElement | null)
+
+  const changeBottom = (value: string) => {
+    bottom.value = value
+    // view 元素 - 普通版本
+    viewRef.value?.style.setProperty('bottom', value)
+    // view 元素 - 拍平版本
+    viewRefFlat.value?.style.setProperty('bottom', value)
+    // text 元素 - 普通版本
+    textRef.value?.style.setProperty('bottom', value)
+    // text 元素 - 拍平版本
+    textRefFlat.value?.style.setProperty('bottom', value)
+    // image 元素 - 普通版本
+    imageRef.value?.style.setProperty('bottom', value)
+    // image 元素 - 拍平版本
+    imageRefFlat.value?.style.setProperty('bottom', value)
+
+    // 使用 nextTick 确保样式已应用后再获取值
+    nextTick(() => {
+      // view 元素 - 普通版本
+      const actualValue = viewRef.value?.style.getPropertyValue('bottom')
+      bottomActual.value = actualValue ?? ''
+      // view 元素 - 拍平版本
+      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('bottom')
+      bottomActualFlat.value = actualValueFlat ?? ''
+      // text 元素 - 普通版本
+      const actualValueText = textRef.value?.style.getPropertyValue('bottom')
+      bottomActualText.value = actualValueText ?? ''
+      // text 元素 - 拍平版本
+      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('bottom')
+      bottomActualTextFlat.value = actualValueTextFlat ?? ''
+      // image 元素 - 普通版本
+      const actualValueImage = imageRef.value?.style.getPropertyValue('bottom')
+      bottomActualImage.value = actualValueImage ?? ''
+      // image 元素 - 拍平版本
+      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('bottom')
+      bottomActualImageFlat.value = actualValueImageFlat ?? ''
+    })
+  }
+
+  const radioChangeBottom = (index: number) => {
+    const selectedItem = bottomEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBottom(selectedItem.name)
+    }
+  }
+
+  const inputChangeBottom = (value: string) => {
+    changeBottom(value)
+  }
+
+  onReady(() => {
+    // view 元素 - 普通版本
+    const actualValue = viewRef.value?.style.getPropertyValue('bottom')
+    bottomActual.value = actualValue ?? ''
+    // view 元素 - 拍平版本
+    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('bottom')
+    bottomActualFlat.value = actualValueFlat ?? ''
+    // text 元素 - 普通版本
+    const actualValueText = textRef.value?.style.getPropertyValue('bottom')
+    bottomActualText.value = actualValueText ?? ''
+    // text 元素 - 拍平版本
+    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('bottom')
+    bottomActualTextFlat.value = actualValueTextFlat ?? ''
+    // image 元素 - 普通版本
+    const actualValueImage = imageRef.value?.style.getPropertyValue('bottom')
+    bottomActualImage.value = actualValueImage ?? ''
+    // image 元素 - 拍平版本
+    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('bottom')
+    bottomActualImageFlat.value = actualValueImageFlat ?? ''
+  })
+</script>
+
+<style>
+  .example-box {
+    position: relative;
+    flex: 1;
+    height: 150px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    margin: 0 5px;
+  }
+
+  .common {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: #ff4444;
+  }
+
+  .common-text{
+    width:50px;
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .test-container {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .test-item {
+    flex: 1;
+    margin: 0 5px;
+  }
+
+  .test-box {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-color: #e0e0e0;
+  }
+
+  .test-info {
+    font-size: 12px;
+    color: #666;
+  }
+</style>

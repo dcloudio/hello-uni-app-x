@@ -36,8 +36,8 @@ const SEARCHBARHEIGHT = 40;
 //返回键按钮宽度
 const BACKWIDTH = 32;
 
-const statusBarHeight = ref(0)
-const nviBarHeight = ref(0)
+let statusBarHeight = 0
+let nviBarHeight = 0
 const navigatorbarRef = ref<UniElement | null>(null)
 const searchbarRef = ref<UniElement | null>(null)
 const titleRef = ref<UniElement | null>(null)
@@ -45,7 +45,7 @@ const seatbarRef = ref<UniElement | null>(null)
 
 function onScroll(e : ScrollEvent) {
   let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
-  navigatorbarRef.value?.style?.setProperty('height', (nviBarHeight.value -offset)+'px');
+  navigatorbarRef.value?.style?.setProperty('height', (nviBarHeight -offset)+'px');
   titleRef.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
   searchbarRef.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
 }
@@ -58,17 +58,17 @@ function search() {
 }
 
 function setStyle() {
-  navigatorbarRef.value?.style?.setProperty('padding-top', statusBarHeight.value + 'px');
-  navigatorbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
-  seatbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight.value) + 'px');
+  navigatorbarRef.value?.style?.setProperty('padding-top', statusBarHeight + 'px');
+  navigatorbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight) + 'px');
+  seatbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight) + 'px');
 }
 
 onLoad(() => {
   // #ifdef APP || MP
-    statusBarHeight.value = uni.getWindowInfo().statusBarHeight;
+    statusBarHeight = uni.getWindowInfo().statusBarHeight;
   // #endif
 
-  nviBarHeight.value = NAVIBARHEIGHT + statusBarHeight.value;
+  nviBarHeight = NAVIBARHEIGHT + statusBarHeight;
 })
 
 onReady(() => {
@@ -78,8 +78,8 @@ onReady(() => {
 onResize((event : OnResizeOptions) => {
   // #ifdef APP-ANDROID
   // 监听多窗口模式
-  statusBarHeight.value = uni.getWindowInfo().statusBarHeight;
-  nviBarHeight.value = NAVIBARHEIGHT + statusBarHeight.value;
+  statusBarHeight = uni.getWindowInfo().statusBarHeight;
+  nviBarHeight = NAVIBARHEIGHT + statusBarHeight;
   setStyle();
   // #endif
 })

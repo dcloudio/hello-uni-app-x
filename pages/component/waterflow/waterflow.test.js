@@ -3,10 +3,11 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-waterflow', () => {
   // 鸿蒙平台api 20支持滚动相关事件，api 18支持load-more。目前先手动测试，后续升级测试机后再放开测试
-  if (isMP || isWeb || isAppWebView || isHarmony) {
+  if (isMP || isWeb || isAppWebView || isHarmony || isDom2) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})

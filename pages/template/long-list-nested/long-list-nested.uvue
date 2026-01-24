@@ -30,7 +30,7 @@
   </scroll-view>
 </template>
 
-<script setup lang="ts">
+<script setup lang="uts">
   import longPage from '../long-list/long-list-page.uvue';
 
   type SwiperTabsItem = {
@@ -84,13 +84,13 @@
     } as SwiperViewItem
   ] as SwiperViewItem[]);
   const swiperIndex = ref(0);
-  const headerHeight = ref(0);
-  const animationFinishIndex = ref(0);
+  let headerHeight = 0;
+  let animationFinishIndex = 0;
   const tabScrollView = ref<UniElement | null>(null);
   const indicatorNode = ref<UniElement | null>(null);
-  const swiperWidth = ref(0);
-  const swiperTabsRect = ref([] as SwiperTabsItem[]);
-  const nestedScrollChildId = ref("");
+  let swiperWidth = 0;
+  let swiperTabsRect: SwiperTabsItem[] = [];
+  let nestedScrollChildId = "";
 
   const pageScrollView = ref<UniScrollViewElement | null>(null);
   const header = ref<UniSwiperElement | null>(null);
@@ -105,12 +105,12 @@
       longPageRef.value[index].$callMethod('loadData', null)
     }
     //swiper页面切换需要重新赋值嵌套滚动子元素的id
-    nestedScrollChildId.value = swiperList.value[index].id
+    nestedScrollChildId = swiperList.value[index].id
   }
 
   function updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
-    const current_size = swiperTabsRect.value[current_index]
-    const move_to_size = swiperTabsRect.value[move_to_index]
+    const current_size = swiperTabsRect[current_index]
+    const move_to_size = swiperTabsRect[move_to_index]
 
     // 计算指示线 左边距 和 宽度 在移动过程中的线性值
     const indicator_line_x = lerpNumber(current_size.x, move_to_size.x, percentage)
@@ -129,7 +129,7 @@
     // #endif
 
     // 滚动到水平中心位置
-    const scroll_x = x - swiperWidth.value / 2
+    const scroll_x = x - swiperWidth / 2
     if (tabScroll.value !== null) {
       tabScroll.value!.scrollLeft = scroll_x
     }
@@ -162,9 +162,9 @@
     const offset_x = e.detail.dx
 
     // 计算当前索引并重置差异
-    const current_offset_x = offset_x % swiperWidth.value
-    const current_offset_i = offset_x / swiperWidth.value
-    const current_index = animationFinishIndex.value + parseInt(current_offset_i + '')
+    const current_offset_x = offset_x % swiperWidth
+    const current_offset_i = offset_x / swiperWidth
+    const current_index = animationFinishIndex + parseInt(current_offset_i + '')
 
     // 计算目标索引及边界检查
     let move_to_index = current_index
@@ -175,7 +175,7 @@
     }
 
     // 计算偏移百分比
-    const percentage = Math.abs(current_offset_x) / swiperWidth.value
+    const percentage = Math.abs(current_offset_x) / swiperWidth
 
     // 通知更新指示线
     if (current_index != move_to_index) {
@@ -187,13 +187,13 @@
 
   function onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
     setSwiperIndex(e.detail.current, true)
-    animationFinishIndex.value = e.detail.current
+    animationFinishIndex = e.detail.current
   }
 
   function cacheTabItemsSize() {
-    swiperTabsRect.value.length = 0
+    swiperTabsRect.length = 0
     swipertab.value.forEach((node) => {
-      swiperTabsRect.value.push({
+      swiperTabsRect.push({
         x: node.offsetLeft,
         w: node.offsetWidth
       } as SwiperTabsItem)
@@ -201,8 +201,8 @@
   }
 
   onReady(() => {
-    headerHeight.value = header.value!.offsetHeight
-    swiperWidth.value = swiper.value!.getBoundingClientRect().width
+    headerHeight = header.value!.offsetHeight
+    swiperWidth = swiper.value!.getBoundingClientRect().width
     cacheTabItemsSize()
     updateTabIndicator(swiperIndex.value, swiperIndex.value, 1)
   });

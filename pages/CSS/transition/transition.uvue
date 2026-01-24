@@ -2,6 +2,15 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
+		<!-- #ifndef APP-ANDROID -->
+		<view style="margin: 7px; height: 60px;">
+			<navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
+				<button type="primary">
+					transform 多个属性示例
+				</button>
+			</navigator>
+		</view>
+		<!-- #endif -->
     <view class="container">
       <text class="text">点击修改宽度</text>
       <view class="base-style transition-width" id="widthOrHeight" @click="changeWidthOrHeight"></view>
@@ -102,23 +111,6 @@
           :style="{transform:`translateX(${lineLeft}px)`,width:`${lineWidth}px`}" @click="changeTransform61">
         </view>
       </view>
-    </view>
-
-    <!-- #ifndef APP-ANDROID -->
-    <view style="margin: 7px; height: 60px;">
-      <navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
-        <button type="primary">
-          transform 多个属性示例
-        </button>
-      </navigator>
-    </view>
-    <!-- #endif -->
-    <view style="margin: 7px; height: 60px;">
-      <navigator url="/pages/CSS/transition/transition-duration" hover-class="none">
-        <button type="primary">
-          transition-duration 示例
-        </button>
-      </navigator>
     </view>
 
     <view class="container">
@@ -254,235 +246,235 @@
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
 
-  const isTranstionWidthOrHeight = ref(false)
-  const isTranstionWidthAuto = ref(false)
-  const widthOrHeightAuto = ref(null as UniElement | null)
-  const widthOrHeight = ref(null as UniElement | null)
-  const widthProgress = ref(null as UniElement | null)
-  const isTranstionWidthOrHeightStyle = ref(false)
-  const widthOrHeightStyle = ref(null as UniElement | null)
-  const progressWidth = ref(200)
-  const isTranstionChangeMargin = ref(false)
-  const styleMargin = ref(null as UniElement | null)
-  const isTransitionStylePadding = ref(false)
-  const stylePadding = ref(null as UniElement | null)
-  const isTransitionstyleBackground = ref(false)
-  const isTransitionstyleBackground2 = ref(false)
-  const isTransitionstyleOpacity = ref(false)
-  const styleBackground = ref(null as UniElement | null)
-  const styleBackground2 = ref(null as UniElement | null)
-  const styleOpacity = ref(null as UniElement | null)
-  const isTransitionStyleTransform = ref(false)
-  const styleTransform = ref(null as UniElement | null)
-  const isTransitionStyleTransformWithWidth = ref(false)
-  const styleTransformWithWidth = ref(null as UniElement | null)
-  const isTransitionstyleBorder = ref(false)
-  const styleBorder = ref(null as UniElement | null)
-  const isTransitionstylePosition = ref(false)
-  const stylePosition = ref(null as UniElement | null)
-  const isSetTransition = ref(false)
-  const isTransitionpropertystyleBackground = ref(false)
-  const propertyStyleBackground = ref(null as UniElement | null)
-  const isTransitionStyleTransformWithOrigin = ref(false)
-  const styleTransformWithOrigin = ref(null as UniElement | null)
-  const styleTransformTranslate = ref(null as UniElement | null)
-  const isTransformTranslate = ref(false)
-  const styleTransformTranslateScale = ref(null as UniElement | null)
-  const startX = ref(0)
-  const moveX = ref(0)
-  const oldX = ref(0)
+  let isTranstionWidthOrHeight = false
+  let isTranstionWidthAuto = false
+  let widthOrHeightAuto: UniElement | null = null
+  let widthOrHeight: UniElement | null = null
+  let widthProgress: UniElement | null = null
+  let isTranstionWidthOrHeightStyle = false
+  let widthOrHeightStyle: UniElement | null = null
+  let progressWidth = 200
+  let isTranstionChangeMargin = false
+  let styleMargin: UniElement | null = null
+  let isTransitionStylePadding = false
+  let stylePadding: UniElement | null = null
+  let isTransitionstyleBackground = false
+  let isTransitionstyleBackground2 = false
+  let isTransitionstyleOpacity = false
+  let styleBackground: UniElement | null = null
+  let styleBackground2: UniElement | null = null
+  let styleOpacity: UniElement | null = null
+  let isTransitionStyleTransform = false
+  let styleTransform: UniElement | null = null
+  let isTransitionStyleTransformWithWidth = false
+  let styleTransformWithWidth: UniElement | null = null
+  let isTransitionstyleBorder = false
+  let styleBorder: UniElement | null = null
+  let isTransitionstylePosition = false
+  let stylePosition: UniElement | null = null
+  let isSetTransition = false
+  let isTransitionpropertystyleBackground = false
+  let propertyStyleBackground: UniElement | null = null
+  let isTransitionStyleTransformWithOrigin = false
+  let styleTransformWithOrigin: UniElement | null = null
+  let styleTransformTranslate: UniElement | null = null
+  let isTransformTranslate = false
+  let styleTransformTranslateScale: UniElement | null = null
+  let startX = 0
+  let moveX = 0
+  let oldX = 0
   const changestyleTransitionDuration = ref('background-color:brown;')
-  const styleTransitionAll = ref(null as UniElement | null)
-  const isTransitionAll = ref(false)
+  let styleTransitionAll: UniElement | null = null
+  let isTransitionAll = false
   const lineLeft = ref(0)
   const lineWidth = ref(200)
-  const changeWidthInEnd = ref(null as UniElement | null)
-  const changeWidthInEndCount = ref(0)
-  const isTextTransform = ref(false)
-  const textTransform = ref(null as UniElement | null)
-  const isTextOpacity = ref(false)
-  const textOpacity = ref(null as UniElement | null)
-  const isTextBackground = ref(false)
-  const textBackground = ref(null as UniElement | null)
-  const isImageTransform = ref(false)
-  const imageTransform = ref(null as UniElement | null)
-  const isImageOpacity = ref(false)
-  const imageOpacity = ref(null as UniElement | null)
-  const isImageScale = ref(false)
-  const imageScale = ref(null as UniElement | null)
-  const isChangeBorderAndBackgroundColor = ref(false)
-  const elChangeBorderAndBackgroundColor = ref(null as UniElement | null)
+  let changeWidthInEnd: UniElement | null = null
+  let changeWidthInEndCount = 0
+  let isTextTransform = false
+  let textTransform: UniElement | null = null
+  let isTextOpacity = false
+  let textOpacity: UniElement | null = null
+  let isTextBackground = false
+  let textBackground: UniElement | null = null
+  let isImageTransform = false
+  let imageTransform: UniElement | null = null
+  let isImageOpacity = false
+  let imageOpacity: UniElement | null = null
+  let isImageScale = false
+  let imageScale: UniElement | null = null
+  let isChangeBorderAndBackgroundColor = false
+  let elChangeBorderAndBackgroundColor: UniElement | null = null
 	// 测试例辅助函数
 	const getChangeWidthInEndCount = ():number => {
-	  return changeWidthInEndCount.value
+	  return changeWidthInEndCount
 	}
 
   onReady(() => {
-    widthOrHeight.value = uni.getElementById("widthOrHeight")
-    widthProgress.value = uni.getElementById("widthProgress")
-    widthOrHeightStyle.value = uni.getElementById("widthOrHeightStyle")
-    styleMargin.value = uni.getElementById("styleMargin")
-    stylePadding.value = uni.getElementById("stylePadding")
-    styleBackground.value = uni.getElementById("styleBackground")
-    styleBackground2.value = uni.getElementById("styleBackground2")
-    styleOpacity.value = uni.getElementById("styleOpacity")
-    styleTransform.value = uni.getElementById("styleTransform")
-    styleBorder.value = uni.getElementById("styleBorder")
-    stylePosition.value = uni.getElementById("stylePosition")
-    propertyStyleBackground.value = uni.getElementById("propertyStyleBackground")
-    styleTransformWithOrigin.value = uni.getElementById("styleTransformWithOrigin")
-    styleTransformWithWidth.value = uni.getElementById("styleTransformWithWidth")
-    styleTransformTranslate.value = uni.getElementById("transformTranslate")
-    styleTransformTranslateScale.value = uni.getElementById("styleTransformTranslateScale")
-    styleTransitionAll.value = uni.getElementById("styleTransitionAll")
-    widthOrHeightAuto.value = uni.getElementById("widthOrHeightAuto")
-    changeWidthInEnd.value = uni.getElementById("changeWidthInEnd")
-    textTransform.value = uni.getElementById("textTransform")
-    textOpacity.value = uni.getElementById("textOpacity")
-    textBackground.value = uni.getElementById("textBackground")
-    imageTransform.value = uni.getElementById("imageTransform")
-    imageOpacity.value = uni.getElementById("imageOpacity")
-    imageScale.value = uni.getElementById("imageScale")
-    elChangeBorderAndBackgroundColor.value = uni.getElementById("borderAndBackgroundColor")
+    widthOrHeight = uni.getElementById("widthOrHeight")
+    widthProgress = uni.getElementById("widthProgress")
+    widthOrHeightStyle = uni.getElementById("widthOrHeightStyle")
+    styleMargin = uni.getElementById("styleMargin")
+    stylePadding = uni.getElementById("stylePadding")
+    styleBackground = uni.getElementById("styleBackground")
+    styleBackground2 = uni.getElementById("styleBackground2")
+    styleOpacity = uni.getElementById("styleOpacity")
+    styleTransform = uni.getElementById("styleTransform")
+    styleBorder = uni.getElementById("styleBorder")
+    stylePosition = uni.getElementById("stylePosition")
+    propertyStyleBackground = uni.getElementById("propertyStyleBackground")
+    styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
+    styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
+    styleTransformTranslate = uni.getElementById("transformTranslate")
+    styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
+    styleTransitionAll = uni.getElementById("styleTransitionAll")
+    widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
+    changeWidthInEnd = uni.getElementById("changeWidthInEnd")
+    textTransform = uni.getElementById("textTransform")
+    textOpacity = uni.getElementById("textOpacity")
+    textBackground = uni.getElementById("textBackground")
+    imageTransform = uni.getElementById("imageTransform")
+    imageOpacity = uni.getElementById("imageOpacity")
+    imageScale = uni.getElementById("imageScale")
+    elChangeBorderAndBackgroundColor = uni.getElementById("borderAndBackgroundColor")
   })
 
   const changeWidthOrHeight = () => {
-    widthOrHeight.value?.style?.setProperty("width", isTranstionWidthOrHeight.value
+    widthOrHeight?.style?.setProperty("width", isTranstionWidthOrHeight
       ? '200px'
       : '300px')
-    isTranstionWidthOrHeight.value = !isTranstionWidthOrHeight.value
+    isTranstionWidthOrHeight = !isTranstionWidthOrHeight
   }
 
   const changeWidthOrHeightAuto = () => {
-    widthOrHeightAuto.value?.style?.setProperty("width", isTranstionWidthAuto.value
+    widthOrHeightAuto?.style?.setProperty("width", isTranstionWidthAuto
       ? '200px'
       : 'auto')
-    isTranstionWidthAuto.value = !isTranstionWidthAuto.value
+    isTranstionWidthAuto = !isTranstionWidthAuto
   }
 
   const changeWidthProgress = () => {
-    progressWidth.value += 20
-    widthProgress.value?.style?.setProperty("width", progressWidth.value + 'px')
+    progressWidth += 20
+    widthProgress?.style?.setProperty("width", progressWidth + 'px')
   }
 
   const changeWidthOrHeightStyle = () => {
-    widthOrHeightStyle.value?.style?.setProperty("width", isTranstionWidthOrHeightStyle.value
+    widthOrHeightStyle?.style?.setProperty("width", isTranstionWidthOrHeightStyle
       ? '200px'
       : '300px')
-    isTranstionWidthOrHeightStyle.value = !isTranstionWidthOrHeightStyle.value
+    isTranstionWidthOrHeightStyle = !isTranstionWidthOrHeightStyle
   }
 
   const changeMargin = () => {
-    styleMargin.value?.style?.setProperty("margin-top", isTranstionChangeMargin.value
+    styleMargin?.style?.setProperty("margin-top", isTranstionChangeMargin
       ? '0px'
       : '50px'
     )
-    styleMargin.value?.style?.setProperty("margin-left", isTranstionChangeMargin.value
+    styleMargin?.style?.setProperty("margin-left", isTranstionChangeMargin
       ? '0px'
       : '50px'
     )
-    isTranstionChangeMargin.value = !isTranstionChangeMargin.value
+    isTranstionChangeMargin = !isTranstionChangeMargin
   }
 
   const changePadding = () => {
-    stylePadding.value?.style?.setProperty("padding-top", isTransitionStylePadding.value
+    stylePadding?.style?.setProperty("padding-top", isTransitionStylePadding
       ? '0px'
       : '50px')
-    stylePadding.value?.style?.setProperty("padding-left", isTransitionStylePadding.value
+    stylePadding?.style?.setProperty("padding-left", isTransitionStylePadding
       ? '0px'
       : '50px')
-    isTransitionStylePadding.value = !isTransitionStylePadding.value
+    isTransitionStylePadding = !isTransitionStylePadding
   }
 
   const changeBackground = () => {
-    styleBackground.value?.style?.setProperty("background-color", isTransitionstyleBackground.value
+    styleBackground?.style?.setProperty("background-color", isTransitionstyleBackground
       ? 'brown'
       : 'black'
     )
-    styleBackground.value?.style?.setProperty("opacity", isTransitionstyleBackground.value
+    styleBackground?.style?.setProperty("opacity", isTransitionstyleBackground
       ? '1'
       : '0.5'
     )
-    isTransitionstyleBackground.value = !isTransitionstyleBackground.value
+    isTransitionstyleBackground = !isTransitionstyleBackground
   }
 
   const changeBackground2 = () => {
-    styleBackground2.value?.style?.setProperty("background-color", isTransitionstyleBackground2.value
+    styleBackground2?.style?.setProperty("background-color", isTransitionstyleBackground2
       ? 'brown'
       : 'rgba(0, 0, 0, 0.5)'
     )
-    isTransitionstyleBackground2.value = !isTransitionstyleBackground2.value
+    isTransitionstyleBackground2 = !isTransitionstyleBackground2
   }
 
   const changeStyleOpacity = () => {
-    styleOpacity.value?.style?.setProperty("opacity", isTransitionstyleOpacity.value
+    styleOpacity?.style?.setProperty("opacity", isTransitionstyleOpacity
       ? '1'
       : '0'
     )
-    isTransitionstyleOpacity.value = !isTransitionstyleOpacity.value
+    isTransitionstyleOpacity = !isTransitionstyleOpacity
   }
 
   const propertyChangeBackground = () => {
-    if (!isSetTransition.value) {
-      propertyStyleBackground.value?.style?.setProperty("transition-property", "background-color")
-      propertyStyleBackground.value?.style?.setProperty("transition-duration", "1000ms")
-      isSetTransition.value = true
+    if (!isSetTransition) {
+      propertyStyleBackground?.style?.setProperty("transition-property", "background-color")
+      propertyStyleBackground?.style?.setProperty("transition-duration", "1000ms")
+      isSetTransition = true
     }
-    propertyStyleBackground.value?.style?.setProperty("background-color", isTransitionpropertystyleBackground.value
+    propertyStyleBackground?.style?.setProperty("background-color", isTransitionpropertystyleBackground
       ? 'brown'
       : 'black'
     )
-    isTransitionpropertystyleBackground.value = !isTransitionpropertystyleBackground.value
+    isTransitionpropertystyleBackground = !isTransitionpropertystyleBackground
   }
 
   const changeTransform = () => {
-    styleTransform.value?.style?.setProperty("transform", isTransitionStyleTransform.value
+    styleTransform?.style?.setProperty("transform", isTransitionStyleTransform
       ? 'rotate(0deg)'
       : 'rotate(135deg)'
     )
-    isTransitionStyleTransform.value = !isTransitionStyleTransform.value
+    isTransitionStyleTransform = !isTransitionStyleTransform
   }
 
   const changeTransformTranslate = () => {
-    const translate = isTransformTranslate.value ? `translate(0%,0%)` : `translate(100%,0%)`
-    styleTransformTranslate.value?.style?.setProperty('transform', translate)
-    isTransformTranslate.value = !isTransformTranslate.value
+    const translate = isTransformTranslate ? `translate(0%,0%)` : `translate(100%,0%)`
+    styleTransformTranslate?.style?.setProperty('transform', translate)
+    isTransformTranslate = !isTransformTranslate
   }
 
   const changeTransformWithWidth = () => {
-    styleTransformWithWidth.value?.style?.setProperty("transform", isTransitionStyleTransformWithWidth.value
+    styleTransformWithWidth?.style?.setProperty("transform", isTransitionStyleTransformWithWidth
       ? 'rotate(0deg)'
       : 'rotate(135deg)'
     )
-    styleTransformWithWidth.value?.style?.setProperty("width", isTransitionStyleTransformWithWidth.value
+    styleTransformWithWidth?.style?.setProperty("width", isTransitionStyleTransformWithWidth
       ? '200px'
       : '100px'
     )
-    isTransitionStyleTransformWithWidth.value = !isTransitionStyleTransformWithWidth.value
+    isTransitionStyleTransformWithWidth = !isTransitionStyleTransformWithWidth
   }
 
   const changeTransformWithOrigin = () => {
-    styleTransformWithOrigin.value?.style?.setProperty("transform", isTransitionStyleTransformWithOrigin.value
+    styleTransformWithOrigin?.style?.setProperty("transform", isTransitionStyleTransformWithOrigin
       ? 'scaleX(1)'
       : 'scaleX(0)'
     )
-    isTransitionStyleTransformWithOrigin.value = !isTransitionStyleTransformWithOrigin.value
+    isTransitionStyleTransformWithOrigin = !isTransitionStyleTransformWithOrigin
   }
 
   const changeBorder = () => {
-    styleBorder.value?.style?.setProperty("border-color", isTransitionstyleBorder.value
+    styleBorder?.style?.setProperty("border-color", isTransitionstyleBorder
       ? 'brown'
       : 'yellow'
     )
-    isTransitionstyleBorder.value = !isTransitionstyleBorder.value
+    isTransitionstyleBorder = !isTransitionstyleBorder
   }
 
   const changestylePosition = () => {
-    stylePosition.value?.style?.setProperty("left", isTransitionstylePosition.value
+    stylePosition?.style?.setProperty("left", isTransitionstylePosition
       ? '0px'
       : '100px'
     )
-    isTransitionstylePosition.value = !isTransitionstylePosition.value
+    isTransitionstylePosition = !isTransitionstylePosition
   }
 
   const changestyleScale = () => {
@@ -496,7 +488,7 @@
   }
 
   const handleTouchStart = (e : UniTouchEvent) => {
-    startX.value = e.changedTouches[0].clientX
+    startX = e.changedTouches[0].clientX
   }
 
   const handleTouchMove = (e : UniTouchEvent) => {
@@ -504,13 +496,13 @@
     e.preventDefault()
     e.stopPropagation()
     const difX = e.changedTouches[0].clientX
-    moveX.value = difX - startX.value + oldX.value
-    styleTransformTranslateScale.value?.style?.setProperty('transition-duration', '0ms')
-    styleTransformTranslateScale.value?.style?.setProperty('transform', `translate(${moveX.value}px,0px) scale(0.5) rotate(90deg)`)
+    moveX = difX - startX + oldX
+    styleTransformTranslateScale?.style?.setProperty('transition-duration', '0ms')
+    styleTransformTranslateScale?.style?.setProperty('transform', `translate(${moveX}px,0px) scale(0.5) rotate(90deg)`)
   }
 
   const handleTouchEnd = (_ : UniTouchEvent) => {
-    oldX.value = moveX.value
+    oldX = moveX
   }
 
   const doChangeTransitionDuration = () => {
@@ -520,22 +512,22 @@
   }
 
   const changeTransitionAll = () => {
-    if (!isTransitionAll.value) {
+    if (!isTransitionAll) {
       // 设置为 all 时的效果
-      styleTransitionAll.value?.style?.setProperty("transition-property", "all")
-      styleTransitionAll.value?.style?.setProperty("width", "300px")
-      styleTransitionAll.value?.style?.setProperty("height", "300px")
-      styleTransitionAll.value?.style?.setProperty("background-color", "blue")
-      styleTransitionAll.value?.style?.setProperty("transform", "rotate(45deg)")
+      styleTransitionAll?.style?.setProperty("transition-property", "all")
+      styleTransitionAll?.style?.setProperty("width", "300px")
+      styleTransitionAll?.style?.setProperty("height", "300px")
+      styleTransitionAll?.style?.setProperty("background-color", "blue")
+      styleTransitionAll?.style?.setProperty("transform", "rotate(45deg)")
     } else {
       // 设置为 none 时的效果
-      styleTransitionAll.value?.style?.setProperty("transition-property", "none")
-      styleTransitionAll.value?.style?.setProperty("width", "200px")
-      styleTransitionAll.value?.style?.setProperty("height", "200px")
-      styleTransitionAll.value?.style?.setProperty("background-color", "brown")
-      styleTransitionAll.value?.style?.setProperty("transform", "rotate(0deg)")
+      styleTransitionAll?.style?.setProperty("transition-property", "none")
+      styleTransitionAll?.style?.setProperty("width", "200px")
+      styleTransitionAll?.style?.setProperty("height", "200px")
+      styleTransitionAll?.style?.setProperty("background-color", "brown")
+      styleTransitionAll?.style?.setProperty("transform", "rotate(0deg)")
     }
-    isTransitionAll.value = !isTransitionAll.value
+    isTransitionAll = !isTransitionAll
   }
 
   const changeTransform61 = () => {
@@ -549,66 +541,66 @@
   }
 
   const onChangeWidthEnd = (event : UniEvent) => {
-    changeWidthInEnd.value?.style.setProperty("width","300px")
-    changeWidthInEndCount.value++
+    changeWidthInEnd?.style.setProperty("width","300px")
+    changeWidthInEndCount++
   }
 
   const changeWidthInEndFun = () => {
-    changeWidthInEnd.value?.style.setProperty("width","300px")
+    changeWidthInEnd?.style.setProperty("width","300px")
   }
 
   const changeTextTransform = () => {
-    textTransform.value?.style?.setProperty("transform", isTextTransform.value
+    textTransform?.style?.setProperty("transform", isTextTransform
       ? 'rotate(0deg)'
       : 'rotate(45deg)'
     )
-    isTextTransform.value = !isTextTransform.value
+    isTextTransform = !isTextTransform
   }
 
   const changeTextOpacity = () => {
-    textOpacity.value?.style?.setProperty("opacity", isTextOpacity.value
+    textOpacity?.style?.setProperty("opacity", isTextOpacity
       ? '1'
       : '0.5'
     )
-    isTextOpacity.value = !isTextOpacity.value
+    isTextOpacity = !isTextOpacity
   }
 
   const changeTextBackground = () => {
-    textBackground.value?.style?.setProperty("background-color", isTextBackground.value
+    textBackground?.style?.setProperty("background-color", isTextBackground
       ? 'transparent'
       : 'yellow'
     )
-    isTextBackground.value = !isTextBackground.value
+    isTextBackground = !isTextBackground
   }
 
   const changeImageTransform = () => {
-    imageTransform.value?.style?.setProperty("transform", isImageTransform.value
+    imageTransform?.style?.setProperty("transform", isImageTransform
       ? 'rotate(0deg)'
       : 'rotate(45deg)'
     )
-    isImageTransform.value = !isImageTransform.value
+    isImageTransform = !isImageTransform
   }
 
   const changeImageOpacity = () => {
-    imageOpacity.value?.style?.setProperty("opacity", isImageOpacity.value
+    imageOpacity?.style?.setProperty("opacity", isImageOpacity
       ? '1'
       : '0.5'
     )
-    isImageOpacity.value = !isImageOpacity.value
+    isImageOpacity = !isImageOpacity
   }
 
   const changeImageScale = () => {
-    imageScale.value?.style?.setProperty("transform", isImageScale.value
+    imageScale?.style?.setProperty("transform", isImageScale
       ? 'scale(1)'
       : 'scale(1.5)'
     )
-    isImageScale.value = !isImageScale.value
+    isImageScale = !isImageScale
   }
 
   function changeBorderAndBackgroundColor() {
-    elChangeBorderAndBackgroundColor.value?.style?.setProperty("background-color",!isChangeBorderAndBackgroundColor.value?"pink":"brown")
-    elChangeBorderAndBackgroundColor.value?.style?.setProperty("border-color",!isChangeBorderAndBackgroundColor.value?"yellow":"blue")
-    isChangeBorderAndBackgroundColor.value = !isChangeBorderAndBackgroundColor.value
+    elChangeBorderAndBackgroundColor?.style?.setProperty("background-color",!isChangeBorderAndBackgroundColor?"pink":"brown")
+    elChangeBorderAndBackgroundColor?.style?.setProperty("border-color",!isChangeBorderAndBackgroundColor?"yellow":"blue")
+    isChangeBorderAndBackgroundColor = !isChangeBorderAndBackgroundColor
   }
 
   const transitionValue = ref('width 1s')

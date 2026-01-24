@@ -39,10 +39,10 @@ let floating : boolean = false
 let touchstartAfter : boolean = false
 
 // Data
-const $elementMap = ref(new Map<string, UniElement>())
+const $elementMap = new Map<string, UniElement>()
 const x = ref(0 as number)
 const y = ref(0 as number)
-const floatCount = ref(0 as number)
+let floatCount = 0
 
 // Computed
 const movePercent = computed(() : number => {
@@ -59,8 +59,7 @@ const dislikeOpacity = computed(() : number => {
 
 // Methods
 function setElementStyle(refName : string, propertyName : string, propertyStyle : any) : void {
-  const elementMap = $elementMap.value as Map<string, UniElement>
-  let element : UniElement | null = elementMap.get(refName)
+  let element : UniElement | null = $elementMap.get(refName)
   if (element == null) {
     // Map ref name to corresponding ref variable
     if (refName == 'card') {
@@ -74,17 +73,17 @@ function setElementStyle(refName : string, propertyName : string, propertyStyle 
     }
 
     if (element != null) {
-      elementMap.set(refName, element)
+      $elementMap.set(refName, element)
     }
   }
 
   if (element != null) {
-    element.style.setProperty(propertyName, propertyStyle)
+    element.style.setProperty(propertyName, propertyStyle.toString())
   }
 }
 
 function initCardStyle() {
-  let _index = (props.cardIndex + floatCount.value) % 3
+  let _index = (props.cardIndex + floatCount) % 3
   // TODO 临时处理 setProperty设置z-index无效的问题
   setElementStyle('card', 'z-index', _index.toString())
   setElementStyle('card', 'margin-top', screenHeight * 0.15 - 30 * _index + 'px')
@@ -202,7 +201,7 @@ onMounted(() => {
   }, 200)
 
   uni.$on('uni-drop-card-float', () => {
-    floatCount.value++
+    floatCount++
     initCardStyle()
   })
 })
