@@ -160,17 +160,28 @@ describe('Button.uvue', () => {
   })
 })
 
-if (isDom2) {
-  describe('Buttonstatus.uvue', () => {
-    let page
-    beforeAll(async () => {
-      page = await program.reLaunch('/pages/component/button/buttonstatus')
-      await page.waitFor('button')
-    })
 
-    test('loading-class', async () => {
-      const btn = await page.$('.loading-class')
-      expect(await btn.attribute('loading-class')).toContain('custom-loading')
-    })
+describe('Buttonstatus.uvue', () => {
+  let page
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/button/buttonstatus')
+    await page.waitFor('button')
   })
-}
+
+  test('newline', async () => {
+    const image = await program.screenshot({
+      fullPage: true,
+    });
+    expect(image).toSaveImageSnapshot();
+  })
+
+  test('loading-class', async () => {
+    if (!isDom2) {
+      expect(1).toBe(1)
+      return
+    }
+    
+    const btn = await page.$('.loading-class')
+    expect(await btn.attribute('loading-class')).toContain('custom-loading')
+  })
+})
