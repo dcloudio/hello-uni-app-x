@@ -5,7 +5,7 @@
     <list-view class="list" @scrolltolower="onScrollTolower">
       <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
         <text>第{{index + 1}}个视频</text>
-        <video class="video" :src="data.src" :controls="true" @pause="onPause"></video>
+        <video class="video" :src="data.src" :controls="true" @play="e => onPlay(e, index)" @pause="e => onPause(e, index)" @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
       </list-item>
     </list-view>
   <!-- #ifdef WEB -->
@@ -28,8 +28,26 @@ const data = reactive({
   isTesting: false,
 } as DataType)
 
-function onPause(e : UniEvent) {
-  console.log(JSON.stringify(e));
+function onPlay(e: UniEvent, index: number) {
+  console.log(`onPlay ${index}`, JSON.stringify(e.timeStamp));
+}
+
+function onPause(e: UniEvent, index: number) {
+  console.log(`onPause ${index}`, JSON.stringify(e.timeStamp));
+}
+
+function _onRecycle(e: UniVideoRecycleEvent, index: number) {
+  console.log(`onRecycle ${index}`, JSON.stringify(e.detail));
+}
+
+function _onReuse(e: UniVideoReuseEvent, index: number) {
+  console.log(`onReuse ${index}`, JSON.stringify(e.detail));
+  const element = e.target as UniVideoElement | null;
+  if (element && (element instanceof UniVideoElement)) {
+    nextTick(() => {
+      element.seek(e.detail.currentTime)
+    })
+  }
 }
 
 function onScrollTolower(event : ScrollToLowerEvent) {
