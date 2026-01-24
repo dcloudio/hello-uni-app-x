@@ -274,7 +274,8 @@ const pages = [
   '/pages/template/swiper-list2/swiper-list2',
   // 单独测试例截图
   // '/pages/template/swiper-vertical-video/swiper-vertical-video',
-  '/pages/template/scroll-fold-nav/scroll-fold-nav',
+  // 单独测试例截图
+  // '/pages/template/scroll-fold-nav/scroll-fold-nav',
   // 单独测试例截图
   // '/pages/template/half-screen/half-screen',
   // 动态内容
