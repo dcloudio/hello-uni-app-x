@@ -5,7 +5,14 @@
     <list-view class="list" @scrolltolower="onScrollTolower">
       <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
         <text>第{{index + 1}}个视频</text>
-        <video class="video" :src="data.src" :controls="true" @play="e => onPlay(e, index)" @pause="e => onPause(e, index)" @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
+        <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
+        <video class="video" :src="data.src" :controls="true" @play="e => onPlay(e, index)" @pause="e => onPause(e, index)"
+        @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
+        <!-- #endif -->
+
+        <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
+        <video class="video" :src="data.src" :controls="true" @play="e => onPlay(e, index)" @pause="e => onPause(e, index)"/>
+        <!-- #endif -->
       </list-item>
     </list-view>
   <!-- #ifdef WEB -->
@@ -36,6 +43,7 @@ function onPause(e: UniEvent, index: number) {
   console.log(`onPause ${index}`, JSON.stringify(e.timeStamp));
 }
 
+// #ifdef APP-HARMONY && VUE3-VAPOR
 function _onRecycle(e: UniVideoRecycleEvent, index: number) {
   console.log(`onRecycle ${index}`, JSON.stringify(e.detail));
 }
@@ -49,6 +57,7 @@ function _onReuse(e: UniVideoReuseEvent, index: number) {
     })
   }
 }
+// #endif
 
 function onScrollTolower(event : ScrollToLowerEvent) {
   setTimeout(() => {
