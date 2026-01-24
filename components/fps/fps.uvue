@@ -6,7 +6,9 @@
 </template>
 
 <script setup lang="uts">
+  // #ifndef MP
   let animationId : number = -1
+  // #endif
   const fps = ref<number>(0)
   const droppedFrameCount = ref<number>(0)
   let frameCount: number = 0
@@ -40,7 +42,9 @@
     frameCount++
     if (fpsUpdateTime === (0 as number)) {
       fpsUpdateTime = currentTime
+      // #ifndef MP
       animationId = requestAnimationFrame(calculateFPS)
+      // #endif
       return
     }
     const delta = currentTime - fpsUpdateTime
@@ -51,14 +55,20 @@
       frameCount = 0
       fpsUpdateTime = currentTime
     }
+    // #ifndef MP
     animationId = requestAnimationFrame(calculateFPS)
+    // #endif
   }
 
+  // #ifndef MP
   animationId = requestAnimationFrame(calculateFPS)
+  // #endif
 
+  // #ifndef MP
   onBeforeUnmount(() => {
     cancelAnimationFrame(animationId)
   })
+  // #endif
 </script>
 
 <style>
