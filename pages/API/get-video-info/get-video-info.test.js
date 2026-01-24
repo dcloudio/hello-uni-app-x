@@ -16,7 +16,7 @@ describe('API-getVideoInfo', () => {
 
   let page;
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/API/get-video-info/get-video-info');
+    page = await program.reLaunch('/pages/API/get-video-info/get-video-info?is_debug=0');
     await page.waitFor('view');
     await page.waitFor(2000);
   });

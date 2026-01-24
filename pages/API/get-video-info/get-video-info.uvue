@@ -43,9 +43,17 @@
   const testState = reactive({
     videoInfoForTest: null as UTSJSONObject | null
   } as TestStateType)
+  const needLoadOnReady = ref(true)
+
+  // #ifdef APP-ANDROID
+  onLoad((event : OnLoadOptions)=>{
+    needLoadOnReady.value = (event["is_debug"] ?? "1") == "1";
+  })
+  // #endif
 
   onReady(() => {
     // #ifndef MP
+    if(!needLoadOnReady.value) return;
     uni.getVideoInfo({
       src: relativeVideoPath.value,
       success: (res) => {
@@ -119,7 +127,6 @@
       }
     });
   }
-
   defineExpose({
     testState,
     testGetVideoInfo
