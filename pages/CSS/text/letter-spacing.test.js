@@ -26,12 +26,6 @@ describe('text-dynamic-letterSpacing', () => {
     })
   })
 
-  afterAll( async () => {
-    await setPageData({
-      begin: false
-    })
-  });
-
   it('text-dynamic-letterSpacing', async () => {
     let h1 = await page.callMethod('getLetterSpacing')
     await page.callMethod('plusLetterSpacing')
@@ -39,6 +33,9 @@ describe('text-dynamic-letterSpacing', () => {
     let h2 = await page.callMethod('getLetterSpacing')
 
     expect(h2).toBeGreaterThan(h1)
+    await setPageData({
+      begin: false
+    })
   })
 
   it('text-dynamic-letterSpacing-snapshot', async () => {
