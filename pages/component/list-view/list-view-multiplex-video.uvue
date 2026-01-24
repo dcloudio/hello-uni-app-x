@@ -6,12 +6,12 @@
       <list-item class="list-item" v-for="(_,index) in data.item_count" :key="index">
         <text>第{{index + 1}}个视频</text>
         <!-- #ifdef APP-HARMONY && VUE3-VAPOR -->
-        <video class="video" :src="data.src" :controls="true" @play="e => onPlay(e, index)" @pause="e => onPause(e, index)"
+        <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"
         @recycle="e => _onRecycle(e, index)" @reuse="e => _onReuse(e, index)"/>
         <!-- #endif -->
 
         <!-- #ifndef APP-HARMONY && VUE3-VAPOR -->
-        <video class="video" :src="data.src" :controls="true" @play="e => onPlay(e, index)" @pause="e => onPause(e, index)"/>
+        <video class="video" :src="data.src" :controls="true" @play="onPlay" @pause="onPause"/>
         <!-- #endif -->
       </list-item>
     </list-view>
@@ -35,12 +35,12 @@ const data = reactive({
   isTesting: false,
 } as DataType)
 
-function onPlay(e: UniEvent, index: number) {
-  console.log(`onPlay ${index}`, JSON.stringify(e.timeStamp));
+function onPlay(e: UniEvent) {
+  console.log(`onPlay`, JSON.stringify(e.timeStamp));
 }
 
-function onPause(e: UniEvent, index: number) {
-  console.log(`onPause ${index}`, JSON.stringify(e.timeStamp));
+function onPause(e: UniEvent) {
+  console.log(`onPause`, JSON.stringify(e.timeStamp));
 }
 
 // #ifdef APP-HARMONY && VUE3-VAPOR
