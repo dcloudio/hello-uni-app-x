@@ -709,6 +709,17 @@
     height: 0,
   })
   // 获取 #longpress-target 位置信息，供自动化测试使用
+  // #ifndef MP
+  onReady(() => {
+    const longpressTarget = uni.getElementById('longpress-target')!
+    const rect = longpressTarget.getBoundingClientRect()
+    longPressTargetRect.x = rect.x
+    longPressTargetRect.y = rect.y
+    longPressTargetRect.width = rect.width
+    longPressTargetRect.height = rect.height
+  })
+  // #endif
+  // #ifdef MP
   onReady(async () => {
     const longpressTarget = uni.getElementById('longpress-target')!
     const rect = await longpressTarget.getBoundingClientRectAsync()!
@@ -717,6 +728,7 @@
     longPressTargetRect.width = rect.width
     longPressTargetRect.height = rect.height
   })
+  // #endif
 
   const onTouchStart = (e : TouchEvent) => {
     touchStartEvent.value = e
