@@ -52,7 +52,8 @@ const pages = [
   // 单独测试例截图
   // '/pages/component/form/form',
   '/pages/component/button/button',
-  '/pages/component/button/buttonstatus',
+  // 单独测试例截图
+  // '/pages/component/button/buttonstatus',
   '/pages/component/radio/radio',
   '/pages/component/checkbox/checkbox',
   // 自动获取焦点，单独测试例截图
