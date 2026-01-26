@@ -2,36 +2,103 @@
   <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) -->
   <!-- <enum-data title="设置mode（仅Android和harmony平台支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data> -->
   <!-- #endif -->
-	<scroll-view style="flex: 1;" :enable-back-to-top="true">
-		<view style="background:#FFFFFF;">
+  <!-- #ifndef MP -->
+  <fps />
+  <!-- #endif -->
+	<scroll-view style="flex: 1;padding: 4px;" :enable-back-to-top="true">
+		<!-- <view style=""> -->
 			<!-- <rich-text :nodes="htmlContent" :mode="modeData.mode" @itemclick="onItemClick"></rich-text> -->
 			<rich-text :nodes="htmlContent" mode="native" @itemclick="onItemClick"></rich-text>
-		</view>
+		<!-- </view> -->
 	</scroll-view>
 </template>
 
 <script setup>
 
-  import { ItemType } from '@/components/enum-data/enum-data-types';
-
+  /* import { ItemType } from '@/components/enum-data/enum-data-types';
   type ModeDataType = {
     mode: string
   }
-
   const modeData = reactive({
     mode: 'web'
   } as ModeDataType)
-
   const modeItems = ref(['web', 'native'])
   const modeItemTypes = ref<ItemType[]>([{ 'value': 0, 'name': 'web' }, { 'value': 1, 'name': 'native' }] as ItemType[])
-
-	function onItemClick(event: UniRichTextItemClickEvent) {
-		console.log("onclick", event.detail.src, event.detail.href);
-	}
-
   function onModeChange(value : number) {
     modeData.mode = modeItems.value[value];
-  }
+  } */
+
+	let imageURLs = [
+    "https://img.36krcdn.com/20200410/v2_ba15ed047ceb4ef396ae98f1b87fbb6c_img_000",
+    "https://img.36krcdn.com/20200410/v2_bdc7a68d143a4ab089d02747e005e49f_img_000",
+    "https://img.36krcdn.com/20200410/v2_d42b04c7c7ab4a0e9ceb96abb42617fb_img_000",
+    "https://img.36krcdn.com/20200410/v2_921661f31f0f467fae90e634c93e042c_img_000",
+    "https://img.36krcdn.com/20200410/v2_4c90c3120f5e4b6a8576e5ed1d57290f_img_gif",
+    "https://img.36krcdn.com/20200411/v2_b76cec37c1d04965859ca23c52384cba_img_png",
+    "https://img.36krcdn.com/20200411/v2_ee486d23d9df41329c69ee8a169ed670_img_png",
+    "https://img.36krcdn.com/20200410/v2_cc370813b05a4e5286ae578e1df4632b_img_000",
+    "https://img.36krcdn.com/20200410/v2_0575c4ed5e5249078095d5db742a479b_img_000",
+    "https://img.36krcdn.com/20200410/v2_4494b0ad1e0b4f4d999c9a903ba90c8b_img_gif",
+    "https://img.36krcdn.com/20200410/v2_1aef34ab257243f8a8bbe37a7a7f90a3_img_000",
+    "https://img.36krcdn.com/20200410/v2_75b7c9b7c8a64f4cba2afd2718672637_img_000",
+    "https://img.36krcdn.com/20200410/v2_3dc317dfd37d4afeb56a77b181086057_img_000",
+    "https://img.36krcdn.com/20200410/v2_535ab55f32504bf0928c3e053ee70f05_img_000",
+    "https://img.36krcdn.com/20200410/v2_900645da50e543e7b7094cdae37e5e32_img_000",
+    "https://img.36krcdn.com/20200410/v2_5224d49f03b2451697950dfbea15b2e5_img_000",
+    "https://img.36krcdn.com/20200410/v2_f8e501c6b9f6488da13e5cfcd532924e_img_000",
+    "https://img.36krcdn.com/20200410/v2_0413e60ba58243cc81aed52170ee042b_img_000",
+    "https://img.36krcdn.com/20200410/v2_7325577b741f4831ab18405537ae6c3b_img_000",
+    "https://img.36krcdn.com/20200410/v2_5fb5add3878e4462a85e9c998117ae93_img_000",
+    "https://img.36krcdn.com/20200410/v2_f643bd69e673416785e416b270ef4e63_img_000",
+    "https://img.36krcdn.com/20200410/v2_73fff018718b4746b76dfcda8120af7c_img_000",
+    "https://img.36krcdn.com/20200410/v2_b0c466a62ad4431b9e4182d9b968bd61_img_000",
+    "https://img.36krcdn.com/20200410/v2_5b79de18ab2f437dbcae81970a6cf61c_img_000",
+    "https://img.36krcdn.com/20200410/v2_094133bfc5fc488188d78fe048ac8d9f_img_000",
+    "https://img.36krcdn.com/20200410/v2_062eaa0be0be4a138a4acab6bea2dd6e_img_000",
+    "https://img.36krcdn.com/20200410/v2_f643bd69e673416785e416b270ef4e63_img_000",
+    "https://img.36krcdn.com/20200410/v2_6791d375c3cb4fffaf9c70a4cc2cf6e2_img_000",
+    "https://img.36krcdn.com/20200410/v2_16828db2670048b7874ce512c2978190_img_000",
+    "https://img.36krcdn.com/20200410/v2_1baecc22d1304eb9bf69adc12cfefb5a_img_000",
+    "https://img.36krcdn.com/20200408/v2_5f4a6e36b1b842b2993bed993a7f5c45_img_png",
+    "https://img.36krcdn.com/20200408/v2_325b956711bd468ba87530d6d8be51e7_img_png",
+    "https://img.36krcdn.com/20200408/v2_3f0fae37bec043879b61acf55d4f6f17_img_png",
+    "https://img.36krcdn.com/20200408/v2_7f40a93e6c6140c69cb6b5b225171c31_img_png",
+    "https://img.36krcdn.com/20200411/v2_864435ad63e44b778853e3e5be7fcbbe_img_000",
+    "https://img.36krcdn.com/20200411/v2_1f19ba9b2d2b4025aa8909375859a8f4_img_000",
+    "https://img.36krcdn.com/20200411/v2_ddabdb23c6534886870712c14e88eb88_img_000",
+    "https://img.36krcdn.com/20200411/v2_b018eed4e7f947219ddba13b29d3864c_img_000",
+    "https://img.36krcdn.com/20200406/v2_5c1831ebcaa048b8a3b572ed603c572e_img_png",
+    "https://img.36krcdn.com/20200411/v2_fc279db70700428980fcb3252a051958_img_000",
+    "https://img.36krcdn.com/20200411/v2_3b60820d52944e93ac95c134deeae138_img_000",
+    "https://img.36krcdn.com/20200411/v2_4842957ffc414a0c84f9b047554c1456_img_000",
+    "https://img.36krcdn.com/20200411/v2_8d9a273bb3db440b892fa06c790761b6_img_000",
+    "https://img.36krcdn.com/20200411/v2_26aa0832629e4b978892b103814a9392_img_000",
+    "https://img.36krcdn.com/20200411/v2_6a01a66c9b5b4ac19a220c7041825c65_img_000",
+    "https://img.36krcdn.com/20200411/v2_f13059221ee64dc380a0692b5ea18be5_img_000",
+    "https://img.36krcdn.com/20200411/v2_b71386e764904ad299b39fde52e9071a_img_jpg",
+    "https://img.36krcdn.com/20200411/v2_51f7cc1200fa460f876d9fb692f8de22_img_png",
+    "https://img.36krcdn.com/20200411/v2_769feba95e9f4f05bceb9b5f21b59f2e_img_png",
+    "https://img.36krcdn.com/20200411/v2_86f7bf29e7064bf88b18c49e020ce7b0_img_jpg",
+    "https://img.36krcdn.com/20200411/v2_74511e12c15e408f9962b0c1b6379f26_img_png",
+    "https://img.36krcdn.com/20200411/v2_6851a80868b84e598a112e97528460a9_img_000",
+    "https://img.36krcdn.com/20200411/v2_9d8482f3d6f7418bb15c1d6db7df7905_img_000",
+    "https://img.36krcdn.com/20200411/v2_be443d79b02b4d98b375922b2817ebcf_img_000",
+    "https://img.36krcdn.com/20200411/v2_af50e450f4584b8fba2847719232e861_img_000",
+    "https://img.36krcdn.com/20200411/v2_04b189c1ad13405886308d50d57670ac_img_000",
+    "https://img.36krcdn.com/20200411/v2_27ffa00fee2f484992e4924d2f58ad67_img_000",
+    "https://img.36krcdn.com/20200411/v2_e018529fbae84f50bd4095839958cee4_img_000",
+    "https://img.36krcdn.com/20200406/v2_0747bbbd919149a5b04ba446a708ce2f_img_jpeg"
+  ]
+
+  function onItemClick(event: UniRichTextItemClickEvent) {
+		console.log("onclick", event.detail.src, event.detail.href);
+    if(event.detail.src!=null){
+      uni.previewImage({
+        urls: imageURLs,
+        current: imageURLs.indexOf(event.detail.src)
+      })
+    }
+	}
 
 	const htmlContent =  `
 	<p>编者按：本文来自36氪「<a href="https://auto-time.36kr.com/p/659199051022344" target="_blank">未来汽车日报</a>」（微信公众号ID：auto-time），作者：程潇熠。</p><p>作者 | 程潇熠</p> \n<p>编辑 | 许阳</p> \n<p>一个月内，“北美自动驾驶第一案”和“中国自动驾驶第一案”先后尘埃落定，同样历时近三年，但却有截然不同的结局。</p> \n<p>作为谷歌母公司旗下Waymo和Uber专利案中的核心人物，谷歌和Uber前自动驾驶工程师、硅谷杰出技术专家安东尼·莱万多夫斯基（Anthony Levandowski），经法院确认必须向谷歌支付1.79亿美元，以结束这场法律纠纷。巨额的赔付款让安东尼无奈申请破产，硅谷天才就此跌下神坛。（延伸阅读：<a href="https://auto-time.36kr.com/p/607847083393029">为向谷歌支付赔偿，前Uber自动驾驶负责人宣布破产</a>）</p> \n<p><img style="max-width:100%" alt="为什么自动驾驶诉讼不断？" src="https://img.36krcdn.com/20200410/v2_ba15ed047ceb4ef396ae98f1b87fbb6c_img_000" data-img-size-val="1920,1274"></p> \n<p   class="img-desc">中间为安东尼·莱万多夫斯基（Anthony Levandowski） 来源：纽约时报</p> \n<p><span >相比之下，百度与王劲的诉讼战显得格外温和。在经历两次庭审，法院即将宣判结果之时，百度最终撤诉。（&nbsp;延伸阅读：</span><a href="https://auto-time.36kr.com/p/603595033346057" >百度撤诉，“中国无人驾驶第一案”尘埃落定</a><span >）</span></p> \n<p>“我们所有人都可以自由地从一个工作岗位换到另一个。”加州北部地区的联邦检察官大卫·安德森（David L. Anderson）曾在指控安东尼涉嫌33起商业窃密案时表示，“但是，我们不能做的是在出门前把自己口袋塞得满满的。”</p> \n<p>没有永远的朋友，也没有永远的敌人，只有永远的利益。自动驾驶这个汇集了前沿科技的领域已成为专利纠纷的重灾区。</p> \n<h2 class="ql-long-21183626"></h2> \n<h3 >自动驾驶成专利纠纷重灾区</h3> \n<p><span >自动驾驶还是处于探索阶段的技术，核心专利与优秀人才往往能有决定成败的作用，而在相关诉讼里，重大专利案总是有关于核心人员的流动。</span><span >&nbsp;</span></p> \n<p>安东尼曾是谷歌X实验室自动驾驶项目的领导者，据《纽约时报》描述，他也是谷歌联合创始人拉里·佩奇（Larry Page）的知己，安东尼创立的激光雷达、自动驾驶技术公司受到了许多VC（风险投资人）的青睐，Uber也向他投来橄榄枝。</p> \n<p>但正如联邦调查局旧金山分局的特殊探员约翰·贝内特（John Bennett）所说，“硅谷不是狂野的西部，快节奏的竞争环境并不意味着在这联邦法律不适用。”</p> \n<p>Waymo最先在2016年指控安东尼在离职前盗走1.4万份文件，包括谷歌的激光雷达和自动驾驶技术的工程、制造和业务相关的多种文件。安东尼在没有任何预兆的情况下从谷歌离职后成立了自动驾驶卡车企业Otto，之后该公司被Uber收购。2017年，Waymo因此起诉Uber使用了他们所研发的自动驾驶技术。&nbsp;</p> \n<p>最终，Waymo与Uber的诉讼案于2018年2月结束，Uber向Waymo支付2.44亿美元，双方达成和解。但安东尼仍需为他参与不正当竞争的行为付出代价，需向谷歌支付1.79亿美元，并以个人申请破产告终。</p> \n<p><img style="max-width:100%" alt="为什么自动驾驶诉讼不断？" src="https://img.36krcdn.com/20200410/v2_bdc7a68d143a4ab089d02747e005e49f_img_000" data-img-size-val="1920,1284"></p> \n<p   class="img-desc">安东尼·莱万多夫斯基与自动驾驶卡车Otto合影 来源：纽约时报</p> \n<p><span >另一案中的核心人物是王劲，他被称为百度“无人车第一人”，曾是百度无人驾驶部门的负责人。2017年，53岁的王劲离开百度在美国创立景驰科技（现“文远知行”）。虽然与百度的恩怨纠葛已有了断，但王劲的诉讼之路尚未结束。</span></p> \n<p>2018年11月，文远知行在美国联邦北加州地区法院提起针对王劲、黄坤及中智行商业秘密侵权、商业诋毁、违约之诉（“美国诉讼”），要求被告停止侵权并赔偿2.49亿美金。并于2019年1月在广东省高级人民法院提起相同诉讼（“中国诉讼”），要求被告停止侵权并赔偿1亿元。</p> \n<p>今年2月11日，王劲在开曼法庭提出诉讼，起诉文远知行侵害股东权益，并依据开曼公司法第92(e)条，要求法庭清盘文远知行。文远知行分别在2018年10月及2019年1月完成A轮及A+轮融资，据芯智讯，王劲的股权比例在两番融资后已被大比例稀释。目前，王劲要求清算文远知行一案已在开曼法庭进入审理阶段。</p> \n<p><img style="max-width:100%" alt="为什么自动驾驶诉讼不断？" src="https://img.36krcdn.com/20200410/v2_d42b04c7c7ab4a0e9ceb96abb42617fb_img_000" data-img-size-val="1200,799"></p> \n<p   class="img-desc">前百度无人车负责人王劲 来源：百度</p> \n<p><span >在L3自动驾驶领域，小鹏汽车张晓浪被前雇主苹果起诉被捕，特斯拉与小鹏汽车的曹光植窃密案也仍无定论。</span></p> \n<p>2019年3月，特斯拉起诉其前工程师曹光植涉嫌窃取自动驾驶仪相关的商业机密，称曹光植复制了30多万份与Autopilot源代码相关的文件，并将其提供给小鹏汽车。同年7月10日，曹光植在一份法庭文件中承认，他在2018年底将包含Autopilot（自动驾驶）源代码的zip文件上传到了自己的iCloud个人账户，当时他尚未从特斯拉离职。</p> \n<p>曹光植曾是特斯拉自动驾驶团队的成员之一，彼时担任Autopilot计算机视觉科学家，也是仅有的40个有权访问Autopilot源代码的人之一。领英信息显示，2019年1月，曹光植加入小鹏汽车，担任自动驾驶感知技术相关的负责人。</p> \n<p>但直到目前，特斯拉、小鹏汽车及曹光植律师均未对此有进一步的置评。</p> \n<p>关于专利滥用的诉讼也层出不穷。2019年12月，苹果联手思科、戴姆勒、宝马、福特、戴尔、联想等全球多家科技公司和汽车企业向欧盟委员会致函，投诉相关企业在自动驾驶方面专利滥用。同年8月13日，美国激光雷达制造商Velodyne LiDAR在加州北部地区法院起诉两家中国激光雷达企业禾赛光电与深圳速腾，指控其激光雷达相关产品涉嫌故意侵犯其专利，请求法院判决两家中国企业永久禁令，并索赔三倍赔偿。</p> \n<p>为何自动驾驶专利案的判决难以很快得出结论？这种专利纠纷到底是科技巨头在自动驾驶方面斤斤计较，还是高新技术的维权常态？</p> \n<h2 class="ql-long-21183626"></h2> \n<h3 >侵权界限模糊，人员流动难以规避</h3> \n<p><span >“硅谷的企业之间一直存在着各种争执，而争执往往定义了硅谷。”华盛顿大学教授、《the Code: Silicon Valley and the Remaking of America（密码：硅谷与美国的重塑）》的作者玛格丽特·奥玛拉（Margaret O 'Mara）表示，“但这起案件（Waymo与Uber专利案）是一个极端的例子。过去提起刑事指控时，通常是涉及大规模的硬件盗窃行为，担心的是与外国对手共享技术。”</span></p> \n<p>自动驾驶是一项基于大量软件算法研发的技术，这就意味着与硬件盗窃相比，软件算法的复制门槛更低，专利纠纷也更难标定侵权界限。<span >&nbsp;</span></p> \n<p>一位国内自动驾驶公司创始人曾向《财经》表示，如果是专利技术，哪怕记在脑子里，再写出来也是侵犯知识产权的。如果不是专利，没有实际去偷窃或者拷贝，脑子里的东西拿出来改一改，是被业内允许的。就算有专利，聪明的人使用技巧把相关专利绕过去，也没办法。</p> \n<p>另一方面，自动驾驶领域比拼的是研发进度。王劲曾在2016年谈及未来汽车时表示，无人驾驶以及人工智能领域是快鱼吃慢鱼的状态，比的就是谁的动作更快，谁能更好的保障安全性，谁能更快的把无人车带入社会。</p> \n<p>这使得自动驾驶赛道更在意出走核心人员的未来去向，因此很多企业会与员工签订竞业协议，公司提供赔偿金，离职员工在一定时期内不得从事同类工作，但国外并没有类似保护。</p> \n<p>2017年神州优车曾起诉王劲创办的景驰科技，因原神州优车硅谷实验室的四名自动驾驶核心员工涉嫌在职期间参与景驰科技的创立，且四人在同一天集体离职正式入职该公司。</p> \n<p><img style="max-width:100%" alt="为什么自动驾驶诉讼不断？" src="https://img.36krcdn.com/20200410/v2_921661f31f0f467fae90e634c93e042c_img_000" data-img-size-val="740,492"></p> \n<p   class="img-desc">景驰科技 来源：景驰科技</p> \n<p><span >但景驰科技的注册地是美国加州，在加州不存在竞业协议这一说，因此加州高等法院最终驳回了神州优车的申请。吕庆向第一财经表示，加州鼓励员工从原来的公司出来，创建一个有竞争力的公司。加州也支持员工从谷歌跳到苹果，从苹果跳到Facebook。</span></p> \n<p>因此，专利的保护作用显得尤为重要。宝鸡市知识产权服务中心主任苟红东曾公开表示，专利的核心作用是跑马圈地，是法律授予可以起垄断作用的。</p> \n<p>欧洲专利办公室在2018年11月公布的数据显示，从2011到2018年间，自动驾驶相关的专利达1.8万件增长330%，同一时期，整个汽车产业的专利数仅增长了16%。自动驾驶专利数量的激增增，意味着即便是自主研发的技术也有可能陷入与已有专利雷同的境地，诉讼风险也随之加大。</p> \n<p>苹果和三星曾在设计专利上进行长达7年的专利战，百度与搜狗3年的输入法专利战涉及17项专利，2.6亿元索赔，华为与高通的专利谈判或使前者每年向高通支付5亿美元。基于此，很多科技公司都有专门的律师进行专利预警，即提醒公司哪些方面可能存在侵权的风险。</p> \n<p>自动驾驶专利纠纷的侧面，是日新月异的技术革新。而在科技商战中，更是没有永远的敌人只有永远的利益。</p> \n<p>&nbsp;</p> \n<p><img style="max-width:100%" alt="为什么自动驾驶诉讼不断？" src="https://img.36krcdn.com/20200410/v2_4c90c3120f5e4b6a8576e5ed1d57290f_img_gif" data-img-size-val="900,500"></p>
@@ -46,9 +113,11 @@
 	<blockquote><p>神译局是36氪旗下编译团队，关注科技、商业、职场、生活等领域，重点介绍国外的新技术、新观点、新风向。</p></blockquote><p>编者按：疫情带来的美国股市波动，直接拉近了不少人和Buffett的差距，毕竟“股神”现在也只比我们多见过一次美股熔断而已。但作为一名在股市中身经百战的长者，Buffett自然有值得我们学习的人生经验。市场的波动是我们抄底的好机会，拥有长远的眼光更是成为一名优秀投资者必不可少的素质，“别人恐惧我贪婪，别人贪婪我恐惧”同样也是需要时刻铭记的箴言。本文译自medium，文章作者Jeremiah Lam，原文标题3 Warren Buffett Principles to Remember in a Volatile Stock Market。</p><p><img style="max-width:100%"  src="https://img.36krcdn.com/20200406/v2_0747bbbd919149a5b04ba446a708ce2f_img_jpeg" data-img-size-val="1910,1000"/></p><p>股市长达11年的牛市在过去几周里终于终结了，主要原因是人们担心即将爆发的病毒疫情，以及随之而来的经济衰退。而且，没有理由认为股市的波动会很快消退。</p><p>全球上市公司领头羊的股价已经开始走下坡路了。然而，与其恐慌，还不如退后一步，站在一个理性的、着眼长远的投资者的角度来评估形势。Berkshire Hathaway公司的CEO——Warren Buffett是最值得我们学习的理性长线投资者。</p><p>在所有的悲观论调中，我们不妨先仔细揣度这位“奥马哈先知”（Oracle of Omaha）在动荡的市场中使用的3条原则，未来你也可以将其作为自己投资策略中加以运用。</p><h3 >着眼长远</h3><p>2008年10月，在金融危机最严重的时候，Warren Buffett在《纽约时报》（the New York Times）发表了一篇题为《Buy American. I Am.》的专栏文章，解释了着眼长远的必要性。</p><blockquote><p>从长期来看，股市当前的下跌也不失为好消息。在20世纪，美国经历了两次世界大战和其他带来创伤和高昂成本的军事冲突，还有大萧条、十几次经济衰退和金融恐慌，石油危机，流感疫情以及一位名誉扫地的总统的辞职。然而，道琼斯指数从66点上涨到了11497点。</p></blockquote><p>现在，人们担心，Covid-19大流行会使世界经济放缓，许多人已经预测，我们可能面临的是萧条，而不仅仅是衰退。</p><p>虽然这可能会导致股市在复苏前继续萎靡不振，但我们应该记住，这不是什么新鲜事，我们之前也经历过好几次股市崩盘。</p><p>所以，这一切都会过去的。这只是时间问题。一旦风暴结束，股市就会继续走高，历史已经证明了这一点。</p><h3 >当股价下跌时，你应该高兴</h3><p>从长期来看，股市表现良好，所以，当股市走低，股价降低的时候，是你投资的好机会。</p><p>以下是Buffett于2011年致Berkshire Hathaway公司股东信的部分节选：</p><blockquote><p>“如果你打算在未来成为股票的净买家，无论是直接用你自己的钱还是间接（通过你拥有的一家正在回购股票的公司），你当然应该希望自己在价格下跌时买入。然而，人们的情绪往往会使问题复杂化：大多数人，包括那些未来将成为净买家的人，都乐于看到股价上涨。这些股东就像一个在油价上涨后欢欣鼓舞的通勤者，只是因为他只是当天早晨把油箱加满了而已。”</p></blockquote><p>作为投资者，我们必须有一个长远的投资眼光——至少五年或更久。如果我们确实对股票有长远的看法，为什么要担心短期的市场下跌呢？只有当你马上要把之前的投资变现时，你才需要担心——比如你打算近期退休。</p><p>如果你近期不打算退休，这样的短期下跌反而会提供一个机会，让你能够以极低的价格买入更多出色企业的股票。</p><h3 >伟大的企业会茁壮成长</h3><p>伟大的企业通常会因为创新之类的东西而继续拥有出色的表现。</p><p>以下是Buffett在2016年致Berkshire Hathaway股东信中所说的话：</p><blockquote><p>在未来的几年里，美国企业——以及因此而来的一篮子股票——的价值几乎肯定会高得多。创新、生产率提高、创业精神和充足的资本将确保这一点。经常唱反调的人可能通过推销他们悲观的预测而获得成功。但是，如果他们照他们所兜售的那一套胡说八道去做，那就只有上 帝才救得了他们了。</p><p>当然，许多公司会落后，有些会倒闭。这种筛选是市场动态的产物。此外，未来几年股市偶尔会大幅下跌，甚至出现恐慌，这几乎会影响所有股票……</p><p>在如此可怕的时期，你不应该忘记两件事：首先，作为投资者，普遍的恐慌是你的朋友，因为它提供了逢低买进的机会。第二，个人的恐慌是你的敌人。那些避免高额和不必要的成本，只选择保守的美国大企业的投资者，我几乎可以肯定他们收益颇丰。</p></blockquote><p>在2016年的这封信中，Buffett还提到，每隔10年左右，股市上空就会布满乌云，并“短暂地降下黄金之雨”。当这样的倾盆大雨发生时，我们出门的时候应该带着大浴盆而不是小茶匙。</p><p>因此，在当前这样的市场崩盘期间，我们应该远离恐惧，采取大规模行动（前提是我们对这些公司进行了适当的研究，并留出3至6个月的应急资金）来积累长期财富。</p><h3 >写在最后</h3><p>综上所述，Buffett对市场波动的态度是：不要害怕波动，持有一些现金，要善于利用利用股价走低的机会，尽管这个时候，其他人似乎都在抛售股票，而你要知道，你的机会来了。</p><p>译者：喜汤</p>
 	`;
 
-  defineExpose({
+
+
+  /* defineExpose({
     modeData
-  })
+  }) */
 
 </script>
 
