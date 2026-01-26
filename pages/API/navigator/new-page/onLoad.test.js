@@ -13,7 +13,7 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 let page;
 
 describe("onLoad", () => {
- if (isMP) {
+  if (isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })
