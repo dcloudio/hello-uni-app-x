@@ -4,11 +4,33 @@
   <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="uni-padding-wrap uni-common-mt">
+      <!-- 单行文本测试 -->
+      <text class="uni-title-text">单行文本</text>
       <view class="text-box">
+        <text class="styled-text single-line">{{ singleLineText }}</text>
+      </view>
+      <text class="uni-subtitle-text">单行文本 - 拍平</text>
+      <view class="text-box" flatten>
+        <text class="styled-text single-line" flatten>{{ singleLineText }}</text>
+      </view>
+
+      <!-- 多行文本测试 -->
+      <text class="uni-title-text">多行文本</text>
+      <view class="text-box">
+        <text class="styled-text multi-line">{{ multiLineText }}</text>
+      </view>
+      <text class="uni-subtitle-text">多行文本 - 拍平</text>
+      <view class="text-box" flatten>
+        <text class="styled-text multi-line" flatten>{{ multiLineText }}</text>
+      </view>
+
+      <!-- 动态文本测试 -->
+      <text class="uni-title-text">动态文本</text>
+      <view class="dynamic-text-box">
         <text class="text">{{ text }}</text>
       </view>
-      <text class="uni-subtitle-text">拍平测试</text>
-      <view class="text-box" flatten>
+      <text class="uni-subtitle-text">动态文本 - 拍平</text>
+      <view class="dynamic-text-box" flatten>
         <text class="text" flatten>{{ text }}</text>
       </view>
       <view class="uni-btn-v">
@@ -43,6 +65,14 @@
 
 <script setup lang="uts">
   const title = ref('text')
+
+  // 单行文本
+  const singleLineText = ref('单行文本：16px字体、500粗细、斜体、下划线、1px字间距、1.8行高、文本阴影、居中对齐、不换行溢出省略、带边框圆角、内外边距、背景色')
+
+  // 多行文本
+  const multiLineText = ref('多行文本：字体(16px/500粗细/斜体)、装饰(下划线/阴影)、间距(1px字间距/1.8行高)、对齐(左对齐)、盒模型(边框/圆角/内外边距/背景色)。\n 第二行：展示自动换行效果及所有CSS样式的渲染表现。')
+
+  // 动态文本测试数据
   const texts: string[] = [
     'HBuilderX，轻巧、极速，极客编辑器',
     'uni-app x，终极跨平台方案',
@@ -100,19 +130,71 @@
 
 <style>
   .text-box {
-    margin-bottom: 20px;
-    padding: 20px 0;
+    margin-bottom: 15px;
+    padding: 10px;
     display: flex;
-    min-height: 150px;
+    min-height: 60px;
     background-color: #ffffff;
     justify-content: center;
     align-items: center;
   }
 
+  /* 包含所有文字和排版CSS的综合样式 */
+  .styled-text {
+    /* 文字专用CSS */
+    /* 字体相关 */
+    font-size: 16px;
+    font-weight: 500;
+    font-style: italic;
+    color: #1a1a1a;
+    /* 行高与字间距 */
+    line-height: 1.8;
+    letter-spacing: 1px;
+    /* 对齐 */
+    text-align: left;
+    /* 文字装饰 */
+    text-decoration-line: underline;
+    /* 文本阴影 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* 排版CSS */
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+
+  /* 单行文本特定样式 */
+  .single-line {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* 多行文本特定样式 */
+  .multi-line {
+    text-align: left;
+    width: 100%;
+  }
+
+  .dynamic-text-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    display: flex;
+    min-height: 50px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+  }
+
   .text {
-    font-size: 15px;
+    font-size: 14px;
     color: #353535;
-    line-height: 27px;
+    line-height: 22px;
     text-align: center;
   }
 </style>
