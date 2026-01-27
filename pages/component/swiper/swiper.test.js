@@ -114,7 +114,7 @@ describe('test swiper', () => {
 
   it('Event change', async () => {
     const changeDetailInfo = await page.data('data.changeDetailTest')
-    if(isWeb || isMP || (isHarmony && !isDom2)){
+    if(isWeb || isMP || isHarmony){
       expect(changeDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
       expect(changeDetailInfo).toEqual(detailRes)
@@ -126,7 +126,7 @@ describe('test swiper', () => {
     // 等待最后一个动画结束animationfinish
     await page.waitFor(2000)
     const animationfinishDetailInfo = await page.data('data.animationfinishDetailTest')
-    if(isWeb || isMP || (isHarmony && !isDom2)){
+    if(isWeb || isMP || isHarmony){
       expect(animationfinishDetailInfo).toEqual(detailResWithCurrentItemId)
     }else{
       expect(animationfinishDetailInfo).toEqual(detailRes)
