@@ -157,41 +157,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    topActual.value = viewRef.value?.style.getPropertyValue('top') ?? ''
+    topActualFlat.value = viewRefFlat.value?.style.getPropertyValue('top') ?? ''
+    topActualText.value = textRef.value?.style.getPropertyValue('top') ?? ''
+    topActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('top') ?? ''
+    topActualImage.value = imageRef.value?.style.getPropertyValue('top') ?? ''
+    topActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('top') ?? ''
+  }
+
   const changeTop = (value: string) => {
     top.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('top', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('top', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('top', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('top', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('top', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('top', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('top')
-      topActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('top')
-      topActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('top')
-      topActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('top')
-      topActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('top')
-      topActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('top')
-      topActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -207,24 +192,7 @@
   }
 
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('top')
-    topActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('top')
-    topActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('top')
-    topActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('top')
-    topActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('top')
-    topActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('top')
-    topActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

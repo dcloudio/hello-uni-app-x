@@ -174,41 +174,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    flexGrowActual.value = viewRef.value?.style.getPropertyValue('flex-grow') ?? ''
+    flexGrowActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
+    flexGrowActualText.value = textRef.value?.style.getPropertyValue('flex-grow') ?? ''
+    flexGrowActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
+    flexGrowActualImage.value = imageRef.value?.style.getPropertyValue('flex-grow') ?? ''
+    flexGrowActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('flex-grow') ?? ''
+  }
+
   const changeFlexGrow = (value: string) => {
     flexGrow.value = value
-    // view 元素
     viewRef.value?.style.setProperty('flex-grow', value)
-    // view 元素 拍平
     viewRefFlat.value?.style.setProperty('flex-grow', value)
-    // text 元素
     textRef.value?.style.setProperty('flex-grow', value)
-    // text 元素 拍平
     textRefFlat.value?.style.setProperty('flex-grow', value)
-    // image 元素
     imageRef.value?.style.setProperty('flex-grow', value)
-    // image 元素 拍平
     imageRefFlat.value?.style.setProperty('flex-grow', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRef.value?.style.getPropertyValue('flex-grow')
-      flexGrowActual.value = actualValue ?? ''
-      // view 元素 拍平
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow')
-      flexGrowActualFlat.value = actualValueFlat ?? ''
-      // text 元素
-      const actualValueText = textRef.value?.style.getPropertyValue('flex-grow')
-      flexGrowActualText.value = actualValueText ?? ''
-      // text 元素 拍平
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex-grow')
-      flexGrowActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素
-      const actualValueImage = imageRef.value?.style.getPropertyValue('flex-grow')
-      flexGrowActualImage.value = actualValueImage ?? ''
-      // image 元素 拍平
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-grow')
-      flexGrowActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -224,19 +209,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRef.value?.style.getPropertyValue('flex-grow')
-    flexGrowActual.value = actualValue ?? ''
-    // view 元素 拍平
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-grow')
-    flexGrowActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素
-    const actualValueText = textRef.value?.style.getPropertyValue('flex-grow')
-    flexGrowActualText.value = actualValueText ?? ''
-    // image 元素
-    const actualValueImage = imageRef.value?.style.getPropertyValue('flex-grow')
-    flexGrowActualImage.value = actualValueImage ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

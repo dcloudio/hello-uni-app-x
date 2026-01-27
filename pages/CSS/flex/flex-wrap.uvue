@@ -135,21 +135,18 @@
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
+  const getPropertyValues = () => {
+    flexWrapActual.value = viewRef.value?.style.getPropertyValue('flex-wrap') ?? ''
+    flexWrapActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-wrap') ?? ''
+  }
+
   const changeFlexWrap = (value : string) => {
     flexWrap.value = value
-    // 普通版本
     viewRef.value?.style.setProperty('flex-wrap', value)
-    // 拍平版本
     viewRefFlat.value?.style.setProperty('flex-wrap', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('flex-wrap')
-      flexWrapActual.value = actualValue ?? ''
-      // 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-wrap')
-      flexWrapActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -165,11 +162,7 @@
   }
 
   onReady(() => {
-    const actualValue = viewRef.value?.style.getPropertyValue('flex-wrap')
-    flexWrapActual.value = actualValue ?? ''
-
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-wrap')
-    flexWrapActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

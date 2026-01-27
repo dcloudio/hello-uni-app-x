@@ -151,26 +151,20 @@
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    zIndexActual.value = viewRef.value?.style.getPropertyValue('z-index') ?? ''
+    zIndexActualText.value = textRef.value?.style.getPropertyValue('z-index') ?? ''
+    zIndexActualImage.value = imageRef.value?.style.getPropertyValue('z-index') ?? ''
+  }
+
   const changeZIndexProperty = (value: number) => {
     zIndexValue.value = value
-    // view 元素
     viewRef.value?.style.setProperty('z-index', value)
-    // text 元素
     textRef.value?.style.setProperty('z-index', value.toString())
-    // image 元素
     imageRef.value?.style.setProperty('z-index', value.toString())
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRef.value?.style.getPropertyValue('z-index')
-      zIndexActual.value = actualValue ?? ''
-      // text 元素
-      const actualValueText = textRef.value?.style.getPropertyValue('z-index')
-      zIndexActualText.value = actualValueText ?? ''
-      // image 元素
-      const actualValueImage = imageRef.value?.style.getPropertyValue('z-index')
-      zIndexActualImage.value = actualValueImage ?? ''
+      getPropertyValues()
     })
   }
 
@@ -190,15 +184,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRef.value?.style.getPropertyValue('z-index')
-    zIndexActual.value = actualValue ?? ''
-    // text 元素
-    const actualValueText = textRef.value?.style.getPropertyValue('z-index')
-    zIndexActualText.value = actualValueText ?? ''
-    // image 元素
-    const actualValueImage = imageRef.value?.style.getPropertyValue('z-index')
-    zIndexActualImage.value = actualValueImage ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

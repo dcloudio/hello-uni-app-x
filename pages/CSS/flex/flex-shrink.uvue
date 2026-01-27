@@ -174,41 +174,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    flexShrinkActual.value = viewRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    flexShrinkActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    flexShrinkActualText.value = textRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    flexShrinkActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+    flexShrinkActualImage.value = imageRef.value?.style.getPropertyValue('flex-shrink') ?? ''
+    flexShrinkActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('flex-shrink') ?? ''
+  }
+
   const changeFlexShrink = (value: string) => {
     flexShrink.value = value
-    // view 元素
     viewRef.value?.style.setProperty('flex-shrink', value)
-    // view 元素 拍平
     viewRefFlat.value?.style.setProperty('flex-shrink', value)
-    // text 元素
     textRef.value?.style.setProperty('flex-shrink', value)
-    // text 元素 拍平
     textRefFlat.value?.style.setProperty('flex-shrink', value)
-    // image 元素
     imageRef.value?.style.setProperty('flex-shrink', value)
-    // image 元素 拍平
     imageRefFlat.value?.style.setProperty('flex-shrink', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRef.value?.style.getPropertyValue('flex-shrink')
-      flexShrinkActual.value = actualValue ?? ''
-      // view 元素 拍平
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-shrink')
-      flexShrinkActualFlat.value = actualValueFlat ?? ''
-      // text 元素
-      const actualValueText = textRef.value?.style.getPropertyValue('flex-shrink')
-      flexShrinkActualText.value = actualValueText ?? ''
-      // text 元素 拍平
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex-shrink')
-      flexShrinkActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素
-      const actualValueImage = imageRef.value?.style.getPropertyValue('flex-shrink')
-      flexShrinkActualImage.value = actualValueImage ?? ''
-      // image 元素 拍平
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-shrink')
-      flexShrinkActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -224,26 +209,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRef.value?.style.getPropertyValue('flex-shrink')
-    flexShrinkActual.value = actualValue ?? ''
-    // view 元素 拍平
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-shrink')
-    flexShrinkActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素
-    const actualValueText = textRef.value?.style.getPropertyValue('flex-shrink')
-    flexShrinkActualText.value = actualValueText ?? ''
-    // text 元素 拍平
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('flex-shrink')
-    flexShrinkActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素
-    const actualValueImage = imageRef.value?.style.getPropertyValue('flex-shrink')
-    flexShrinkActualImage.value = actualValueImage ?? ''
-    // image 元素 拍平
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('flex-shrink')
-    flexShrinkActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

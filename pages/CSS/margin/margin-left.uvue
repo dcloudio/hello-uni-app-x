@@ -149,41 +149,26 @@
     { value: 6, name: 'auto' }
   ]
 
+  const getPropertyValues = () => {
+    marginLeftActual.value = viewRef.value?.style.getPropertyValue('margin-left') ?? ''
+    marginLeftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    marginLeftActualText.value = textRef.value?.style.getPropertyValue('margin-left') ?? ''
+    marginLeftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+    marginLeftActualImage.value = imageRef.value?.style.getPropertyValue('margin-left') ?? ''
+    marginLeftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('margin-left') ?? ''
+  }
+
   const changeMarginLeft = (value: string) => {
     marginLeft.value = value
-    // view 元素
     viewRef.value?.style.setProperty('margin-left', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('margin-left', value)
-    // text 元素
     textRef.value?.style.setProperty('margin-left', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('margin-left', value)
-    // image 元素
     imageRef.value?.style.setProperty('margin-left', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('margin-left', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRef.value?.style.getPropertyValue('margin-left')
-      marginLeftActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-left')
-      marginLeftActualFlat.value = actualValueFlat ?? ''
-      // text 元素
-      const actualValueText = textRef.value?.style.getPropertyValue('margin-left')
-      marginLeftActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-left')
-      marginLeftActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素
-      const actualValueImage = imageRef.value?.style.getPropertyValue('margin-left')
-      marginLeftActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-left')
-      marginLeftActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -198,26 +183,8 @@
     changeMarginLeft(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素
-    const actualValue = viewRef.value?.style.getPropertyValue('margin-left')
-    marginLeftActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-left')
-    marginLeftActualFlat.value = actualValueFlat ?? ''
-    // text 元素
-    const actualValueText = textRef.value?.style.getPropertyValue('margin-left')
-    marginLeftActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-left')
-    marginLeftActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素
-    const actualValueImage = imageRef.value?.style.getPropertyValue('margin-left')
-    marginLeftActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-left')
-    marginLeftActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

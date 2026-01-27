@@ -150,41 +150,26 @@
     { value: 6, name: 'auto' }
   ]
 
+  const getPropertyValues = () => {
+    marginTopActual.value = viewRef.value?.style.getPropertyValue('margin-top') ?? ''
+    marginTopActualFlat.value = viewRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
+    marginTopActualText.value = textRef.value?.style.getPropertyValue('margin-top') ?? ''
+    marginTopActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
+    marginTopActualImage.value = imageRef.value?.style.getPropertyValue('margin-top') ?? ''
+    marginTopActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('margin-top') ?? ''
+  }
+
   const changeMarginTop = (value: string) => {
     marginTop.value = value
-    // view 元素
     viewRef.value?.style.setProperty('margin-top', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('margin-top', value)
-    // text 元素
     textRef.value?.style.setProperty('margin-top', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('margin-top', value)
-    // image 元素
     imageRef.value?.style.setProperty('margin-top', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('margin-top', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRef.value?.style.getPropertyValue('margin-top')
-      marginTopActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-top')
-      marginTopActualFlat.value = actualValueFlat ?? ''
-      // text 元素
-      const actualValueText = textRef.value?.style.getPropertyValue('margin-top')
-      marginTopActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-top')
-      marginTopActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素
-      const actualValueImage = imageRef.value?.style.getPropertyValue('margin-top')
-      marginTopActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-top')
-      marginTopActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -199,26 +184,8 @@
     changeMarginTop(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素
-    const actualValue = viewRef.value?.style.getPropertyValue('margin-top')
-    marginTopActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('margin-top')
-    marginTopActualFlat.value = actualValueFlat ?? ''
-    // text 元素
-    const actualValueText = textRef.value?.style.getPropertyValue('margin-top')
-    marginTopActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('margin-top')
-    marginTopActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素
-    const actualValueImage = imageRef.value?.style.getPropertyValue('margin-top')
-    marginTopActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('margin-top')
-    marginTopActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
