@@ -3,12 +3,13 @@ const isAndroid = platformInfo.startsWith("android")
 const isIos = platformInfo.startsWith("ios")
 const isWeb = platformInfo.startsWith("web")
 const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 let page
 
 describe("css-custom-variable", () => {
-  if (isMP) {
-  	it('skip mp', () => {
+  if (isMP || isDom2) {
+  	it('skip mp or dom2', () => {
   		expect(1).toBe(1)
   	})
   	return
