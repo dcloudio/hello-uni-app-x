@@ -16,14 +16,28 @@ describe('web-cover-view', () => {
   it('screenshot', async () => {
     const page = await program.reLaunch('/pages/component/cover-view/cover-view')
     await page.waitFor('view');
-    await page.waitFor('cover-view');
-    if(isApp){
-    // app 端 cover-image 会被转换为 image
-      await page.waitFor('image');
-    }else{
-      await page.waitFor('cover-image');
-      await page.waitFor('map');
-    }
+
+    const startTime = Date.now();
+    let checkElementResult = false;
+
+    await page.waitFor(async () => {
+      const isCoverViewExist = await page.waitFor('cover-view');
+      let isCoverImageExist, isMapExist = true;
+      if(isApp){
+      // app 端 cover-image 会被转换为 image
+        isCoverImageExist = await page.waitFor('image');
+      }else{
+        isCoverImageExist = await page.waitFor('cover-image');
+        isMapExist = await page.waitFor('map');
+      }
+      checkElementResult = isCoverViewExist && isCoverImageExist && isMapExist;
+      if (Date.now() - startTime > 5000) {
+        return true;
+      }
+    })
+
+    expect(checkElementResult).toBe(true);
+
     // 等待地图加载完成
     const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000:4000
     await page.waitFor(waitTime)
