@@ -629,41 +629,26 @@
     { value: 5, name: 'width 1s, background-color 1s' }
   ]
 
+  const getPropertyValues = () => {
+    transitionActual.value = viewRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    transitionActualFlat.value = viewRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    transitionActualText.value = textRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    transitionActualTextFlat.value = textRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+    transitionActualImage.value = imageRefTransition.value?.style.getPropertyValue('transition') ?? ''
+    transitionActualImageFlat.value = imageRefTransitionFlat.value?.style.getPropertyValue('transition') ?? ''
+  }
+
   const changeTransition = (value: string) => {
     transitionValue.value = value
-    // view 元素
     viewRefTransition.value?.style.setProperty('transition', value)
-    // view 元素 - 拍平版本
     viewRefTransitionFlat.value?.style.setProperty('transition', value)
-    // text 元素
     textRefTransition.value?.style.setProperty('transition', value)
-    // text 元素 - 拍平版本
     textRefTransitionFlat.value?.style.setProperty('transition', value)
-    // image 元素
     imageRefTransition.value?.style.setProperty('transition', value)
-    // image 元素 - 拍平版本
     imageRefTransitionFlat.value?.style.setProperty('transition', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
-      transitionActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
-      transitionActualFlat.value = actualValueFlat ?? ''
-      // text 元素
-      const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
-      transitionActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
-      transitionActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素
-      const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
-      transitionActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
-      transitionActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -757,24 +742,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRefTransition.value?.style.getPropertyValue('transition')
-    transitionActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefTransitionFlat.value?.style.getPropertyValue('transition')
-    transitionActualFlat.value = actualValueFlat ?? ''
-    // text 元素
-    const actualValueText = textRefTransition.value?.style.getPropertyValue('transition')
-    transitionActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefTransitionFlat.value?.style.getPropertyValue('transition')
-    transitionActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素
-    const actualValueImage = imageRefTransition.value?.style.getPropertyValue('transition')
-    transitionActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefTransitionFlat.value?.style.getPropertyValue('transition')
-    transitionActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
 	defineExpose({

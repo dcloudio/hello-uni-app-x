@@ -582,59 +582,44 @@
     { value: 7, name: '0px 1px 3px rgba(0,0,0,0.4)' },
   ]
 
+  const getPropertyValues = (value: string) => {
+    boxShadowActual.value = viewRef.value?.style.getPropertyValue('box-shadow') ?? ''
+    if (!value.includes('inset')) {
+      boxShadowActualFlat.value = viewRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
+    } else {
+      boxShadowActualFlat.value = '不支持 inset'
+    }
+    boxShadowActualText.value = textRef.value?.style.getPropertyValue('box-shadow') ?? ''
+    if (!value.includes('inset')) {
+      boxShadowActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
+    } else {
+      boxShadowActualTextFlat.value = '不支持 inset'
+    }
+    boxShadowActualImage.value = imageRef.value?.style.getPropertyValue('box-shadow') ?? ''
+    if (!value.includes('inset')) {
+      boxShadowActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('box-shadow') ?? ''
+    } else {
+      boxShadowActualImageFlat.value = '不支持 inset'
+    }
+  }
+
   const changeBoxShadow = (value: string) => {
     boxShadow.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('box-shadow', value)
-    // view 元素 - 拍平版本（不支持 inset 值）
     if (!value.includes('inset')) {
       viewRefFlat.value?.style.setProperty('box-shadow', value)
     }
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('box-shadow', value)
-    // text 元素 - 拍平版本（不支持 inset 值）
     if (!value.includes('inset')) {
       textRefFlat.value?.style.setProperty('box-shadow', value)
     }
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('box-shadow', value)
-    // image 元素 - 拍平版本（不支持 inset 值）
     if (!value.includes('inset')) {
       imageRefFlat.value?.style.setProperty('box-shadow', value)
     }
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('box-shadow')
-      boxShadowActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      if (!value.includes('inset')) {
-        const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('box-shadow')
-        boxShadowActualFlat.value = actualValueFlat ?? ''
-      } else {
-        boxShadowActualFlat.value = '不支持 inset'
-      }
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('box-shadow')
-      boxShadowActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      if (!value.includes('inset')) {
-        const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('box-shadow')
-        boxShadowActualTextFlat.value = actualValueTextFlat ?? ''
-      } else {
-        boxShadowActualTextFlat.value = '不支持 inset'
-      }
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('box-shadow')
-      boxShadowActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      if (!value.includes('inset')) {
-        const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('box-shadow')
-        boxShadowActualImageFlat.value = actualValueImageFlat ?? ''
-      } else {
-        boxShadowActualImageFlat.value = '不支持 inset'
-      }
+      getPropertyValues(value)
     })
   }
 
@@ -654,36 +639,7 @@
       const element = uni.getElementById("dynamic-height-textarea")
       element?.style.setProperty("height", "26px")
     })
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('box-shadow')
-    boxShadowActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    if (!boxShadow.value.includes('inset')) {
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('box-shadow')
-      boxShadowActualFlat.value = actualValueFlat ?? ''
-    } else {
-      boxShadowActualFlat.value = '不支持 inset'
-    }
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('box-shadow')
-    boxShadowActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    if (!boxShadow.value.includes('inset')) {
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('box-shadow')
-      boxShadowActualTextFlat.value = actualValueTextFlat ?? ''
-    } else {
-      boxShadowActualTextFlat.value = '不支持 inset'
-    }
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('box-shadow')
-    boxShadowActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    if (!boxShadow.value.includes('inset')) {
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('box-shadow')
-      boxShadowActualImageFlat.value = actualValueImageFlat ?? ''
-    } else {
-      boxShadowActualImageFlat.value = '不支持 inset'
-    }
+    getPropertyValues(boxShadow.value)
   })
 
   defineExpose({

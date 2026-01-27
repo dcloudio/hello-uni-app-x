@@ -173,41 +173,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    boxSizingActual.value = viewRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    boxSizingActualFlat.value = viewRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    boxSizingActualText.value = textRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    boxSizingActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+    boxSizingActualImage.value = imageRef.value?.style.getPropertyValue('box-sizing') ?? ''
+    boxSizingActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('box-sizing') ?? ''
+  }
+
   const changeBoxSizing = (value: string) => {
     boxSizing.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('box-sizing', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('box-sizing', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('box-sizing', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('box-sizing', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('box-sizing', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('box-sizing', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('box-sizing')
-      boxSizingActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('box-sizing')
-      boxSizingActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('box-sizing')
-      boxSizingActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('box-sizing')
-      boxSizingActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('box-sizing')
-      boxSizingActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('box-sizing')
-      boxSizingActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -223,24 +208,7 @@
   }
 
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('box-sizing')
-    boxSizingActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('box-sizing')
-    boxSizingActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('box-sizing')
-    boxSizingActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('box-sizing')
-    boxSizingActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('box-sizing')
-    boxSizingActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('box-sizing')
-    boxSizingActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 </script>
 

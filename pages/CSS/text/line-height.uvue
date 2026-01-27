@@ -83,21 +83,18 @@
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
+  const getPropertyValues = () => {
+    lineHeightActual.value = textRef.value?.style.getPropertyValue('line-height') ?? ''
+    lineHeightActualFlat.value = textRefFlat.value?.style.getPropertyValue('line-height') ?? ''
+  }
+
   const changeLineHeight = (value: string) => {
     lineHeight.value = value
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('line-height', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('line-height', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // text 元素 - 普通版本
-      const actualValue = textRef.value?.style.getPropertyValue('line-height')
-      lineHeightActual.value = actualValue ?? ''
-      // text 元素 - 拍平版本
-      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('line-height')
-      lineHeightActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -154,12 +151,7 @@
    */
 
   onReady(() => {
-    // text 元素 - 普通版本
-    const actualValue = textRef.value?.style.getPropertyValue('line-height')
-    lineHeightActual.value = actualValue ?? ''
-    // text 元素 - 拍平版本
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('line-height')
-    lineHeightActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 </script>
 

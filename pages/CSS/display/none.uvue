@@ -85,26 +85,20 @@
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    displayActual.value = viewRef.value?.style.getPropertyValue('display') ?? ''
+    displayActualText.value = textRef.value?.style.getPropertyValue('display') ?? ''
+    displayActualImage.value = imageRef.value?.style.getPropertyValue('display') ?? ''
+  }
+
   const changeDisplay = (value: string) => {
     displayProp.value = value
-    // view 元素
     viewRef.value?.style.setProperty('display', value)
-    // text 元素
     textRef.value?.style.setProperty('display', value)
-    // image 元素
     imageRef.value?.style.setProperty('display', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRef.value?.style.getPropertyValue('display')
-      displayActual.value = actualValue ?? ''
-      // text 元素
-      const actualValueText = textRef.value?.style.getPropertyValue('display')
-      displayActualText.value = actualValueText ?? ''
-      // image 元素
-      const actualValueImage = imageRef.value?.style.getPropertyValue('display')
-      displayActualImage.value = actualValueImage ?? ''
+      getPropertyValues()
     })
   }
 
@@ -120,15 +114,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRef.value?.style.getPropertyValue('display')
-    displayActual.value = actualValue ?? ''
-    // text 元素
-    const actualValueText = textRef.value?.style.getPropertyValue('display')
-    displayActualText.value = actualValueText ?? ''
-    // image 元素
-    const actualValueImage = imageRef.value?.style.getPropertyValue('display')
-    displayActualImage.value = actualValueImage ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

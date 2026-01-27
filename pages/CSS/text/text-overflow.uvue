@@ -107,21 +107,18 @@
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
+  const getPropertyValues = () => {
+    textOverflowActual.value = textRef.value?.style.getPropertyValue('text-overflow') ?? ''
+    textOverflowActualFlat.value = textRefFlat.value?.style.getPropertyValue('text-overflow') ?? ''
+  }
+
   const changeTextOverflow = (value: string) => {
     textOverflow.value = value
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('text-overflow', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('text-overflow', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // text 元素 - 普通版本
-      const actualValue = textRef.value?.style.getPropertyValue('text-overflow')
-      textOverflowActual.value = actualValue ?? ''
-      // text 元素 - 拍平版本
-      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-overflow')
-      textOverflowActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -137,12 +134,7 @@
   }
 
   onReady(() => {
-    // text 元素 - 普通版本
-    const actualValue = textRef.value?.style.getPropertyValue('text-overflow')
-    textOverflowActual.value = actualValue ?? ''
-    // text 元素 - 拍平版本
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-overflow')
-    textOverflowActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

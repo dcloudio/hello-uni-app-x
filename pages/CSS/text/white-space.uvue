@@ -81,21 +81,18 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
+  const getPropertyValues = () => {
+    whiteSpaceActual.value = textRef.value?.style.getPropertyValue('white-space') ?? ''
+    whiteSpaceActualFlat.value = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
+  }
+
   const changeWhiteSpace = (value: string) => {
     whiteSpace.value = value
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('white-space', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('white-space', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // text 元素 - 普通版本
-      const actualValue = textRef.value?.style.getPropertyValue('white-space')
-      whiteSpaceActual.value = actualValue ?? ''
-      // text 元素 - 拍平版本
-      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('white-space')
-      whiteSpaceActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -111,12 +108,7 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
   }
 
   onReady(() => {
-    // text 元素 - 普通版本
-    const actualValue = textRef.value?.style.getPropertyValue('white-space')
-    whiteSpaceActual.value = actualValue ?? ''
-    // text 元素 - 拍平版本
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('white-space')
-    whiteSpaceActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
