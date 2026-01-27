@@ -304,10 +304,10 @@ describe('component-native-input', () => {
     await setPageData({
       firstInputFocus: false,
     })
-    // if (isHarmony) {
-    //   await program.tap({ x: 100, y: 50 })
-    //   await page.waitFor(1000);
-    // }
+    if (isHarmony) {
+      await program.tap({ x: 100, y: 50 })
+      await page.waitFor(1000);
+    }
   })
 
   it('both set modelValue and value', async () => {
