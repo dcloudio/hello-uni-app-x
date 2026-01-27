@@ -397,21 +397,18 @@
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
+  const getPropertyValues = () => {
+    flexFlowActual.value = viewRef.value?.style.getPropertyValue('flex-flow') ?? ''
+    flexFlowActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-flow') ?? ''
+  }
+
   const changeFlexFlow = (value : string) => {
     flexFlow.value = value
-    // 普通版本
     viewRef.value?.style.setProperty('flex-flow', value)
-    // 拍平版本
     viewRefFlat.value?.style.setProperty('flex-flow', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('flex-flow')
-      flexFlowActual.value = actualValue ?? ''
-      // 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-flow')
-      flexFlowActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -427,11 +424,7 @@
   }
 
   onReady(() => {
-    const actualValue = viewRef.value?.style.getPropertyValue('flex-flow')
-    flexFlowActual.value = actualValue ?? ''
-
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-flow')
-    flexFlowActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

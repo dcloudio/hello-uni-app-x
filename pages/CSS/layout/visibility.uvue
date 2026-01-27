@@ -130,41 +130,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    visibilityActual.value = viewRef.value?.style.getPropertyValue('visibility') ?? ''
+    visibilityActualFlat.value = viewRefFlat.value?.style.getPropertyValue('visibility') ?? ''
+    visibilityActualText.value = textRef.value?.style.getPropertyValue('visibility') ?? ''
+    visibilityActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('visibility') ?? ''
+    visibilityActualImage.value = imageRef.value?.style.getPropertyValue('visibility') ?? ''
+    visibilityActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('visibility') ?? ''
+  }
+
   const changeVisibilityProperty = (value: string) => {
     visibilityValue.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('visibility', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('visibility', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('visibility', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('visibility', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('visibility', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('visibility', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('visibility')
-      visibilityActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('visibility')
-      visibilityActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('visibility')
-      visibilityActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('visibility')
-      visibilityActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
-      visibilityActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('visibility')
-      visibilityActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -180,24 +165,7 @@
   }
 
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('visibility')
-    visibilityActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('visibility')
-    visibilityActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('visibility')
-    visibilityActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('visibility')
-    visibilityActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('visibility')
-    visibilityActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('visibility')
-    visibilityActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

@@ -199,21 +199,18 @@
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
+  const getPropertyValues = () => {
+    alignContentActual.value = viewRef.value?.style.getPropertyValue('align-content') ?? ''
+    alignContentActualFlat.value = viewRefFlat.value?.style.getPropertyValue('align-content') ?? ''
+  }
+
   const changeAlignContent = (value: string) => {
     alignContent.value = value
-    // 普通版本
     viewRef.value?.style.setProperty('align-content', value)
-    // 拍平版本
     viewRefFlat.value?.style.setProperty('align-content', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('align-content')
-      alignContentActual.value = actualValue ?? ''
-      // 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-content')
-      alignContentActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -229,11 +226,7 @@
   }
 
   onReady(() => {
-    const actualValue = viewRef.value?.style.getPropertyValue('align-content')
-    alignContentActual.value = actualValue ?? ''
-
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-content')
-    alignContentActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

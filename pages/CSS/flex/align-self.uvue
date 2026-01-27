@@ -158,41 +158,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    alignSelfActual.value = viewRef.value?.style.getPropertyValue('align-self') ?? ''
+    alignSelfActualFlat.value = viewRefFlat.value?.style.getPropertyValue('align-self') ?? ''
+    alignSelfActualText.value = textRef.value?.style.getPropertyValue('align-self') ?? ''
+    alignSelfActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('align-self') ?? ''
+    alignSelfActualImage.value = imageRef.value?.style.getPropertyValue('align-self') ?? ''
+    alignSelfActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('align-self') ?? ''
+  }
+
   const changeAlignSelf = (value: string) => {
     alignSelf.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('align-self', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('align-self', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('align-self', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('align-self', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('align-self', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('align-self', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('align-self')
-      alignSelfActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-self')
-      alignSelfActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('align-self')
-      alignSelfActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('align-self')
-      alignSelfActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('align-self')
-      alignSelfActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('align-self')
-      alignSelfActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -208,24 +193,7 @@
   }
 
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('align-self')
-    alignSelfActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('align-self')
-    alignSelfActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('align-self')
-    alignSelfActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('align-self')
-    alignSelfActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('align-self')
-    alignSelfActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('align-self')
-    alignSelfActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

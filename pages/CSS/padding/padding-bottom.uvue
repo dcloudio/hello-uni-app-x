@@ -130,41 +130,26 @@
     { value: 5, name: '20%' }
   ]
 
+  const getPropertyValues = () => {
+    paddingBottomActual.value = viewRef.value?.style.getPropertyValue('padding-bottom') ?? ''
+    paddingBottomActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
+    paddingBottomActualText.value = textRef.value?.style.getPropertyValue('padding-bottom') ?? ''
+    paddingBottomActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
+    paddingBottomActualImage.value = imageRef.value?.style.getPropertyValue('padding-bottom') ?? ''
+    paddingBottomActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding-bottom') ?? ''
+  }
+
   const changePaddingBottom = (value: string) => {
     paddingBottom.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('padding-bottom', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('padding-bottom', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('padding-bottom', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('padding-bottom', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('padding-bottom', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('padding-bottom', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('padding-bottom')
-      paddingBottomActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-bottom')
-      paddingBottomActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('padding-bottom')
-      paddingBottomActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-bottom')
-      paddingBottomActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('padding-bottom')
-      paddingBottomActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-bottom')
-      paddingBottomActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -179,26 +164,8 @@
     changePaddingBottom(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('padding-bottom')
-    paddingBottomActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-bottom')
-    paddingBottomActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('padding-bottom')
-    paddingBottomActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-bottom')
-    paddingBottomActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('padding-bottom')
-    paddingBottomActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-bottom')
-    paddingBottomActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

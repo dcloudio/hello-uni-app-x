@@ -125,21 +125,18 @@
   const viewRef = ref(null as UniElement | null)
   const viewRefFlat = ref(null as UniElement | null)
 
+  const getPropertyValues = () => {
+    flexDirectionActual.value = viewRef.value?.style.getPropertyValue('flex-direction') ?? ''
+    flexDirectionActualFlat.value = viewRefFlat.value?.style.getPropertyValue('flex-direction') ?? ''
+  }
+
   const changeFlexDirection = (value: string) => {
     flexDirection.value = value
-    // 普通版本
     viewRef.value?.style.setProperty('flex-direction', value)
-    // 拍平版本
     viewRefFlat.value?.style.setProperty('flex-direction', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('flex-direction')
-      flexDirectionActual.value = actualValue ?? ''
-      // 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction')
-      flexDirectionActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -155,11 +152,7 @@
   }
 
   onReady(() => {
-    const actualValue = viewRef.value?.style.getPropertyValue('flex-direction')
-    flexDirectionActual.value = actualValue ?? ''
-
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('flex-direction')
-    flexDirectionActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
