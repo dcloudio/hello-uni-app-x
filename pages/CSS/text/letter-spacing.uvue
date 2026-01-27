@@ -83,21 +83,18 @@
 	const textRef = ref(null as UniTextElement | null)
 	const textRefFlat = ref(null as UniTextElement | null)
 
+	const getPropertyValues = () => {
+		letterSpacingActual.value = textRef.value?.style.getPropertyValue('letter-spacing') ?? ''
+		letterSpacingActualFlat.value = textRefFlat.value?.style.getPropertyValue('letter-spacing') ?? ''
+	}
+
 	const changeLetterSpacing = (value: string) => {
 		letterSpacing.value = value
-		// text 元素 - 普通版本
 		textRef.value?.style.setProperty('letter-spacing', value)
-		// text 元素 - 拍平版本
 		textRefFlat.value?.style.setProperty('letter-spacing', value)
-
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
-			// text 元素 - 普通版本
-			const actualValue = textRef.value?.style.getPropertyValue('letter-spacing')
-			letterSpacingActual.value = actualValue ?? ''
-			// text 元素 - 拍平版本
-			const actualValueFlat = textRefFlat.value?.style.getPropertyValue('letter-spacing')
-			letterSpacingActualFlat.value = actualValueFlat ?? ''
+			getPropertyValues()
 		})
 	}
 
@@ -153,12 +150,7 @@
    */
 
 	onReady(() => {
-		// text 元素 - 普通版本
-		const actualValue = textRef.value?.style.getPropertyValue('letter-spacing')
-		letterSpacingActual.value = actualValue ?? ''
-		// text 元素 - 拍平版本
-		const actualValueFlat = textRefFlat.value?.style.getPropertyValue('letter-spacing')
-		letterSpacingActualFlat.value = actualValueFlat ?? ''
+		getPropertyValues()
 	})
 </script>
 

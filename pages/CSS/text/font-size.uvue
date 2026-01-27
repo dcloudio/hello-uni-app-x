@@ -79,21 +79,18 @@
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
+  const getPropertyValues = () => {
+    fontSizeActual.value = textRef.value?.style.getPropertyValue('font-size') ?? ''
+    fontSizeActualFlat.value = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
+  }
+
   const changeFontSize = (value: string) => {
     fontSizeProp.value = value
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('font-size', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('font-size', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // text 元素 - 普通版本
-      const actualValue = textRef.value?.style.getPropertyValue('font-size')
-      fontSizeActual.value = actualValue ?? ''
-      // text 元素 - 拍平版本
-      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-size')
-      fontSizeActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -109,12 +106,7 @@
   }
 
   onReady(() => {
-    // text 元素 - 普通版本
-    const actualValue = textRef.value?.style.getPropertyValue('font-size')
-    fontSizeActual.value = actualValue ?? ''
-    // text 元素 - 拍平版本
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-size')
-    fontSizeActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 </script>
 

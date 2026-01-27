@@ -202,41 +202,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    borderRadiusActual.value = viewRef.value?.style.getPropertyValue('border-radius') ?? ''
+    borderRadiusActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
+    borderRadiusActualText.value = textRef.value?.style.getPropertyValue('border-radius') ?? ''
+    borderRadiusActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
+    borderRadiusActualImage.value = imageRef.value?.style.getPropertyValue('border-radius') ?? ''
+    borderRadiusActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
+  }
+
   const changeBorderRadius = (value: string) => {
     borderRadius.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-radius', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-radius', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-radius', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-radius', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-radius', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-radius', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border-radius')
-      borderRadiusActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-radius')
-      borderRadiusActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border-radius')
-      borderRadiusActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-radius')
-      borderRadiusActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border-radius')
-      borderRadiusActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-radius')
-      borderRadiusActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -251,28 +236,8 @@
     changeBorderRadius(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border-radius')
-    borderRadiusActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-radius')
-    borderRadiusActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border-radius')
-    borderRadiusActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-radius')
-    borderRadiusActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-radius')
-    borderRadiusActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-radius')
-    borderRadiusActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

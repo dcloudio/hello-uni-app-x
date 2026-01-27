@@ -121,41 +121,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    maxWidthActual.value = viewRef.value?.style.getPropertyValue('max-width') ?? ''
+    maxWidthActualFlat.value = viewRefFlat.value?.style.getPropertyValue('max-width') ?? ''
+    maxWidthActualText.value = textRef.value?.style.getPropertyValue('max-width') ?? ''
+    maxWidthActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('max-width') ?? ''
+    maxWidthActualImage.value = imageRef.value?.style.getPropertyValue('max-width') ?? ''
+    maxWidthActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('max-width') ?? ''
+  }
+
   const changeMaxWidth = (value: string) => {
     maxWidth.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('max-width', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('max-width', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('max-width', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('max-width', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('max-width', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('max-width', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('max-width')
-      maxWidthActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('max-width')
-      maxWidthActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('max-width')
-      maxWidthActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('max-width')
-      maxWidthActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('max-width')
-      maxWidthActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('max-width')
-      maxWidthActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -171,24 +156,7 @@
   }
 
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('max-width')
-    maxWidthActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('max-width')
-    maxWidthActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('max-width')
-    maxWidthActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('max-width')
-    maxWidthActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('max-width')
-    maxWidthActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('max-width')
-    maxWidthActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

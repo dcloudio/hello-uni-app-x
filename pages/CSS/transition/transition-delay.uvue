@@ -129,26 +129,20 @@
     { value: 4, name: '2s' },
   ]
 
+  const getPropertyValues = () => {
+    transitionDelayActual.value = viewRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    transitionDelayActualText.value = textRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+    transitionDelayActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transition-delay') ?? ''
+  }
+
   const changeTransitionDelayDynamic = (value: string) => {
     transitionDelayDynamic.value = value
-    // view 元素
     viewRefDynamic.value?.style.setProperty('transition-delay', value)
-    // text 元素
     textRefDynamic.value?.style.setProperty('transition-delay', value)
-    // image 元素
     imageRefDynamic.value?.style.setProperty('transition-delay', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-delay')
-      transitionDelayActual.value = actualValue ?? ''
-      // text 元素
-      const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-delay')
-      transitionDelayActualText.value = actualValueText ?? ''
-      // image 元素
-      const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-delay')
-      transitionDelayActualImage.value = actualValueImage ?? ''
+      getPropertyValues()
     })
   }
 
@@ -182,15 +176,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-delay')
-    transitionDelayActual.value = actualValue ?? ''
-    // text 元素
-    const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-delay')
-    transitionDelayActualText.value = actualValueText ?? ''
-    // image 元素
-    const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-delay')
-    transitionDelayActualImage.value = actualValueImage ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

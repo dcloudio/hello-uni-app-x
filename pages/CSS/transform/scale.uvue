@@ -306,41 +306,26 @@
 		{ value: 6, name: 'scaleY(-1)' }
 	]
 
+	const getPropertyValues = () => {
+		transformActual.value = viewRefDynamic.value?.style.getPropertyValue('transform') ?? ''
+		transformActualFlat.value = viewRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
+		transformActualText.value = textRefDynamic.value?.style.getPropertyValue('transform') ?? ''
+		transformActualTextFlat.value = textRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
+		transformActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transform') ?? ''
+		transformActualImageFlat.value = imageRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
+	}
+
 	const changeTransformDynamic = (value : string) => {
 		transformValueDynamic.value = value
-		// view 元素
 		viewRefDynamic.value?.style.setProperty('transform', value)
-		// view 元素 - 拍平版本
 		viewRefDynamicFlat.value?.style.setProperty('transform', value)
-		// text 元素
 		textRefDynamic.value?.style.setProperty('transform', value)
-		// text 元素 - 拍平版本
 		textRefDynamicFlat.value?.style.setProperty('transform', value)
-		// image 元素
 		imageRefDynamic.value?.style.setProperty('transform', value)
-		// image 元素 - 拍平版本
 		imageRefDynamicFlat.value?.style.setProperty('transform', value)
-
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
-			// view 元素
-			const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform')
-			transformActual.value = actualValue ?? ''
-			// view 元素 - 拍平版本
-			const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform')
-			transformActualFlat.value = actualValueFlat ?? ''
-			// text 元素
-			const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform')
-			transformActualText.value = actualValueText ?? ''
-			// text 元素 - 拍平版本
-			const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform')
-			transformActualTextFlat.value = actualValueTextFlat ?? ''
-			// image 元素
-			const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform')
-			transformActualImage.value = actualValueImage ?? ''
-			// image 元素 - 拍平版本
-			const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform')
-			transformActualImageFlat.value = actualValueImageFlat ?? ''
+			getPropertyValues()
 		})
 	}
 
@@ -356,24 +341,7 @@
 	}
 
 	onReady(() => {
-		// view 元素
-		const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform')
-		transformActual.value = actualValue ?? ''
-		// view 元素 - 拍平版本
-		const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform')
-		transformActualFlat.value = actualValueFlat ?? ''
-		// text 元素
-		const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform')
-		transformActualText.value = actualValueText ?? ''
-		// text 元素 - 拍平版本
-		const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform')
-		transformActualTextFlat.value = actualValueTextFlat ?? ''
-		// image 元素
-		const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform')
-		transformActualImage.value = actualValueImage ?? ''
-		// image 元素 - 拍平版本
-		const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform')
-		transformActualImageFlat.value = actualValueImageFlat ?? ''
+		getPropertyValues()
 	})
 </script>
 

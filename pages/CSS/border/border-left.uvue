@@ -114,41 +114,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    borderLeftActual.value = viewRef.value?.style.getPropertyValue('border-left') ?? ''
+    borderLeftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-left') ?? ''
+    borderLeftActualText.value = textRef.value?.style.getPropertyValue('border-left') ?? ''
+    borderLeftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-left') ?? ''
+    borderLeftActualImage.value = imageRef.value?.style.getPropertyValue('border-left') ?? ''
+    borderLeftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-left') ?? ''
+  }
+
   const changeBorderLeft = (value: string) => {
     borderLeft.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-left', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-left', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-left', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-left', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-left', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-left', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border-left')
-      borderLeftActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-left')
-      borderLeftActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border-left')
-      borderLeftActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-left')
-      borderLeftActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border-left')
-      borderLeftActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-left')
-      borderLeftActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -163,28 +148,8 @@
     changeBorderLeft(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border-left')
-    borderLeftActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-left')
-    borderLeftActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border-left')
-    borderLeftActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-left')
-    borderLeftActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-left')
-    borderLeftActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-left')
-    borderLeftActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

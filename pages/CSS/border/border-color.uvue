@@ -166,41 +166,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    borderColorActual.value = viewRef.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualText.value = textRef.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualImage.value = imageRef.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+  }
+
   const changeBorderColor = (value: string) => {
     borderColor.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-color', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-color', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-color', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-color', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-color', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-color', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border-color')
-      borderColorActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-color')
-      borderColorActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border-color')
-      borderColorActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-color')
-      borderColorActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border-color')
-      borderColorActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color')
-      borderColorActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -215,28 +200,8 @@
     changeBorderColor(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border-color')
-    borderColorActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-color')
-    borderColorActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border-color')
-    borderColorActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-color')
-    borderColorActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-color')
-    borderColorActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color')
-    borderColorActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
