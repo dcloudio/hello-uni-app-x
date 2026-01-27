@@ -5,13 +5,6 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 
 describe('touch-events-test', () => {
-  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
