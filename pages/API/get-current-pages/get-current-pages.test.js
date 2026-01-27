@@ -54,10 +54,7 @@ describe('getCurrentPages', () => {
     const pageRes = await page.callMethod('check$page')
     expect(pageRes).toBe(true)
 
-    const componentCheckPageBtn = await page.$('.component-check-page-btn')
-    await componentCheckPageBtn.tap()
-    const checkPageResText = await page.$('.check-page-res')
-    expect(await checkPageResText.text()).toBe('true')
+    expect(await page.callMethod('componentCheck$page')).toBe(true)
   })
 
   if (isMP) {
