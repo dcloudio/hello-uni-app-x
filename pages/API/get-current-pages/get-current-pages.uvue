@@ -78,7 +78,7 @@
       </button>
       <!-- #endif -->
       <!-- #endif -->
-      <ComponentCheckPage />
+      <ComponentCheckPage ref="componentCheckPage" />
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -90,6 +90,8 @@
   import { PageStyleItem, PageStyleArray } from './page-style.uts';
 
   const currentInstance = getCurrentInstance()
+
+  const componentCheckPage = ref<ComponentPublicInstance | null>(null)
 
   type DataType = {
     checked: boolean;
@@ -206,6 +208,11 @@
     uni.showToast(res ? { title: 'check success' } : { title: 'check fail', icon: 'error' })
     return res
   }
+  const componentCheck$page = () : boolean => {
+    const res = componentCheckPage.value?.$callMethod('check$page') as boolean
+    console.log('component check $page', res)
+    return res
+  }
   const checkGetParentPage = () : boolean => {
     const page = getCurrentPage()
     const parentPage = page.getParentPage()
@@ -297,6 +304,7 @@
     setPageStyle,
     startPullDownRefresh,
     check$page,
+    componentCheck$page,
     checkGetParentPage,
     checkGetDialogPages,
     checkGetElementById,
