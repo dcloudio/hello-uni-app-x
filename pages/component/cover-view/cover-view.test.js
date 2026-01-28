@@ -4,6 +4,7 @@ const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('web-cover-view', () => {
   if (isAppWebView) {
@@ -25,7 +26,8 @@ describe('web-cover-view', () => {
         return true;
       }
       let isCoverImageExist, isMapExist = true;
-      const isCoverViewExist = !!(await page.$('cover-view'));
+      // dom2 cover-view 会被转换为 view
+      const isCoverViewExist = isDom2 || !!(await page.$('cover-view'));
       if(isApp){
       // app 端 cover-image 会被转换为 image
         isCoverImageExist = !!(await page.$('image'));
