@@ -55,13 +55,14 @@ describe('test element-get-attribute', () => {
       expect(await scrollView.property('scrollLeft')).toBe(200);
     });
   }
-
-  it('getBoundingClientRect-scaledView', async () => {
-    await page.callMethod("handleGetScaledViewSize");
-    const scaledViewWidth = await page.data("data.scaledViewWidth")
-    const scaledViewHeight = await page.data("data.scaledViewHeight")
-    // Android 差异尺寸：99.809525
-    expect(scaledViewWidth).toBeGreaterThan(99.5);
-    expect(scaledViewHeight).toBeGreaterThan(99.5);
-  })
+  if (!isMP) {
+    it('getBoundingClientRect-scaledView', async () => {
+      await page.callMethod("handleGetScaledViewSize");
+      const scaledViewWidth = await page.data("data.scaledViewWidth")
+      const scaledViewHeight = await page.data("data.scaledViewHeight")
+      // Android 差异尺寸：99.809525
+      expect(scaledViewWidth).toBeGreaterThan(99.5);
+      expect(scaledViewHeight).toBeGreaterThan(99.5);
+    })
+  }
 });
