@@ -34,6 +34,7 @@ describe('web-cover-view', () => {
         isMapExist = !!(await page.$('map'));
       }
       checkElementResult = isCoverViewExist && isCoverImageExist && isMapExist;
+      return checkElementResult;
     })
 
     expect(checkElementResult).toBe(true);
