@@ -12,7 +12,7 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-video', () => {
   // TODO: web 端暂不支持测试 harmony 模拟器异常
-  if (isWeb || isAppWebView || (isHarmony && platformInfo.includes('模拟器')) || (isHarmony && isDom2 && isDev)) {
+  if (isWeb || isAppWebView || (isHarmony && platformInfo.includes('模拟器'))) {
     it('web', async () => {
       expect(1).toBe(1)
     })
