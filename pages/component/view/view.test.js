@@ -55,9 +55,7 @@ const isHarmony = platformInfo.startsWith('harmony')
         }
       })
       await page.waitFor(100)
-
-      await program.tap({ x: 150, y: 325, duration: 2000 })
-
+      await program.tap({ x: 150, y: 600, duration: 2000 })
       // const systemInfo = await program.systemInfo()
       // const devicePixelRatio = systemInfo.devicePixelRatio
       // const positionX = systemInfo.screenWidth / 2
@@ -70,7 +68,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 
       // 通过检查样式来判断 hover-class 是否生效
       const viewChild1 = await page.$('#view-child1')
-      expect(await viewChild1.style('background-color')).toBe(isDom2 ? '#179b16ff' : '#179b16')
+      expect(await viewChild1.style('background-color')).toBe(isDom2 ? 'rgb(23,155,22)' : '#179b16')
     })
   }
 })
