@@ -5,9 +5,10 @@
     <view style="flex-grow: 1;">
       <view>
         <text>border-right: 5px solid blue</text>
-        <view class="common" style="border-right: 5px solid blue;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-right: 5px solid blue;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-right: 5px solid blue;"></view>
+          <view class="common" style="border-right: 5px solid blue;" flatten></view>
+        </view>
       </view>
 
       <view class="uni-common-mt">
@@ -114,41 +115,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    borderRightActual.value = viewRef.value?.style.getPropertyValue('border-right') ?? ''
+    borderRightActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-right') ?? ''
+    borderRightActualText.value = textRef.value?.style.getPropertyValue('border-right') ?? ''
+    borderRightActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-right') ?? ''
+    borderRightActualImage.value = imageRef.value?.style.getPropertyValue('border-right') ?? ''
+    borderRightActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-right') ?? ''
+  }
+
   const changeBorderRight = (value: string) => {
     borderRight.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-right', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-right', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-right', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-right', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-right', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-right', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border-right')
-      borderRightActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-right')
-      borderRightActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border-right')
-      borderRightActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-right')
-      borderRightActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border-right')
-      borderRightActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-right')
-      borderRightActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -163,28 +149,8 @@
     changeBorderRight(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border-right')
-    borderRightActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-right')
-    borderRightActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border-right')
-    borderRightActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-right')
-    borderRightActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-right')
-    borderRightActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-right')
-    borderRightActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
@@ -195,8 +161,14 @@
 <style>
   .common {
     width: 150px;
-    height: 100px;
+    height: 50px;
     background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-between;
   }
 
   .common-dynamic {

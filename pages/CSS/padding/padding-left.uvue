@@ -130,41 +130,26 @@
     { value: 5, name: '10%' }
   ]
 
+  const getPropertyValues = () => {
+    paddingLeftActual.value = viewRef.value?.style.getPropertyValue('padding-left') ?? ''
+    paddingLeftActualFlat.value = viewRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
+    paddingLeftActualText.value = textRef.value?.style.getPropertyValue('padding-left') ?? ''
+    paddingLeftActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
+    paddingLeftActualImage.value = imageRef.value?.style.getPropertyValue('padding-left') ?? ''
+    paddingLeftActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('padding-left') ?? ''
+  }
+
   const changePaddingLeft = (value: string) => {
     paddingLeft.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('padding-left', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('padding-left', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('padding-left', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('padding-left', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('padding-left', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('padding-left', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('padding-left')
-      paddingLeftActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-left')
-      paddingLeftActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('padding-left')
-      paddingLeftActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-left')
-      paddingLeftActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('padding-left')
-      paddingLeftActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-left')
-      paddingLeftActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -179,26 +164,8 @@
     changePaddingLeft(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('padding-left')
-    paddingLeftActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('padding-left')
-    paddingLeftActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

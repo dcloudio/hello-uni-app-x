@@ -127,41 +127,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    heightActual.value = viewRef.value?.style.getPropertyValue('height') ?? ''
+    heightActualFlat.value = viewRefFlat.value?.style.getPropertyValue('height') ?? ''
+    heightActualText.value = textRef.value?.style.getPropertyValue('height') ?? ''
+    heightActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('height') ?? ''
+    heightActualImage.value = imageRef.value?.style.getPropertyValue('height') ?? ''
+    heightActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('height') ?? ''
+  }
+
   const changeHeight = (value: string) => {
     height.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('height', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('height', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('height', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('height', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('height', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('height', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('height')
-      heightActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('height')
-      heightActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('height')
-      heightActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('height')
-      heightActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('height')
-      heightActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('height')
-      heightActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -177,24 +162,7 @@
   }
 
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('height')
-    heightActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('height')
-    heightActualFlat.value = actualValueFlat ?? ''
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('height')
-    heightActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('height')
-    heightActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('height')
-    heightActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('height')
-    heightActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

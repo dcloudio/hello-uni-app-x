@@ -327,6 +327,7 @@ const pages = [
   // '/pages/template/slider-100/slider-100',
   // 动态内容
   // '/pages/template/long-list-nested/long-list-nested',
+  '/pages/template/issue-25934/issue-25934'
 ]
 
 // if (!isIos) {

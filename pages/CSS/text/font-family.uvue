@@ -82,21 +82,18 @@
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
+  const getPropertyValues = () => {
+    fontFamilyActual.value = textRef.value?.style.getPropertyValue('font-family') ?? ''
+    fontFamilyActualFlat.value = textRefFlat.value?.style.getPropertyValue('font-family') ?? ''
+  }
+
   const changeFontFamily = (value: string) => {
     fontFamily.value = value
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('font-family', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('font-family', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // text 元素 - 普通版本
-      const actualValue = textRef.value?.style.getPropertyValue('font-family')
-      fontFamilyActual.value = actualValue ?? ''
-      // text 元素 - 拍平版本
-      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-family')
-      fontFamilyActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -112,12 +109,7 @@
   }
 
   onReady(() => {
-    // text 元素 - 普通版本
-    const actualValue = textRef.value?.style.getPropertyValue('font-family')
-    fontFamilyActual.value = actualValue ?? ''
-    // text 元素 - 拍平版本
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('font-family')
-    fontFamilyActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 </script>
 

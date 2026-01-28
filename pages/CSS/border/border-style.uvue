@@ -3,60 +3,69 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>border-style: dashed</text>
-        <view class="common" style="border-width: 5px; border-style: dashed"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-width: 5px; border-style: dashed" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-style: dashed"></view>
+          <view class="common" style="border-width: 5px; border-style: dashed" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-left-style: dashed</text>
-        <view class="common" style="border-left-width: 5px; border-left-style: dashed"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-left-width: 5px; border-left-style: dashed" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-left-width: 5px; border-left-style: dashed"></view>
+          <view class="common" style="border-left-width: 5px; border-left-style: dashed" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-top-style: dashed</text>
-        <view class="common" style="border-top-width: 5px; border-top-style: dashed"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-top-width: 5px; border-top-style: dashed" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-top-width: 5px; border-top-style: dashed"></view>
+          <view class="common" style="border-top-width: 5px; border-top-style: dashed" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-right-style: dotted</text>
-        <view class="common" style="border-right-width: 5px; border-right-style: dotted"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-right-width: 5px; border-right-style: dotted" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-right-width: 5px; border-right-style: dotted"></view>
+          <view class="common" style="border-right-width: 5px; border-right-style: dotted" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-bottom-style: dotted</text>
-        <view class="common" style="border-bottom-width: 5px; border-bottom-style: dotted"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-bottom-width: 5px; border-bottom-style: dotted" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-width: 5px; border-bottom-style: dotted"></view>
+          <view class="common" style="border-bottom-width: 5px; border-bottom-style: dotted" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-style: solid (缺省 border-width)</text>
-        <view class="common" style="border-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-style: solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-style: solid;"></view>
+          <view class="common" style="border-style: solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-style: none</text>
-        <view class="common" style="border-style: none; border-width: 5px;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-style: none; border-width: 5px;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-style: none; border-width: 5px;"></view>
+          <view class="common" style="border-style: none; border-width: 5px;" flatten></view>
+        </view>
       </view>
 
       <view @click="changeBorderStyle">
         <text>border-style: 点击切换</text>
-        <view class="common" :style="borderStyle"></view>
-        <text>拍平测试</text>
-        <view class="common" :style="borderStyle" flatten></view>
+        <view class="demo-box">
+          <view class="common" :style="borderStyle"></view>
+          <view class="common" :style="borderStyle" flatten></view>
+        </view>
       </view>
 
       <view class="uni-common-mt">
@@ -173,41 +182,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    borderStyleActual.value = viewRef.value?.style.getPropertyValue('border-style') ?? ''
+    borderStyleActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    borderStyleActualText.value = textRef.value?.style.getPropertyValue('border-style') ?? ''
+    borderStyleActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+    borderStyleActualImage.value = imageRef.value?.style.getPropertyValue('border-style') ?? ''
+    borderStyleActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-style') ?? ''
+  }
+
   const changeBorderStyleValue = (value: string) => {
     borderStyleValue.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-style', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-style', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-style', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-style', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-style', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-style', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border-style')
-      borderStyleActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-style')
-      borderStyleActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border-style')
-      borderStyleActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-style')
-      borderStyleActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border-style')
-      borderStyleActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-style')
-      borderStyleActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -222,28 +216,8 @@
     changeBorderStyleValue(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border-style')
-    borderStyleActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-style')
-    borderStyleActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border-style')
-    borderStyleActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-style')
-    borderStyleActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-style')
-    borderStyleActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-style')
-    borderStyleActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
@@ -254,8 +228,13 @@
 <style>
   .common {
     width: 150px;
-    height: 100px;
+    height: 50px;
     background-color: gray;
+  }
+  .demo-box{
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
   }
 
   .common-dynamic {

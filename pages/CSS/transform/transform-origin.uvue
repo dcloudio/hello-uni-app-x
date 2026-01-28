@@ -224,41 +224,26 @@
     { value: 7, name: '60px 60px' }
   ]
 
+  const getPropertyValues = () => {
+    transformOriginActual.value = viewRefDynamic.value?.style.getPropertyValue('transform-origin') ?? ''
+    transformOriginActualFlat.value = viewRefDynamicFlat.value?.style.getPropertyValue('transform-origin') ?? ''
+    transformOriginActualText.value = textRefDynamic.value?.style.getPropertyValue('transform-origin') ?? ''
+    transformOriginActualTextFlat.value = textRefDynamicFlat.value?.style.getPropertyValue('transform-origin') ?? ''
+    transformOriginActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transform-origin') ?? ''
+    transformOriginActualImageFlat.value = imageRefDynamicFlat.value?.style.getPropertyValue('transform-origin') ?? ''
+  }
+
   const changeTransformOrigin = (value: string) => {
     transformOrigin.value = value
-    // view 元素
     viewRefDynamic.value?.style.setProperty('transform-origin', value)
-    // view 元素 - 拍平版本
     viewRefDynamicFlat.value?.style.setProperty('transform-origin', value)
-    // text 元素
     textRefDynamic.value?.style.setProperty('transform-origin', value)
-    // text 元素 - 拍平版本
     textRefDynamicFlat.value?.style.setProperty('transform-origin', value)
-    // image 元素
     imageRefDynamic.value?.style.setProperty('transform-origin', value)
-    // image 元素 - 拍平版本
     imageRefDynamicFlat.value?.style.setProperty('transform-origin', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform-origin')
-      transformOriginActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
-      transformOriginActualFlat.value = actualValueFlat ?? ''
-      // text 元素
-      const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform-origin')
-      transformOriginActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
-      transformOriginActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素
-      const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform-origin')
-      transformOriginActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
-      transformOriginActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -274,24 +259,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRefDynamic.value?.style.getPropertyValue('transform-origin')
-    transformOriginActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
-    transformOriginActualFlat.value = actualValueFlat ?? ''
-    // text 元素
-    const actualValueText = textRefDynamic.value?.style.getPropertyValue('transform-origin')
-    transformOriginActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
-    transformOriginActualTextFlat.value = actualValueTextFlat ?? ''
-    // image 元素
-    const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transform-origin')
-    transformOriginActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform-origin')
-    transformOriginActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 </script>
 

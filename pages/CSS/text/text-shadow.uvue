@@ -77,21 +77,18 @@
   const textRef = ref(null as UniTextElement | null)
   const textRefFlat = ref(null as UniTextElement | null)
 
+  const getPropertyValues = () => {
+    textShadowActual.value = textRef.value?.style.getPropertyValue('text-shadow') ?? ''
+    textShadowActualFlat.value = textRefFlat.value?.style.getPropertyValue('text-shadow') ?? ''
+  }
+
   const changeTextShadow = (value: string) => {
     textShadow.value = value
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('text-shadow', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('text-shadow', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // text 元素 - 普通版本
-      const actualValue = textRef.value?.style.getPropertyValue('text-shadow')
-      textShadowActual.value = actualValue ?? ''
-      // text 元素 - 拍平版本
-      const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-shadow')
-      textShadowActualFlat.value = actualValueFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -107,12 +104,7 @@
   }
 
   onReady(() => {
-    // text 元素 - 普通版本
-    const actualValue = textRef.value?.style.getPropertyValue('text-shadow')
-    textShadowActual.value = actualValue ?? ''
-    // text 元素 - 拍平版本
-    const actualValueFlat = textRefFlat.value?.style.getPropertyValue('text-shadow')
-    textShadowActualFlat.value = actualValueFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

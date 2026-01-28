@@ -4,49 +4,60 @@
   <!-- #endif -->
     <view style="flex-grow: 1;">
       <view>
-        <text>border: 5px dotted blue</text>
-        <view class="common" style="border: 5px dotted blue;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border: 5px dotted blue;" flatten></view>
-      </view>
-      <view>
         <text>border与background-image同时设置</text>
         <view class="common"
           style="border-style: solid;border-color: rgba(0, 0, 255, 0.1);background-image: linear-gradient(to right, #00ff00, #00bc79)">
         </view>
       </view>
+
+      <view>
+        <text>设置border 多次赋值的场景</text>
+        <view class="demo-box">
+          <view class="common multi-times-border"></view>
+          <view class="multi-times-border" style="width: 150px;height: 50px;"></view>
+        </view>
+      </view>
+
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
+      <view>
+        <text>border: 5px dotted blue</text>
+        <view class="demo-box">
+          <view class="common" style="border: 5px dotted blue;"></view>
+          <view class="common" style="border: 5px dotted blue;" flatten></view>
+        </view>
+      </view>
+
       <view>
         <text>设置border的view，通过v-show控制显示</text>
-        <view v-show="shown">
+        <view v-show="shown" class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
-          <text>拍平测试</text>
           <view class="common" style="border: 5px dotted blue;" flatten></view>
         </view>
       </view>
       <view>
         <text>设置border 多次赋值的场景</text>
-        <view>
-          <view class="common multi-times-border"></view>
-          <view class="multi-times-border" style="width: 150px;height: 100px;"></view>
-          <view class="multi-times-border" style="border-right: 6px solid blue; width: 150px;height: 100px;"></view>
-          <text>拍平测试</text>
-          <view class="multi-times-border" style="border-right: 6px solid blue; width: 150px;height: 100px;" flatten></view>
+        <view class="demo-box">
+          <view class="multi-times-border" style="border-right: 6px solid blue; width: 150px;height: 50px;"></view>
+          <view class="multi-times-border" style="border-right: 6px solid blue; width: 150px;height: 50px;" flatten></view>
+        </view>
+        <view class="demo-box">
           <view class="common multi-times-border" style='border: dashed'></view>
-          <text>拍平测试</text>
           <view class="common multi-times-border" style='border: dashed' flatten></view>
         </view>
       </view>
       <view>
         <text>text组件: border: 5px dotted blue</text>
-        <text class="text-border" style="border: 5px dotted blue;">测试文本</text>
-        <text>拍平测试</text>
-        <text class="text-border" style="border: 5px dotted blue;" flatten>测试文本</text>
+        <view class="demo-box">
+          <text class="text-border" style="border: 5px dotted blue;">测试文本</text>
+          <text class="text-border" style="border: 5px dotted blue;" flatten>测试文本</text>
+        </view>
       </view>
       <view>
         <text>image组件: border: 5px dotted blue</text>
-        <image class="image-border" style="border: 5px dotted blue;" src="/static/test-image/logo.png"></image>
-        <text>拍平测试</text>
-        <image class="image-border" style="border: 5px dotted blue;" src="/static/test-image/logo.png" flatten></image>
+        <view class="demo-box">
+          <image class="image-border" style="border: 5px dotted blue;" src="/static/test-image/logo.png"></image>
+          <image class="image-border" style="border: 5px dotted blue;" src="/static/test-image/logo.png" flatten></image>
+        </view>
       </view>
 
       <view class="uni-common-mt">
@@ -154,42 +165,27 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    const actualValue = viewRef.value?.style.getPropertyValue('border')
+    borderActual.value = actualValue ?? ''
+    borderActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border') ?? ''
+    borderActualText.value = textRef.value?.style.getPropertyValue('border') ?? ''
+    borderActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border') ?? ''
+    borderActualImage.value = imageRef.value?.style.getPropertyValue('border') ?? ''
+    borderActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border') ?? ''
+  }
+
   const changeBorder = (value: string) => {
     border.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border')
-      console.log('actualValue',actualValue)
-      borderActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border')
-      borderActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border')
-      borderActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border')
-      borderActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border')
-      borderActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border')
-      borderActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -204,36 +200,21 @@
     changeBorder(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border')
-    borderActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border')
-    borderActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border')
-    borderActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border')
-    borderActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border')
-    borderActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border')
-    borderActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 </script>
 
 <style>
   .common {
     width: 150px;
-    height: 100px;
+    height: 50px;
     background-color: gray;
+  }
+  .demo-box{
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-between;
   }
 
   .multi-times-border {
@@ -283,6 +264,9 @@
   .test-item {
     flex: 1;
     margin: 0 5px;
+  }
+  .test-text{
+    height:50px;
   }
 
   .test-box {

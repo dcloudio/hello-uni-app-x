@@ -130,26 +130,20 @@
     { value: 6, name: 'cubic-bezier(0.42, 0, 0.58, 1)' },
   ]
 
+  const getPropertyValues = () => {
+    transitionTimingFunctionActual.value = viewRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
+    transitionTimingFunctionActualText.value = textRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
+    transitionTimingFunctionActualImage.value = imageRefDynamic.value?.style.getPropertyValue('transition-timing-function') ?? ''
+  }
+
   const changeTransitionTimingFunctionDynamic = (value: string) => {
     transitionTimingFunctionDynamic.value = value
-    // view 元素
     viewRefDynamic.value?.style.setProperty('transition-timing-function', value)
-    // text 元素
     textRefDynamic.value?.style.setProperty('transition-timing-function', value)
-    // image 元素
     imageRefDynamic.value?.style.setProperty('transition-timing-function', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素
-      const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-timing-function')
-      transitionTimingFunctionActual.value = actualValue ?? ''
-      // text 元素
-      const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-timing-function')
-      transitionTimingFunctionActualText.value = actualValueText ?? ''
-      // image 元素
-      const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-timing-function')
-      transitionTimingFunctionActualImage.value = actualValueImage ?? ''
+      getPropertyValues()
     })
   }
 
@@ -183,15 +177,7 @@
   }
 
   onReady(() => {
-    // view 元素
-    const actualValue = viewRefDynamic.value?.style.getPropertyValue('transition-timing-function')
-    transitionTimingFunctionActual.value = actualValue ?? ''
-    // text 元素
-    const actualValueText = textRefDynamic.value?.style.getPropertyValue('transition-timing-function')
-    transitionTimingFunctionActualText.value = actualValueText ?? ''
-    // image 元素
-    const actualValueImage = imageRefDynamic.value?.style.getPropertyValue('transition-timing-function')
-    transitionTimingFunctionActualImage.value = actualValueImage ?? ''
+    getPropertyValues()
   })
 
   defineExpose({

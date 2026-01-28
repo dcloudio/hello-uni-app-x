@@ -3,61 +3,68 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
+      <text class="uni-tips">说明：左边是正常版本，右边是拍平版本</text>
       <view>
         <text>border-color: red</text>
-        <view class="common" style="border-width: 5px; border-color: red; border-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-width: 5px; border-color: red; border-style: solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: red; border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: red; border-style: solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-color: #00FF00</text>
-        <view class="common" style="border-width: 5px; border-color: #00FF00; border-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-width: 5px; border-color: #00FF00; border-style: solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: #00FF00; border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: #00FF00; border-style: solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-color: rgb(0,0,255)</text>
-        <view class="common" style="border-width: 5px; border-color: rgb(0,0,255); border-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-width: 5px; border-color: rgb(0,0,255); border-style: solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: rgb(0,0,255); border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: rgb(0,0,255); border-style: solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-color: rgba(0,255,255,0.5)</text>
-        <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;"></view>
+          <view class="common" style="border-width: 5px; border-color: rgba(0,255,255,0.5); border-style: solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-left-color: red</text>
-        <view class="common" style="border-left-width: 5px; border-left-color: red; border-left-style:solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-left-width: 5px; border-left-color: red; border-left-style:solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-left-width: 5px; border-left-color: red; border-left-style:solid;"></view>
+          <view class="common" style="border-left-width: 5px; border-left-color: red; border-left-style:solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-top-color: green</text>
-        <view class="common" style="border-top-width: 5px; border-top-color: green; border-top-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-top-width: 5px; border-top-color: green; border-top-style: solid;" flatten></view>
+        <view class="demo-box">
+          <view class="common" style="border-top-width: 5px; border-top-color: green; border-top-style: solid;"></view>
+          <view class="common" style="border-top-width: 5px; border-top-color: green; border-top-style: solid;" flatten></view>
+        </view>
       </view>
 
       <view>
         <text>border-right-color: yellow</text>
-        <view class="common" style="border-right-width: 5px; border-right-color: yellow; border-right-style: solid;"></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-right-width: 5px; border-right-color: yellow; border-right-style: solid;" flatten>
+        <view class="demo-box">
+          <view class="common" style="border-right-width: 5px; border-right-color: yellow; border-right-style: solid;"></view>
+          <view class="common" style="border-right-width: 5px; border-right-color: yellow; border-right-style: solid;" flatten></view>
         </view>
       </view>
 
       <view>
         <text>border-bottom-color: blue</text>
-        <view class="common" style="border-bottom-width: 5px; border-bottom-color: blue; border-bottom-style: solid; "></view>
-        <text>拍平测试</text>
-        <view class="common" style="border-bottom-width: 5px; border-bottom-color: blue; border-bottom-style: solid; " flatten>
+        <view class="demo-box">
+          <view class="common" style="border-bottom-width: 5px; border-bottom-color: blue; border-bottom-style: solid; "></view>
+          <view class="common" style="border-bottom-width: 5px; border-bottom-color: blue; border-bottom-style: solid; " flatten></view>
         </view>
       </view>
 
@@ -166,41 +173,26 @@
   const textRefFlat = ref(null as UniTextElement | null)
   const imageRefFlat = ref(null as UniImageElement | null)
 
+  const getPropertyValues = () => {
+    borderColorActual.value = viewRef.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualFlat.value = viewRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualText.value = textRef.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualTextFlat.value = textRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualImage.value = imageRef.value?.style.getPropertyValue('border-color') ?? ''
+    borderColorActualImageFlat.value = imageRefFlat.value?.style.getPropertyValue('border-color') ?? ''
+  }
+
   const changeBorderColor = (value: string) => {
     borderColor.value = value
-    // view 元素 - 普通版本
     viewRef.value?.style.setProperty('border-color', value)
-    // view 元素 - 拍平版本
     viewRefFlat.value?.style.setProperty('border-color', value)
-    // text 元素 - 普通版本
     textRef.value?.style.setProperty('border-color', value)
-    // text 元素 - 拍平版本
     textRefFlat.value?.style.setProperty('border-color', value)
-    // image 元素 - 普通版本
     imageRef.value?.style.setProperty('border-color', value)
-    // image 元素 - 拍平版本
     imageRefFlat.value?.style.setProperty('border-color', value)
-
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
-      // view 元素 - 普通版本
-      const actualValue = viewRef.value?.style.getPropertyValue('border-color')
-      borderColorActual.value = actualValue ?? ''
-      // view 元素 - 拍平版本
-      const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-color')
-      borderColorActualFlat.value = actualValueFlat ?? ''
-      // text 元素 - 普通版本
-      const actualValueText = textRef.value?.style.getPropertyValue('border-color')
-      borderColorActualText.value = actualValueText ?? ''
-      // text 元素 - 拍平版本
-      const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-color')
-      borderColorActualTextFlat.value = actualValueTextFlat ?? ''
-      // image 元素 - 普通版本
-      const actualValueImage = imageRef.value?.style.getPropertyValue('border-color')
-      borderColorActualImage.value = actualValueImage ?? ''
-      // image 元素 - 拍平版本
-      const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color')
-      borderColorActualImageFlat.value = actualValueImageFlat ?? ''
+      getPropertyValues()
     })
   }
 
@@ -215,28 +207,8 @@
     changeBorderColor(value)
   }
 
-  // 页面初次渲染完成后获取初始值
   onReady(() => {
-    // view 元素 - 普通版本
-    const actualValue = viewRef.value?.style.getPropertyValue('border-color')
-    borderColorActual.value = actualValue ?? ''
-    // view 元素 - 拍平版本
-    const actualValueFlat = viewRefFlat.value?.style.getPropertyValue('border-color')
-    borderColorActualFlat.value = actualValueFlat ?? ''
-
-    // text 元素 - 普通版本
-    const actualValueText = textRef.value?.style.getPropertyValue('border-color')
-    borderColorActualText.value = actualValueText ?? ''
-    // text 元素 - 拍平版本
-    const actualValueTextFlat = textRefFlat.value?.style.getPropertyValue('border-color')
-    borderColorActualTextFlat.value = actualValueTextFlat ?? ''
-
-    // image 元素 - 普通版本
-    const actualValueImage = imageRef.value?.style.getPropertyValue('border-color')
-    borderColorActualImage.value = actualValueImage ?? ''
-    // image 元素 - 拍平版本
-    const actualValueImageFlat = imageRefFlat.value?.style.getPropertyValue('border-color')
-    borderColorActualImageFlat.value = actualValueImageFlat ?? ''
+    getPropertyValues()
   })
 
   defineExpose({
@@ -247,8 +219,14 @@
 <style>
   .common {
     width: 150px;
-    height: 100px;
+    height: 50px;
     background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-around;
   }
 
   .common-dynamic {
