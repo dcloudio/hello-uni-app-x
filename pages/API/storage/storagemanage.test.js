@@ -10,10 +10,17 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isIos = platformInfo.startsWith('ios')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('Storage管理器页面-多类型新增', () => {
   if (isIos) {
   	it('skip not support', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+  if (isDom2) {
+  	it('dom2 暂不支持 .input api', () => {
   		expect(1).toBe(1)
   	})
   	return
