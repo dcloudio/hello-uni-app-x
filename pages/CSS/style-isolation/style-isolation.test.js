@@ -21,7 +21,7 @@ describe('style-isolation', () => {
     const levelEl = await page.$('.level-child-class')
 		const levelElStyle = await levelEl.style('background-color')
     if(isHarmony){
-      expect(levelElStyle).toBe('#00aaffff')
+      expect(levelElStyle).toBe('rgb(0,170,255)')
     }
     if(isWeb){
       expect(levelElStyle).toBe('rgb(0, 170, 255)')
@@ -34,7 +34,7 @@ describe('style-isolation', () => {
     const comBoxEl = await compIsolatedEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
     if(isHarmony){
-      expect(comBoxStyle).toBe('#d9d1ffff')
+      expect(comBoxStyle).toBe('rgb(217,209,255)')
     }
     if(isWeb){
       expect(comBoxStyle).toBe('rgb(217, 209, 255)')
@@ -51,7 +51,7 @@ describe('style-isolation', () => {
     const comBoxEl = await compAppEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
     if(isHarmony){
-      expect(comBoxStyle).toBe('#d9d1ffff')
+      expect(comBoxStyle).toBe('rgb(217,209,255)')
     }
     if(isWeb){
       expect(comBoxStyle).toBe('rgb(217, 209, 255)')
@@ -74,7 +74,7 @@ describe('style-isolation', () => {
     const comBoxEl = await compAppAndPageEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
     if(isHarmony){
-      expect(comBoxStyle).toBe('#e8f5e9ff')
+      expect(comBoxStyle).toBe('rgb(232,245,233)')
     }
     if(isWeb){
       expect(comBoxStyle).toBe('rgb(232, 245, 233)')
