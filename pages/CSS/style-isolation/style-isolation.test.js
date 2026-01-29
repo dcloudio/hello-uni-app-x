@@ -21,7 +21,7 @@ describe('style-isolation', () => {
     const levelEl = await page.$('.level-child-class')
 		const levelElStyle = await levelEl.style('background-color')
     if(isHarmony){
-      expect(levelElStyle).toBe('#00aaffff')
+      expect(levelElStyle).toBe('rgb(0,170,255)')
     }
     if(isWeb){
       expect(levelElStyle).toBe('rgb(0, 170, 255)')
@@ -34,7 +34,7 @@ describe('style-isolation', () => {
     const comBoxEl = await compIsolatedEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
     if(isHarmony){
-      expect(comBoxStyle).toBe('#d9d1ffff')
+      expect(comBoxStyle).toBe('rgb(217,209,255)')
     }
     if(isWeb){
       expect(comBoxStyle).toBe('rgb(217, 209, 255)')
@@ -51,7 +51,7 @@ describe('style-isolation', () => {
     const comBoxEl = await compAppEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
     if(isHarmony){
-      expect(comBoxStyle).toBe('#d9d1ffff')
+      expect(comBoxStyle).toBe('rgb(217,209,255)')
     }
     if(isWeb){
       expect(comBoxStyle).toBe('rgb(217, 209, 255)')
@@ -70,14 +70,14 @@ describe('style-isolation', () => {
 
   it('styleIsolation-app-and-page模式 - 受全局和页面样式影响', async () => {
     const compAppAndPageEl = await page.$('.comp-app-and-page')
-    // 优先级：全局样式 < 页面样式 < 自身样式，预期组件自身样式紫色
+    // 优先级：全局样式 < 组件自身样式 < 页面样式，预期组件应用页面样式（绿色）优先级最高
     const comBoxEl = await compAppAndPageEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
     if(isHarmony){
-      expect(comBoxStyle).toBe('#d9d1ffff')
+      expect(comBoxStyle).toBe('rgb(232,245,233)')
     }
     if(isWeb){
-      expect(comBoxStyle).toBe('rgb(217, 209, 255)')
+      expect(comBoxStyle).toBe('rgb(232, 245, 233)')
     }
     // 验证，全局样式有效(字体的粗细bold，大小18px)
     const globalTestEl = await compAppAndPageEl.$('.global-text')

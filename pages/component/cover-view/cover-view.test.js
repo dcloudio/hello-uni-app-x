@@ -4,6 +4,7 @@ const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('web-cover-view', () => {
   if (isAppWebView) {
@@ -21,19 +22,21 @@ describe('web-cover-view', () => {
     let checkElementResult = false;
 
     await page.waitFor(async () => {
-      const isCoverViewExist = await page.waitFor('cover-view');
-      let isCoverImageExist, isMapExist = true;
-      if(isApp){
-      // app 端 cover-image 会被转换为 image
-        isCoverImageExist = await page.waitFor('image');
-      }else{
-        isCoverImageExist = await page.waitFor('cover-image');
-        isMapExist = await page.waitFor('map');
-      }
-      checkElementResult = isCoverViewExist && isCoverImageExist && isMapExist;
       if (Date.now() - startTime > 5000) {
         return true;
       }
+      let isCoverImageExist, isMapExist = true;
+      // harmony ios cover-view 会被转换为 view
+      const isCoverViewExist = isHarmony || isIos || await page.$('cover-view');
+      if(isApp){
+      // app 端 cover-image 会被转换为 image
+        isCoverImageExist = !!(await page.$('image'));
+      }else{
+        isCoverImageExist = !!(await page.$('cover-image'));
+        isMapExist = !!(await page.$('map'));
+      }
+      checkElementResult = isCoverViewExist && isCoverImageExist && isMapExist;
+      return checkElementResult;
     })
 
     expect(checkElementResult).toBe(true);
