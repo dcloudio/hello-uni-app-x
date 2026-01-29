@@ -26,8 +26,8 @@ describe('web-cover-view', () => {
         return true;
       }
       let isCoverImageExist, isMapExist = true;
-      // dom2 cover-view 会被转换为 view
-      const isCoverViewExist = isDom2 || !!(await page.$('cover-view'));
+      // harmony ios cover-view 会被转换为 view
+      const isCoverViewExist = isHarmony || isIos || await page.$('cover-view');
       if(isApp){
       // app 端 cover-image 会被转换为 image
         isCoverImageExist = !!(await page.$('image'));
