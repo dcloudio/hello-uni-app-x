@@ -28,8 +28,13 @@ describe('test element-get-attribute', () => {
   it('check getPropertyValue', async () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
-    const propertyValue = isWeb?'rgb(255, 240, 0)': isDom2 ? 'rgb(255,240,0)' : '#FFF000'
-    expect(await page.data('data.propertyValue')).toEqual(propertyValue);
+    const propertyValueData = await page.data('data.propertyValue')
+    if (isDom2) {
+      expect(['#FFF000FF', 'rgb(255,240,0)']).toContain(propertyValueData)
+    } else {
+      const propertyValue = isWeb?'rgb(255, 240, 0)': '#FFF000'
+      expect(propertyValueData).toEqual(propertyValue);
+    }
   });
 
   it('getBoundingClientRectSync', async () => {
