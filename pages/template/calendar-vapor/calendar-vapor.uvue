@@ -388,10 +388,11 @@
 		if (valueAsString.length > 2) {
 			const parts = valueAsString.split('-')
 			if (parts.length >= 2) {
-				currentYear.value = parseInt(parts[0])
-				currentMonth.value = parseInt(parts[1])
-				initSwiperItems()
+				// 先归位，后更新数据，因为需要保持当前月在中间
 				swiperCurrent.value = 1
+				nextTick(() => {
+					switchToMonth(parseInt(parts[0]), parseInt(parts[1]), 1)
+				})
 			}
 		}
 	}
