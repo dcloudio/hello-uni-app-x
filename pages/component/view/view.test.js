@@ -68,7 +68,12 @@ const isHarmony = platformInfo.startsWith('harmony')
 
       // 通过检查样式来判断 hover-class 是否生效
       const viewChild1 = await page.$('#view-child1')
-      expect(await viewChild1.style('background-color')).toBe(isDom2 ? 'rgb(23,155,22)' : '#179b16')
+      const bgColor = await viewChild1.style('background-color')
+      if (isDom2) {
+        expect(['#179b16ff', 'rgb(23,155,22)']).toContain(bgColor)
+      } else {
+        expect(bgColor).toBe('#179b16')
+      }
     })
   }
 })
