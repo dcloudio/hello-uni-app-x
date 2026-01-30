@@ -1,5 +1,5 @@
 <template>
-  <scroll-view ref="pageScrollView" class="page" :bounces="false" type="nested">
+  <scroll-view ref="pageScrollView" class="page" type="nested" :refresher-triggered="refresherTriggered" refresher-enabled="true" @refresherrefresh="onRefresherrefresh">
     <nested-scroll-header>
       <swiper ref="header" indicator-dots="true" circular="true" style="height: 150px;">
         <swiper-item v-for="i in 3" :item-id="''+i" style="height: 100%;align-items: center;justify-content: center;">
@@ -98,6 +98,14 @@
   const swipertab = ref<UniElement[]>([]);
   const swiper = ref<UniSwiperElement | null>(null);
   const longPageRef = ref<ComponentPublicInstance[]>([]);
+  const refresherTriggered = ref(false);
+
+  function onRefresherrefresh(e : UniRefresherEvent) {
+    refresherTriggered.value = true;
+    longPageRef.value[swiperIndex.value].$callMethod('refreshData', () => {
+      refresherTriggered.value = false;
+    });
+  }
 
   function initSwiperItemData(index : number) {
     if (!swiperList.value[index].preload) {
