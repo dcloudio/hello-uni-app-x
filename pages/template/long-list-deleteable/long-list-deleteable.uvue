@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <list-view class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
+    <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
       <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
         :style="{ backgroundColor: item.bgColor, transform: getItemVerticalTransform(index), zIndex: getItemZIndex(index) }"
         @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
@@ -107,6 +107,7 @@
   }
 
   const items = ref<ListItemData[]>(generateItems())
+  const listRef = ref<UniElement | null>(null)
 
   // 侧滑相关状态
   const MENU_WIDTH = 80 // 菜单宽度
@@ -139,7 +140,8 @@
   let isDeleting = false
   const isDeleteAnimating = ref(false) // 删除动画进行中（用于控制菜单显示）
   const deletingIndex = ref(-1) // 正在删除的索引
-  const deleteAnimationOffset = ref(0) // 下方列表项向上移动的偏移量
+  const deleteAnimationOffsetBelow = ref(0) // 下方列表项向上移动的偏移量
+  const deleteAnimationOffsetAbove = ref(0) // 上方列表项向下移动的偏移量
   const deletedItemHeight = ref(0) // 被删除项的高度
   const deleteItemOffsetX = ref(0) // 被删除项向左移出的偏移量
 
@@ -158,6 +160,14 @@
     if (menuVisible.value || isDeleteAnimating.value) return 'visible'
     return 'hidden'
   })
+
+  let visibleStartIndex = 0
+  let visibleEndIndex = -1
+  const VISIBLE_RANGE_BUFFER = 1
+
+  const isIndexInVisibleRange = (index : number) : boolean => {
+    return index >= visibleStartIndex - VISIBLE_RANGE_BUFFER && index <= visibleEndIndex + VISIBLE_RANGE_BUFFER
+  }
 
   // #ifdef WEB
   // Web 平台安全区域高度
@@ -199,17 +209,27 @@
   // TODO 优化这批函数触发响应式时的性能。目前蒸汽模式下list-item vue实例也会回收，这些函数卡顿不明显。但是在非蒸汽模式下会比较影响性能
   // 获取列表项的垂直 transform（删除动画）
   const getItemVerticalTransform = (index : number) : string => {
-    // 删除动画：被删除项下方的项向上移动
-    if (deletingIndex.value != -1 && index > deletingIndex.value) {
-      return `translateY(${-deleteAnimationOffset.value}px)`
+    if (deletingIndex.value != -1 && isDeleteAnimating.value) {
+      const isVisible = isIndexInVisibleRange(index)
+      if (isVisible && index > deletingIndex.value) {
+        return `translateY(${-deleteAnimationOffsetBelow.value}px)`
+      }
+      if (isVisible && index < deletingIndex.value) {
+        return `translateY(${deleteAnimationOffsetAbove.value}px)`
+      }
     }
     return 'translateY(0px)'
   }
 
   const getItemZIndex = (index : number) : number => {
+    console.log(deletingIndex.value)
     // 用于处理被删除项和其后一项的层级问题，蒸汽模式app端list-item复用时不会确保层级正确
-    if (deletingIndex.value != -1 && deletingIndex.value + 1 == index) {
-      return 1
+    if (deletingIndex.value != -1) {
+      if (deletingIndex.value + 1 == index) {
+        return 1
+      } else if (deletingIndex.value - 1 == index) {
+        return 1
+      }
     }
     return 0
   }
@@ -425,10 +445,9 @@
   }
 
   // 列表滚动事件
-  const onListScroll = (_ : ScrollEvent) => {
+  const onListScroll = (e : UniScrollEvent) => {
     // 标记正在滚动
     isScrolling = true
-
     // 清除之前的定时器
     if (scrollEndTimer != null) {
       clearTimeout(scrollEndTimer!)
@@ -460,7 +479,8 @@
 
   // 删除动画相关变量
   let deleteAnimationStartTime = 0
-  let deleteAnimationTargetVertical = 0
+  let deleteAnimationTargetBelow = 0
+  let deleteAnimationTargetAbove = 0
   let deleteAnimationTargetHorizontal = 0
   let deleteAnimationStartHorizontal = 0
   let deleteAnimationIndexToDelete = -1
@@ -475,7 +495,9 @@
     const easeOut = 1 - Math.pow(1 - progress, 2)
 
     // 下方列表项向上移动
-    deleteAnimationOffset.value = deleteAnimationTargetVertical * easeOut
+    deleteAnimationOffsetBelow.value = deleteAnimationTargetBelow * easeOut
+    // 上方列表项向下移动
+    deleteAnimationOffsetAbove.value = deleteAnimationTargetAbove * easeOut
 
     // 被删除项继续向左移出（速度略慢，让下方项能覆盖住）
     const horizontalProgress = Math.min(progress * 0.85, 1)
@@ -491,7 +513,8 @@
   // 删除动画完成处理
   const finishDeleteAnimation = () => {
     // 重置动画状态
-    deleteAnimationOffset.value = 0
+    deleteAnimationOffsetBelow.value = 0
+    deleteAnimationOffsetAbove.value = 0
     deletingIndex.value = -1
     deletedItemHeight.value = 0
     deleteItemOffsetX.value = 0
@@ -527,8 +550,9 @@
 
     // 保存删除项信息用于动画
     deletingIndex.value = indexToDelete
-    deletedItemHeight.value = itemToDelete.height
-    deleteAnimationOffset.value = 0
+    deletedItemHeight.value = currentListItemElement!.getBoundingClientRect().height
+    deleteAnimationOffsetBelow.value = 0
+    deleteAnimationOffsetAbove.value = 0
     deleteItemOffsetX.value = -MENU_WIDTH // 从当前展开位置开始
     isDeleting = true
     isDeleteAnimating.value = true
@@ -540,13 +564,53 @@
     menuVisible.value = false
     activeIndex.value = -1
 
-    // 设置动画参数
+    let itemElements = listRef.value!.querySelectorAll('.item-wrapper')!
+    // #ifdef VUE3-VAPOR && APP
+    // TODO 底层处理querySelectorAll顺序问题后移除此排序逻辑
+    itemElements = itemElements.sort((itemElement1, itemElement2) => {
+      return itemElement1.getBoundingClientRect().top - itemElement2.getBoundingClientRect().top
+    })
+    // #endif
+    // 按照删除项位置计算上下偏移目标
+    const itemRenderIndex = itemElements.indexOf(currentListItemElement!)
+    if (itemRenderIndex == -1) return
+    const lastItemElement = itemElements[itemElements.length - 1]
+    const lastItemRect = lastItemElement.getBoundingClientRect()
+    const lastItemBottom = lastItemRect.top + lastItemRect.height
+    const listRect = listRef.value!.getBoundingClientRect()
+    const listBottom = listRect.top + listRect.height
+    const lastItemOffsetBottom = Math.max(0, lastItemBottom - listBottom)
+    if (lastItemOffsetBottom < deletedItemHeight.value) {
+      deleteAnimationTargetBelow = lastItemOffsetBottom
+      deleteAnimationTargetAbove = deletedItemHeight.value - lastItemOffsetBottom
+    } else {
+      deleteAnimationTargetBelow = deletedItemHeight.value
+      deleteAnimationTargetAbove = 0
+    }
     deleteAnimationStartTime = Date.now()
-    deleteAnimationTargetVertical = deletedItemHeight.value
     deleteAnimationStartHorizontal = -MENU_WIDTH
     deleteAnimationTargetHorizontal = -(MENU_WIDTH + 400)
     deleteAnimationIndexToDelete = indexToDelete
 
+    visibleStartIndex = indexToDelete
+    visibleEndIndex = indexToDelete
+    for (let i = itemRenderIndex - 1; i >= 0; i--) {
+      const itemElement = itemElements[i]
+      const itemRect = itemElement.getBoundingClientRect()
+      const itemBottom = itemRect.top + itemRect.height
+      if (itemBottom <= listRect.top || i == 0) {
+        visibleStartIndex = Math.max(0, indexToDelete - itemRenderIndex + i - 1)
+        break
+      }
+    }
+    for (let i = itemRenderIndex + 1; i < itemElements.length; i++) {
+      const itemElement = itemElements[i]
+      const itemRect = itemElement.getBoundingClientRect()
+      if (itemRect.top >= listRect.bottom || i == itemElements.length - 1) {
+        visibleEndIndex = Math.min(indexToDelete + i - itemRenderIndex + 1, items.value.length - 1)
+        break
+      }
+    }
     // 开始动画
     scheduleNextAnimationFrame()
   }
