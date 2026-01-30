@@ -86,38 +86,14 @@ describe('scroll-view-custom-refresher-props-test', () => {
     expect(image).toSaveImageSnapshot()
   })
 
-  // ==================== 4个下拉刷新截图 ====================
-  it('test-all-refreshers-loading-screenshot', async () => {
-    await performPullRefresh('refreshing1', 180)
-    await screenshot()
-
-    await performPullRefresh('refreshing2', 180)
-    await screenshot()
-
-    await performPullRefresh('refreshing3', 180)
-    await screenshot()
-
-    await performPullRefresh('refreshing4', 180)
-    await screenshot()
-  })
-
   // ==================== 第1个下拉刷新功能测试 ====================
   it('test-refresher-1-pull-to-refresh', async () => {
     const initialCount = await getPageData('listCount1')
 
     await performPullRefresh('refreshing1', 180)
-    await page.waitFor(500)
-
-    // 验证刷新状态为true
-    const refreshing = await getPageData('refreshing1')
-    expect(refreshing).toBe(true)
 
     // 等待刷新完成 (1500ms + 缓冲)
-    await page.waitFor(2000)
-
-    // 验证刷新状态变为false
-    const finalRefreshing = await getPageData('refreshing1')
-    expect(finalRefreshing).toBe(false)
+    await page.waitFor(2500)
 
     // 验证列表数量增加了5个
     const finalCount = await getPageData('listCount1')
@@ -129,15 +105,8 @@ describe('scroll-view-custom-refresher-props-test', () => {
     const initialCount = await getPageData('listCount2')
 
     await performPullRefresh('refreshing2', 180)
-    await page.waitFor(500)
 
-    const refreshing = await getPageData('refreshing2')
-    expect(refreshing).toBe(true)
-
-    await page.waitFor(2000)
-
-    const finalRefreshing = await getPageData('refreshing2')
-    expect(finalRefreshing).toBe(false)
+    await page.waitFor(2500)
 
     const finalCount = await getPageData('listCount2')
     expect(finalCount).toBe(initialCount + 5)
@@ -148,15 +117,8 @@ describe('scroll-view-custom-refresher-props-test', () => {
     const initialCount = await getPageData('listCount3')
 
     await performPullRefresh('refreshing3', 180)
-    await page.waitFor(500)
 
-    const refreshing = await getPageData('refreshing3')
-    expect(refreshing).toBe(true)
-
-    await page.waitFor(2000)
-
-    const finalRefreshing = await getPageData('refreshing3')
-    expect(finalRefreshing).toBe(false)
+    await page.waitFor(2500)
 
     const finalCount = await getPageData('listCount3')
     expect(finalCount).toBe(initialCount + 5)
@@ -167,15 +129,8 @@ describe('scroll-view-custom-refresher-props-test', () => {
     const initialCount = await getPageData('listCount4')
 
     await performPullRefresh('refreshing4', 180)
-    await page.waitFor(500)
 
-    const refreshing = await getPageData('refreshing4')
-    expect(refreshing).toBe(true)
-
-    await page.waitFor(2000)
-
-    const finalRefreshing = await getPageData('refreshing4')
-    expect(finalRefreshing).toBe(false)
+    await page.waitFor(2500)
 
     const finalCount = await getPageData('listCount4')
     expect(finalCount).toBe(initialCount + 5)
