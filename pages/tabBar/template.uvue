@@ -40,6 +40,9 @@
 </template>
 
 <script setup lang="uts">
+  // #ifdef VUE3-VAPOR && APP || WEB
+  import { generateMockList } from '../template/long-list-perf/mock-data'
+  // #endif
   defineOptions({
     styleIsolation: 'app'
   })
@@ -387,6 +390,10 @@
   // #endif
 
   onMounted(() => {
+    // #ifdef VUE3-VAPOR && APP || WEB
+    // 预加载长列表数据
+    generateMockList()
+    // #endif
     // 预请求网络，只发送head请求，预先完成dns解析和tcp握手，提升后续请求速度
     uni.request({
       url: 'https://unidemo.dcloud.net.cn', // 替换为实际请求的URL
