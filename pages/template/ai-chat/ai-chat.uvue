@@ -52,6 +52,15 @@
     type : string;
     height : number;
   }
+  // 自动化测试使用
+  type AutoTest = {
+    done : boolean;
+    waitNode1:boolean;
+    waitNode2:boolean;
+    waitNode3:boolean;
+    waitNode4:boolean;
+    waitNode5:boolean;
+  }
 
   const messageView = ref<UniElement | null>(null)
   const bottom = ref<UniElement | null>(null)
@@ -64,6 +73,15 @@
   const maxKeyboardHeight = ref(0)
   const keyboardIsShow = ref(false)
   const isAndroid = ref(uni.getSystemInfoSync().platform == 'android')
+  // 自动化测试使用，在不同节点截图
+  let autoTest = reactive<AutoTest>({
+    done:false,
+    waitNode1:false,
+    waitNode2:false,
+    waitNode3:false,
+    waitNode4:false,
+    waitNode5:false,
+  })
 
   const screenWidth = computed(() : number => {
     return 1080
@@ -272,6 +290,8 @@
     await typeBlockMixed('p', [
       { text: '完整项目样例请参考 uni-ai x，地址：' }
     ] as SegmentInput[], 60)
+    // 自动化测试例使用
+    autoTest.waitNode1 = true
     // 换行
     rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
     rebuildAndFlush()
@@ -288,6 +308,9 @@
     rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
     rebuildAndFlush()
     await sleep(180)
+    // 自动化测试例使用
+    autoTest.waitNode2 = true
+
     await typeBlock('h2', '中标题', 60)
     rootTail = [...rootTail, { name: 'br' } as ElementNode] as Nodes
     rebuildAndFlush()
@@ -301,6 +324,8 @@
     rebuildAndFlush()
     await sleep(180)
     await typeBlock('p', '这是段落文字。', 60)
+    // 自动化测试例使用
+    autoTest.waitNode3 = true
 
     // 3）加粗斜体，逐字出
     await sleep(220)
@@ -314,6 +339,8 @@
       { text: '斜体', i: true },
       { text: ' 的示例。' }
     ] as SegmentInput[], 60)
+    // 自动化测试例使用
+    autoTest.waitNode4 = true
 
     // 4）无序列表（其中一项加粗），标题逐字出
     await sleep(220)
@@ -327,6 +354,8 @@
       { text: '香蕉（加粗）', bold: true },
       { text: '橙子' }
     ] as ListItemInput[], 70, 180)
+    // 自动化测试例使用
+    autoTest.waitNode5 = true
 
     // 5）有序列表（其中一项加粗），标题逐字出
     await sleep(220)
@@ -358,6 +387,8 @@
     ] as SegmentInput[], 60)
     await sleep(180)
     await typeBlock('blockquote', '这是一段引用。', 60)
+    //仅供测试例使用
+    autoTest.done = true
   }
 
   function send() {
@@ -395,6 +426,8 @@
   onReady(() => {
     getMessage()
   })
+
+  defineExpose({autoTest})
 </script>
 
 <style scoped lang="scss">
