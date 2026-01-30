@@ -16,7 +16,8 @@
   import { ItemChildType } from '../uni-collapse/item.type.uts'
 
   defineOptions({
-    name: "UniCollapseItem"
+    name: "UniCollapseItem",
+    styleIsolation: 'app'
   })
 
   const props = defineProps({
