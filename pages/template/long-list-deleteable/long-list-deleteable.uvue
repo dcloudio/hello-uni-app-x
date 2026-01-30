@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <list-view id="list-view" class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
+    <list-view class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
       <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
         :style="{ backgroundColor: item.bgColor, transform: getItemVerticalTransform(index), zIndex: getItemZIndex(index) }"
         @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
@@ -139,8 +139,7 @@
   let isDeleting = false
   const isDeleteAnimating = ref(false) // 删除动画进行中（用于控制菜单显示）
   const deletingIndex = ref(-1) // 正在删除的索引
-  const deleteAnimationOffsetBelow = ref(0) // 下方列表项向上移动的偏移量
-  const deleteAnimationOffsetAbove = ref(0) // 上方列表项向下移动的偏移量
+  const deleteAnimationOffset = ref(0) // 下方列表项向上移动的偏移量
   const deletedItemHeight = ref(0) // 被删除项的高度
   const deleteItemOffsetX = ref(0) // 被删除项向左移出的偏移量
 
@@ -200,26 +199,17 @@
   // TODO 优化这批函数触发响应式时的性能。目前蒸汽模式下list-item vue实例也会回收，这些函数卡顿不明显。但是在非蒸汽模式下会比较影响性能
   // 获取列表项的垂直 transform（删除动画）
   const getItemVerticalTransform = (index : number) : string => {
-    if (deletingIndex.value != -1 && isDeleteAnimating.value) {
-      const isVisible = isIndexInVisibleRange(index)
-      if (isVisible && index > deletingIndex.value) {
-        return `translateY(${-deleteAnimationOffsetBelow.value}px)`
-      }
-      if (isVisible && index < deletingIndex.value) {
-        return `translateY(${deleteAnimationOffsetAbove.value}px)`
-      }
+    // 删除动画：被删除项下方的项向上移动
+    if (deletingIndex.value != -1 && index > deletingIndex.value) {
+      return `translateY(${-deleteAnimationOffset.value}px)`
     }
     return 'translateY(0px)'
   }
 
   const getItemZIndex = (index : number) : number => {
     // 用于处理被删除项和其后一项的层级问题，蒸汽模式app端list-item复用时不会确保层级正确
-    if (deletingIndex.value != -1) {
-      if(deletingIndex.value + 1 == index) {
-        return 1
-      } else if (deletingIndex.value - 1 == index) {
-        return 2
-      }
+    if (deletingIndex.value != -1 && deletingIndex.value + 1 == index) {
+      return 1
     }
     return 0
   }
@@ -319,9 +309,6 @@
     if (items.value.length == 0) {
       exitMultiSelectMode()
     }
-
-    rebuildItemOffsets()
-    updateVisibleRange()
   }
 
   // 触摸开始
@@ -438,12 +425,9 @@
   }
 
   // 列表滚动事件
-  const onListScroll = (e : UniScrollEvent) => {
+  const onListScroll = (_ : ScrollEvent) => {
     // 标记正在滚动
     isScrolling = true
-
-    listScrollTop = e.detail.scrollTop
-    updateVisibleRange()
 
     // 清除之前的定时器
     if (scrollEndTimer != null) {
@@ -476,8 +460,7 @@
 
   // 删除动画相关变量
   let deleteAnimationStartTime = 0
-  let deleteAnimationTargetBelow = 0
-  let deleteAnimationTargetAbove = 0
+  let deleteAnimationTargetVertical = 0
   let deleteAnimationTargetHorizontal = 0
   let deleteAnimationStartHorizontal = 0
   let deleteAnimationIndexToDelete = -1
@@ -492,9 +475,7 @@
     const easeOut = 1 - Math.pow(1 - progress, 2)
 
     // 下方列表项向上移动
-    deleteAnimationOffsetBelow.value = deleteAnimationTargetBelow * easeOut
-    // 上方列表项向下移动
-    deleteAnimationOffsetAbove.value = deleteAnimationTargetAbove * easeOut
+    deleteAnimationOffset.value = deleteAnimationTargetVertical * easeOut
 
     // 被删除项继续向左移出（速度略慢，让下方项能覆盖住）
     const horizontalProgress = Math.min(progress * 0.85, 1)
@@ -510,8 +491,7 @@
   // 删除动画完成处理
   const finishDeleteAnimation = () => {
     // 重置动画状态
-    deleteAnimationOffsetBelow.value = 0
-    deleteAnimationOffsetAbove.value = 0
+    deleteAnimationOffset.value = 0
     deletingIndex.value = -1
     deletedItemHeight.value = 0
     deleteItemOffsetX.value = 0
@@ -525,8 +505,6 @@
       // 动画结束，执行删除
       items.value.splice(deleteAnimationIndexToDelete, 1)
       deleteAnimationIndexToDelete = -1
-      rebuildItemOffsets()
-      updateVisibleRange()
     })
   }
 
@@ -550,8 +528,7 @@
     // 保存删除项信息用于动画
     deletingIndex.value = indexToDelete
     deletedItemHeight.value = itemToDelete.height
-    deleteAnimationOffsetBelow.value = 0
-    deleteAnimationOffsetAbove.value = 0
+    deleteAnimationOffset.value = 0
     deleteItemOffsetX.value = -MENU_WIDTH // 从当前展开位置开始
     isDeleting = true
     isDeleteAnimating.value = true
@@ -564,18 +541,8 @@
     activeIndex.value = -1
 
     // 设置动画参数
-    updateListViewport()
-    updateVisibleRange()
-    const totalContentHeight = getTotalContentHeight()
-    const lastItemOffsetBottom = Math.max(0, totalContentHeight - listScrollTop - listViewportHeight)
-    if (lastItemOffsetBottom < deletedItemHeight.value) {
-      deleteAnimationTargetBelow = lastItemOffsetBottom
-      deleteAnimationTargetAbove = deletedItemHeight.value - lastItemOffsetBottom
-    } else {
-      deleteAnimationTargetBelow = deletedItemHeight.value
-      deleteAnimationTargetAbove = 0
-    }
     deleteAnimationStartTime = Date.now()
+    deleteAnimationTargetVertical = deletedItemHeight.value
     deleteAnimationStartHorizontal = -MENU_WIDTH
     deleteAnimationTargetHorizontal = -(MENU_WIDTH + 400)
     deleteAnimationIndexToDelete = indexToDelete
@@ -583,80 +550,6 @@
     // 开始动画
     scheduleNextAnimationFrame()
   }
-
-  // 列表可视区域与偏移量计算
-  const itemOffsets = ref<number[]>([])
-  let listScrollTop = 0
-  let listViewportHeight = 0
-  let visibleStartIndex = 0
-  let visibleEndIndex = -1
-  const VISIBLE_RANGE_BUFFER = 1
-
-  const rebuildItemOffsets = () => {
-    const offsets : number[] = []
-    let acc = 0
-    for (let i = 0; i < items.value.length; i++) {
-      offsets.push(acc)
-      acc += items.value[i].height
-    }
-    itemOffsets.value = offsets
-  }
-
-  const getTotalContentHeight = () : number => {
-    const listElement = uni.getElementById('list-view') as UniElement | null
-    if (listElement == null) return 0
-    return listElement.scrollHeight
-  }
-
-  const updateListViewport = () => {
-    const listElement = uni.getElementById('list-view') as UniElement | null
-    if (listElement == null) return
-    const rect = listElement.getBoundingClientRect()
-    listViewportHeight = rect.height
-  }
-
-  const updateVisibleRange = () => {
-    if (listViewportHeight <= 0 || itemOffsets.value.length == 0) {
-      visibleStartIndex = 0
-      visibleEndIndex = -1
-      return
-    }
-
-    const startY = listScrollTop
-    const endY = listScrollTop + listViewportHeight
-
-    let startIndex = 0
-    for (let i = 0; i < items.value.length; i++) {
-      const itemTop = itemOffsets.value[i]
-      const itemBottom = itemTop + items.value[i].height
-      if (itemBottom > startY) {
-        startIndex = i
-        break
-      }
-    }
-
-    let endIndex = items.value.length - 1
-    for (let i = startIndex; i < items.value.length; i++) {
-      const itemTop = itemOffsets.value[i]
-      if (itemTop >= endY) {
-        endIndex = Math.max(startIndex, i - 1)
-        break
-      }
-    }
-
-    visibleStartIndex = startIndex
-    visibleEndIndex = endIndex
-  }
-
-  const isIndexInVisibleRange = (index : number) : boolean => {
-    return index >= visibleStartIndex - VISIBLE_RANGE_BUFFER && index <= visibleEndIndex + VISIBLE_RANGE_BUFFER
-  }
-
-  rebuildItemOffsets()
-  onMounted(() => {
-    updateListViewport()
-    updateVisibleRange()
-  })
 </script>
 
 <style>
