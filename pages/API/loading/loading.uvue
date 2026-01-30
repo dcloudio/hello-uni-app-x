@@ -20,21 +20,21 @@
     <!-- #ifdef APP-IOS -->
 		<view class="uni-padding-wrap uni-common-mt" style="flex-direction: row; justify-content: space-between; align-items: center;">
 			<text class="uni-title-text"> iOS 雪花样式 </text>
-			<switch :checked="data.iosSnow" @change="iosSnowChange" />
+			<switch :checked="data.iosSpinner" @change="iosSpinnerChange" />
 		</view>
     <!-- #endif -->
 		<view class="uni-padding-wrap">
 			<view class="uni-btn-v">
-				<button class="uni-btn-v" type="primary" @click="showLoading">显示 loading 提示框</button>
-				<button class="uni-btn-v" @click="hideLoading">隐藏 loading 提示框</button>
+				<button type="primary" @click="showLoading">显示 loading 提示框</button>
+				<button @click="hideLoading">隐藏 loading 提示框</button>
 				<text>为方便演示，loading弹出3秒后自动关闭</text>
 			</view>
 		</view>
 		<view class="uni-padding-wrap">
 			<text>{{data.callbackText}}</text>
 			<view class="uni-btn-v">
-				<button class="uni-btn-v" type="primary" @click="closeSomeLoading">关闭指定loading</button>
-				<button class="uni-btn-v" type="primary" @click="noParamLoading">无参数测试</button>
+				<button type="primary" @click="closeSomeLoading">关闭指定loading</button>
+				<button type="primary" @click="noParamLoading">无参数测试</button>
 			</view>
 		</view>
 	</view>
@@ -51,7 +51,7 @@
 		current : number;
 		callbackText : string[];
 		titleSelect : string;
-		iosSnow : boolean;
+		iosSpinner : boolean;
 	}
 
 	const data = reactive({
@@ -73,7 +73,7 @@
 		callbackText: [] as Array<string>,
 		current: 0,
 		titleSelect: "null",
-		iosSnow: false
+		iosSpinner: false
 	} as DataType)
 
 	const jest_getWindowInfo = () : GetWindowInfoResult => {
@@ -89,8 +89,8 @@
 		}
 	}
 
-	const iosSnowChange = (e : UniSwitchChangeEvent) => {
-		data.iosSnow = e.detail.value
+	const iosSpinnerChange = (e : UniSwitchChangeEvent) => {
+		data.iosSpinner = e.detail.value
 	}
 
 	const hideLoading = () => {
@@ -123,7 +123,7 @@
 	const closeSomeLoading = () => {
 		const loading1 = uni.showLoading({
 			title: "第一个loading",
-			iosSnow: data.iosSnow,
+			iosSpinner: data.iosSpinner,
 			success: function (res : ShowLoadingSuccess) {
 				data.callbackText.push("showLoading 1 success")
 				console.log("showLoading 1 success", res)
@@ -139,7 +139,7 @@
 		})
 		const loading2 = uni.showLoading({
 			title: "第二个loading",
-			iosSnow: data.iosSnow,
+			iosSpinner: data.iosSpinner,
 			success: function (res : ShowLoadingSuccess) {
 				data.callbackText.push("showLoading 2 success")
 				console.log("showLoading 2 success", res)
@@ -193,12 +193,12 @@
 		if (data.titleSelect == "null") {
 			uni.showLoading({
 				title: "",
-				iosSnow: data.iosSnow,
+				iosSpinner: data.iosSpinner,
 			});
 		} else {
 			uni.showLoading({
 				title: data.titleSelect,
-				iosSnow: data.iosSnow,
+				iosSpinner: data.iosSpinner,
 			});
 		}
 		setTimeout(() => {
