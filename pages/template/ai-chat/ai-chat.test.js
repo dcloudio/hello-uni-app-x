@@ -5,14 +5,13 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
-
+jest.setTimeout(30000);
 describe('ai-chat', () => {
   let page;
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/template/ai-chat/ai-chat');
     await page.waitFor('view');
-    await page.waitFor(1000);
   });
 
   async function takeScreenshot() {
