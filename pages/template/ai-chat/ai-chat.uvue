@@ -1,6 +1,6 @@
 <template>
   <view style="flex:1;background-color: #f5f5f5;">
-    <scroll-view @click="hideKeyboard" :show-scrollbar="false" :scroll-with-animation="true" style="flex: 1;padding-bottom: 10px;" :bounces="false">
+    <scroll-view @click="hideKeyboard" @touchmove="onUserScroll" @touchend="onUserScrollEnd" :show-scrollbar="false" :scroll-with-animation="true" style="flex: 1;padding-bottom: 10px;" :bounces="false">
       <list-view ref="messageView" @scrolltoupper="clearData" @scrolltolower="loadData" :scroll-with-animation="true"
         :show-scrollbar="false" style="flex: 1;transform: scale(1, -1)">
         <list-item v-for="(item, index) in messageList" @longpress="listItemLongPress(index)" :key="'listItem' + index"
@@ -73,6 +73,8 @@
   const maxKeyboardHeight = ref(0)
   const keyboardIsShow = ref(false)
   const isAndroid = ref(uni.getSystemInfoSync().platform == 'android')
+  const isUserScrolling = ref(false)
+  let scrollEndTimer : number = -1
   // 自动化测试使用，在不同节点截图
   let autoTest = reactive<AutoTest>({
     done:false,
@@ -143,6 +145,28 @@
     })
   }
 
+  function onUserScroll() {
+    isUserScrolling.value = true
+    if (scrollEndTimer >= 0) {
+      clearTimeout(scrollEndTimer)
+      scrollEndTimer = -1
+    }
+  }
+
+  function onUserScrollEnd() {
+    if (scrollEndTimer >= 0) clearTimeout(scrollEndTimer)
+    scrollEndTimer = setTimeout(() => {
+      isUserScrolling.value = false
+      scrollEndTimer = -1
+    }, 600) as number
+  }
+
+  async function waitUntilNotScrolling() {
+    while (isUserScrolling.value) {
+      await sleep(80)
+    }
+  }
+
   /** demo：模拟“发送成功” */
   async function mockSendSuccess() : Promise<void> {
     await sleep(250)
@@ -179,6 +203,7 @@
       rootTail = [...rootTail, { name: tagName, children: [{ type: 'text', text: '' } as TextNode] as Nodes } as ElementNode] as Nodes
       rebuildAndFlush()
       for (let i = 0; i < text.length; i++) {
+        await waitUntilNotScrolling()
         const buf = text.substring(0, i + 1)
         rootTail = [...rootTail.slice(0, -1), { name: tagName, children: [{ type: 'text', text: buf } as TextNode] as Nodes } as ElementNode] as Nodes
         rebuildAndFlush()
@@ -207,6 +232,7 @@
       for (let s = 0; s < segments.length; s++) {
         const seg = segments[s]
         for (let c = 0; c < seg.text.length; c++) {
+          await waitUntilNotScrolling()
           const buf = seg.text.substring(0, c + 1)
           const tn = { type: 'text', text: buf } as TextNode
           const inner : Nodes = [tn] as Nodes
@@ -255,6 +281,7 @@
       rebuildAndFlush()
 
       for (let i = 0; i < items.length; i++) {
+        await waitUntilNotScrolling()
         const it = items[i]
         const emptyChildren : RichNode[] = [] as RichNode[]
         let liNode : ElementNode = { name: 'li', children: emptyChildren }
@@ -268,6 +295,7 @@
 
         let buf = ''
         for (let c = 0; c < it.text.length; c++) {
+          await waitUntilNotScrolling()
           buf = buf + it.text.substring(c, c + 1)
           const inner : Nodes = it.bold == true
             ? [{ name: 'strong', children: [{ type: 'text', text: buf } as TextNode] as Nodes } as ElementNode] as Nodes
