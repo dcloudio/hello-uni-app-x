@@ -30,6 +30,57 @@ describe('scroll-view-custom-refresher-props-test', () => {
   }
 
   /**
+   * 等待刷新完成（通过轮询状态）
+   * @param {string} refreshingKey - refreshing 状态的 key（如 'refreshing1'）
+   * @param {string} listCountKey - listCount 的 key（如 'listCount1'）
+   * @param {number} expectedIncrement - 预期增加的数量（默认 5）
+   * @param {number} timeout - 超时时间（默认 6000ms）
+   * @returns {Promise<boolean>} 返回是否刷新成功
+   */
+  async function waitForRefreshComplete(refreshingKey, listCountKey, expectedIncrement = 5, timeout = 6000) {
+    const initialCount = await getPageData(listCountKey)
+    const startTime = Date.now()
+    let hasStarted = false
+    let lastRefreshing = null
+    let lastCount = initialCount
+    let pollCount = 0
+
+    // 轮询间隔（指数退避，避免高频 IPC）
+    let interval = 200
+
+    console.log(`[waitForRefreshComplete] 开始等待刷新完成: ${refreshingKey}, 初始数量: ${initialCount}`)
+
+    while (Date.now() - startTime < timeout) {
+      pollCount++
+      const refreshing = await getPageData(refreshingKey)
+      const currentCount = await getPageData(listCountKey)
+
+      console.log(`[waitForRefreshComplete] 第 ${pollCount} 次轮询 - refreshing: ${refreshing}, count: ${currentCount}, hasStarted: ${hasStarted}, interval: ${interval}ms`)
+
+      lastRefreshing = refreshing
+      lastCount = currentCount
+
+      if (refreshing) {
+        hasStarted = true
+      }
+
+      if (hasStarted && !refreshing && currentCount >= initialCount + expectedIncrement) {
+        const elapsedTime = Date.now() - startTime
+        console.log(`[waitForRefreshComplete] 刷新成功！共轮询 ${pollCount} 次，耗时 ${elapsedTime}ms`)
+        return true
+      }
+
+      await page.waitFor(interval)
+      interval = Math.min(interval * 1.5, 800)
+    }
+
+    // 超时后返回 false
+    const elapsedTime = Date.now() - startTime
+    console.log(`[waitForRefreshComplete] 刷新超时！共轮询 ${pollCount} 次，耗时 ${elapsedTime}ms，最终状态: refreshing=${lastRefreshing}, count=${lastCount}`)
+    return false
+  }
+
+  /**
    * 执行下拉刷新操作
    * @param {string} elementId - scroll-view 的id
    * @param {number} pullDistance - 下拉距离
@@ -93,8 +144,9 @@ describe('scroll-view-custom-refresher-props-test', () => {
 
     await performPullRefresh('refreshing1', 180)
 
-    // 等待刷新完成 (1500ms + 缓冲)
-    await page.waitFor(2500)
+    // 使用轮询等待刷新完成
+    const refreshSuccess = await waitForRefreshComplete('refreshing1', 'listCount1', 5, 6000)
+    expect(refreshSuccess).toBe(true)
 
     // 验证列表数量增加了5个
     const finalCount = await getPageData('listCount1')
@@ -107,7 +159,8 @@ describe('scroll-view-custom-refresher-props-test', () => {
 
     await performPullRefresh('refreshing2', 180)
 
-    await page.waitFor(2500)
+    const refreshSuccess = await waitForRefreshComplete('refreshing2', 'listCount2', 5, 6000)
+    expect(refreshSuccess).toBe(true)
 
     const finalCount = await getPageData('listCount2')
     expect(finalCount).toBe(initialCount + 5)
@@ -119,7 +172,8 @@ describe('scroll-view-custom-refresher-props-test', () => {
 
     await performPullRefresh('refreshing3', 180)
 
-    await page.waitFor(2500)
+    const refreshSuccess = await waitForRefreshComplete('refreshing3', 'listCount3', 5, 6000)
+    expect(refreshSuccess).toBe(true)
 
     const finalCount = await getPageData('listCount3')
     expect(finalCount).toBe(initialCount + 5)
@@ -131,7 +185,8 @@ describe('scroll-view-custom-refresher-props-test', () => {
 
     await performPullRefresh('refreshing4', 180)
 
-    await page.waitFor(2500)
+    const refreshSuccess = await waitForRefreshComplete('refreshing4', 'listCount4', 5, 6000)
+    expect(refreshSuccess).toBe(true)
 
     const finalCount = await getPageData('listCount4')
     expect(finalCount).toBe(initialCount + 5)
