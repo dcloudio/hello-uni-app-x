@@ -9,13 +9,14 @@ const isHarmony = platformInfo.startsWith('harmony')
 
 describe('scroll-view-custom-refresher-props-test', () => {
 
-  // //TODO：临时方案
-  // if (isWeb || isMP || isAndroid || isHarmony) {
-  //   it('其他平台需要测试验证再放开', () => {
-  //     expect(1).toBe(1)
-  //   })
-  //   return
-  // }
+  //TODO：临时方案
+  if (isWeb || isMP) {
+    // 不支持program.swipe
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
 
   let page
   beforeAll(async () => {
