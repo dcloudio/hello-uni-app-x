@@ -17,25 +17,22 @@
     </view>
   </view>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-        title: 'onCompassChange',
-        direction: 0
-      }
-    },
-    onReady: function () {
-      uni.onCompassChange((res) => {
-        console.log('onCompassChange', res)
-        this.direction = res.direction
-      })
-    },
-    onUnload() {
-      uni.stopCompass();
-      this.direction = 0;
-    }
-  }
+<script setup lang="uts">
+  const title = ref('onCompassChange')
+  const direction = ref(0)
+
+  onReady(() => {
+    uni.onCompassChange((res) => {
+      console.log('onCompassChange', res)
+      direction.value = res.direction
+    })
+  })
+
+  onUnload(() => {
+    uni.stopCompass();
+    direction.value = 0;
+  })
+
 </script>
 
 <style>

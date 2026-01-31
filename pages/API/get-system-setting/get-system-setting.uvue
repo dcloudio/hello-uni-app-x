@@ -7,7 +7,7 @@
           <view class="uni-label" style="width:180px;">蓝牙的系统开关</view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="bluetoothEnabled" />
+          <input type="text" :disabled="true" placeholder="未获取" :value="data.bluetoothEnabled" />
         </view>
       </view>
       <view class="uni-list-cell">
@@ -15,7 +15,7 @@
           <view class="uni-label" style="width:180px;">地理位置的系统开关</view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="locationEnabled" />
+          <input type="text" :disabled="true" placeholder="未获取" :value="data.locationEnabled" />
         </view>
       </view>
       <view class="uni-list-cell">
@@ -23,7 +23,7 @@
           <view class="uni-label" style="width:180px;">Wi-Fi 的系统开关</view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="wifiEnabled" />
+          <input type="text" :disabled="true" placeholder="未获取" :value="data.wifiEnabled" />
         </view>
       </view>
       <view class="uni-list-cell">
@@ -31,7 +31,7 @@
           <view class="uni-label" style="width:180px;">设备方向</view>
         </view>
         <view class="uni-list-cell-db">
-          <input type="text" :disabled="true" placeholder="未获取" :value="deviceOrientation" />
+          <input type="text" :disabled="true" placeholder="未获取" :value="data.deviceOrientation" />
         </view>
       </view>
     </view>
@@ -43,37 +43,38 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'getSystemSetting',
-        bluetoothEnabled: "",
-        locationEnabled: "",
-        wifiEnabled: "",
-        deviceOrientation: ""
-      }
-    },
-    onUnload: function () {
-    },
-    methods: {
-      getSystemSetting: function () {
-        const res = uni.getSystemSetting();
-        this.bluetoothEnabled = (res.bluetoothEnabled ?? false) ? "开启" : "关闭";
-        this.locationEnabled = res.locationEnabled ? "开启" : "关闭";
-        this.wifiEnabled = (res.wifiEnabled ?? false) ? "开启" : "关闭";
-        this.deviceOrientation = res.deviceOrientation
+<script setup lang="uts">
+  type DataType = {
+    bluetoothEnabled: string;
+    locationEnabled: string;
+    wifiEnabled: string;
+    deviceOrientation: string;
+  }
 
-        if (res.bluetoothError != null) {
-          this.bluetoothEnabled = "无蓝牙权限"
-        }
+  const title = ref('getSystemSetting')
+  const data = reactive({
+    bluetoothEnabled: "",
+    locationEnabled: "",
+    wifiEnabled: "",
+    deviceOrientation: ""
+  } as DataType)
 
-        if (res.wifiError != null) {
-          this.wifiEnabled = "无WiFi权限"
-        }
-      }
+  const getSystemSetting = () => {
+    const res = uni.getSystemSetting();
+    data.bluetoothEnabled = (res.bluetoothEnabled ?? false) ? "开启" : "关闭";
+    data.locationEnabled = res.locationEnabled ? "开启" : "关闭";
+    data.wifiEnabled = (res.wifiEnabled ?? false) ? "开启" : "关闭";
+    data.deviceOrientation = res.deviceOrientation
+
+    if (res.bluetoothError != null) {
+      data.bluetoothEnabled = "无蓝牙权限"
+    }
+
+    if (res.wifiError != null) {
+      data.wifiEnabled = "无WiFi权限"
     }
   }
+
 </script>
 
 <style>

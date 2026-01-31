@@ -56,130 +56,160 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        jest_result: false,
-        jest_click_x: -1,
-        jest_click_y: -1,
-        jest_parent_top: -1.0,
-        startX: 0,
-        startY: 0,
-        moveX: 0,
-        moveY: 0,
-        oldX: 0,
-        oldY: 0,
-        moveEl: null as UniElement | null
-      }
-    },
-    onReady() {
-      this.moveEl = uni.getElementById('parent')
-    },
-    methods: {
-      handleClickOverflowPart() {
-        console.log("click");
-        this.jest_result = true;
-        uni.showToast({ "title": "点击红色区域" })
-      },
-      handleTouchStartOverflowPart(e : UniTouchEvent) {
-        this.startX = e.changedTouches[0].clientX
-        this.startY = e.changedTouches[0].clientY
-      },
-      handleTouchMoveOverflowPart(e : UniTouchEvent) {
-        console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY);
-        e.preventDefault()
-        e.stopPropagation()
-        const difX = e.changedTouches[0].clientX
-        const difY = e.changedTouches[0].clientY
-        this.moveX = difX - this.startX + this.oldX
-        this.moveY = difY - this.startY + this.oldY
-        this.moveEl?.style?.setProperty('transform', `translate(${this.moveX}px,${this.moveY}px)`)
-      },
-      handleTouchEndOverflowPart(_ : UniTouchEvent) {
-        this.oldX = this.moveX
-        this.oldY = this.moveY
-      },
-      handleClick(str : string) {
-        console.log(`点击了 ${str} view`);
-        if (str == 'red') {
-          this.jest_result = true;
-        }
-      },
-      async jest_getRect() {
-        const rect = await uni.getElementById('child')!.getBoundingClientRectAsync()!
-        let ratio = 1
-        if (uni.getSystemInfoSync().platform == 'android'){
-          ratio = uni.getSystemInfoSync().devicePixelRatio
-        }
-        this.jest_click_x = rect.x * ratio + 30
-        this.jest_click_y = rect.bottom * ratio - 30
-      },
-      jest_getParentRect() {
-        const transform = uni.getElementById('parent')?.style.getPropertyValue("transform")
-        if (transform != null) {
-          let value = transform as string
-          value = value.split(",")[1].slice(0, -3)
-          let ratio = 1
-          if (uni.getSystemInfoSync().platform == 'android'){
-            ratio = uni.getSystemInfoSync().devicePixelRatio
-          }
-          this.jest_parent_top = Math.round((parseFloat(value) * ratio))
-        }
-      },
-      async jest_getAbsoluteViewRect() {
-        const rect = await uni.getElementById('absolute-view')!.getBoundingClientRectAsync()!
-        const systemInfo = uni.getSystemInfoSync()
-        const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
-        let ratio = 1
-        if (uni.getSystemInfoSync().platform == 'android'){
-          ratio = uni.getSystemInfoSync().devicePixelRatio
-        }
-        this.jest_click_x = rect.x * ratio + 30
-        this.jest_click_y = (rect.top + titleBarHeight) * ratio + 30
-      },
+<script setup lang="uts">
 
-      async jest_restScorllView(){
-        const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
-        scrollView.scrollTo(0, 0)
-      },
+  type DataType = {
+    jest_result: boolean;
+    jest_click_x: number;
+    jest_click_y: number;
+    jest_parent_top: number;
+    startX: number;
+    startY: number;
+    moveX: number;
+    moveY: number;
+    oldX: number;
+    oldY: number;
+    moveEl: UniElement | null;
+  }
 
-      async jest_scrollToDeepOverflow() {
-        const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
-        const rect = await uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!
-        scrollView.scrollTo(0, rect.top)
-        setTimeout(() => {
-          const systemInfo = uni.getSystemInfoSync()
-          let ratio = 1
-          if (uni.getSystemInfoSync().platform == 'android'){
-            ratio = uni.getSystemInfoSync().devicePixelRatio
-          }
-          const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
-          uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
-            this.jest_click_x = afterRect.x * ratio + 30
-            this.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
-          })
-        }, 200)
-      },
-      async jest_scrollToZIndexOverflow() {
-        const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
-        const rect = await uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!
-        scrollView.scrollTo(0, rect.top)
-        setTimeout(() => {
-          const systemInfo = uni.getSystemInfoSync()
-          let ratio = 1
-          if (uni.getSystemInfoSync().platform == 'android'){
-            ratio = uni.getSystemInfoSync().devicePixelRatio
-          }
-          const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
-          uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
-            this.jest_click_x = afterRect.x * ratio + 30
-            this.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
-          })
-        }, 200)
-      }
+  const data = reactive({
+    jest_result: false,
+    jest_click_x: -1,
+    jest_click_y: -1,
+    jest_parent_top: -1.0,
+    startX: 0,
+    startY: 0,
+    moveX: 0,
+    moveY: 0,
+    oldX: 0,
+    oldY: 0,
+    moveEl: null as UniElement | null
+  } as DataType)
+
+  onReady(() => {
+    data.moveEl = uni.getElementById('parent')
+  })
+
+  const handleClickOverflowPart = () => {
+    console.log("click")
+    data.jest_result = true
+    uni.showToast({ "title": "点击红色区域" })
+  }
+
+  const handleTouchStartOverflowPart = (e : UniTouchEvent) => {
+    data.startX = e.changedTouches[0].clientX
+    data.startY = e.changedTouches[0].clientY
+  }
+
+  const handleTouchMoveOverflowPart = (e : UniTouchEvent) => {
+    console.log("touchmove:" + e.touches[0].clientX + "," + e.touches[0].clientY)
+    e.preventDefault()
+    e.stopPropagation()
+    const difX = e.changedTouches[0].clientX
+    const difY = e.changedTouches[0].clientY
+    data.moveX = difX - data.startX + data.oldX
+    data.moveY = difY - data.startY + data.oldY
+    data.moveEl?.style?.setProperty('transform', `translate(${data.moveX}px,${data.moveY}px)`)
+  }
+
+  const handleTouchEndOverflowPart = (_ : UniTouchEvent) => {
+    data.oldX = data.moveX
+    data.oldY = data.moveY
+  }
+
+  const handleClick = (str : string) => {
+    console.log(`点击了 ${str} view`)
+    if (str == 'red') {
+      data.jest_result = true
     }
   }
+
+  const jest_getRect = async () => {
+    const rect = await uni.getElementById('child')!.getBoundingClientRectAsync()!
+    let ratio = 1
+    if (uni.getSystemInfoSync().platform == 'android'){
+      ratio = uni.getSystemInfoSync().devicePixelRatio
+    }
+    data.jest_click_x = rect.x * ratio + 30
+    data.jest_click_y = rect.bottom * ratio - 30
+  }
+
+  const jest_getParentRect = () => {
+    const transform = uni.getElementById('parent')?.style.getPropertyValue("transform")
+    if (transform != null) {
+      let value = transform as string
+      value = value.split(",")[1].slice(0, -3)
+      let ratio = 1
+      if (uni.getSystemInfoSync().platform == 'android'){
+        ratio = uni.getSystemInfoSync().devicePixelRatio
+      }
+      data.jest_parent_top = Math.round((parseFloat(value) * ratio))
+    }
+  }
+
+  const jest_getAbsoluteViewRect = async () => {
+    const rect = await uni.getElementById('absolute-view')!.getBoundingClientRectAsync()!
+    const systemInfo = uni.getSystemInfoSync()
+    const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+    let ratio = 1
+    if (uni.getSystemInfoSync().platform == 'android'){
+      ratio = uni.getSystemInfoSync().devicePixelRatio
+    }
+    data.jest_click_x = rect.x * ratio + 30
+    data.jest_click_y = (rect.top + titleBarHeight) * ratio + 30
+  }
+
+  const jest_restScorllView = async () => {
+    const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+    scrollView.scrollTo(0, 0)
+  }
+
+  const jest_scrollToDeepOverflow = async () => {
+    const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+    const rect = await uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!
+    scrollView.scrollTo(0, rect.top)
+    setTimeout(() => {
+      const systemInfo = uni.getSystemInfoSync()
+      let ratio = 1
+      if (uni.getSystemInfoSync().platform == 'android'){
+        ratio = uni.getSystemInfoSync().devicePixelRatio
+      }
+      const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+      uni.getElementById('deep-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
+        data.jest_click_x = afterRect.x * ratio + 30
+        data.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
+      })
+    }, 200)
+  }
+
+  const jest_scrollToZIndexOverflow = async () => {
+    const scrollView = uni.getElementById('scroll-view') as UniScrollViewElement
+    const rect = await uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!
+    scrollView.scrollTo(0, rect.top)
+    setTimeout(() => {
+      const systemInfo = uni.getSystemInfoSync()
+      let ratio = 1
+      if (uni.getSystemInfoSync().platform == 'android'){
+        ratio = uni.getSystemInfoSync().devicePixelRatio
+      }
+      const titleBarHeight = systemInfo.screenHeight - systemInfo.windowHeight
+      uni.getElementById('zindex-overflow')!.getBoundingClientRectAsync()!.then((afterRect: DOMRect) => {
+        data.jest_click_x = afterRect.x * ratio + 30
+        data.jest_click_y = (afterRect.top + titleBarHeight) * ratio + 30
+      })
+    }, 200)
+  }
+	
+	defineExpose({
+		data,
+	  jest_getRect,
+	  jest_getParentRect,
+	  jest_getAbsoluteViewRect,
+	  jest_scrollToDeepOverflow,
+	  jest_scrollToZIndexOverflow,
+	  jest_restScorllView
+	})
+	
 </script>
 
 <style>

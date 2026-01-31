@@ -9,10 +9,11 @@ const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 let page;
 
 describe("onLoad", () => {
- if (isMP) {
+  if (isMP) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -108,6 +109,8 @@ describe("onLoad", () => {
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
   });
+  if (!isDom2) {
+  // dom2 目前 tabbar 是页面+组件实现，无法支持 switchTab 测试
   it("switchTab", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
@@ -116,6 +119,7 @@ describe("onLoad", () => {
     page = await program.currentPage();
     expect(page.path).toBe("pages/tabBar/component");
   });
+  }
   it("showToast", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor("view");
@@ -151,6 +155,20 @@ describe("onLoad", () => {
       failureThresholdType: "percent",
     });
   });
+  it("showActionSheet", async () => {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
+    await page.waitFor("view");
+    await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
+    await page.waitFor(1000);
+    const image = await program.screenshot(deviceShotOptions);
+    expect(image).toSaveImageSnapshot({
+      failureThreshold: 0.05,
+      failureThresholdType: "percent",
+    });
+    page = await program.currentPage();
+    await page.callMethod("hideActionSheet");
+    await page.waitFor(1000);
+  });
   it('onLoad 参数 decode', async () => {
     page = await program.reLaunch(PAGE_PATH);
     await page.waitFor("view");
@@ -163,7 +181,7 @@ describe("onLoad", () => {
     })
     await page.waitFor(1000);
     page = await program.currentPage();
-    const data = await page.data();
-    expect(data.data).toBe(TEXT);
+    const pageData = await page.data('data');
+    expect(pageData.data).toBe(TEXT);
   })
 });

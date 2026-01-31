@@ -4,12 +4,13 @@
       <view class="scroll-header-tiem1">
         <text>会渲染的nested-scroll-header</text>
       </view>
-      <view class="scroll-header-tiem1">
+      <!-- dom2 nested-scroll-header 没有限制节点数量 临时注释 -->
+      <!-- <view class="scroll-header-tiem1">
         <text>不会渲染nested-scroll-header，因为 nested-scroll-header 只会渲染第一个子节点</text>
-      </view>
+      </view> -->
     </nested-scroll-header>
     <nested-scroll-header>
-      <swiper ref="header" indicator-dots="true" circular="true">
+      <swiper ref="headerRef" indicator-dots="true" circular="true">
         <swiper-item v-for="i in num" :item-id="i">
           <view class="scroll-header-tiem2">
             <text>如果存在多个头部节点，那么就使用多个 nested-scroll-header 来将其包裹</text>
@@ -29,27 +30,23 @@
   </scroll-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        scrollData: [] as Array<string>,
-        num: 0,
-      }
-    },
-    onLoad() {
-      let lists : Array<string> = []
-      for (let i = 0; i < 30; i++) {
-        lists.push("item---" + i)
-      }
-      this.scrollData = lists
-    },
-    onReady() {
-      this.num = 3
-    },
-    methods: {
+<script setup lang="uts">
+  const scrollData = ref([] as Array<string>)
+  const num = ref(0)
+  const headerRef = ref<UniSwiperElement | null>(null)
+
+  onLoad(() => {
+    let lists : Array<string> = []
+    for (let i = 0; i < 30; i++) {
+      lists.push("item---" + i)
     }
-  }
+    scrollData.value = lists
+  })
+
+  onReady(() => {
+    num.value = 3
+  })
+
 </script>
 
 <style>

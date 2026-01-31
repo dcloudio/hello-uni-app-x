@@ -8,18 +8,22 @@
         <view class="uni-title">
           <text class="uni-title-text">图片路径示例</text>
         </view>
-        <view v-for="(item,index) in data" :key="index">
-          <text class="uni-subtitle-text">{{item.description}}</text>
-          <view class="uni-center" style="background:#FFFFFF;">
-            <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
-              @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
-          </view>
-        </view>
         <test-image-path />
         <view>
           <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
           <view class="uni-center" style="background:#FFFFFF;">
             <image class="image" mode="widthFix" src="./logo.png"></image>
+            <image class="image" mode="widthFix" src="./logo.png" flatten></image>
+          </view>
+        </view>
+        <view v-for="(item,index) in data" :key="index">
+          <text class="uni-subtitle-text">{{item.description}}（右边为拍平测试）</text>
+          <view class="uni-center" style="background:#FFFFFF;">
+            <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
+              @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
+
+            <image class="image" mode="widthFix" :src="item.errorImageFlatten == null ? item.src : item.errorImageFlatten"
+              @error="imageFlattenErrorEvent(index, $event as ImageErrorEvent)" flatten></image>
           </view>
         </view>
       </view>
@@ -29,16 +33,16 @@
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+
   import logo from './logo.png';
+
   const appid = uni.getAppBaseInfo().appId;
-  export default {
-    data() {
-      return {
-        title: 'image-path',
-        outsideStaticPath: './logo.png' as string.ImageURIString,
-        outsideStaticErrorPath: null as string | null,
-        data: [
+
+  const title = ref('image-path')
+  const outsideStaticPath = ref('./logo.png' as string.ImageURIString)
+  const outsideStaticErrorPath = ref(null as string | null)
+  const data = ref([
           {
             src: '/static/test-image/logo.png',
             description: '本地路径：/static方式'
@@ -131,21 +135,22 @@
             description: 'uni.env.ANDROID_INTERNAL_SANDBOX_PATH 路径'
           },
           // #endif
-        ] as Array<ImagePath>
-      }
-    },
-    onLoad() {
+  ] as Array<ImagePath>)
+
+  onLoad(() => {
+      // #ifndef WEB
       let fileManager = uni.getFileSystemManager()
+      // #endif
       // #ifdef APP-ANDROID || APP-HARMONY || MP-WEIXIN
       try {
         fileManager.accessSync(`${uni.env.USER_DATA_PATH}/uni.png`)
       } catch (e) {
-        fileManager.copyFileSync("/static/uni.png", `${uni.env.USER_DATA_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.USER_DATA_PATH}/uni.png`)
       }
       // #endif
 
       // #ifdef APP-IOS
-      fileManager.copyFileSync("/static/uni.png", `${uni.env.USER_DATA_PATH}/uni.png`)
+      fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.USER_DATA_PATH}/uni.png`)
       // #endif
 
       // #ifdef APP-ANDROID || APP-HARMONY
@@ -154,43 +159,48 @@
         fileManager.accessSync(`${uni.env.SANDBOX_PATH}/uni.png`)
       } catch (e) {
         console.log("CACHE_PATH  error")
-        fileManager.copyFileSync("/static/uni.png", `${uni.env.CACHE_PATH}/uni.png`)
-        fileManager.copyFileSync("/static/uni.png", `${uni.env.SANDBOX_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.CACHE_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.SANDBOX_PATH}/uni.png`)
       }
       // #endif
 
       // #ifdef APP-IOS
-      fileManager.copyFileSync("/static/uni.png", `${uni.env.CACHE_PATH}/uni.png`)
-      fileManager.copyFileSync("/static/uni.png", `${uni.env.SANDBOX_PATH}/uni.png`)
+      fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.CACHE_PATH}/uni.png`)
+      fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.SANDBOX_PATH}/uni.png`)
       // #endif
 
       // #ifdef APP-HARMONY
       try {
         fileManager.accessSync(`${uni.env.TEMP_PATH}/uni.png`)
       } catch (e) {
-        fileManager.copyFileSync("/static/uni.png", `${uni.env.TEMP_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.TEMP_PATH}/uni.png`)
       }
       // #endif
       // #ifdef APP-ANDROID
       try {
         fileManager.accessSync(`${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
       } catch (e) {
-        fileManager.copyFileSync("/static/uni.png", `${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
+        fileManager.copyFileSync("/static/test-image/logo.png", `${uni.env.ANDROID_INTERNAL_SANDBOX_PATH}/uni.png`)
       }
       // #endif
-    },
-    methods: {
-      imageErrorEvent(index : number, e : ImageErrorEvent) {
-        console.log("图片加载错误", e.detail.errMsg);
-        // 图片加载失败，加载本地占位图
-        this.data[index].errorImage = '/static/template/drop-card/dislike.png'
-      }
-    },
+  })
+
+  function imageErrorEvent(index : number, e : ImageErrorEvent) {
+    console.log("图片加载错误", e.detail.errMsg);
+    // 图片加载失败，加载本地占位图
+    data.value[index].errorImage = '/static/dislike.png'
+  }
+
+  function imageFlattenErrorEvent(index : number, e : ImageErrorEvent) {
+    console.log("拍平图片加载错误", e.detail.errMsg);
+    // 图片加载失败，加载本地占位图
+    data.value[index].errorImageFlatten = '/static/dislike.png'
   }
 
   type ImagePath = {
     src : string.ImageURIString
     errorImage ?: string.ImageURIString | null
+    errorImageFlatten ?: string.ImageURIString | null
     description : string
   }
 </script>

@@ -23,7 +23,7 @@ describe('ExtApi-GetBatteryInfo', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600);
-    res = await page.data();
+    res = await page.data('data');
   });
 
   it('Check properties', async () => {

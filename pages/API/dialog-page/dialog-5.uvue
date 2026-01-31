@@ -32,49 +32,49 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'dialog 5',
-        pageBody : null as UniPageBody | null,
-        safeAreaInsets: null as UniSafeAreaInsets | null,
-        width: null as number | null,
-        height: null as number | null,
-        statusBarHeight: null as number | null,
-      }
-    },
-    onShow() {
-      console.log('dialog 5 onShow')
-    },
-    onReady(){
-      const currentPage = this.$page
-      this.pageBody = currentPage.pageBody;
-      this.safeAreaInsets = currentPage.safeAreaInsets
-      // #ifdef APP-ANDROID || APP-IOS || WEB
-      this.width = currentPage.width
-      this.height = currentPage.height
-      this.statusBarHeight = currentPage.statusBarHeight
-      // #endif
-    },
-    onUnload() {
-      console.log('dialog 5 onUnload')
-    },
-    methods: {
-      closeThisDialog() {
-        uni.closeDialogPage({
-          dialogPage: this.$page,
-          success(res) {
-            console.log('closeThisDialog success', res)
-          },
-          fail(err) {
-            console.log('closeThisDialog fail', err)
-          },
-          complete(res) {
-            console.log('closeThisDialog complete', res)
-          }
-        })
-      }
+<script setup lang="uts">
+  const instance = getCurrentInstance()!.proxy!
+  const currentPage = instance.$page
+
+  const title = ref('dialog 5')
+  const pageBody = ref(null as UniPageBody | null)
+  const safeAreaInsets = ref(null as UniSafeAreaInsets | null)
+  const width = ref(null as number | null)
+  const height = ref(null as number | null)
+  const statusBarHeight = ref(null as number | null)
+
+  onPageShow(() => {
+    console.log('dialog 5 onShow')
+  })
+
+  onReady(() => {
+    pageBody.value = currentPage.pageBody;
+    safeAreaInsets.value = currentPage.safeAreaInsets
+    // #ifdef APP-ANDROID || APP-IOS || WEB
+    width.value = currentPage.width
+    height.value = currentPage.height
+    statusBarHeight.value = currentPage.statusBarHeight
+    // #endif
+  })
+
+  onUnload(() => {
+    console.log('dialog 5 onUnload')
+  })
+
+  function closeThisDialog() {
+    if (currentPage != null) {
+      uni.closeDialogPage({
+        dialogPage: currentPage,
+        success(res) {
+          console.log('closeThisDialog success', res)
+        },
+        fail(err) {
+          console.log('closeThisDialog fail', err)
+        },
+        complete(res) {
+          console.log('closeThisDialog complete', res)
+        }
+      })
     }
   }
 </script>

@@ -3,10 +3,11 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isWeb = platformInfo.startsWith('web')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-sticky-header', () => {
-  if (isMP) {
-  	it('not support', () => {
+  if (isMP || isDom2 && isHarmony) {
+  	it('skip', () => {
   		expect(1).toBe(1)
   	})
   	return

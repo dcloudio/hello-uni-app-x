@@ -8,8 +8,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 
 describe('Api-createWorker', () => {
-  // 鸿蒙由于自动化测试生成安装包功能缺失 worker 文件拷贝，暂时跳过相关测试
-  if(isIOS || isHarmony) {
+  if(isIOS) {
     it('skip Api-createWorker', async () => {
       expect(1).toBe(1)
     })
@@ -20,7 +19,7 @@ describe('Api-createWorker', () => {
   let res;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(500);
+    await page.waitFor(1000);
   });
 
   it('workerTask ', async () => {
@@ -31,9 +30,9 @@ describe('Api-createWorker', () => {
     await page.callMethod('onWorkerMsg');
     await page.callMethod('sendMessage');
     await page.waitFor(async () => {
-      const taskResult = await page.data('taskResult')
+      const taskResult = await page.data('taskResult.value')
       return taskResult.length > 0
     });
-    expect(await page.data('taskResult')).toBe('2');
+    expect(await page.data('taskResult.value')).toBe('2');
   });
 });

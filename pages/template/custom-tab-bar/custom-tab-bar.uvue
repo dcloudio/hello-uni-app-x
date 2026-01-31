@@ -2,8 +2,8 @@
   <view class="tabs">
     <view ref="tabview" class="tab-view">
       <!-- 注意tab的逻辑是：第一次使用v-if创建，创建之后不再使用v-if，而是设置visibility来隐藏和显示。不能设置tab的v-if为false，因为销毁再创建影响性能 -->
-      <tab1 ref="tab1" class="tab-page" v-if="tabList[0].init" :style="{visibility:(selectedIndex==0?'visible':'hidden')}"></tab1>
-      <tab2 ref="tab2" class="tab-page" v-if="tabList[1].init" :style="{visibility:(selectedIndex==1?'visible':'hidden')}"></tab2>
+      <tab1 ref="tab1Ref" class="tab-page" v-if="tabList[0].init" :style="{visibility:(selectedIndex==0?'visible':'hidden')}"></tab1>
+      <tab2 ref="tab2Ref" class="tab-page" v-if="tabList[1].init" :style="{visibility:(selectedIndex==1?'visible':'hidden')}"></tab2>
     </view>
     <view ref="tabbar" class="tab-bar">
       <view class="tab-item" @click="onTabClick(0)">
@@ -38,104 +38,104 @@
   </view>
 </template>
 
-<script>
-  import tab1 from './custom-tab-bar-tab1.uvue';
-  import tab2 from './custom-tab-bar-tab2.uvue';
+<script setup lang="uts">
+import tab1 from './custom-tab-bar-tab1.uvue'
+import tab2 from './custom-tab-bar-tab2.uvue'
 
-  type TabItem = {
-    init : boolean,
-    preload : boolean,
+type TabItem = {
+  init : boolean,
+  preload : boolean,
+}
+
+// Template refs
+const tabview = ref<UniElement | null>(null)
+const tab1Ref = ref<ComponentPublicInstance | null>(null)
+const tab2Ref = ref<ComponentPublicInstance | null>(null)
+
+// Data
+const tabList = ref([
+  {
+    init: true,
+    preload: false
+  } as TabItem,
+  {
+    init: false,
+    preload: false
+  } as TabItem,
+] as TabItem[])
+const selectedIndex = ref(0)
+const displayArrow = ref(false)
+let lastTab1Top = 0
+let tabViewHeight = 0
+
+// Methods
+function setSelectedIndex(index : number) {
+  if (selectedIndex.value === index) {
+    return
   }
+  if (!tabList.value[index].init) {
+    tabList.value[index].init = true
+  }
+  selectedIndex.value = index
+}
 
-  export default {
-    components: {
-      tab1,
-      tab2
-    },
-    data() {
-      return {
-        tabList: [
-          {
-            init: true,
-            preload: false
-          } as TabItem,
-          {
-            init: false,
-            preload: false
-          } as TabItem,
-        ] as TabItem[],
-        selectedIndex: 0,
-        displayArrow: false,
-        lastTab1Top:0,
-        tabViewHeight: 0
-      }
-    },
-    onLoad() {
-      uni.$on('tabchange', this.onTabPageEvent) //监听tab1页面发出的tabchange事件，触发到本页面的onTabPageEvent方法。为了判断tab1的scroll-view滚动距离
-    },
-    onReady() {
-      // this.setSelectedIndex(0)
-      (this.$refs["tabview"] as UniElement).getBoundingClientRectAsync()!.then((res: DOMRect) => {
-        this.tabViewHeight = res.height
-      });
-    },
-    onUnload() {
-      uni.$off('tabchange', this.onTabPageEvent)
-    },
-    methods: {
-      onTabClick(index : number) {
-        if (this.selectedIndex == index && index == 0 && this.displayArrow == true) { //首页当tab按钮变成向上时，点向上就滚动到顶
-          // console.log("11");
-          this.displayArrow = false;
-          (this.$refs["tab1"]! as ComponentPublicInstance).$callMethod('scrollTop', 0)
-        }
-        else if (index !=0){ //不在首页时，把箭头变成图标
-          // console.log("22");
-          this.displayArrow = false
-        }
-        else if (index == 0 && this.selectedIndex !=0){ //从其他tab切回首页时，检查是否需要把图标变箭头
-          // console.log("33",this.lastTab1Top, this.tabViewHeight);
-          this.displayArrow = this.lastTab1Top > this.tabViewHeight
-        }
-        this.setSelectedIndex(index);
-        // console.log('index: ',index);
-        // console.log('this.selectedIndex: ',this.selectedIndex);
-        // console.log('this.displayArrow: ',this.displayArrow);
-        // console.log('this.lastTab1Top: ',this.lastTab1Top);
-      },
-      onTabPageEvent(top : number) {
-        // console.log('top: ',top);
-        this.displayArrow = top > this.tabViewHeight //滚动1屏后，就把第一个tab的图标从首页变成向上箭头
-        this.lastTab1Top = top
-      },
-      setSelectedIndex(index : number) {
-        if (this.selectedIndex === index) {
-          return
-        }
-        if (!this.tabList[index].init) {
-          this.tabList[index].init = true
-        }
-        this.selectedIndex = index
-      },
-      onPlusClick() {
-        uni.showModal({
-          title: "提示",
-          content: "你点击了 +",
-          showCancel: false
-        })
-      }
+function onTabClick(index : number) {
+  if (selectedIndex.value == index && index == 0 && displayArrow.value == true) {
+    displayArrow.value = false;
+    const tab1Instance = tab1Ref.value
+    if (tab1Instance != null) {
+      tab1Instance.$callMethod('scrollTop', 0)
     }
   }
+  else if (index !=0){
+    displayArrow.value = false
+  }
+  else if (index == 0 && selectedIndex.value !=0){
+    displayArrow.value = lastTab1Top > tabViewHeight
+  }
+  setSelectedIndex(index)
+}
+
+function onTabPageEvent(top : number) {
+  displayArrow.value = top > tabViewHeight
+  lastTab1Top = top
+}
+
+function onPlusClick() {
+  uni.showModal({
+    title: "提示",
+    content: "你点击了 +",
+    showCancel: false
+  })
+}
+
+// Lifecycle
+onLoad(() => {
+  uni.$on('tabchange', onTabPageEvent)
+})
+
+onReady(() => {
+  const tabviewElement = tabview.value
+  if (tabviewElement != null) {
+    tabviewElement.getBoundingClientRectAsync()!.then((res : DOMRect) => {
+      tabViewHeight = res.height
+    })
+  }
+})
+
+onUnload(() => {
+  uni.$off('tabchange', onTabPageEvent)
+})
 </script>
 
 <style>
   @font-face {
-    font-family: "UniIcon";
-    src: url('@/static/fonts/uni-icon.ttf');
+    font-family: "UniFontFamily";
+    src: url('@/static/font/uni.ttf');
   }
 
   .uni-icon {
-    font-family: "UniIcon";
+    font-family: "UniFontFamily";
     font-size: 16px;
     font-style: normal;
   }
@@ -198,6 +198,11 @@
 
   .concave-image {
     height: 56px;
+    /* TODO fix(harmony)排版取整导致在部分设备上出现白缝的问题 */
+    /* #ifdef VUE3-VAPOR */
+    margin-left: -1px;
+    margin-right: -1px;
+    /* #endif */
   }
 
   .btn-plus {

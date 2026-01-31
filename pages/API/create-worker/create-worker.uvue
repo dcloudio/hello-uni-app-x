@@ -22,7 +22,7 @@
 
     <view class="log-section">
       <text class="section-title">通信日志:</text>
-      <scroll-view class="log-container" scroll-y="true">
+      <scroll-view class="log-container">
         <view v-for="(log, index) in logs" :key="index" class="log-item">
           <text :class="['log-text', log.type]">{{log.message}}</text>
         </view>
@@ -40,121 +40,127 @@
   </scroll-view>
 </template>
 
-<script>
-  export default {
-    onUnload() {
-      this.destory();
-    },
-    data() {
-      return {
-        created_boolean: false,
-        workerStatus: 'none', // none, created, destroyed
-        isListening: false,
-        logs: [] as Array<UTSJSONObject>,
-        inputValue: '1', // 默认值为1
-        taskResult: '',
-        worker: null as Worker | null
-      }
-    },
-    computed: {
-      statusText() : string {
-        switch (this.workerStatus) {
-          case 'none': return '未创建';
-          case 'created': return '已创建';
-          case 'destroyed': return '已销毁';
-          default: return '未知';
-        }
-      }
-    },
-    methods: {
-      // 添加日志方法
-      addLog(message : string, type : string = 'info') {
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-        const logItem = {
-          message: `[${timeStr}] ${message}`,
-          type: type,
-          time: timeStr
-        } as UTSJSONObject;
-        this.logs.unshift(logItem);
-        // 限制日志数量
-        if (this.logs.length > 50) {
-          this.logs = this.logs.slice(0, 50);
-        }
-      },
+<script setup lang="uts">
+  type TaskResultType = {
+    value: string
+  }
 
-      // 创建Worker
-      create() {
-        this.worker = uni.createWorker('workers/helloWorkerTask.uts');
-        this.workerStatus = 'created';
-        this.addLog('Worker创建成功', 'success');
-        this.created_boolean = true;
+  const created_boolean = ref<boolean>(false)
+  const workerStatus = ref<string>('none') // none, created, destroyed
+  const isListening = ref<boolean>(false)
+  const logs = ref<Array<UTSJSONObject>>([])
+  const inputValue = ref<string>('1') // 默认值为1
+  const taskResult = reactive({ value: '' } as TaskResultType)
+  const worker = ref<Worker | null>(null)
 
-      },
-      onWorkerMsg() {
-        if (this.worker == null) {
-          this.addLog('请先创建worker', 'warning');
-          return;
-        }
-        this.worker!.onMessage((result) => {
-          // 处理Worker返回的消息
-          console.log(`收到Worker消息:`, result);
-          const res = result as UTSJSONObject;
-          const resultData = res['data'] as string;
-          this.taskResult = resultData;
-          this.inputValue = this.taskResult
-          this.addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
-        })
-      },
-      onWorkerError() {
-        if (this.worker == null) {
-          this.addLog('请先创建worker', 'warning');
-          return;
-        }
-        this.worker!.onError((error) => {
-          console.error('Worker发生错误:', error);
-          // this.addLog(`Worker错误: ${error.message}`, 'error');
-        })
-      },
+  const statusText = computed(() : string => {
+    switch (workerStatus.value) {
+      case 'none': return '未创建';
+      case 'created': return '已创建';
+      case 'destroyed': return '已销毁';
+      default: return '未知';
+    }
+  })
 
-      // 向workerTask发送消息
-      sendMessage() {
-        // 检查输入值
-        if (this.inputValue == '') {
-          this.addLog('请输入有效的数字', 'warning');
-          return;
-        }
-        const options = {
-          data: this.inputValue,
-          needReply: true
-        };
-        this.worker!.postMessage(options, null);
-        this.addLog(`发送值到WorkerTask: ${this.inputValue}`, 'send');
-      },
-
-      // 销毁Worker
-      destory() {
-        if (this.worker == null) {
-          this.addLog('没有创建worker,无法销毁', 'warning');
-          return;
-        }
-        this.worker!.terminate();
-        this.workerStatus = 'destroyed';
-        this.isListening = false;
-        this.addLog('Worker已销毁', 'warning');
-        this.created_boolean = false;
-      },
-
-      // 清空日志
-      clearLogs() {
-        this.logs = [];
-      },
-
-      test_resetInputValue() {
-        this.inputValue = '1'
-      },
+  // 添加日志方法
+  function addLog(message : string, type : string = 'info') {
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+    const logItem = {
+      message: `[${timeStr}] ${message}`,
+      type: type,
+      time: timeStr
+    } as UTSJSONObject;
+    logs.value.unshift(logItem);
+    // 限制日志数量
+    if (logs.value.length > 50) {
+      logs.value = logs.value.slice(0, 50);
     }
   }
+
+  // 创建Worker
+  const create = () => {
+    worker.value = uni.createWorker('workers/helloWorkerTask.uts');
+    workerStatus.value = 'created';
+    addLog('Worker创建成功', 'success');
+    created_boolean.value = true;
+  }
+
+  const onWorkerMsg = () => {
+    if (worker.value == null) {
+      addLog('请先创建worker', 'warning');
+      return;
+    }
+    worker.value!.onMessage((result) => {
+      // 处理Worker返回的消息
+      console.log(`收到Worker消息:`, result);
+      const res = result as UTSJSONObject;
+      const resultData = res['data'] as string;
+      taskResult.value = resultData;
+      inputValue.value = taskResult.value
+      addLog(`收到WorkerTask返回: ${resultData}`, 'receive');
+    })
+  }
+
+  const onWorkerError = () => {
+    if (worker.value == null) {
+      addLog('请先创建worker', 'warning');
+      return;
+    }
+    worker.value!.onError((error) => {
+      console.error('Worker发生错误:', error);
+      // addLog(`Worker错误: ${error.message}`, 'error');
+    })
+  }
+
+  // 向workerTask发送消息
+  const sendMessage = () => {
+    // 检查输入值
+    if (inputValue.value == '') {
+      addLog('请输入有效的数字', 'warning');
+      return;
+    }
+    const options = {
+      data: inputValue.value,
+      needReply: true
+    };
+    worker.value!.postMessage(options, null);
+    addLog(`发送值到WorkerTask: ${inputValue.value}`, 'send');
+  }
+
+  // 销毁Worker
+  const destory = () => {
+    if (worker.value == null) {
+      addLog('没有创建worker,无法销毁', 'warning');
+      return;
+    }
+    worker.value!.terminate();
+    workerStatus.value = 'destroyed';
+    isListening.value = false;
+    addLog('Worker已销毁', 'warning');
+    created_boolean.value = false;
+  }
+
+  // 清空日志
+  const clearLogs = () => {
+    logs.value = [];
+  }
+
+  const test_resetInputValue = () => {
+    inputValue.value = '1'
+  }
+
+  onUnmounted(() => {
+    destory();
+  })
+
+  defineExpose({
+    taskResult,
+    test_resetInputValue,
+    create,
+    onWorkerMsg,
+    sendMessage
+  })
 </script>
 
 <style>

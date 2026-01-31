@@ -5,92 +5,92 @@
   </view>
 </template>
 
-<script>
-  type Point = {
-    x : number
-    y : number
-  };
+<script setup lang="uts">
+type Point = {
+  x : number
+  y : number
+}
 
-  export default {
-    data() {
-      return {
-        lastPointX: 0,
-        lastPointY: 0,
-        offsetX: 0,
-        offsetY: 0,
-        renderingContext: null as CanvasRenderingContext2D | null,
-      }
-    },
-    onReady() {
-      uni.createCanvasContextAsync({
-        id: 'tablet',
-        // component: this,
-        success: (context : CanvasContext) => {
-          console.log('success');
-          this.renderingContext = context.getContext('2d')!;
-          const canvas = this.renderingContext!.canvas;
+// Data
+let lastPointX = 0
+let lastPointY = 0
+let offsetX = 0
+let offsetY = 0
+let renderingContext: CanvasRenderingContext2D | null = null
 
-          const dpr = uni.getWindowInfo().pixelRatio;
-          canvas.width = canvas.offsetWidth * dpr
-          canvas.height = canvas.offsetHeight * dpr
-          this.renderingContext!.scale(dpr, dpr)
+// Methods
+function getPosition(event : TouchEvent) : Point {
+  const touch = event.touches[0]
+  // #ifndef MP-WEIXIN
+  return {
+    x: touch.clientX - offsetX,
+    y: touch.clientY - offsetY
+  } as Point
+  // #endif
 
-          // #ifndef MP
-          const elRect = canvas.getBoundingClientRect()
-          this.offsetX = elRect.left
-          this.offsetY = elRect.top
-          // #endif
-        }
-      })
-    },
-    methods: {
-      touchStart(event : TouchEvent) {
-        const position = this.getPosition(event)
-        this.lastPointX = position.x
-        this.lastPointY = position.y
-      },
-      touchMove(event : TouchEvent) {
-        const position = this.getPosition(event)
-        const x = position.x
-        const y = position.y
+  // #ifdef MP-WEIXIN
+  return {
+    x: touch.x,
+    y: touch.y
+  } as Point
+  // #endif
+}
 
-        const ctx = this.renderingContext!
-        ctx.lineWidth = 5
-        ctx.lineCap = "round"
-        ctx.lineJoin = "round"
-        ctx.beginPath()
-        ctx.moveTo(this.lastPointX, this.lastPointY)
-        ctx.lineTo(x, y)
-        ctx.stroke()
+function touchStart(event : TouchEvent) {
+  const position = getPosition(event)
+  lastPointX = position.x
+  lastPointY = position.y
+}
 
-        this.lastPointX = x
-        this.lastPointY = y
-      },
-      touchEnd(_ : TouchEvent) {
-      },
-      doClear() {
-        if (this.renderingContext != null) {
-          this.renderingContext!.clearRect(0, 0, this.renderingContext!.canvas.width, this.renderingContext!.canvas.height)
-        }
-      },
-      getPosition(event : TouchEvent) : Point {
-        const touch = event.touches[0]
-        // #ifndef MP-WEIXIN
-        return {
-          x: touch.clientX - this.offsetX,
-          y: touch.clientY - this.offsetY
-        } as Point
-        // #endif
+function touchMove(event : TouchEvent) {
+  const position = getPosition(event)
+  const x = position.x
+  const y = position.y
 
-        // #ifdef MP-WEIXIN
-        return {
-          x: touch.x,
-          y: touch.y
-        } as Point
-        // #endif
-      }
-    }
+  const ctx = renderingContext!
+  ctx.lineWidth = 5
+  ctx.lineCap = "round"
+  ctx.lineJoin = "round"
+  ctx.beginPath()
+  ctx.moveTo(lastPointX, lastPointY)
+  ctx.lineTo(x, y)
+  ctx.stroke()
+
+  lastPointX = x
+  lastPointY = y
+}
+
+function touchEnd(event : TouchEvent) {
+}
+
+function doClear() {
+  if (renderingContext != null) {
+    renderingContext!.clearRect(0, 0, renderingContext!.canvas.width, renderingContext!.canvas.height)
   }
+}
+
+// Lifecycle
+onReady(() => {
+  uni.createCanvasContextAsync({
+    id: 'tablet',
+    success: (context : CanvasContext) => {
+      console.log('success')
+      renderingContext = context.getContext('2d')!
+      const canvas = renderingContext!.canvas
+
+      const dpr = uni.getWindowInfo().pixelRatio
+      canvas.width = canvas.offsetWidth * dpr
+      canvas.height = canvas.offsetHeight * dpr
+      renderingContext!.scale(dpr, dpr)
+
+      // #ifndef MP
+      const elRect = canvas.getBoundingClientRect()
+      offsetX = elRect.left
+      offsetY = elRect.top
+      // #endif
+    }
+  })
+})
 </script>
 
 <style>

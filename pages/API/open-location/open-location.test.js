@@ -42,7 +42,7 @@ describe('dialog page', () => {
   });
 
   it('dialogPage should be opened', async () => {
-		const dialogPagesNum = (await page.data('dialogPagesNum')).value
+		const dialogPagesNum = await page.data('data.dialogPagesNum')
 		expect(dialogPagesNum).toBe(1)
 	})
 

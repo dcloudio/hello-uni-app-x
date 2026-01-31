@@ -2,7 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 
 const PAGE_PATH = '/pages/API/rpx2px/rpx2px'
-  
+
 describe('API-rpx2px', () => {
   if(isMP) {
     it('not support', () => {
@@ -10,7 +10,7 @@ describe('API-rpx2px', () => {
     })
     return
   }
-  
+
   it('rpx2px', async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
@@ -19,7 +19,7 @@ describe('API-rpx2px', () => {
     await btnConvert.tap()
     await page.waitFor(100)
 
-    const data = await page.data()
+    const data = await page.data('data')
     expect(data.result).toBe(true)
   });
 });

@@ -22,12 +22,12 @@ describe('component-native-web-view', () => {
     });
 
     it('check_load_url', async () => {
-      expect(await page.data('loadError')).toBe(false)
+      expect(await page.data('data.loadError')).toBe(false)
     });
 
     it('screenshot', async () => {
       await page.waitFor(async () => {
-        return await page.data('loadFinish') === true;
+        return await page.data('data.loadFinish') === true;
       });
       const image = await program.screenshot({
         fullPage: true
@@ -37,24 +37,24 @@ describe('component-native-web-view', () => {
 
     it('test event download', async () => {
       await page.setData({
-        autoTest: true
+        data: { autoTest: true }
       });
       await page.callMethod('testEventDownload');
       start = Date.now();
       await page.waitFor(async () => {
-        return (await page.data('eventDownload')) || (Date.now() - start > 1000);
+        return (await page.data('data.eventDownload')) || (Date.now() - start > 1000);
       });
       if (isHarmony) {
         await page.waitFor(1500);
         // 关闭弹框
         await program.tap({ x: 26, y: 80 })
         
-        expect(await page.data('eventDownload')).toEqual({
+        expect(await page.data('data.eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
-          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: 'Mobile',
-          contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
+          contentDisposition: `attachment; filename="hello-uniapp-x.apk"; filename*=utf-8''hello-uniapp-x.apk`,
           mimetype: 'application/vnd.android.package-archive',
           isContentLengthValid: true
         });
@@ -64,7 +64,7 @@ describe('component-native-web-view', () => {
         // expect(await page.data('eventDownload')).toEqual({
         //   tagName: 'WEB-VIEW',
         //   type: 'download',
-        //   url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+        //   url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
         //   userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
         //   contentDisposition: '',
         //   mimetype: 'application/vnd.android.package-archive',
@@ -76,20 +76,20 @@ describe('component-native-web-view', () => {
       const version = parseInt(infos[infos.length - 1]);
       if (version == 8) return; // android8测试结果不稳定
       if (version >= 9) {
-        expect(await page.data('eventDownload')).toEqual({
+        expect(await page.data('data.eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
-          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: `uni-app-x/${process.env.HX_Version.split('-')[0].split('.').slice(0, 2).join('.')}`,
-          contentDisposition: `attachment; filename="hello-uniappx.apk"; filename*=utf-8''hello-uniappx.apk`,
+          contentDisposition: `attachment; filename="hello-uniapp-x.apk"; filename*=utf-8''hello-uniapp-x.apk`,
           mimetype: 'application/vnd.android.package-archive',
           isContentLengthValid: true
         });
       } else if (version >= 7) { // 低版本webview内核，部分属性无有效值
-        expect(await page.data('eventDownload')).toEqual({
+        expect(await page.data('data.eventDownload')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'download',
-          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniappx.apk',
+          url: 'https://web-ext-storage.dcloud.net.cn/uni-app-x/pkg/hello-uniapp-x.apk',
           userAgent: '',
           contentDisposition: '',
           mimetype: '',
@@ -105,9 +105,9 @@ describe('component-native-web-view', () => {
         await page.callMethod('testEventMessage');
         start = Date.now();
         await page.waitFor(async () => {
-          return (await page.data('eventMessage')) || (Date.now() - start > 500);
+          return (await page.data('data.eventMessage')) || (Date.now() - start > 500);
         });
-        expect(await page.data('eventMessage')).toEqual({
+        expect(await page.data('data.eventMessage')).toEqual({
           tagName: 'WEB-VIEW',
           type: 'message',
           data: [{
@@ -116,7 +116,7 @@ describe('component-native-web-view', () => {
         });
       }
       await page.setData({
-        autoTest: false
+        data: { autoTest: false }
       });
     });
 });

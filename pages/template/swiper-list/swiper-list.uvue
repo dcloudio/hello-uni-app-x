@@ -2,7 +2,7 @@
   <view class="swiper-list">
     <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
       <view class="flex-row">
-        <text ref="swipertab" space="nbsp" class="swiper-tabs-item"
+        <text ref="swipertab" class="swiper-tabs-item" :style="textSpace"
           :class="swiperIndex==index ? 'swiper-tabs-item-active' : ''" v-for="(item, index) in swiperList" :key="index"
           @click="onTabClick(index)">
           {{item.title}}
@@ -21,6 +21,9 @@
 </template>
 
 <script setup lang="ts">
+  // TODO 目前仅支态绑定时 white-space: pre; 才生效
+  const textSpace = ref('white-space: pre;')
+
 type SwiperTabsItem = {
   x : number,
   w : number
@@ -70,7 +73,7 @@ function updateTabIndicator(current_index : number, move_to_index : number, perc
   const scroll_x = x - swiperWidth.value / 2
   // app 平台后续支持 scrollTo()
   // #ifndef MP-WEIXIN
-  tabScroll.value!.scrollLeft = scroll_x
+  tabScroll.value!.scrollLeft = scroll_x > 0 ? scroll_x : 0
   // #endif
   // #ifdef MP-WEIXIN
   tabScroll.value!.scrollTo({

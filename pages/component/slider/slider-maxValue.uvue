@@ -7,35 +7,44 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-        sliderX: 0,
-        sliderY: 0,
-        sliderHeight: 0,
-        sliderValue: 0
-			}
-		},
-    onReady() {
-      // #ifdef APP-IOS || APP-HARMONY
-      const sliderEle = uni.getElementById("slider")
-      const sliderRect = sliderEle?.getBoundingClientRect()
-      if (sliderRect != null) {
-        this.sliderX = sliderRect.x
-        this.sliderY = sliderRect.y
-        this.sliderHeight = sliderRect.height
-      }
-      // 加上导航栏及状态栏高度
-      const systemInfo = uni.getSystemInfoSync()
-      this.sliderY += systemInfo.safeAreaInsets.top + 44
-      // #endif
-    },
-		methods: {
-      valueChange(e: UniSliderChangeEvent) {
-				console.log('valueChange', e.detail.value)
-        this.sliderValue = e.detail.value
-			}
-		}
+<script setup lang="uts">
+	
+
+	type DataType = {
+		sliderX: number,
+		sliderY: number,
+		sliderHeight: number,
+		sliderValue: number,
 	}
+
+	const data = reactive({
+		sliderX: 0,
+		sliderY: 0,
+		sliderHeight: 0,
+		sliderValue: 0,
+	} as DataType)
+
+	function valueChange(e: UniSliderChangeEvent) {
+		console.log('valueChange', e.detail.value)
+		data.sliderValue = e.detail.value
+	}
+
+	onReady(() => {
+		// #ifdef APP-IOS || APP-HARMONY
+		const sliderEle = uni.getElementById("slider")
+		const sliderRect = sliderEle?.getBoundingClientRect()
+		if (sliderRect != null) {
+			data.sliderX = sliderRect.x
+			data.sliderY = sliderRect.y
+			data.sliderHeight = sliderRect.height
+		}
+		// 加上导航栏及状态栏高度
+		const systemInfo = uni.getSystemInfoSync()
+		data.sliderY += systemInfo.safeAreaInsets.top + 44
+		// #endif
+	})
+
+	defineExpose({
+		data
+	})
 </script>

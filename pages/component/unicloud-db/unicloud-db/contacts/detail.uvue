@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="page">
-    <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
+    <unicloud-db ref="udbRef" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
       page-data="replace">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
       <view v-if="loading" class="loading">正在加载...</view>
@@ -31,53 +31,47 @@
   </scroll-view>
 </template>
 
-<script>
+<script setup lang="uts">
+
   import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE } from './types.uts'
 
-  export default {
-    data() {
-      return {
-        collection: '',
-        where: '',
-        whereID: '',
-        uniCloudElement: null as UniCloudDBElement | null
-      }
-    },
-    onLoad(options) {
-      this.collection = COLLECTION_NAME;
-      this.whereID = options['id'] as string;
-      this.where = `_id=='${this.whereID}'`;
-    },
-    onShow() {
-      // TODO 后续通过 EventChannel 实现
-      uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
-    },
-    onUnload() {
-      // TODO 后续通过 EventChannel 实现
-      uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
-    },
-    onReady() {
-      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
-    },
-    methods: {
-      displayGender(value : number | null) : string {
-        const str = value ?? -1
-        return (GenderList as GenderType[]).find((item : GenderType) : boolean => {
-          return item.value == str
-        })!.text;
-      },
-      gotoUpdatePage(id : string | null) {
-        // TODO 后续通过 EventChannel 实现
-        uni.$on(UNICLOUD_DB_CONTACTS_UPDATE, this.onDataChange);
-        uni.navigateTo({
-          url: './edit?id=' + id
-        })
-      },
-      onDataChange(_ : string) {
-        this.uniCloudElement!.loadData()
-      }
+  const collection = ref('')
+  const where = ref('')
+  const whereID = ref('')
+  const udbRef = ref<UniCloudDBElement | null>(null)
+
+  function displayGender(value : number | null) : string {
+    const str = value ?? -1
+    return (GenderList as GenderType[]).find((item : GenderType) : boolean => {
+      return item.value == str
+    })!.text;
+  }
+  function onDataChange(event : string) {
+    if (udbRef.value != null) {
+      udbRef.value!.loadData()
     }
   }
+  function gotoUpdatePage(id : string | null) {
+    // TODO 后续通过 EventChannel 实现
+    uni.$on(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
+    uni.navigateTo({
+      url: './edit?id=' + id
+    })
+  }
+
+  onLoad((options) => {
+    collection.value = COLLECTION_NAME;
+    whereID.value = options['id'] as string;
+    where.value = `_id=='${whereID.value}'`;
+  })
+  onPageShow(() => {
+    // TODO 后续通过 EventChannel 实现
+    uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
+  })
+  onUnload(() => {
+    // TODO 后续通过 EventChannel 实现
+    uni.$off(UNICLOUD_DB_CONTACTS_UPDATE, onDataChange);
+  })
 </script>
 
 <style>

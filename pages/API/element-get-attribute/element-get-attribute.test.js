@@ -7,33 +7,40 @@ describe('test element-get-attribute', () => {
   const isApp = isAndroid || isIos
   const isWeb = platformInfo.startsWith('web')
   const isMP = platformInfo.startsWith('mp')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+
   beforeAll(async () => {
     page = await program.reLaunch('/pages/API/element-get-attribute/element-get-attribute')
     await page.waitFor(3000);
   });
   it('check getAttributeId', async () => {
     await page.callMethod('getAttributeId')
-    expect(await page.data('attrId')).toEqual('box');
+    expect(await page.data('data.attrId')).toEqual('box');
   });
   it('check setStyle getAttributeStyle', async () => {
     await page.callMethod('setStyle')
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
-      expect(await page.data('attrStyle')).toEqual(attrStyle);
+      expect(await page.data('data.attrStyle')).toEqual(attrStyle);
     }
   });
   it('check getPropertyValue', async () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
-    const propertyValue = isWeb?'rgb(255, 240, 0)':'#FFF000'
-    expect(await page.data('propertyValue')).toEqual(propertyValue);
+    const propertyValueData = await page.data('data.propertyValue')
+    if (isDom2) {
+      expect(['#FFF000FF', 'rgb(255,240,0)']).toContain(propertyValueData)
+    } else {
+      const propertyValue = isWeb?'rgb(255, 240, 0)': '#FFF000'
+      expect(propertyValueData).toEqual(propertyValue);
+    }
   });
 
   it('getBoundingClientRectSync', async () => {
     await page.callMethod("getBoundingClientRectAsyncChild");
     await page.waitFor(100)
-    const rectInfo = await page.data("rectInfo")
+    const rectInfo = await page.data("data.rectInfo")
     const systemInfo = await program.systemInfo();
     const width = systemInfo.screenWidth
     expect(Math.round(rectInfo.x)).toBe(15)
@@ -52,5 +59,15 @@ describe('test element-get-attribute', () => {
       const scrollView =  await page.$('.scroll-view_H')
       expect(await scrollView.property('scrollLeft')).toBe(200);
     });
+  }
+  if (!isMP) {
+    it('getBoundingClientRect-scaledView', async () => {
+      await page.callMethod("handleGetScaledViewSize");
+      const scaledViewWidth = await page.data("data.scaledViewWidth")
+      const scaledViewHeight = await page.data("data.scaledViewHeight")
+      // Android 差异尺寸：99.809525
+      expect(scaledViewWidth).toBeGreaterThan(99.5);
+      expect(scaledViewHeight).toBeGreaterThan(99.5);
+    })
   }
 });

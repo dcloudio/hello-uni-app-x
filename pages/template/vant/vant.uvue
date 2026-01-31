@@ -14,26 +14,29 @@
     <vant-loading color="#00aaff"></vant-loading>
   </view>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-        // 自动化测试
-        jest: false
-      };
-    },
-    methods: {
-      onClick() {
-        this.jest = true
-        uni.showToast({
-          title: "click van-button",
-          mask: false,
-          icon: "none",
-          duration: 1500
-        });
-      }
-    }
+<script setup lang="uts">
+  type DataType = {
+    jest: boolean,
   }
+
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const data = reactive({
+    jest: false,
+  } as DataType)
+
+  function onClick() {
+    data.jest = true
+    uni.showToast({
+      title: "click van-button",
+      mask: false,
+      icon: "none",
+      duration: 1500
+    });
+  }
+
+  defineExpose({
+    data
+  })
 </script>
 <style>
   .van-info {

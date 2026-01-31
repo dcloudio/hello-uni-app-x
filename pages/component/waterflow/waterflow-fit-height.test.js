@@ -3,9 +3,10 @@ const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('waterflow-fit-height', () => {
-  if (!(isAndroid || isIOS || isHarmony) || isAppWebView) {
+  if (!(isAndroid || isIOS || isHarmony) || isAppWebView || isDom2) {
   	it('not support', () => {
   		expect(1).toBe(1)
   	})

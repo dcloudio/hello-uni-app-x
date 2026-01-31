@@ -22,95 +22,118 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				swiperChangeEvent: false,
-				viewTouchEvent: false,
-				swiperItemTouchEvent: false,
-				swiperTouchEvent: false,
-        stopPropagation: false,
-        preventDefault: false,
-        touchResult: ""
-			}
-		},
-		methods: {
-      changeStopPropagation(value: boolean) {
-        this.stopPropagation = value
-      },
-      changePreventDefault(value: boolean) {
-        this.preventDefault = value
-      },
-			swiperChange(e: UniSwiperChangeEvent) {
-				console.log("swiperChange", e.detail.current)
-				this.swiperChangeEvent = true
-			},
-			viewTouchStart(e: UniTouchEvent) {
-				console.log("viewTouchStart")
-        this.touchResult = "viewTouchStart"
-				this.viewTouchEvent = true
-        if (this.stopPropagation) e.stopPropagation()
-				if (this.preventDefault) e.preventDefault()
-			},
-      viewTouchMove(e: UniTouchEvent) {
-        console.log("viewTouchMove")
-        this.touchResult = "viewTouchMove"
-        this.viewTouchEvent = true
-        if (this.stopPropagation) e.stopPropagation()
-				if (this.preventDefault) e.preventDefault()
-      },
-      viewTouchEnd(e: UniTouchEvent) {
-        console.log("viewTouchEnd")
-        this.touchResult = "viewTouchEnd"
-        if (this.stopPropagation) e.stopPropagation()
-      },
-			swiperItemTouchStart(e: UniTouchEvent) {
-				console.log("swiperItemTouchStart")
-        this.touchResult += " -> swiperItemTouchStart"
-				this.swiperItemTouchEvent = true
-			},
-      swiperItemTouchMove(e: UniTouchEvent) {
-        console.log("swiperItemTouchMove")
-        this.touchResult += " -> swiperItemTouchMove"
-      },
-      swiperItemTouchEnd(e: UniTouchEvent) {
-        console.log("swiperItemTouchEnd")
-        this.touchResult += " -> swiperItemTouchEnd"
-      },
-			swiperTouchStart(e: UniTouchEvent) {
-				console.log("swiperTouchStart")
-        this.touchResult += " -> swiperTouchStart"
-				this.swiperTouchEvent = true
-			},
-      swiperTouchMove(e: UniTouchEvent) {
-        console.log("swiperTouchMove")
-        this.touchResult += " -> swiperTouchMove"
-      },
-      swiperTouchEnd(e: UniTouchEvent) {
-        console.log("swiperTouchEnd")
-        this.touchResult += " -> swiperTouchEnd"
-      },
-      resetEvent() {
-        this.swiperChangeEvent = false
-        this.viewTouchEvent = false
-        this.swiperItemTouchEvent = false
-        this.swiperTouchEvent = false
-        this.stopPropagation = true
-        this.preventDefault = true
-      },
-      isPassTest1() {
-        console.log("swiperChangeEvent:", this.swiperChangeEvent)
-        return this.swiperChangeEvent == false
-      },
-      isPassTest2() {
-        console.log("viewTouchEvent:", this.viewTouchEvent)
-        console.log("swiperItemTouchEvent:", this.swiperItemTouchEvent)
-        console.log("swiperTouchEvent:", this.swiperTouchEvent)
-        return this.viewTouchEvent == true && this.swiperItemTouchEvent == true  && this.swiperTouchEvent == true
-      }
-		}
-	}
+<script setup lang="uts">
+
+
+type DataType = {
+  swiperChangeEvent: boolean,
+  viewTouchEvent: boolean,
+  swiperItemTouchEvent: boolean,
+  swiperTouchEvent: boolean,
+}
+
+const stopPropagation = ref(false)
+const preventDefault = ref(false)
+const touchResult = ref("")
+const data = reactive({
+  swiperChangeEvent: false,
+  viewTouchEvent: false,
+  swiperItemTouchEvent: false,
+  swiperTouchEvent: false,
+} as DataType)
+
+function changeStopPropagation(value: boolean) {
+  stopPropagation.value = value
+}
+
+function changePreventDefault(value: boolean) {
+  preventDefault.value = value
+}
+
+function swiperChange(e: UniSwiperChangeEvent) {
+  console.log("swiperChange", e.detail.current)
+  data.swiperChangeEvent = true
+}
+
+function viewTouchStart(e: UniTouchEvent) {
+  console.log("viewTouchStart")
+  touchResult.value = "viewTouchStart"
+  data.viewTouchEvent = true
+  if (stopPropagation.value) e.stopPropagation()
+  if (preventDefault.value) e.preventDefault()
+}
+
+function viewTouchMove(e: UniTouchEvent) {
+  console.log("viewTouchMove")
+  touchResult.value = "viewTouchMove"
+  data.viewTouchEvent = true
+  if (stopPropagation.value) e.stopPropagation()
+  if (preventDefault.value) e.preventDefault()
+}
+
+function viewTouchEnd(e: UniTouchEvent) {
+  console.log("viewTouchEnd")
+  touchResult.value = "viewTouchEnd"
+  if (stopPropagation.value) e.stopPropagation()
+}
+
+function swiperItemTouchStart(e: UniTouchEvent) {
+  console.log("swiperItemTouchStart")
+  touchResult.value += " -> swiperItemTouchStart"
+  data.swiperItemTouchEvent = true
+}
+
+function swiperItemTouchMove(e: UniTouchEvent) {
+  console.log("swiperItemTouchMove")
+  touchResult.value += " -> swiperItemTouchMove"
+}
+
+function swiperItemTouchEnd(e: UniTouchEvent) {
+  console.log("swiperItemTouchEnd")
+  touchResult.value += " -> swiperItemTouchEnd"
+}
+
+function swiperTouchStart(e: UniTouchEvent) {
+  console.log("swiperTouchStart")
+  touchResult.value += " -> swiperTouchStart"
+  data.swiperTouchEvent = true
+}
+
+function swiperTouchMove(e: UniTouchEvent) {
+  console.log("swiperTouchMove")
+  touchResult.value += " -> swiperTouchMove"
+}
+
+function swiperTouchEnd(e: UniTouchEvent) {
+  console.log("swiperTouchEnd")
+  touchResult.value += " -> swiperTouchEnd"
+}
+
+function resetEvent() {
+  data.swiperChangeEvent = false
+  data.viewTouchEvent = false
+  data.swiperItemTouchEvent = false
+  data.swiperTouchEvent = false
+  stopPropagation.value = true
+  preventDefault.value = true
+}
+
+function isPassTest1() {
+  console.log("swiperChangeEvent:", data.swiperChangeEvent)
+  return data.swiperChangeEvent == false
+}
+
+function isPassTest2() {
+  console.log("viewTouchEvent:", data.viewTouchEvent)
+  console.log("swiperItemTouchEvent:", data.swiperItemTouchEvent)
+  console.log("swiperTouchEvent:", data.swiperTouchEvent)
+  return data.viewTouchEvent == true && data.swiperItemTouchEvent == true  && data.swiperTouchEvent == true
+}
+
+defineExpose({
+  data,
+  resetEvent
+})
 </script>
 
 <style>

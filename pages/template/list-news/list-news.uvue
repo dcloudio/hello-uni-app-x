@@ -1,12 +1,14 @@
 <template>
   <view :class="['uni-container', { 'flex-row': isWideScreen }, isDarkMode ? 'theme-dark' : 'theme-light']" style="flex: 1;padding: 0px;">
     <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
-    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled=true
-      @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top="true">
-      <list-item class="banner" @click="bannerClick(banner)" type=1>
+    <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled
+      @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top>
+      <list-item class="banner" @click="bannerClick(banner)">
         <image class="banner-img" :src="banner.cover"></image>
         <text class="banner-title">{{ banner.title }}</text>
       </list-item>
+
+      <!-- #ifndef VUE3-VAPOR -->
       <sticky-section>
         <sticky-header>
           <view class="th-item">
@@ -15,13 +17,23 @@
             </text>
           </view>
         </sticky-header>
-        <list-item v-for="(value, index) in listData" :key="index" type=2>
+        <!-- #endif -->
+        <list-item v-for="(value, index) in listData" :key="index"
+          <!-- #ifndef VUE3-VAPOR -->
+          type=2
+          <!-- #endif -->
+        >
           <view class="uni-list-cell" hover-class="uni-list-cell-hover" @click="goDetail(value, index)">
             <view class="uni-media-list">
               <image v-if="isWideScreen" class="uni-media-list-logo" :src="value.cover"></image>
+              <!-- #ifdef VUE3-VAPOR -->
+              <image v-else class="uni-media-list-logo" :src="value.cover"></image>
+              <!-- #endif -->
+              <!-- #ifndef VUE3-VAPOR -->
               <share-element v-else :share-key="'image_'+index">
                 <image class="uni-media-list-logo" :src="value.cover"></image>
               </share-element>
+              <!-- #endif -->
               <view class="uni-media-list-body">
                 <text class="uni-media-list-text-top">{{ value.title }}</text>
                 <view class="uni-media-list-text-bottom">
@@ -32,7 +44,9 @@
             </view>
           </view>
         </list-item>
-      </sticky-section>
+        <!-- #ifndef VUE3-VAPOR -->
+        </sticky-section>
+        <!-- #endif -->
     </list-view>
 
     <!-- 详情区域：宽屏时，右侧显示-->
@@ -52,11 +66,6 @@
 
 <script setup lang="uts">
   import { state } from '@/store/index.uts'
-  type Banner = {
-    cover : string | null,
-    title : string | null,
-    post_id : string | null
-  }
   type Item = {
     author_name : string,
     cover : string,
@@ -70,9 +79,9 @@
 
   const th_item = ref(["排序", "筛选"])
   const refresherTriggered = ref(false)
-  const banner = ref({} as Banner)
+  let banner = ref({} as UTSJSONObject)
   const listData = ref([] as Item[])
-  const last_id = ref('')
+  let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
   const currentIndex = ref(0) // 当前选中的列表项索引
   const post_id = ref('')
@@ -81,30 +90,31 @@
   const firstDetailContent = ref('') // 并行预加载的第一个详情内容
 
   function checkScreenWidth() {
-    const deviceType = uni.getDeviceInfo().deviceType
     const { windowWidth } = uni.getWindowInfo()
     // 只要是pad/pc，或者宽度大于700，都算宽屏
-    isWideScreen.value = (
-      deviceType === 'pad' ||
-      deviceType === 'pc' ||
-      windowWidth > 700
-    )
+    // #ifdef WEB
+    // WEB 端切换设备模拟器时 deviceType 不会改变，只依赖 windowWidth 判断
+    isWideScreen.value = windowWidth > 700
+    // #endif
+    // #ifndef WEB
+    const deviceType = uni.getDeviceInfo().deviceType
+    isWideScreen.value = deviceType === 'pad' || windowWidth > 700
+    // #endif
   }
 
   function getBanner() {
     let data = {
-      column: 'id,post_id,title,author_name,cover,published_at' //需要的字段名
+      column: 'post_id,title,cover' //需要的字段名
     };
-    uni.request<Banner>({
+    uni.request({
       url: 'https://unidemo.dcloud.net.cn/api/banner/36kr',
       data: data,
       success: data => {
         refresherTriggered.value = false
         if (data.statusCode == 200) {
-          const result = data.data
-          if (result != null) {
-            banner.value = result;
-          }
+          banner.value = data.data as UTSJSONObject
+          // banner = data.data as UTSJSONObject
+          // console.log(banner.title)
         }
       },
       fail: (e) => {
@@ -132,8 +142,8 @@
 
   function getList() {
     let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
-    /* if (last_id.value != "") {
-      const minId = parseInt((last_id.value))
+    /* if (last_id != "") {
+      const minId = parseInt((last_id))
       const time = new Date().getTime() + '';
       const pageSize = 10;
       url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
@@ -146,7 +156,7 @@
           const result = res.data
           //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
           // listData.value.push(...result)
-          // last_id.value = listData.value[0].id + "";
+          // last_id = listData.value[0].id + "";
           if (result != null) {
             listData.value = result
             // 宽屏模式下，自动选中并展示第一个新闻详情
@@ -175,14 +185,14 @@
     });
   }
 
-  function bannerClick(e: Banner) {
-    const detail = e;
-    const post_id_val = detail.post_id;
-    let cover_val = detail.cover ?? "";
+  function bannerClick(e:UTSJSONObject) {
+    // const detail = e;
+    const post_id_val = e.post_id as string;
+    let cover_val = e.cover as string;
     // #ifdef APP-ANDROID
     cover_val = btoa(cover_val);
     // #endif
-    const title_val = detail.title;
+    const title_val = e.title;
     uni.navigateTo({
       url: '/pages/template/list-news/detail/detail?post_id=' + post_id_val + "&cover=" + cover_val + "&title=" + title_val
     });
@@ -235,9 +245,7 @@
   .list-container {
     width: 100%;
     background-color: var(--list-background-color,#ffffff);
-    /* #ifdef APP */
     flex: 1;
-    /* #endif */
   }
 
   .list-narrow {
@@ -318,7 +326,9 @@
   .uni-media-list-text-top {
     /* height: 37px; */
     font-size: 14px;
+    /* #ifndef VUE3-VAPOR */
     lines: 2;
+    /* #endif */
     overflow: hidden;
     color: var(--text-color,#333333);
   }

@@ -38,14 +38,14 @@ describe('touch-events-test', () => {
     })
 
     await page.waitFor(1500);
-    const swiperChangeEvent = await page.data('swiperChangeEvent')
+    const swiperChangeEvent = await page.data('data.swiperChangeEvent')
     expect(swiperChangeEvent).toBe(true)
   })
 
   it('touch-event-case2', async () => {
-    const viewTouchEvent = await page.data('viewTouchEvent')
-    const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
-    const swiperTouchEvent = await page.data('swiperTouchEvent')
+    const viewTouchEvent = await page.data('data.viewTouchEvent')
+    const swiperItemTouchEvent = await page.data('data.swiperItemTouchEvent')
+    const swiperTouchEvent = await page.data('data.swiperTouchEvent')
     let ret = viewTouchEvent && swiperItemTouchEvent && swiperTouchEvent
     expect(ret).toBe(true)
   })
@@ -70,16 +70,16 @@ describe('touch-events-test', () => {
     })
 
     await page.waitFor(1500);
-    const swiperChangeEvent = await page.data('swiperChangeEvent')
+    const swiperChangeEvent = await page.data('data.swiperChangeEvent')
   // harmony 依赖 API 15+
     console.log("swiperChangeEvent:", swiperChangeEvent)
     expect(swiperChangeEvent).toBe(false)
   })
 
   it('touch-event-case4', async () => {
-    const viewTouchEvent = await page.data('viewTouchEvent')
-    const swiperItemTouchEvent = await page.data('swiperItemTouchEvent')
-    const swiperTouchEvent = await page.data('swiperTouchEvent')
+    const viewTouchEvent = await page.data('data.viewTouchEvent')
+    const swiperItemTouchEvent = await page.data('data.swiperItemTouchEvent')
+    const swiperTouchEvent = await page.data('data.swiperTouchEvent')
     let ret = viewTouchEvent && !swiperItemTouchEvent && !swiperTouchEvent
     expect(ret).toBe(true)
   })

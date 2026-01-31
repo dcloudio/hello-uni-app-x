@@ -24,7 +24,7 @@ describe('api-resize-observer', () => {
   it('check_outbox_resize', async () => {
     await page.callMethod('setOutBoxMarginLeft', '100px')
     await page.waitFor(500)
-    const value = await page.data('outBoxElementOnResize')
+    const value = await page.data('data.outBoxElementOnResize')
     expect(value).toBe(false)
   })
 })

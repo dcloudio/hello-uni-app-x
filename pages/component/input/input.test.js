@@ -7,6 +7,7 @@ const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-input', () => {
   if (isAppWebView) {
@@ -22,15 +23,17 @@ describe('component-native-input', () => {
     await page.waitFor('view');
   });
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   // 测试焦点及键盘弹起
   if(!isMP) {
     it('focus', async () => {
       const input = await page.$('#uni-input-focus');
       expect(await input.attribute('focus')).toBe("true")
       // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-      await page.setData({
-        focus: false,
-      })
+      await setPageData({focus: false})
       expect(await input.attribute('focus')).toBe("false")
       // await page.waitFor(1000)
       // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
@@ -50,7 +53,8 @@ describe('component-native-input', () => {
     });
   }
   // web ios 自动化测试时无法触发事件，手动测试可以
-  if (isHarmony || isAndroid) {
+  // TODO: dom2 harmony 暂时不支持 holdKeyboard
+  if ((isHarmony && !isDom2) || isAndroid) {
     it("focus and blur event", async () => {
       if (isHarmony) {
         await program.tap({ x: 100, y: 50 })
@@ -60,19 +64,23 @@ describe('component-native-input', () => {
         triggerFocus: false,
         triggerBlur: false,
       })
-      let pageData = await page.data()
+      let pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(false)
       expect(pageData.triggerBlur).toBe(false)
       await page.callMethod('triggerFocusOrBlur')
       await page.waitFor(500)
-      pageData = await page.data()
+      pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(true)
       expect(pageData.triggerBlur).toBe(false)
+      const focusEventDetail = JSON.parse(pageData.focusAndBlurEventDetail)
+      expect(focusEventDetail.height).not.toBe(undefined)
       await page.callMethod('triggerFocusOrBlur')
       await page.waitFor(500)
-      pageData = await page.data()
+      pageData = await page.data('data')
       expect(pageData.triggerFocus).toBe(false)
       expect(pageData.triggerBlur).toBe(true)
+      const blurEventDetail = JSON.parse(pageData.focusAndBlurEventDetail)
+      expect(blurEventDetail.cursor).not.toBe(undefined)
       if (isHarmony) {
         await program.tap({ x: 100, y: 50 })
         await page.waitFor(1000);
@@ -191,9 +199,7 @@ describe('component-native-input', () => {
       expect(await (await page.$('#uni-input-confirm-done')).attribute("confirmType")).toEqual("done")
     })
     it("cursor-color", async () => {
-      await page.setData({
-        cursor_color: "red",
-      })
+      await setPageData({cursor_color: "red"})
       await page.waitFor(500)
       expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
     })
@@ -215,27 +221,22 @@ describe('component-native-input', () => {
     for (let i = 0; i < 200; i++) {
       str += `${i}`
     }
-    await page.setData({
-      inputMaxLengthValue: str
-    })
+    await setPageData({inputMaxLengthValue: str})
     let length = (await input.value()).length
     expect(length).toBe(10)
-    await page.setData({
-      inputMaxLengthValue: ""
-    })
+    await setPageData({inputMaxLengthValue: ""})
   })
 
   it("password and value order", async () => {
     const input = await page.$('#uni-input-password');
     let length = (await input.value()).length
     expect(length).toBe(6)
-    await page.setData({
-      inputPasswordValue: ""
-    })
+    await setPageData({inputPasswordValue: ""})
   })
 
   it("keyboard height changed after page back", async () => {
-    if (isWeb || isMP || isIOS) {
+    // TODO: dom2 harmony 暂时不支持 holdKeyboard
+    if (isWeb || isMP || isIOS || isDom2) {
       expect(1).toBe(1)
       return
     }
@@ -248,15 +249,13 @@ describe('component-native-input', () => {
     await page.waitFor(2000);
     await program.navigateBack()
     await page.waitFor(1000);
-    await page.setData({
-      focusedForKeyboardHeightChangeTest: true
-    })
+    await setPageData({focusedForKeyboardHeightChangeTest: true})
     await page.waitFor(2000);
 
-    const keyboardHeight = await page.data('keyboardHeight');
+    const keyboardHeight = await page.data('data.keyboardHeight');
     expect(keyboardHeight).toBeGreaterThan(25)
     //reset
-    await page.setData({
+    await setPageData({
       focusedForKeyboardHeightChangeTest: false,
       keyboardHeight: 0
     })
@@ -266,14 +265,60 @@ describe('component-native-input', () => {
     }
   })
 
+  it('focus with value', async () => {
+    await setPageData({
+      focus: false,
+      cursorInputFocus: false,
+      cursorColorInputFocus: false,
+      selectionInputFocus: false,
+      inputMaxLengthFocus: false,
+    })
+    await page.waitFor(1000)
+
+    await setPageData({
+      firstInputFocus: true
+    })
+    await page.waitFor(1000)
+
+    await program.pageScrollTo(0)
+    await page.waitFor(1000)
+
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    const image1 = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44,
+      },
+    })
+    expect(image1).toSaveImageSnapshot()
+    // 两张截图，避免光标闪烁截不到
+    const image2 = await program.screenshot({
+      deviceShot: true,
+      area: {
+        x: 0,
+        y: windowInfo.safeAreaInsets.top + 44,
+      },
+    })
+    expect(image2).toSaveImageSnapshot()
+    await setPageData({
+      firstInputFocus: false,
+    })
+    if (isHarmony) {
+      await program.tap({ x: 100, y: 50 })
+      await page.waitFor(1000);
+    }
+  })
+
+  it('both set modelValue and value', async () => {
+    const input2 = await page.$('#both-model-value');
+    expect(await input2.value()).toEqual("123")
+  })
+
   it("afterAllTestScreenshot", async () => {
     const image = await program.screenshot({
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
-  })
-  it('both set modelValue and value', async () => {
-    const input2 = await page.$('#both-model-value');
-    expect(await input2.value()).toEqual("123")
   })
 });

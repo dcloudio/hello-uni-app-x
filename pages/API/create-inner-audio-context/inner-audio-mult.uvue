@@ -9,74 +9,73 @@
 	</view>
 </template>
 
-<script>
-	type AudioPath = {
-		description : string
-		src : string
-	}
-	export default {
-		data() {
-			return {
-				title: "多音频同时播放",
-				_audioContext1: null as InnerAudioContext | null,
-				src: 'https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3',
-				_audioContext2: null as InnerAudioContext | null,
-				playing1: false,
-				playing2: false,
-				currentTime1: 0,
-				currentTime2: 0,
-			}
-		},
-		onReady() {
-			this._audioContext1 = uni.createInnerAudioContext();
-			this._audioContext1!.src = this.src
-			this._audioContext1!.onTimeUpdate((res) => {
-				this.currentTime1 = this._audioContext1!.currentTime;
-			})
-			this._audioContext2 = uni.createInnerAudioContext();
-			this._audioContext2!.src = this.src
-			this._audioContext2!.onTimeUpdate((res) => {
-				this.currentTime2 = this._audioContext2!.currentTime;
-			})
-		},
+<script setup lang="uts">
 
-		onUnload() {
-			if (this._audioContext1 != null) {
-				this._audioContext1!.stop()
-				this._audioContext1!.destroy()
-			}
-			if (this._audioContext2 != null) {
-				this._audioContext2!.stop()
-				this._audioContext2!.destroy()
-			}
-		},
-		methods: {
-			play1() {
-				if (this._audioContext1 != null) {
-					this.currentTime1=0
-					if (this.playing1) {
-						this._audioContext1!.stop()
-					} else {
-						this._audioContext1!.play()
-					}
+  // Types
+  type AudioPath = {
+    description : string
+    src : string
+  }
 
-				}
-				this.playing1 = !this.playing1
-			},
-			play2() {
-				if (this._audioContext2 != null) {
-					this.currentTime2=0
-					if (this.playing2) {
-						this._audioContext2!.stop()
-					} else {
-						this._audioContext2!.play()
-					}
+  // Data
+  const title = ref("多音频同时播放")
+  const _audioContext1 = ref<InnerAudioContext | null>(null)
+  const src = ref('https://web-ext-storage.dcloud.net.cn/uni-app/ForElise.mp3')
+  const _audioContext2 = ref<InnerAudioContext | null>(null)
+  const playing1 = ref(false)
+  const playing2 = ref(false)
+  const currentTime1 = ref(0)
+  const currentTime2 = ref(0)
 
-				}
-				this.playing2 = !this.playing2
-			}
-		}
-	}
+  // Functions
+  function play1() {
+    if (_audioContext1.value != null) {
+      currentTime1.value = 0
+      if (playing1.value) {
+        _audioContext1.value!.stop()
+      } else {
+        _audioContext1.value!.play()
+      }
+    }
+    playing1.value = !playing1.value
+  }
+
+  function play2() {
+    if (_audioContext2.value != null) {
+      currentTime2.value = 0
+      if (playing2.value) {
+        _audioContext2.value!.stop()
+      } else {
+        _audioContext2.value!.play()
+      }
+    }
+    playing2.value = !playing2.value
+  }
+
+  // Lifecycle hooks
+  onReady(() => {
+    _audioContext1.value = uni.createInnerAudioContext();
+    _audioContext1.value!.src = src.value
+    _audioContext1.value!.onTimeUpdate((res) => {
+      currentTime1.value = _audioContext1.value!.currentTime;
+    })
+    _audioContext2.value = uni.createInnerAudioContext();
+    _audioContext2.value!.src = src.value
+    _audioContext2.value!.onTimeUpdate((res) => {
+      currentTime2.value = _audioContext2.value!.currentTime;
+    })
+  })
+
+  onUnload(() => {
+    if (_audioContext1.value != null) {
+      _audioContext1.value!.stop()
+      _audioContext1.value!.destroy()
+    }
+    if (_audioContext2.value != null) {
+      _audioContext2.value!.stop()
+      _audioContext2.value!.destroy()
+    }
+  })
 </script>
 
 <style>

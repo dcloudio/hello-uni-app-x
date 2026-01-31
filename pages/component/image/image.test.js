@@ -1,3 +1,4 @@
+jest.setTimeout(50000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
@@ -15,73 +16,77 @@ describe('component-native-image', () => {
     await page.waitFor(isWeb ? 4000 : 100);
   });
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('screenshot', async () => {
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot()
   });
 
   it('check_image_load', async () => {
-    expect(await page.data('loadError')).toBe(false)
+    expect(await page.data('data.loadError')).toBe(false)
   });
 
   it('check_image_load_url', async () => {
-    await page.setData({
+    await setPageData({
       loadError: false,
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     })
     await page.waitFor(300);
-    expect(await page.data('loadError')).toBe(false)
+    expect(await page.data('data.loadError')).toBe(false)
   })
 
   if(process.env.uniTestPlatformInfo.toLowerCase().startsWith('ios')) {
     it('check_qurey_url', async () => {
-      await page.setData({
+      await setPageData({
         loadError: false,
-        imageSrc: '/static/logo.png?t=11234'
+        imageSrc: '/static/test-image/logo.png?t=11234'
       })
       await page.waitFor(300);
-      expect(await page.data('loadError')).toBe(false)
+      expect(await page.data('data.loadError')).toBe(false)
     })
   };
 
   it('check_image_load_error', async () => {
-    await page.setData({
+    await setPageData({
       loadError: false,
       imageSrc: 'testerror.jpg'
     })
     await page.waitFor(300);
-    expect(await page.data('loadError')).toBe(true)
+    expect(await page.data('data.loadError')).toBe(true)
   })
 
   if (isAndroid && !isAppWebView) {
     it('check-cookie', async () => {
-      await page.setData({
+      await setPageData({
         autoTest: true,
         setCookieImage: 'https://cdn.dcloud.net.cn/img/shadow-grey.png'
       });
       await page.waitFor(1000);
-      await page.setData({
+      await setPageData({
         loadError: false,
         verifyCookieImage: 'https://request.dcloud.net.cn/img/shadow-grey.png'
       });
       await page.waitFor(1000);
-      expect(await page.data('loadError')).toBe(false);
-      await page.setData({
+      expect(await page.data('data.loadError')).toBe(false);
+      await setPageData({
         autoTest: false
       });
     })
   }
 
   it('test event load', async () => {
-    await page.setData({
+    await setPageData({
       autoTest: true,
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/image/png'
     });
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventLoad')) || (Date.now() - start > 1000);
+      return (await page.data('data.eventLoad')) || (Date.now() - start > 1000);
     });
-    expect(await page.data('eventLoad')).toEqual({
+    expect(await page.data('data.eventLoad')).toEqual({
       tagName: isMP ? '' : 'IMAGE',
       type: 'load',
       width: 10,
@@ -90,19 +95,19 @@ describe('component-native-image', () => {
   });
 
   it('test event error', async () => {
-    await page.setData({
+    await setPageData({
       imageSrc: 'https://request.dcloud.net.cn/api/http/contentType/404.png'
     });
     start = Date.now();
     await page.waitFor(async () => {
-      return (await page.data('eventError')) || (Date.now() - start > 1000);
+      return (await page.data('data.eventError')) || (Date.now() - start > 1000);
     });
-    expect(await page.data('eventError')).toEqual({
+    expect(await page.data('data.eventError')).toEqual({
       tagName: isMP ? '' : 'IMAGE',
       type: 'error'
     });
 
-    await page.setData({
+    await setPageData({
       autoTest: false
     });
   });
@@ -144,4 +149,29 @@ describe('component-native-image', () => {
     const image = await program.screenshot(screenshotParams)
     expect(image).toSaveImageSnapshot()
   })
+
+  it('test all button clicks', async () => {
+    page = await program.reLaunch('/pages/component/image/image');
+    await page.waitFor('view');
+    await page.waitFor(isWeb ? 4000 : 100);
+    // 获取所有按钮元素
+    const buttons = await page.$$('.uni-btn');
+    const buttonCount = buttons.length;
+    console.log('buttonCount',buttonCount)
+    // 循环点击每个按钮
+    for (let i = 0; i < buttonCount; i++) {
+      // 重新获取按钮（因为返回后页面可能重新渲染）
+      const currentButtons = await page.$$('.uni-btn');
+      const button = currentButtons[i];
+      console.log('button',button)
+      // 点击按钮
+      await button.tap();
+      // 等待页面跳转完成,返回上一页
+      await page.waitFor(isWeb ? 1000 : 500);
+      await program.navigateBack();
+      await page.waitFor(300);
+    }
+    // 验证所有按钮都点击成功（通过没有抛出异常来验证）
+    expect(buttonCount).toBeGreaterThan(0);
+  });
 });

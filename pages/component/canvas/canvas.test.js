@@ -11,8 +11,8 @@ beforeAll(async () => {
 describe('Canvas.uvue', () => {
   it('toBlob', async () => {
     if (process.env.uniTestPlatformInfo.toLowerCase().startsWith('web')) {
-      const testToBlobResult = await page.data('testToBlobResult')
-      const testToDataURLResult = await page.data('testToDataURLResult')
+      const testToBlobResult = await page.data('data.testToBlobResult')
+      const testToDataURLResult = await page.data('data.testToDataURLResult')
 
       expect(testToBlobResult).toBe(true)
       expect(testToDataURLResult).toBe(true)
@@ -65,7 +65,7 @@ describe('Canvas.uvue', () => {
   })
   it('child multi root node', async () => {
     await page.waitFor(50)
-    const testCounter = await page.data('testCounter')
+    const testCounter = await page.data('data.testCounter')
     expect(testCounter).toBe(2)
   })
 })

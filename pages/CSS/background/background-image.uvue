@@ -19,52 +19,104 @@
         <text>class 动态切换 background</text>
         <view @click='changeBgClass' class="common" :class='testClass'>{{testClass}}</view>
       </view>
+
+      <view class="uni-common-mt">
+        <text class="uni-title-text">style.setProperty 动态设置 background-image </text>
+        <text>background-image: {{backgroundImage}}</text>
+        <view ref="viewRef" class="common" :style="{ backgroundImage: backgroundImage }">
+          <text style="color: white;">当前 background-image: {{backgroundImage}}</text>
+        </view>
+      </view>
+
+      <!-- 测试控制区域 -->
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :compact="true" :items="backgroundImageEnum" title="background-image 枚举值" @change="radioChangeBackgroundImage"></enum-data>
+        <input-data :defaultValue="backgroundImage" title="background-image 自定义值" type="text" @confirm="inputChangeBackgroundImage"></input-data>
+      </view>
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        backgroundSelect: true,
-        directionData: ['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'],
-        testStyle: "background:linear-gradient(to right, red, yellow)",
-        testClass: "bg-color"
-      }
-    },
-    methods: {
-      //供自动化测试使用
-      updateBackgroundSelect() {
-        this.backgroundSelect = !this.backgroundSelect
-      },
-      changeBgStyle() {
-        const isColor = this.testStyle == "background:blue"
-        if (isColor) {
-          this.setBackgroundImage()
-        } else {
-          this.setBackgroundColor()
-        }
-      },
-      setBackgroundColor() {
-        this.testStyle = "background:blue"
-      },
-      setBackgroundImage() {
-        this.testStyle = "background:linear-gradient(to right, red, yellow)"
-      },
-      changeBgClass() {
-        this.testClass = this.testClass == "bg-color" ? "bg-image" : "bg-color"
-      }
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types'
+
+  const backgroundSelect = ref(true)
+  const directionData = ref(['to right', 'to left', 'to bottom', 'to top', 'to bottom left', 'to bottom right', 'to top left', 'to top right'])
+  const testStyle = ref("background:linear-gradient(to right, red, yellow)")
+  const testClass = ref("bg-color")
+
+  //供自动化测试使用
+  const updateBackgroundSelect = () => {
+    backgroundSelect.value = !backgroundSelect.value
+  }
+
+  const setBackgroundColor = () => {
+    testStyle.value = "background:blue"
+  }
+
+  const setBackgroundImage = () => {
+    testStyle.value = "background:linear-gradient(to right, red, yellow)"
+  }
+
+  const changeBgStyle = () => {
+    const isColor = testStyle.value == "background:blue"
+    if (isColor) {
+      setBackgroundImage()
+    } else {
+      setBackgroundColor()
     }
   }
+
+  const changeBgClass = () => {
+    testClass.value = testClass.value == "bg-color" ? "bg-image" : "bg-color"
+  }
+
+  defineExpose({
+    updateBackgroundSelect,
+    setBackgroundColor,
+    setBackgroundImage,
+    changeBgClass
+  })
+
+  const backgroundImage = ref('linear-gradient(to right, red, yellow)')
+  const viewRef = ref(null as UniElement | null)
+
+  const backgroundImageEnum: ItemType[] = [
+    { value: 0, name: '' },
+    { value: 1, name: 'linear-gradient(to right, red, yellow)' },
+    { value: 2, name: 'linear-gradient(to bottom, blue, green)' },
+    { value: 3, name: 'linear-gradient(to top, red, blue)' },
+    { value: 4, name: 'linear-gradient(45deg, red, yellow)' },
+    { value: 5, name: 'linear-gradient(to right, red, yellow, green)' },
+    { value: 6, name: '(to right, red 0%, yellow 50%, green 100%)' },
+    { value: 7, name: 'linear-gradient(to bottom left, red, yellow)' }
+  ]
+
+  const changeBackgroundImage = (value: string) => {
+    backgroundImage.value = value
+    viewRef.value?.style.setProperty('background-image', value)
+  }
+
+  const radioChangeBackgroundImage = (index: number) => {
+    const selectedItem = backgroundImageEnum.find((item): boolean => item.value === index)
+    if (selectedItem != null) {
+      changeBackgroundImage(selectedItem.name)
+    }
+  }
+
+  const inputChangeBackgroundImage = (value: string) => {
+    changeBackgroundImage(value)
+  }
+
 </script>
 
 <style>
   .common {
     width: 250px;
-    height: 250px;
+    height: 100px;
   }
   .bg-color {
     background: blue;

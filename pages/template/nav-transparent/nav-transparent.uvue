@@ -8,11 +8,8 @@
       <view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
       <!-- #endif -->
       <view class="custom-navbar-inner">
-        <view class="left-content">
-          <view ref="backRef" class="left-content-inner" @click="back">
-            <uni-icons style="margin-left: -1px;" type="back" :color="iconColor"></uni-icons>
-          </view>
-        </view>
+        <!-- uni-back-arrow-circle组件：旋转边框的view实现返回箭头 -->
+        <uni-back-arrow-circle :style="{backgroundColor:backBackgroundColor}" :arrow-class="arrowClass"></uni-back-arrow-circle>
         <view class="custom-navbar-content">
           <text ref="textRef" class="content-inner-text">
             标题
@@ -25,13 +22,13 @@
         <image class="banner-img" :src="banner.cover"></image>
         <text class="banner-title">{{ banner.title }}</text>
       </view>
-      <view class="list-tab" ref="tabRef">
+      <!-- <view class="list-tab" ref="tabRef">
         <view class="th-item">
           <text v-for="(name,index) in th_item" :key="index" @click="clickTH(index)" class="th-item-text">
             {{name}}
           </text>
         </view>
-      </view>
+      </view> -->
       <template v-for="(value, index) in listData" :key="index">
         <view class="uni-list-cell" hover-class="uni-list-cell-hover">
           <view class="uni-media-list">
@@ -71,7 +68,7 @@
   const refresherTriggered = ref(false)
   const banner = ref({} as Banner)
   const listData = ref([] as Item[])
-  const last_id = ref('')
+  let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
   const currentIndex = ref(0) // 当前选中的列表项索引
   const post_id = ref('')
@@ -81,12 +78,13 @@
 
   // 导航栏相关
   const navbar = ref<UniElement | null>(null);
-  const backRef = ref<UniElement | null>(null);
+  let backBackgroundColor = ref<string>('rgba(255, 255, 255, 1)')
   const textRef = ref<UniElement | null>(null);
-  const iconColor = ref('#999')
-  const navbarHeight = ref(0)
-  const tabRef = ref<UniElement | null>(null);
-  const tabTop = ref(0)
+  // 自定义返回箭头样式
+  const arrowClass = ref('arrow-gray')
+  let navbarHeight = 0
+  // const tabRef = ref<UniElement | null>(null);
+  let tabTop = 0
 
   function getBanner() {
     let data = {
@@ -121,7 +119,7 @@
           const result = res.data
           //因本接口没有更多分页数据，所以重新赋值。正常有分页的列表应该如下面push方式增加数组项
           // listData.value.push(...result)
-          // last_id.value = listData.value[0].id + "";
+          // last_id = listData.value[0].id + "";
           if (result != null) {
             listData.value = result
             // 宽屏模式下，自动选中并展示第一个新闻详情
@@ -155,31 +153,29 @@
     let transparent_count = parseFloat((top / THRESHOLD).toFixed(2))
     if (transparent_count >= 1) {
       transparent_count = 1
-      iconColor.value = '#fff'
+      // TODO 这不停的改响应式变量不对，性能低，效果差，应该也是渐变@wuhao
+      arrowClass.value = 'arrow-white'
     } else {
-      iconColor.value = '#999'
+      arrowClass.value = 'arrow-gray'
     }
 
     navbar.value!.style.setProperty('background-color', `rgba(0, 122, 255,${transparent_count})`)
-    backRef.value!.style.setProperty('background-color', `rgba(255, 255, 255,${1 - transparent_count})`)
+    backBackgroundColor.value = `rgba(255, 255, 255,${1 - transparent_count})`
     textRef.value!.style.setProperty('opacity', transparent_count.toString())
-    if (tabTop.value <= top) {
-      const stickyTran = top - tabTop.value
-      tabRef.value!.style.setProperty('transform', 'translateY(' + stickyTran + 'px)');
-    }
+    // if (tabTop <= top) {
+      // const stickyTran = top - tabTop
+      // tabRef.value!.style.setProperty('transform', 'translateY(' + stickyTran + 'px)');
+    // }
 
   }
 
-  async function calcStickyTop() {
+  /* async function calcStickyTop() {
     const stickyRect = await (tabRef.value! as UniElement).getBoundingClientRectAsync()!;
     const navbarRect = await (navbar.value! as UniElement).getBoundingClientRectAsync()!;
-    navbarHeight.value = navbarRect.height
-    tabTop.value = stickyRect.top - navbarHeight.value
-  }
+    navbarHeight = navbarRect.height
+    tabTop = stickyRect.top - navbarHeight
+  } */
 
-  const back = () => {
-    uni.navigateBack({});
-  }
 
   const isDarkMode = computed(() => state.isDarkMode)
 
@@ -189,9 +185,9 @@
   })
   onReady(() => {
     // const top = tabRef.value!.getBoundingClientRect().top
-    // navbarHeight.value = navbar.value!.offsetHeight
-    // tabTop.value = top - navbarHeight.value
-    calcStickyTop()
+    // navbarHeight = navbar.value!.offsetHeight
+    // tabTop = top - navbarHeight
+    // calcStickyTop()
   })
 
 
@@ -303,22 +299,15 @@
     height: 45px;
   }
 
-  .left-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 100%;
+  /* uni-back-arrow-circle组件 自定义样式 */
+  .arrow-gray {
+    border-left-color: #999999 !important;
+    border-bottom-color: #999999 !important;
   }
 
-  .left-content-inner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 28px;
-    height: 28px;
-    background-color: #fff;
-    border-radius: 40px;
+  .arrow-white {
+    border-left-color: #FFFFFF !important;
+    border-bottom-color: #FFFFFF !important;
   }
 
   .custom-navbar-content {

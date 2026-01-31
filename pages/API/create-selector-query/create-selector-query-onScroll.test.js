@@ -1,11 +1,12 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query-onScroll'
 
 describe('create-selector-query-onScroll', () => {
-  if (isWeb || isMP || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
+  if (isWeb || isMP || isDom2 || process.env.UNI_TEST_DEVICES_DIRECTION == 'landscape') {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -31,7 +32,7 @@ describe('create-selector-query-onScroll', () => {
     })
 
     await page.waitFor(600);
-    const ret = await page.data('ret')
+    const ret = await page.data('data.ret')
     expect(ret).toBe(true)
   })
 })

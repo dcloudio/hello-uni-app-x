@@ -3,14 +3,14 @@
     <view class="content-item">
       <text class="text">左右滑动页面，体验swiper嵌套list-view效果。</text>
     </view>
-    <swiper style="flex: 1;" :current="currentVal" @change="swiperChange">
+    <swiper style="flex: 1;" :current="data.currentVal" @change="swiperChange">
       <swiper-item v-for="index in 3">
-        <list-view :id="'list'+index" style="flex: 1;" refresher-enabled="true" @refresherrefresh="onRefresherrefresh"
-          :refresher-triggered="refresherTriggeredArray[index-1]" :scroll-top="scrollTop">
+        <list-view :id="'list'+index" style="flex: 1;  border: 3px solid lime;" refresher-enabled="true" @refresherrefresh="onRefresherrefresh"
+          :refresher-triggered="data.refresherTriggeredArray[index-1]" :scroll-top="data.scrollTop">
           <sticky-header>
             <text class="header">上下滑动体验吸顶效果 swiper-item{{index}}</text>
           </sticky-header>
-          <list-item v-for="itemIndex in 40" class="item">
+          <list-item v-for="itemIndex in 40" :key="itemIndex" class="item">
             <text>item----------{{itemIndex}}</text>
           </list-item>
         </list-view>
@@ -19,28 +19,38 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        swiperCurrentIndex: 0,
-        currentVal: 0,
-        scrollTop: 0,
-        refresherTriggeredArray: [false, false, false] as Array<boolean>,
-      }
-    },
-    methods: {
-      swiperChange(e : SwiperChangeEvent) {
-        this.swiperCurrentIndex = e.detail.current
-      },
-      onRefresherrefresh() {
-        this.refresherTriggeredArray[this.swiperCurrentIndex] = true;
-        setTimeout(() => {
-          this.refresherTriggeredArray[this.swiperCurrentIndex] = false;
-        }, 100)
-      }
-    }
-  }
+<script setup lang="uts">
+
+type DataType = {
+  swiperCurrentIndex: number,
+  currentVal: number,
+  scrollTop: number,
+  refresherTriggeredArray: boolean[],
+}
+
+// 使用reactive包装数据，便于自动化测试获取
+const data = reactive({
+  swiperCurrentIndex: 0,
+  currentVal: 0,
+  scrollTop: 0,
+  refresherTriggeredArray: [false, false, false] as boolean[],
+} as DataType)
+
+// Methods
+function swiperChange(e : SwiperChangeEvent) {
+  data.swiperCurrentIndex = e.detail.current
+}
+
+function onRefresherrefresh() {
+  data.refresherTriggeredArray[data.swiperCurrentIndex] = true
+  setTimeout(() => {
+    data.refresherTriggeredArray[data.swiperCurrentIndex] = false
+  }, 100)
+}
+
+defineExpose({
+  data
+})
 </script>
 
 <style>

@@ -19,6 +19,9 @@ describe('ExtApi-FileManagerTest-aboutStatic', () => {
   }
   let page;
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -27,76 +30,76 @@ describe('ExtApi-FileManagerTest-aboutStatic', () => {
   });
 
   it('testAccessFile', async () => {
-    await page.setData({
+    await setPageData({
       logAble: false,
       isSuccess: false,
     })
     const testAccessFile = await page.$('#testAccessFile')
     await testAccessFile.tap()
     await page.waitFor(300);
-    const isSuccess = await page.data('isSuccess')
+    const isSuccess = await page.data('data.isSuccess')
     expect(isSuccess).toEqual(true)
   });
 
   it('testAccessDir', async () => {
-    await page.setData({
+    await setPageData({
       logAble: false,
       isSuccess: false,
     })
     const testAccessDir = await page.$('#testAccessDir')
     await testAccessDir.tap()
     await page.waitFor(300);
-    const isSuccess = await page.data('isSuccess')
+    const isSuccess = await page.data('data.isSuccess')
     expect(isSuccess).toEqual(true)
   });
 
 
   it('testCopyFile', async () => {
-    await page.setData({
+    await setPageData({
       logAble: false,
       isSuccess: false,
     })
     const testCopyFile = await page.$('#testCopyFile')
     await testCopyFile.tap()
     await page.waitFor(300);
-    const isSuccess = await page.data('isSuccess')
+    const isSuccess = await page.data('data.isSuccess')
     expect(isSuccess).toEqual(true)
   });
 
 
   it('testReadDir', async () => {
-    await page.setData({
+    await setPageData({
       logAble: false,
       isSuccess: false,
     })
     const testReadDir = await page.$('#testReadDir')
     await testReadDir.tap()
     await page.waitFor(300);
-    const isSuccess = await page.data('isSuccess')
+    const isSuccess = await page.data('data.isSuccess')
     expect(isSuccess).toEqual(true)
   });
 
   it('testFstatFile', async () => {
-    await page.setData({
+    await setPageData({
       logAble: false,
       isSuccess: false,
     })
     const testFstatFile = await page.$('#testFstatFile')
     await testFstatFile.tap()
     await page.waitFor(300);
-    const isSuccess = await page.data('isSuccess')
+    const isSuccess = await page.data('data.isSuccess')
     expect(isSuccess).toEqual(true)
   });
 
   it('testReadZipEntry', async () => {
-    await page.setData({
+    await setPageData({
       logAble: false,
       isSuccess: false,
     })
     const testReadZipEntry = await page.$('#testReadZipEntry')
     await testReadZipEntry.tap()
     await page.waitFor(300);
-    const isSuccess = await page.data('isSuccess')
+    const isSuccess = await page.data('data.isSuccess')
     expect(isSuccess).toEqual(true)
   });
 

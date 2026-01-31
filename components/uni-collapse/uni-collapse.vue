@@ -37,7 +37,3 @@
   provide('uni-collapse-register-child', registerChild)
   provide('k-collapse-child-toggle', toggle)
 </script>
-
-<style>
-
-</style>

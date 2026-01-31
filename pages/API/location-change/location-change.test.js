@@ -15,10 +15,16 @@ describe("location-change", () => {
     })
     return
   }
+  let page;
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(600)
   });
+
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
 
   it("system+type=wgs84+success", async () => {
   if (isAndroid) {
@@ -29,7 +35,7 @@ describe("location-change", () => {
     await program.adbCommand(
       'pm grant io.dcloud.uniappx android.permission.ACCESS_BACKGROUND_LOCATION');
   }
-    await page.setData({
+    await setPageData({
       currentSelectedProvider: 0,
       currentSelectedType: 0,
       startSuccess: false,
@@ -44,20 +50,20 @@ describe("location-change", () => {
 
     await page.waitFor(500)
 
-    let data = await page.data()
+    let data = await page.data('data')
     let startSuccess = data['startSuccess']
     expect(startSuccess).toEqual(true);
 
     if (!isHarmony) {
       // NOTE 鸿蒙上需要在设置中允许，屏蔽该测试
-      await page.setData({
+      await setPageData({
         startSuccess: false
       })
 
       const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
       await startLocationUpdateBackgroundBtn.tap()
 
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       expect(startSuccess).toEqual(true);
     }
@@ -65,7 +71,7 @@ describe("location-change", () => {
 
   it(`system+type=gcj02+${isHarmony ? 'success' : 'fail'}`, async () => {
 
-    await page.setData({
+    await setPageData({
       currentSelectedProvider: 0,
       currentSelectedType: 1,
       startSuccess: false,
@@ -81,7 +87,7 @@ describe("location-change", () => {
 
     await page.waitFor(1000)
 
-    let data = await page.data()
+    let data = await page.data('data')
     let startSuccess = data['startSuccess']
     if (!isHarmony) {
       let errCode = data['errCode']
@@ -93,7 +99,7 @@ describe("location-change", () => {
 
     if (!isHarmony) {
       // NOTE 鸿蒙上需要在设置中允许，屏蔽该测试
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 0,
         currentSelectedType: 1,
         startSuccess: false,
@@ -103,7 +109,7 @@ describe("location-change", () => {
       const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
       await startLocationUpdateBackgroundBtn.tap()
       await page.waitFor(1000)
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       errCode = data['errCode']
       expect(startSuccess).toEqual(false);
@@ -113,7 +119,7 @@ describe("location-change", () => {
 
   if (!isHarmony) {
     it("tencent+type=wgs84+fail", async () => {
-      await page.setData({
+      await setPageData({
         logAble: false,
         currentSelectedProvider: 1,
         currentSelectedType: 0,
@@ -121,7 +127,7 @@ describe("location-change", () => {
         errCode: 0
       })
 
-      await page.setData({
+      await setPageData({
         currentSelectedType: 0
       })
 
@@ -131,13 +137,13 @@ describe("location-change", () => {
       const startLocationUpdateBtn = await page.$('#startLocationUpdate')
       await startLocationUpdateBtn.tap()
 
-      let data = await page.data()
+      let data = await page.data('data')
       let startSuccess = data['startSuccess']
       let errCode = data['errCode']
       expect(startSuccess).toEqual(false);
       expect(errCode).toEqual(1505607);
 
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 1,
         currentSelectedType: 0,
         startSuccess: false,
@@ -146,7 +152,7 @@ describe("location-change", () => {
 
       const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
       await startLocationUpdateBackgroundBtn.tap()
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       errCode = data['errCode']
       expect(startSuccess).toEqual(false);
@@ -154,7 +160,7 @@ describe("location-change", () => {
     });
 
     it("tencent+type=gcj02+success", async () => {
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 1,
         currentSelectedType: 1,
         startSuccess: false,
@@ -168,11 +174,11 @@ describe("location-change", () => {
       const startLocationUpdateBtn = await page.$('#startLocationUpdate')
       await startLocationUpdateBtn.tap()
 
-      let data = await page.data()
+      let data = await page.data('data')
       let startSuccess = data['startSuccess']
       expect(startSuccess).toEqual(true);
 
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 1,
         currentSelectedType: 1,
         startSuccess: false,
@@ -181,13 +187,13 @@ describe("location-change", () => {
 
       const startLocationUpdateBackgroundBtn = await page.$('#startLocationUpdateBackground')
       await startLocationUpdateBackgroundBtn.tap()
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       expect(startSuccess).toEqual(true);
     });
 
     it("tencent+system+fail", async () => {
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 1,
         currentSelectedType: 1,
         startSuccess: false,
@@ -201,11 +207,11 @@ describe("location-change", () => {
       const startLocationUpdateBtn = await page.$('#startLocationUpdate')
       await startLocationUpdateBtn.tap()
 
-      let data = await page.data()
+      let data = await page.data('data')
       let startSuccess = data['startSuccess']
       expect(startSuccess).toEqual(true);
 
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 0,
         currentSelectedType: 0,
         startSuccess: false,
@@ -214,7 +220,7 @@ describe("location-change", () => {
 
       await startLocationUpdateBtn.tap()
 
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       let errCode = data['errCode']
       expect(startSuccess).toEqual(false);
@@ -222,7 +228,7 @@ describe("location-change", () => {
 
       await stopLocationUpdateBtn.tap()
 
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 0,
         currentSelectedType: 0,
         startSuccess: false,
@@ -231,11 +237,11 @@ describe("location-change", () => {
 
       await startLocationUpdateBtn.tap()
 
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       expect(startSuccess).toEqual(true);
 
-      await page.setData({
+      await setPageData({
         currentSelectedProvider: 1,
         currentSelectedType: 1,
         startSuccess: false,
@@ -243,7 +249,7 @@ describe("location-change", () => {
       })
 
       await startLocationUpdateBtn.tap()
-      data = await page.data()
+      data = await page.data('data')
       startSuccess = data['startSuccess']
       errCode = data['errCode']
       expect(startSuccess).toEqual(false);
@@ -252,14 +258,14 @@ describe("location-change", () => {
   }
 
   it("stopLocationUpdate", async () => {
-    await page.setData({
+    await setPageData({
       stopSuccess: false,
       logAble: true
     })
 
     await page.callMethod('stopLocationUpdate')
 
-    let data = await page.data()
+    let data = await page.data('data')
     let stopSuccess = data['stopSuccess']
     expect(stopSuccess).toEqual(true);
   })

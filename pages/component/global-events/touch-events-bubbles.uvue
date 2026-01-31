@@ -18,91 +18,111 @@
   </scroll-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        iconRect: null as DOMRect | null,
-        viewEleRect: null as DOMRect | null,
-        touchstartValue: [] as string[],
-        touchmoveValue: [] as string[],
-        touchendValue: [] as string[],
-        ret1: false,
-        ret2: false
-      }
-    },
-    onReady() {
-      // #ifdef APP-IOS || APP-HARMONY
-      let iconEle = uni.getElementById("view1-3")
-      this.iconRect = iconEle?.getBoundingClientRect()
-      // 加上导航栏及状态栏高度
-      this.iconRect.y += uni.getSystemInfoSync().safeArea.top + 44
+<script setup lang="uts">
 
-      let viewEle = uni.getElementById("view2-3")
-      this.viewEleRect = viewEle?.getBoundingClientRect()
-      // 加上导航栏及状态栏高度
-      this.viewEleRect.y += uni.getSystemInfoSync().safeArea.top + 44
 
-      // #endif
-    },
-    methods: {
-      clearValue() {
-        this.touchstartValue = []
-        this.touchmoveValue = []
-        this.touchendValue = []
-      },
-      isPassTest1() {
-        let touchStart = this.touchstartValue.join("")
-        let touchMove = this.touchmoveValue.join("")
-        let touchEnd = this.touchendValue.join("")
-        console.log("touchStart: ", touchStart)
-        console.log("touchMove: ", touchMove)
-        console.log("touchEnd: ", touchEnd)
+type DataType = {
+  iconRect: DOMRect | null,
+  viewEleRect: DOMRect | null,
+  ret1: boolean,
+  ret2: boolean,
+}
 
-        let result = touchStart == "view1-3view1-2view1" &&
-          touchMove == "view1-3view1-2view1" &&
-          touchEnd == "view1-3view1-2view1"
-        console.log('isPassTest1', result)
-        this.ret1 = result
-        this.clearValue()
-      },
-      isPassTest2() {
-        let touchStart = this.touchstartValue.join("")
-        let touchMove = this.touchmoveValue.join("")
-        let touchEnd = this.touchendValue.join("")
-        console.log("touchStart: ", touchStart)
-        console.log("touchMove: ", touchMove)
-        console.log("touchEnd: ", touchEnd)
+const touchstartValue = ref([] as string[])
+const touchmoveValue = ref([] as string[])
+const touchendValue = ref([] as string[])
+const data = reactive({
+  iconRect: null as DOMRect | null,
+  viewEleRect: null as DOMRect | null,
+  ret1: false,
+  ret2: false,
+} as DataType)
 
-        let result = touchStart == "view2-3view2" &&
-          touchMove == "view2" &&
-          touchEnd == "view2-3view2-2view2"
-        console.log('isPassTest2', result)
-        this.ret2 = result
-        this.clearValue()
-      },
-      onTouchStart(e : TouchEvent) {
-        let _id = e.currentTarget!.attributes.get("id") as string
-        if (!this.touchstartValue.includes(_id)) {
-          this.touchstartValue.push(_id)
-        }
-        console.log('onTouchStart', e.currentTarget!.attributes.get("id"))
-      },
-      onTouchMove(e : TouchEvent) {
-        let _id = e.currentTarget!.attributes.get("id") as string
-        if (!this.touchmoveValue.includes(_id)) {
-          this.touchmoveValue.push(_id)
-        }
-        console.log('onTouchMove', e.currentTarget!.attributes.get("id"))
-      },
-      onTouchEnd(e : TouchEvent) {
-        let _id = e.currentTarget!.attributes.get("id") as string
-        if (!this.touchendValue.includes(_id)) {
-          this.touchendValue.push(_id)
-        }
-      }
-    }
+function clearValue() {
+  touchstartValue.value = []
+  touchmoveValue.value = []
+  touchendValue.value = []
+}
+
+function isPassTest1() {
+  let touchStart = touchstartValue.value.join("")
+  let touchMove = touchmoveValue.value.join("")
+  let touchEnd = touchendValue.value.join("")
+  console.log("touchStart: ", touchStart)
+  console.log("touchMove: ", touchMove)
+  console.log("touchEnd: ", touchEnd)
+
+  let result = touchStart == "view1-3view1-2view1" &&
+    touchMove == "view1-3view1-2view1" &&
+    touchEnd == "view1-3view1-2view1"
+  console.log('isPassTest1', result)
+  data.ret1 = result
+  clearValue()
+}
+
+function isPassTest2() {
+  let touchStart = touchstartValue.value.join("")
+  let touchMove = touchmoveValue.value.join("")
+  let touchEnd = touchendValue.value.join("")
+  console.log("touchStart: ", touchStart)
+  console.log("touchMove: ", touchMove)
+  console.log("touchEnd: ", touchEnd)
+
+  let result = touchStart == "view2-3view2" &&
+    touchMove == "view2" &&
+    touchEnd == "view2-3view2-2view2"
+  console.log('isPassTest2', result)
+  data.ret2 = result
+  clearValue()
+}
+
+function onTouchStart(e : TouchEvent) {
+  let _id = e.currentTarget!.getAttribute("id") as string
+  if (!touchstartValue.value.includes(_id)) {
+    touchstartValue.value.push(_id)
   }
+  console.log('onTouchStart', e.currentTarget!.getAttribute("id"))
+}
+
+function onTouchMove(e : TouchEvent) {
+  let _id = e.currentTarget!.getAttribute("id") as string
+  if (!touchmoveValue.value.includes(_id)) {
+    touchmoveValue.value.push(_id)
+  }
+  console.log('onTouchMove', e.currentTarget!.getAttribute("id"))
+}
+
+function onTouchEnd(e : TouchEvent) {
+  let _id = e.currentTarget!.getAttribute("id") as string
+  if (!touchendValue.value.includes(_id)) {
+    touchendValue.value.push(_id)
+  }
+}
+
+onReady(() => {
+  // #ifdef APP-IOS || APP-HARMONY
+  let iconEle = uni.getElementById("view1-3")
+  data.iconRect = iconEle?.getBoundingClientRect() ?? null
+  // 加上导航栏及状态栏高度
+  if (data.iconRect != null) {
+    data.iconRect.y += uni.getSystemInfoSync().safeArea.top + 44
+  }
+
+  let viewEle = uni.getElementById("view2-3")
+  data.viewEleRect = viewEle?.getBoundingClientRect() ?? null
+  // 加上导航栏及状态栏高度
+  if (data.viewEleRect != null) {
+    data.viewEleRect.y += uni.getSystemInfoSync().safeArea.top + 44
+  }
+
+  // #endif
+})
+
+defineExpose({
+  data,
+  isPassTest1,
+  isPassTest2
+})
 </script>
 
 <style>

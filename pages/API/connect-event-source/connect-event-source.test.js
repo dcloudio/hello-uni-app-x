@@ -1,6 +1,5 @@
 const PAGE_PATH = '/pages/API/connect-event-source/connect-event-source'
 
-
 describe('sse', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isAndroid = platformInfo.startsWith('android')
@@ -21,7 +20,7 @@ describe('sse', () => {
   it('sse_open', async () => {
     await page.callMethod('connect')
     await page.waitFor(2000)
-    const data = await page.data()
+    const data = await page.data('data')
     expect(data.open).toBe(true)
     await page.waitFor(500)
     expect(data.receiveMessage).toBe(true)

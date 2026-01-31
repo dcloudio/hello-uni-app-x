@@ -34,13 +34,18 @@ describe('ExtApi-StorageInfoTest', () => {
   }
 
   let page;
+  
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+  
   function getData (key = '') {
     return new Promise(async (resolve, reject) => {
-      const data = await page.data()
+      const data = await page.data('data')
       resolve(key ? data[key] : data)
     })
   }
-
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
@@ -49,7 +54,7 @@ describe('ExtApi-StorageInfoTest', () => {
 
   it('Check async properties', async () => {
     // 异步存储测试
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: "长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
     })
@@ -78,8 +83,7 @@ describe('ExtApi-StorageInfoTest', () => {
     storageInfoRet = await getData('apiGetData')
     expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
-
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: 1100.8989
     })
@@ -89,7 +93,6 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageButtonInfo.tap()
     await page.waitFor(600)
     expect(await getData('apiGetData')).toEqual(1100.8989)
-
 
     // 测试 remove
     // await btnGetStorageInfoASyncButton.tap()
@@ -106,8 +109,7 @@ describe('ExtApi-StorageInfoTest', () => {
     storageInfoRet = await getData('apiGetData')
     expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
-
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: 123456789
     })
@@ -122,7 +124,7 @@ describe('ExtApi-StorageInfoTest', () => {
       name: "zhangsan",
       age: 12
     }
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: userObj
     })
@@ -133,7 +135,7 @@ describe('ExtApi-StorageInfoTest', () => {
     await page.waitFor(600)
     expect(await getData('apiGetData')).toEqual(userObj)
 
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: {
         name: "zhangsan",
@@ -147,22 +149,16 @@ describe('ExtApi-StorageInfoTest', () => {
     await page.waitFor(600)
     let objRet = await getData('apiGetData')
     expect(objRet.age).toEqual(122)
-
-
-
-
   });
 
-
   it('Check sync properties', async () => {
-
     let btnComplexStaticTest = await page.$('.btn-complexStaticTest')
     await btnComplexStaticTest.tap()
     await page.waitFor(600)
     if (!isIOS) {
       expect(await getData('staticComplexRet')).toEqual(true)
     }
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: "长安大道连狭斜，青牛白马七香车。玉辇纵横过主第，金鞭络绎向侯家。龙衔宝盖承朝日，凤吐流苏带晚霞。百尺游丝争绕树，一群娇鸟共啼花。游蜂戏蝶千门侧，碧树银台万种色。复道交窗作合欢，双阙连甍垂凤翼。"
     })
@@ -182,7 +178,6 @@ describe('ExtApi-StorageInfoTest', () => {
     // let storageInfoRet = await getData('apiGetData')
     // expect(storageInfoRet.keys[0]).toEqual("autotest_key_mock")
 
-
     const btnClearStorageInfoSyncButton = await page.$('.btn-clearStorageInfoSync')
     await btnClearStorageInfoSyncButton.tap()
 
@@ -191,8 +186,7 @@ describe('ExtApi-StorageInfoTest', () => {
     storageInfoRet = await getData('apiGetData')
     expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
-
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: 12345789.235689
     })
@@ -204,7 +198,6 @@ describe('ExtApi-StorageInfoTest', () => {
     await btnGetStorageButtonInfo.tap()
     await page.waitFor(600)
     expect(await getData('apiGetData')).toEqual(12345789.235689)
-
 
     // 测试 remove
     // await btnGetStorageInfoSyncButton.tap()
@@ -221,7 +214,7 @@ describe('ExtApi-StorageInfoTest', () => {
     storageInfoRet = await getData('apiGetData')
     expect(filterStorageKeys(storageInfoRet.keys).length).toEqual(0)
 
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: 0
     })
@@ -234,9 +227,7 @@ describe('ExtApi-StorageInfoTest', () => {
     await page.waitFor(600)
     expect(await getData('apiGetData')).toEqual(0)
 
-
-
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: {
         name: "tom",
@@ -253,7 +244,7 @@ describe('ExtApi-StorageInfoTest', () => {
     let objRet = await getData('apiGetData')
     expect(objRet.name).toEqual("tom")
 
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: JSON.stringify({
         name: "james",
@@ -276,9 +267,7 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(parseObj['from']).toEqual('american')
     expect(parseObj['name']).toEqual('james')
 
-
-
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: "1234567890"
     })
@@ -294,8 +283,7 @@ describe('ExtApi-StorageInfoTest', () => {
     expect(typeof strRet).toEqual("string")
     expect(strRet).toEqual("1234567890")
 
-
-    await page.setData({
+    await setPageData({
       key: "autotest_key_mock",
       data: "1234567.890"
     })
@@ -310,9 +298,6 @@ describe('ExtApi-StorageInfoTest', () => {
     // 顺序不能保证，验证长度和各个属性来区分
     expect(typeof strRet2).toEqual("string")
     expect(strRet2).toEqual("1234567.890")
-
-
-
   });
 
   it('saveUTSJSONObject', async () => {
@@ -321,7 +306,7 @@ describe('ExtApi-StorageInfoTest', () => {
     const {
       jest_saveUTSJSONObjectSyncResult,
       jest_saveUTSJSONObjectAsyncResult
-    } = await page.data()
+    } = await page.data('data')
     expect(jest_saveUTSJSONObjectSyncResult).toBe(1)
     expect(jest_saveUTSJSONObjectAsyncResult).toBe(1)
   })
@@ -333,7 +318,7 @@ describe('ExtApi-StorageInfoTest', () => {
       await page.waitFor(600)
       const {
         jest_saveUTSJSONObjectArraySyncResult
-      } = await page.data()
+      } = await page.data('data')
       expect(jest_saveUTSJSONObjectArraySyncResult).toBe(1)
     })
   }

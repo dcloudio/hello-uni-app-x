@@ -12,7 +12,6 @@ describe('css-font-family-icon', () => {
     return;
   }
 
-
   it('screenshot', async () => {
     page = await program.reLaunch('/pages/CSS/text/font-family-icon');
     await page.waitFor('view');

@@ -10,8 +10,53 @@ describe('preview-image', () => {
     await page.waitFor(isWeb ? 4000 : 100);
   });
 
-  it('screenshot', async () => {
-    const image = await program.screenshot({fullPage: true});
-    expect(image).toSaveImageSnapshot()
-  });
+  if (isWeb) {
+    it('screenshot', async () => {
+      const image = await program.screenshot({
+        fullPage: true
+      });
+      expect(image).toSaveImageSnapshot()
+    });
+  } else {
+    it('previewImage_default', async () => {
+      await page.callMethod('previewImage')
+      await page.waitFor(1000)
+      const image = await program.screenshot({
+        deviceShot: true,
+      });
+      expect(image).toSaveImageSnapshot()
+      await page.callMethod('closePreviewImage')
+      await page.waitFor(300)
+    })
+    it('previewImage_number', async () => {
+      // await page.setData({
+      //   currentIndicator: "number"
+      // })
+      await page.callMethod('testSetCurrentIndicator','number')
+      await page.waitFor(300)
+      await page.callMethod('previewImage')
+      await page.waitFor(3000)
+      const image = await program.screenshot({
+        deviceShot: true,
+      });
+      expect(image).toSaveImageSnapshot()
+      await page.callMethod('closePreviewImage')
+      await page.waitFor(300)
+    })
+    it('previewImage_none', async () => {
+      // await page.setData({
+      //   currentIndicator: "none"
+      // })
+      await page.callMethod('testSetCurrentIndicator','none')
+      await page.waitFor(300)
+      await page.callMethod('previewImage')
+      await page.waitFor(3000)
+      const image = await program.screenshot({
+        deviceShot: true,
+      });
+      expect(image).toSaveImageSnapshot()
+      await page.callMethod('closePreviewImage')
+      await page.waitFor(300)
+    })
+  }
 });

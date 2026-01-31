@@ -76,10 +76,10 @@
   const list = ref<Item[]>([]);
   const jobs = ref<Jobs>(new Jobs());
   const batchSize = ref<number>(100);
-  const scrolling = ref<boolean>(false);
+  let scrolling = false;
   const refresherTriggered = ref<boolean>(false);
-  const scrollendTimeout = ref<number>(-1);
-  const pulling = ref<boolean>(false);
+  let scrollendTimeout = -1;
+  let pulling = false;
 
   function init(autoResumeJobs: boolean = true) {
     // 将数据分批放入任务队列
@@ -100,21 +100,21 @@
   }
 
   const onScrollEnd = () => {
-    scrolling.value = false;
+    scrolling = false;
     // 滚动结束，继续执行分批加载逻辑
     jobs.value.resume();
   };
 
   const onScroll = () => {
     // 部分平台不支持scrollend事件，使用定时器模拟
-    clearTimeout(scrollendTimeout.value)
-    scrollendTimeout.value = setTimeout(() => {
+    clearTimeout(scrollendTimeout)
+    scrollendTimeout = setTimeout(() => {
       onScrollEnd()
     }, 100)
-    if (scrolling.value) {
+    if (scrolling) {
       return;
     }
-    scrolling.value = true;
+    scrolling = true;
     // 滚动期间暂停分批加载，保证滚动流畅度
     jobs.value.pause();
   };
@@ -143,16 +143,16 @@
   };
 
   const onRefresherPulling = () => {
-    if(pulling.value) {
+    if(pulling) {
       return
     }
-    pulling.value = true
+    pulling = true
     // 在下拉刷新时暂停分批加载，避免影响刷新操作
     jobs.value.pause()
   };
 
   const onRefresherRestore = () => {
-    pulling.value = false
+    pulling = false
     // 下拉刷新结束后恢复分批加载
     jobs.value.resume();
   };

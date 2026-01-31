@@ -18,7 +18,7 @@ describe('list-view-multiplex-video', () => {
     await page.waitFor('list-view')
     await page.waitFor(4000)
 
-    await page.setData({ isTesting: true })
+    await page.setData({ data: { isTesting: true } })
     const image = await program.screenshot({ fullPage: true });
     expect(image).toSaveImageSnapshot()
   })

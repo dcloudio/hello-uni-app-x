@@ -5,8 +5,10 @@ const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
-const HOME_PAGE_PATH = '/pages/tabBar/component'
+// const HOME_PAGE_PATH = 
+const HOME_PAGE_PATH = isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 
 describe('getCurrentPages', () => {
@@ -37,14 +39,22 @@ describe('getCurrentPages', () => {
         }, waitTime)
       })
     }
-    page = await program.switchTab(HOME_PAGE_PATH)
+    page = isDom2 ? await program.redirectTo(HOME_PAGE_PATH) : await program.switchTab(HOME_PAGE_PATH)
     await page.waitFor(1000)
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(1000)
     await page.callMethod('_getCurrentPages')
     await page.waitFor(200)
-    const data = await page.data()
+    const data = await page.data('data')
     expect(data.checked).toBe(true)
+  })
+
+  it('$page', async () => {
+    await page.setData({data:{testing: true}})
+    const pageRes = await page.callMethod('check$page')
+    expect(pageRes).toBe(true)
+
+    expect(await page.callMethod('componentCheck$page')).toBe(true)
   })
 
   if (isMP) {
@@ -56,7 +66,7 @@ describe('getCurrentPages', () => {
 
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh1 = await page.data('currentPageStyle.enablePullDownRefresh')
+    const isEnablePullDownRefresh1 = await page.data('data.currentPageStyle.enablePullDownRefresh')
     expect(isEnablePullDownRefresh1).toBe(true)
 
     // setPageStyle
@@ -67,7 +77,7 @@ describe('getCurrentPages', () => {
 
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh2 = await page.data('currentPageStyle.enablePullDownRefresh')
+    const isEnablePullDownRefresh2 = await page.data('data.currentPageStyle.enablePullDownRefresh')
     expect(isEnablePullDownRefresh2).toBe(false)
 
     await page.callMethod('startPullDownRefresh')
@@ -129,11 +139,6 @@ describe('getCurrentPages', () => {
       return 'get-current-pages-test-hideStatusBar-hideBottomNavigationIndicator'
     }});
   })
-  it('$page', async () => {
-    await page.setData({testing: true})
-    const res = await page.callMethod('check$page')
-    expect(res).toBe(true)
-  })
   it('getParentPage', async () => {
     const res = await page.callMethod('checkGetParentPage')
     expect(res).toBe(true)
@@ -157,6 +162,14 @@ describe('getCurrentPages', () => {
   it('getHTMLElement', async () => {
     const res = await page.callMethod('checkGetHTMLElement')
     expect(res).toBe(isWeb)
+  })
+  it('querySelector', async () => {
+    const res = await page.callMethod('checkQuerySelector')
+    expect(res).toBe(true)
+  })
+  it('querySelectorAll', async () => {
+    const res = await page.callMethod('checkQuerySelectorAll')
+    expect(res).toBe(true)
   })
 
   if(isAndroid) {
