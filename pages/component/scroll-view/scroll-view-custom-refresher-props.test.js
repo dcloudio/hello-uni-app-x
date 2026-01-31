@@ -92,10 +92,12 @@ describe('scroll-view-custom-refresher-props-test', () => {
 
     const windowInfo = await program.callUniMethod('getWindowInfo')
 
-    const startX = rect.left + rect.width / 2;
-    const startY = rect.top + offsetY + windowInfo.safeAreaInsets.top + 44;
+    // 确保坐标为整数（IDB 要求整数坐标）
+    const startX = Math.round(rect.left + rect.width / 2);
+    const startY = Math.round(rect.top + offsetY + windowInfo.safeAreaInsets.top + 44);
+    const endY = Math.round(startY + pullDistance);
 
-    console.log(`Refresher [${elementId}] swipe from (${startX}, ${startY}) to (${startX}, ${startY + pullDistance})`);
+    console.log(`Refresher [${elementId}] swipe from (${startX}, ${startY}) to (${startX}, ${endY})`);
 
     await program.swipe({
       startPoint: {
@@ -104,7 +106,7 @@ describe('scroll-view-custom-refresher-props-test', () => {
       },
       endPoint: {
         x: startX,
-        y: startY + pullDistance
+        y: endY
       },
       duration: 500
     })
