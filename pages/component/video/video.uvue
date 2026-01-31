@@ -1,22 +1,39 @@
 <template>
   <view class="uni-flex-item">
     <video class="video" ref="video" id="video" :header="data.header" :src="data.src" :autoplay="data.autoplay" :loop="data.loop"
-      :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn"
+      :muted="data.muted" :initial-time="data.initialTime" :duration="data.duration" :controls="data.controls" :danmu-btn="data.danmuBtn && fullscreenShowDanmuBtn"
       :enable-danmu="data.enableDanmu" :page-gesture="data.pageGesture" :direction="data.direction" :show-progress="data.showProgress"
-      :show-fullscreen-btn="data.showFullscreenBtn" :show-play-btn="data.showPlayBtn" :show-center-play-btn="data.showCenterPlayBtn"
+      :show-fullscreen-btn="data.showFullscreenBtn && fullscreenShowFullscreenBtn" :show-play-btn="data.showPlayBtn && fullscreenShowPlayBtn" :show-center-play-btn="data.showCenterPlayBtn"
       :show-loading="data.showLoading" :enable-progress-gesture="data.enableProgressGesture" :object-fit="data.objectFit"
-      :poster="data.poster" :show-mute-btn="data.showMuteBtn" :title="data.title" :enable-play-gesture="data.enablePlayGesture"
+      :poster="data.poster" :show-mute-btn="data.showMuteBtn && fullscreenShowMuteBtn" :title="data.title" :enable-play-gesture="data.enablePlayGesture"
       :vslide-gesture="data.vslideGesture" :vslide-gesture-in-fullscreen="data.vslideGestureInFullscreen" :codec="data.codec"
       :http-cache="data.httpCache" :play-strategy="data.playStrategy" :danmu-list="data.danmuList" @play="onPlay" @pause="onPause"
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
+
       <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-backward"
-        src="../../../static/test-video/fast-backward.png" @tap="fastBackward"></image>
+        src="../../../static/test-video/fast-backward.png" @tap.stop="fastBackward"></image>
       <image v-if="data.subCompEnable && data.subCompShow" class="img-fast-forward"
-        src="../../../static/test-video/fast-forward.png" @tap="fastForward"></image>
-      <input id="input-send-danmu" class="input-send-danmu" v-if="data.subCompEnable && data.subCompShow" placeholder="请输入弹幕内容"
+        src="../../../static/test-video/fast-forward.png" @tap.stop="fastForward"></image>
+      <input v-if="data.subCompEnable && data.subCompShow" id="input-send-danmu" class="input-send-danmu" placeholder="请输入弹幕内容"
         placeholder-style="color: white;" confirm-type="send" @confirm="onSendDanmuConfirm"
         @keyboardheightchange="onSendDanmuKeyboardHeightChange" @blur="onSendDanmuBlur"></input>
+
+      <!-- #ifdef APP-HARMONY -->
+      <template #controls>
+        <view  v-if="data.subCompControlsShow" class="video-fullscreen_controls">
+          <view class="control-btn" @click="togglePlay">
+            <text class="control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
+          </view>
+          <view class="control-btn" @click="toggleDanmu">
+            <text class="control-icon">{{ data.enableDanmu ? ICON_DANMU_ACTIVE : ICON_DANMU }}</text>
+          </view>
+          <view class="control-btn" @click="toggleMute">
+            <text class="control-icon">{{ data.muted ? ICON_VOLUME_MUTE : ICON_VOLUME }}</text>
+          </view>
+        </view>
+      </template>
+      <!-- #endif -->
     </video>
     <scroll-view class="uni-padding-wrap uni-common-mt uni-flex-item">
       <view class="uni-btn-v">
@@ -34,6 +51,10 @@
       <!-- #ifdef APP-HARMONY -->
       <view class="uni-btn-v">
         <button type="primary" @click="openDialogPageVideo">dialogPage 视频格式示例</button>
+      </view>
+      <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
+        <text class="uni-title" style="width: 80%;">全屏后自定义 controls</text>
+        <switch :checked="data.subCompControlsEnable" @change="onSubCompControlsEnable" />
       </view>
       <!-- #endif -->
       <view class="uni-flex uni-btn-v" style="justify-content: space-between;align-items: center;">
@@ -177,7 +198,9 @@
     rateItemTypes: ItemType[];
     rateItems: number[];
     subCompEnable: boolean;
+    subCompControlsEnable: boolean;
     subCompShow: boolean;
+    subCompControlsShow: boolean;
     curPos: number;
     endPos: number;
     // 自动化测试
@@ -197,6 +220,13 @@
     eventControlstoggle: UTSJSONObject | null;
     dialogPageVideo: UniPage | null;
   }
+
+  const ICON_PLAY = '\uea24';
+  const ICON_PAUSH = '\uea25';
+  const ICON_DANMU = '\uea26';
+  const ICON_DANMU_ACTIVE = '\uea27';
+  const ICON_VOLUME = '\uea30';
+  const ICON_VOLUME_MUTE = '\uea31';
 
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -274,7 +304,14 @@
     rateItemTypes: [{ "value": 0, "name": "0.5" }, { "value": 1, "name": "0.8" }, { "value": 2, "name": "1.0" }, { "value": 3, "name": "1.25" }, { "value": 4, "name": "1.5" }],
     rateItems: [0.5, 0.8, 1.0, 1.25, 1.5],
     subCompEnable: false,
+    // #ifdef APP-HARMONY
+    subCompControlsEnable: true,
+    // #endif
+    // #ifndef APP-HARMONY
+    subCompControlsEnable: false,
+    // #endif
     subCompShow: false,
+    subCompControlsShow: false,
     curPos: 0,
     endPos: 0,
     // 自动化测试
@@ -376,6 +413,22 @@
 
   const onPlaybackRateChange = (value : number) => {
     data.rate = data.rateItems[value];
+  }
+
+  const togglePlay = () => {
+    if (data.isPlaying) {
+      pause();
+    } else {
+      play();
+    }
+  }
+
+  const toggleDanmu = () => {
+    data.enableDanmu = !data.enableDanmu;
+  }
+
+  const toggleMute = () => {
+    data.muted = !data.muted;
   }
 
   const fastBackward = () => {
@@ -569,6 +622,24 @@
     data.subCompEnable = event.detail.value;
   }
 
+  function onSubCompControlsEnable(event: UniSwitchChangeEvent) {
+    data.subCompControlsEnable = event.detail.value;
+  }
+
+  const isHorizontalFullscreen = ref(false)
+  const fullscreenShowPlayBtn = ref(data.showPlayBtn)
+  const fullscreenShowMuteBtn = ref(data.showMuteBtn)
+  const fullscreenShowFullscreenBtn = ref(data.showFullscreenBtn)
+  const fullscreenShowDanmuBtn = ref(data.danmuBtn)
+  watchEffect(() => {
+    data.subCompControlsShow = isHorizontalFullscreen.value && data.subCompControlsEnable
+    // 当全屏显示自定义 controls 时，不显示 video 组件原本 controls 按钮
+    fullscreenShowPlayBtn.value = !data.subCompControlsShow
+    fullscreenShowMuteBtn.value = !data.subCompControlsShow
+    fullscreenShowFullscreenBtn.value = !data.subCompControlsShow // 不显示全屏按钮，返回手势或者右上角退出全屏
+    fullscreenShowDanmuBtn.value = !data.subCompControlsShow
+  })
+
   // 事件
   const onPlay = (res : UniEvent) => {
     console.log(res.type);
@@ -619,8 +690,10 @@
   }
 
   const onFullScreenChange = (res : UniVideoFullScreenChangeEvent) => {
-    console.log(res.type + " -> " + JSON.stringify(res.detail));
-    data.subCompShow = res.detail.fullScreen;
+    const detail = res.detail
+    console.log(res.type + " -> " + JSON.stringify(detail));
+    data.subCompShow = detail.fullScreen;
+    isHorizontalFullscreen.value = detail.fullScreen && detail.direction === 'horizontal'
     if (data.autoTest) {
       data.eventFullscreenchange = {
         "tagName": res.target?.tagName,
@@ -775,9 +848,35 @@
     height: 40px;
     padding: 8px 13px;
     margin: 0 var(--status-bar-height);
-    bottom: 50px;
+    bottom: 100px;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
     color: #FFF;
+  }
+
+  .video-fullscreen_controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    height: 50px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .control-btn {
+    width: 60px;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 15px;
+  }
+
+  .control-icon {
+    font-family: 'uni-video-icon';
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
   }
 </style>
