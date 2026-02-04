@@ -165,6 +165,18 @@
       <view class="base-style transition-border-background" id="borderAndBackgroundColor" @click="changeBorderAndBackgroundColor"></view>
     </view>
 
+    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+    <text class="text">点击 scroll-view 查看 transition 效果</text>
+
+    <view class="demo-box">
+      <scroll-view ref="scrollView1" class="base-style" style="transition: width 1s;" @click="changeScrollViewWidth1">
+        <text>transition: width 1s</text>
+      </scroll-view>
+      <scroll-view ref="scrollView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeScrollViewWidth2">
+        <text>transition: width 2s ease-in-out</text>
+      </scroll-view>
+    </view>
+
     <view class="uni-common-mt">
       <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition </text>
     </view>
@@ -253,6 +265,10 @@
   let isTranstionWidthOrHeightStyle = false
   let widthOrHeightStyle: UniElement | null = null
   let progressWidth = 200
+  let isScrollViewWidth1 = false
+  let isScrollViewWidth2 = false
+  const scrollView1 = ref(null as UniElement | null)
+  const scrollView2 = ref(null as UniElement | null)
   let isTranstionChangeMargin = false
   let styleMargin: UniElement | null = null
   let isTransitionStylePadding = false
@@ -361,6 +377,16 @@
       ? '200px'
       : '300px')
     isTranstionWidthOrHeightStyle = !isTranstionWidthOrHeightStyle
+  }
+
+  const changeScrollViewWidth1 = () => {
+    scrollView1.value?.style.setProperty("width", isScrollViewWidth1 ? '100px' : '200px')
+    isScrollViewWidth1 = !isScrollViewWidth1
+  }
+
+  const changeScrollViewWidth2 = () => {
+    scrollView2.value?.style.setProperty("width", isScrollViewWidth2 ? '100px' : '200px')
+    isScrollViewWidth2 = !isScrollViewWidth2
   }
 
   const changeMargin = () => {
@@ -782,6 +808,12 @@
     width: 100px;
     height: 100px;
     background-color: brown;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
   }
 
   .width-progress {
