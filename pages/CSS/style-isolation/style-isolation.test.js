@@ -1,16 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const PAGE_PATH = '/pages/CSS/style-isolation/style-isolation'
 
 describe('style-isolation', () => {
-  if (!(isWeb || (isDom2 && isHarmony))) {
-    it('skip: DOM1 不支持', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
 
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
