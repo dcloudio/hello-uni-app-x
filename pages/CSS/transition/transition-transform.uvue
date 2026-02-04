@@ -3,11 +3,9 @@
   <scroll-view style="flex: 1;">
   <!-- #endif -->
     <view>
-
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-property </text>
       </view>
-
       <view class="test-container">
         <view class="test-item">
           <text class="uni-subtitle-text">view 组件</text>
@@ -79,6 +77,11 @@
       <view id="v" class="popup" @click="open">open</view>
       <view class="test"></view>
 
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <scroll-view ref="scrollViewRefDynamic" class="common-image" style="margin: 30px;" @click="triggerTransitionScrollViewDynamic">
+        <text style="font-size: 12px;">点击</text>
+      </scroll-view>
+
       <view class="text-container">
         <text class="tip">text 组件 transition-property </text>
         <text id="textTransform" class="text-popup" @click="openText">点击 text 测试 transform transition</text>
@@ -143,9 +146,11 @@
 	const viewRefDynamicFlat = ref(null as UniElement | null)
 	const textRefDynamicFlat = ref(null as UniTextElement | null)
 	const imageRefDynamicFlat = ref(null as UniImageElement | null)
+	const scrollViewRefDynamic = ref(null as UniElement | null)
 	const isRotatedDynamic = ref(false)
 	const isRotatedDynamicText = ref(false)
 	const isRotatedDynamicImage = ref(false)
+	const isRotatedDynamicScrollView = ref(false)
 	const isOpacityDynamic = ref(false)
 	const isOpacityDynamicText = ref(false)
 	const isOpacityDynamicImage = ref(false)
@@ -182,6 +187,8 @@
 		imageRefDynamic.value?.style.setProperty('transition-duration', '1s')
 		imageRefDynamicFlat.value?.style.setProperty('transition-property', value)
 		imageRefDynamicFlat.value?.style.setProperty('transition-duration', '1s')
+		scrollViewRefDynamic.value?.style.setProperty('transition-property', value)
+		scrollViewRefDynamic.value?.style.setProperty('transition-duration', '1s')
 
 		// 重置所有状态，确保初始值正确
 		resetAllStates()
@@ -198,6 +205,7 @@
 		isRotatedDynamic.value = false
 		isRotatedDynamicText.value = false
 		isRotatedDynamicImage.value = false
+		isRotatedDynamicScrollView.value = false
 		isOpacityDynamic.value = false
 		isOpacityDynamicText.value = false
 		isOpacityDynamicImage.value = false
@@ -233,6 +241,10 @@
 		if (imageRefDynamicFlat.value != null) {
 			imageRefDynamicFlat.value.style.setProperty('transform', 'rotate(0deg)')
 			imageRefDynamicFlat.value.style.setProperty('opacity', '1')
+		}
+		// scroll-view 元素初始值
+		if (scrollViewRefDynamic.value != null) {
+			scrollViewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
 		}
 	}
 
@@ -295,6 +307,15 @@
 		}
 	}
 
+	const triggerTransitionScrollViewDynamic = () => {
+		const property = transitionTransform.value
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicScrollView.value = !isRotatedDynamicScrollView.value
+			const transform = isRotatedDynamicScrollView.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			scrollViewRefDynamic.value?.style.setProperty('transform', transform)
+		}
+	}
+
 	onReady(() => {
 		// 设置初始的 transition-property 和 transition-duration
 		if (viewRefDynamic.value != null) {
@@ -320,6 +341,10 @@
 		if (imageRefDynamicFlat.value != null) {
 			imageRefDynamicFlat.value.style.setProperty('transition-property', transitionTransform.value)
 			imageRefDynamicFlat.value.style.setProperty('transition-duration', '1s')
+		}
+		if (scrollViewRefDynamic.value != null) {
+			scrollViewRefDynamic.value.style.setProperty('transition-property', transitionTransform.value)
+			scrollViewRefDynamic.value.style.setProperty('transition-duration', '1s')
 		}
 		// 设置初始值
 		setInitialValues()
@@ -438,6 +463,12 @@
     padding: 10px;
     background-color: gray;
     overflow: visible;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
   }
 
 </style>
