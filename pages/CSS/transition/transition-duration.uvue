@@ -24,13 +24,6 @@
         <button class="button-item" @click="imageReset">image reset</button>
       </view>
 
-      <text class="uni-title-text uni-common-mt">scroll-view 组件 transition-duration: 2s</text>
-      <scroll-view :class="scrollViewClassValue"></scroll-view>
-      <view class="button-container">
-        <button class="button-item" @click="scrollViewStart">scroll-view start</button>
-        <button class="button-item" @click="scrollViewReset">scroll-view reset</button>
-      </view>
-
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition-duration </text>
       </view>
@@ -102,14 +95,6 @@
         <enum-data :items="transitionDurationEnum" title="transition-duration 枚举值" @change="radioChangeTransitionDuration" :compact="true"></enum-data>
         <input-data :defaultValue="transitionDurationDynamic" title="transition-duration 自定义值" type="text" @confirm="inputChangeTransitionDuration"></input-data>
       </view>
-
-      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-duration: 2s</text>
-      <native-view :class="nativeViewClassValue"></native-view>
-      <view class="button-container">
-        <button class="button-item" @click="nativeViewStart">native-view start</button>
-        <button class="button-item" @click="nativeViewReset">native-view reset</button>
-      </view>
-
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -120,8 +105,6 @@
   const classValue = ref('box')
   const textClassValue = ref('text-box')
   const imageClassValue = ref('image-box')
-  const scrollViewClassValue = ref('scroll-view-box')
-  const nativeViewClassValue = ref('native-view-box')
 
   const start = () => {
     classValue.value = 'box ani'
@@ -145,22 +128,6 @@
 
   const imageReset = () => {
     imageClassValue.value = 'image-box'
-  }
-
-  const scrollViewStart = () => {
-    scrollViewClassValue.value = 'scroll-view-box scroll-view-ani'
-  }
-
-  const scrollViewReset = () => {
-    scrollViewClassValue.value = 'scroll-view-box'
-  }
-
-  const nativeViewStart = () => {
-    nativeViewClassValue.value = 'native-view-box native-view-ani'
-  }
-
-  const nativeViewReset = () => {
-    nativeViewClassValue.value = 'native-view-box'
   }
 
   const jest_start = () => {
@@ -195,11 +162,9 @@
   const viewRefDynamicFlat = ref(null as UniElement | null)
   const textRefDynamicFlat = ref(null as UniTextElement | null)
   const imageRefDynamicFlat = ref(null as UniImageElement | null)
-  const scrollViewRefDynamic = ref(null as UniElement | null)
   const isExpandedDynamic = ref(false)
   const isExpandedDynamicText = ref(false)
   const isExpandedDynamicImage = ref(false)
-  const isExpandedDynamicScrollView = ref(false)
 
   const transitionDurationEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -226,7 +191,6 @@
     textRefDynamicFlat.value?.style.setProperty('transition-duration', value)
     imageRefDynamic.value?.style.setProperty('transition-duration', value)
     imageRefDynamicFlat.value?.style.setProperty('transition-duration', value)
-    scrollViewRefDynamic.value?.style.setProperty('transition-duration', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
@@ -265,18 +229,8 @@
     imageRefDynamicFlat.value?.style.setProperty('width', width)
   }
 
-  const triggerTransitionScrollViewDynamic = () => {
-    isExpandedDynamicScrollView.value = !isExpandedDynamicScrollView.value
-    const width = isExpandedDynamicScrollView.value ? '100px' : '50px'
-    scrollViewRefDynamic.value?.style.setProperty('width', width)
-  }
-
   onReady(() => {
     getPropertyValues()
-    if (scrollViewRefDynamic.value != null) {
-      scrollViewRefDynamic.value.style.setProperty('transition-duration', transitionDurationDynamic.value)
-      scrollViewRefDynamic.value.style.setProperty('transition-property', 'width')
-    }
   })
 
 </script>
@@ -332,29 +286,6 @@
     background-color: green;
   }
 
-  .scroll-view-box {
-    width: 200px;
-    height: 50px;
-    background-color: green;
-  }
-
-  .scroll-view-ani {
-    transition-duration: 2s;
-    width: 300px;
-  }
-
-  .native-view-box {
-    width: 200px;
-    height: 50px;
-    background-color: green;
-  }
-
-  .native-view-ani {
-    transition-property: width;
-    transition-duration: 2s;
-    width: 300px;
-  }
-
   .test-container {
     flex-direction: row;
     justify-content: space-between;
@@ -372,11 +303,6 @@
     background-color: gray;
   }
 
-  .demo-box {
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 10px;
-  }
 
   .button-container {
     flex-direction: row;
