@@ -71,6 +71,14 @@
         <enum-data :items="transitionDelayEnum" title="transition-delay 枚举值" @change="radioChangeTransitionDelay" :compact="true"></enum-data>
         <input-data :defaultValue="transitionDelayDynamic" title="transition-delay 自定义值" type="text" @confirm="inputChangeTransitionDelay"></input-data>
       </view>
+
+      <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件 transition-delay：1s</text>
+      <native-view :class="nativeViewClassValue"></native-view>
+      <view class="button-container">
+        <button class="button-item" @click="nativeViewStart">native-view start</button>
+        <button class="button-item" @click="nativeViewReset">native-view reset</button>
+      </view>
+
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -83,6 +91,7 @@
   const textClassValue = ref('text-box')
   const imageClassValue = ref('image-box')
   const scrollViewClassValue = ref('scroll-view-box')
+  const nativeViewClassValue = ref('native-view-box')
 
   const start = () => {
     classValue.value = 'box ani'
@@ -114,6 +123,14 @@
 
   const scrollViewReset = () => {
     scrollViewClassValue.value = 'scroll-view-box'
+  }
+
+  const nativeViewStart = () => {
+    nativeViewClassValue.value = 'native-view-box native-view-ani'
+  }
+
+  const nativeViewReset = () => {
+    nativeViewClassValue.value = 'native-view-box'
   }
 
   const jest_start = () => {
@@ -281,6 +298,19 @@
   }
 
   .scroll-view-ani {
+    transition-property: width;
+    transition-duration: 2s;
+    transition-delay: 1s;
+    width: 300px;
+  }
+
+  .native-view-box {
+    width: 200px;
+    height: 50px;
+    background-color: green;
+  }
+
+  .native-view-ani {
     transition-property: width;
     transition-duration: 2s;
     transition-delay: 1s;
