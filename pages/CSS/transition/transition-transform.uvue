@@ -92,6 +92,8 @@
         <image id="imageTransform" class="image-popup" @click="openImage" src="/static/test-image/logo.png"></image>
       </view>
 
+      <text class="uni-title-text uni-common-mb">native-view 组件</text>
+      <native-view ref="nativeViewRefDynamic" class="common-image" style="margin: 30px;" @click="triggerTransitionNativeViewDynamic"></native-view>
 
     </view>
   <!-- #ifdef APP -->
@@ -147,10 +149,12 @@
 	const textRefDynamicFlat = ref(null as UniTextElement | null)
 	const imageRefDynamicFlat = ref(null as UniImageElement | null)
 	const scrollViewRefDynamic = ref(null as UniElement | null)
+	const nativeViewRefDynamic = ref(null as UniElement | null)
 	const isRotatedDynamic = ref(false)
 	const isRotatedDynamicText = ref(false)
 	const isRotatedDynamicImage = ref(false)
 	const isRotatedDynamicScrollView = ref(false)
+	const isRotatedDynamicNativeView = ref(false)
 	const isOpacityDynamic = ref(false)
 	const isOpacityDynamicText = ref(false)
 	const isOpacityDynamicImage = ref(false)
@@ -206,6 +210,7 @@
 		isRotatedDynamicText.value = false
 		isRotatedDynamicImage.value = false
 		isRotatedDynamicScrollView.value = false
+		isRotatedDynamicNativeView.value = false
 		isOpacityDynamic.value = false
 		isOpacityDynamicText.value = false
 		isOpacityDynamicImage.value = false
@@ -245,6 +250,9 @@
 		// scroll-view 元素初始值
 		if (scrollViewRefDynamic.value != null) {
 			scrollViewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
+		}
+		if (nativeViewRefDynamic.value != null) {
+			nativeViewRefDynamic.value.style.setProperty('transform', 'rotate(0deg)')
 		}
 	}
 
@@ -316,6 +324,15 @@
 		}
 	}
 
+	const triggerTransitionNativeViewDynamic = () => {
+		const property = transitionTransform.value
+		if (property.includes('transform') || property === 'all') {
+			isRotatedDynamicNativeView.value = !isRotatedDynamicNativeView.value
+			const transform = isRotatedDynamicNativeView.value ? 'rotate(45deg)' : 'rotate(0deg)'
+			nativeViewRefDynamic.value?.style.setProperty('transform', transform)
+		}
+	}
+
 	onReady(() => {
 		// 设置初始的 transition-property 和 transition-duration
 		if (viewRefDynamic.value != null) {
@@ -345,6 +362,10 @@
 		if (scrollViewRefDynamic.value != null) {
 			scrollViewRefDynamic.value.style.setProperty('transition-property', transitionTransform.value)
 			scrollViewRefDynamic.value.style.setProperty('transition-duration', '1s')
+		}
+		if (nativeViewRefDynamic.value != null) {
+			nativeViewRefDynamic.value.style.setProperty('transition-property', transitionTransform.value)
+			nativeViewRefDynamic.value.style.setProperty('transition-duration', '1s')
 		}
 		// 设置初始值
 		setInitialValues()
@@ -421,7 +442,7 @@
 
 	.image-container {
 		width: 400px;
-		height: 400px;
+		height: 260px;
 		margin-left: 20px;
 		overflow: visible;
 	}
