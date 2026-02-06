@@ -52,6 +52,109 @@
         <text>{{data.nodeResultContainNode}}</text>
       </view>
       <canvas id="canvas1"></canvas>
+
+      <!-- text 组件 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Text 组件查询示例</text>
+        <text id="test-text" class="test-text">这是一个测试文本元素</text>
+        <button class="btn" @click="getTextNodeInfo">查询 Text 节点信息</button>
+        <view v-if="data.textNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.textNodeInfo!.height}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- image 组件 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Image 组件查询示例</text>
+        <image id="test-image" class="test-image" src="/static/test-image/logo.png" mode="aspectFit"></image>
+        <button class="btn" @click="getImageNodeInfo">查询 Image 节点信息</button>
+        <view v-if="data.imageNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.imageNodeInfo!.height}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- scroll-view 组件 -->
+      <view class="uni-common-mt">
+        <text class="uni-title-text">Scroll-view 组件查询示例</text>
+        <scroll-view id="test-scroll-view" class="test-scroll-view">
+          <view style="padding: 10px;">
+            <text v-for="i in 10" :key="i">Scroll-view 第 {{i}} 行</text>
+          </view>
+        </scroll-view>
+        <button class="btn" @click="getScrollViewNodeInfo">查询 Scroll-view 节点信息</button>
+        <view v-if="data.scrollViewNodeInfo" class="rect-info">
+          <view class="node-info-item">
+            <text class="node-info-item-k">left: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.left}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">right: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.right}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">top: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.top}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">bottom: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.bottom}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">width: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.width}}</text>
+          </view>
+          <view class="node-info-item">
+            <text class="node-info-item-k">height: </text>
+            <text class="node-info-item-v">{{data.scrollViewNodeInfo!.height}}</text>
+          </view>
+        </view>
+      </view>
     </view>
     <navigator url="/pages/API/create-selector-query/create-selector-query-onScroll"><button>滚动容器中的createSelectorQuery</button></navigator>
   <!-- #ifdef APP -->
@@ -80,6 +183,9 @@
     selectAllCount: number;
     fieldsResultContainNode: boolean;
     nodeResultContainNode: boolean;
+    textNodeInfo: NodeInfoType | null;
+    imageNodeInfo: NodeInfoType | null;
+    scrollViewNodeInfo: NodeInfoType | null;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -93,7 +199,10 @@
     selectCount: 0,
     selectAllCount: 0,
     fieldsResultContainNode: false,
-    nodeResultContainNode: false
+    nodeResultContainNode: false,
+    textNodeInfo: null,
+    imageNodeInfo: null,
+    scrollViewNodeInfo: null
   } as DataType)
 
   const multiChildRef = ref<ComponentPublicInstance | null>(null)
@@ -182,6 +291,57 @@
     }).exec()
   }
 
+  // 查询 text 节点信息
+  const getTextNodeInfo = () => {
+    uni.createSelectorQuery().select('#test-text').boundingClientRect().exec((ret) => {
+      if (ret.length > 0) {
+        const i = ret[0] as NodeInfo
+        data.textNodeInfo = {
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType
+      }
+    })
+  }
+
+  // 查询 image 节点信息
+  const getImageNodeInfo = () => {
+    uni.createSelectorQuery().select('#test-image').boundingClientRect().exec((ret) => {
+      if (ret.length > 0) {
+        const i = ret[0] as NodeInfo
+        data.imageNodeInfo = {
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType
+      }
+    })
+  }
+
+  // 查询 scroll-view 节点信息
+  const getScrollViewNodeInfo = () => {
+    uni.createSelectorQuery().select('#test-scroll-view').boundingClientRect().exec((ret) => {
+      if (ret.length > 0) {
+        const i = ret[0] as NodeInfo
+        data.scrollViewNodeInfo = {
+          left: i.left,
+          top: i.top,
+          right: i.right,
+          bottom: i.bottom,
+          width: i.width,
+          height: i.height,
+        } as NodeInfoType
+      }
+    })
+  }
+
   onLoad(() => {
     uni.$on('childDataReady', onChildReady)
   })
@@ -208,7 +368,10 @@
 
   defineExpose({
     data,
-    getRootNodeInfo
+    getRootNodeInfo,
+    getTextNodeInfo,
+    getImageNodeInfo,
+    getScrollViewNodeInfo
   })
 </script>
 
@@ -263,4 +426,26 @@
     font-weight: bold;
     line-height: 2;
   }
+
+  .test-text {
+    padding: 10px;
+    background-color: #d6d6d6;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .test-image {
+    margin: 10px 0;
+    width: 100px;
+    height: 100px;
+  }
+
+  .test-scroll-view {
+    margin: 10px 0;
+    width: 300px;
+    height: 100px;
+    border: 1px solid #ccc;
+  }
+
 </style>
