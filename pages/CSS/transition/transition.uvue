@@ -123,7 +123,7 @@
     </view>
 
     <view style="margin-top: 20px; margin-left: 7px;">
-      <text style="font-size: 18px; font-weight: bold;">text 组件 transition 测试</text>
+      <text style="font-size: 18px; font-weight: bold;">text 组件 transition </text>
     </view>
 
     <view class="container">
@@ -142,7 +142,7 @@
     </view>
 
     <view style="margin-top: 20px; margin-left: 7px;">
-      <text style="font-size: 18px; font-weight: bold;">image 组件 transition 测试</text>
+      <text style="font-size: 18px; font-weight: bold;">image 组件 transition </text>
     </view>
 
     <view class="container">
@@ -165,8 +165,20 @@
       <view class="base-style transition-border-background" id="borderAndBackgroundColor" @click="changeBorderAndBackgroundColor"></view>
     </view>
 
+    <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+    <text class="text">点击 scroll-view 查看 transition 效果</text>
+
+    <view class="demo-box">
+      <scroll-view ref="scrollView1" class="base-style" style="transition: width 1s;" @click="changeScrollViewWidth1">
+        <text>transition: width 1s</text>
+      </scroll-view>
+      <scroll-view ref="scrollView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeScrollViewWidth2">
+        <text>transition: width 2s ease-in-out</text>
+      </scroll-view>
+    </view>
+
     <view class="uni-common-mt">
-      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition 测试</text>
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transition </text>
     </view>
 
     <view class="test-container">
@@ -232,9 +244,16 @@
     </view>
 
     <view class="uni-common-mt uni-common-mb">
-      <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
+      <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
       <enum-data :items="transitionEnum" title="transition 枚举值" @change="radioChangeTransition" :compact="true"></enum-data>
       <input-data :defaultValue="transitionValue" title="transition 自定义值" type="text" @confirm="inputChangeTransition"></input-data>
+    </view>
+
+    <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
+    <text class="text">点击 native-view 查看 transition 效果</text>
+    <view class="demo-box">
+      <native-view ref="nativeView1" class="base-style" style="transition: width 1s;" @click="changeNativeViewWidth1"></native-view>
+      <native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></native-view>
     </view>
 
   <!-- #ifdef APP -->
@@ -253,6 +272,14 @@
   let isTranstionWidthOrHeightStyle = false
   let widthOrHeightStyle: UniElement | null = null
   let progressWidth = 200
+  let isScrollViewWidth1 = false
+  let isScrollViewWidth2 = false
+  const scrollView1 = ref(null as UniElement | null)
+  const scrollView2 = ref(null as UniElement | null)
+  let isNativeViewWidth1 = false
+  let isNativeViewWidth2 = false
+  const nativeView1 = ref(null as UniElement | null)
+  const nativeView2 = ref(null as UniElement | null)
   let isTranstionChangeMargin = false
   let styleMargin: UniElement | null = null
   let isTransitionStylePadding = false
@@ -361,6 +388,26 @@
       ? '200px'
       : '300px')
     isTranstionWidthOrHeightStyle = !isTranstionWidthOrHeightStyle
+  }
+
+  const changeScrollViewWidth1 = () => {
+    scrollView1.value?.style.setProperty("width", isScrollViewWidth1 ? '100px' : '150px')
+    isScrollViewWidth1 = !isScrollViewWidth1
+  }
+
+  const changeScrollViewWidth2 = () => {
+    scrollView2.value?.style.setProperty("width", isScrollViewWidth2 ? '100px' : '150px')
+    isScrollViewWidth2 = !isScrollViewWidth2
+  }
+
+  const changeNativeViewWidth1 = () => {
+    nativeView1.value?.style.setProperty("width", isNativeViewWidth1 ? '100px' : '150px')
+    isNativeViewWidth1 = !isNativeViewWidth1
+  }
+
+  const changeNativeViewWidth2 = () => {
+    nativeView2.value?.style.setProperty("width", isNativeViewWidth2 ? '100px' : '150px')
+    isNativeViewWidth2 = !isNativeViewWidth2
   }
 
   const changeMargin = () => {
@@ -782,6 +829,12 @@
     width: 100px;
     height: 100px;
     background-color: brown;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
   }
 
   .width-progress {

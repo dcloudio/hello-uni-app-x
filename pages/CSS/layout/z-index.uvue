@@ -17,16 +17,16 @@
           <text>z-index: -1</text>
         </view>
       </view>
-      <view style="top: 250px;">
+      <view style="top: 170px;">
         <view class="common" style="background-color: cyan;z-index: 10;">
           <text>z-index: 10</text>
         </view>
-        <view ref="view" class="common" style="background-color: green;z-index: 5;top: -37px;left: 87px;"
+        <view ref="view" class="common" style="background-color: green;z-index: 5;top: -100px;left: 100px;"
           @click="changeZIndex(20)">
           <text>z-index: {{data.zIndex}}</text>
           <text>点击修改z-index</text>
         </view>
-        <view class="common" style="background-color: blue;top: -75px;left: 175px;">
+        <view class="common" style="background-color: blue;top: -120px;left: 175px;">
           <text>z-index: 0</text>
         </view>
       </view>
@@ -39,77 +39,85 @@
         </view>
       </view>
     </view>
-  <view v-if="data.autoTest">
-    <view style="z-index: 1;position: fixed;">111</view>
-    <view style="width: 750rpx;">222</view>
-  </view>
-  <view style="top: 200px;">
-    <view class="common" style="background-color: cyan;z-index: 10;">
-      <text>text组件: z-index: 10</text>
+    <view v-if="data.autoTest">
+      <view style="z-index: 1;position: fixed;">111</view>
+      <view style="width: 750rpx;">222</view>
     </view>
-    <view class="common" style="background-color: green;z-index: 5;top: -37px;left: 87px;">
-      <text>text组件: z-index: 5</text>
+    <view style="top: 50px;">
+      <text class="uni-title-text uni-common-mt">text 组件</text>
+      <text class="common" style="background-color: cyan;z-index: 10;text-align: right;">text组件: z-index: 10</text>
+      <text class="common" style="background-color: green;top: -37px;left: 87px;z-index: 5;text-align: right;">text组件: z-index: 5</text>
+      <text class="common" style="background-color: blue;top: -75px;left: 175px;z-index: 0;text-align: right;">text组件: z-index: 0</text>
     </view>
-    <view class="common" style="background-color: blue;top: -75px;left: 175px;">
-      <text>text组件: z-index: 0</text>
+    <view style="top: 50px;">
+      <text class="uni-title-text uni-common-mt">image 组件</text>
+      <image class="common image-zindex" style="background-color: cyan;z-index: 10;" src="/static/test-image/logo.png"></image>
+      <image class="common image-zindex" style="background-color: green;top: -37px;left: 87px;z-index: 5;" src="/static/test-image/logo.png"></image>
+      <image class="common image-zindex" style="background-color: blue;top: -75px;left: 175px;z-index: 0;" src="/static/test-image/logo.png"></image>
     </view>
-  </view>
-  <view style="top: 200px;">
-    <view class="common" style="background-color: cyan;z-index: 10;">
-      <image class="image-zindex" src="/static/test-image/logo.png"></image>
-    </view>
-    <view class="common" style="background-color: green;z-index: 5;top: -37px;left: 87px;">
-      <image class="image-zindex" src="/static/test-image/logo.png"></image>
-    </view>
-    <view class="common" style="background-color: blue;top: -75px;left: 175px;">
-      <image class="image-zindex" src="/static/test-image/logo.png"></image>
-    </view>
-  </view>
-  <view class="uni-common-mt" style="top:300px;">
-    <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 z-index 测试</text>
-  </view>
 
-  <view class="test-container" style="top:300px;">
-    <view class="test-item">
-      <text class="uni-subtitle-text">view 组件</text>
-      <text class="uni-info">设置值: {{zIndexValue}}</text>
-      <text class="uni-info">获取值: {{zIndexActual}}</text>
-      <view class="test-box">
-        <view class="common-bg" style="background-color: blue; z-index: 1;">
-          <text class="common-text-bg">蓝色view</text>
+    <view class="uni-common-mb" style="top: 50px;">
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <text class="uni-subtitle-text">z-index: 10 和 z-index: 5</text>
+      <scroll-view class="common" style="z-index: 10; background-color: cyan;">
+        <text>z-index: 10</text>
+      </scroll-view>
+      <scroll-view class="common" style="top: -40px;left: 30px;z-index: 5;background-color: green;">
+        <text style="line-height: 100px;">z-index: 5</text>
+      </scroll-view>
+    </view>
+
+    <view class="uni-common-mt" style="top:100px;">
+      <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 z-index </text>
+      <view class="test-container">
+        <view class="test-item">
+          <text class="uni-subtitle-text">view 组件</text>
+          <text class="uni-info">设置值: {{zIndexValue}}</text>
+          <text class="uni-info">获取值: {{zIndexActual}}</text>
+          <view class="test-box">
+            <view class="common-bg" style="background-color: blue; z-index: 1;">
+              <text class="common-text-bg">蓝色view</text>
+            </view>
+            <view ref="viewRef" class="common-dynamic test-view" style="background-color: cyan;" :style="{ zIndex: zIndexValue }">
+              <text class="common-text-bg">青色view</text>
+            </view>
+          </view>
         </view>
-        <view ref="viewRef" class="common-dynamic test-view" style="background-color: cyan;" :style="{ zIndex: zIndexValue }">
-          <text class="common-text-bg">青色view</text>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">text 组件</text>
+          <text class="uni-info">设置值: {{zIndexValue}}</text>
+          <text class="uni-info">获取值: {{zIndexActualText}}</text>
+          <view class="test-box">
+            <text class="common-bg common-text-bg" style="background-color: blue; z-index: 1;">蓝色text</text>
+            <text ref="textRef" class="common-dynamic common-text-bg test-text" style="background-color: cyan;" :style="{ zIndex: zIndexValue }">青色text</text>
+          </view>
+        </view>
+
+        <view class="test-item">
+          <text class="uni-subtitle-text">image 组件</text>
+          <text class="uni-info">设置值: {{zIndexValue}}</text>
+          <text class="uni-info">获取值: {{zIndexActualImage}}</text>
+          <view class="test-box">
+            <image class="common-bg common-image-bg" style="z-index: 1;" src="/static/test-image/logo.png"></image>
+            <image ref="imageRef" class="common-dynamic common-image-bg test-image" :style="{ zIndex: zIndexValue }" src="/static/test-image/logo.png"></image>
+          </view>
         </view>
       </view>
-    </view>
 
-    <view class="test-item">
-      <text class="uni-subtitle-text">text 组件</text>
-      <text class="uni-info">设置值: {{zIndexValue}}</text>
-      <text class="uni-info">获取值: {{zIndexActualText}}</text>
-      <view class="test-box">
-        <text class="common-bg common-text-bg" style="background-color: blue; z-index: 1;">蓝色text</text>
-        <text ref="textRef" class="common-dynamic common-text-bg test-text" style="background-color: cyan;" :style="{ zIndex: zIndexValue }">青色text</text>
+      <view class="uni-common-mt uni-common-mb">
+        <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
+        <enum-data :items="zIndexEnum" title="z-index 枚举值" @change="radioChangeZIndex" :compact="true"></enum-data>
+        <input-data :defaultValue="zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
+      </view>
+
+      <view class="uni-common-mb" style="top: 50px;">
+        <text>native-view组件: z-index: 10 和 z-index: 5</text>
+        <native-view class="common" style="z-index: 10; background-color: cyan;"></native-view>
+        <native-view class="common" style="top: -40px;left: 30px;z-index: 5;background-color: green;"></native-view>
       </view>
     </view>
 
-    <view class="test-item">
-      <text class="uni-subtitle-text">image 组件</text>
-      <text class="uni-info">设置值: {{zIndexValue}}</text>
-      <text class="uni-info">获取值: {{zIndexActualImage}}</text>
-      <view class="test-box">
-        <image class="common-bg common-image-bg" style="z-index: 1;" src="/static/test-image/logo.png"></image>
-        <image ref="imageRef" class="common-dynamic common-image-bg test-image" :style="{ zIndex: zIndexValue }" src="/static/test-image/logo.png"></image>
-      </view>
-    </view>
-  </view>
-
-  <view class="uni-common-mt uni-common-mb" style="top:300px;">
-    <text class="uni-tips">第一个枚举值，'' (空字符串) - 测试空值情况</text>
-    <enum-data :items="zIndexEnum" title="z-index 枚举值" @change="radioChangeZIndex" :compact="true"></enum-data>
-    <input-data :defaultValue="zIndexValue.toString()" title="z-index 自定义值" type="number" @confirm="inputChangeZIndex"></input-data>
-  </view>
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -207,14 +215,14 @@
   }
 
   .default {
-    background-color: cyan;
+    background-color: yellow;
     z-index: 10;
     top: var(--uni-safe-area-inset-top);
     left: var(--uni-safe-area-inset-left);
   }
 
   .specified {
-    background-color: green;
+    background-color: yellowgreen;
     z-index: 5;
     /* #ifdef APP || MP */
     top: 87px;
