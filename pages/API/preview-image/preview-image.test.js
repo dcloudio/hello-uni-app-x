@@ -11,14 +11,7 @@ describe('preview-image', () => {
     await page.waitFor(isWeb ? 4000 : 100);
   });
 
-// 微信不支持closePreviewImage
-  if (isMP) {
-    it('other platform', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
-  if (isWeb) {
+  if (isWeb || isMP) {
     it('screenshot', async () => {
       const image = await program.screenshot({
         fullPage: true
