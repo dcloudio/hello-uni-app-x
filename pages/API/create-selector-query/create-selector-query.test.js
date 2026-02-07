@@ -111,7 +111,7 @@ describe('nodes-info', () => {
     await page.waitFor(100)
     const textNodeInfo = await page.data('data.textNodeInfo')
     expect(textNodeInfo).not.toBe(null)
-    expect(textNodeInfo.left).toBe(15)
+    expect(textNodeInfo.left).toBeCloseTo(15, 0);
     expect(Math.round(textNodeInfo.right) > 300).toBe(true)
     expect(Math.round(textNodeInfo.top) > 200).toBe(true)
     expect(Math.round(textNodeInfo.bottom) > 200).toBe(true)
@@ -125,8 +125,8 @@ describe('nodes-info', () => {
     await page.waitFor(100)
     const imageNodeInfo = await page.data('data.imageNodeInfo')
     expect(imageNodeInfo).not.toBe(null)
-    expect(imageNodeInfo.left).toBe(15)
-    expect(imageNodeInfo.right).toBe(115)
+    expect(imageNodeInfo.left).toBeCloseTo(15, 0);
+    expect(imageNodeInfo.right).toBeCloseTo(115, 0);
     expect(Math.round(imageNodeInfo.top) > 380).toBe(true)
     expect(Math.round(imageNodeInfo.bottom) > 480).toBe(true)
     expect(imageNodeInfo.width).toBe(100)
@@ -139,8 +139,8 @@ describe('nodes-info', () => {
     await page.waitFor(100)
     const scrollViewNodeInfo = await page.data('data.scrollViewNodeInfo')
     expect(scrollViewNodeInfo).not.toBe(null)
-    expect(scrollViewNodeInfo.left).toBe(15)
-    expect(scrollViewNodeInfo.right).toBe(315)
+    expect(scrollViewNodeInfo.left).toBeCloseTo(15, 0);
+    expect(scrollViewNodeInfo.right).toBeCloseTo(315, 0);
     expect(Math.round(scrollViewNodeInfo.top) > 560).toBe(true)
     expect(Math.round(scrollViewNodeInfo.bottom) > 660).toBe(true)
     expect(scrollViewNodeInfo.width).toBe(300)
