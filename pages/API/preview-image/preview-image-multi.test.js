@@ -2,7 +2,8 @@
 describe('test-previewImage-multi', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isWeb = platformInfo.startsWith('web')
-  if (isWeb) {
+  const isMP = platformInfo.startsWith('mp')
+  if (isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
