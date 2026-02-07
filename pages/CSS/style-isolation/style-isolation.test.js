@@ -1,7 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isHarmony = platformInfo.startsWith('harmony')
-const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 const PAGE_PATH = '/pages/CSS/style-isolation/style-isolation'
 
 describe('style-isolation', () => {
@@ -14,10 +15,9 @@ describe('style-isolation', () => {
   it('测试组件的根节点为二级组件时 样式传递', async () => {
     const levelEl = await page.$('.level-child-class')
 		const levelElStyle = await levelEl.style('background-color')
-    if(isHarmony){
-      expect(['#00aaff','#00AAFFFF', 'rgb(0,170,255)']).toContain(levelElStyle)
-    }
-    if(isWeb){
+    if(isApp){
+      expect(levelElStyle).toBe('#00aaff')
+    }else{
       expect(levelElStyle).toBe('rgb(0, 170, 255)')
     }
   })
@@ -27,10 +27,9 @@ describe('style-isolation', () => {
     // 样式全隔离，预期组件自身样式紫色
     const comBoxEl = await compIsolatedEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
-    if(isHarmony){
-      expect(['#d9d1ff','#D9D1FFFF', 'rgb(217,209,255)']).toContain(comBoxStyle)
-    }
-    if(isWeb){
+    if(isApp){
+      expect(comBoxStyle).toBe('#d9d1ff')
+    }else{
       expect(comBoxStyle).toBe('rgb(217, 209, 255)')
     }
     // 验证全局样式无效，预期组件默认字体大小16px
@@ -49,10 +48,9 @@ describe('style-isolation', () => {
     // 优先级：全局样式 < 自身样式，预期组件自身样式紫色
     const comBoxEl = await compAppEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
-    if(isHarmony){
-      expect(['#d9d1ff','#D9D1FFFF', 'rgb(217,209,255)']).toContain(comBoxStyle)
-    }
-    if(isWeb){
+    if(isApp){
+      expect(comBoxStyle).toBe('#d9d1ff')
+    }else{
       expect(comBoxStyle).toBe('rgb(217, 209, 255)')
     }
     // 验证，全局样式有效(字体的粗细bold与 700 等值，大小18px)
@@ -79,10 +77,9 @@ describe('style-isolation', () => {
     // 优先级：全局样式 < 组件自身样式 < 页面样式，预期组件应用页面样式（绿色）优先级最高
     const comBoxEl = await compAppAndPageEl.$('.com-box')
     const comBoxStyle = await comBoxEl.style('background-color')
-    if(isHarmony){
-      expect(['#e8f5e9','#E8F5E9FF', 'rgb(232,245,233)']).toContain(comBoxStyle)
-    }
-    if(isWeb){
+    if(isApp){
+      expect(comBoxStyle).toBe('#e8f5e9')
+    }else{
       expect(comBoxStyle).toBe('rgb(232, 245, 233)')
     }
     // 验证，全局样式有效(字体的粗细bold，大小18px)
