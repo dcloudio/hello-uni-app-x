@@ -7,7 +7,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 describe('list-view-issue-17610', () => {
   /**
    * 蒸汽模式不支持sticky-header，未来也不会支持sticky-header和list-view在不同文件内的用法。
-   * Harmony非蒸汽模式不支持，将sticky-header放在非sticky-section下
+   * Harmony非蒸汽模式sticky-header只能放在sticky-section下
    */
   if (isDom2 || isMP || isAppWebView || isHarmony) {
     it('not support or not need', async () => {
