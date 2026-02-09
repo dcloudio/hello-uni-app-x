@@ -1,12 +1,12 @@
 <template>
 	<view class="page">
     <!-- #ifndef MP -->
-		<fps />
+		<fps :interval="100" @updateFps="onFpsUpdate" />
     <!-- #endif -->
 		<view class="header">
 			<text class="header-info">{{ listData.length }}行 | 每行40+元素 | 共近20万元素 | 10+层嵌套 | 圆角边框阴影 | 视频</text>
 		</view>
-		<list-view style="flex: 1;">
+		<list-view ref="listViewRef" style="flex: 1;" :scroll-with-animation="true" @scrollend="onScrollEnd">
 			<list-item v-for="(item, index) in listData" :key="item.id" :type="item.type">
 
 				<!-- ========== Type 1: 单图配文 ========== -->
@@ -263,6 +263,9 @@
 				</view>
 			</list-item>
 		</list-view>
+    <view class="scroll-top-top-btn" @click="scrollToTop">
+      <text class="scroll-top-top-btn-icon">▲</text>
+    </view>
 	</view>
 </template>
 
@@ -271,6 +274,7 @@ import { generateMockList, type ListItemData } from './mock-data.uts'
 
 // 使用预生成的数据
 const listData = ref<ListItemData[]>([])
+const listViewRef = ref<UniListViewElement | null>(null)
 
 onMounted(() => {
 	// console.log('加载预生成的4000条数据')
@@ -290,6 +294,32 @@ function onImageClick(urls: string[], current: number) {
 		urls: urls,
 		current: current
 	})
+}
+
+const fpsArr: number[] = []
+let startFpsCounter = false
+function onFpsUpdate(fps: number) {
+  if(startFpsCounter) {
+    fpsArr.push(fps)
+  }
+}
+function scrollToTop() {
+  if (listViewRef.value) {
+    fpsArr.length = 0
+    startFpsCounter = true
+    listViewRef.value.scrollTop = 0
+  }
+}
+function onScrollEnd() {
+  if(fpsArr.length === 0) {
+    return
+  }
+  const avgFps = fpsArr.reduce((sum, val) => sum + val, 0) / fpsArr.length
+  const minFps = Math.min(...fpsArr)
+  const maxFps = Math.max(...fpsArr)
+  console.log(`平均FPS: ${avgFps.toFixed(2)}, 最高FPS: ${maxFps}, 最低FPS: ${minFps}`)
+  startFpsCounter = false
+  fpsArr.length = 0
 }
 </script>
 
@@ -652,5 +682,22 @@ function onImageClick(urls: string[], current: number) {
 .info-text {
 	font-size: 9px;
 	color: #666;
+}
+
+.scroll-top-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 16px;
+}
+
+.scroll-top-top-btn-icon {
+  color: #fff;
+  font-size: 16px;
+  line-height: 32px;
+  text-align: center;
 }
 </style>
