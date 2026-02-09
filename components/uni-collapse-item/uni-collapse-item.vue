@@ -1,5 +1,5 @@
 <template>
-  <view class="uni-collapse-item">
+  <view class="uni-collapse-item" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <view class="uni-collapse-item__title" @click="openCollapse(!is_open)">
       <text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
       <view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
@@ -14,6 +14,10 @@
 
 <script lang="uts" setup>
   import { ItemChildType } from '../uni-collapse/item.type.uts'
+  import { state } from '@/store/index.uts'
+  const isDarkMode = computed((): boolean => {
+    return state.isDarkMode
+  })
 
   defineOptions({
     name: "UniCollapseItem",
@@ -105,7 +109,7 @@
     flex-direction: row;
     align-items: center;
     padding: 12px 18px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color,#ffffff);
   }
 
   .down_arrow {
@@ -126,14 +130,14 @@
 
   .uni-collapse-item__title-text {
     flex: 1;
-    color: #000;
     font-size: 14px;
     font-weight: 400;
+    color: var(--text-color, #333333);
   }
 
   .open--active {
     /* background-color: #f0f0f0; */
-    color: #bbb;
+    color: var(--active-color, #bbb);
   }
 
   .is-disabled {
