@@ -6,6 +6,15 @@
 </template>
 
 <script setup lang="uts">
+
+  const emit = defineEmits(['updateFps'])
+  const props = defineProps({
+    interval: {
+      type: Number,
+      default: 1000
+    }
+  })
+
   let animationId : number = -1
   const fps = ref<number>(0)
   // const droppedFrameCount = ref<number>(0)
@@ -44,8 +53,10 @@
       return
     }
     const delta = currentTime - fpsUpdateTime
-    if (delta >= 1000) {
-      fps.value = Math.round(frameCount * 1000 / delta)
+    if (delta >= props.interval) {
+      const value = Math.round(frameCount * 1000 / delta)
+      fps.value = value
+      emit('updateFps', value)
       /* droppedFrameCount.value = currentDroppedCount
       currentDroppedCount = 0 */
       frameCount = 0
