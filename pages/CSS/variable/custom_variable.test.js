@@ -8,7 +8,7 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 let page
 
 describe("css-custom-variable", () => {
-  if (isMP || isDom2) {
+  if (isMP) {
   	it('skip mp or dom2', () => {
   		expect(1).toBe(1)
   	})
