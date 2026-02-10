@@ -1,0 +1,50 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase();
+const isAndroid = platformInfo.startsWith('android');
+const isWeb = platformInfo.startsWith('web');
+const isMP = platformInfo.startsWith('mp');
+
+const PAGE_PATH = '/pages/component/page-container/page-container';
+
+describe('page-container.uvue', () => {
+  const isNotSupported = isWeb || isAndroid || isMP;
+  if (isNotSupported) {
+    it('not support', () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
+  let page;
+  beforeAll(async () => {
+    page = await program.reLaunch(PAGE_PATH);
+    await page.waitFor('scroll-view');
+  });
+
+  it('position', async () => {
+    const button = await page.$('.mt-5');
+    await button.tap();
+    await page.waitFor(500);
+
+    const containerContent = await page.$('.container-content');
+    expect(await containerContent.text()).toBe('容器从 底部 弹出');
+
+    await page.callMethod('navigateBack');
+    await page.waitFor(500);
+
+    const currentPage = await program.currentPage();
+    expect(currentPage.path).toBe(PAGE_PATH.substring(1));
+
+    const leftButton = await page.$('#left-button');
+    await leftButton.tap();
+    await page.waitFor(500);
+
+    const leftContainerContent = await page.$('.container-content');
+    expect(await leftContainerContent.text()).toBe('容器从 左侧 弹出');
+
+    await page.callMethod('navigateBack');
+    await page.waitFor(500);
+
+    const leftCurrentPage = await program.currentPage();
+    expect(leftCurrentPage.path).toBe(PAGE_PATH.substring(1));
+  });
+});
