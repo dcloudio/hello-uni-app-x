@@ -47,53 +47,8 @@
 					</view>
 				</view>
 
-				<!-- ========== Type 3: 九宫格 ========== -->
-				<view v-else-if="item.type == 3" class="card card-type3">
-					<view class="card-header">
-						<text class="card-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }}</text>
-						<text class="tag-sm">九宫</text>
-					</view>
-					<view class="grid-container">
-						<view class="grid-row">
-							<image class="grid-img" :src="item.gridImages[0]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 0)"></image>
-							<image class="grid-img" :src="item.gridImages[1]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 1)"></image>
-							<image class="grid-img" :src="item.gridImages[2]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 2)"></image>
-						</view>
-						<view class="grid-row">
-							<image class="grid-img" :src="item.gridImages[3]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 3)"></image>
-							<image class="grid-img" :src="item.gridImages[4]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 4)"></image>
-							<image class="grid-img" :src="item.gridImages[5]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 5)"></image>
-						</view>
-						<view class="grid-row">
-							<image class="grid-img" :src="item.gridImages[6]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 6)"></image>
-							<image class="grid-img" :src="item.gridImages[7]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 7)"></image>
-							<image class="grid-img" :src="item.gridImages[8]" mode="aspectFill" @click.stop="onImageClick(item.gridImages, 8)"></image>
-						</view>
-					</view>
-					<view class="card-content">
-						<view class="meta-info">
-							<text class="author-text">{{ item.author }}</text>
-						</view>
-					</view>
-				</view>
-
-				<!-- ========== Type 4: 卡片条 ========== -->
-				<view v-else-if="item.type == 4" class="card card-type4">
-					<view class="card-header">
-						<text class="card-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }}</text>
-						<text class="tag-sm">卡片</text>
-					</view>
-					<view class="card-content">
-						<text class="content-desc">{{ item.desc }}</text>
-						<view class="meta-info">
-							<text class="author-text">{{ item.author }}</text>
-							<text class="status-text">进行中</text>
-						</view>
-					</view>
-				</view>
-
-				<!-- ========== Type 5: 视频 ========== -->
-				<view v-else-if="item.type == 5" class="card card-type5">
+				<!-- ========== Type 3: 视频 ========== -->
+				<view v-else-if="item.type == 3" class="card card-type5">
 					<view class="card-header">
 						<text class="card-title" @click.stop="onTitleClick(item.id + 1)">#{{ item.id + 1 }}</text>
 						<text class="tag-sm">视频</text>
@@ -114,13 +69,14 @@
 						</view>
 					</view>
 				</view>
+
 			</flow-item>
 		</waterflow>
 	</view>
 </template>
 
 <script setup lang="uts">
-import { generateMockList, type ListItemData } from '../long-list-perf/mock-data.uts'
+import { generateMockList, type ListItemData } from './mock-data.uts'
 
 // 使用预生成的数据
 const listData = ref<ListItemData[]>([])
@@ -219,7 +175,6 @@ function onImageClick(urls: string[], current: number) {
 	/* #endif */
 	text-overflow: ellipsis;
 }
-
 .content-desc {
 	font-size: 10px;
 	color: #666;
@@ -261,11 +216,6 @@ function onImageClick(urls: string[], current: number) {
 }
 
 /* ===== Type 1: 单图配文 ===== */
-.card-type1 {
-	border-left-width: 3px;
-	border-left-color: #e74c3c;
-	border-left-style: solid;
-}
 
 .card-image-area {
 	margin: 6px 0;
@@ -280,11 +230,6 @@ function onImageClick(urls: string[], current: number) {
 }
 
 /* ===== Type 2: 三图配文 ===== */
-.card-type2 {
-	border-left-width: 3px;
-	border-left-color: #3498db;
-	border-left-style: solid;
-}
 
 .card-images-row {
 	flex-direction: row;
@@ -300,55 +245,21 @@ function onImageClick(urls: string[], current: number) {
 	overflow: hidden;
 }
 
-/* ===== Type 3: 九宫格 ===== */
-.card-type3 {
-	border-left-width: 3px;
-	border-left-color: #2ecc71;
-	border-left-style: solid;
-}
-
-.grid-container {
-	margin: 6px 0;
-}
-
-.grid-row {
-	flex-direction: row;
-	justify-content: space-between;
-	height: 50px;
-	margin-bottom: 2px;
-}
-
-.grid-img {
-	flex: 1;
-	height: 50px;
-	border-radius: 3px;
-	overflow: hidden;
-}
-
-/* ===== Type 4: 卡片条 ===== */
-.card-type4 {
-	border-left-width: 3px;
-	border-left-color: #9b59b6;
-	border-left-style: solid;
-	padding: 12px 10px;
-}
 
 /* ===== Type 5: 视频 ===== */
-.card-type5 {
-	border-left-width: 3px;
-	border-left-color: #e67e22;
-	border-left-style: solid;
+.video-area {
+	margin: 6px 0;
 }
 
 .video-area {
 	margin: 6px 0;
-	height: 120px;
+	height: 240px;
 	border-radius: 4px;
 	overflow: hidden;
 }
 
 .card-video {
 	width: 100%;
-	height: 120px;
+	height: 240px;
 }
 </style>
