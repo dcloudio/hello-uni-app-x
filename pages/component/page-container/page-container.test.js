@@ -31,6 +31,8 @@ describe('page-container.uvue', () => {
     await page.callMethod('navigateBack');
     await page.waitFor(500);
 
+    expect(await page.data('data.onAfterLeaveCallCount')).toBe(1);
+
     const currentPage = await program.currentPage();
     expect(currentPage.path).toBe(PAGE_PATH.substring(1));
 
@@ -43,6 +45,8 @@ describe('page-container.uvue', () => {
 
     await page.callMethod('navigateBack');
     await page.waitFor(500);
+
+    expect(await page.data('data.onAfterLeaveCallCount')).toBe(2);
 
     const leftCurrentPage = await program.currentPage();
     expect(leftCurrentPage.path).toBe(PAGE_PATH.substring(1));
