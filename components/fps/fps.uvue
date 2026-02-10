@@ -18,28 +18,10 @@
   const fps = ref<number>(0)
   let frameCount: number = 0
   let fpsUpdateTime: number = 0
-  let lastFrameTime: number = 0
   let minFrameTime: number = 0
-  let warmupFrames: number = 0
 
   let calculateFPS = (currentTime : number) => { }
   calculateFPS = (currentTime : number) => {
-    if (lastFrameTime > 0) {
-      const frameDuration = currentTime - lastFrameTime
-      warmupFrames++
-
-      if (warmupFrames > 3) {
-        if (minFrameTime == (0 as number)) {
-          minFrameTime = frameDuration
-        } else {
-          if (frameDuration < minFrameTime && frameDuration > 5) {
-            minFrameTime = frameDuration
-          }
-        }
-      }
-    }
-    lastFrameTime = currentTime
-
     if (fpsUpdateTime == (0 as number)) {
       fpsUpdateTime = currentTime
       animationId = requestAnimationFrame(calculateFPS)
