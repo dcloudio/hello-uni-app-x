@@ -68,6 +68,11 @@
   const containerContent = ref<string>("这是一个 page-container 容器")
   const containerCloseOnSlideDown = ref<boolean>(false)
 
+  // 仅用于自动化测试
+  const data = reactive({
+    onAfterLeaveCallCount: 0
+  })
+
   function resetConfig() {
     containerRound.value = false
     containerPosition.value = "bottom"
@@ -120,6 +125,7 @@
 
   function onAfterLeave() {
     containerShow.value = false
+    data.onAfterLeaveCallCount += 1
   }
 
   function closeContainer() {
@@ -131,6 +137,7 @@
   }
 
   defineExpose({
+    data,
     showContainer,
     navigateBack
   })
