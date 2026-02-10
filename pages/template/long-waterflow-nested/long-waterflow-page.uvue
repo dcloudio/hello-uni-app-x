@@ -13,9 +13,9 @@
         <view>
           <text class="description-text">{{item.plugin_intro}}</text>
         </view>
-        <uni-rate :value="item.score / 10" :full="true" :readonly="true"></uni-rate>
+        <uni-rate :value="(item.score as number) / 10" :full="true" :readonly="true"></uni-rate>
         <view class="tag-grid">
-          <text class="tag-item" v-for="(item2, index2) in item.tags.slice(0,1)" :key="index2">{{item2}}</text>
+          <text class="tag-item" v-for="(item2, index2) in (item.tags as Array<string>).slice(0,1)" :key="index2">{{item2}}</text>
         </view>
         <view class="flex-row update-date">
           <text class="author">{{item.author_name}}</text>
@@ -38,22 +38,6 @@
   const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
   const PAGE_SIZE = 10; // 最大值 10
 
-  type flowItem = {
-    plugin_id : number,
-    plugin_img_link : string,
-    plugin_name : string,
-    plugin_intro : string,
-    score : number,
-    tags : Array<string>,
-    update_date : string,
-    author_name : string,
-  }
-
-  type ResponseDataType = {
-    code : number,
-    data : flowItem[]
-  }
-
   const props = defineProps({
     type: { type: String, default: '' },
     preload: { type: Boolean, default: false },
@@ -61,7 +45,7 @@
   })
 
   const loadingRef = ref(false);
-  const datagrid = ref([] as flowItem[]);
+  const datagrid = ref([] as Array<UTSJSONObject>);
   const isEnded = ref(false);
   const loadingError = ref('');
   const currentPage = ref(1);
@@ -84,7 +68,7 @@
     }
     loadingRef.value = true
 
-    uni.request<ResponseDataType>({
+    uni.request<UTSJSONObject>({
       url: SERVER_URL,
       data: {
         type: props.type,
@@ -92,14 +76,15 @@
         page_size: PAGE_SIZE
       },
       success: (res) => {
-        const responseData = res.data
+        const responseData = res.data as UTSJSONObject
         if (responseData == null) {
           return
         }
 
-        datagrid.value.push(...responseData.data)
+        const list = responseData.data as Array<UTSJSONObject>
+        datagrid.value.push(...list)
 
-        if (responseData.data.length == 0) {
+        if (list.length == 0) {
           isEnded.value = true
         } else {
           currentPage.value++
