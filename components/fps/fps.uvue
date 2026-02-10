@@ -1,7 +1,6 @@
 <template>
   <view style="position: fixed;right: 10px;top: 10px;z-index: 999;flex-direction: column;align-items: flex-end;pointer-events: none;">
     <text style="font-size: 24px;color: green;">FPS: {{ fps }}</text>
-    <!-- <text style="font-size: 16px;color: red;">Drop: {{ droppedFrameCount }}</text> -->
   </view>
 </template>
 
@@ -17,55 +16,50 @@
 
   let animationId : number = -1
   const fps = ref<number>(0)
-  // const droppedFrameCount = ref<number>(0)
   let frameCount: number = 0
   let fpsUpdateTime: number = 0
   let lastFrameTime: number = 0
-  // let currentDroppedCount: number = 0
   let minFrameTime: number = 0
+  let warmupFrames: number = 0
 
   let calculateFPS = (currentTime : number) => { }
   calculateFPS = (currentTime : number) => {
     if (lastFrameTime > 0) {
-      const interval = currentTime - lastFrameTime
+      const frameDuration = currentTime - lastFrameTime
+      warmupFrames++
 
-      if (minFrameTime == 0) {
-        minFrameTime = interval
-      } else {
-        if (interval < minFrameTime && interval > 5) {
-          minFrameTime = interval
+      if (warmupFrames > 3) {
+        if (minFrameTime == (0 as number)) {
+          minFrameTime = frameDuration
+        } else {
+          if (frameDuration < minFrameTime && frameDuration > 5) {
+            minFrameTime = frameDuration
+          }
         }
       }
-
-      /* if (minFrameTime > 0) {
-        const dropped = Math.round(interval / minFrameTime) - 1
-        if (dropped > 0) {
-          currentDroppedCount += dropped
-        }
-      } */
     }
     lastFrameTime = currentTime
 
-    frameCount++
-    if (fpsUpdateTime === (0 as number)) {
+    if (fpsUpdateTime == (0 as number)) {
       fpsUpdateTime = currentTime
       animationId = requestAnimationFrame(calculateFPS)
       return
     }
+    frameCount++
     const delta = currentTime - fpsUpdateTime
     if (delta >= props.interval) {
       const value = Math.round(frameCount * 1000 / delta)
       fps.value = value
       emit('updateFps', value)
-      /* droppedFrameCount.value = currentDroppedCount
-      currentDroppedCount = 0 */
       frameCount = 0
       fpsUpdateTime = currentTime
     }
     animationId = requestAnimationFrame(calculateFPS)
   }
 
-  animationId = requestAnimationFrame(calculateFPS)
+  onMounted(() => {
+    animationId = requestAnimationFrame(calculateFPS)
+  })
 
   onBeforeUnmount(() => {
     cancelAnimationFrame(animationId)
