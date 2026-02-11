@@ -6,7 +6,7 @@ const isMP = platformInfo.startsWith('mp');
 const PAGE_PATH = '/pages/component/page-container/page-container';
 
 describe('page-container.uvue', () => {
-  const isNotSupported = isWeb || isAndroid || isMP;
+  const isNotSupported = isWeb || isAndroid;
   if (isNotSupported) {
     it('not support', () => {
       expect(1).toBe(1);
@@ -28,7 +28,11 @@ describe('page-container.uvue', () => {
     const containerContent = await page.$('.container-content');
     expect(await containerContent.text()).toBe('容器从 底部 弹出');
 
-    await page.callMethod('navigateBack');
+    if (isMP) {
+      await page.callMethod('closeContainer');
+    } else {
+      await page.callMethod('navigateBack');
+    }
     await page.waitFor(500);
 
     expect(await page.data('data.onAfterLeaveCallCount')).toBe(1);
@@ -36,19 +40,23 @@ describe('page-container.uvue', () => {
     const currentPage = await program.currentPage();
     expect(currentPage.path).toBe(PAGE_PATH.substring(1));
 
-    const leftButton = await page.$('#left-button');
-    await leftButton.tap();
+    const rightButton = await page.$('#right-button');
+    await rightButton.tap();
     await page.waitFor(500);
 
-    const leftContainerContent = await page.$('.container-content');
-    expect(await leftContainerContent.text()).toBe('容器从 左侧 弹出');
+    const rightContainerContent = await page.$('.container-content');
+    expect(await rightContainerContent.text()).toBe('容器从 右侧 弹出');
 
-    await page.callMethod('navigateBack');
+    if (isMP) {
+      await page.callMethod('closeContainer');
+    } else {
+      await page.callMethod('navigateBack');
+    }
     await page.waitFor(500);
 
     expect(await page.data('data.onAfterLeaveCallCount')).toBe(2);
 
-    const leftCurrentPage = await program.currentPage();
-    expect(leftCurrentPage.path).toBe(PAGE_PATH.substring(1));
+    const rightCurrentPage = await program.currentPage();
+    expect(rightCurrentPage.path).toBe(PAGE_PATH.substring(1));
   });
 });
