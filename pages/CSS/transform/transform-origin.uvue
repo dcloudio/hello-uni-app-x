@@ -17,6 +17,16 @@
         <image ref="imageTransformView" class="image-view" @click="changeImageTransform" src="/static/test-image/logo.png"></image>
       </view>
 
+      <view class="scroll-view-container">
+        <text class="uni-title-text">scroll-view 组件 transform-origin ：</text>
+        <text class="uni-subtitle-text">点击下方 scroll-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+        <view class="scroll-view-item">
+          <scroll-view ref="scrollViewTransformView" class="scroll-view-base transform" @click="changeScrollViewTransform">
+            <text>点击 scroll-view 测试 transform-origin</text>
+          </scroll-view>
+        </view>
+      </view>
+
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform-origin </text>
       </view>
@@ -88,6 +98,15 @@
         <enum-data :items="transformOriginEnum" title="transform-origin 枚举值" @change="radioChangeTransformOrigin" :compact="true"></enum-data>
         <input-data :defaultValue="transformOrigin" title="transform-origin 自定义值" type="text" @confirm="inputChangeTransformOrigin"></input-data>
       </view>
+
+      <view class="scroll-view-container">
+        <text class="uni-title-text">native-view 组件 transform-origin ：</text>
+        <text class="uni-subtitle-text">点击下方 native-view 组件，不同 transform-origin 值（60px 60px、100% 0%、10px 10px）对 translate、scale、rotate 变换的影响</text>
+        <view class="scroll-view-item">
+          <native-view ref="nativeViewTransformView" class="scroll-view-base transform" @click="changeNativeViewTransform"></native-view>
+        </view>
+      </view>
+
     </view>
   <!-- #ifdef APP -->
   </scroll-view>
@@ -100,9 +119,13 @@
   const transformView = ref(null as UniElement | null)
   const textTransformView = ref(null as UniElement | null)
   const imageTransformView = ref(null as UniElement | null)
+  const scrollViewTransformView = ref(null as UniElement | null)
+  const nativeViewTransformView = ref(null as UniElement | null)
   const count = ref(0)
   const textCount = ref(0)
   const imageCount = ref(0)
+  const scrollViewCount = ref(0)
+  const nativeViewCount = ref(0)
 
   const changetransform = () => {
     const element = transformView.value
@@ -197,6 +220,76 @@
     }
 
     imageCount.value++
+  }
+
+  const changeScrollViewTransform = () => {
+    const element = scrollViewTransformView.value
+
+    if (scrollViewCount.value == 0) {
+      element?.style.setProperty("transform-origin", "60px 60px")
+      element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
+
+      nextTick(() => {
+        const originActual = element?.style.getPropertyValue("transform-origin")
+        const transformActual = element?.style.getPropertyValue("transform")
+      })
+    }
+    else if (scrollViewCount.value == 1) {
+      element?.style.setProperty("transform-origin", "100% 0%")
+      element?.style.setProperty("transform", "rotate(-20deg)")
+
+      nextTick(() => {
+        const originActual = element?.style.getPropertyValue("transform-origin")
+        const transformActual = element?.style.getPropertyValue("transform")
+      })
+    }
+    else {
+      element?.style.setProperty("transform-origin", "10px 10px")
+      element?.style.setProperty("transform", "scale(1)")
+
+      nextTick(() => {
+        const originActual = element?.style.getPropertyValue("transform-origin")
+        const transformActual = element?.style.getPropertyValue("transform")
+      })
+      scrollViewCount.value = -1
+    }
+
+    scrollViewCount.value++
+  }
+
+  const changeNativeViewTransform = () => {
+    const element = nativeViewTransformView.value
+
+    if (nativeViewCount.value == 0) {
+      element?.style.setProperty("transform-origin", "60px 60px")
+      element?.style.setProperty("transform", "translate(50px, 50px) scale(1.5)")
+
+      nextTick(() => {
+        const originActual = element?.style.getPropertyValue("transform-origin")
+        const transformActual = element?.style.getPropertyValue("transform")
+      })
+    }
+    else if (nativeViewCount.value == 1) {
+      element?.style.setProperty("transform-origin", "100% 0%")
+      element?.style.setProperty("transform", "rotate(-20deg)")
+
+      nextTick(() => {
+        const originActual = element?.style.getPropertyValue("transform-origin")
+        const transformActual = element?.style.getPropertyValue("transform")
+      })
+    }
+    else {
+      element?.style.setProperty("transform-origin", "10px 10px")
+      element?.style.setProperty("transform", "scale(1)")
+
+      nextTick(() => {
+        const originActual = element?.style.getPropertyValue("transform-origin")
+        const transformActual = element?.style.getPropertyValue("transform")
+      })
+      nativeViewCount.value = -1
+    }
+
+    nativeViewCount.value++
   }
 
   const transformOrigin = ref('50% 50%')
@@ -312,6 +405,12 @@
     height: 300px;
   }
 
+  .scroll-view-container {
+    width: 400px;
+    height: 300px;
+    margin-top: 20px;
+  }
+
   .common-text {
     width: 50px;
     height: 50px;
@@ -341,6 +440,36 @@
     width: 100%;
     height: 120px;
     background-color: gray;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .scroll-view-item {
+    position: relative;
+    width: 100%;
+    height:200px;
+    margin: 10px 0;
+  }
+
+  .scroll-view-base {
+    width: 200px;
+    height: 70px;
+    padding: 10px;
+    margin: 20px;
+    font-size: 16px;
+    transform-origin: 10px 10px;
+    background-color: aqua;
+    transform: scale(1);
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    text-align: center;
+    position: relative;
   }
 
 </style>

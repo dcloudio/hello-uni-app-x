@@ -10,11 +10,21 @@ describe("video-format", () => {
   	return
   }
 
-  it("screenshot", async () => {
-    const page = await program.reLaunch('/pages/component/video/video-format');
+  let page
+
+  // 添加辅助函数来简化数据设置
+  async function setPageData(newData) {
+    return await page.setData({ autoTestData: newData });
+  }
+
+  beforeAll(async () => {
+    page = await program.reLaunch('/pages/component/video/video-format');
     await page.waitFor('view');
     await page.waitFor(3000)
-    
+  })
+
+  it("screenshot", async () => {
+    await setPageData({autoTest: true})
     const image = await program.screenshot({ fullPage: true });
     expect(image).toSaveImageSnapshot();
   })

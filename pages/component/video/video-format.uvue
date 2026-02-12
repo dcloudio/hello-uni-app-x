@@ -3,6 +3,8 @@
   <scroll-view class="page-scroll-view">
   <!-- #endif -->
     <page-head title="video-format"></page-head>
+    <!-- 自动化测试图片显示是否正常 -->
+    <image v-if="autoTestData.autoTest" src="/static/logo_square.jpeg" style="width: 50px;height: 50px;"></image>
     <view class="uni-padding-wrap uni-common-mt">
       <view class="uni-title">
         <text class="uni-title-text">支持的视频格式示例</text>
@@ -95,6 +97,7 @@
   ] as Array<VideoFormat>)
 
   // 自动化测试
+  const autoTestData = reactive({ autoTest: false })
   const isError = reactive({ value: false })
 
   const onError = (format : string, e : UniVideoErrorEvent) => {
@@ -109,7 +112,7 @@
     // v?.play()
   })
 
-  defineExpose({ isError })
+  defineExpose({ isError, autoTestData })
 </script>
 
 <style>

@@ -1,5 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
+const isMP = platformInfo.startsWith('mp')
 
 describe('preview-image', () => {
   let page;
@@ -10,7 +11,7 @@ describe('preview-image', () => {
     await page.waitFor(isWeb ? 4000 : 100);
   });
 
-  if (isWeb) {
+  if (isWeb || isMP) {
     it('screenshot', async () => {
       const image = await program.screenshot({
         fullPage: true
@@ -29,9 +30,6 @@ describe('preview-image', () => {
       await page.waitFor(300)
     })
     it('previewImage_number', async () => {
-      // await page.setData({
-      //   currentIndicator: "number"
-      // })
       await page.callMethod('testSetCurrentIndicator','number')
       await page.waitFor(300)
       await page.callMethod('previewImage')
@@ -44,9 +42,6 @@ describe('preview-image', () => {
       await page.waitFor(300)
     })
     it('previewImage_none', async () => {
-      // await page.setData({
-      //   currentIndicator: "none"
-      // })
       await page.callMethod('testSetCurrentIndicator','none')
       await page.waitFor(300)
       await page.callMethod('previewImage')

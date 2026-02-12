@@ -385,7 +385,8 @@ export default {
       if (this.needNotificationProgress) {
         finishNotificationProgress({
           title: '升级包下载失败',
-          content: '请重新检查更新'
+          content: '请重新检查更新',
+					onClick: () => {}
         });
       }
     },
@@ -402,7 +403,8 @@ export default {
 			if (this.needNotificationProgress) {
 				finishNotificationProgress({
 					title: '安装升级包',
-					content: '下载完成'
+					content: '下载完成',
+					onClick: () => {}
 				});
 
 				this.installPackage();

@@ -26,18 +26,19 @@
         <view class="test-item">
           <text class="label">默认样式的组件：</text>
           <child text="默认样式"></child>
+          <text class="section-desc">预期：组件内部有内联style的元素（黄色背景，3px边框），外部class无法覆盖内联style</text>
         </view>
         <view class="test-item">
-          <text class="label">外部添加class覆盖（蓝色）：</text>
-          <child text="外部class覆盖" class="custom-style-blue"></child>
+          <text class="label">外部添加class覆盖（绿色）：</text>
+          <child text="外部class覆盖" class="custom-style-green"></child>
         </view>
         <view class="test-item">
           <text class="label">外部添加style覆盖（绿色）：</text>
           <child text="外部style覆盖" style="background-color: #E8F5E9; border-color: #4CAF50;"></child>
         </view>
         <view class="test-item">
-          <text class="label">外部class和style同时覆盖（蓝色+border-width为5px）：</text>
-          <child text="class+style覆盖" class="custom-style-blue" style="border-width: 5px;"></child>
+          <text class="label">外部class和style同时覆盖（绿色+border-width为5px）：</text>
+          <child text="class+style覆盖" class="custom-style-green" style="border-width: 5px;"></child>
         </view>
       </view>
 
@@ -45,12 +46,34 @@
         <text class="section-title">3. externalClasses配置 </text>
         <text class="section-desc">通过externalClasses暴露特定class（类似微信小程序），允许外部精确控制组件内部样式</text>
         <view class="test-item">
-          <text class="label">默认样式：</text>
-          <child-external text="默认样式：绿色背景红色描边"></child-external>
+          <text class="label">默认样式（橙色）：</text>
+          <child-external text="默认样式：紫色背景和描边"></child-external>
         </view>
         <view class="test-item">
           <text class="label">通过child-class自定义样式（蓝色）：</text>
-          <child-external text="蓝色样式：红色背景绿色描边" child-class="external-class" box-class="custom-box"></child-external>
+          <child-external text="蓝色样式：黄色背景蓝色描边" child-class="external-class" box-class="external-custom-box"></child-external>
+        </view>
+        <view class="test-item">
+          <text class="label">全局样式使用!important覆盖组件样式：</text>
+          <child-external text="全局蓝色样式：黄色背景描边" child-class="global-important-class" box-class="global-important-box"></child-external>
+          <text class="section-desc">预期：全局样式中的!important可以覆盖组件内部样式</text>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">3.5. external-style配置 </text>
+        <text class="section-desc">通过external-style暴露style属性，允许外部通过style字符串控制组件内部样式（不受样式隔离策略影响）</text>
+        <view class="test-item">
+          <text class="label">默认样式（橙色）：</text>
+          <child-external-style text="默认样式：紫色背景和描边"></child-external-style>
+        </view>
+        <view class="test-item">
+          <text class="label">通过box-style自定义外层样式（蓝色）：</text>
+          <child-external-style text="组件根节点：蓝色背景样式" box-style="background-color: #8fd3ff; border-color: #00aaff;"></child-external-style>
+        </view>
+        <view class="test-item">
+          <text class="label">通过inner-box-style自定义内层样式（绿色）：</text>
+          <child-external-style text="组件内层：绿色背景样式" inner-box-style="background-color: #E8F5E9; border-color: #4CAF50;"></child-external-style>
         </view>
       </view>
 
@@ -81,6 +104,16 @@
         <view class="test-item">
           <text class="label">外部添加class覆盖（蓝色）：</text>
           <level class="level-child-class"></level>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">5.5. 父组件不影响子组件 </text>
+        <text class="section-desc">默认策略下，父组件的样式不会影响子组件（子组件样式隔离）</text>
+        <view class="test-item">
+          <text class="label">父组件包含子组件：</text>
+          <parent></parent>
+          <text class="section-desc">预期：父组件有橙色背景，子组件有蓝色背景。父组件中定义的.child-box样式（黄色）不会影响子组件，子组件保持自己的蓝色背景</text>
         </view>
       </view>
 
@@ -118,8 +151,10 @@
 <script setup lang="uts">
   import child from './child.uvue'
   import childExternal from './child-external-classes.uvue'
+  import childExternalStyle from './child-external-style.uvue'
   import childMultiTag from './child-multi-tag.uvue'
   import level from './level.uvue'
+  import parent from './parent.uvue'
   import compIsolated from './comp-isolated.uvue'
   import compApp from './comp-app.uvue'
   import compAppAndPage from './comp-app-and-page.uvue'
@@ -148,7 +183,7 @@
 
   .section-desc {
     font-size: 13px;
-    color: #666;
+    color: #999;
     margin: 10px;
   }
 
@@ -166,20 +201,20 @@
   }
 
   /* 外部覆盖样式 - 用于测试单根节点组件 */
-  .custom-style-blue {
-    background-color: #8fd3ff !important;
-    border-color: #00aaff !important;
+  .custom-style-green {
+    background-color: #cbf1db !important;
+    border-color: #8bc399 !important;
   }
 
   /* externalClasses自定义样式 */
   .external-class {
-    background-color: #8fd3ff !important;
+    background-color: #9ad6fa !important;
     border-color: #00aaff !important;
   }
 
-  .custom-box {
-    background-color: red !important;
-    border: green solid 2px !important;
+  .external-custom-box {
+    background-color: yellow !important;
+    border: blue solid 2px !important;
   }
 
   /* 多根节点组件外部class样式 */

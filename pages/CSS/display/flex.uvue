@@ -2,15 +2,31 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
-    <view class="page" style="flex:1">
+    <view>
       <view class="head">
         <text class="tip">下面有一个灰色区域，display默认值为flex</text>
         <text class="tip">当前display值：{{display}}</text>
       </view>
       <view class="content" :style="{display:display}">
         <text style="background-color: aquamarine;">展示display区域</text>
+        <scroll-view>
+          <text class="common-text" style="height: 20px;">scroll-view</text>
+        </scroll-view>
+        <text class="common-text" style="height: 20px;">下方有个native-view</text>
+        <native-view style="width: 20px;height: 20px;background-color: cyan;"></native-view>
       </view>
       <button @tap="switchDisplay" class="uni-common-mb">切换display属性</button>
+
+      <text class="uni-title-text uni-common-mt">scroll-view 组件</text>
+      <text class="uni-subtitle-text">display: flex 和 display: none</text>
+      <view class="demo-box">
+        <scroll-view class="common-view" style="display: flex;">
+          <text class="common-text">display: flex</text>
+        </scroll-view>
+        <scroll-view class="common-view" style="display: none;">
+          <text class="common-text">display: none</text>
+        </scroll-view>
+      </view>
 
       <view class="uni-common-mt">
         <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 display </text>
@@ -55,6 +71,14 @@
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="displayEnum" title="display 枚举值" @change="radioChangeDisplay" :compact="true"></enum-data>
         <input-data :defaultValue="displayProp" title="display 自定义值" type="text" @confirm="inputChangeDisplay"></input-data>
+      </view>
+
+      <view class="uni-common-mb">
+        <text>native-view组件: display: flex 和 display: none</text>
+        <view class="demo-box">
+          <native-view class="common-view" style="display: flex;width:100px;"></native-view>
+          <native-view class="common-view" style="display: none;width:100px;"></native-view>
+        </view>
       </view>
     </view>
   <!-- #ifdef APP -->
@@ -165,7 +189,6 @@
     background-color: gray;
   }
 
-
   .common-view {
     height: 50px;
     background-color: green;
@@ -182,5 +205,11 @@
     width: 50px;
     height: 50px;
     background-color: green;
+  }
+
+  .demo-box {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
   }
 </style>

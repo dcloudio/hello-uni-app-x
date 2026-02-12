@@ -104,6 +104,48 @@ describe('nodes-info', () => {
       expect(pageData.nodeResultContainNode).toBe(true)
     })
   }
+
+  // 测试 text 组件查询
+  it('get-text-node-info', async () => {
+    await page.callMethod('getTextNodeInfo')
+    await page.waitFor(100)
+    const textNodeInfo = await page.data('data.textNodeInfo')
+    expect(textNodeInfo).not.toBe(null)
+    expect(textNodeInfo.left).toBeCloseTo(15, 0);
+    expect(Math.round(textNodeInfo.right) > 300).toBe(true)
+    expect(Math.round(textNodeInfo.top) > 200).toBe(true)
+    expect(Math.round(textNodeInfo.bottom) > 200).toBe(true)
+    expect(Math.round(textNodeInfo.width) > 300).toBe(true)
+    expect(Math.round(textNodeInfo.height) > 30).toBe(true)
+  })
+
+  // 测试 image 组件查询
+  it('get-image-node-info', async () => {
+    await page.callMethod('getImageNodeInfo')
+    await page.waitFor(100)
+    const imageNodeInfo = await page.data('data.imageNodeInfo')
+    expect(imageNodeInfo).not.toBe(null)
+    expect(imageNodeInfo.left).toBeCloseTo(15, 0);
+    expect(imageNodeInfo.right).toBeCloseTo(115, 0);
+    expect(Math.round(imageNodeInfo.top) > 380).toBe(true)
+    expect(Math.round(imageNodeInfo.bottom) > 480).toBe(true)
+    expect(imageNodeInfo.width).toBe(100)
+    expect(imageNodeInfo.height).toBe(100)
+  })
+
+  // 测试 scroll-view 组件查询
+  it('get-scroll-view-node-info', async () => {
+    await page.callMethod('getScrollViewNodeInfo')
+    await page.waitFor(100)
+    const scrollViewNodeInfo = await page.data('data.scrollViewNodeInfo')
+    expect(scrollViewNodeInfo).not.toBe(null)
+    expect(scrollViewNodeInfo.left).toBeCloseTo(15, 0);
+    expect(scrollViewNodeInfo.right).toBeCloseTo(315, 0);
+    expect(Math.round(scrollViewNodeInfo.top) > 560).toBe(true)
+    expect(Math.round(scrollViewNodeInfo.bottom) > 660).toBe(true)
+    expect(scrollViewNodeInfo.width).toBe(300)
+    expect(scrollViewNodeInfo.height).toBe(100)
+  })
 })
 
 async function getRootNode(selector) {

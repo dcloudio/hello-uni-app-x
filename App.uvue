@@ -39,9 +39,14 @@
       uni.getPrivacySetting({
         success(res1){
             if(res1.needAuthorization){
-              uni.openDialogPage({
-                url: '/pages/component/button/privacy',
-              })
+              // #ifdef VUE3-VAPOR
+              setTimeout(() => {
+                uni.openDialogPage({ url: '/pages/component/button/privacy' })
+              }, 500)
+              // #endif
+              // #ifndef VUE3-VAPOR
+              uni.openDialogPage({ url: '/pages/component/button/privacy' })
+              // #endif
             }
         }
       })
@@ -207,4 +212,16 @@
   	border-radius: 8px;
   	border: 2px solid #007AFF;
   }
+
+  /* 全局样式使用!important覆盖组件样式 */
+  .global-important-class {
+    background-color: #c6deff !important;
+    border-color: #3d7cf5 !important;
+  }
+
+  .global-important-box {
+    background-color: #fff6c2 !important;
+    border: #fcdf02 solid 3px !important;
+  }
+
 </style>

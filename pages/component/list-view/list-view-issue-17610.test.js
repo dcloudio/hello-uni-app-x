@@ -2,9 +2,14 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isHarmony = platformInfo.startsWith('harmony')
 
 describe('list-view-issue-17610', () => {
-  if (isDom2 || isMP || isAppWebView) {
+  /**
+   * 蒸汽模式不支持sticky-header，未来也不会支持sticky-header和list-view在不同文件内的用法。
+   * Harmony非蒸汽模式sticky-header只能放在sticky-section下
+   */
+  if (isDom2 || isMP || isAppWebView || isHarmony) {
     it('not support or not need', async () => {
       expect(1).toBe(1)
     })
