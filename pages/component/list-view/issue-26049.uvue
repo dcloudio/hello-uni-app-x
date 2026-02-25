@@ -1,14 +1,20 @@
 <template>
   <list-view>
-    <list-item v-for="item in 2" class="item"
-      :style="{transform: `translateY(${ item % 2 === 0 ? -50 : 50 }px)`, zIndex: item % 2 === 0 ? 0 : 10, backgroundColor: item % 2 === 0 ? 'red' : 'green' }">
+    <list-item v-for="item in 2" :key="item" class="item" :style="getItemStyle(item)">
       {{item}}
     </list-item>
   </list-view>
 </template>
 
 <script setup lang="uts">
-  const title = ref('Hello')
+  const getItemStyle = (item: number) => {
+    const isEven = item % 2 === 0
+    return {
+      transform: `translateY(${isEven ? -50 : 50}px)`,
+      zIndex: isEven ? 0 : 10,
+      backgroundColor: isEven ? 'red' : 'green'
+    }
+  }
 </script>
 
 <style>
