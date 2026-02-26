@@ -312,7 +312,8 @@ describe('dialog page', () => {
       await page.waitFor(2000)
     }
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    expect(lifecycleNum).toBe(4)
+    // onload + 2 onReady +1 onShow 不应触发，因为 dialogPage 未在当前页打开
+    expect(lifecycleNum).toBe(3)
     await page.callMethod('setLifeCycleNum', 0)
   })
 
@@ -323,8 +324,8 @@ describe('dialog page', () => {
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
     lifecycleNum = await page.callMethod('getLifeCycleNum')
-    // dialogPage2 onBackPress +1 dialogPage1 show +1 dialogPage unload -5*2 firstPage show +10
-    expect(lifecycleNum).toBe(2)
+    // dialogPage2 onBackPress +1 dialogPage1 show +1 dialogPage unload -5*2 firstPage show +10 firstPage 中的 dialog1 show + 1
+    expect(lifecycleNum).toBe(3)
     await page.callMethod('setLifeCycleNum', 0)
   })
 
