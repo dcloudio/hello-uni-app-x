@@ -1,7 +1,8 @@
 <template>
   <view class="uni-collapse-item" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <view class="uni-collapse-item__title" @click="openCollapse(!is_open)">
-      <text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
+      <text class="uni-collapse-item__title-text"
+        :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
       <view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
     </view>
     <view ref="boxRef" class="uni-collapse-item__content" :class="{'box-open--active':is_open}">
@@ -13,14 +14,16 @@
 </template>
 
 <script lang="uts" setup>
-  import { ItemChildType } from '../uni-collapse/item.type.uts'
+  import type { ItemChildType } from '../type.uts'
   import { state } from '@/store/index.uts'
-  const isDarkMode = computed((): boolean => {
+  import { UNI_COLLAPSE_REGISTER_CHILD, UNI_COLLAPSE_CHILD_TOGGLE } from '../common.uts'
+
+  const isDarkMode = computed(() : boolean => {
     return state.isDarkMode
   })
 
   defineOptions({
-    name: "UniCollapseItem",
+    name: 'UniCollapseItem',
     styleIsolation: 'app'
   })
 
@@ -41,8 +44,8 @@
   // 组件唯一ID
   const elId = ref(`uni_collapse_item_${Math.ceil(Math.random() * 10e5).toString(36)}`)
 
-  const registerChild = inject<((child : ItemChildType) => string) | null>('uni-collapse-register-child', null)
-  const collapseToggle = inject<((elId : string) => string) | null>('k-collapse-child-toggle', null)
+  const registerChild = inject<((child : ItemChildType) => string) | null>(UNI_COLLAPSE_REGISTER_CHILD, null)
+  const collapseToggle = inject<((elId : string) => string) | null>(UNI_COLLAPSE_CHILD_TOGGLE, null)
 
   function openOrClose(open : boolean) {
     setTimeout(() => {
@@ -109,7 +112,7 @@
     flex-direction: row;
     align-items: center;
     padding: 12px 18px;
-    background-color: var(--list-background-color,#ffffff);
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .down_arrow {
