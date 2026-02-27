@@ -52,7 +52,7 @@ describe('rich-text-test-cases', () => {
         const image = await program.screenshot({ fullPage: true })
         expect(image).toSaveImageSnapshot({
           customSnapshotIdentifier() {
-            return `rich-text-test-cases/${caseId}`
+            return `rich-text-test-cases-${caseId}`
           }
         })
 
@@ -66,7 +66,7 @@ describe('rich-text-test-cases', () => {
 
     console.log(`\n=== Test Summary ===`)
     console.log(`Total: ${caseIds.length}, Success: ${successCount}, Failed: ${failCount}`)
-    
+
     // 允许少量失败（如网络图片加载失败等）
     expect(failCount).toBeLessThan(caseIds.length * 0.1)
   }, 600000) // 单个测试10分钟超时
