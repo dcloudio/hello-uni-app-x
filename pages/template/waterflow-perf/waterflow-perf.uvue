@@ -6,7 +6,7 @@
 		<view class="header">
 			<text class="header-info">{{ listData.length }}项 | 瀑布流动态列数 | 圆角边框阴影</text>
 		</view>
-		<waterflow class="waterflow-container" :max-cross-axis-extent="200" :main-axis-gap="4" :cross-axis-gap="4">
+		<waterflow class="waterflow-container" :max-cross-axis-extent="200" :main-axis-gap="4" :cross-axis-gap="4" @scrolltolower="onScrollToLower">
 			<flow-item v-for="(item, index) in listData" :key="item.id" class="flow-item" :type="item.type">
 
 				<!-- ========== Type 1: 单图配文 ========== -->
@@ -71,6 +71,9 @@
 				</view>
 
 			</flow-item>
+      <flow-item slot="load-more">
+        <text style="line-height: 50px; text-align: center; font-size: 12px; color: #999999;">{{ hasMore ? '加载中...' : '没有更多' }}</text>
+      </flow-item>
 		</waterflow>
 	</view>
 </template>
@@ -78,12 +81,32 @@
 <script setup lang="uts">
 import { generateMockList, type ListItemData } from './mock-data.uts'
 
+const fullData = generateMockList().slice(0, 100) // 模拟总共100条数据
+const pageSize = 20
+function getPageData(pageIndex: number): ListItemData[] {
+  const start = pageIndex * pageSize
+  return fullData.slice(start, start + pageSize)
+}
 // 使用预生成的数据
 const listData = ref<ListItemData[]>([])
-
+const hasMore = ref(true)
+let cucurrentPage = 0
 onMounted(() => {
-	listData.value = generateMockList()
+	listData.value = getPageData(cucurrentPage)
 })
+
+function onScrollToLower() {
+  // 模拟加载更多数据
+  setTimeout(() => {
+    cucurrentPage++
+    const newData = getPageData(cucurrentPage)
+    if (newData.length > 0) {
+      listData.value = listData.value.concat(newData)
+    } else {
+      hasMore.value = false
+    }
+  }, 1000)
+}
 
 function onTitleClick(index: number) {
 	uni.showToast({
