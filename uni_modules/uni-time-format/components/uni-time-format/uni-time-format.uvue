@@ -27,9 +27,25 @@
   function getRelativeTime(timestamp : number) : string {
     const now = Date.now()
     const diff = now - timestamp
+    // 处理未来时间戳：按时间粒度分级展示
     if (diff < 0) {
-      return '即将'
+      const absDiff = -diff
+      const futureSeconds = Math.floor(absDiff / 1000)
+      const futureMinutes = Math.floor(futureSeconds / 60)
+      const futureHours = Math.floor(futureMinutes / 60)
+      const futureDays = Math.floor(futureHours / 24)
+
+      if (futureDays > 0) {
+        return `${futureDays}天后`
+      } else if (futureHours > 0) {
+        return `${futureHours}小时后`
+      } else if (futureMinutes > 0) {
+        return `${futureMinutes}分钟后`
+      } else {
+        return '即将'
+      }
     }
+
 
     const seconds = Math.floor(diff / 1000)
     const minutes = Math.floor(seconds / 60)
