@@ -24,43 +24,32 @@
     return num < 10 ? '0' + num.toString() : num.toString()
   }
 
-  function getRelativeTime(timestamp : number) : string {
-    const now = Date.now()
-    const diff = now - timestamp
-    // 处理未来时间戳：按时间粒度分级展示
-    if (diff < 0) {
-      const absDiff = -diff
-      const futureSeconds = Math.floor(absDiff / 1000)
-      const futureMinutes = Math.floor(futureSeconds / 60)
-      const futureHours = Math.floor(futureMinutes / 60)
-      const futureDays = Math.floor(futureHours / 24)
-
-      if (futureDays > 0) {
-        return `${futureDays}天后`
-      } else if (futureHours > 0) {
-        return `${futureHours}小时后`
-      } else if (futureMinutes > 0) {
-        return `${futureMinutes}分钟后`
-      } else {
-        return '即将'
-      }
-    }
-
-
-    const seconds = Math.floor(diff / 1000)
+  function decomposeDiff(absDiff : number) : { days : number; hours : number; minutes : number; seconds : number } {
+    const seconds = Math.floor(absDiff / 1000)
     const minutes = Math.floor(seconds / 60)
     const hours = Math.floor(minutes / 60)
     const days = Math.floor(hours / 24)
+    return { days, hours, minutes, seconds }
+  }
 
-    if (days > 0) {
-      return `${days}天前`
-    } else if (hours > 0) {
-      return `${hours}小时前`
-    } else if (minutes > 0) {
-      return `${minutes}分钟前`
-    } else {
-      return '刚刚'
+
+  function getRelativeTime(timestamp : number) : string {
+    const now = Date.now()
+    const diff = now - timestamp
+
+    if (diff < 0) {
+      const { days, hours, minutes } = decomposeDiff(-diff)
+      if (days > 0) return `${days}天后`
+      if (hours > 0) return `${hours}小时后`
+      if (minutes > 0) return `${minutes}分钟后`
+      return '即将'
     }
+
+    const { days, hours, minutes } = decomposeDiff(diff)
+    if (days > 0) return `${days}天前`
+    if (hours > 0) return `${hours}小时前`
+    if (minutes > 0) return `${minutes}分钟前`
+    return '刚刚'
   }
 
   // 格式化时间
