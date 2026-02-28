@@ -69,38 +69,6 @@
         </view>
       </view>
 
-      <!-- 拍平版本 -->
-      <view class="test-container">
-        <view class="test-item">
-          <text class="uni-subtitle-text">view 组件拍平</text>
-          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
-          <text class="uni-info">获取值: {{data.visibilityActualFlat}}</text>
-          <view class="test-box">
-            <view ref="viewRefFlat" class="common-dynamic test-view-flatten" :style="{ visibility: data.visibilityValue }" flatten>
-              <text>view</text>
-            </view>
-          </view>
-        </view>
-
-        <view class="test-item">
-          <text class="uni-subtitle-text">text 组件拍平</text>
-          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
-          <text class="uni-info">获取值: {{data.visibilityActualTextFlat}}</text>
-          <view class="test-box">
-            <text ref="textRefFlat" class="common-dynamic test-text-flatten" :style="{ visibility: data.visibilityValue }" flatten>text</text>
-          </view>
-        </view>
-
-        <view class="test-item">
-          <text class="uni-subtitle-text">image 组件拍平</text>
-          <text class="uni-info">设置值: {{data.visibilityValue}}</text>
-          <text class="uni-info">获取值: {{data.visibilityActualImageFlat}}</text>
-          <view class="test-box">
-            <image ref="imageRefFlat" class="common-dynamic test-image-flatten" :style="{ visibility: data.visibilityValue }" flatten src="/static/test-image/logo.png"></image>
-          </view>
-        </view>
-      </view>
-
       <view class="uni-common-mt uni-common-mb">
         <text class="uni-tips">第一个枚举值，'' (空字符串) - 空值情况</text>
         <enum-data :items="visibilityEnum" title="visibility 枚举值" @change="radioChangeVisibility" :compact="true"></enum-data>
@@ -135,10 +103,7 @@
     visibilityValue: 'visible',
     visibilityActual: '',
     visibilityActualText: '',
-    visibilityActualImage: '',
-    visibilityActualFlat: '',
-    visibilityActualTextFlat: '',
-    visibilityActualImageFlat: ''
+    visibilityActualImage: ''
   })
 
   const changeVisibility = () => {
@@ -159,27 +124,18 @@
   const viewRef = ref(null as UniElement | null)
   const textRef = ref(null as UniTextElement | null)
   const imageRef = ref(null as UniImageElement | null)
-  const viewRefFlat = ref(null as UniElement | null)
-  const textRefFlat = ref(null as UniTextElement | null)
-  const imageRefFlat = ref(null as UniImageElement | null)
 
   const getPropertyValues = () => {
     data.visibilityActual = viewRef.value?.style.getPropertyValue('visibility') ?? ''
-    data.visibilityActualFlat = viewRefFlat.value?.style.getPropertyValue('visibility') ?? ''
     data.visibilityActualText = textRef.value?.style.getPropertyValue('visibility') ?? ''
-    data.visibilityActualTextFlat = textRefFlat.value?.style.getPropertyValue('visibility') ?? ''
     data.visibilityActualImage = imageRef.value?.style.getPropertyValue('visibility') ?? ''
-    data.visibilityActualImageFlat = imageRefFlat.value?.style.getPropertyValue('visibility') ?? ''
   }
 
   const changeVisibilityProperty = (value: string) => {
     data.visibilityValue = value
     viewRef.value?.style.setProperty('visibility', value)
-    viewRefFlat.value?.style.setProperty('visibility', value)
     textRef.value?.style.setProperty('visibility', value)
-    textRefFlat.value?.style.setProperty('visibility', value)
     imageRef.value?.style.setProperty('visibility', value)
-    imageRefFlat.value?.style.setProperty('visibility', value)
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
