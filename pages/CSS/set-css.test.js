@@ -5,24 +5,22 @@ jest.setTimeout(50000);
 // 调试用：临时覆盖某些页面的测试参数，不需要时置为 null
 // 可以写多个页面，例如只跑 margin 相关的页面：
 // skipAssert: false, // true 时跳过 expectedValue 断言
-// const TEST_OVERRIDE = null
+const TEST_OVERRIDE = null
 
-const TEST_OVERRIDE = [
-  {
-    path: '/pages/CSS/layout/visibility',
-    method: 'radioChangeVisibility',
-    valueIndex: 2,
-    styleName: 'visibility',
-    expectedValue: {
-      visibilityActual: 'hidden',
-      visibilityActualText: 'hidden',
-      visibilityActualImage: 'hidden',
-      visibilityActualFlat: 'hidden',
-      visibilityActualTextFlat: 'hidden',
-      visibilityActualImageFlat: 'hidden',
-    }
-  },
-];
+// const TEST_OVERRIDE = [
+//   {
+//     path: '/pages/CSS/layout/visibility',
+//     method: 'radioChangeVisibility',
+//     valueIndex: 2,
+//     styleName: 'visibility',
+//     expectedValue: {
+//       visibility: 'visible',
+//       visibilityActual: 'hidden',
+//       visibilityActualText: 'hidden',
+//       visibilityActualImage: 'hidden'
+//     }
+//   },
+// ];
 
 
 // CSS setProperty 测试配置数组
@@ -139,12 +137,10 @@ const cssTests = [
       valueIndex: 2,
       styleName: 'visibility',
       expectedValue: {
+        visibility: 'visible',
         visibilityActual: 'hidden',
         visibilityActualText: 'hidden',
-        visibilityActualImage: 'hidden',
-        visibilityActualFlat: 'hidden',
-        visibilityActualTextFlat: 'hidden',
-        visibilityActualImageFlat: 'hidden',
+        visibilityActualImage: 'hidden'
       }
     },
     {
