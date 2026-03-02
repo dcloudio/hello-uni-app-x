@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" id="container">
     <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
       <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
         :style="{ backgroundColor: item.bgColor, transform: 'translateY(' + itemMetas[index].translateY + 'px)', zIndex: itemMetas[index].zIndex }"
@@ -201,24 +201,22 @@
     }
   }
 
+  let containerTop = 0
   // #ifdef WEB
-  // Web 平台安全区域高度
-  let safeAreaTop = 44
+  // swipe-menu未使用fixed定位，而是相对于父元素（container）定位。按照现有布局仅web平台需要额外计算。如果后续调整布局，也需要同步的调整此处逻辑
   onMounted(() => {
     // 获取 安全区高度
-    safeAreaTop = uni.getWindowInfo().safeAreaInsets.top
-    if (safeAreaTop == 0) { safeAreaTop = 44 }
+    const containerEle = uni.getElementById('container')
+    const containerRect = containerEle?.getBoundingClientRect()
+    if(containerRect != null) {
+      containerTop = containerRect.top
+    }
   })
   // #endif
 
   // 计算菜单的 transform
   const menuTransform = computed(() : string => {
-    // #ifdef WEB
-    return `translateY(${menuTop.value - safeAreaTop}px)`
-    // #endif
-    // #ifndef WEB
     return `translateY(${menuTop.value}px)`
-    // #endif
   })
 
   // 查找列表项元素（兼容 APP 和 WEB）
@@ -263,7 +261,7 @@
     // 获取列表项的位置
     const rect = currentListItemElement!.getBoundingClientRect()
     const item = items.value[currentIndex]
-    menuTop.value = rect.top
+    menuTop.value = rect.top - containerTop
     menuHeight.value = item.height
   }
 
