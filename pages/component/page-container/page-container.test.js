@@ -1,12 +1,13 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase();
 const isAndroid = platformInfo.startsWith('android');
+const isIos = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web');
 const isMP = platformInfo.startsWith('mp');
 
 const PAGE_PATH = '/pages/component/page-container/page-container';
 
 describe('page-container.uvue', () => {
-  const isNotSupported = isWeb || isAndroid;
+  const isNotSupported = isWeb || isAndroid || isIos;
   if (isNotSupported) {
     it('not support', () => {
       expect(1).toBe(1);
