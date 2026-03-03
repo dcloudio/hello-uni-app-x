@@ -12,6 +12,11 @@ describe('style-isolation', () => {
     await page.waitFor('view')
   })
 
+  it('screenshot', async () => {
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  });
+
   it('测试组件的根节点为二级组件时 样式传递', async () => {
     const levelEl = await page.$('.level-child-class')
 		const levelElStyle = await levelEl.style('background-color')
