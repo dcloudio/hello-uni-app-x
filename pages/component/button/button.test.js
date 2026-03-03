@@ -187,9 +187,11 @@ describe('Buttonstatus.uvue', () => {
     expect(await btn.attribute('loading-class')).toContain('custom-loading')
   })
 
-  test('disabled', async () => {
+  test('change-disabled-screenshot', async () => {
     const changeDisabledButton = await page.$('#changeDisabledButton')
     await changeDisabledButton.tap()
+
+    await page.waitFor(100);
 
     const image = await program.screenshot({
       fullPage: true,
