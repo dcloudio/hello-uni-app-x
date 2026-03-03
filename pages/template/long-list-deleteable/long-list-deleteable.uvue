@@ -633,6 +633,24 @@
     // 开始动画
     scheduleNextAnimationFrame()
   }
+
+  type DataType = {
+    listTop: number
+    listWidth: number
+  }
+  const data = reactive({
+    listTop: 0,
+    listWidth: 0
+  })
+  function jest_getListRect() {
+    const listRect = listRef.value!.getBoundingClientRect()
+    data.listTop = listRect.top
+    data.listWidth = listRect.width
+  }
+  defineExpose({
+    jest_getListRect,
+    data
+  })
 </script>
 
 <style>
