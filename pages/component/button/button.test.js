@@ -172,7 +172,9 @@ describe('Buttonstatus.uvue', () => {
     const image = await program.screenshot({
       fullPage: true,
     });
-    expect(image).toSaveImageSnapshot();
+    expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'buttonstatus-newline'
+    }});
   })
 
   test('loading-class', async () => {
@@ -183,5 +185,17 @@ describe('Buttonstatus.uvue', () => {
     
     const btn = await page.$('.loading-class')
     expect(await btn.attribute('loading-class')).toContain('custom-loading')
+  })
+
+  test('disabled', async () => {
+    const changeDisabledButton = await page.$('#changeDisabledButton')
+    await changeDisabledButton.tap()
+
+    const image = await program.screenshot({
+      fullPage: true,
+    });
+    expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
+      return 'buttonstatus-disabled'
+    }});
   })
 })
