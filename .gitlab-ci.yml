@@ -2,6 +2,7 @@ image: node:22
 
 stages:
   - review
+  - uni_autotest
 
 variables:
   GITLAB_TOKEN: $GITLAB_ACCESS_TOKEN
@@ -22,3 +23,22 @@ code_review:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH != "main" && $CI_COMMIT_BRANCH != "master"
+
+uni_autotest:
+  stage: uni_autotest
+  only:
+    - dev
+  script:
+    - |
+      echo "Sending webhook to $UNI_AUTOTEST_API_URL..."
+      curl -sS -X POST "$UNI_AUTOTEST_API_URL" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"repo\": \"$CI_PROJECT_PATH\",
+          \"project_id\": \"$CI_PROJECT_ID\",
+          \"project_name\": \"$CI_PROJECT_NAME\",
+          \"branch\": \"$CI_COMMIT_BRANCH\",
+          \"commit_sha\": \"$CI_COMMIT_SHA\",
+          \"commit_url\": \"$CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA\",
+          \"pipeline_id\": \"$CI_PIPELINE_ID\"
+        }"
