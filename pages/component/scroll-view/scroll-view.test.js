@@ -96,7 +96,8 @@ describe('component-native-scroll-view', () => {
   if(!isMP) {
     it('通过UniElement.scrollBy检测scroll事件是否触发',async()=>{
       await page.callMethod('setVerticalScrollBy', 120)
-      await page.waitFor(600)
+      // Harmony 平台动画为1000毫秒 所以600毫秒可能未滚动到指定区域
+      await page.waitFor(1000)
       const scrollDetail = await page.data('data.scrollDetailTest')
       expect(scrollDetail.scrollTop).toBeGreaterThan(119)
     })
