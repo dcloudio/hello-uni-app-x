@@ -31,6 +31,8 @@ uni_autotest:
   script:
     - |
       echo "Sending webhook to $UNI_AUTOTEST_API_URL..."
+      COMMIT_MESSAGE_ESCAPED=$(printf '%s' "$CI_COMMIT_MESSAGE" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n' | sed 's/\\n$//')
+      COMMIT_AUTHOR_ESCAPED=$(printf '%s' "$CI_COMMIT_AUTHOR" | sed 's/\\/\\\\/g; s/"/\\"/g')
       curl -sS -X POST "$UNI_AUTOTEST_API_URL" \
         -H "Content-Type: application/json" \
         -d "{
@@ -40,8 +42,8 @@ uni_autotest:
           \"branch\": \"$CI_COMMIT_BRANCH\",
           \"commit_sha\": \"$CI_COMMIT_SHA\",
           \"commit_url\": \"$CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA\",
-          \"commit_author\": \"$CI_COMMIT_AUTHOR\",
+          \"commit_author\": \"$COMMIT_AUTHOR_ESCAPED\",
           \"commit_timestamp\": \"$CI_COMMIT_TIMESTAMP\",
-          \"commit_message\": \"$CI_COMMIT_MESSAGE\",
+          \"commit_message\": \"$COMMIT_MESSAGE_ESCAPED\",
           \"pipeline_id\": \"$CI_PIPELINE_ID\"
         }"
