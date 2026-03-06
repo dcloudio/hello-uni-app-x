@@ -103,8 +103,18 @@
 </template>
 
 <script setup lang="uts">
-  let mainView: UniElement | null = null
-  let animation: UniAnimation | null = null
+  let mainView : UniElement | null = null
+  let animation : UniAnimation | null = null
+
+  type Data = {
+    testTriggerFinishEvent : boolean,
+    testTriggerCancelEvent : boolean
+  }
+
+  const data = {
+    testTriggerFinishEvent: false,
+    testTriggerCancelEvent: false
+  } as Data
 
   function startAnimate() {
     animation = mainView!.animate([
@@ -125,11 +135,13 @@
 
     })
     animation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
+      data.testTriggerCancelEvent = true
       uni.showToast({
         title: "动画被取消了"
       })
     }
     animation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
+      data.testTriggerFinishEvent = true
       uni.showToast({
         title: "动画播放完成"
       })
@@ -150,7 +162,7 @@
 
   function widthProperty(e : UniPointerEvent) {
     e.currentTarget?.animate({
-      width: ["100px", "200px", "100px"]
+      width: ["100px", "200px", "150px"]
     }, {
       duration: 1000,
       fill: "forwards"
@@ -177,7 +189,7 @@
 
   function paddingProperty(e : UniPointerEvent) {
     e.currentTarget?.animate({
-      padding: ["0px", "16px", "32px", "0px"]
+      padding: ["0px", "16px", "32px", "16px"]
     }, {
       duration: 1000,
       fill: "forwards"
@@ -241,7 +253,7 @@
 
   function positionProperty(e : UniPointerEvent) {
     e.currentTarget?.animate({
-      left: ["0px", "16px", "32px", "0px"]
+      left: ["0px", "16px", "32px", "16px"]
     }, {
       duration: 1000,
       fill: "forwards"
@@ -336,7 +348,7 @@
     })
   }
 
-  function opacityProperty(e : UniPointerEvent){
+  function opacityProperty(e : UniPointerEvent) {
     e.currentTarget?.animate([
       {
         offset: 0.3,
@@ -347,7 +359,7 @@
         opacity: "0.1"
       },
       {
-        opacity: "1"
+        opacity: "0.5"
       }
     ], {
       duration: 1000,
@@ -369,6 +381,12 @@
         iterations: Infinity,
       },
     )
+  })
+
+  defineExpose({
+    data,
+    startAnimate,
+    cancelAnimate
   })
 </script>
 
