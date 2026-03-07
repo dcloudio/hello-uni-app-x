@@ -41,7 +41,8 @@
 
 <script setup lang="uts">
   // #ifdef VUE3-VAPOR && APP || WEB
-  import { generateMockList } from '../template/long-list-perf/mock-data'
+  import { generateMockList as generateListViewMockList } from '../template/long-list-perf/mock-data'
+  import { generateMockList as generateWaterflowMockList } from '../template/waterflow-perf/mock-data'
   // #endif
   defineOptions({
     styleIsolation: 'app'
@@ -97,6 +98,13 @@
       open: false,
       pages: [] as Page[],
     },
+    {
+      id: 'waterflow-perf',
+      url: 'waterflow-perf',
+      name: 'waterflow滚动加载长列表',
+      open: false,
+      pages: [] as Page[],
+    },
     // #endif
     {
       id: 'long-list',
@@ -116,8 +124,6 @@
           name: '顶部banner长列表（嵌套滚动）',
           url: 'long-list-nested'
         },
-        // #endif
-        // #ifdef APP-IOS || APP-ANDROID
         {
           name: '顶部banner瀑布流长列表（嵌套滚动）',
           url: 'long-waterflow-nested'
@@ -136,7 +142,7 @@
       open: false,
       pages: [] as Page[],
     },
-    // #ifdef VUE3-VAPOR && APP || WEB
+    // #ifdef APP || WEB
     {
       id: 'long-list-deleteable',
       url: 'long-list-deleteable',
@@ -394,7 +400,8 @@
   onMounted(() => {
     // #ifdef VUE3-VAPOR && APP || WEB
     // 预加载长列表数据
-    generateMockList()
+    generateListViewMockList()
+    generateWaterflowMockList()
     // #endif
     // 预请求网络，只发送head请求，预先完成dns解析和tcp握手，提升后续请求速度
     uni.request({

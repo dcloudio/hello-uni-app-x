@@ -2,12 +2,14 @@ jest.setTimeout(60000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
-// const HOME_PAGE_PATH = 
 const HOME_PAGE_PATH = isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 
@@ -176,6 +178,14 @@ describe('getCurrentPages', () => {
     it('getAndroidActivity', async () => {
       const res = await page.callMethod('checkGetAndroidActivity')
       expect(res).toBe(true)
+    })
+  }
+
+  if(isApp) {
+    it('takeSnapshot', async () => {
+      await page.callMethod('checkTakeSnapshot')
+      await page.waitFor(2000)
+      expect(await page.data('data.checkSnapshotResult')).toBe(true)
     })
   }
 })
