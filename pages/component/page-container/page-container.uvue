@@ -146,17 +146,24 @@
           </view>
       </page-container>
 
+      <!-- 跟随元素对齐的弹层 -->
       <page-container <!-- #ifdef MP -->
           v-if="showAlignContainer"
           <!-- #endif -->
-          :show="showAlignContainer" position="center" :custom-style="alignContainerStyle"
+          :show="showAlignContainer" position="center" :custom-style="alignContainerStyle" overlay-style="background-color: rgba(0, 0, 0, 0.1);"
           @clickoverlay="closeAlignContainer">
           <view class="align-shell">
               <view class="align-arrow" :style="alignArrowStyle"></view>
               <view class="align-container">
-                  <text class="container-title">{{ alignContainerTitle }}</text>
-                  <text class="container-content">{{ alignContainerContent }}</text>
-                  <button @click="closeAlignContainer" type="primary">关闭容器</button>
+                  <view class="align-menu-item" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单1')">
+                      <text class="align-menu-text">菜单1</text>
+                  </view>
+                  <view class="align-menu-item" hover-class="align-menu-item-hover" @click="onAlignMenuClick('菜单2')">
+                      <text class="align-menu-text">菜单2</text>
+                  </view>
+                  <view class="align-menu-item align-menu-item-last" hover-class="align-menu-item-hover" @click="closeAlignContainer">
+                      <text class="align-menu-text">关闭</text>
+                  </view>
               </view>
           </view>
       </page-container>
@@ -312,7 +319,7 @@
                   alignContent = '此弹层与触发按钮右侧对齐显示'
                   arrowLeftStyle = 'left: 156px;'
               }
-              
+
               alignContainerTitle.value = alignTitle
               alignContainerContent.value = alignContent
               alignArrowStyle.value = arrowLeftStyle
@@ -332,7 +339,7 @@
               const offsetY = targetTop - windowInfo.windowHeight / 2
               alignContainerStyle.value = `transform: translate(${offsetX}px, ${offsetY}px); background-color: transparent; transition: none`
               // #endif
-              
+
               showAlignContainer.value = true
           }
       })
@@ -352,6 +359,14 @@
 
   function closeAlignContainer() {
       showAlignContainer.value = false
+  }
+
+  function onAlignMenuClick(menuName : string) {
+      showAlignContainer.value = false
+      uni.showToast({
+          title: `点击了${menuName}`,
+          icon: 'none'
+      })
   }
 
   // 多层堆叠弹层方法
@@ -425,11 +440,30 @@
   }
 
   .align-container {
-      padding: 10px;
       background-color: #ffffff;
       width: 200px;
       border-radius: 8px;
       margin-top: -1px;
+  }
+
+  .align-menu-item {
+      padding: 12px;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      border-bottom-color: #eeeeee;
+  }
+
+  .align-menu-item-last {
+      border-bottom-width: 0;
+  }
+
+  .align-menu-text {
+      font-size: 14px;
+      color: #333333;
+  }
+
+  .align-menu-item-hover {
+      background-color: #f5f5f5;
   }
 
   .align-shell {
