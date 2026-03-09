@@ -87,8 +87,7 @@
           </view>
       </view>
 
-      <page-container 
-          <!-- #ifdef MP -->
+      <page-container <!-- #ifdef MP -->
           v-if="containerShow"
           <!-- #endif -->
           :show="containerShow" :position="containerPosition" :round="containerRound"
@@ -106,8 +105,7 @@
       </page-container>
 
       <!-- 多层堆叠弹层 - 第1层 -->
-      <page-container 
-          <!-- #ifdef MP -->
+      <page-container <!-- #ifdef MP -->
           v-if="showStackedPop1"
           <!-- #endif -->
           :show="showStackedPop1" position="center" @afterleave="closeStackedLayer1">
@@ -122,8 +120,7 @@
       </page-container>
 
       <!-- 多层堆叠弹层 - 第2层 -->
-      <page-container 
-          <!-- #ifdef MP -->
+      <page-container <!-- #ifdef MP -->
           v-if="showStackedPop2"
           <!-- #endif -->
           :show="showStackedPop2" position="center" @afterleave="closeStackedLayer2">
@@ -138,8 +135,7 @@
       </page-container>
 
       <!-- 多层堆叠弹层 - 第3层 -->
-      <page-container 
-          <!-- #ifdef MP -->
+      <page-container <!-- #ifdef MP -->
           v-if="showStackedPop3"
           <!-- #endif -->
           :show="showStackedPop3" position="center" @afterleave="closeStackedLayer3">
@@ -150,8 +146,7 @@
           </view>
       </page-container>
 
-      <page-container 
-          <!-- #ifdef MP -->
+      <page-container <!-- #ifdef MP -->
           v-if="showAlignContainer"
           <!-- #endif -->
           :show="showAlignContainer" position="center" :custom-style="alignContainerStyle"
@@ -325,13 +320,21 @@
               const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
               // #endif
 
+              // #ifdef MP-WEIXIN
+              alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; transform: none; background-color: transparent; transition: none`
+              // #endif
+
+              // #ifndef MP-WEIXIN
               const offsetX = targetLeft - windowInfo.windowWidth / 2
               const offsetY = targetTop - windowInfo.windowHeight / 2
+              // #endif
 
               alignContainerTitle.value = alignTitle
               alignContainerContent.value = alignContent
               alignArrowStyle.value = arrowLeftStyle
+              // #ifndef MP-WEIXIN
               alignContainerStyle.value = `transform: translate(${offsetX}px, ${offsetY}px); background-color: transparent; transition: none`
+              // #endif
               showAlignContainer.value = true
           }
       })
