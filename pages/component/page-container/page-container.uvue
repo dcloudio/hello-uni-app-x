@@ -134,13 +134,15 @@
           </view>
       </page-container>
 
-      <!-- 左对齐弹层 -->
       <page-container :show="showAlignContainer" position="center" :custom-style="alignContainerStyle"
           @clickoverlay="closeAlignContainer">
-          <view class="align-container">
-              <text class="container-title">弹层与按钮左侧对齐</text>
-              <text class="container-content">此弹层与触发按钮左侧对齐显示</text>
-              <button @click="closeAlignContainer" type="primary">关闭容器</button>
+          <view class="align-shell">
+              <view class="align-arrow" :style="alignArrowStyle"></view>
+              <view class="align-container">
+                  <text class="container-title">{{ alignContainerTitle }}</text>
+                  <text class="container-content">{{ alignContainerContent }}</text>
+                  <button @click="closeAlignContainer" type="primary">关闭容器</button>
+              </view>
           </view>
       </page-container>
   </scroll-view>
@@ -165,6 +167,9 @@
   // 左对齐弹层状态
   const showAlignContainer = ref<boolean>(false)
   const alignContainerStyle = ref<string>('')
+  const alignArrowStyle = ref<string>('')
+  const alignContainerTitle = ref<string>('弹层与按钮左侧对齐')
+  const alignContainerContent = ref<string>('此弹层与触发按钮左侧对齐显示')
 
   type Data = {
       onAfterLeaveCallCount : number
@@ -275,25 +280,38 @@
               const nodeInfo = ret[0] as NodeInfo;
               const systemInfo = uni.getSystemInfoSync()
               const containerWidth = 200
+              const nodeWidth = nodeInfo.width as number
               let targetLeft = nodeInfo.left as number
+              let alignTitle = '弹层与按钮左侧对齐'
+              let alignContent = '此弹层与触发按钮左侧对齐显示'
+              let arrowLeftStyle = 'left: 28px;'
 
               if (alignType == 'center') {
-                  targetLeft += ((nodeInfo.width as number) / 2 - containerWidth / 2)
+                  targetLeft += (nodeWidth / 2 - containerWidth / 2)
+                  alignTitle = '弹层与按钮水平居中'
+                  alignContent = '此弹层与触发按钮水平居中显示'
+                  arrowLeftStyle = 'left: 92px;'
               } else if (alignType == 'right') {
-                  targetLeft += ((nodeInfo.width as number) - containerWidth)
+                  targetLeft += (nodeWidth - containerWidth)
+                  alignTitle = '弹层与按钮右侧对齐'
+                  alignContent = '此弹层与触发按钮右侧对齐显示'
+                  arrowLeftStyle = 'left: 156px;'
               }
 
               // #ifdef WEB
-              const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number) + 30
+              const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number) + 22
               // #endif
               // #ifndef WEB
-              const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number) + 10
+              const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
               // #endif
 
               const offsetX = targetLeft - systemInfo.windowWidth / 2
               const offsetY = targetTop - systemInfo.windowHeight / 2
 
-              alignContainerStyle.value = `transform: translate(${offsetX}px, ${offsetY}px);border-radius: 8px; transition: none`
+              alignContainerTitle.value = alignTitle
+              alignContainerContent.value = alignContent
+              alignArrowStyle.value = arrowLeftStyle
+              alignContainerStyle.value = `transform: translate(${offsetX}px, ${offsetY}px); background-color: transparent; transition: none`
               showAlignContainer.value = true
           }
       })
@@ -389,5 +407,24 @@
       padding: 10px;
       background-color: #ffffff;
       width: 200px;
+      border-radius: 8px;
+      margin-top: -1px;
+  }
+
+  .align-shell {
+      width: 200px;
+      padding-top: 7px;
+      position: relative;
+      background-color: transparent;
+  }
+
+  .align-arrow {
+      position: absolute;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 8px solid #ffffff;
   }
 </style>
