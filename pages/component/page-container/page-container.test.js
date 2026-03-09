@@ -1,5 +1,4 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase();
-const isMP = platformInfo.startsWith('mp');
 
 const BUTTON_PAGE_PATH = '/pages/component/button/button';
 const PAGE_CONTAINER_PAGE_PATH = '/pages/component/page-container/page-container';
