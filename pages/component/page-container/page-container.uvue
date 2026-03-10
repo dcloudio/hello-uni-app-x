@@ -190,8 +190,6 @@
   const showAlignContainer = ref<boolean>(false)
   const alignContainerStyle = ref<string>('')
   const alignArrowStyle = ref<string>('')
-  const alignContainerTitle = ref<string>('弹层与按钮左侧对齐')
-  const alignContainerContent = ref<string>('此弹层与触发按钮左侧对齐显示')
 
   type Data = {
       onAfterLeaveCallCount : number
@@ -297,53 +295,66 @@
   }
 
   function showAlign(selector : string, alignType : string) {
-      uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
-          if (ret.length == 1) {
-              const nodeInfo = ret[0] as NodeInfo;
-              const windowInfo = uni.getWindowInfo()
-              const containerWidth = 200
-              const nodeWidth = nodeInfo.width as number
-              let targetLeft = nodeInfo.left as number
-              let alignTitle = '弹层与按钮左侧对齐'
-              let alignContent = '此弹层与触发按钮左侧对齐显示'
-              let arrowLeftStyle = 'left: 28px;'
+        // #ifdef WEB
+        const elementId = selector.substring(1)
+        const targetElement = uni.getElementById(elementId)
+        if (targetElement != null) {
+            const rect = targetElement.getBoundingClientRect()
+            const containerWidth = 200
+            const nodeWidth = rect.width
+            let targetLeft = rect.left
+            let arrowLeftStyle = 'left: 28px;'
 
-              if (alignType == 'center') {
-                  targetLeft += (nodeWidth / 2 - containerWidth / 2)
-                  alignTitle = '弹层与按钮水平居中'
-                  alignContent = '此弹层与触发按钮水平居中显示'
-                  arrowLeftStyle = 'left: 92px;'
-              } else if (alignType == 'right') {
-                  targetLeft += (nodeWidth - containerWidth)
-                  alignTitle = '弹层与按钮右侧对齐'
-                  alignContent = '此弹层与触发按钮右侧对齐显示'
-                  arrowLeftStyle = 'left: 156px;'
-              }
+            if (alignType == 'center') {
+                targetLeft += (nodeWidth / 2 - containerWidth / 2)
+                arrowLeftStyle = 'left: 92px;'
+            } else if (alignType == 'right') {
+                targetLeft += (nodeWidth - containerWidth)
+                arrowLeftStyle = 'left: 156px;'
+            }
 
-              alignContainerTitle.value = alignTitle
-              alignContainerContent.value = alignContent
-              alignArrowStyle.value = arrowLeftStyle
+            alignArrowStyle.value = arrowLeftStyle
+            alignContainerStyle.value = `left: ${targetLeft}px; top: ${rect.bottom}px; background-color: transparent; transform: none`
+            showAlignContainer.value = true
+            return
+        }
+        // #endif
 
-              // #ifdef WEB
-              const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number) + 22
-              // #endif
-              // #ifndef WEB
-              const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
-              // #endif
+        uni.createSelectorQuery().select(selector).boundingClientRect().exec((ret) => {
+            if (ret.length == 1) {
+                const nodeInfo = ret[0] as NodeInfo;
+                const containerWidth = 200
+                const nodeWidth = nodeInfo.width as number
+                let targetLeft = nodeInfo.left as number
+                let arrowLeftStyle = 'left: 28px;'
 
-              // #ifdef MP-WEIXIN
-              alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; background-color: transparent; transform: none`
-              // #endif
-              // #ifndef MP-WEIXIN
-              const offsetX = targetLeft - windowInfo.windowWidth / 2
-              const offsetY = targetTop - windowInfo.windowHeight / 2
-              alignContainerStyle.value = `transform: translate(${offsetX}px, ${offsetY}px); background-color: transparent; transition: none`
-              // #endif
+                if (alignType == 'center') {
+                    targetLeft += (nodeWidth / 2 - containerWidth / 2)
+                    arrowLeftStyle = 'left: 92px;'
+                } else if (alignType == 'right') {
+                    targetLeft += (nodeWidth - containerWidth)
+                    arrowLeftStyle = 'left: 156px;'
+                }
 
-              showAlignContainer.value = true
-          }
-      })
-  }
+                alignArrowStyle.value = arrowLeftStyle
+
+                const targetTop = (nodeInfo.top as number) + (nodeInfo.height as number)
+
+                // #ifdef MP-WEIXIN
+                alignContainerStyle.value = `left: ${targetLeft}px; top: ${targetTop}px; background-color: transparent; transform: none`
+                // #endif
+
+                // #ifndef MP-WEIXIN
+                const windowInfo = uni.getWindowInfo()
+                const offsetX = targetLeft - windowInfo.windowWidth / 2
+                const offsetY = targetTop - windowInfo.windowHeight / 2
+                alignContainerStyle.value = `transform: translate(${offsetX}px, ${offsetY}px); background-color: transparent; transition: none`
+                // #endif
+
+                showAlignContainer.value = true
+            }
+        })
+    }
 
   function showAlignLeft() {
       showAlign('#align-left-button', 'left')
