@@ -50,9 +50,8 @@ describe('editor.uvue', () => {
       await iconfontsEl[i].tap()
       // await page.waitFor(500)
       const getFormats = await page.data('data.formats')
-      const name = await iconfontsEl[i].attribute('data-name')
       options.push({
-        insert: '文本内容' + name,
+        insert: '文本内容',
         attributes: getFormats
       })
       await page.callMethod('setContents', options)
