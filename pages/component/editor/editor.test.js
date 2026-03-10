@@ -71,6 +71,7 @@ describe('editor.uvue', () => {
 
   it('clear', async () => {
     await page.callMethod('clear')
+    const start = Date.now();
     await page.waitFor(async () => {
       return await page.data('data.clearTest') === true || (Date.now() - start > 2000)
     })

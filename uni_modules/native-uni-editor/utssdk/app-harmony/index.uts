@@ -1,0 +1,238 @@
+import { UTSObject } from "@dcloudio/uni-app-x-runtime";
+
+type OptionsSuccessRes = {
+  errMsg : string
+}
+type OptionsFailRes = {
+  errMsg : string
+}
+type OptionsCompleteRes = {
+  errMsg : string
+}
+
+type Options = {
+  success : (res : OptionsSuccessRes) => void
+  fail : (res : OptionsFailRes) => void
+  complete : (res : OptionsCompleteRes) => void
+}
+
+type InsertImageOptions = {
+  src ?: string | null,
+  alt ?: string | null,
+  width ?: string | null,
+  height ?: string | null,
+  extClass ?: string | null,
+  data ?: any,
+  success : (res : OptionsSuccessRes) => void
+  fail : (res : OptionsFailRes) => void
+  complete : (res : OptionsCompleteRes) => void
+}
+
+type InsertTextOptions = {
+  text ?: string | null,
+  success : (res : OptionsSuccessRes) => void
+  fail : (res : OptionsFailRes) => void
+  complete : (res : OptionsCompleteRes) => void
+}
+
+type SetContentsOptions = {
+  delta ?: any,
+  html ?: string | null,
+  success : (res : OptionsSuccessRes) => void
+  fail : (res : OptionsFailRes) => void
+  complete : (res : OptionsCompleteRes) => void
+}
+
+type GetSelectionTextOptionsRes = {
+  text : string
+}
+
+type GetSelectionTextOptions = {
+  success : (res : GetSelectionTextOptionsRes) => void
+  fail : (res : OptionsFailRes) => void
+  complete : (res : OptionsCompleteRes) => void
+}
+
+interface IUniEditorElement extends UniElement {
+  format(name : string, value ?: string | number | null) : void
+  insertDivider(options : Options | null) => void
+  insertImage(options : InsertImageOptions | null) : void
+  insertText(options : InsertTextOptions | null) : void
+  setContents(options : SetContentsOptions | null) : void
+  getContents(options : Options | null) : void
+  clear(options : Options | null) : void
+  removeFormat(options : Options | null) : void
+  undo(options : Options | null) : void
+  redo(options : Options | null) : void
+  getSelectionText(options : GetSelectionTextOptions | null) : void
+  scrollIntoView(options : Options | null) : void
+}
+
+function createEditorEventName(name : string, id : string) {
+  return `__UNIEDITOR_${name}_${id}`
+}
+
+let callbackId = 100000
+const callbackMap = new Map<number, UTSObject | null>()
+
+function LOG(...args : string[]) {
+  // 此处供开发时调试
+  // console.log(`${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} [Editor LOG]`, ...args)
+}
+
+function generateCallbackId() : number {
+  return ++callbackId
+}
+
+function handleCallback(cbId : number, result : UTSObject) {
+  const callbacks = callbackMap.get(cbId)
+  if (callbacks == null) {
+    LOG('Callback not found for id:', cbId.toString())
+    return
+  }
+
+  // 移除回调
+  callbackMap.delete(cbId)
+
+  const errMsg = result['errMsg'] as string | null
+  const isSuccess = errMsg != null && errMsg.indexOf(':ok') > -1
+
+  // 调用相应的回调函数
+  if (isSuccess) {
+    const success = callbacks['success'] as ((res : UTSObject) => void) | null
+    if (success != null) {
+      success(result)
+    }
+  } else {
+    const fail = callbacks['fail'] as ((res : UTSObject) => void) | null
+    if (fail != null) {
+      fail(result)
+    }
+  }
+
+  // 总是调用 complete
+  const complete = callbacks['complete'] as ((res : UTSObject) => void) | null
+  if (complete != null) {
+    complete(result)
+  }
+}
+
+export class NativeEditor {
+  id : string
+
+  constructor(id : string, element: UniEditorElement) {
+    this.id = id
+
+    element?.setNativeEditor(this)
+
+    uni.$on(createEditorEventName('callback', this.id), (cbId : number, result : UTSObject) => {
+      handleCallback(cbId, result)
+    })
+  }
+
+  dispose() {
+    uni.$off(createEditorEventName('callback', this.id))
+  }
+}
+
+export class UniEditorElement extends UniViewElementImpl implements IUniEditorElement {
+  override tagName : string = 'EDITOR'
+  override nodeName : string = 'EDITOR'
+
+  private nativeEditor : NativeEditor | null = null
+
+  // @ts-ignore dispose
+  override dispose() {
+    this.nativeEditor?.dispose()
+    this.nativeEditor = null
+    // #ifndef VUE3-VAPOR
+    // @ts-ignore dispose
+    super.dispose()
+    // #endif
+  }
+
+  private getNativeEditorId() : string {
+    return this.nativeEditor!.id
+  }
+
+  setNativeEditor(nativeEditor : NativeEditor) {
+    this.nativeEditor = nativeEditor
+  }
+
+  format(name : string, value : string | number | null = null) : void {
+    uni.$emit(createEditorEventName('format', this.getNativeEditorId()), name, value)
+  }
+
+  insertDivider(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('insertDivider', this.getNativeEditorId()), options, cbId)
+  }
+
+  insertImage(options : InsertImageOptions | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('insertImage', this.getNativeEditorId()), options, cbId)
+  }
+
+  insertText(options : InsertTextOptions | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('insertText', this.getNativeEditorId()), options, cbId)
+  }
+
+  setContents(options : SetContentsOptions | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('setContents', this.getNativeEditorId()), options, cbId)
+  }
+
+  getContents(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('getContents', this.getNativeEditorId()), options, cbId)
+  }
+
+  clear(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('clear', this.getNativeEditorId()), options, cbId)
+  }
+
+  removeFormat(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('removeFormat', this.getNativeEditorId()), options, cbId)
+  }
+
+  undo(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('undo', this.getNativeEditorId()), options, cbId)
+  }
+
+  redo(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('redo', this.getNativeEditorId()), options, cbId)
+  }
+
+  /**
+   * TODO 和基类冲突，不支持 success 等回调
+   */
+  override blur() : void {
+    uni.$emit(createEditorEventName('blur', this.getNativeEditorId()))
+  }
+
+  getSelectionText(options : GetSelectionTextOptions | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('getSelectionText', this.getNativeEditorId()), options, cbId)
+  }
+
+  scrollIntoView(options : Options | null) : void {
+    const cbId = generateCallbackId()
+    callbackMap.set(cbId, options)
+    uni.$emit(createEditorEventName('scrollIntoView', this.getNativeEditorId()), options, cbId)
+  }
+}
