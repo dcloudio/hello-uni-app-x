@@ -2,10 +2,11 @@ jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('editor.uvue', () => {
-  if (isDom2 || (!isWeb && !isMP)) {
+  if (!isHarmony && (isDom2 || (!isWeb && !isMP))) {
     it('app', () => {
       expect(1).toBe(1)
     })
@@ -32,11 +33,13 @@ describe('editor.uvue', () => {
   }
 
   it('editor-wrapper', async () => {
-    expect(await editor.attribute("placeholder")).toBe("开始输入...")
-    if(isMP){
-      expect(await page.data("data.readOnly")).toBe(false)
-    }else{
-      expect(await editor.attribute("read-only")).toBe("false")
+    if (isWeb || isMP) {
+      expect(await editor.attribute("placeholder")).toBe("开始输入...")
+      if(isMP){
+        expect(await page.data("data.readOnly")).toBe(false)
+      }else{
+        expect(await editor.attribute("read-only")).toBe("false")
+      }
     }
     expect(await program.screenshot()).toSaveImageSnapshot();
   });
@@ -68,7 +71,12 @@ describe('editor.uvue', () => {
 
   it('clear', async () => {
     await page.callMethod('clear')
-    expect(await editor.attribute("placeholder")).toBe("开始输入...")
+    await page.waitFor(async () => {
+      return await page.data('data.clearTest') === true || (Date.now() - start > 2000)
+    })
+    if (isWeb || isMP) {
+      expect(await editor.attribute("placeholder")).toBe("开始输入...")
+    }
   })
 
   it('undo-redo', async () => {
