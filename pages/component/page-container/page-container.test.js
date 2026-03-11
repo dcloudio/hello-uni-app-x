@@ -1,5 +1,3 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase();
-
 const BUTTON_PAGE_PATH = '/pages/component/button/button';
 const PAGE_CONTAINER_PAGE_PATH = '/pages/component/page-container/page-container';
 
