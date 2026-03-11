@@ -9,8 +9,9 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
+// 【勿动】pages 由 const 改为 let，因为在其它任务会修改 pages 的值
 let pageIndex = 0
-const pages = [
+let pages = [
   // tabBar  //改动频繁，不再测试
   // '/pages/tabBar/component',
   // '/pages/tabBar/API',
