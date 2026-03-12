@@ -44,4 +44,20 @@ describe('page-container.uvue', () => {
     const rightCurrentPage = await program.currentPage();
     expect(rightCurrentPage.path).toBe(PAGE_CONTAINER_PAGE_PATH.substring(1));
   });
+
+  it('round', async () => {
+    const roundButton = await page.$('#round-button');
+    await roundButton.tap();
+    await page.waitFor(500);
+
+    const roundContainerContent = await page.$('.container-content');
+    expect(await roundContainerContent.text()).toBe('弹窗圆角: true');
+
+    const closeRoundButton = await page.$('#close-round-button');
+    await closeRoundButton.tap();
+    await page.waitFor(500);
+
+    const closeRoundContainerContent = await page.$('.container-content');
+    expect(await closeRoundContainerContent.text()).toBe('弹窗圆角: false');
+  });
 });

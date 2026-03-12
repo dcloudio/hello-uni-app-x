@@ -33,7 +33,8 @@
         <text class="uni-title-text"> 弹窗圆角 </text>
       </view>
       <view>
-        <button @click="showRound">圆角</button>
+        <button id="round-button" @click="showRound"> 开启圆角 </button>
+        <button id="close-round-button" class="mt-5" @click="closeRound"> 关闭圆角 </button>
       </view>
     </view>
 
@@ -201,7 +202,6 @@
   })
 
   function resetConfig() {
-    containerRound.value = false
     containerPosition.value = 'bottom'
     containerOverlay.value = true
     containerCloseOnSlideDown.value = false
@@ -222,7 +222,15 @@
     containerRound.value = true
     containerShow.value = true
     containerTitle.value = 'Round: true'
-    containerContent.value = '弹窗圆角: true'
+    containerContent.value = `弹窗圆角: ${containerRound.value}`
+  }
+
+  function closeRound() {
+    resetConfig()
+    containerRound.value = false
+    containerShow.value = true
+    containerTitle.value = 'Round: false'
+    containerContent.value = `弹窗圆角: ${containerRound.value}`
   }
 
   function showOverlay(overlay : boolean) {
