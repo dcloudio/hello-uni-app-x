@@ -1,7 +1,6 @@
 <template>
   <scroll-view @scroll="onScroll" class="page" show-scrollbar="false">
-    <view ref="seatbar" class="seatbar"></view>
-
+    <view ref="seatbarRef" class="seatbar"></view>
     <view class="content">
       <view class="content-item">
         <text class="text">1. 当前示例监听了 scroll-view 的 scroll 事件 ，滚动页面实时监听scrollTop。</text>
@@ -14,14 +13,12 @@
       </view>
     </view>
 
-    <view ref="navigatorbar" class="navigatorbar">
+    <view ref="navigatorbarRef" class="navigatorbar">
       <view class="titlebar">
-        <view class="backview" @tap="back">
-          <image class="back" src="/static/template/scroll-fold-nav/back.png" mode="widthFix"></image>
-        </view>
-        <text ref="title" class="title">DCloud 为开发者而生</text>
+        <uni-back-arrow-circle style="background-color: transparent;" arrow-class="arrow"></uni-back-arrow-circle>
+        <text ref="titleRef" class="title">DCloud 为开发者而生</text>
       </view>
-      <view ref="searchbar" class="searchbar" @tap="search">
+      <view ref="searchbarRef" class="searchbar" @tap="search">
         <image class="searchimg" src="/static/template/scroll-fold-nav/search.png" mode="widthFix"></image>
         <text class="searchinput">请输入你要搜索的内容</text>
         <text class="searchbutton">搜索</text>
@@ -30,69 +27,61 @@
   </scroll-view>
 </template>
 
-<script>
-  //导航栏高度
-  const NAVIBARHEIGHT = 88;
-  //搜索栏高度
-  const SEARCHBARHEIGHT = 40;
-  //返回键按钮宽度
-  const BACKWIDTH = 32;
-  export default {
-    data() {
-      return {
-        statusBarHeight: 0,
-        nviBarHeight: 0,
-        naviElement: null as UniElement | null,
-        titleElement: null as UniElement | null,
-        searchElement: null as UniElement | null,
-        seatElement: null as UniElement | null
-      }
-    },
-    onLoad() {
-      // #ifdef APP || MP
-        this.statusBarHeight = uni.getWindowInfo().statusBarHeight;
-      // #endif
+<script setup lang="uts">
+//导航栏高度
+const NAVIBARHEIGHT = 88;
+//搜索栏高度
+const SEARCHBARHEIGHT = 40;
+//返回键按钮宽度
+const BACKWIDTH = 32;
 
-      this.nviBarHeight = NAVIBARHEIGHT + this.statusBarHeight;
-    },
-    onReady() {
-      this.naviElement = this.$refs['navigatorbar'] as UniElement;
-      this.searchElement = this.$refs['searchbar'] as UniElement;
-      this.titleElement = this.$refs['title'] as UniElement;
-      this.seatElement = this.$refs['seatbar'] as UniElement;
-      this.setStyle();
-    },
-    onResize(_ : OnResizeOptions) {
-      // #ifdef APP-ANDROID
-      // 监听多窗口模式
-      this.statusBarHeight = uni.getWindowInfo().statusBarHeight;
-      this.nviBarHeight = NAVIBARHEIGHT + this.statusBarHeight;
-      this.setStyle();
-      // #endif
-    },
-    methods: {
-      onScroll(e : ScrollEvent) {
-        let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
-        this.naviElement?.style?.setProperty('height', (this.nviBarHeight -offset)+'px');
-        this.titleElement?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
-        this.searchElement?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
-      },
-      back() {
-        uni.navigateBack();
-      },
-      search() {
-        uni.showToast({
-          title: '暂不支持',
-          icon: 'none'
-        });
-      },
-      setStyle() {
-        this.naviElement?.style?.setProperty('padding-top', this.statusBarHeight + 'px');
-        this.naviElement?.style?.setProperty('height', (NAVIBARHEIGHT + this.statusBarHeight) + 'px');
-        this.seatElement?.style?.setProperty('height', (NAVIBARHEIGHT + this.statusBarHeight) + 'px');
-      }
-    }
-  }
+let statusBarHeight = 0
+let nviBarHeight = 0
+const navigatorbarRef = ref<UniElement | null>(null)
+const searchbarRef = ref<UniElement | null>(null)
+const titleRef = ref<UniElement | null>(null)
+const seatbarRef = ref<UniElement | null>(null)
+
+function onScroll(e : ScrollEvent) {
+  let offset = e.detail.scrollTop>SEARCHBARHEIGHT?SEARCHBARHEIGHT:e.detail.scrollTop;//(e.detail.scrollTop<0?0:e.detail.scrollTop)
+  navigatorbarRef.value?.style?.setProperty('height', (nviBarHeight -offset)+'px');
+  titleRef.value?.style?.setProperty('opacity', (1-offset/SEARCHBARHEIGHT).toString());
+  searchbarRef.value?.style?.setProperty('left', ((offset<0)?0:BACKWIDTH*offset/SEARCHBARHEIGHT)+'px');
+}
+
+function search() {
+  uni.showToast({
+    title: '暂不支持',
+    icon: 'none'
+  });
+}
+
+function setStyle() {
+  navigatorbarRef.value?.style?.setProperty('padding-top', statusBarHeight + 'px');
+  navigatorbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight) + 'px');
+  seatbarRef.value?.style?.setProperty('height', (NAVIBARHEIGHT + statusBarHeight) + 'px');
+}
+
+onLoad(() => {
+  // #ifdef APP || MP
+    statusBarHeight = uni.getWindowInfo().statusBarHeight;
+  // #endif
+
+  nviBarHeight = NAVIBARHEIGHT + statusBarHeight;
+})
+
+onReady(() => {
+  setStyle();
+})
+
+onResize((event : OnResizeOptions) => {
+  // #ifdef APP-ANDROID
+  // 监听多窗口模式
+  statusBarHeight = uni.getWindowInfo().statusBarHeight;
+  nviBarHeight = NAVIBARHEIGHT + statusBarHeight;
+  setStyle();
+  // #endif
+})
 </script>
 
 <style>
@@ -118,15 +107,13 @@
   align-items: center;
   height: 44px;
 }
-.backview {
-  width: 44px;
-  height: 44px;
-  justify-content: center;
-  align-items: center;
+
+/* uni-back-arrow-circle组件 自定义样式 */
+.arrow {
+  border-left: 2px solid #555!important;
+  border-bottom: 2px solid #555!important;
 }
-.back {
-  width: 20px;
-}
+
 .title {
   margin: 0px 2px;
 }

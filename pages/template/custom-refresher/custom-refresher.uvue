@@ -6,12 +6,13 @@
       refresher-default-style="none" @refresherpulling="onRefresherpulling" @refresherrefresh="onRefresherrefresh"
       @refresherrestore="onRefreshrestore" :refresher-threshold="refresherThreshold" refresher-max-drag-distance="200px">
 
+      <page-intro content="本页演示自定义下拉刷新：sticky header、列表项与自定义 refresher 插槽（refresh-box），下拉触发刷新。"></page-intro>
       <sticky-header>
         <view class="header">
           <text>sticky header</text>
         </view>
       </sticky-header>
-      <list-item v-for="i in 20" class="content-item">
+      <list-item v-for="i in 20" :key="i" class="content-item">
         <text class="text">item-{{i}}</text>
       </list-item>
       <refresh-box slot="refresher" :state="state" :pullingDistance="pullingDistance"></refresh-box>
@@ -21,51 +22,46 @@
   <!-- #endif -->
 </template>
 
-<script>
-  import refreshBox from './refresh-box/refresh-box.uvue';
-  export default {
-    components: { refreshBox },
-    data() {
-      return {
-        refresherTriggered: false,
-        refresherThreshold: 40,
-        pullingDistance: 0,
-        resetting: false
-      }
-    },
-    computed: {
-      state() : number {
-        if (this.resetting) {
-          return 3;
-        }
-        if (this.refresherTriggered) {
-          return 2
-        }
-        if (this.pullingDistance > this.refresherThreshold) {
-          return 1
-        } else {
-          return 0
-        }
-      }
-    },
-    methods: {
-      onRefresherpulling(e : RefresherEvent) {
-        // console.log('onRefresherpulling',e.detail.dy)
-        this.pullingDistance = e.detail.dy
-      },
-      onRefresherrefresh() {
-        this.refresherTriggered = true
-        setTimeout(() => {
-          this.refresherTriggered = false
-          this.resetting = true
-        }, 1500)
-      },
-      onRefreshrestore() {
-        this.pullingDistance = 0
-        this.resetting = false;
-      }
-    }
+<script setup lang="uts">
+
+import refreshBox from './refresh-box/refresh-box.uvue';
+
+const refresherTriggered = ref(false)
+const refresherThreshold = ref(40)
+const pullingDistance = ref(0)
+const resetting = ref(false)
+
+const state = computed(() : number => {
+  if (resetting.value) {
+    return 3;
   }
+  if (refresherTriggered.value) {
+    return 2
+  }
+  if (pullingDistance.value > refresherThreshold.value) {
+    return 1
+  } else {
+    return 0
+  }
+})
+
+function onRefresherpulling(e : RefresherEvent) {
+  // console.log('onRefresherpulling',e.detail.dy)
+  pullingDistance.value = e.detail.dy
+}
+
+function onRefresherrefresh() {
+  refresherTriggered.value = true
+  setTimeout(() => {
+    refresherTriggered.value = false
+    resetting.value = true
+  }, 1500)
+}
+
+function onRefreshrestore() {
+  pullingDistance.value = 0
+  resetting.value = false;
+}
 </script>
 
 <style>
@@ -85,7 +81,6 @@
     padding: 15px;
     margin: 5px 0;
     background-color: #fff;
-    border-radius: 5px;
   }
 
   .text {

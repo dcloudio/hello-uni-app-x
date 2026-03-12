@@ -11,15 +11,17 @@ describe('text-props', () => {
     await page.waitFor(1000)
   })
 
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   it('screenshot', async () => {
     const image = await program.screenshot({ fullPage: true })
     expect(image).toSaveImageSnapshot()
   })
 
   it('empty text', async () => {
-      await page.setData({
-        autoTest: true
-      })
+      await setPageData({ autoTest: true })
       const element = await page.$('#empty-text')
       if (element != null) {
         const { width, height } = await element.size()
@@ -39,15 +41,11 @@ describe('text-props', () => {
       if (element3 != null) {
         expect(await element3.text()).toBe('')
       }
-      await page.setData({
-        autoTest: false
-      })
+      await setPageData({ autoTest: false })
   })
 
   it('nested text', async () => {
-      await page.setData({
-        autoTest: true
-      })
+      await setPageData({ autoTest: true })
       await page.callMethod("setNestedText")
       await page.waitFor(100)
       const element = await page.$('#nested-text')
@@ -70,25 +68,19 @@ describe('text-props', () => {
       })
 
       await page.waitFor(300)
-      expect(await page.data('isNestedText1TapTriggered')).toBe(true)
-      expect(await page.data('isNestedText2TapTriggered')).toBe(true)
-      await page.setData({
-        autoTest: false
-      })
+      expect(await page.data('data.isNestedText1TapTriggered')).toBe(true)
+      expect(await page.data('data.isNestedText2TapTriggered')).toBe(true)
+      await setPageData({ autoTest: false })
   })
 
   it('height text', async () => {
-      await page.setData({
-        autoTest: true
-      })
+      await setPageData({ autoTest: true })
       await page.callMethod("setHeightText")
       await page.waitFor(100)
       const element = await page.$('#height-text')
       if (element != null) {
         expect(await element.text()).toBe("修改设置高度文本")
       }
-      await page.setData({
-        autoTest: false
-      })
+      await setPageData({ autoTest: false })
   })
 })

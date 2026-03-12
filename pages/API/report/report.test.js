@@ -18,32 +18,32 @@ describe('report', () => {
   })
   it('Report - onLaunch', async () => {
     await page.callMethod('handleAppLaunch')
-    const msg = await page.data('msg')
+    const msg = await page.data('msg.value')
     expect(msg).toBe('onLaunch --> report:ok')
   })
   it('Report - onShow', async () => {
     await page.callMethod('handleAppShow')
-    const msg = await page.data('msg')
+    const msg = await page.data('msg.value')
     expect(msg).toBe('onAppShow --> report:ok')
   })
   it('Report - onHide', async () => {
     await page.callMethod('handleAppHide')
-    const msg = await page.data('msg')
+    const msg = await page.data('msg.value')
     expect(msg).toBe('onAppHide --> report:ok')
   })
   it('Report - onError', async () => {
     await page.callMethod('handleAppError')
-    const msg = await page.data('msg')
+    const msg = await page.data('msg.value')
     expect(msg).toBe('onAppError --> report:ok')
   })
   it('Report - customTitle', async () => {
     await page.callMethod('handleTitle')
-    const msg = await page.data('msg')
+    const msg = await page.data('msg.value')
     expect(msg).toBe('自定义title --> report:ok')
   })
   it('Report - customEvent', async () => {
     await page.callMethod('handleEvent')
-    const msg = await page.data('msg')
+    const msg = await page.data('msg.value')
     expect(msg).toBe('自定义事件 --> report:ok')
   })
 })

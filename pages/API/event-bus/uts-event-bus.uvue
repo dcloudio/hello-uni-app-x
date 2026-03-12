@@ -19,7 +19,7 @@
       <view class="box">
         <view>收到的消息：</view>
         <view>
-          <view v-for="(item, index) in log" :key="index">{{ item }}</view>
+          <view v-for="(item, index) in data.log" :key="index">{{ item }}</view>
         </view>
       </view>
     </view>
@@ -29,7 +29,8 @@
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
+  
   import {
     onJsMessage,
     offJsMessage,
@@ -43,103 +44,134 @@
     onJsMessageOnce,
   } from "@/uni_modules/uts-eventbus"
 
-
-  export default {
-    data() {
-      return {
-        log: [] as string[],
-      }
-    },
-    methods: {
-      fn(res : any, res2 : any) {
-        if (res != null){
-          console.log("on rev: " + JSON.stringify(res))
-          this.log.push(res)
-        }
-        if (res2 != null) {
-          console.log("on rev: " + JSON.stringify(res2))
-          this.log.push(res2)
-        }
-      },
-      fn2(res : string) {
-        this.log.push(res)
-      },
-      JsOnUts() {
-        uni.$off(getMessageChannel(), this.fn)
-        uni.$on(getMessageChannel(), this.fn)
-      },
-      offUts() {
-        uni.$off(getMessageChannel(), this.fn)
-      },
-      emitFromUts() {
-        emitUtsMessage("emit form uts")
-      },
-      emitUtsMessageUTSObject() {
-        emitUtsMessageUTSObject({
-            latitude: 39.951028,
-            longitude: 116.354662,
-            name: '金运大厦',
-            address: '西直门北大街xx号'
-          })
-      },
-      emitUtsMessages() {
-        emitUtsMessages({
-            latitude: 39.951028,
-            longitude: 116.354662,
-            name: '金运大厦',
-            address: '西直门北大街xx号'
-          }, "emit form uts")
-      },
-      emitUtsMessageNoArgument() {
-        emitUtsMessageNoArgument()
-      },
-      JsOnUtsOnce() {
-        uni.$once(getMessageChannel(), this.fn2)
-      },
-      UtsOnJS() {
-        onJsMessage("JsMessage")
-      },
-      UtsOnJSOnce() {
-        onJsMessageOnce("JsMessage")
-      },
-      offJs() {
-        offJsMessage("JsMessage")
-      },
-      emitFormJS() {
-        clearJsMessage()
-        uni.$emit("JsMessage", "emit form js")
-        let msg = getRevJsMessage()
-        console.log("message:"+msg)
-        if (msg && msg.length){
-          this.log.push(msg)
-        }
-      },
-      emitFormJSObject() {
-        clearJsMessage()
-        uni.$emit("JsMessage", {
-            latitude: 39.951028,
-            longitude: 116.354662,
-            name: '金运大厦form js',
-            address: '西直门北大街xx号 from js'
-          })
-        let msg = getRevJsMessage()
-        console.log("message:"+msg)
-        if (msg && msg.length){
-          this.log.push(msg)
-        }
-      },
-      clear() {
-        clearJsMessage()
-        this.log.length = 0
-      },
-      testAll() {
-      	this.JsOnUts();
-      	this.emitFromUts();
-      	this.UtsOnJS();
-      	this.emitFormJS();
-      }
-    },
+  type DataType = {
+    log: string[],
   }
+
+  const data = reactive({
+    log: [] as string[],
+  } as DataType)
+
+  function fn(res : any, res2 : any) {
+    if (res != null){
+      console.log("on rev: " + JSON.stringify(res))
+      data.log.push(res)
+    }
+    if (res2 != null) {
+      console.log("on rev: " + JSON.stringify(res2))
+      data.log.push(res2)
+    }
+  }
+
+  function fn2(res : string) {
+    data.log.push(res)
+  }
+
+  function JsOnUts() {
+    uni.$off(getMessageChannel(), fn)
+    uni.$on(getMessageChannel(), fn)
+  }
+
+  function offUts() {
+    uni.$off(getMessageChannel(), fn)
+  }
+
+  function emitFromUts() {
+    emitUtsMessage("emit form uts")
+  }
+
+  function emitUtsMessageUTSObject() {
+    emitUtsMessageUTSObject({
+        latitude: 39.951028,
+        longitude: 116.354662,
+        name: '金运大厦',
+        address: '西直门北大街xx号'
+      })
+  }
+
+  function emitUtsMessages() {
+    emitUtsMessages({
+        latitude: 39.951028,
+        longitude: 116.354662,
+        name: '金运大厦',
+        address: '西直门北大街xx号'
+      }, "emit form uts")
+  }
+
+  function emitUtsMessageNoArgument() {
+    emitUtsMessageNoArgument()
+  }
+
+  function JsOnUtsOnce() {
+    uni.$once(getMessageChannel(), fn2)
+  }
+
+  function UtsOnJS() {
+    onJsMessage("JsMessage")
+  }
+
+  function UtsOnJSOnce() {
+    onJsMessageOnce("JsMessage")
+  }
+
+  function offJs() {
+    offJsMessage("JsMessage")
+  }
+
+  function emitFormJS() {
+    clearJsMessage()
+    uni.$emit("JsMessage", "emit form js")
+    let msg = getRevJsMessage()
+    console.log("message:"+msg)
+    if (msg && msg.length){
+      data.log.push(msg)
+    }
+  }
+
+  function emitFormJSObject() {
+    clearJsMessage()
+    uni.$emit("JsMessage", {
+        latitude: 39.951028,
+        longitude: 116.354662,
+        name: '金运大厦form js',
+        address: '西直门北大街xx号 from js'
+      })
+    let msg = getRevJsMessage()
+    console.log("message:"+msg)
+    if (msg && msg.length){
+      data.log.push(msg)
+    }
+  }
+
+  function clear() {
+    clearJsMessage()
+    data.log.length = 0
+  }
+
+  function testAll() {
+  	JsOnUts();
+  	emitFromUts();
+  	UtsOnJS();
+  	emitFormJS();
+  }
+
+  defineExpose({
+    data,
+    clear,
+    JsOnUts,
+    emitFromUts,
+    emitUtsMessageUTSObject,
+    emitUtsMessages,
+    emitUtsMessageNoArgument,
+    offUts,
+    JsOnUtsOnce,
+    UtsOnJS,
+    UtsOnJSOnce,
+    offJs,
+    emitFormJS,
+    emitFormJSObject,
+    testAll
+  })
 </script>
 
 <style>

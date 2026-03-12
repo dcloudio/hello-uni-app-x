@@ -23,7 +23,7 @@ describe('ExtApi-UploadFile', () => {
 
   beforeEach(async () => {
     await page.setData({
-      jest_result: false
+      data:{jest_result: false}
     })
   });
 
@@ -32,14 +32,14 @@ describe('ExtApi-UploadFile', () => {
       await page.waitFor(600);
       await page.callMethod('jest_uploadFile');
       await page.waitFor(2000);
-      res = await page.data('jest_result');
+      res = await page.data('data.jest_result');
       expect(res).toBe(true);
     });
 
     it('Check files upload', async () => {
       res = await page.callMethod('jest_files_upload')
       await page.waitFor(2000);
-      res = await page.data('jest_result');
+      res = await page.data('data.jest_result');
       expect(res).toBe(true)
     });
   }
@@ -47,7 +47,7 @@ describe('ExtApi-UploadFile', () => {
   it('Check uni.env', async () => {
     await page.callMethod('jest_uploadFile_with_uni_env');
     await page.waitFor(3000);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
     expect(res).toBe(true);
   });
 
@@ -59,12 +59,10 @@ describe('ExtApi-UploadFile', () => {
     it('Check Upload File In UTS Module', async () => {
       res = await page.callMethod('jest_uts_module_invoked')
       await page.waitFor(2000);
-      res = await page.data('jest_result');
+      res = await page.data('data.jest_result');
       expect(res).toBe(true)
     })
   }
-
-
 
   let shouldTestCookie = false
   if (isAndroid && !isAppWebView) {
@@ -80,25 +78,25 @@ describe('ExtApi-UploadFile', () => {
   it('Check Set Cookie', async () => {
     res = await page.callMethod('jest_set_cookie')
     await page.waitFor(2000);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
     expect(res).toBe(true)
   });
   it('Check Delete Cookie', async () => {
     res = await page.callMethod('jest_delete_cookie')
     await page.waitFor(2000);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
     expect(res).toBe(true)
   });
   it('Check without file or files', async () => {
     res = await page.callMethod('jest_uploadFileWithoutFile')
     await page.waitFor(2000);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
     expect(res).toBe(true)
   })
   it('Check verify useragent count', async () => {
     res = await page.callMethod('jest_uploadFileVerifyUA')
     await page.waitFor(2000);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
     expect(res).toBe(true)
   })
 });

@@ -14,12 +14,16 @@ describe('css-z-index', () => {
   if (isAndroid) {
     it('test crash', async () => {
       await page.setData({
-        autoTest: true
+        data: {
+          autoTest: true
+        }
       });
       const elements = await page.$$('view');
       expect(elements.length).toBeGreaterThan(0);
       await page.setData({
-        autoTest: false
+        data: {
+          autoTest: false
+        }
       });
     });
   }

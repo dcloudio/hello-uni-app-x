@@ -12,41 +12,45 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        title: 'saveVideoToPhotosAlbum',
-        src: '/static/test-video/10second-demo.mp4',
-        // 自动化测试
-        success: false
-      }
-    },
-    methods: {
-      saveVideo() {
-        uni.saveVideoToPhotosAlbum({
-          filePath: this.src,
-          success: (_) => {
-            console.log("saveVideoToPhotosAlbum success");
-            uni.showToast({
-              position: "center",
-              icon: "none",
-              title: "视频保存成功，请到手机相册查看"
-            });
-            this.success = true;
-          },
-          fail: (err) => {
-            uni.showModal({
-              title: "保存视频到相册失败",
-              content: JSON.stringify(err),
-              showCancel: false
-            });
-            this.success = false;
-          }
-        });
-      }
-    }
+<script setup lang="uts">
+  type TestStateType = {
+    success: boolean
   }
+
+  const title = ref('saveVideoToPhotosAlbum')
+  const src = ref('/static/test-video/10second-demo.mp4')
+  // 使用reactive避免ref数据在自动化测试中无法访问
+  const testState = reactive({
+    success: false
+  } as TestStateType)
+
+  const saveVideo = () => {
+    uni.saveVideoToPhotosAlbum({
+      filePath: src.value,
+      success: (_) => {
+        console.log("saveVideoToPhotosAlbum success");
+        uni.showToast({
+          position: "center",
+          icon: "none",
+          title: "视频保存成功，请到手机相册查看"
+        });
+        testState.success = true;
+      },
+      fail: (err) => {
+        uni.showModal({
+          title: "保存视频到相册失败",
+          content: JSON.stringify(err),
+          showCancel: false
+        });
+        testState.success = false;
+      }
+    });
+  }
+
+  defineExpose({
+    testState,
+    saveVideo
+  })
 </script>
 
 <style>

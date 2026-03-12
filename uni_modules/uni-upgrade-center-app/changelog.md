@@ -1,3 +1,7 @@
+## 0.9.9（2026-02-03）
+- 修复 安卓端非强制更新 kotlin 报错 `onClick has not been intialized`
+## 0.9.8（2026-01-05）
+- 更新 移除 vapor 模式不支持的 class 选择器
 ## 0.9.7（2025-07-28）
 - 修复 使用腾讯云时，wgt 更新报错的Bug
 - 改进 uni-app-x 平台弹窗该用 script setup 实现

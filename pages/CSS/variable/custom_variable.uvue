@@ -26,44 +26,37 @@
     <button class="test-v-if-button" @tap="do_vif()">v-if测试</button>
   </view>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-        statusbar: false,
-        var_bind: "var_1_bind_1",
-        var_v_if: false,
-        text_style_var_def: "text_style_var_1",
-        text_style_var_1_on: true,
-      }
-    },
-    methods: {
-      do_change_var() {
-        let view_container = uni.getElementById("view_container")
-        if (this.text_style_var_1_on) {
-          this.text_style_var_def = "text_style_var_2"
-          this.text_style_var_1_on = false
-          view_container?.style?.setProperty("--var_flex_direction", "row");
-          view_container?.style?.setProperty("--var_justify_content", "flex-end");
-          view_container?.style?.setProperty("--var_margin", "");
-          // 与 style 中的写法表现不一致，且可能与非简写属性存在冲突
-          // view_container?.style?.setProperty("border", "var(--var_border)");
-          view_container?.style?.setProperty("background-color", "var(--background-color)");
-        } else {
-          this.text_style_var_def = "text_style_var_1"
-          this.text_style_var_1_on = true
-          view_container?.style?.setProperty("--var_margin", "10px");
-          view_container?.style?.setProperty("--var_flex_direction", "column");
-          view_container?.style?.setProperty("--var_justify_content", "center");
-          view_container?.style?.setProperty("background-color", "#FFF");
-        }
-        this.var_bind = (this.var_bind == "var_1_bind_2") ? "var_1_bind_1" : "var_1_bind_2"
-      },
-      do_vif() {
-        this.var_v_if = !this.var_v_if
+<script setup lang="uts">
 
-      }
+  const var_bind = ref("var_1_bind_1")
+  const var_v_if = ref(false)
+  const text_style_var_def = ref("text_style_var_1")
+  const text_style_var_1_on = ref(true)
+
+  const do_change_var = () => {
+    const view_container = uni.getElementById("view_container")
+    if (text_style_var_1_on.value) {
+      text_style_var_def.value = "text_style_var_2"
+      text_style_var_1_on.value = false
+      view_container?.style?.setProperty("--var_flex_direction", "row")
+      view_container?.style?.setProperty("--var_justify_content", "flex-end")
+      view_container?.style?.setProperty("--var_margin", "")
+      // 与 style 中的写法表现不一致，且可能与非简写属性存在冲突
+      // view_container?.style?.setProperty("border", "var(--var_border)")
+      view_container?.style?.setProperty("background-color", "var(--background-color)")
+    } else {
+      text_style_var_def.value = "text_style_var_1"
+      text_style_var_1_on.value = true
+      view_container?.style?.setProperty("--var_margin", "10px")
+      view_container?.style?.setProperty("--var_flex_direction", "column")
+      view_container?.style?.setProperty("--var_justify_content", "center")
+      view_container?.style?.setProperty("background-color", "#FFF")
     }
+    var_bind.value = (var_bind.value == "var_1_bind_2") ? "var_1_bind_1" : "var_1_bind_2"
+  }
+
+  const do_vif = () => {
+    var_v_if.value = !var_v_if.value
   }
 </script>
 

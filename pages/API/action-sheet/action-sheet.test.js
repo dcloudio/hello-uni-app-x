@@ -6,6 +6,7 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
@@ -13,6 +14,12 @@ describe('showActionSheet', () => {
   let screenShotOptions = {};
   let page;
   let topSafeArea = 0
+  
+  // 测试辅助函数
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   async function showActionSheet(page) {
     const btn = await page.$('#btn-action-sheet-show')
     await btn.tap()
@@ -54,7 +61,7 @@ describe('showActionSheet', () => {
       },
     };
 
-    page = await program.reLaunch('/pages/tabBar/API')
+    page = await program.reLaunch(isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
     await page.waitFor('view');
 
     page = await program.navigateTo(PAGE_PATH)
@@ -93,77 +100,61 @@ describe('showActionSheet', () => {
   })
 
   it("有标题", async () => {
-    await page.setData({
+    await setPageData({
       showErrorToast:false,
       current: 0,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
 
   it("有标题 长内容", async () => {
-    await page.setData({
+    await setPageData({
       itemContentLarge:true,
     })
-
     await showActionSheet(page);
-
     await screenshot();
-
-
   })
 
   it("有标题 超过6个item", async () => {
-    await page.setData({
+    await setPageData({
       itemContentLarge:false,
       itemNumLargeSelect:true,
     })
-
     await showActionSheet(page);
-
     await screenshot();
-
-
   })
 
   it("有标题 长内容 自定义 itemColor", async () => {
-    await page.setData({
+    await setPageData({
       itemContentLarge: true,
       itemNumLargeSelect: false,
       itemColorCustom: true,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
 
   it("无标题", async () => {
-    await page.setData({
+    await setPageData({
       current: 1,
       itemContentLarge:false,
       itemColorCustom:false,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
 
   it("长标题", async () => {
-    await page.setData({
+    await setPageData({
       current: 2,
     })
-
     await showActionSheet(page);
-
     await screenshot();
   })
   if (!isMP) {
     it("custom titleColor cancelText cancelColor backgroundColor", async () => {
-      await page.setData({
+      await setPageData({
         titleColorCustom: true,
         cancelTextCustom: true,
         cancelColorCustom: true,
@@ -218,7 +209,11 @@ describe('showActionSheet', () => {
     });
   }
   afterAll(async () => {
-    await page.callMethod('setLifeCycleNum', 1100);
+    if (!isMP) {
+      await page.callMethod('hideActionSheet')
+      await page.waitFor(1000);
+    }
+    await page.callMethod('setLifeCycleNumFunc', 1100);
     if(isApp && !isAppWebView){
       await page.callMethod('resetTheme')
     }

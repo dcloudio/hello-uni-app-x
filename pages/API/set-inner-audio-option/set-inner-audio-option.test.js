@@ -29,7 +29,7 @@ describe('/pages/API/set-inner-audio-option/set-inner-audio-option', () => {
     await page.callMethod('playInnerMusic')
     await page.waitFor(1000)
 
-    isBackgroundAudioPaused = await page.data('isBackgroundAudioPaused')
+    const isBackgroundAudioPaused = await page.data('data.isBackgroundAudioPaused')
     expect(isBackgroundAudioPaused).toBe(true)
   })
 });

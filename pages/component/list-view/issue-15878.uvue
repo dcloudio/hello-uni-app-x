@@ -1,9 +1,9 @@
 <template>
   <view style="flex: 1;">
     <list-view style="flex: 1;" refresher-enabled="true" @refresherrefresh="onRefresh"
-      :refresher-triggered="refresherTriggered" refresher-default-style="none">
-      <list-item class="item" v-for="item in 1000">
-        {{item}}
+      :refresher-triggered="data.refresherTriggered" refresher-default-style="none">
+      <list-item class="item" v-for="item in 1000" :key="item">
+        <text>{{item}}</text>
       </list-item>
       <list-item class="refresher" slot="refresher">
         <text class="refresher-text">自定义下拉刷新</text>
@@ -12,25 +12,31 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        refresherTriggered: false
-      }
-    },
-    onLoad() {
+<script setup lang="uts">
 
-    },
-    methods: {
-      onRefresh() {
-        this.refresherTriggered = true
-        setTimeout(() => {
-          this.refresherTriggered = false
-        }, 5000)
-      }
-    }
-  }
+type DataType = {
+  refresherTriggered: boolean
+}
+
+const data = reactive({
+  refresherTriggered: false
+} as DataType)
+
+function onRefresh() {
+  data.refresherTriggered = true
+  setTimeout(() => {
+    data.refresherTriggered = false
+  }, 5000)
+}
+
+onLoad(() => {
+
+})
+
+defineExpose({
+  data,
+  onRefresh
+})
 </script>
 
 <style>

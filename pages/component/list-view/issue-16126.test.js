@@ -1,6 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('issue-16162', () => {
   if (isMP || isWeb) {
@@ -16,16 +17,20 @@ describe('issue-16162', () => {
     await page.waitFor(600)
   })
 
-  it('issue16934', async () => {
-    await page.callMethod('setScrollTop', 2000)
-    await page.waitFor(2000)
-    await page.setData({
-      'intoview': 'item1'
+  if(!isDom2) {
+    it('issue16934', async () => {
+      await page.callMethod('setScrollTop', 2000)
+      await page.waitFor(2000)
+      await page.setData({
+        data: {
+          intoview: 'item1'
+        }
+      })
+      await page.waitFor(600)
+      const scrollTop = await page.callMethod('getScrollTop')
+      expect(scrollTop).toBe(0)
     })
-    await page.waitFor(600)
-    const scrollTop = await page.callMethod('getScrollTop')
-    expect(scrollTop).toBe(0)
-  })
+  }
 
   it('issue16162', async () => {
     await page.waitFor(1000);

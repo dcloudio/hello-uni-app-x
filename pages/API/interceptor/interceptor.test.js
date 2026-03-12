@@ -2,6 +2,7 @@ const PAGE_PATH = '/pages/API/interceptor/interceptor'
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('interceptor', () => {
   let page
@@ -15,7 +16,7 @@ describe('interceptor', () => {
     it('no Interceptor', async () => {
       const newPage = await program.navigateTo('./page1')
       await newPage.waitFor('text')
-      const num = (await newPage.data()).page
+      const num = (await newPage.data('data')).page
       await program.navigateBack()
       expect(num).toBe(1)
       // 新增 navigator 元素
@@ -32,7 +33,7 @@ describe('interceptor', () => {
       await page.callMethod('addInterceptor')
       const newPage = await program.navigateTo('./page1')
       await newPage.waitFor('text')
-      const num = (await newPage.data()).page
+      const num = (await newPage.data('data')).page
       await program.navigateBack()
       expect(num).toBe(2)
       // 新增 navigator 元素
@@ -49,7 +50,7 @@ describe('interceptor', () => {
       await page.callMethod('removeInterceptor')
       const newPage = await program.navigateTo('./page1')
       await newPage.waitFor('text')
-      const num = (await newPage.data()).page
+      const num = (await newPage.data('data')).page
       await program.navigateBack()
       expect(num).toBe(1)
       // 新增 navigator 元素
@@ -88,6 +89,8 @@ describe('interceptor', () => {
     await program.navigateBack()
   })
 
+  if (!isDom2) {
+  // dom2 tabbar 页面暂时为页面+组件实现，没有真正的 tabbar 故无法 switchTab
   it('addSwitchTabInterceptor', async () => {
     await page.callMethod('addSwitchTabInterceptor')
     await page.callMethod('switchTab')
@@ -103,6 +106,14 @@ describe('interceptor', () => {
     await page.waitFor(500)
     const currentPage = await program.currentPage()
     expect(currentPage.path).toBe('pages/tabBar/component')
+  })
+  }
+
+  it('preventNavigateTo', async () => {
+    await page.callMethod('preventNavigateTo')
+    await page.waitFor(500)
+    const currentPage = await program.currentPage()
+    expect(currentPage.path).toBe('pages/API/interceptor/interceptor')
   })
 
 })

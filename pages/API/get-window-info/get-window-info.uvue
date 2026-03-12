@@ -2,7 +2,7 @@
   <page-head :title="title"></page-head>
   <view class="uni-common-mt">
     <view class="uni-list">
-      <view class="uni-list-cell" v-for="(item, _) in items" style="align-items: center">
+      <view class="uni-list-cell" v-for="(item, _) in data.items" style="align-items: center">
         <view class="uni-pd">
           <view class="uni-label" style="width: 180px">{{ item.label }}</view>
         </view>
@@ -23,7 +23,7 @@
     </view>
   </view>
 </template>
-<script>
+<script setup lang="uts">
   import { setStatusBarHeight, setSafeArea } from '@/store/index.uts'
   // #ifdef APP-ANDROID
   import type { SafeArea } from '@/store/index.uts'
@@ -33,66 +33,66 @@
     label : string,
     value : string,
   }
-  export default {
-    data() {
-      return {
-        title: 'getWindowInfo',
-        items: [] as Item[],
-      }
-    },
-    onUnload: function () {
-    },
-    onReady() {
-      this.getWindowInfo()
-    },
-    methods: {
-      getWindowInfo: function () {
-        const res = uni.getWindowInfo();
-        // 获取状态栏高度, 供截图对比使用
-        setStatusBarHeight(res.statusBarHeight);
-        // 获取安全区信息,供截图使用
-        // #ifdef APP-ANDROID
-        setSafeArea({
-          top: res.safeArea.top,
-          left: res.safeArea.left,
-          right: res.safeArea.right,
-          bottom: res.safeArea.bottom,
-          width: res.safeArea.width,
-          height: res.safeArea.height,
-        } as SafeArea);
-        // #endif
-        // #ifdef APP-IOS
-        setSafeArea({
-          top: res.safeArea.top,
-          left: res.safeArea.left,
-          right: res.safeArea.right,
-          bottom: res.safeArea.bottom,
-          width: res.safeArea.width,
-          height: res.safeArea.height,
-        });
-        // #endif
-        this.items = [] as Item[];
 
-        const res_str = JSON.stringify(res);
-        const res_obj = JSON.parseObject(res_str);
-        const res_map = res_obj!.toMap();
-        let keys = [] as string[]
-        res_map.forEach((_, key) => {
-          keys.push(key);
-        });
-        keys.sort().forEach(key => {
-          const value = res[key];
-          if (value != null) {
-            const item = {
-              label: key,
-              value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
-            } as Item;
-            this.items.push(item);
-          }
-        });
-      },
-    }
+  type DataType = {
+    items: Item[];
   }
+
+  const title = ref('getWindowInfo')
+  const data = reactive({
+    items: [] as Item[],
+  } as DataType)
+
+  const getWindowInfo = () => {
+    const res = uni.getWindowInfo();
+    // 获取状态栏高度, 供截图对比使用
+    setStatusBarHeight(res.statusBarHeight);
+    // 获取安全区信息,供截图使用
+    // #ifdef APP-ANDROID
+    setSafeArea({
+      top: res.safeArea.top,
+      left: res.safeArea.left,
+      right: res.safeArea.right,
+      bottom: res.safeArea.bottom,
+      width: res.safeArea.width,
+      height: res.safeArea.height,
+    } as SafeArea);
+    // #endif
+    // #ifdef APP-IOS
+    setSafeArea({
+      top: res.safeArea.top,
+      left: res.safeArea.left,
+      right: res.safeArea.right,
+      bottom: res.safeArea.bottom,
+      width: res.safeArea.width,
+      height: res.safeArea.height,
+    });
+    // #endif
+    data.items = [] as Item[];
+
+    const res_str = JSON.stringify(res);
+    const res_obj = JSON.parseObject(res_str);
+    const res_map = res_obj!.toMap();
+    let keys = [] as string[]
+    res_map.forEach((_, key) => {
+      keys.push(key);
+    });
+    keys.sort().forEach(key => {
+      const value = res[key];
+      if (value != null) {
+        const item = {
+          label: key,
+          value: "" + ((typeof value == "object") ? JSON.stringify(value) : value)
+        } as Item;
+        data.items.push(item);
+      }
+    });
+  }
+
+  onReady(() => {
+    getWindowInfo()
+  })
+
 </script>
 
 <style>

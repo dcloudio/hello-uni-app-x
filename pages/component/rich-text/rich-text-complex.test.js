@@ -25,7 +25,6 @@ describe('rich-text-test', () => {
     return
   }
 
-  let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
@@ -42,9 +41,15 @@ describe('rich-text-test', () => {
     });
   }
 
+  let page
+
+  async function setPageData(newData) {
+    return await page.setData({ data: newData });
+  }
+
   if (isAndroid && !isAppWebView) {
     it("test attr mode", async () => {
-      await page.setData({
+      await setPageData({
         mode: 'native'
       });
       await page.waitFor(1000);
@@ -55,30 +60,35 @@ describe('rich-text-test', () => {
   }
 
   it('click-event', async () => {
+    const rect = await page.callMethod("getBoundingClientRectForRichtext")
+    const windowInfo = await program.callUniMethod('getWindowInfo');
     await program.tap({
-      x: 210,
-      y: 280,
+      x: Math.ceil(rect.left + rect.width *0.7),
+      y: Math.ceil(windowInfo.statusBarHeight + 44 + rect.top + 100),
       duration: 100
     })
 
     await page.waitFor(1000);
-    const fViewClicked = await page.data('fViewClicked')
-    const selfClicked = await page.data('selfClicked')
+    const fViewClicked = await page.data('data.fViewClicked')
+    const selfClicked = await page.data('data.selfClicked')
     expect(fViewClicked).toBe(true)
     expect(selfClicked).toBe(true)
   })
 
 
   it('itemclick-event', async () => {
+    const rect = await page.callMethod("getBoundingClientRectForRichtext")
+    const windowInfo = await program.callUniMethod('getWindowInfo');
     await program.tap({
-      x: 66,
-      y: 266,
+      x: Math.ceil(rect.left + 30),
+      y: Math.ceil(windowInfo.statusBarHeight + 44 + rect.top + 60),
       duration: 100
     })
 
     await page.waitFor(500);
 
     // 关闭弹窗逻辑各平台需要适配不同机型
+
     if (isIOS) {
         // 关闭弹窗 iPhone Pro 机型
         await program.tap({
@@ -109,7 +119,7 @@ describe('rich-text-test', () => {
         })
     }
 
-    const imageClicked = await page.data('imageClicked')
+    const imageClicked = await page.data('data.imageClicked')
     expect(imageClicked).toBe(true)
   })
 

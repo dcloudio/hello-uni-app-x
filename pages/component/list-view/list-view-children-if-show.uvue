@@ -7,7 +7,7 @@
       :class="{ ' p-10': list.length > 0 }"
     >
       <list-view>
-        <template v-for="(item, index) in list">
+        <template v-for="(item, index) in list" :key="item.id">
           <list-item
 						id="toggle-children-show-btn"
             :class="{ 'uni-common-mt': index > 0 }"
@@ -16,7 +16,7 @@
             <text>toggle children isShow</text>
           </list-item>
           <template v-if="expandIds.includes(item.id)">
-            <template v-for="child in item.children">
+            <template v-for="child in item.children" :key="child.id">
               <list-item id="list-item-child" class="mt-5">
                 <text>{{ child.id }}</text>
               </list-item>
@@ -28,7 +28,9 @@
   </view>
 </template>
 
-<script>
+<script setup lang="uts">
+
+
 type Child = {
 	id: string
 }
@@ -37,40 +39,36 @@ type List = {
 	children: Child[]
 }
 
-export default {
-	data(){
-		return {
-			list: [] as List[],
-			expandIds: [] as string[],
-		}
-	},
-	onLoad() {
-		this.init()
-	},
-	methods: {
-		init(){
-			this.list = [
-				{id:'1', children: [{ id: '1-1'},{ id: '1-2'},{ id: '1-3'}]},
-				{id:'2', children: [{ id: '2-1'},{ id: '2-2'},{ id: '2-3'}]},
-				{id:'3', children: [{ id: '3-1'},{ id: '3-2'},{ id: '3-3'}]},
-			] as List[]
+const list = ref<List[]>([])
+const expandIds = ref<string[]>([])
 
-			this.expandIds = [this.list[0].id]
-		},
-		clear(){
-			this.list = [] as List[]
-			this.expandIds = [] as string[]
-		},
-		toggleChildrenShow(id: string){
-			const index = this.expandIds.findIndex((item) => item == id)
-			if(index == -1) {
-				this.expandIds.push(id)
-			} else {
-				this.expandIds.splice(index, 1)
-			}
-		},
+function init(){
+	list.value = [
+		{id:'1', children: [{ id: '1-1'},{ id: '1-2'},{ id: '1-3'}]},
+		{id:'2', children: [{ id: '2-1'},{ id: '2-2'},{ id: '2-3'}]},
+		{id:'3', children: [{ id: '3-1'},{ id: '3-2'},{ id: '3-3'}]},
+	] as List[]
+
+	expandIds.value = [list.value[0].id]
+}
+
+function clear(){
+	list.value = [] as List[]
+	expandIds.value = [] as string[]
+}
+
+function toggleChildrenShow(id: string){
+	const index = expandIds.value.findIndex((item) => item == id)
+	if(index == -1) {
+		expandIds.value.push(id)
+	} else {
+		expandIds.value.splice(index, 1)
 	}
 }
+
+onLoad(() => {
+	init()
+})
 </script>
 
 <style>

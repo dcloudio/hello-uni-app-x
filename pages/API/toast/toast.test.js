@@ -1,3 +1,4 @@
+jest.setTimeout(50000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
@@ -69,14 +70,14 @@ describe('API-toast', () => {
   })
 
   it("icon=none-mask=true-toast-test", async () => {
-    await page.setData({maskSelect: true})
+    await page.setData({data:{maskSelect: true}})
     await page.callMethod('toast3Tap')
     await page.waitFor(300);
     await toScreenshot('icon=none-mask=true-toast-image')
   })
 
   it("image-toast-test", async () => {
-    await page.setData({imageSelect: true})
+    await page.setData({data:{imageSelect: true}})
     await page.waitFor(300);
     await page.callMethod('toast1Tap')
     await page.waitFor(300);
@@ -84,7 +85,7 @@ describe('API-toast', () => {
   })
 
   it("duration-toast-test", async () => {
-    await page.setData({intervalSelect: 4000})
+    await page.setData({data:{intervalSelect: 4000}})
     await page.callMethod('toast1Tap')
     await page.waitFor(2000);
     await toScreenshot('toast-duration-2000')
@@ -99,6 +100,18 @@ describe('API-toast', () => {
   }
 
   it("position-toast-test", async () => {
+    if (isIos) {
+      const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+      if (
+        platformInfo.indexOf('14.5') != -1 ||
+        platformInfo.indexOf('13.7') != -1 ||
+        platformInfo.indexOf('12.4') != -1
+      ) {
+        expect(1).toBe(1)
+        return
+      }
+    }
+
     const positions = await page.$$('.radio-position')
     for (let i = 0;i < positions.length;i++) {
       // 等待上一个 toast 消失

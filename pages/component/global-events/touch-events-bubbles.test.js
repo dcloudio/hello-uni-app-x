@@ -23,7 +23,8 @@ describe('touch-events-test', () => {
   })
 
   it('touch-event-bubbles-test1', async () => {
-    let iconRect = await page.data('iconRect')
+    const pageData = await page.data('data')
+    let iconRect = pageData.iconRect
     if (isHarmony && iconRect.x < 20) {
       iconRect.x = 144
     }
@@ -39,12 +40,13 @@ describe('touch-events-test', () => {
 
     await page.waitFor(1500);
     await page.callMethod('isPassTest1')
-    const ret = await page.data('ret1')
+    const ret = await page.data('data.ret1')
     expect(ret).toBe(true)
   })
 
   it('touch-event-bubbles-test2', async () => {
-    let viewEleRect = await page.data('viewEleRect')
+    const pageData = await page.data('data')
+    let viewEleRect = pageData.viewEleRect
     if (isHarmony && viewEleRect.x < 20) {
       viewEleRect.x = 144
     }
@@ -60,7 +62,7 @@ describe('touch-events-test', () => {
 
     await page.waitFor(1500);
     await page.callMethod('isPassTest2')
-    const ret = await page.data('ret2')
+    const ret = await page.data('data.ret2')
     expect(ret).toBe(true)
   })
 })

@@ -12,7 +12,7 @@ describe('PickerView.uvue', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(1000)
-    await page.callMethod('setEventCallbackNum', 0)
+    await page.callMethod('setEventCallbackNumTest', 0)
     pickerViewEl = await page.$('.picker-view')
   })
 
@@ -36,7 +36,7 @@ describe('PickerView.uvue', () => {
     expect(newValue1.toString()).toEqual('0,1,30')
     // 仅在App端，setValue可触发change事件
     if (isAndroid || isIOS) {
-      const res = await page.data('result')
+      const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([ 0, 1, 30 ])
     }
@@ -46,7 +46,7 @@ describe('PickerView.uvue', () => {
     // TODO
     expect(newValue2.toString()).toEqual('10,10,10')
     if (isAndroid || isIOS) {
-      const res = await page.data('result')
+      const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([10, 10, 10])
     }
@@ -104,6 +104,8 @@ describe('PickerView.uvue', () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
       const linearToBottom = "background-image: linear-gradient(to top, #f4ff73, rgba(216, 229, 255, 0));"
+
+      // 第一次激活：设置黄色渐变
       await page.callMethod('setMaskTopStyle',true)
       await page.callMethod('setMaskBottomStyle',true)
       await page.waitFor(500)
@@ -111,6 +113,15 @@ describe('PickerView.uvue', () => {
       expect(await pickerViewEl.attribute('mask-bottom-style')).toBe(linearToBottom)
       await page.waitFor(2000)
       await toScreenshot('picker-view-app-mask-top-bottom-style')
+
+      // 第二次点击：切换回原始状态
+      await page.callMethod('setMaskTopStyle',false)
+      await page.callMethod('setMaskBottomStyle',false)
+      await page.waitFor(500)
+      expect(await pickerViewEl.attribute('mask-top-style')).toBe('')
+      expect(await pickerViewEl.attribute('mask-bottom-style')).toBe('')
+      await page.waitFor(1000)
+      await toScreenshot('picker-view-app-mask-top-bottom-style-cleared')
     })
 
     it('reopen-picker-view-page', async () => {
@@ -118,19 +129,18 @@ describe('PickerView.uvue', () => {
       await page.waitFor(500)
       page = await program.navigateTo(PAGE_PATH)
       await page.waitFor(500)
-
       const {
         year,
         month,
         day
-      } = await page.data()
+      } = await page.data('data')
       expect(year).toEqual(2018)
       expect(month).toEqual(1)
       expect(day).toEqual(12)
     })
 
     it('trigger UniPickerViewChangeEvent', async () => {
-      await page.callMethod('setEventCallbackNum', 0)
+      await page.callMethod('setEventCallbackNumTest', 0)
       await page.callMethod('setValue')
       await page.waitFor(1500)
       const eventCallbackNum = await page.callMethod('getEventCallbackNum')

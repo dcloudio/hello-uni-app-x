@@ -34,21 +34,19 @@
   </view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        statusBarHeight: 0,
-        statusBarHeight2: 0,
-      }
-    },
-    onReady() {
-      this.statusBarHeight = uni.getWindowInfo().statusBarHeight
-      // #ifndef MP-WEIXIN
-      this.statusBarHeight2 = this.$page.statusBarHeight
-      // #endif
-    }
-  }
+<script setup lang="uts">
+
+  const statusBarHeight = ref(0)
+  const statusBarHeight2 = ref(0)
+
+  const instance = getCurrentInstance()
+
+  onReady(() => {
+    statusBarHeight.value = uni.getWindowInfo().statusBarHeight
+    // #ifndef MP-WEIXIN
+    statusBarHeight2.value = instance?.proxy?.$page?.statusBarHeight ?? 0
+    // #endif
+  })
 </script>
 
 <style>

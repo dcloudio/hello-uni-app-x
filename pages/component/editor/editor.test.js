@@ -1,7 +1,11 @@
-// uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
 jest.setTimeout(30000);
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+
 describe('editor.uvue', () => {
-  if (!process.env.uniTestPlatformInfo.includes('web')) {
+  if (isDom2 || (!isWeb && !isMP)) {
     it('app', () => {
       expect(1).toBe(1)
     })
@@ -11,10 +15,11 @@ describe('editor.uvue', () => {
   beforeAll(async () => {
     page = await program.reLaunch("/pages/component/editor/editor");
     await page.waitFor('view');
+    const time = isWeb ? 3000 : 6000
+    await page.waitFor(time);
     editor = await page.$('#editor');
-    await page.waitFor(3000);
     await page.setData({
-      autoTest: true
+      data:{autoTest: true}
     })
   });
 
@@ -22,13 +27,17 @@ describe('editor.uvue', () => {
     const start = Date.now();
     await page.callMethod('blur')
     await page.waitFor(async () => {
-      return await page.data('blurTest') === true || (Date.now() - start > 2000)
+      return await page.data('data.blurTest') === true || (Date.now() - start > 2000)
     })
   }
 
   it('editor-wrapper', async () => {
     expect(await editor.attribute("placeholder")).toBe("开始输入...")
-    expect(await editor.attribute("read-only")).toBe("false")
+    if(isMP){
+      expect(await page.data("data.readOnly")).toBe(false)
+    }else{
+      expect(await editor.attribute("read-only")).toBe("false")
+    }
     expect(await program.screenshot()).toSaveImageSnapshot();
   });
 
@@ -37,7 +46,7 @@ describe('editor.uvue', () => {
     for (var i = 0; i < iconfontsEl.length - 7; i++) {
       await iconfontsEl[i].tap()
       // await page.waitFor(500)
-      const getFormats = await page.data('formats')
+      const getFormats = await page.data('data.formats')
       const name = await iconfontsEl[i].attribute('data-name')
       options.push({
         insert: '文本内容' + name,
@@ -45,7 +54,7 @@ describe('editor.uvue', () => {
       })
       await page.callMethod('setContents', options)
       await page.setData({
-        formats: {}
+        data:{formats: {}}
       })
       await iconfontsEl[i].tap()
     }
@@ -66,10 +75,11 @@ describe('editor.uvue', () => {
     await page.callMethod('insertDivider')
     await page.waitFor(500)
     await page.callMethod('undo')
-    await page.waitFor(500)
-    expect(await page.data('undoTest')).toBe(true)
+    await page.waitFor(1000)
+    expect(await page.data('data.undoTest')).toBe(true)
     await page.callMethod('redo')
-    expect(await page.data('redoTest')).toBe(true)
+    if(isMP){await page.waitFor(1000)}
+    expect(await page.data('data.redoTest')).toBe(true)
   })
 
   it('insertImage', async () => {
@@ -77,7 +87,7 @@ describe('editor.uvue', () => {
     await page.callMethod('insertImage', 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png')
     const start1 = Date.now();
     await page.waitFor(async () => {
-      return await page.data('insertImageTest') === true || (Date.now() - start1 > 2000)
+      return await page.data('data.insertImageTest') === true || (Date.now() - start1 > 2000)
     })
   })
 
@@ -92,15 +102,16 @@ describe('editor.uvue', () => {
     const bgcolorEl = await page.$('.icon-fontbgcolor');
     await bgcolorEl.tap()
     await page.waitFor(500)
-    const getFormats = await page.data('formats')
+    const getFormats = await page.data('data.formats')
     await page.callMethod('setContents', [{
       insert: '设置字体样式bgcolor',
       attributes: getFormats
     }])
     await page.waitFor(500)
     await page.callMethod('removeFormat')
-    expect(await page.data('removeFormatTest')).toBe(true)
-    expect(await page.data('formats')).toEqual({})
+    if(isMP){await page.waitFor(1000)}
+    expect(await page.data('data.removeFormatTest')).toBe(true)
+    expect(await page.data('data.formats')).toEqual({})
   })
 
 });

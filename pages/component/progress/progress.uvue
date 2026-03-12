@@ -1,78 +1,103 @@
-<script>
+<script setup lang="uts">
   import { state, setEventCallbackNum } from '@/store/index.uts'
   import { ItemType } from '@/components/enum-data/enum-data-types'
-  export default {
-    data() {
-      return {
-        title: 'progress',
-        pgList: [0, 0, 0, 0] as number[],
-        curPercent: 0,
-        showInfo: true,
-        borderRadius: 0,
-        fontSize: 16,
-        strokeWidth: 3,
-        backgroundColor: '#EBEBEB',
 
-        // 组件属性 autotest
-        active_boolean: false,
-        show_info_boolean: false,
-        duration_input: 30,
-        percent_input: 0,
-        stroke_width_input: 6,
-        activeColor_input: "#09BB07",
-        backgroundColor_input: "#EBEBEB",
-        active_mode_enum: [{ "value": 0, "name": "backwards" }, { "value": 1, "name": "forwards" }] as ItemType[],
-        active_mode_enum_current: 0
-      }
-    },
-    methods: {
-      // 自动化测试
-      getEventCallbackNum() : number {
-        return state.eventCallbackNum
-      },
-      // 自动化测试
-      setEventCallbackNum(num : number) {
-        setEventCallbackNum(num)
-      },
-
-      setProgress() {
-        this.pgList = [20, 40, 60, 80] as number[]
-      },
-      clearProgress() {
-        this.pgList = [0, 0, 0, 0] as number[]
-      },
-      activeend(e : UniProgressActiveendEvent) {
-        // 自动化测试
-        if ((e.target?.tagName ?? '').includes('PROGRESS')) {
-          this.setEventCallbackNum(state.eventCallbackNum + 1)
-        }
-        if (e.type === 'activeend') {
-          this.setEventCallbackNum(state.eventCallbackNum + 2)
-        }
-        this.curPercent = e.detail.curPercent
-      },
-      progress_touchstart() { console.log("手指触摸动作开始") },
-      progress_touchmove() { console.log("手指触摸后移动") },
-      progress_touchcancel() { console.log("手指触摸动作被打断，如来电提醒，弹窗") },
-      progress_touchend() { console.log("手指触摸动作结束") },
-      progress_tap() { console.log("手指触摸后马上离开") },
-      change_active_boolean(checked : boolean) { this.active_boolean = checked },
-      change_show_info_boolean(checked : boolean) { this.show_info_boolean = checked },
-      confirm_duration_input(value : number) { this.duration_input = value },
-      confirm_percent_input(value : number) { this.percent_input = value },
-      confirm_stroke_width_input(value : number) { this.stroke_width_input = value },
-      confirm_activeColor_input(value : string) { this.activeColor_input = value },
-      confirm_backgroundColor_input(value : string) { this.backgroundColor_input = value },
-      radio_change_active_mode_enum(checked : number) { this.active_mode_enum_current = checked }
-    }
+  type DataType = {
+    title: string;
+    pgList: number[];
+    curPercent: number;
+    showInfo: boolean;
+    borderRadius: number;
+    fontSize: number;
+    strokeWidth: number;
+    backgroundColor: string;
+    // 组件属性 autotest
+    active_boolean: boolean;
+    show_info_boolean: boolean;
+    duration_input: number;
+    percent_input: number;
+    stroke_width_input: number;
+    activeColor_input: string;
+    backgroundColor_input: string;
+    active_mode_enum: ItemType[];
+    active_mode_enum_current: number;
   }
+
+  // 使用reactive包装数据，避免ref数据在自动化测试中无法获取的问题
+  const data = reactive({
+    title: 'progress',
+    pgList: [0, 0, 0, 0] as number[],
+    curPercent: 0,
+    showInfo: true,
+    borderRadius: 0,
+    fontSize: 16,
+    strokeWidth: 3,
+    backgroundColor: '#EBEBEB',
+    // 组件属性 autotest
+    active_boolean: false,
+    show_info_boolean: false,
+    duration_input: 30,
+    percent_input: 0,
+    stroke_width_input: 6,
+    activeColor_input: "#09BB07",
+    backgroundColor_input: "#EBEBEB",
+    active_mode_enum: [{ "value": 0, "name": "backwards" }, { "value": 1, "name": "forwards" }] as ItemType[],
+    active_mode_enum_current: 0
+  } as DataType)
+
+  // 自动化测试
+  const getEventCallbackNum = () : number => {
+    return state.eventCallbackNum
+  }
+  // 自动化测试
+  const setEventCallbackNumTest = (num : number) => {
+    setEventCallbackNum(num)
+  }
+
+  const setProgress = () => {
+    data.pgList = [20, 40, 60, 80] as number[]
+  }
+  const clearProgress = () => {
+    data.pgList = [0, 0, 0, 0] as number[]
+  }
+  const activeend = (e : UniProgressActiveendEvent) => {
+    // 自动化测试
+    if ((e.target?.tagName ?? '').includes('PROGRESS')) {
+      setEventCallbackNumTest(state.eventCallbackNum + 1)
+    }
+    if (e.type === 'activeend') {
+      setEventCallbackNumTest(state.eventCallbackNum + 2)
+    }
+    data.curPercent = e.detail.curPercent
+  }
+  const progress_touchstart = () => { console.log("手指触摸动作开始") }
+  const progress_touchmove = () => { console.log("手指触摸后移动") }
+  const progress_touchcancel = () => { console.log("手指触摸动作被打断，如来电提醒，弹窗") }
+  const progress_touchend = () => { console.log("手指触摸动作结束") }
+  const progress_tap = () => { console.log("手指触摸后马上离开") }
+  const change_active_boolean = (checked : boolean) => { data.active_boolean = checked }
+  const change_show_info_boolean = (checked : boolean) => { data.show_info_boolean = checked }
+  const confirm_duration_input = (value : number) => { data.duration_input = value }
+  const confirm_percent_input = (value : number) => { data.percent_input = value }
+  const confirm_stroke_width_input = (value : number) => { data.stroke_width_input = value }
+  const confirm_activeColor_input = (value : string) => { data.activeColor_input = value }
+  const confirm_backgroundColor_input = (value : string) => { data.backgroundColor_input = value }
+  const radio_change_active_mode_enum = (checked : number) => { data.active_mode_enum_current = checked }
+
+  defineExpose({
+    data,
+    getEventCallbackNum,
+    setEventCallbackNumTest,
+    setProgress,
+    clearProgress,
+  })
 </script>
 
 <template>
   <view class="main">
-    <progress :duration="duration_input" :percent="percent_input" :show-info="show_info_boolean"
-      :stroke-width="stroke_width_input" :activeColor="activeColor_input" :backgroundColor="backgroundColor_input"
-      :active="active_boolean" :active-mode="active_mode_enum[active_mode_enum_current].name"
+    <progress :duration="data.duration_input" :percent="data.percent_input" :show-info="data.show_info_boolean"
+      :stroke-width="data.stroke_width_input" :activeColor="data.activeColor_input" :backgroundColor="data.backgroundColor_input"
+      :active="data.active_boolean" :active-mode="data.active_mode_enum[data.active_mode_enum_current].name"
       @touchstart="progress_touchstart" @touchmove="progress_touchmove" @touchcancel="progress_touchcancel"
       @touchend="progress_touchend" @tap="progress_tap" style="width: 80%">
     </progress>
@@ -91,7 +116,7 @@
         @confirm="confirm_activeColor_input"></input-data>
       <input-data defaultValue="#EBEBEB" title="未选择的进度条的颜色" type="text"
         @confirm="confirm_backgroundColor_input"></input-data>
-      <enum-data :items="active_mode_enum" title="backwards: 动画从头播；forwards：动画从上次结束点接着播"
+      <enum-data :items="data.active_mode_enum" title="backwards: 动画从头播；forwards：动画从上次结束点接着播"
         @change="radio_change_active_mode_enum"></enum-data>
     </view>
 
@@ -99,18 +124,18 @@
       <page-head title="默认及使用"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="progress-box">
-          <progress :percent="pgList[0]" :active="true" :border-radius="borderRadius" :show-info="showInfo"
-            :font-size="fontSize" :stroke-width="strokeWidth" :background-color="backgroundColor" class="progress p"
+          <progress :percent="data.pgList[0]" :active="true" :border-radius="data.borderRadius" :show-info="data.showInfo"
+            :font-size="data.fontSize" :stroke-width="data.strokeWidth" :background-color="data.backgroundColor" class="progress p"
             @activeend="activeend" />
         </view>
         <view class="progress-box">
-          <progress :percent="pgList[1]" :stroke-width="3" class="progress p1" />
+          <progress :percent="data.pgList[1]" :stroke-width="3" class="progress p1" />
         </view>
         <view class="progress-box">
-          <progress :percent="pgList[2]" :stroke-width="3" class="progress p2" />
+          <progress :percent="data.pgList[2]" :stroke-width="3" class="progress p2" />
         </view>
         <view class="progress-box">
-          <progress :percent="pgList[3]" activeColor="#10AEFF" :stroke-width="3" class="progress p3" />
+          <progress :percent="data.pgList[3]" activeColor="#10AEFF" :stroke-width="3" class="progress p3" />
         </view>
         <view class="progress-control">
           <button type="primary" @click="setProgress" class="button">
@@ -122,6 +147,10 @@
         </view>
       </view>
     </view>
+
+    <navigator class="uni-common-mb" url="/pages/template/progress-100/progress-100">
+      <button>组件性能测试</button>
+    </navigator>
   </scroll-view>
 </template>
 

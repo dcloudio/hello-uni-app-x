@@ -4,7 +4,7 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-  
+
 const PAGE_PATH = '/pages/component/global-events/global-events'
 
 describe('event trigger', () => {
@@ -17,13 +17,18 @@ describe('event trigger', () => {
 
   let page
   const tapParams = {
-    x: 100,
-    y: 380,
+    x: 0,
+    y: 0,
     duration: 1000
   }
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view')
+    const windowInfo = await program.callUniMethod('getWindowInfo');
+    topSafeArea = windowInfo.safeAreaInsets.top;
+    const longPressTargetRect = await page.data('longPressTargetRect')
+    tapParams.x = parseInt(longPressTargetRect.x + longPressTargetRect.width / 2)
+    tapParams.y = parseInt(longPressTargetRect.y + longPressTargetRect.height / 2 + topSafeArea)
   })
 
   it('touch', async () => {
@@ -276,13 +281,6 @@ describe('event trigger', () => {
         expect(await longPressChangedTouchScreenY.text()).toBe(longPressTouchTargetValue)
 
         if (isAndroid || isIos || isHarmony) {
-          if (isIos) {
-            // 规避系统授权弹框
-            await program.tap({
-              x: 100,
-              y: 500,
-            })
-          }
           await program.tap(tapParams)
           const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
           expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
@@ -333,9 +331,8 @@ describe('event trigger', () => {
 
   if (isIos || isHarmony) {
     it('mock tap event', async () => {
-      await page.setData({
-        clickEvent: null
-      })
+      await page.callMethod('clearAllEvents')
+
       tapParams.duration = 0
       await program.tap(tapParams)
       await page.waitFor(200)

@@ -13,35 +13,36 @@
   </view>
 </template>
 
-<script lang="uts">
-  export default {
-    data() {
-      return {
-        checked: false,
-        homePagePath: '/pages/tabBar/component',
-        launchOptionsPath: '',
-      }
-    },
-    methods: {
-      getElementByNotExistId() : Element | null {
-        return uni.getElementById('not-exist-id')
-      },
-      changePageHeadBackgroundColor() {
-        const pageHead = uni.getElementById('page-head')!
-        pageHead.style.setProperty('background-color', 'red')
-      },
-      changeTextColor() {
-        const text = uni.getElementById('text')!
-        text.style.setProperty('color', 'red')
-      },
-      changeViewStyle() {
-        const view = uni.getElementById<UniViewElement>('view')
-        if (view !== null) {
-          view.style.setProperty('width', '90%')
-          view.style.setProperty('height', '50px')
-          view.style.setProperty('background-color', '#007AFF')
-        }
-      }
-    }
+<script setup lang="uts">
+
+// Methods
+function getElementByNotExistId() : Element | null {
+  return uni.getElementById('not-exist-id')
+}
+
+function changePageHeadBackgroundColor() {
+  const pageHead = uni.getElementById('page-head')!
+  pageHead.style.setProperty('background-color', 'red')
+}
+
+function changeTextColor() {
+  const text = uni.getElementById('text')!
+  text.style.setProperty('color', 'red')
+}
+
+function changeViewStyle() {
+  const view = uni.getElementById<UniViewElement>('view')
+  if (view !== null) {
+    view.style.setProperty('width', '90%')
+    view.style.setProperty('height', '50px')
+    view.style.setProperty('background-color', '#007AFF')
   }
+}
+
+defineExpose({
+  getElementByNotExistId,
+  changePageHeadBackgroundColor,
+  changeTextColor,
+  changeViewStyle
+})
 </script>

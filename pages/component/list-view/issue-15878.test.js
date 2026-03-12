@@ -18,7 +18,9 @@ describe('issue-15878', () => {
 
   it('issue-15878', async () => {
     await page.setData({
-      refresherTriggered: true
+      data: {
+        refresherTriggered: true
+      }
     })
     await page.waitFor(600)
     const image = await program.screenshot({

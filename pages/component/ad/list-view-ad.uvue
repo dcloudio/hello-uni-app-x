@@ -1,7 +1,6 @@
 <template>
-
   <list-view @scrolltolower="onScrollTolower" style="flex:1" show-scrollbar=false>
-    <list-item v-for="index in listcount" :type="(index != 0 && index%10 == 6) ? 0:1">
+    <list-item v-for="index in listcount" :key="index" :type="(index != 0 && index%10 == 6) ? 0:1">
       <!-- #ifndef MP -->
       <ad v-if="index != 0 && index%10 == 6" adpid="1111111111" @load="onAdLoad" @error="onAdError" @close="onAdClose"></ad>
       <!-- #endif -->
@@ -13,32 +12,32 @@
   </list-view>
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        listcount: 10
-      }
-    },
-    methods: {
-      onScrollTolower(_ : ScrollToLowerEvent) {
-        setTimeout(() => {
-          this.listcount = this.listcount + 10
-        }, 300)
-      },
-      onAdLoad() {
-        console.log("广告加载成功")
-        uni.showToast({
-          position: "center",
-          title: "广告加载成功"
-        })
-      },
-      onAdError(e : UniAdErrorEvent) {
-        console.log("广告加载失败" + (e.detail))
-      },
-      onAdClose() {
-        console.log("广告关闭了")
-      }
-    }
-  }
+<script setup lang="uts">
+
+
+// Data
+const listcount = ref(10)
+
+// Methods
+function onScrollTolower(event : ScrollToLowerEvent) {
+  setTimeout(() => {
+    listcount.value = listcount.value + 10
+  }, 300)
+}
+
+function onAdLoad() {
+  console.log("广告加载成功")
+  uni.showToast({
+    position: "center",
+    title: "广告加载成功"
+  })
+}
+
+function onAdError(e : UniAdErrorEvent) {
+  console.log("广告加载失败" + (e.detail))
+}
+
+function onAdClose() {
+  console.log("广告关闭了")
+}
 </script>

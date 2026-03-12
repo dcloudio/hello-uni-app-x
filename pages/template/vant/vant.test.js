@@ -13,7 +13,7 @@ describe('test vant', () => {
     page = await program.reLaunch('/pages/template/vant/vant')
     await page.waitFor(3000);
     vantBtnContainer = await page.$('vant-button');
-    expect(await page.data('jest')).toBe(false);
+    expect(await page.data('data.jest')).toBe(false);
   });
   afterAll(async () => {
     expect(await program.screenshot()).toSaveImageSnapshot();
@@ -24,6 +24,6 @@ describe('test vant', () => {
     vantBtn = await vantBtnContainer.$('button')
     await vantBtn.tap()
     await page.waitFor(1000);
-    expect(await page.data('jest')).toBe(true);
+    expect(await page.data('data.jest')).toBe(true);
   });
 });

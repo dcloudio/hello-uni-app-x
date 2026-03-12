@@ -3,14 +3,21 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const CURRENT_PAGE_PATH = "/pages/template/navbar-lite/navbar-lite";
 
 describe("setCustomNavigationBarColor", () => {
+  if (isAppWebView) {
+  	it('skip not support', () => {
+  		expect(1).toBe(1)
+  	})
+  	return
+  }
+
   let page;
   let originLifeCycleNum;
-  const isAndroid = process.env.UNI_OS_NAME === "android";
-  const screenShotArea = {
+  let screenShotArea = {
     x: 342,
     y:18,
     width: 40,
@@ -48,7 +55,7 @@ describe("setCustomNavigationBarColor", () => {
     expect(lifeCycleNum).toBe(originLifeCycleNum);
   });
 
-  it("setNavigationBarColor2", async () => {
+  it("setNavigationBarColor-black", async () => {
     await page.callMethod("setNavigationBarColor2");
     await page.waitFor(1000);
     if (isApp) {
@@ -62,10 +69,10 @@ describe("setCustomNavigationBarColor", () => {
     expect(lifeCycleNum - originLifeCycleNum).toBe(2);
   });
 
-  it("setNavigationBarColor1", async () => {
+  it("setNavigationBarColor-white", async () => {
     await page.callMethod("setNavigationBarColor1");
     await page.waitFor(1000);
-    if (isAndroid) {
+    if (isApp) {
       const image = await program.screenshot({
         deviceShot: true,
         area: screenShotArea,
@@ -75,4 +82,42 @@ describe("setCustomNavigationBarColor", () => {
     const lifeCycleNum = await page.callMethod("getLifeCycleNum");
     expect(lifeCycleNum - originLifeCycleNum).toBe(4);
   });
+
+  if (isApp) {
+    it("input-in-scroll-view-focus", async () => {
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      let topSafeArea = windowInfo.statusBarHeight;
+      screenShotArea = {
+        x: 0,
+        y: topSafeArea
+      }
+      await page.setData({ data: { indexView: 2 } });
+      await page.waitFor(1000);
+      await page.setData({ data: { indexView: 0 } });
+      await page.waitFor(1000);
+      await page.setData({ data: { scrollViewInputFocus: true } });
+      await page.waitFor(1000);
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: screenShotArea,
+      });
+      expect(image).toSaveImageSnapshot();
+      await page.setData({ data: { scrollViewInputFocus: false } });
+      await page.waitFor(1000);
+    });
+
+    it("input-in-list-view-focus", async () => {
+      await page.setData({ data: { indexView: 1 } });
+      await page.waitFor(1000);
+      await page.setData({ data: { listViewInputFocus: true } });
+      await page.waitFor(1000);
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: screenShotArea,
+      });
+      expect(image).toSaveImageSnapshot();
+      await page.setData({ data: { listViewInputFocus: false } });
+      await page.waitFor(1000);
+    });
+  }
 });

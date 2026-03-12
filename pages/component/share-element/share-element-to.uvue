@@ -16,25 +16,20 @@
     </view>
   </share-element>
 </template>
-<script>
-  export default {
-    data() {
-      return {
-        shuttleOnPush: "to",
-        transitionOnGesture: false
-      }
-    },
-    onLoad(event : OnLoadOptions) {
-      this.shuttleOnPush = event["shuttleOnPush"] as string
-      this.transitionOnGesture = event["transitionOnGesture"] === "true"
-      console.log(`shuttleOnPush:${this.shuttleOnPush} transitionOnGesture:${this.transitionOnGesture}`)
-    },
-    methods: {
-      openPage() {
-        uni.navigateBack()
-      }
-    },
-  }
+<script setup lang="uts">
+
+const shuttleOnPush = ref("to")
+const transitionOnGesture = ref(false)
+
+function openPage() {
+  uni.navigateBack()
+}
+
+onLoad((event : OnLoadOptions) => {
+  shuttleOnPush.value = event["shuttleOnPush"] as string
+  transitionOnGesture.value = event["transitionOnGesture"] === "true"
+  console.log(`shuttleOnPush:${shuttleOnPush.value} transitionOnGesture:${transitionOnGesture.value}`)
+})
 </script>
 
 <style>

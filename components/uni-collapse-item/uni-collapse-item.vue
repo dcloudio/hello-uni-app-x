@@ -1,5 +1,5 @@
 <template>
-  <view class="uni-collapse-item">
+  <view class="uni-collapse-item" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
     <view class="uni-collapse-item__title" @click="openCollapse(!is_open)">
       <text class="uni-collapse-item__title-text" :class="{'is-disabled':disabled,'open--active':is_open}">{{title}}</text>
       <view class="down_arrow" :class="{'down_arrow--active': is_open}"></view>
@@ -14,9 +14,14 @@
 
 <script lang="uts" setup>
   import { ItemChildType } from '../uni-collapse/item.type.uts'
+  import { state } from '@/store/index.uts'
+  const isDarkMode = computed((): boolean => {
+    return state.isDarkMode
+  })
 
   defineOptions({
-    name: "UniCollapseItem"
+    name: "UniCollapseItem",
+    styleIsolation: 'app'
   })
 
   const props = defineProps({
@@ -100,14 +105,14 @@
     background-color: #fff;
   } */
 
-  .uni-collapse-item .uni-collapse-item__title {
+  .uni-collapse-item__title {
     flex-direction: row;
     align-items: center;
     padding: 12px 18px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color,#ffffff);
   }
 
-  .uni-collapse-item .down_arrow {
+  .down_arrow {
     width: 8px;
     height: 8px;
     transform: rotate(45deg);
@@ -115,49 +120,49 @@
     border-bottom: 1px #999 solid;
     margin-top: -3px;
     transition-property: transform;
-    transition-duration: 0.2s;
+    transition-duration: 150ms;
   }
 
-  .uni-collapse-item .down_arrow--active {
+  .down_arrow--active {
     transform: rotate(-135deg);
     margin-top: 0px;
   }
 
-  .uni-collapse-item .uni-collapse-item__title-text {
+  .uni-collapse-item__title-text {
     flex: 1;
-    color: #000;
     font-size: 14px;
     font-weight: 400;
+    color: var(--text-color, #333333);
   }
 
-  .uni-collapse-item .open--active {
+  .open--active {
     /* background-color: #f0f0f0; */
-    color: #bbb;
+    color: var(--active-color, #bbb);
   }
 
-  .uni-collapse-item .is-disabled {
+  .is-disabled {
     color: #999;
   }
 
-  .uni-collapse-item .uni-collapse-item__content {
+  .uni-collapse-item__content {
     display: none;
     position: relative;
     overflow: hidden;
   }
 
-  .uni-collapse-item .box-open--active {
+  .box-open--active {
     display: flex;
   }
 
-  .uni-collapse-item .uni-collapse-item__content-box {
+  .uni-collapse-item__content-box {
     width: 100%;
     transition-property: transform, opacity;
-    transition-duration: 0.2s;
+    transition-duration: 150ms;
     transform: translateY(-100%);
     opacity: 0;
   }
 
-  .uni-collapse-item .content-open--active {
+  .content-open--active {
     transform: translateY(0%);
     opacity: 1;
   }

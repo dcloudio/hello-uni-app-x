@@ -25,14 +25,14 @@ describe('API-getImageInfo', () => {
   it('test getImageInfo', async () => {
     await page.waitFor(500);
     if (isWeb) {
-      expect(await page.data('imageInfoForTest')).toEqual({
+      expect(await page.data('testState.imageInfoForTest')).toEqual({
         width: 192,
         height: 192,
         path: 'test-image/logo.png'
       });
       return;
     }
-    expect(await page.data('imageInfoForTest')).toEqual({
+    expect(await page.data('testState.imageInfoForTest')).toEqual({
       width: 192,
       height: 192,
       path: 'test-image/logo.png',

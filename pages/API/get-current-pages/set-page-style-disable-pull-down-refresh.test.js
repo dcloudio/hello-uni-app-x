@@ -17,7 +17,7 @@ describe('getCurrentPages', () => {
     page = await program.navigateTo(PAGE_PATH)
     //onLoad会对currentPageStyle赋值
     await page.waitFor(200)
-    const currentPageStyle = (await page.data()).currentPageStyle
+    const currentPageStyle = await page.data('data.currentPageStyle')
     const isEnablePullDownRefresh1 = currentPageStyle.enablePullDownRefresh
     expect(isEnablePullDownRefresh1).toBe(false)
     //校验pageStyle数据是否完整
@@ -27,7 +27,8 @@ describe('getCurrentPages', () => {
     await page.waitFor(200)
     await page.callMethod('getPageStyle')
     await page.waitFor(200)
-    const isEnablePullDownRefresh2 = (await page.data()).currentPageStyle.enablePullDownRefresh
+    const currentPageStyle2 = await page.data('data.currentPageStyle')
+    const isEnablePullDownRefresh2 = currentPageStyle2.enablePullDownRefresh
     expect(isEnablePullDownRefresh2).toBe(true)
     await page.callMethod('startPullDownRefresh')
     await page.waitFor(500)

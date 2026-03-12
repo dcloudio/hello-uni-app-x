@@ -66,7 +66,7 @@
           </view>
           <view class="uni-flex" style="flex-wrap: wrap;">
             <view v-for="(file,index) in mediaList" :key="index" class="uni-uploader__input-box" style="border: 0;">
-              <image style="width: 104px; height: 104px;" :src="file.imagePath" :data-src="file.imagePath" @tap="previewMedia(index)">
+              <image style="width: 104px; height: 104px;" :src="file.imagePath" @tap="previewMedia(index)">
               </image>
               <image src="/static/plus.png" class="image-remove" @click="removeMedia(index)"></image>
             </view>
@@ -80,7 +80,7 @@
   <!-- #endif -->
 </template>
 
-<script>
+<script setup lang="uts">
   type FileSource = {
     imagePath : string;
     filePath : string;
@@ -144,135 +144,137 @@
       title: '后置摄像头',
     }
   ];
-  export default {
-    data() {
-      return {
-        title: 'chooseMedia',
-        mediaList: [] as Array<FileSource>,
-        sourceTypeIndex: 2,
-        mediaTypeIndex: 2,
-        cameraTypeIndex: 1,
-        orientationTypeIndex: 0,
-        albumModeTypeIndex: 0,
-        count: 9,
-        maxDuration: 10,
-        sourceTypes: sourceTypeList as ChooseSource[],
-        mediaTypes: mediaTypeList as ChooseSource[],
-        cameraTypes: cameraTypeList as ChooseSource[],
-        orientationTypes: orientationTypeList as ChooseSource[]
+
+  const title = ref('chooseMedia')
+  const mediaList = ref([] as Array<FileSource>)
+  const sourceTypeIndex = ref(2)
+  const mediaTypeIndex = ref(2)
+  const cameraTypeIndex = ref(1)
+  const orientationTypeIndex = ref(0)
+  const albumModeTypeIndex = ref(0)
+  const count = ref(9)
+  const maxDuration = ref(10)
+  const sourceTypes = ref(sourceTypeList as ChooseSource[])
+  const mediaTypes = ref(mediaTypeList as ChooseSource[])
+  const cameraTypes = ref(cameraTypeList as ChooseSource[])
+  const orientationTypes = ref(orientationTypeList as ChooseSource[])
+  const refCountInput = ref<UniElement | null>(null)
+
+  const chooseMediaSource = () => {
+    uni.showActionSheet({
+      itemList: ['拍摄', '相册', '拍摄或相册'],
+      success: (e) => {
+        sourceTypeIndex.value = e.tapIndex
       }
-    },
-    methods: {
-      chooseMediaSource() {
-        uni.showActionSheet({
-          itemList: ['拍摄', '相册', '拍摄或相册'],
-          success: (e) => {
-            this.sourceTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseMediaType() {
-        uni.showActionSheet({
-          itemList: ['仅图片', '仅视频', '不限制'],
-          success: (e) => {
-            this.mediaTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseMediaCount(event : UniInputBlurEvent) {
-        let count = parseInt(event.detail.value)
-        if (count < 1 || count > 9 || isNaN(count)) {
-          uni.showToast({
-            position: "bottom",
-            title: "图片数量应该不小于1不大于9"
-          })
-          return
-        }
-        this.count = count
-      },
-      chooseOrientationType() {
-        uni.showActionSheet({
-          itemList: ['竖屏', '横屏', '自动'],
-          success: (e) => {
-            this.orientationTypeIndex = e.tapIndex
-          }
-        })
-      },
-      chooseCameraType() {
-        uni.showActionSheet({
-          itemList: ['前置', '后置'],
-          success: (e) => {
-            this.cameraTypeIndex = e.tapIndex
-          }
-        })
-      },
-      onMaxDurationConfirm(value : number) {
-        this.maxDuration = value;
-      },
-      chooseMedia() {
-        if (this.mediaList.length >= this.count) {
-          const message = "已经有" + this.count + "个了，请删除部分后重新选择";
-          uni.showToast({
-            position: "bottom",
-            title: message
-          })
-          return
-        }
+    })
+  }
 
-        uni.chooseMedia({
-          count: this.count - this.mediaList.length,
-          sourceType: sourceTypeList[this.sourceTypeIndex].value,
-          mediaType: mediaTypeList[this.mediaTypeIndex].value,
-          camera: cameraTypeList[this.cameraTypeIndex].value[0],
-          // #ifdef APP-IOS
-          maxDuration: this.maxDuration,
-          // #endif
-          // #ifdef APP-ANDROID
-          pageOrientation: orientationTypeList[this.orientationTypeIndex].value[0],
-          // #endif
-          success: (res) => {
-            const tempFiles : ChooseMediaTempFile[] = res.tempFiles as ChooseMediaTempFile[];
-            for (let i = 0; i < tempFiles.length; i++) {
-              const tempFile : ChooseMediaTempFile = tempFiles[i]
-              const imagePath = tempFile.fileType == "image" ? tempFile.tempFilePath : tempFile.thumbTempFilePath;
-              const file : FileSource = { imagePath: imagePath!, filePath: tempFile.tempFilePath, fileType: tempFile.fileType };
-              this.mediaList.push(file);
-            }
-          },
-          fail: (err) => {
-            console.log("err: ", JSON.stringify(err));
-            uni.showToast({
-              title:"choose media error.code:" + err.errCode+";message:"+err.errMsg,
-              position:"bottom"
-            })
-          }
-        })
-      },
-      previewMedia: function (index : number) {
-        const file : FileSource = this.mediaList[index];
-        if (file.fileType == "image") {
-          uni.previewImage({
-            current: 0,
-            urls: [file.filePath]
-          })
-        } else {
-          uni.$once("__ONFULLVIDEOLOAD", () => {
-            uni.$emit("__ONRECEIVEURL", {
-              "url": file.filePath,
-              "cover": file.imagePath
-            })
-          })
-          const url = "/pages/API/choose-media/fullscreen-video";
-          uni.navigateTo({
-            url: url,
-          })
-        }
+  const chooseMediaType = () => {
+    uni.showActionSheet({
+      itemList: ['仅图片', '仅视频', '不限制'],
+      success: (e) => {
+        mediaTypeIndex.value = e.tapIndex
+      }
+    })
+  }
 
-      },
-      removeMedia(index : number) {
-        this.mediaList.splice(index, 1)
-      },
+  const chooseMediaCount = (event: UniInputBlurEvent) => {
+    let countValue = parseInt(event.detail.value)
+    if (countValue < 1 || countValue > 9 || isNaN(countValue)) {
+      uni.showToast({
+        position: "bottom",
+        title: "图片数量应该不小于1不大于9"
+      })
+      return
     }
+    count.value = countValue
+  }
+
+  const chooseOrientationType = () => {
+    uni.showActionSheet({
+      itemList: ['竖屏', '横屏', '自动'],
+      success: (e) => {
+        orientationTypeIndex.value = e.tapIndex
+      }
+    })
+  }
+
+  const chooseCameraType = () => {
+    uni.showActionSheet({
+      itemList: ['前置', '后置'],
+      success: (e) => {
+        cameraTypeIndex.value = e.tapIndex
+      }
+    })
+  }
+
+  const onMaxDurationConfirm = (value: number) => {
+    maxDuration.value = value;
+  }
+
+  const chooseMedia = () => {
+    if (mediaList.value.length >= count.value) {
+      const message = "已经有" + count.value + "个了，请删除部分后重新选择";
+      uni.showToast({
+        position: "bottom",
+        title: message
+      })
+      return
+    }
+
+    uni.chooseMedia({
+      count: count.value - mediaList.value.length,
+      sourceType: sourceTypeList[sourceTypeIndex.value].value,
+      mediaType: mediaTypeList[mediaTypeIndex.value].value,
+      camera: cameraTypeList[cameraTypeIndex.value].value[0],
+      // #ifdef APP-IOS
+      maxDuration: maxDuration.value,
+      // #endif
+      // #ifdef APP-ANDROID
+      pageOrientation: orientationTypeList[orientationTypeIndex.value].value[0],
+      // #endif
+      success: (res) => {
+        const tempFiles : ChooseMediaTempFile[] = res.tempFiles as ChooseMediaTempFile[];
+        for (let i = 0; i < tempFiles.length; i++) {
+          const tempFile : ChooseMediaTempFile = tempFiles[i]
+          const imagePath = tempFile.fileType == "image" ? tempFile.tempFilePath : tempFile.thumbTempFilePath;
+          const file : FileSource = { imagePath: imagePath!, filePath: tempFile.tempFilePath, fileType: tempFile.fileType };
+          mediaList.value.push(file);
+        }
+      },
+      fail: (err) => {
+        console.log("err: ", JSON.stringify(err));
+        uni.showToast({
+          title:"choose media error.code:" + err.errCode+";message:"+err.errMsg,
+          position:"bottom"
+        })
+      }
+    })
+  }
+
+  const previewMedia = (index: number) => {
+    const file : FileSource = mediaList.value[index];
+    if (file.fileType == "image") {
+      uni.previewImage({
+        current: 0,
+        urls: [file.filePath]
+      })
+    } else {
+      uni.$once("__ONFULLVIDEOLOAD", () => {
+        uni.$emit("__ONRECEIVEURL", {
+          "url": file.filePath,
+          "cover": file.imagePath
+        })
+      })
+      const url = "/pages/API/choose-media/fullscreen-video";
+      uni.navigateTo({
+        url: url,
+      })
+    }
+  }
+
+  const removeMedia = (index: number) => {
+    mediaList.value.splice(index, 1)
   }
 </script>
 

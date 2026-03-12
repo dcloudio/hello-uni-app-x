@@ -40,8 +40,8 @@ const swiperIndex = ref(0)
 const tabScroll = ref<UniScrollViewElement | null>(null)
 const swipertab = ref<UniTextElement[] | null>(null)
 const swiper = ref<UniSwiperElement | null>(null)
-const animationFinishIndex = ref(0)
-const swiperWidth = ref(0)
+let animationFinishIndex = 0
+let swiperWidth = 0
 
 function updateTabIndicator(current_index : number, move_to_index : number, percentage : number) {
   if (percentage == 0) {
@@ -57,7 +57,7 @@ function updateTabIndicator(current_index : number, move_to_index : number, perc
   const move_to_scale = lerpNumber(min_ratio, max_ratio, percentage)
   move_to_node.style.setProperty('transform', `scale(${move_to_scale})`)
   const target_x = lerpNumber(current_node.offsetLeft, move_to_node.offsetLeft, percentage)
-  const center_x = target_x + move_to_node.offsetWidth / 2 - swiperWidth.value / 2
+  const center_x = target_x + move_to_node.offsetWidth / 2 - swiperWidth / 2
   // app 平台后续支持 scrollTo()
   // #ifndef MP-WEIXIN
   tabScroll.value!.scrollLeft = center_x
@@ -85,16 +85,16 @@ function onTabClick(index : number) {
 
 function onSwiperTransition(e : SwiperTransitionEvent) {
   const offset_x = e.detail.dx
-  const current_offset_x = offset_x % swiperWidth.value
-  const current_offset_i = offset_x / swiperWidth.value
-  const current_index = animationFinishIndex.value + parseInt(current_offset_i + '')
+  const current_offset_x = offset_x % swiperWidth
+  const current_offset_i = offset_x / swiperWidth
+  const current_index = animationFinishIndex + parseInt(current_offset_i + '')
   let move_to_index = current_index
   if (current_offset_x > 0 && move_to_index < swiperList.value.length - 1) {
     move_to_index += 1
   } else if (current_offset_x < 0 && move_to_index > 0) {
     move_to_index -= 1
   }
-  const percentage = Math.abs(current_offset_x) / swiperWidth.value
+  const percentage = Math.abs(current_offset_x) / swiperWidth
   if (current_index != move_to_index) {
     updateTabIndicator(current_index, move_to_index, percentage)
   }
@@ -102,7 +102,7 @@ function onSwiperTransition(e : SwiperTransitionEvent) {
 
 function onSwiperAnimationfinish(e : SwiperAnimationFinishEvent) {
   setSwiperIndex(e.detail.current, true)
-  animationFinishIndex.value = e.detail.current
+  animationFinishIndex = e.detail.current
 }
 
 onLoad(() => {
@@ -115,7 +115,7 @@ onLoad(() => {
 
 onReady(() => {
   (swiper.value as UniSwiperElement).getBoundingClientRectAsync()!.then((res : DOMRect) => {
-    swiperWidth.value = res.width
+    swiperWidth = res.width
     updateTabIndicator(swiperIndex.value, swiperIndex.value, 1)
   });
 })

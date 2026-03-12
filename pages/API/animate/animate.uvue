@@ -2,6 +2,7 @@
   <!-- #ifdef APP -->
   <scroll-view style="flex:1">
   <!-- #endif -->
+    <page-intro content="本页演示 uni.createAnimation 与 uni.createAnimateContext：点击开始/暂停/恢复/取消动画，可点击各 view 修改宽度、高度、margin、padding 等属性动画。"></page-intro>
     <view id="main" style="width: 100px;height: 100px; background-color: brown; transform: scale(1);"></view>
 
     <button @click="startAnimate">开始动画</button>
@@ -13,7 +14,7 @@
     <button @click="cancelAnimate">取消动画</button>
     <!-- #endif -->
 
-    <image src="/static/uni.png" id="roll" style="width: 100px; height: 100px;margin: 10px;"></image>
+    <image src="/static/test-image/logo.png" id="roll" style="width: 100px; height: 100px;margin: 10px;"></image>
 
     <!-- #ifndef APP-HARMONY -->
    <view
@@ -108,264 +109,274 @@
   <!-- #endif -->
 </template>
 
-<script>
-  export default {
-    data() {
-      return {
-        mainView: null as UniElement | null,
-        animation: null as UniAnimation | null
-      }
-    },
-    onReady() {
-      this.mainView = uni.getElementById("main")
-      var roll = uni.getElementById("roll")
-      roll!.animate([
-        { transform: "translateX(0) rotate(0)" }, // keyframe
-        { transform: "translateX(200px) rotate(540deg)" }, // keyframe
-      ],
-        {
-          // keyframe options
-          duration: 2000,
-          direction: "alternate",
+<script setup lang="uts">
+  let mainView: UniElement | null = null
+  let animation: UniAnimation | null = null
 
-          easing: "ease-in-out",
-          iterations: Infinity,
-        },
-      )
-    },
-    methods: {
-      startAnimate() {
-        this.animation = this.mainView!.animate([
-          {
-            transform: "scale(1)",
-            transformOrigin: "0px 0px"
-          },
-          {
-            transform: "scale(0)",
-            transformOrigin: "50px 50px"
-          },
-          {
-            transform: "scale(1)",
-            transformOrigin: "100px 100px"
-          }
-        ], {
-          duration: 5000,
-
-        })
-        this.animation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
-          uni.showToast({
-            title: "动画被取消了"
-          })
-        }
-        this.animation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
-          uni.showToast({
-            title: "动画播放完成"
-          })
-        }
+  function startAnimate() {
+    animation = mainView!.animate([
+      {
+        transform: "scale(1)",
+        transformOrigin: "0px 0px"
       },
-      pauseAnimate() {
-        this.animation?.pause()
+      {
+        transform: "scale(0)",
+        transformOrigin: "50px 50px"
       },
-      resumeAnimate() {
-        this.animation?.play()
-      },
-      cancelAnimate() {
-        this.animation?.cancel()
-      },
-      widthProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          width: ["100px", "200px", "100px"]
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      heightProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          height: ["100px", "200px"]
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      marginProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          margin: ["8px", "16px", "32px"]
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      paddingProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          padding: ["0px", "16px", "32px", "0px"]
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      backgroundProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate([
-          {
-            offset: 0.3,
-            backgroundColor: "yellow"
-          },
-          {
-            offset: 0.6,
-            backgroundColor: "red"
-          },
-          {
-            backgroundColor: "blue"
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      borderProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate([
-          {
-            offset: 0.3,
-            borderColor: "yellow"
-          },
-          {
-            offset: 0.6,
-            borderColor: "pink"
-          },
-          {
-            borderColor: "blue"
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      transformProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate([
-          {
-            transform: "translateX(0px) scale(1) rotate(0deg)"
-          },
-          {
-            transform: "translateX(100px)"
-          },
-          {
-            transform: "scale(0.8) rotate(180deg)"
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      positionProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          left: ["0px", "16px", "32px", "0px"]
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      backgroundAndWidthProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          width: ["100px", "200px"],
-          backgroundColor: ["red", "yellow", "blue"]
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      backgroundAndMarginLeftProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate([
-          {
-            offset: 0.2,
-            backgroundColor: "red"
-          }, {
-            marginLeft: "10px"
-          }, {
-            marginLeft: "20px"
-          }, {
-            marginLeft: "30px",
-            backgroundColor: "pink"
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      backgroundAndTransformProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate([
-          {
-            offset: 0.2,
-            backgroundColor: "red"
-          }, {
-            transform: "translate(30px,0px)"
-          }, {
-            transform: "translate(50px,0px)"
-          }, {
-            transform: "translate(100px,0px)",
-            backgroundColor: "pink"
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      oneProperty1(e : UniPointerEvent) {
-        e.currentTarget?.animate({
-          backgroundColor: "green"
-        }, {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      oneProperty2(e : UniPointerEvent) {
-        e.currentTarget?.animate([{
-          backgroundColor: "blue"
-        }], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      borderColorMarginLeftProperty(e : UniPointerEvent) {
-        e.currentTarget?.animate([
-          {
-            borderColor: "red",
-            marginLeft: "0px",
-            offset: 0
-          },
-          {
-            marginLeft: "20px",
-            offset: 0.5
-          },
-          {
-            marginLeft: "60px",
-            borderColor: "yellow",
-            offset: 1
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
-      },
-      opacityProperty(e : UniPointerEvent){
-        e.currentTarget?.animate([
-          {
-            offset: 0.3,
-            opacity: "1"
-          },
-          {
-            offset: 0.6,
-            opacity: "0.1"
-          },
-          {
-            opacity: "1"
-          }
-        ], {
-          duration: 1000,
-          fill: "forwards"
-        })
+      {
+        transform: "scale(1)",
+        transformOrigin: "100px 100px"
       }
+    ], {
+      duration: 5000,
+
+    })
+    animation!.oncancel = (_ : UniAnimationPlaybackEvent) => {
+      uni.showToast({
+        title: "动画被取消了"
+      })
+    }
+    animation!.onfinish = (_ : UniAnimationPlaybackEvent) => {
+      uni.showToast({
+        title: "动画播放完成"
+      })
     }
   }
+
+  function pauseAnimate() {
+    animation?.pause()
+  }
+
+  function resumeAnimate() {
+    animation?.play()
+  }
+
+  function cancelAnimate() {
+    animation?.cancel()
+  }
+
+  function widthProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      width: ["100px", "200px", "100px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function heightProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      height: ["100px", "200px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function marginProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      margin: ["8px", "16px", "32px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function paddingProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      padding: ["0px", "16px", "32px", "0px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.3,
+        backgroundColor: "yellow"
+      },
+      {
+        offset: 0.6,
+        backgroundColor: "red"
+      },
+      {
+        backgroundColor: "blue"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function borderProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.3,
+        borderColor: "yellow"
+      },
+      {
+        offset: 0.6,
+        borderColor: "pink"
+      },
+      {
+        borderColor: "blue"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function transformProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        transform: "translateX(0px) scale(1) rotate(0deg)"
+      },
+      {
+        transform: "translateX(100px)"
+      },
+      {
+        transform: "scale(0.8) rotate(180deg)"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function positionProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      left: ["0px", "16px", "32px", "0px"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundAndWidthProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      width: ["100px", "200px"],
+      backgroundColor: ["red", "yellow", "blue"]
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundAndMarginLeftProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.2,
+        backgroundColor: "red"
+      }, {
+        marginLeft: "10px"
+      }, {
+        marginLeft: "20px"
+      }, {
+        marginLeft: "30px",
+        backgroundColor: "pink"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function backgroundAndTransformProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        offset: 0.2,
+        backgroundColor: "red"
+      }, {
+        transform: "translate(30px,0px)"
+      }, {
+        transform: "translate(50px,0px)"
+      }, {
+        transform: "translate(100px,0px)",
+        backgroundColor: "pink"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function oneProperty1(e : UniPointerEvent) {
+    e.currentTarget?.animate({
+      backgroundColor: "green"
+    }, {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function oneProperty2(e : UniPointerEvent) {
+    e.currentTarget?.animate([{
+      backgroundColor: "blue"
+    }], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function borderColorMarginLeftProperty(e : UniPointerEvent) {
+    e.currentTarget?.animate([
+      {
+        borderColor: "red",
+        marginLeft: "0px",
+        offset: 0
+      },
+      {
+        marginLeft: "20px",
+        offset: 0.5
+      },
+      {
+        marginLeft: "60px",
+        borderColor: "yellow",
+        offset: 1
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  function opacityProperty(e : UniPointerEvent){
+    e.currentTarget?.animate([
+      {
+        offset: 0.3,
+        opacity: "1"
+      },
+      {
+        offset: 0.6,
+        opacity: "0.1"
+      },
+      {
+        opacity: "1"
+      }
+    ], {
+      duration: 1000,
+      fill: "forwards"
+    })
+  }
+
+  onReady(() => {
+    mainView = uni.getElementById("main")
+    var roll = uni.getElementById("roll")
+    roll!.animate([
+      { transform: "translateX(0) rotate(0)" },
+      { transform: "translateX(200px) rotate(540deg)" },
+    ],
+      {
+        duration: 2000,
+        direction: "alternate",
+        easing: "ease-in-out",
+        iterations: Infinity,
+      },
+    )
+  })
 </script>
 
 <style>

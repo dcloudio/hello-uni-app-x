@@ -1,12 +1,16 @@
 <template>
-  <scroll-view scroll-y="true" style="flex: 1;" :type="props.type" :direction="props.direction"
-    :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop" :bounces="props.bounces"
+  <scroll-view style="flex: 1;" :direction="props.direction" :scroll-into-view="props.scrollIntoView"
+    <!-- #ifndef VUE3-VAPOR -->
+    :type="props.type" :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild"
+    <!-- #endif -->
+    :associative-container="props.associativeContainer" :enable-back-to-top="props.enableBackToTop"
+    :bounces="props.bounces"
     :upper-threshold="props.upperThreshold" :lower-threshold="props.lowerThreshold" :scroll-top="props.scrollTop"
-    :scroll-left="props.scrollLeft" :scroll-into-view="props.scrollIntoView" :scroll-with-animation="props.scrollWithAnimation"
+    :scroll-left="props.scrollLeft" :scroll-with-animation="props.scrollWithAnimation"
     :refresher-enabled="props.refresherEnabled" :refresher-threshold="props.refresherThreshold"
     :refresher-max-drag-distance="props.refresherMaxDragDistance" :refresher-default-style="props.refresherDefaultStyle"
     :refresher-background="props.refresherBackground" :refresher-triggered="props.refresherTriggered"
-    :show-scrollbar="props.showScrollbar" :custom-nested-scroll="props.customNestedScroll" :nested-scroll-child="props.nestedScrollChild"
+    :show-scrollbar="props.showScrollbar"
     @scroll="onScroll" @scrollend="onScrollEnd" @scrolltolower="onScrollToLower" @scrolltoupper="onScrollToUpper"
     @refresherabort="onRefresherAbort" @refresherpulling="onRefresherPulling" @refresherrefresh="onRefresherRefresh"
     @refresherrestore="onRefresherRestore">
@@ -150,14 +154,14 @@
       props.list.length - renderItemCount.value
     );
   })
-  const items = computed < any[] > (() => {
+  const items = computed<any[]>(() => {
     return props.list.slice(startIndex.value, Math.min(props.list.length, startIndex.value + renderItemCount.value))
   })
-  const layoutItems = ref < LayoutItem[] > ([])
+  const layoutItems = ref<LayoutItem[]>([])
 
   type ItemAndIndex = {
-    item: any,
-    index: number
+    item : any,
+    index : number
   }
   watch([items, startIndex], () => {
     if (layoutItems.value.length !== items.value.length) {
@@ -167,13 +171,13 @@
           id: index,
           offset: (startIndex.value + index) * props.itemHeight,
           item
-        })
+        } as LayoutItem)
       })
     } else {
       // 仍存活的item仅更新offset，新生的item复用并更新死亡的item的layoutItem，注意id无论如何都不更新
       // TODO 当前方案在列表末尾向列表开头滚动时可能会命中if分支，导致所有item都触发更新
-      const newItems: ItemAndIndex[] = []
-      const aliveItems: ItemAndIndex[] = []
+      const newItems : ItemAndIndex[] = []
+      const aliveItems : ItemAndIndex[] = []
       for (let i = 0; i < items.value.length; i++) {
         const item = items.value[i]
         const layoutItemIndex = layoutItems.value.findIndex((layoutItem) => {
@@ -213,33 +217,32 @@
     immediate: true
   })
 
-  function onScroll (e: UniScrollEvent) {
+  function onScroll(e : UniScrollEvent) {
     const _scrollTop = e.detail.scrollTop
     scrollTop.value = _scrollTop < 0 ? 0 : _scrollTop
     emit('scroll', e)
   }
-  function onScrollToLower (e: UniScrollToLowerEvent) {
+  function onScrollToLower(e : UniScrollToLowerEvent) {
     emit('scrolltolower', e)
   }
-  function onScrollToUpper (e: UniScrollToUpperEvent) {
+  function onScrollToUpper(e : UniScrollToUpperEvent) {
     emit('scrolltoupper', e)
   }
-  function onScrollEnd (e: UniScrollEvent) {
+  function onScrollEnd(e : UniScrollEvent) {
     emit('scrollend', e)
   }
-  function onRefresherAbort (e: UniRefresherEvent) {
+  function onRefresherAbort(e : UniRefresherEvent) {
     emit('refresherabort', e)
   }
-  function onRefresherPulling (e: UniRefresherEvent) {
+  function onRefresherPulling(e : UniRefresherEvent) {
     emit('refresherpulling', e)
   }
-  function onRefresherRefresh (e: UniRefresherEvent) {
+  function onRefresherRefresh(e : UniRefresherEvent) {
     emit('refresherrefresh', e)
   }
-  function onRefresherRestore (e: UniRefresherEvent) {
+  function onRefresherRestore(e : UniRefresherEvent) {
     emit('refresherrestore', e)
   }
-
 </script>
 <style>
 </style>

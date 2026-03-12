@@ -6,24 +6,20 @@
   </view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
+<script setup lang="uts">
+const currentPage = getCurrentInstance()?.proxy?.$page
 
-			}
-		},
-		methods: {
-			onChanged(e : UniNativeViewEvent) {
-			  console.log("onchanged-----", e.detail)
-			},
-      sure() {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        })
-      }
-		}
-	}
+function onChanged(e : UniNativeViewEvent) {
+  console.log("onchanged-----", e.detail)
+}
+
+function sure() {
+  if (currentPage != null) {
+    uni.closeDialogPage({
+      dialogPage: currentPage
+    })
+  }
+}
 </script>
 
 <style>

@@ -10,48 +10,38 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				title: '广告演示',
-				src: "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4",
-				showAd: false,
-				adVisible: false,
-				countdown: 10,
-				adTimer: null
-			}
-		},
-		onLoad() {
-			// 页面加载逻辑
-		},
-		methods: {
-			// 视频播放时触发广告
-			onVideoPlay() {
-				if (!this.showAd) {
-					this.showAd = true;
-					this.adVisible = true;
-					const videoContext = uni.createVideoContext('myVideo')
-					videoContext!.stop();
-				}
-			},
-			// 关闭广告
-			closeAd() {
-				console.log("执行了关闭");
-				// this.showAd = false
-				this.adVisible = false;
-				// 确保视频恢复播放
-				const videoContext = uni.createVideoContext('myVideo')
-				videoContext!.play()
-			},
-			loadFun(){
-				console.log("加载成功");
-			},
-			errorFun(e : UniAdErrorEvent){
-				console.log(e.detail);
-			}
+<script setup lang="uts">
+	const src = ref("https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4")
+	let showAd: boolean = false
+	const adVisible = ref(false)
+
+	function onVideoPlay() {
+		if (!showAd) {
+			showAd = true;
+			adVisible.value = true;
+			const videoContext = uni.createVideoContext('myVideo')
+			videoContext!.stop();
 		}
 	}
+
+	function closeAd() {
+		console.log("执行了关闭");
+		adVisible.value = false;
+		const videoContext = uni.createVideoContext('myVideo')
+		videoContext!.play()
+	}
+
+	function loadFun(){
+		console.log("加载成功");
+	}
+
+	function errorFun(e : UniAdErrorEvent){
+		console.log(e.detail);
+	}
+
+	onLoad(() => {
+		// 页面加载逻辑
+	})
 </script>
 
 <style>

@@ -18,7 +18,7 @@ describe('ExtApi-WebSocket', () => {
     await page.waitFor(600);
     await page.callMethod('jest_connectSocket');
     await page.waitFor(1500);
-    res = await page.data('jest_result');
+    res = await page.data('data.jest_result');
   });
 
   it('Check ', async () => {

@@ -1,6 +1,6 @@
 <template>
   <scroll-view class="scroll-view">
-    <unicloud-db ref="udb" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
+    <unicloud-db ref="udbRef" v-slot:default="{data, loading, error}" :collection="collection" :where="where"
       page-data="replace">
       <view v-if="error!=null" class="error">{{error.errMsg}}</view>
       <view v-if="loading" class="loading">正在加载...</view>
@@ -41,80 +41,76 @@
   </scroll-view>
 </template>
 
-<script>
+<script setup lang="uts">
+
   import { COLLECTION_NAME, GenderType, GenderList, UNICLOUD_DB_CONTACTS_UPDATE, UNICLOUD_DB_CONTACTS_DELETE } from './types.uts'
 
-  export default {
-    data() {
-      return {
-        collection: '',
-        where: '',
-        genderList: GenderList as GenderType[],
-        whereID: '',
-        uniCloudElement: null as UniCloudDBElement | null
-      }
-    },
-    onLoad(options) {
-      this.collection = COLLECTION_NAME;
-      this.whereID = options['id'] as string;
-      this.where = `_id=='${this.whereID}'`;
-    },
-    onReady() {
-      this.uniCloudElement = this.$refs['udb'] as UniCloudDBElement
-    },
-    methods: {
-      onFormSubmit: function (e : UniFormSubmitEvent) {
-        const formData = e.detail.value
-        const genderString = formData['gender'] as string
-        formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
-        this.uniCloudElement!.update(this.whereID, formData, {
-          showToast: false,
-          needLoading: true,
-          needConfirm: false,
-          loadingTitle: "正在保存...",
-          success: (_ : UniCloudDBUpdateResult) => {
-            // TODO 后续通过 EventChannel 实现
-            uni.$emit(UNICLOUD_DB_CONTACTS_UPDATE, this.whereID)
-            setTimeout(() => {
-              uni.navigateBack()
-            }, 500)
-          },
-          fail: (err : any | null) => {
-            const error = err as UniCloudError
-            uni.showModal({
-              content: error.errMsg,
-              showCancel: false
-            })
-          }
-        })
+  const collection = ref('')
+  const where = ref('')
+  const genderList = ref(GenderList as GenderType[])
+  const whereID = ref('')
+  const udbRef = ref<UniCloudDBElement | null>(null)
+
+  function onFormSubmit(e : UniFormSubmitEvent) {
+    const formData = e.detail.value
+    const genderString = formData['gender'] as string
+    formData['gender'] = (genderString.length > 0) ? parseInt(genderString) : -1
+    if (udbRef.value != null) {
+      udbRef.value!.update(whereID.value, formData, {
+      showToast: false,
+      needLoading: true,
+      needConfirm: false,
+      loadingTitle: "正在保存...",
+      success: (_ : UniCloudDBUpdateResult) => {
+        // TODO 后续通过 EventChannel 实现
+        uni.$emit(UNICLOUD_DB_CONTACTS_UPDATE, whereID.value)
+        setTimeout(() => {
+          uni.navigateBack()
+        }, 500)
       },
-      remove(id : string | null, name : string | null) {
-        this.uniCloudElement!.remove(id!, {
-          needConfirm: true,
-          needLoading: true,
-          loadingTitle: "正在删除...",
-          confirmTitle: "确定删除?",
-          confirmContent: name,
-          success: (_ : UniCloudDBRemoveResult) => {
-            // TODO 后续通过 EventChannel 实现
-            uni.$emit(UNICLOUD_DB_CONTACTS_DELETE, this.whereID)
-            setTimeout(() => {
-              uni.navigateBack({
-                delta: 2
-              })
-            }, 500)
-          },
-          fail: (err : any | null) => {
-            const error = err as UniCloudError
-            uni.showModal({
-              content: error.errMsg,
-              showCancel: false
-            })
-          }
-        })
-      }
+        fail: (err : any | null) => {
+          const error = err as UniCloudError
+          uni.showModal({
+            content: error.errMsg,
+            showCancel: false
+          })
+        }
+      })
     }
   }
+  function remove(id : string | null, name : string | null) {
+    if (udbRef.value != null) {
+      udbRef.value!.remove(id!, {
+      needConfirm: true,
+      needLoading: true,
+      loadingTitle: "正在删除...",
+      confirmTitle: "确定删除?",
+      confirmContent: name,
+      success: (_ : UniCloudDBRemoveResult) => {
+        // TODO 后续通过 EventChannel 实现
+        uni.$emit(UNICLOUD_DB_CONTACTS_DELETE, whereID.value)
+        setTimeout(() => {
+          uni.navigateBack({
+            delta: 2
+          })
+        }, 500)
+      },
+        fail: (err : any | null) => {
+          const error = err as UniCloudError
+          uni.showModal({
+            content: error.errMsg,
+            showCancel: false
+          })
+        }
+      })
+    }
+  }
+
+  onLoad((options) => {
+    collection.value = COLLECTION_NAME;
+    whereID.value = options['id'] as string;
+    where.value = `_id=='${whereID.value}'`;
+  })
 </script>
 
 <style>
