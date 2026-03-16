@@ -194,9 +194,9 @@
     allCityData: [],
     region: [],
     cityIndex: [0, 0, 0],
-    dayDate: getDate('day'),
-    monthDate: getDate('month'),
-    yearDate: getDate('year'),
+    dayDate: getDate('day', ''),
+    monthDate: getDate('month', ''),
+    yearDate: getDate('year', ''),
     startDate: getDate('day', 'start'),
     endDate: getDate('day', 'end'),
     time: '12:01'
@@ -204,7 +204,10 @@
 
   // #ifndef MP-WEIXIN
   function initCityData() {
-    const cityDataList = JSON.parse(cityData) as CityItemData[]
+    const cityDataList = JSON.parse<CityItemData[]>(cityData)
+    if (cityDataList == null) {
+      return
+    }
     data.allCityData = cityDataList
     data.cityArray[0] = cityDataList.map(item => item.title)
     // 使用当前选择的省份索引来初始化城市数据
