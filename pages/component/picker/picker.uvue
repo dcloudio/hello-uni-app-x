@@ -87,11 +87,12 @@
         <text class="uni-list-cell-left">当前选择</text>
         <view class="uni-list-cell-db" @click="initCityData">
           <!-- #ifndef MP-WEIXIN -->
-            <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange" :value="data.cityIndex" :range="data.cityArray">
-              <text class="uni-input picker-city--value">
-                {{data.cityArray[0][data.cityIndex[0]]}}{{data.cityArray[1][data.cityIndex[1]] ? '，' : ''}}{{data.cityArray[1][data.cityIndex[1]]}}{{data.cityArray[2][data.cityIndex[2]] ? '，' : ''}}{{data.cityArray[2][data.cityIndex[2]]}}
-              </text>
-            </picker>
+          <picker class="picker-city--test" mode="multiSelector" @columnchange="bindCityPickerColumnChange"
+            :value="data.cityIndex" :range="data.cityArray">
+            <text class="uni-input picker-city--value">
+              {{getCityDisplayText()}}
+            </text>
+          </picker>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
             <picker class="picker-city--test" mode="region" @change="bindRegionChange" :value="data.region" >
@@ -200,6 +201,31 @@
     endDate: getDate('day', 'end'),
     time: '12:01'
   } as PageDataType)
+
+  function getSafeCityValue(column : number, index : number) : string {
+    if (column < 0 || column >= data.cityArray.length) {
+      return ''
+    }
+    const columnData = data.cityArray[column]
+    if (index < 0 || index >= columnData.length) {
+      return ''
+    }
+    return columnData[index]
+  }
+
+  function getCityDisplayText() : string {
+    const province = getSafeCityValue(0, data.cityIndex[0])
+    const city = getSafeCityValue(1, data.cityIndex[1])
+    const district = getSafeCityValue(2, data.cityIndex[2])
+    let text = province
+    if (city != '') {
+      text += '，' + city
+    }
+    if (district != '') {
+      text += '，' + district
+    }
+    return text
+  }
 
   // #ifndef MP-WEIXIN
   function initCityData() {
