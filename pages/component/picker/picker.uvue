@@ -123,7 +123,6 @@
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  import { state, setEventCallbackNum } from '@/store/index.uts'
   // #ifndef MP-WEIXIN
   import { cityData } from './city.uts'
   // #endif
@@ -236,7 +235,7 @@
 
   const bindPickerChange = (e : UniPickerChangeEvent) => {
     console.log('picker发送选择改变，携带值为：' + e.detail.value)
-    data.index = e.detail.value
+    data.index = e.detail.value as number
   }
 
   const bindMultiPickerColumnChange = (e : UniPickerColumnChangeEvent) => {
@@ -339,15 +338,6 @@
   // 自动化函数
   const setSelectorValue = () => {
     data.index = 2
-  }
-
-  const getEventCallbackNum = () : number => {
-    return state.eventCallbackNum
-  }
-
-  // 自动化测试
-  const setEventCallbackNum = (num : number) => {
-    setEventCallbackNum(num)
   }
 
   defineExpose({
