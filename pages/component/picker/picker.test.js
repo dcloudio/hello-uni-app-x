@@ -1,18 +1,6 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isHarmony = platformInfo.startsWith('harmony')
-const isWeb = platformInfo.startsWith('web')
-const isAndroid = platformInfo.startsWith('android')
-const isIOS = platformInfo.startsWith('ios')
-
 const PAGE_PATH = '/pages/component/picker/picker'
 
 describe('Picker.uvue', () => {
-  if (!isHarmony && !isWeb && !isAndroid && !isIOS) {
-    it('not support', () => {
-      expect(1).toBe(1)
-    })
-    return
-  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
