@@ -19,7 +19,7 @@ describe('Picker.uvue', () => {
   });
 
   function getData(key = '') {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const data = await page.data('data')
       resolve(key ? data[key] : data)
     })
@@ -72,7 +72,7 @@ describe('Picker.uvue', () => {
     expect(await getData('time')).toEqual('15:30')
   })
 
-  it('picer date-day', async () => {
+  it('picker date-day', async () => {
     const dayDate = await getData('dayDate')
     const startDate = await getData('startDate')
     const endDate = await getData('endDate')
@@ -116,5 +116,4 @@ describe('Picker.uvue', () => {
     expect(await getData('startDate')).toStrictEqual(startDate)
     expect(await getData('endDate')).toStrictEqual(endDate)
   })
-
 })
