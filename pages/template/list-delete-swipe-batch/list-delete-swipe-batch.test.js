@@ -3,7 +3,7 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 
-describe('/pages/template/long-list-deleteable/long-list-deleteable.uvue', () => {
+describe('/pages/template/list-delete-swipe-batch/list-delete-swipe-batch.uvue', () => {
   if (isWeb || isMP) {
     it('skip', () => {
       expect(1).toBe(1)
@@ -13,7 +13,7 @@ describe('/pages/template/long-list-deleteable/long-list-deleteable.uvue', () =>
 
   let page;
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/template/long-list-deleteable/long-list-deleteable')
+    page = await program.reLaunch('/pages/template/list-delete-swipe-batch/list-delete-swipe-batch')
     await page.waitFor(600);
   })
 
