@@ -6,7 +6,9 @@ const isHarmony = platformInfo.startsWith('harmony')
 describe('test title', () => {
 
   if (!isIOS && !isAndroid && !isHarmony) {
-    expect(1).toBe(1);
+    it('app', async () => {
+      expect(1).toBe(1)
+    })
     return
   }
   let page;
