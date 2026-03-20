@@ -293,27 +293,27 @@ let pages = [
 
   // template
   // 网络资源加载，单独测试例截图
-  // '/pages/template/list-news/list-news',
+  // '/pages/template/news-feed-list/news-feed-list',
   // 依赖网络资源加载
-  // '/pages/template/list-news/detail/detail',
+  // '/pages/template/news-feed-list/detail/detail',
   // 动画页面
   // '/pages/template/drop-card/drop-card',
-  '/pages/template/swiper-list/swiper-list',
+  '/pages/template/swipe-tabs-underline/swipe-tabs-underline',
   '/pages/template/swipe-tabs-scale-highlight/swipe-tabs-scale-highlight',
   // 单独测试例截图
-  // '/pages/template/swiper-vertical-video/swiper-vertical-video',
+  // '/pages/template/vertical-video-feed/vertical-video-feed',
   // 单独测试例截图
   // '/pages/template/scroll-fold-nav/scroll-fold-nav',
   // 单独测试例截图
-  // '/pages/template/half-screen/half-screen',
+  // '/pages/template/draggable-half-modal/draggable-half-modal',
   // 动态内容
-  // '/pages/template/long-list/long-list',
+  // '/pages/template/search-header-long-list/search-header-long-list',
   // 动态内容
   // '/pages/template/banner-tabs-feed-nested-scroll/banner-tabs-feed-nested-scroll',
   // harmony 整体测试时截图异常，单独测试例截图
-  // '/pages/template/pull-zoom-image/pull-zoom-image',
+  // '/pages/template/pull-zoom-profile-page/pull-zoom-profile-page',
   '/pages/template/navbar-lite/navbar-lite',
-  '/pages/template/custom-tab-bar/custom-tab-bar',
+  '/pages/template/tabbar-center-action/tabbar-center-action',
   // 动态内容
   // '/pages/template/calendar/calendar',
   // 不同平台存在差异，且页面简单
@@ -323,11 +323,11 @@ let pages = [
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
   // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   // 页面内容不稳定
-  // '/pages/template/custom-long-list/custom-long-list',
+  // '/pages/template/recycle-long-list/recycle-long-list',
   // 单独测试例截图
   // '/pages/template/slider-100/slider-100',
   // 动态内容
-  // '/pages/template/long-list-nested/long-list-nested',
+  // '/pages/template/banner-tabs-long-list-nested-scroll/banner-tabs-long-list-nested-scroll',
   '/pages/template/issue-25934/issue-25934'
 ]
 
