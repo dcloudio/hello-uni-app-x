@@ -299,7 +299,7 @@ let pages = [
   // 动画页面
   // '/pages/template/drop-card/drop-card',
   '/pages/template/swiper-list/swiper-list',
-  '/pages/template/swiper-list2/swiper-list2',
+  '/pages/template/swipe-tabs-scale-highlight/swipe-tabs-scale-highlight',
   // 单独测试例截图
   // '/pages/template/swiper-vertical-video/swiper-vertical-video',
   // 单独测试例截图
@@ -309,7 +309,7 @@ let pages = [
   // 动态内容
   // '/pages/template/long-list/long-list',
   // 动态内容
-  // '/pages/template/long-list2/long-list2',
+  // '/pages/template/banner-tabs-feed-nested-scroll/banner-tabs-feed-nested-scroll',
   // harmony 整体测试时截图异常，单独测试例截图
   // '/pages/template/pull-zoom-image/pull-zoom-image',
   '/pages/template/navbar-lite/navbar-lite',
@@ -317,7 +317,7 @@ let pages = [
   // 动态内容
   // '/pages/template/calendar/calendar',
   // 不同平台存在差异，且页面简单
-  // '/pages/template/schema/schema',
+  // '/pages/template/external-link-launch/external-link-launch',
   // '/uni_modules/uni-pay-x/pages/success/success',
   // 依赖 onload 参数获取 web-view src
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
@@ -386,7 +386,7 @@ if (!isAppWebView) {
       // '/pages/component/waterflow/waterflow-fit-height',
       // 非 UI 相关不截图
       // '/pages/API/share-with-system/share-with-system',
-      '/pages/template/test-uts-button/test-uts-button',
+      '/pages/template/native-button-bridge/native-button-bridge',
       '/pages/component/loading/loading',
     )
   }
@@ -440,7 +440,7 @@ if (isWeb) {
     '/pages/component/canvas/canvas',
     // 动态内容
     // '/pages/component/canvas/canvas/ball',
-    '/pages/template/browser-element/browser-element',
+    '/pages/template/browser-built-in-elements/browser-built-in-elements',
   )
 }
 

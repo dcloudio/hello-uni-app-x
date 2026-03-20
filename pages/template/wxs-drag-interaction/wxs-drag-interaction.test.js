@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 
-describe('test WXS', () => {
+describe('test WXS drag interaction', () => {
   let page,movable;
   if (!isMP) {
     it('not support', () => {
@@ -10,7 +10,7 @@ describe('test WXS', () => {
     return
   }
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/template/WXS/WXS')
+    page = await program.reLaunch('/pages/template/wxs-drag-interaction/wxs-drag-interaction')
     await page.waitFor(3000);
     movable = await page.$('.movable');
   });

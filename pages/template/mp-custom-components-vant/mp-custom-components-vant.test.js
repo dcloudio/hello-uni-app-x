@@ -1,7 +1,7 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 
-describe('test vant', () => {
+describe('test mp custom components vant', () => {
   let page,vantBtnContainer,vantBtn;
   if (!isMP) {
     it('not support', () => {
@@ -10,7 +10,7 @@ describe('test vant', () => {
     return
   }
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/template/vant/vant')
+    page = await program.reLaunch('/pages/template/mp-custom-components-vant/mp-custom-components-vant')
     await page.waitFor(3000);
     vantBtnContainer = await page.$('vant-button');
     expect(await page.data('data.jest')).toBe(false);

@@ -2,7 +2,7 @@ describe('PagesJson-backgroundColorContent', () => {
   let page;
   beforeAll(async () => {
     page = await program.reLaunch(
-      '/pages/template/test-background-color-content/test-background-color-content')
+      '/pages/template/page-content-background-preview/page-content-background-preview')
     await page.waitFor('view');
     await page.waitFor(1000);
   });
