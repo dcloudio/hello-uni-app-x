@@ -6,11 +6,11 @@ const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 jest.setTimeout(30000);
-describe('ai-chat', () => {
+describe('chat-stream-reply', () => {
   let page;
 
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/template/ai-chat/ai-chat');
+    page = await program.reLaunch('/pages/template/chat-stream-reply/chat-stream-reply');
     await page.waitFor('view');
   });
 

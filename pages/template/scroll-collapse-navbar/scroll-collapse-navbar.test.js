@@ -1,9 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-const PAGE_PATH = '/pages/template/scroll-fold-nav/scroll-fold-nav'
+const PAGE_PATH = '/pages/template/scroll-collapse-navbar/scroll-collapse-navbar'
 
-describe('scroll-fold-nav', () => {
+describe('scroll-collapse-navbar', () => {
   let page
   let deviceShotOptions = {
       deviceShot: true,

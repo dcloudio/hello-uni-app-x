@@ -5,7 +5,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-const CURRENT_PAGE_PATH = "/pages/template/navbar-lite/navbar-lite";
+const CURRENT_PAGE_PATH = "/pages/template/custom-navbar-search/custom-navbar-search";
 
 describe("setCustomNavigationBarColor", () => {
   if (isAppWebView) {

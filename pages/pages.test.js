@@ -297,13 +297,13 @@ let pages = [
   // 依赖网络资源加载
   // '/pages/template/news-feed-list/detail/detail',
   // 动画页面
-  // '/pages/template/drop-card/drop-card',
+  // '/pages/template/swipe-card-stack/swipe-card-stack',
   '/pages/template/swipe-tabs-underline/swipe-tabs-underline',
   '/pages/template/swipe-tabs-scale-highlight/swipe-tabs-scale-highlight',
   // 单独测试例截图
   // '/pages/template/vertical-video-feed/vertical-video-feed',
   // 单独测试例截图
-  // '/pages/template/scroll-fold-nav/scroll-fold-nav',
+  // '/pages/template/scroll-collapse-navbar/scroll-collapse-navbar',
   // 单独测试例截图
   // '/pages/template/draggable-half-modal/draggable-half-modal',
   // 动态内容
@@ -312,7 +312,7 @@ let pages = [
   // '/pages/template/banner-tabs-feed-nested-scroll/banner-tabs-feed-nested-scroll',
   // harmony 整体测试时截图异常，单独测试例截图
   // '/pages/template/pull-zoom-profile-page/pull-zoom-profile-page',
-  '/pages/template/navbar-lite/navbar-lite',
+  '/pages/template/custom-navbar-search/custom-navbar-search',
   '/pages/template/tabbar-center-action/tabbar-center-action',
   // 动态内容
   // '/pages/template/calendar/calendar',
@@ -369,7 +369,7 @@ if (!isAppWebView) {
       // '/pages/API/get-uni-verify-manager/get-uni-verify-manager',
       // 非 UI 相关不截图
       // '/pages/API/request-payment/request-payment',
-      '/pages/template/scroll-sticky/scroll-sticky',
+      '/pages/template/scroll-view-sticky-section/scroll-view-sticky-section',
     )
   }
   if(isIos || isAndroid){
