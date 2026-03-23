@@ -72,8 +72,12 @@
             placeholder="占位符文字颜色为红色" />
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-placeholder2" class="uni-input" :placeholder-class="data.inputPlaceHolderClass"
-            placeholder="占位符字体大小为10px" />
+          <input id="uni-input-placeholder-class-dynamic" class="uni-input" :placeholder-class="data.inputPlaceHolderClass"
+            :placeholder="`占位符字体大小为${data.inputPlaceHolderClass == '' ? '15px' : '10px'}`" />
+        </view>
+        <button @click="togglePlaceholderClass">切换 placeholder-class</button>
+        <view class="input-wrapper">
+          <input class="uni-input" placeholder="占位符字体大小为15px" />
         </view>
         <view class="input-wrapper">
           <input id="uni-input-placeholder3" class="uni-input" placeholder-class=""
@@ -84,7 +88,7 @@
             value="不设置placeholder只设置placeholder-style" />
         </view>
         <view class="input-wrapper">
-          <input id="uni-input-placeholder2" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;text-align: right;" class="uni-input" :placeholder-style="data.placeholderStyle"
+          <input id="uni-input-placeholder-align" style="font-family: AlimamaDaoLiTiOTF;font-weight: bold;text-align: right;" class="uni-input" :placeholder-style="data.placeholderStyle"
             placeholder="占位符以及内容右对齐" />
         </view>
       </view>
@@ -485,6 +489,10 @@
     triggerBlur: false,
     showTypeNoneAndFocusCase: false
   } as DataType)
+
+  const togglePlaceholderClass = () => {
+    data.inputPlaceHolderClass = data.inputPlaceHolderClass == "uni-input-placeholder-class" ? "" : "uni-input-placeholder-class"
+  }
 
   const inputFocusKeyBoardChange = (e : UniInputKeyboardHeightChangeEvent) => {
     data.inputFocusKeyBoardChangeValue = e.detail.height > 50
