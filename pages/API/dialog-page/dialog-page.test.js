@@ -624,8 +624,37 @@ describe('dialog page', () => {
       expect(image).toSaveImageSnapshot();
       await tabPage.callMethod('testCloseDialogPage');
       page = await program.reLaunch(FIRST_PAGE_PATH);
+      await page.callMethod('setLifeCycleNum', 0);
     });
   }
+
+  it ('open dialogPage & go another page', async () => {
+    await page.callMethod('openDialog1');
+    await page.waitFor(1000);
+    if (isWeb) {
+      await page.waitFor(2000);
+    }
+
+    lifecycleNum = await page.callMethod('getLifeCycleNum');
+    expect(lifecycleNum).toBe(7);
+    await page.callMethod('setLifeCycleNum', 0);
+
+    await page.callMethod('goNextPage');
+    await page.waitFor(1000);
+    if (isWeb) {
+      await page.waitFor(2000);
+    }
+
+    page = await program.currentPage();
+    expect(page.path).toBe(NEXT_PAGE_PATH.substring(1));
+    lifecycleNum = await page.callMethod('getLifeCycleNum');
+    // 页面跳转后，父页面 onPageHide 和 dialogPage onHide 都应该被触发
+    expect(lifecycleNum).toBe(-11);
+
+    await page.callMethod('setLifeCycleNum', 0);
+    page = await program.reLaunch(FIRST_PAGE_PATH);
+    await page.waitFor('view');
+  });
 
   afterAll(async () => {
     await page.callMethod('setLifeCycleNum', initLifeCycleNum)
