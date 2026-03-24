@@ -1,6 +1,6 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-
+const isIos = platformInfo.startsWith('ios')
 const PAGE_PATH = '/pages/template/scroll-collapse-navbar/scroll-collapse-navbar'
 
 describe('scroll-collapse-navbar', () => {
