@@ -117,6 +117,17 @@ function onPlusClick() {
 // Lifecycle
 onLoad(() => {
   uni.$on('tabchange', onTabPageEvent)
+  // 微信小程序只支持加载网络字体
+  uni.loadFontFace({
+    family: 'UniFontFamily',
+    source: "url('https://web-ext-storage.dcloud.net.cn/uni-app-x/font/uni.ttf')",
+    success() {
+      console.log('loadFontFace uni.ttf')
+    },
+    fail(error) {
+      console.warn('loadFontFace uni.ttf fail', error.errMsg)
+    }
+  })
 })
 
 onReady(() => {
@@ -134,11 +145,6 @@ onUnload(() => {
 </script>
 
 <style>
-  @font-face {
-    font-family: "UniFontFamily";
-    src: url('@/static/font/uni.ttf');
-  }
-
   .uni-icon {
     font-family: "UniFontFamily";
     font-size: 16px;
