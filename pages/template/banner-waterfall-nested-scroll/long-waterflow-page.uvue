@@ -43,6 +43,22 @@
   const SERVER_URL = "https://unidemo.dcloud.net.cn/plugin/uniappx-plugin-list"
   const PAGE_SIZE = 10; // 最大值 10
 
+  type flowItem = {
+    plugin_id : number,
+    plugin_img_link : string,
+    plugin_name : string,
+    plugin_intro : string,
+    score : number,
+    tags : Array<string>,
+    update_date : string,
+    author_name : string,
+  }
+
+  type ResponseDataType = {
+    code : number,
+    data : flowItem[]
+  }
+
   const props = defineProps({
     type: { type: String, default: '' },
     preload: { type: Boolean, default: false },
@@ -50,7 +66,7 @@
   })
 
   const loadingRef = ref(false);
-  const datagrid = ref([] as Array<UTSJSONObject>);
+  const datagrid = ref([] as flowItem[]);
   const isEnded = ref(false);
   const loadingError = ref('');
   const currentPage = ref(1);
@@ -73,7 +89,7 @@
     }
     loadingRef.value = true
 
-    uni.request<UTSJSONObject>({
+    uni.request<ResponseDataType>({
       url: SERVER_URL,
       data: {
         type: props.type,
@@ -81,15 +97,14 @@
         page_size: PAGE_SIZE
       },
       success: (res) => {
-        const responseData = res.data as UTSJSONObject
+        const responseData = res.data
         if (responseData == null) {
           return
         }
 
-        const list = responseData.data as Array<UTSJSONObject>
-        datagrid.value.push(...list)
+        datagrid.value.push(...responseData.data)
 
-        if (list.length == 0) {
+        if (responseData.data.length == 0) {
           isEnded.value = true
         } else {
           currentPage.value++

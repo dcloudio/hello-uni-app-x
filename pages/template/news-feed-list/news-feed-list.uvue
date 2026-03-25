@@ -65,10 +65,18 @@
   // 导入详情组件，宽屏时，右侧直接展示详情内容
   import detail from './detail/detail.uvue'
 
+  type Item = {
+    author_name : string,
+    cover : string,
+    id : number,
+    post_id : string,
+    published_at : string,
+    title : string
+  }
   const th_item = ref(["排序", "筛选"])
   const refresherTriggered = ref(false)
   let banner = ref({} as UTSJSONObject)
-  const listData = ref([] as Array<UTSJSONObject>)
+  const listData = ref([] as Item[])
   let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
   const currentIndex = ref(0) // 当前选中的列表项索引
@@ -111,12 +119,12 @@
     });
   }
 
-  function goDetail(e: UTSJSONObject, key: number) {
+  function goDetail(e: Item, key: number) {
     currentIndex.value = key
     const detail = e;
-    post_id.value = detail.post_id as string;
-    cover.value = detail.cover as string;
-    title.value = detail.title as string;
+    post_id.value = detail.post_id;
+    cover.value = detail.cover;
+    title.value = detail.title;
     // 窄屏时跳转到详情页，宽屏时右侧直接展示
     if (!isWideScreen.value) {
       // #ifdef APP-ANDROID
@@ -136,7 +144,7 @@
       const pageSize = 10;
       url = url + "&minId=" + minId + "&time=" + time + "&pageSize=" + pageSize;
     } */
-    uni.request<Array<UTSJSONObject>>({
+    uni.request<Item[]>({
       url: url,
       method: "GET",
       success: (res) => {
@@ -153,11 +161,11 @@
               // 并行预加载第一个详情内容，提升右侧展示速度
               const first = listData.value[0]
               uni.request({
-                url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + (first.post_id as string),
+                url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + first.post_id,
                 success: (res) => {
                   if (res.statusCode == 200) {
                     const result = res.data as UTSJSONObject;
-                    firstDetailContent.value = result.content as string
+                    firstDetailContent.value = result["content"] as string
                   }
                 }
               })
@@ -180,7 +188,7 @@
     // #ifdef APP-ANDROID
     cover_val = btoa(cover_val);
     // #endif
-    const title_val = e.title as string;
+    const title_val = e.title;
     uni.navigateTo({
       url: '/pages/template/news-feed-list/detail/detail?post_id=' + post_id_val + "&cover=" + cover_val + "&title=" + title_val
     });

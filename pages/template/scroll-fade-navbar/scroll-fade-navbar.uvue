@@ -73,7 +73,7 @@
   const th_item = ref(["排序", "筛选"])
   const refresherTriggered = ref(false)
   const banner = ref({} as Banner)
-  const listData = ref([] as Array<UTSJSONObject>)
+  const listData = ref([] as Item[])
   let last_id = ''
   const isWideScreen = ref(false) // 是否为宽屏模式
   const currentIndex = ref(0) // 当前选中的列表项索引
@@ -117,7 +117,7 @@
 
   function getList() {
     let url = "https://unidemo.dcloud.net.cn/api/news?column=id,post_id,title,author_name,cover,published_at";
-    uni.request<Array<UTSJSONObject>>({
+    uni.request<Item[]>({
       url: url,
       method: "GET",
       success: (res) => {
