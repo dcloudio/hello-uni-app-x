@@ -185,6 +185,7 @@
     blurTest: boolean;
     clearTest: boolean;
     type: string;
+    getContentDeltaTest: any | null
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -218,7 +219,8 @@
     insertImageTest: false,
     blurTest: false,
     clearTest: false,
-    type: ''
+    type: '',
+    getContentDeltaTest: null
   } as DataType)
 
   onReady(() => {
@@ -271,6 +273,7 @@
   }
 
   const insertMention = () => {
+    // 此处插入的两个 mention 测试例会用到
     data.editorCtx?.insertMention({
       id: '123456',
       name: 'uni-app',
@@ -321,8 +324,9 @@
 
   const getCon = () => {
     data.editorCtx?.getContents({
-      success: (res: any) => {
+      success: (res: UniEditorElementGetContentsOptionsRes) => {
         console.log('文本详情：', res)
+        data.getContentDeltaTest = res.delta
       },
       fail: (err: any) => {
         console.log(err)
@@ -464,7 +468,9 @@
     undo,
     redo,
     insertImage,
-    removeFormat
+    removeFormat,
+    insertMention,
+    getCon
   })
 </script>
 
