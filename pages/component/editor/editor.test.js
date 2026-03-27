@@ -55,7 +55,7 @@ describe('editor.uvue', () => {
       // await page.waitFor(500)
       const getFormats = await page.data('data.formats')
       options.push({
-        insert: '文本内容ABC123defgpqif',
+        insert: '文本内容font',
         attributes: getFormats
       })
       await page.callMethod('setContents', options)
