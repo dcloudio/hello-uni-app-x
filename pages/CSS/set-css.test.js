@@ -9,15 +9,18 @@ const TEST_OVERRIDE = null
 
 // const TEST_OVERRIDE = [
 //   {
-//     path: '/pages/CSS/layout/visibility',
-//     method: 'radioChangeVisibility',
+//     path: '/pages/CSS/box-sizing/box-sizing',
+//     method: 'radioChangeBoxSizing',
 //     valueIndex: 2,
-//     styleName: 'visibility',
+//     styleName: 'box-sizing',
 //     expectedValue: {
-//       visibility: 'visible',
-//       visibilityActual: 'hidden',
-//       visibilityActualText: 'hidden',
-//       visibilityActualImage: 'hidden'
+//       boxSizing: 'border-box',
+//       boxSizingActual: 'border-box',
+//       boxSizingActualText: 'border-box',
+//       boxSizingActualImage: 'border-box',
+//       boxSizingActualFlat: 'border-box',
+//       boxSizingActualTextFlat: 'border-box',
+//       boxSizingActualImageFlat: 'border-box',
 //     }
 //   },
 // ];
@@ -260,6 +263,22 @@ const cssTests = [
         borderBottomActualTextFlat: '2px dashed blue',
         borderBottomActualImageFlat: '2px dashed blue',
       }
+     },
+    {
+      path: '/pages/CSS/border/border',
+      method: 'radioChangeBorder',
+      valueIndex: 3,
+      styleName: 'border',
+      skipAssert: true,
+      expectedValue: {
+        border: '2px dashed blue',
+        borderActual: '2px dashed blue',
+        borderActualText: '2px dashed blue',
+        borderActualImage: '2px dashed blue',
+        borderActualFlat: '2px dashed blue',
+        borderActualTextFlat: '2px dashed blue',
+        borderActualImageFlat: '2px dashed blue',
+      }
     },
     {
       path: '/pages/CSS/border/border-color',
@@ -384,6 +403,21 @@ const cssTests = [
       boxShadowActualFlat: 'black 5px 5px 5px',
       boxShadowActualTextFlat: 'black 5px 5px 5px',
       boxShadowActualImageFlat: 'black 5px 5px 5px',
+    }
+  },
+  {
+    path: '/pages/CSS/box-sizing/box-sizing',
+    method: 'radioChangeBoxSizing',
+    valueIndex: 2,
+    styleName: 'box-sizing',
+    expectedValue: {
+      boxSizing: 'border-box',
+      boxSizingActual: 'border-box',
+      boxSizingActualText: 'border-box',
+      boxSizingActualImage: 'border-box',
+      boxSizingActualFlat: 'border-box',
+      boxSizingActualTextFlat: 'border-box',
+      boxSizingActualImageFlat: 'border-box',
     }
   },
   // display
@@ -733,6 +767,18 @@ const cssTests = [
     }
   },
   {
+    path: '/pages/CSS/text/font-family',
+    method: 'radioChangeFontFamily',
+    valueIndex: 5,
+    styleName: 'font-family',
+    skipAssert: true,
+    expectedValue: {
+      fontFamily: 'UniFontFamily',
+      fontFamilyActual: 'UniFontFamily',
+      fontFamilyActualFlat: 'UniFontFamily',
+    }
+  },
+  {
     path: '/pages/CSS/text/color',
     method: 'radioChangeColor',
     valueIndex: 2,
@@ -745,14 +791,25 @@ const cssTests = [
     }
   },
   {
+    path: '/pages/CSS/text/font-size',
+    method: 'radioChangeFontSize',
+    valueIndex: 4,
+    styleName: 'font-size',
+    expectedValue: {
+      fontSizeProp: '20px',
+      fontSizeActual: '20px',
+      fontSizeActualFlat: '20px',
+    }
+  },
+  {
     path: '/pages/CSS/text/font-weight',
     method: 'radioChangeFontWeight',
     valueIndex: 4,
     styleName: 'font-weight',
     expectedValue: {
-      fontWeight: '500',
-      fontWeightActual: '500',
-      fontWeightActualFlat: '500',
+      fontWeight: '200',
+      fontWeightActual: '200',
+      fontWeightActualFlat: '200',
     }
   },
   {
@@ -790,6 +847,28 @@ const cssTests = [
     }
   },
   {
+    path: '/pages/CSS/text/letter-spacing',
+    method: 'radioChangeLetterSpacing',
+    valueIndex: 5,
+    styleName: 'letter-spacing',
+    expectedValue: {
+      letterSpacing: '5px',
+      letterSpacingActual: '5px',
+      letterSpacingActualFlat: '5px',
+    }
+  },
+  {
+    path: '/pages/CSS/text/line-height',
+    method: 'radioChangeLineHeight',
+    valueIndex: 3,
+    styleName: 'line-height',
+    expectedValue: {
+      lineHeight: '25px',
+      lineHeightActual: '25px',
+      lineHeightActualFlat: '25px',
+    }
+  },
+  {
     path: '/pages/CSS/text/white-space',
     method: 'radioChangeWhiteSpace',
     valueIndex: 3,
@@ -809,6 +888,71 @@ const cssTests = [
       fontStyle: 'italic',
       fontStyleActual: 'italic',
       fontStyleActualFlat: 'italic',
+    }
+  },
+  // transform
+  {
+    path: '/pages/CSS/transform/rotate',
+    method: 'radioChangeTransform',
+    valueIndex: 3,
+    styleName: 'transform',
+    skipAssert: true,
+    expectedValue: {
+      transformValueDynamic: 'rotate(90deg)',
+      transformActual: 'rotate(90deg)',
+      transformActualText: 'rotate(90deg)',
+      transformActualImage: 'rotate(90deg)',
+      transformActualFlat: 'rotate(90deg)',
+      transformActualTextFlat: 'rotate(90deg)',
+      transformActualImageFlat: 'rotate(90deg)',
+    }
+  },
+  {
+    path: '/pages/CSS/transform/scale',
+    method: 'radioChangeTransform',
+    valueIndex: 2,
+    styleName: 'transform',
+    skipAssert: true,
+    expectedValue: {
+      transformValueDynamic: 'scale(0.5,0.5)',
+      transformActual: 'scale(0.5,0.5)',
+      transformActualText: 'scale(0.5,0.5)',
+      transformActualImage: 'scale(0.5,0.5)',
+      transformActualFlat: 'scale(0.5,0.5)',
+      transformActualTextFlat: 'scale(0.5,0.5)',
+      transformActualImageFlat: 'scale(0.5,0.5)',
+    }
+  },
+  {
+    path: '/pages/CSS/transform/transform-origin',
+    method: 'radioChangeTransformOrigin',
+    valueIndex: 6,
+    styleName: 'transform-origin',
+    skipAssert: true,
+    expectedValue: {
+      transformOrigin: '10px 10px',
+      transformOriginActual: '10px 10px',
+      transformOriginActualText: '10px 10px',
+      transformOriginActualImage: '10px 10px',
+      transformOriginActualFlat: '10px 10px',
+      transformOriginActualTextFlat: '10px 10px',
+      transformOriginActualImageFlat: '10px 10px',
+    }
+  },
+  {
+    path: '/pages/CSS/transform/translate',
+    method: 'radioChangeTransform',
+    valueIndex: 4,
+    styleName: 'transform',
+    skipAssert: true,
+    expectedValue: {
+      transformValueDynamic: 'translate(50px, 50px)',
+      transformActual: 'translate(50px, 50px)',
+      transformActualText: 'translate(50px, 50px)',
+      transformActualImage: 'translate(50px, 50px)',
+      transformActualFlat: 'translate(50px, 50px)',
+      transformActualTextFlat: 'translate(50px, 50px)',
+      transformActualImageFlat: 'translate(50px, 50px)',
     }
   },
   // transition
