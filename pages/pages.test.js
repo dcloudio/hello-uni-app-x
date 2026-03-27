@@ -110,7 +110,6 @@ let pages = [
   // 单独测试例截图
   // '/pages/component/swiper/swiper-list-view',
   // 单独测试例截图
-  // '/pages/component/list-view/issue-2199',
 
   // API
   // 非 UI 相关不截图
@@ -289,7 +288,6 @@ let pages = [
   // 单独测试例截图
   // '/pages/CSS/variable/variable',
   '/pages/CSS/overflow/overflow-visible-event',
-  '/pages/CSS/overflow/issue-21223',
 
   // template
   // 网络资源加载，单独测试例截图
@@ -328,7 +326,6 @@ let pages = [
   // '/pages/template/slider-100/slider-100',
   // 动态内容
   // '/pages/template/banner-tabs-long-list-nested-scroll/banner-tabs-long-list-nested-scroll',
-  '/pages/template/issue-25934/issue-25934'
 ]
 
 // if (!isIos) {
