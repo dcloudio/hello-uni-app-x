@@ -92,6 +92,14 @@ describe('ExtApi-Request', () => {
   it('Check HEAD', async () => {
     await request(page, 'HEAD');
   });
+  if (!isMp) {
+    it('Check Request Header Lowercase', async () => {
+      res = await page.callMethod('jest_check_header_lowercase')
+      await page.waitFor(3000);
+      res = await page.data('data.jest_result');
+      expect(res).toBe(true)
+    })
+  }
   it('Request with timeout null', async () => {
     res = await page.callMethod('jest_timeout_null')
     await page.waitFor(2000);
