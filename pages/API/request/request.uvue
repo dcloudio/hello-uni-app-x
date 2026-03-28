@@ -326,6 +326,10 @@
     }
   }
 
+  function getResponseHeaderObject(header : any): UTSJSONObject {
+    return JSON.parse(JSON.stringify(header)) as UTSJSONObject
+  }
+
   const checkHeaderLowerCase = () => {
     uni.showLoading({
       title: "请求中..."
@@ -344,8 +348,9 @@
       withCredentials: false,
       firstIpv4: false,
       success: (res : RequestSuccess<UTSJSONObject>) => {
-        const lowerCaseValue = (res.header as UTSJSONObject).getString("content-type") ?? ""
-        const upperCaseValue = (res.header as UTSJSONObject).getString("Content-Type")
+        const responseHeader = getResponseHeaderObject(res.header)
+        const lowerCaseValue = responseHeader.getString("content-type") ?? ""
+        const upperCaseValue = responseHeader.getString("Content-Type")
         data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
         data.res = '请求结果 : ' + JSON.stringify(res.data)
         uni.showToast({
@@ -807,8 +812,9 @@
       withCredentials: false,
       firstIpv4: false,
       success: (res : RequestSuccess<UTSJSONObject>) => {
-        const lowerCaseValue = (res.header as UTSJSONObject).getString("content-type") ?? ""
-        const upperCaseValue = (res.header as UTSJSONObject).getString("Content-Type")
+        const responseHeader = getResponseHeaderObject(res.header)
+        const lowerCaseValue = responseHeader.getString("content-type") ?? ""
+        const upperCaseValue = responseHeader.getString("Content-Type")
         data.jest_result = lowerCaseValue == "application/json" && upperCaseValue == null
       },
       fail: () => {
