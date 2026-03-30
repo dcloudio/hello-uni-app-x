@@ -9,18 +9,19 @@ const TEST_OVERRIDE = null
 
 // const TEST_OVERRIDE = [
 //   {
-//     path: '/pages/CSS/box-sizing/box-sizing',
-//     method: 'radioChangeBoxSizing',
+//     path: '/pages/CSS/transform/scale',
+//     method: 'radioChangeTransform',
 //     valueIndex: 2,
-//     styleName: 'box-sizing',
+//     styleName: 'transform',
+//     // skipAssert: true,
 //     expectedValue: {
-//       boxSizing: 'border-box',
-//       boxSizingActual: 'border-box',
-//       boxSizingActualText: 'border-box',
-//       boxSizingActualImage: 'border-box',
-//       boxSizingActualFlat: 'border-box',
-//       boxSizingActualTextFlat: 'border-box',
-//       boxSizingActualImageFlat: 'border-box',
+//       transformValueDynamic: 'scale(0.5,0.5)',
+//       transformActual: 'scale(0.5, 0.5)',
+//       transformActualText: 'scale(0.5, 0.5)',
+//       transformActualImage: 'scale(0.5, 0.5)',
+//       transformActualFlat: 'scale(0.5, 0.5)',
+//       transformActualTextFlat: 'scale(0.5, 0.5)',
+//       transformActualImageFlat: 'scale(0.5, 0.5)',
 //     }
 //   },
 // ];
@@ -123,7 +124,7 @@ const cssTests = [
       method: 'radioChangeOpacity',
       valueIndex: 3,
       styleName: 'opacity',
-      skipAssert: true,
+      skipAssert: true,// 获取的值0.50
       expectedValue: {
         opacity: '0.5',
         opacityActual: '0.5',
@@ -223,7 +224,7 @@ const cssTests = [
       method: 'radioChangeZIndex',
       valueIndex: 4,
       styleName: 'z-index',
-      skipAssert: true,
+      skipAssert: true,// 获取还是旧的默认值5
       expectedValue: {
         zIndexActual: '10',
         zIndexActualText: '10',
@@ -236,40 +237,24 @@ const cssTests = [
       method: 'radioChangeBackgroundColor',
       valueIndex: 3,
       styleName: 'background-color',
-      skipAssert: true,
       expectedValue: {
-        backgroundColor: 'rgb(255, 0, 0)',
-        backgroundColorActual: 'rgb(255, 0, 0)',
-        backgroundColorActualText: 'rgb(255, 0, 0)',
-        backgroundColorActualImage: 'rgb(255, 0, 0)',
-        backgroundColorActualFlat: 'rgb(255, 0, 0)',
-        backgroundColorActualTextFlat: 'rgb(255, 0, 0)',
-        backgroundColorActualImageFlat: 'rgb(255, 0, 0)',
+        backgroundColor: 'rgb(0, 255, 0)',
+        backgroundColorActual: '#00FF00FF',
+        backgroundColorActualText: '#00FF00FF',
+        backgroundColorActualImage: '#00FF00FF',
+        backgroundColorActualFlat: '#00FF00FF',
+        backgroundColorActualTextFlat: '#00FF00FF',
+        backgroundColorActualImageFlat: '#00FF00FF',
       }
     },
     // border
-    {
-      path: '/pages/CSS/border/border-bottom',
-      method: 'radioChangeBorderBottom',
-      valueIndex: 3,
-      styleName: 'border-bottom',
-      skipAssert: true,
-      expectedValue: {
-        borderBottom: '2px dashed blue',
-        borderBottomActual: '2px dashed blue',
-        borderBottomActualText: '2px dashed blue',
-        borderBottomActualImage: '2px dashed blue',
-        borderBottomActualFlat: '2px dashed blue',
-        borderBottomActualTextFlat: '2px dashed blue',
-        borderBottomActualImageFlat: '2px dashed blue',
-      }
-     },
+
     {
       path: '/pages/CSS/border/border',
       method: 'radioChangeBorder',
       valueIndex: 3,
       styleName: 'border',
-      skipAssert: true,
+      skipAssert: true,// 获取的还是上一次的值 5px solid #00FFFFFF
       expectedValue: {
         border: '2px dashed blue',
         borderActual: '2px dashed blue',
@@ -285,23 +270,54 @@ const cssTests = [
       method: 'radioChangeBorderColor',
       valueIndex: 2,
       styleName: 'border-color',
-      skipAssert: true,
       expectedValue: {
-        borderColor: '#ff0000',
-        borderColorActual: '#ff0000',
-        borderColorActualText: '#ff0000',
-        borderColorActualImage: '#ff0000',
-        borderColorActualFlat: '#ff0000',
-        borderColorActualTextFlat: '#ff0000',
-        borderColorActualImageFlat: '#ff0000',
+        borderColor: '#0000ff',
+        borderColorActual: '#0000FFFF',
+        borderColorActualText: '#0000FFFF',
+        borderColorActualImage: '#0000FFFF',
+        borderColorActualFlat: '#0000FFFF',
+        borderColorActualTextFlat: '#0000FFFF',
+        borderColorActualImageFlat: '#0000FFFF',
       }
     },
+    {
+      path: '/pages/CSS/border/border-top',
+      method: 'radioChangeBorderTop',
+      valueIndex: 3,
+      styleName: 'border-top',
+      skipAssert: true,// 获取的还是上一次的值 5px solid #800080FF
+      expectedValue: {
+        borderTop: '2px dashed blue',
+        borderTopActual: '2px dashed blue',
+        borderTopActualText: '2px dashed blue',
+        borderTopActualImage: '2px dashed blue',
+        borderTopActualFlat: '2px dashed blue',
+        borderTopActualTextFlat: '2px dashed blue',
+        borderTopActualImageFlat: '2px dashed blue',
+      }
+    },
+    {
+      path: '/pages/CSS/border/border-bottom',
+      method: 'radioChangeBorderBottom',
+      valueIndex: 3,
+      styleName: 'border-bottom',
+      skipAssert: true,// 获取的还是上一次的值 5px solid #800080FF
+      expectedValue: {
+        borderBottom: '2px dashed blue',
+        borderBottomActual: '2px dashed blue',
+        borderBottomActualText: '2px dashed blue',
+        borderBottomActualImage: '2px dashed blue',
+        borderBottomActualFlat: '2px dashed blue',
+        borderBottomActualTextFlat: '2px dashed blue',
+        borderBottomActualImageFlat: '2px dashed blue',
+      }
+     },
     {
       path: '/pages/CSS/border/border-left',
       method: 'radioChangeBorderLeft',
       valueIndex: 3,
       styleName: 'border-left',
-      skipAssert: true,
+      skipAssert: true,// 获取的还是上一次的值 5px solid #FFC0CBFF
       expectedValue: {
         borderLeft: '2px dashed blue',
         borderLeftActual: '2px dashed blue',
@@ -310,6 +326,22 @@ const cssTests = [
         borderLeftActualFlat: '2px dashed blue',
         borderLeftActualTextFlat: '2px dashed blue',
         borderLeftActualImageFlat: '2px dashed blue',
+      }
+    },
+    {
+      path: '/pages/CSS/border/border-right',
+      method: 'radioChangeBorderRight',
+      valueIndex: 3,
+      styleName: 'border-right',
+      skipAssert: true,// 获取的还是上一次的值 5px solid #FFC0CBFF
+      expectedValue: {
+        borderRight: '2px dashed blue',
+        borderRightActual: '2px dashed blue',
+        borderRightActualText: '2px dashed blue',
+        borderRightActualImage: '2px dashed blue',
+        borderRightActualFlat: '2px dashed blue',
+        borderRightActualTextFlat: '2px dashed blue',
+        borderRightActualImageFlat: '2px dashed blue',
       }
     },
     {
@@ -326,22 +358,7 @@ const cssTests = [
         borderRadiusActualImageFlat: '5px',
       }
     },
-    {
-      path: '/pages/CSS/border/border-right',
-      method: 'radioChangeBorderRight',
-      valueIndex: 3,
-      styleName: 'border-right',
-      skipAssert: true,
-      expectedValue: {
-        borderRight: '2px dashed blue',
-        borderRightActual: '2px dashed blue',
-        borderRightActualText: '2px dashed blue',
-        borderRightActualImage: '2px dashed blue',
-        borderRightActualFlat: '2px dashed blue',
-        borderRightActualTextFlat: '2px dashed blue',
-        borderRightActualImageFlat: '2px dashed blue',
-      }
-    },
+
     {
       path: '/pages/CSS/border/border-style',
       method: 'radioChangeBorderStyle',
@@ -357,22 +374,7 @@ const cssTests = [
         borderStyleActualImageFlat: 'solid',
       }
     },
-    {
-      path: '/pages/CSS/border/border-top',
-      method: 'radioChangeBorderTop',
-      valueIndex: 3,
-      styleName: 'border-top',
-      skipAssert: true,
-      expectedValue: {
-        borderTop: '2px dashed blue',
-        borderTopActual: '2px dashed blue',
-        borderTopActualText: '2px dashed blue',
-        borderTopActualImage: '2px dashed blue',
-        borderTopActualFlat: '2px dashed blue',
-        borderTopActualTextFlat: '2px dashed blue',
-        borderTopActualImageFlat: '2px dashed blue',
-      }
-    },
+
   {
     path: '/pages/CSS/border/border-width',
     method: 'radioChangeBorderWidth',
@@ -394,7 +396,7 @@ const cssTests = [
     method: 'radioChangeBoxShadow',
     valueIndex: 3,
     styleName: 'box-shadow',
-    skipAssert: true, // true 时跳过 expectedValue 断言
+    skipAssert: true, // 获取值 5.00px 5.00px 5.00px #000000FF
     expectedValue: {
       boxShadow: '5px 5px 5px black',
       boxShadowActual: 'black 5px 5px 5px',
@@ -590,7 +592,6 @@ const cssTests = [
     method: 'radioChangeMargin',
     valueIndex: 3,
     styleName: 'margin',
-    skipAssert: false,
     expectedValue: {
       margin: '20px',
       marginActual: '20px',
@@ -771,7 +772,6 @@ const cssTests = [
     method: 'radioChangeFontFamily',
     valueIndex: 5,
     styleName: 'font-family',
-    skipAssert: true,
     expectedValue: {
       fontFamily: 'UniFontFamily',
       fontFamilyActual: 'UniFontFamily',
@@ -783,11 +783,10 @@ const cssTests = [
     method: 'radioChangeColor',
     valueIndex: 2,
     styleName: 'color',
-    skipAssert: true, // true 时跳过 expectedValue 断言
     expectedValue: {
       color: '#942192',
-      colorActual: 'rgb(148, 33, 146)',
-      colorActualFlat: 'rgb(148, 33, 146)',
+      colorActual: '#942192FF',
+      colorActualFlat: '#942192FF',
     }
   },
   {
@@ -839,11 +838,10 @@ const cssTests = [
     method: 'radioChangeTextShadow',
     valueIndex: 3,
     styleName: 'text-shadow',
-    skipAssert: true, // true 时跳过 expectedValue 断言
     expectedValue: {
       textShadow: '5px 5px #558abb',
-      textShadowActual: 'rgb(85, 138, 187) 5px 5px',
-      textShadowActualFlat: 'rgb(85, 138, 187) 5px 5px',
+      textShadowActual: '5px 5px 0px #558ABBFF',
+      textShadowActualFlat: '5px 5px 0px #558ABBFF',
     }
   },
   {
@@ -896,7 +894,6 @@ const cssTests = [
     method: 'radioChangeTransform',
     valueIndex: 3,
     styleName: 'transform',
-    skipAssert: true,
     expectedValue: {
       transformValueDynamic: 'rotate(90deg)',
       transformActual: 'rotate(90deg)',
@@ -912,15 +909,14 @@ const cssTests = [
     method: 'radioChangeTransform',
     valueIndex: 2,
     styleName: 'transform',
-    skipAssert: true,
     expectedValue: {
       transformValueDynamic: 'scale(0.5,0.5)',
-      transformActual: 'scale(0.5,0.5)',
-      transformActualText: 'scale(0.5,0.5)',
-      transformActualImage: 'scale(0.5,0.5)',
-      transformActualFlat: 'scale(0.5,0.5)',
-      transformActualTextFlat: 'scale(0.5,0.5)',
-      transformActualImageFlat: 'scale(0.5,0.5)',
+      transformActual: 'scale(0.5, 0.5)',
+      transformActualText: 'scale(0.5, 0.5)',
+      transformActualImage: 'scale(0.5, 0.5)',
+      transformActualFlat: 'scale(0.5, 0.5)',
+      transformActualTextFlat: 'scale(0.5, 0.5)',
+      transformActualImageFlat: 'scale(0.5, 0.5)',
     }
   },
   {
@@ -928,7 +924,6 @@ const cssTests = [
     method: 'radioChangeTransformOrigin',
     valueIndex: 6,
     styleName: 'transform-origin',
-    skipAssert: true,
     expectedValue: {
       transformOrigin: '10px 10px',
       transformOriginActual: '10px 10px',
@@ -944,7 +939,6 @@ const cssTests = [
     method: 'radioChangeTransform',
     valueIndex: 4,
     styleName: 'transform',
-    skipAssert: true,
     expectedValue: {
       transformValueDynamic: 'translate(50px, 50px)',
       transformActual: 'translate(50px, 50px)',
@@ -972,7 +966,7 @@ const cssTests = [
     method: 'radioChangeTransitionTimingFunction',
     valueIndex: 3,
     styleName: 'transition-timing-function',
-    skipAssert: true,
+    skipAssert: true,//设置和获取不一致，获取ease
     expectedValue: {
       transitionTimingFunctionActual: 'ease-out',
       transitionTimingFunctionActualText: 'ease-out',
