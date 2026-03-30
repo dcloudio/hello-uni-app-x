@@ -1,516 +1,1872 @@
 <template>
-  <view class="container">
-    <page-intro content="本页演示 editor 富文本编辑器：工具栏可设置加粗、斜体、对齐、行高、字体等，支持插入图片与预览，展示内容变化与只读模式。"></page-intro>
-    <view class='toolbar'>
-      <scroll-view style="flex: 1">
-        <view style="flex-direction: row;flex-wrap: wrap;">
-          <view @click="format('bold')">
-            <!-- #ifdef MP -->
-            <text :class="data.formats?.bold === 'strong' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8a;"}}</text>
-            <!-- #endif -->
-            <!-- #ifndef MP -->
-            <text :class="data.formats?.bold ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8a;"}}</text>
-            <!-- #endif -->
-          </view>
-          <view @click="format('italic')">
-            <!-- #ifdef MP -->
-            <text :class="data.formats?.italic === 'em' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8f;"}}</text>
-            <!-- #endif -->
-            <!-- #ifndef MP -->
-            <text :class="data.formats?.italic ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8f;"}}</text>
-            <!-- #endif -->
-          </view>
-          <view @click="format('underline')">
-            <text :class="data.formats?.underline ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8e;"}}</text>
-          </view>
-          <!-- #ifndef MP -->
-          <view @click="insertMention">
-            <text class="iconfont">@</text>
-          </view>
-          <!-- #endif -->
-          <view @click="format('strike')">
-            <!-- #ifdef MP -->
-            <text :class="data.formats?.strike === 'del' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8b;"}}</text>
-            <!-- #endif -->
-            <!-- #ifndef MP -->
-            <text :class="data.formats?.strike ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8b;"}}</text>
-            <!-- #endif -->
-          </view>
-          <!-- #ifndef MP-BAIDU -->
-          <view @click="format('align', 'left')">
-            <text :class="data.formats?.align == 'left' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec91;"}}</text>
-          </view>
-          <!-- #endif -->
-          <view @click="format('align', 'center')">
-            <text :class="data.formats?.align == 'center' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec84;"}}</text>
-          </view>
-          <view @click="format('align', 'right')">
-            <text :class="data.formats?.align == 'right' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec87;"}}</text>
-          </view>
-          <view @click="format('align', 'justify')">
-            <text :class="data.formats?.align == 'justify' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec94;"}}</text>
-          </view>
-          <!-- #ifndef MP-BAIDU -->
-          <view @click="format('lineHeight', '2')">
-            <text :class="data.formats?.lineHeight == '2' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe7f8;"}}</text>
-          </view>
-          <view @click="format('letterSpacing', '2em')">
-            <text :class="data.formats?.letterSpacing == '2em' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe964;"}}</text>
-          </view>
-          <view @click="format('marginTop', '20px')">
-            <text :class="data.formats?.marginTop == '20px' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe660;"}}</text>
-          </view>
-          <view @click="format('marginBottom', '20px')">
-            <text :class="data.formats?.marginBottom == '20px' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe65f;"}}</text>
-          </view>
-          <!-- #endif -->
+  <view id="editor-page-shell" class="page-shell">
+    <view
+     class="toolbar-wrap"
+     :class="isWebToolbarMode() ? 'toolbar-wrap toolbar-wrap-web' : 'toolbar-wrap'"
+     :style="getToolbarWrapStyle()"
+     v-if="isToolbarRendered()"
+     @touchstart="onToolbarTouchStart"
+     <!--#ifdef WEB -->
+     @mousedown="onToolbarMouseDown"
+     <!--#endif-->
+    >
+      <view :class="getToolbarShellClass()">
+        <scroll-view :class="getToolbarScrollTrackClass()" direction="horizontal" :show-scrollbar="false">
+          <view :class="getToolbarRowClass()">
+            <view class="toolbar-group toolbar-group-main">
+              <view id="toolbar-button-more" @click="openMoreSheet" :class="data.activeSheet == 'more' ? 'toolbar-button toolbar-button-active toolbar-button-right' : 'toolbar-button toolbar-button-right'">
+                <text :class="data.activeSheet == 'more' ? 'toolbar-iconfont toolbar-iconfont-active iconfont' : 'toolbar-iconfont iconfont'">&#xec7c;</text>
+              </view>
+            </view>
 
-          <view @click="removeFormat">
-            <text class="iconfont">{{"&#xe67e;"}}</text>
-          </view>
+            <view class="toolbar-divider toolbar-divider-side"></view>
 
-          <!-- #ifndef MP-BAIDU -->
-          <view @click="format('fontFamily', 'Pacifico')">
-            <text :class="data.formats?.fontFamily == 'Pacifico' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe684;"}}</text>
-          </view>
-          <view @click="format('fontSize', '24px')">
-            <text :class="data.formats?.fontSize == '24px' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe6fd;"}}</text>
-          </view>
-          <!-- #endif -->
-          <view @click="format('color', '#0000ff')">
-            <text :class="data.formats?.color == '#0000ff' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe72c;"}}</text>
-          </view>
-          <view @click="format('backgroundColor', '#00ff00')" class="icon-fontbgcolor">
-            <text :class="data.formats?.backgroundColor == '#00ff00' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe678;"}}</text>
-          </view>
-          <view @click="insertDate">
-            <text class="iconfont">{{"&#xe63e;"}}</text>
-          </view>
-          <view @click="format('list', 'check')">
-            <text class="iconfont">{{"&#xe664;"}}</text>
-          </view>
-          <view @click="format('list', 'ordered')">
-            <text :class="data.formats?.list == 'ordered' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec86;"}}</text>
-          </view>
-          <view @click="format('list', 'bullet')">
-            <text :class="data.formats?.list == 'bullet' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec83;"}}</text>
-          </view>
+            <view class="toolbar-group toolbar-group-main">
+              <view id="toolbar-button-title" @click="openTitleSheet" :class="isTitleSheetHighlighted() ? 'toolbar-button toolbar-button-active' : 'toolbar-button'">
+                <text :class="isTitleSheetHighlighted() ? 'toolbar-iconfont toolbar-iconfont-active iconfont' : 'toolbar-iconfont iconfont'">&#xec8d;</text>
+              </view>
+              <view id="toolbar-button-style" @click="openStyleSheet" :class="isStyleSheetHighlighted() ? 'toolbar-button toolbar-button-active' : 'toolbar-button'">
+                <text :class="isStyleSheetHighlighted() ? 'toolbar-iconfont toolbar-iconfont-active iconfont' : 'toolbar-iconfont iconfont'">&#xec8a;</text>
+              </view>
+              <view id="toolbar-button-align" @click="openAlignSheet" :class="isAlignSheetHighlighted() ? 'toolbar-button toolbar-button-active toolbar-button-right' : 'toolbar-button toolbar-button-right'">
+                <text :class="isAlignSheetHighlighted() ? 'toolbar-iconfont toolbar-iconfont-active iconfont' : 'toolbar-iconfont iconfont'">&#xec84;</text>
+              </view>
+            </view>
 
-          <view @click="undo">
-            <text class="iconfont">{{"&#xe633;"}}</text>
-          </view>
-          <view @click="redo">
-            <text class="iconfont">{{"&#xe627;"}}</text>
-          </view>
+            <view class="toolbar-divider toolbar-divider-center"></view>
 
-          <view @click="format('indent', '-1')">
-            <text class="iconfont">{{"&#xe6e8;"}}</text>
+            <view class="toolbar-group toolbar-group-main toolbar-group-main-right">
+              <view @click="chooseInsertImage" class="toolbar-button">
+                <text class="toolbar-iconfont iconfont">&#xec82;</text>
+              </view>
+              <view @click="insertDivider" class="toolbar-button">
+                <text class="toolbar-iconfont iconfont">&#xec7f;</text>
+              </view>
+              <!-- #ifndef MP -->
+              <view @click="insertMention" class="toolbar-button">
+                <text class="toolbar-iconfont iconfont">@</text>
+              </view>
+              <!-- #endif -->
+            </view>
           </view>
-          <view @click="format('indent', '+1')">
-            <text class="iconfont">{{"&#xeb28;"}}</text>
-          </view>
-          <view @click="insertDivider">
-            <text class="iconfont">{{"&#xec7f;"}}</text>
-          </view>
-          <view @click="chooseInsertImage">
-            <text class="iconfont">{{"&#xec82;"}}</text>
-          </view>
-          <view @click="format('header', 1)">
-            <text :class="data.formats?.header == 1 ? 'iconfont ql-active' : 'iconfont'">{{"&#xe860;"}}</text>
-          </view>
-          <view @click="format('script', 'sub')">
-            <text :class="data.formats?.script == 'sub' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec93;"}}</text>
-          </view>
-          <view @click="format('script', 'super')">
-            <text :class="data.formats?.script == 'super' ? 'iconfont ql-active' : 'iconfont'">{{"&#xec8c;"}}</text>
-          </view>
+        </scroll-view>
 
-          <view @click="clear">
-            <text class="iconfont">{{"&#xec7b;"}}</text>
-          </view>
-
-          <view @click="format('direction', 'rtl')">
-            <text :class="data.formats?.direction == 'rtl' ? 'iconfont ql-active' : 'iconfont'">{{"&#xe66e;"}}</text>
+        <!-- #ifndef WEB -->
+        <view class="toolbar-fixed-action">
+          <view class="toolbar-fixed-inner">
+            <view class="toolbar-divider toolbar-divider-fixed"></view>
+            <view @click="hideEditorKeyboard" class="toolbar-button toolbar-button-dismiss">
+              <text class="toolbar-iconfont iconfont">&#xeca0;</text>
+            </view>
           </view>
         </view>
-      </scroll-view>
+        <!-- #endif -->
+      </view>
     </view>
 
-    <view class="editor-wrapper">
-      <editor id="editor" class="ql-container" placeholder="开始输入..." :type="data.type" show-img-size show-img-toolbar show-img-resize @statuschange="onStatusChange" :read-only="data.readOnly" @ready="onEditorReady" @focus="onEditorFocus" @blur="onEditorBlur" @input="onEditorInput"/>
+    <!-- #ifdef WEB -->
+    <view v-if="data.activeSheet != ''" class="sheet-backdrop-web" @click="closeSheets"></view>
+    <!-- #endif -->
+
+    <view
+     id="editor-sheet-host"
+     class="sheet-host"
+     :class="isWebToolbarMode() ? 'sheet-host sheet-host-web' : 'sheet-host'"
+     :style="getSheetHostStyle()"
+     v-if="data.activeSheet != ''"
+      @touchstart="onToolbarTouchStart"
+      <!--#ifdef WEB -->
+      @mousedown="onToolbarMouseDown"
+      <!--#endif-->
+    >
+      <view :class="getToolbarPanelClass()" :style="getSheetPanelStyle()">
+        <!-- #ifdef WEB -->
+        <view class="toolbar-panel-arrow" :style="getToolbarPanelArrowStyle()"></view>
+        <!-- #endif -->
+        <view :class="getToolbarPanelHeaderClass()">
+          <view class="toolbar-panel-title-wrap">
+            <text :class="getToolbarPanelTitleClass()">{{ getPanelTitle() }}</text>
+            <text :class="getToolbarPanelSubtitleClass()">{{ getPanelSubtitle() }}</text>
+          </view>
+        </view>
+
+        <scroll-view :class="getToolbarPanelScrollClass()" direction="vertical" :show-scrollbar="false">
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'title'">
+            <view :class="getToolbarChipRowClass()">
+              <view :class="getToolbarChipCellClass()"><view @click="setParagraph" :class="isParagraphActive() ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="isParagraphActive() ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">P</text><text :class="isParagraphActive() ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">正文</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(1)" :class="data.formats.header == 1 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 1 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H1</text><text :class="data.formats.header == 1 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题1</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(2)" :class="data.formats.header == 2 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 2 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H2</text><text :class="data.formats.header == 2 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题2</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(3)" :class="data.formats.header == 3 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 3 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H3</text><text :class="data.formats.header == 3 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题3</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(4)" :class="data.formats.header == 4 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 4 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H4</text><text :class="data.formats.header == 4 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题4</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(5)" :class="data.formats.header == 5 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 5 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H5</text><text :class="data.formats.header == 5 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题5</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(6)" :class="data.formats.header == 6 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 6 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H6</text><text :class="data.formats.header == 6 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题6</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setOrderedList" :class="data.formats.list == 'ordered' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.list == 'ordered' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">1.</text><text :class="data.formats.list == 'ordered' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">有序列表</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setBulletList" :class="data.formats.list == 'bullet' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.list == 'bullet' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">•</text><text :class="data.formats.list == 'bullet' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">无序列表</text></view></view>
+              <!-- <view class="toolbar-chip-cell"><view @click="toggleBlockquote" :class="data.formats.blockquote ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.blockquote ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">\"</text><text :class="data.formats.blockquote ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">引用</text></view></view> -->
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'style'">
+            <view :class="getToolbarChipRowClass()">
+              <view :class="getToolbarChipCellClass()"><view @click="toggleBoldAndClose" :class="data.formats.bold ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.bold ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">B</text><text :class="data.formats.bold ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">加粗</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleItalicAndClose" :class="data.formats.italic ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.italic ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">I</text><text :class="data.formats.italic ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">斜体</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleUnderlineAndClose" :class="data.formats.underline ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.underline ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">U</text><text :class="data.formats.underline ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">下划线</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleStrikeAndClose" :class="data.formats.strike ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.strike ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">S</text><text :class="data.formats.strike ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">删除线</text></view></view>
+            </view>
+
+            <view class="toolbar-color-section">
+              <text class="toolbar-color-title">文字颜色</text>
+              <view :class="getColorRowClass()">
+                <view @click="setTextColorAndClose('')" :class="data.formats.color == '' ? 'color-swatch color-swatch-clear color-swatch-active' : 'color-swatch color-swatch-clear'"></view>
+                <view @click="setTextColorAndClose('#1f1f1f')" :class="data.formats.color == '#1f1f1f' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #1f1f1f;"></view>
+                <view @click="setTextColorAndClose('#3553ff')" :class="data.formats.color == '#3553ff' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #3553ff;"></view>
+                <view @click="setTextColorAndClose('#ef4444')" :class="data.formats.color == '#ef4444' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #ef4444;"></view>
+                <view @click="setTextColorAndClose('#16a34a')" :class="data.formats.color == '#16a34a' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #16a34a;"></view>
+                <view @click="setTextColorAndClose('#f59e0b')" :class="data.formats.color == '#f59e0b' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #f59e0b;"></view>
+              </view>
+
+              <text class="toolbar-color-title toolbar-color-title-secondary">文字背景颜色</text>
+              <view :class="getColorRowClass()">
+                <view @click="setBackgroundColorAndClose('')" :class="data.formats.backgroundColor == '' ? 'color-swatch color-swatch-clear color-swatch-active' : 'color-swatch color-swatch-clear'"></view>
+                <view @click="setBackgroundColorAndClose('#fff4bf')" :class="data.formats.backgroundColor == '#fff4bf' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #fff4bf;"></view>
+                <view @click="setBackgroundColorAndClose('#dbeafe')" :class="data.formats.backgroundColor == '#dbeafe' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #dbeafe;"></view>
+                <view @click="setBackgroundColorAndClose('#fee2e2')" :class="data.formats.backgroundColor == '#fee2e2' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #fee2e2;"></view>
+                <view @click="setBackgroundColorAndClose('#dcfce7')" :class="data.formats.backgroundColor == '#dcfce7' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #dcfce7;"></view>
+                <view @click="setBackgroundColorAndClose('#f3e8ff')" :class="data.formats.backgroundColor == '#f3e8ff' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #f3e8ff;"></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'align'">
+            <view :class="getToolbarChipRowClass()">
+              <view :class="getToolbarChipCellClass()"><view @click="clearAlign" :class="data.formats.align == '' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == '' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">D</text><text :class="data.formats.align == '' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">默认</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setAlignLeft" :class="data.formats.align == 'left' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == 'left' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">L</text><text :class="data.formats.align == 'left' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">居左</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setAlignCenter" :class="data.formats.align == 'center' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == 'center' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">C</text><text :class="data.formats.align == 'center' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">居中</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setAlignRight" :class="data.formats.align == 'right' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == 'right' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">R</text><text :class="data.formats.align == 'right' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">居右</text></view></view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'more'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">插入内容</text>
+              <view :class="getToolbarChipRowClass()">
+                <view :class="getToolbarChipCellClass()"><view @click="chooseInsertImage" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">IMG</text><text class="toolbar-chip-text">图片</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="toggleChecklistTool" :class="data.formats.list == 'check' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.list == 'check' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">TODO</text><text :class="data.formats.list == 'check' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">TODO</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="insertDivider" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">---</text><text class="toolbar-chip-text">分割线</text></view></view>
+              </view>
+            </view>
+
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">编辑操作</text>
+              <view :class="getToolbarChipRowClass()">
+                <view :class="getToolbarChipCellClass()"><view @click="clearFormatting" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">CLR</text><text class="toolbar-chip-text">清除样式</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="undo" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">↶</text><text class="toolbar-chip-text">撤销</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="redo" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">↷</text><text class="toolbar-chip-text">重做</text></view></view>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
     </view>
-    <view style="flex-direction: row;justify-content: space-between;">
-      <!-- #ifndef MP -->
-      <button @click="changeType">聚焦{{data.type == 'none' ? '不' : ''}}弹出键盘</button>
-      <!-- #endif -->
-      <button @click="getCon">控制台打印文本内容</button>
+
+    <view class="editor-stage" :style="getEditorStageStyle()">
+      <editor
+        id="editor"
+        class="editor-field"
+        placeholder="请输入正文内容..."
+        show-img-size
+        show-img-toolbar
+        show-img-resize
+        @ready="onEditorReady"
+        @focus="onEditorFocus"
+        @blur="onEditorBlur"
+        @statuschange="onStatusChange"
+      />
     </view>
   </view>
 </template>
 
 <script setup lang="uts">
-  type Formats = {
-    bold?: boolean
-    italic?: boolean
-    underline?: boolean
-    strike?: boolean
-    align?: string
-    lineHeight?: string
-    letterSpacing?: string
-    marginTop?: string
-    marginBottom?: string
-    fontFamily?: string
-    fontSize?: string
-    color?: string
-    backgroundColor?: string
-    list?: string
-    header?: number
-    script?: string
-    direction?: string
-  }
 
-  type DataType = {
-    readOnly: boolean;
-    // 此处 null 类型在安卓端测试例用到
-    formats: Formats | null;
-    // TODO 补充editorContext类型
-    // #ifdef APP
-    editorCtx: EditorContext | null;
-    // #endif
-    // #ifdef MP || WEB
-    editorCtx: any | null;
-    // #endif
-    // 自动化测试
-    autoTest: boolean;
-    undoTest: boolean;
-    redoTest: boolean;
-    removeFormatTest: boolean;
-    insertImageTest: boolean;
-    blurTest: boolean;
-    clearTest: boolean;
-    type: string;
-    getContentDeltaTest: any | null
+type Formats = {
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strike: boolean;
+  // blockquote: boolean;
+  header: number;
+  list: string;
+  align: string;
+  color: string;
+  backgroundColor: string;
+}
+
+type DataType = {
+  toolbarVisible: boolean;
+  toolbarBottom: number;
+  keyboardHeight: number;
+  pageWindowHeight: number;
+  pageWindowWidth: number;
+  sheetHeight: number;
+  sheetTop: number;
+  sheetLeft: number;
+  sheetArrowLeft: number;
+  sheetAnimated: boolean;
+  isFocused: boolean;
+  toolbarKeepVisible: boolean;
+  activeSheet: string;
+  autoTest: boolean;
+  undoTest: boolean;
+  redoTest: boolean;
+  removeFormatTest: boolean;
+  insertImageTest: boolean;
+  blurTest: boolean;
+  clearTest: boolean;
+  getContentDeltaTest: any | null;
+  formats: Formats;
+}
+
+const data = reactive({
+  toolbarVisible: false,
+  toolbarBottom: 0,
+  keyboardHeight: 0,
+  pageWindowHeight: 0,
+  pageWindowWidth: 0,
+  sheetHeight: 320,
+  sheetTop: 74,
+  sheetLeft: 12,
+  sheetArrowLeft: 32,
+  sheetAnimated: false,
+  isFocused: false,
+  toolbarKeepVisible: false,
+  activeSheet: '',
+  autoTest: false,
+  undoTest: false,
+  redoTest: false,
+  removeFormatTest: false,
+  insertImageTest: false,
+  blurTest: false,
+  clearTest: false,
+  getContentDeltaTest: null,
+  formats: {
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    // blockquote: false,
+    header: 0,
+    list: '',
+    align: '',
+    color: '',
+    backgroundColor: ''
   }
-  // 使用reactive避免ref数据在自动化测试中无法访问
-  const data = reactive({
-    readOnly: false,
-    formats: {
-      bold: false,
-      italic: false,
-      underline: false,
-      strike: false,
-      align: '',
-      lineHeight: '',
-      letterSpacing: '',
-      marginTop: '',
-      marginBottom: '',
-      fontFamily: '',
-      fontSize: '',
-      color: '',
-      backgroundColor: '',
-      list: '',
-      header: 0,
-      script: '',
-      direction: ''
+} as DataType)
+
+const editorContext = ref<EditorContext | null>(null)
+
+let keyboardChangeListenerId: number | null = null
+let toolbarHideTimer = 0
+
+function clearToolbarHideTimer() {
+  if (toolbarHideTimer > 0) {
+    clearTimeout(toolbarHideTimer)
+    toolbarHideTimer = 0
+  }
+}
+
+function scheduleToolbarHide() {
+  clearToolbarHideTimer()
+  toolbarHideTimer = setTimeout(() => {
+    if (!data.isFocused && data.keyboardHeight <= 0 && data.activeSheet == '') {
+      data.toolbarVisible = false
+      data.toolbarBottom = 0
+    }
+    toolbarHideTimer = 0
+  }, 120)
+}
+
+function getEditor() : EditorContext | null {
+  return editorContext.value
+}
+
+function isWebToolbarMode() : boolean {
+  // #ifdef WEB
+  return true
+  // #endif
+  return false
+}
+
+function isToolbarRendered() : boolean {
+  if (isWebToolbarMode()) {
+    return true
+  }
+  return data.toolbarVisible
+}
+
+function getToolbarWrapStyle() : string {
+  if (isWebToolbarMode()) {
+    return ''
+  }
+  return `bottom:${data.toolbarBottom}px;`
+}
+
+function getSheetPanelStyle() : string {
+  if (isWebToolbarMode()) {
+    return ''
+  }
+  return `height:${data.sheetHeight}px;`
+}
+
+function getWebSheetWidth() : number {
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  let maxWidth = windowWidth - 24
+  if (maxWidth < 240) {
+    maxWidth = windowWidth - 12
+  }
+  if (maxWidth < 220) {
+    return maxWidth
+  }
+  if (data.activeSheet == 'title') {
+    return maxWidth < 520 ? maxWidth : 520
+  }
+  if (data.activeSheet == 'style') {
+    return maxWidth < 420 ? maxWidth : 420
+  }
+  if (data.activeSheet == 'align') {
+    return maxWidth < 280 ? maxWidth : 280
+  }
+  return maxWidth < 360 ? maxWidth : 360
+}
+
+function getSheetHostStyle() : string {
+  if (!isWebToolbarMode()) {
+    return ''
+  }
+  return `left:${data.sheetLeft}px;top:${data.sheetTop}px;width:${getWebSheetWidth()}px;`
+}
+
+function getToolbarPanelArrowStyle() : string {
+  if (!isWebToolbarMode()) {
+    return ''
+  }
+  return `left:${data.sheetArrowLeft}px;`
+}
+
+function getToolbarShellClass() : string {
+  if (isWebToolbarMode()) {
+    if (data.activeSheet != '') {
+      return 'toolbar-shell toolbar-shell-attached toolbar-shell-web'
+    }
+    return 'toolbar-shell toolbar-shell-web'
+  }
+  if (data.activeSheet != '') {
+    return 'toolbar-shell toolbar-shell-attached'
+  }
+  return 'toolbar-shell'
+}
+
+function getToolbarScrollTrackClass() : string {
+  if (isWebToolbarMode()) {
+    return 'toolbar-scroll-track toolbar-scroll-track-web'
+  }
+  return 'toolbar-scroll-track'
+}
+
+function getToolbarRowClass() : string {
+  if (isWebToolbarMode()) {
+    return 'toolbar-row toolbar-row-scroll toolbar-row-web'
+  }
+  return 'toolbar-row toolbar-row-scroll'
+}
+
+function getToolbarPanelClass() : string {
+  if (isWebToolbarMode()) {
+    if (data.sheetAnimated) {
+      return 'toolbar-panel toolbar-panel-attached toolbar-panel-web toolbar-panel-web-attached toolbar-panel-web-entered'
+    }
+    return 'toolbar-panel toolbar-panel-attached toolbar-panel-web toolbar-panel-web-attached'
+  }
+  return 'toolbar-panel toolbar-panel-attached'
+}
+
+function getToolbarPanelHeaderClass() : string {
+  if (isWebToolbarMode()) {
+    return 'toolbar-panel-header toolbar-panel-header-web'
+  }
+  return 'toolbar-panel-header'
+}
+
+function getToolbarPanelTitleClass() : string {
+  if (isWebToolbarMode()) {
+    return 'toolbar-panel-title toolbar-panel-title-web'
+  }
+  return 'toolbar-panel-title'
+}
+
+function getToolbarPanelSubtitleClass() : string {
+  if (isWebToolbarMode()) {
+    return 'toolbar-panel-subtitle toolbar-panel-subtitle-web'
+  }
+  return 'toolbar-panel-subtitle'
+}
+
+function getToolbarPanelScrollClass() : string {
+  if (isWebToolbarMode()) {
+    return 'toolbar-panel-scroll toolbar-panel-scroll-web'
+  }
+  return 'toolbar-panel-scroll'
+}
+
+function getToolbarChipRowClass() : string {
+  if (!isWebToolbarMode()) {
+    return 'toolbar-chip-row'
+  }
+  const panelWidth = getWebSheetWidth()
+  if (panelWidth <= 300) {
+    return 'toolbar-chip-row toolbar-chip-row-web toolbar-chip-row-web-compact'
+  }
+  return 'toolbar-chip-row toolbar-chip-row-web'
+}
+
+function getToolbarChipCellClass() : string {
+  if (!isWebToolbarMode()) {
+    return 'toolbar-chip-cell'
+  }
+  const panelWidth = getWebSheetWidth()
+  if (panelWidth <= 300) {
+    return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-half'
+  }
+  if (panelWidth <= 420) {
+    return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-third'
+  }
+  return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-quarter'
+}
+
+function getColorRowClass() : string {
+  if (!isWebToolbarMode()) {
+    return 'color-row'
+  }
+  return 'color-row color-row-web'
+}
+
+function refocusEditorAfterToolbarAction() {
+  // #ifdef APP-ANDROID || APP-IOS || APP-HARMONY
+  setTimeout(() => {
+    const editorElement = uni.getElementById('editor')
+    if (editorElement != null) {
+      editorElement.focus()
+    }
+    data.toolbarKeepVisible = false
+  }, 30)
+  // #endif
+}
+
+function updatePageWindowHeight() {
+  const windowInfo = uni.getWindowInfo()
+  data.pageWindowHeight = windowInfo.windowHeight
+  data.pageWindowWidth = windowInfo.windowWidth
+}
+
+function getSheetButtonId(sheet: string) : string {
+  if (sheet == 'more') {
+    return 'toolbar-button-more'
+  }
+  if (sheet == 'title') {
+    return 'toolbar-button-title'
+  }
+  if (sheet == 'style') {
+    return 'toolbar-button-style'
+  }
+  return 'toolbar-button-align'
+}
+
+function updateWebSheetAnchor(sheet: string) {
+  if (!isWebToolbarMode()) {
+    return
+  }
+  updatePageWindowHeight()
+  const pageShellElement = uni.getElementById('editor-page-shell')
+  const buttonElement = uni.getElementById(getSheetButtonId(sheet))
+  if (buttonElement == null || pageShellElement == null) {
+    data.sheetTop = 74
+    data.sheetLeft = 12
+    data.sheetArrowLeft = 32
+    return
+  }
+  const pageRect = pageShellElement.getBoundingClientRect()
+  const rect = buttonElement.getBoundingClientRect()
+  const panelWidth = getWebSheetWidth()
+  const pageWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  let panelLeft = rect.left - pageRect.left + rect.width / 2 - panelWidth / 2
+  let maxLeft = pageWidth - panelWidth - 12
+  if (maxLeft < 12) {
+    maxLeft = 12
+  }
+  if (panelLeft < 12) {
+    panelLeft = 12
+  }
+  if (panelLeft > maxLeft) {
+    panelLeft = maxLeft
+  }
+  let arrowLeft = rect.left - pageRect.left + rect.width / 2 - panelLeft - 8
+  if (arrowLeft < 18) {
+    arrowLeft = 18
+  }
+  if (arrowLeft > panelWidth - 30) {
+    arrowLeft = panelWidth - 30
+  }
+  data.sheetTop = rect.bottom - pageRect.top + 12
+  data.sheetLeft = panelLeft
+  data.sheetArrowLeft = arrowLeft
+}
+
+function onEditorReady() {
+  uni.createEditorContextAsync({
+    id: 'editor',
+    success: (context: EditorContext) => {
+      editorContext.value = context
     },
-    // TODO 补充editorContext类型
-    editorCtx: null,
-    // 自动化测试
-    autoTest: false,
-    undoTest: false,
-    redoTest: false,
-    removeFormatTest: false,
-    insertImageTest: false,
-    blurTest: false,
-    clearTest: false,
-    type: '',
-    getContentDeltaTest: null
-  } as DataType)
+    fail: (error: UniError) => {
+      console.log('createEditorContextAsync fail', error)
+    }
+  } as CreateEditorContextAsyncOptions)
+}
 
-  onReady(() => {
-    uni.loadFontFace({
-      family: 'Pacifico',
-      source: 'url("/static/font/Pacifico-Regular.ttf")',
-      success() {
-        console.log('success load font')
-      },
-      fail() {
-        console.log('fail load font load')
+function applyFormat(name: string, value: string | number | boolean | null) {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.format(name, value)
+  editor.scrollIntoView(null)
+}
+
+function getEditorBottomSpacing() : number {
+  if (isWebToolbarMode()) {
+    return 0
+  }
+  if (!data.toolbarVisible) {
+    return 0
+  }
+  if (data.activeSheet != '') {
+    return data.sheetHeight + 74
+  }
+  return 74
+}
+
+function getEditorStageStyle() : string {
+  const paddingBottom = getEditorBottomSpacing()
+  if (isWebToolbarMode()) {
+    return `padding-bottom:${paddingBottom}px;`
+  }
+  if (data.keyboardHeight <= 0 || data.pageWindowHeight <= 0) {
+    return `padding-bottom:${paddingBottom}px;`
+  }
+  let editorHeight = data.pageWindowHeight - data.keyboardHeight
+  if (editorHeight < 120) {
+    editorHeight = 120
+  }
+  return `height:${editorHeight}px;padding-bottom:${paddingBottom}px;`
+}
+
+function syncToolbarBottom() {
+  if (data.activeSheet != '') {
+    data.toolbarBottom = data.sheetHeight
+    return
+  }
+  data.toolbarBottom = data.keyboardHeight
+}
+
+function syncToolbarVisibility() {
+  if (data.activeSheet != '') {
+    data.toolbarVisible = true
+    return
+  }
+  if (data.isFocused) {
+    data.toolbarVisible = true
+    return
+  }
+  if (data.keyboardHeight > 0) {
+    data.toolbarVisible = true
+    return
+  }
+  if (data.toolbarKeepVisible) {
+    data.toolbarVisible = true
+    return
+  }
+  data.toolbarVisible = false
+}
+
+function closeSheets() {
+  if (isWebToolbarMode()) {
+    data.sheetAnimated = false
+  }
+  data.activeSheet = ''
+  syncToolbarBottom()
+  syncToolbarVisibility()
+}
+
+function hideKeyboardForSheet() {
+  if (data.keyboardHeight > 0) {
+    data.sheetHeight = data.keyboardHeight
+  }
+  data.isFocused = false
+  uni.hideKeyboard()
+}
+
+function toggleSheet(sheet: string) {
+  if (data.activeSheet == sheet) {
+    closeSheets()
+    return
+  }
+  updateWebSheetAnchor(sheet)
+  data.activeSheet = sheet
+  if (isWebToolbarMode()) {
+    data.sheetAnimated = false
+    setTimeout(() => {
+      if (data.activeSheet == sheet) {
+        data.sheetAnimated = true
       }
-    })
-  })
+    }, 16)
+  }
+  hideKeyboardForSheet()
+  syncToolbarBottom()
+  syncToolbarVisibility()
+}
 
-  const changeType = () => {
-    if (data.type.length <= 0) {
-      data.type = 'none'
-    } else {
-      data.type = ''
+function openMoreSheet() {
+  toggleSheet('more')
+}
+
+function openTitleSheet() {
+  toggleSheet('title')
+}
+
+function openStyleSheet() {
+  toggleSheet('style')
+}
+
+function openAlignSheet() {
+  toggleSheet('align')
+}
+
+function getPanelTitle() : string {
+  if (data.activeSheet == 'title') {
+    return '设置标题'
+  }
+  if (data.activeSheet == 'style') {
+    return '设置字格式'
+  }
+  if (data.activeSheet == 'align') {
+    return '居中设置'
+  }
+  return '更多操作'
+}
+
+function getTitleSummary() : string {
+  // if (data.formats.blockquote) {
+  //   return '当前为引用'
+  // }
+  if (data.formats.list == 'ordered') {
+    return '当前为有序列表'
+  }
+  if (data.formats.list == 'bullet') {
+    return '当前为无序列表'
+  }
+  if (data.formats.header > 0) {
+    return `当前为大标题${data.formats.header}`
+  }
+  return '当前为正文'
+}
+
+function getStyleSummary() : string {
+  const names: string[] = []
+  if (data.formats.bold) {
+    names.push('加粗')
+  }
+  if (data.formats.italic) {
+    names.push('斜体')
+  }
+  if (data.formats.underline) {
+    names.push('下划线')
+  }
+  if (data.formats.strike) {
+    names.push('删除线')
+  }
+  if (data.formats.color != '') {
+    names.push('已设颜色')
+  }
+  if (names.length == 0) {
+    return '当前未设置字格式'
+  }
+  return names.join(' / ')
+}
+
+function getAlignSummary() : string {
+  if (data.formats.align == '') {
+    return '当前为默认对齐'
+  }
+  if (data.formats.align == 'center') {
+    return '当前为居中'
+  }
+  if (data.formats.align == 'right') {
+    return '当前为居右'
+  }
+  return '当前为居左'
+}
+
+function getPanelSubtitle() : string {
+  if (data.activeSheet == 'title') {
+    return getTitleSummary()
+  }
+  if (data.activeSheet == 'style') {
+    return getStyleSummary()
+  }
+  if (data.activeSheet == 'align') {
+    return getAlignSummary()
+  }
+  return '插入与编辑快捷操作'
+}
+
+function hasInlineStyleActive() : boolean {
+  return data.formats.bold || data.formats.italic || data.formats.underline || data.formats.strike || data.formats.color != ''
+}
+
+function hasTitleFormatActive() : boolean {
+  return data.formats.header > 0 || data.formats.list != ''
+}
+
+function isTitleSheetHighlighted() : boolean {
+  return data.activeSheet == 'title' || hasTitleFormatActive()
+}
+
+function isStyleSheetHighlighted() : boolean {
+  return data.activeSheet == 'style' || hasInlineStyleActive()
+}
+
+function isAlignSheetHighlighted() : boolean {
+  return data.activeSheet == 'align' || data.formats.align != ''
+}
+
+function isParagraphActive() : boolean {
+  return data.formats.header == 0 && data.formats.list == ''
+}
+
+function clearTitleFormats() {
+  // applyFormat('blockquote', false)
+  applyFormat('list', null)
+}
+
+function setParagraph() {
+  clearTitleFormats()
+  applyFormat('header', 0)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setHeadingLevel(level: number) {
+  clearTitleFormats()
+  if (data.formats.header == level) {
+    applyFormat('header', 0)
+  } else {
+    applyFormat('header', level)
+  }
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setOrderedList() {
+  // applyFormat('blockquote', false)
+  applyFormat('header', 0)
+  applyFormat('list', data.formats.list == 'ordered' ? null : 'ordered')
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setBulletList() {
+  // applyFormat('blockquote', false)
+  applyFormat('header', 0)
+  applyFormat('list', data.formats.list == 'bullet' ? null : 'bullet')
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+// function toggleBlockquote() {
+//   applyFormat('header', 0)
+//   applyFormat('list', null)
+//   applyFormat('blockquote', data.formats.blockquote ? false : true)
+//   closeSheets()
+// }
+
+function toggleBold() {
+  applyFormat('bold', null)
+}
+
+function toggleItalic() {
+  applyFormat('italic', null)
+}
+
+function toggleUnderline() {
+  applyFormat('underline', null)
+}
+
+function toggleStrike() {
+  applyFormat('strike', null)
+}
+
+function toggleBoldAndClose() {
+  toggleBold()
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function toggleItalicAndClose() {
+  toggleItalic()
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function toggleUnderlineAndClose() {
+  toggleUnderline()
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function toggleStrikeAndClose() {
+  toggleStrike()
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setTextColor(color: string) {
+  applyFormat('color', color == '' ? null : color)
+}
+
+function setTextColorAndClose(color: string) {
+  setTextColor(color)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setBackgroundColor(color: string) {
+  applyFormat('background', color == '' ? null : color)
+}
+
+function setBackgroundColorAndClose(color: string) {
+  setBackgroundColor(color)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setAlignLeft() {
+  applyFormat('align', 'left')
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setAlignCenter() {
+  applyFormat('align', 'center')
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setAlignRight() {
+  applyFormat('align', 'right')
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function clearAlign() {
+  applyFormat('align', null)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function clearFormatting() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.removeFormat(null)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function toggleChecklistTool() {
+  applyFormat('list', data.formats.list == 'check' ? null : 'check')
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function insertDivider() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.insertDivider(null)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function insertMention () {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  // 此处插入的两个 mention 测试例会用到
+  editor.insertMention({
+    id: '123456',
+    name: 'uni-app',
+    success: (res: any) => {
+      console.log('insert mention success')
+    }
+  })
+  editor.insertMention({
+    id: '000',
+    name: 'uni-app x',
+    color: '#fff',
+    background: '#42b983',
+    radius: '10px',
+    success: (res: any) => {
+      console.log('insert mention success')
+    }
+  })
+}
+
+function getCon () {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.getContents({
+    success: (res: UniEditorElementGetContentsOptionsRes) => {
+      console.log('文本详情：', res)
+      data.getContentDeltaTest = res.delta
+    },
+    fail: (err: any) => {
+      console.log(err)
+    }
+  })
+}
+
+// 自动化测试专用
+const setContents = (options: any) => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.setContents({
+    delta: {
+      ops: options
+    },
+    success: (res: any) => {
+      console.log('setContents-success', res)
+    },
+    fail: (err: any) => {
+      console.log(err)
+    }
+  })
+}
+
+const blur = () => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.blur({
+    success: (res: any) => {
+      console.log('编辑器失焦：', res)
+      data.blurTest = true
+    },
+    fail: (err: any) => {
+      console.log(err)
+      data.blurTest = false
+    }
+  })
+}
+
+const clear = () => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.clear({
+    success: function (res: any) {
+      console.log("clear success",res)
+      data.clearTest = true
+    },
+    fail: (err: any) => {
+      console.log(err)
+      data.clearTest = false
+    }
+  })
+}
+
+const clearShowModal = () => {
+  uni.showModal({
+    title: '清空编辑器',
+    content: '确定清空编辑器全部内容？',
+    success: (res) => {
+      if (res.confirm) {
+        clear()
+      }
+    }
+  })
+}
+
+const removeFormat = () => {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.removeFormat({
+    success: (res: any) => {
+      console.log('removeFormat-success', res)
+      data.removeFormatTest = true
+    },
+    fail: (err: any) => {
+      console.log(err)
+      data.removeFormatTest = false
+    }
+  })
+}
+
+function insertImage(path: string) {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  const options: UniEditorElementInsertImageOptions = {
+    src: path,
+    alt: 'image',
+    success: () => {
+      data.insertImageTest = true
+    },
+    fail: () => {
+      data.insertImageTest = false
     }
   }
+  editor.insertImage(options)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
 
-  const readOnlyChange = () => {
-    data.readOnly = !data.readOnly
-  }
-
-  const onEditorReady = () => {
-    uni.createEditorContextAsync({
-      id: 'editor',
-      success: (res) => {
-        data.editorCtx = res
-      },
-      fail: (err) => {
-        console.log('createEditorContextAsync fail', err)
+function chooseInsertImage() {
+  uni.chooseImage({
+    count: 1,
+    success: (res: ChooseImageSuccess) => {
+      const paths = res.tempFilePaths
+      if (paths.length > 0) {
+        insertImage(paths[0])
       }
-    })
-  }
-
-  function onEditorFocus(e: UniEditorFocusEvent) {
-    console.log('编辑器获得焦点')
-  }
-
-  function onEditorBlur(e: UniEditorBlurEvent) {
-    console.log('编辑器失去焦点')
-  }
-
-  function onEditorInput(e: UniEditorInputEvent) {
-    console.log(`内容改变: ${e?.detail.text.substring(0, 20)}...`)
-  }
-
-  const insertMention = () => {
-    // 此处插入的两个 mention 测试例会用到
-    data.editorCtx?.insertMention({
-      id: '123456',
-      name: 'uni-app',
-      success: (res: any) => {
-        console.log('insert mention success')
-      }
-    })
-    data.editorCtx?.insertMention({
-      id: '000',
-      name: 'uni-app x',
-      color: '#fff',
-      background: '#42b983',
-      radius: '10px',
-      success: (res: any) => {
-        console.log('insert mention success')
-      }
-    })
-  }
-
-  // 自动化测试专用
-  const setContents = (options: any) => {
-    data.editorCtx?.setContents({
-      delta: {
-        ops: options
-      },
-      success: (res: any) => {
-        console.log('setContents-success', res)
-      },
-      fail: (err: any) => {
-        console.log(err)
-      }
-    })
-  }
-
-  const blur = () => {
-    data.editorCtx?.blur(
-      {
-        success: (res: any) => {
-          console.log('编辑器失焦：', res)
-          data.blurTest = true
-        },
-        fail: (err: any) => {
-          console.log(err)
-        }
-      }
-    )
-  }
-
-  const getCon = () => {
-    data.editorCtx?.getContents({
-      success: (res: UniEditorElementGetContentsOptionsRes) => {
-        console.log('文本详情：', res)
-        data.getContentDeltaTest = res.delta
-      },
-      fail: (err: any) => {
-        console.log(err)
-      }
-    })
-  }
-
-  const undo = () => {
-    data.editorCtx?.undo({
-      success: (res: any) => {
-        data.undoTest = true
-      },
-      fail: (err: any) => {
-        data.undoTest = false
-      }
-    })
-  }
-
-  const redo = () => {
-    data.editorCtx?.redo({
-      success: (res: any) => {
-        data.redoTest = true
-      },
-      fail: (err: any) => {
-        data.redoTest = false
-      }
-    })
-  }
-
-  function format (name: string, value: string | number | null = null) {
-    if (name.length == 0) return
-    console.log('format', name, value)
-    data.editorCtx?.format(name, value)
-  }
-
-  const onStatusChange = (e: UniEditorStatusChangeEvent) => {
-    const statusDetail = e.detail
-    // #ifdef APP-ANDROID
-    data.formats = {
-      bold: statusDetail.bold,
-      italic: statusDetail.italic,
-      underline: statusDetail.underline,
-      strike: statusDetail.strike,
-      align: statusDetail.align,
-      lineHeight: statusDetail.lineHeight,
-      letterSpacing: statusDetail.letterSpacing,
-      marginTop: statusDetail.marginTop,
-      marginBottom: statusDetail.marginBottom,
-      fontFamily: statusDetail.fontFamily,
-      fontSize: statusDetail.fontSize,
-      color: statusDetail.color,
-      backgroundColor: statusDetail.backgroundColor,
-      list: statusDetail.list,
-      header: statusDetail.header,
-      script: statusDetail.script,
-      direction: statusDetail.direction,
-    } as Formats
-    // #endif
-    // #ifndef APP-ANDROID
-    data.formats = statusDetail as Formats
-    // #endif
-  }
-
-  const insertDivider = () => {
-    data.editorCtx?.insertDivider({
-      success: function (res: any) {
-        console.log('insert divider success')
-      }
-    })
-  }
-
-  const clear = () => {
-    data.editorCtx?.clear({
-      success: function (res: any) {
-        console.log("clear success",res)
-        data.clearTest = true
-      }
-    })
-  }
-
-  const clearShowModal = () => {
-    uni.showModal({
-      title: '清空编辑器',
-      content: '确定清空编辑器全部内容？',
-      success: (res) => {
-        if (res.confirm) {
-          clear()
-        }
-      }
-    })
-  }
-
-  const removeFormat = () => {
-    data.editorCtx?.removeFormat({
-      success: (res: any) => {
-        console.log('removeFormat-success', res)
-        data.removeFormatTest = true
-      },
-      fail: (err: any) => {
-        data.removeFormatTest = false
-      }
-    })
-  }
-
-  const insertDate = () => {
-    const date = new Date()
-    const formatDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
-    data.editorCtx?.insertText({
-      text: formatDate
-    })
-  }
-
-  const insertImage = (image: string) => {
-    data.editorCtx?.insertImage({
-      src: image,
-      alt: '图像',
-      success: (res: any) => {
-        console.log('insert image success')
-        data.insertImageTest = true
-      }
-    })
-  }
-
-  const chooseInsertImage = () => {
-    uni.chooseImage({
-      count: 1,
-      success: (res) => {
-        insertImage(res.tempFilePaths[0])
-      }
-    })
-  }
-
-  defineExpose({
-    data,
-    setContents,
-    blur,
-    clear,
-    insertDivider,
-    undo,
-    redo,
-    insertImage,
-    removeFormat,
-    insertMention,
-    getCon
+    }
   })
+}
+
+function undo() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.undo({
+    success: () => {
+      data.undoTest = true
+    },
+    fail: () => {
+      data.undoTest = false
+    }
+  })
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function redo() {
+  const editor = getEditor()
+  if (editor == null) {
+    return
+  }
+  editor.redo({
+    success: () => {
+      data.redoTest = true
+    },
+    fail: () => {
+      data.redoTest = false
+    }
+  })
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function hideEditorKeyboard() {
+  uni.hideKeyboard()
+  data.isFocused = false
+  data.toolbarKeepVisible = false
+  closeSheets()
+  syncToolbarBottom()
+  syncToolbarVisibility()
+  scheduleToolbarHide()
+}
+
+// #ifdef WEB
+function onToolbarMouseDown(event: UniMouseEvent) {
+  clearToolbarHideTimer()
+  data.toolbarVisible = true
+  event.preventDefault()
+}
+
+// #endif
+
+function onToolbarTouchStart(event: UniTouchEvent) {
+  clearToolbarHideTimer()
+  data.toolbarVisible = true
+  // #ifndef WEB
+  data.toolbarKeepVisible = true
+  // #endif
+}
+
+function onEditorFocus(event: UniEditorFocusEvent) {
+  console.log('onEditorFocus')
+  clearToolbarHideTimer()
+  if (data.activeSheet != '') {
+    data.activeSheet = ''
+  }
+  data.isFocused = true
+  data.toolbarKeepVisible = false
+  syncToolbarVisibility()
+  syncToolbarBottom()
+}
+
+function onEditorBlur(event: UniEditorBlurEvent) {
+  data.isFocused = false
+  if (data.activeSheet == '') {
+    syncToolbarBottom()
+    // #ifndef WEB
+    if (data.toolbarKeepVisible) {
+      data.toolbarVisible = true
+      return
+    }
+    // #endif
+    // #ifdef WEB
+    data.toolbarVisible = true
+    return
+    // #endif
+    syncToolbarVisibility()
+    scheduleToolbarHide()
+  }
+}
+
+function onStatusChange(event: UniEditorStatusChangeEvent) {
+  const formats = event.detail
+  data.formats.bold = formats.bold == true
+  data.formats.italic = formats.italic == true
+  data.formats.underline = formats.underline == true
+  data.formats.strike = formats.strike == true
+  // data.formats.blockquote = formats.blockquote == true
+  data.formats.header = formats.header != null ? formats.header : 0
+  data.formats.list = formats.list != null ? formats.list : ''
+  data.formats.align = formats.align != null ? formats.align : ''
+  data.formats.color = formats.color != null ? formats.color : ''
+  data.formats.backgroundColor = formats.backgroundColor != null ? formats.backgroundColor : ''
+}
+
+onLoad(() => {
+  // editor 内部基于 web-view，键盘高度用全局 API 更稳妥
+  keyboardChangeListenerId = uni.onKeyboardHeightChange((res) => {
+    data.keyboardHeight = res.height
+    if (res.height > 0) {
+      data.sheetHeight = res.height
+      if (data.activeSheet != '') {
+        data.activeSheet = ''
+      }
+    }
+    syncToolbarBottom()
+    if (res.height > 0) {
+      syncToolbarVisibility()
+      return
+    }
+    if (data.activeSheet != '') {
+      data.toolbarVisible = true
+      return
+    }
+    if (data.isFocused) {
+      data.toolbarVisible = true
+      return
+    }
+    if (data.toolbarKeepVisible) {
+      data.toolbarVisible = true
+      return
+    }
+    scheduleToolbarHide()
+  })
+})
+
+onReady(() => {
+  updatePageWindowHeight()
+})
+
+onResize((options: OnResizeOptions) => {
+  data.pageWindowHeight = options.size.windowHeight
+  data.pageWindowWidth = options.size.windowWidth
+  if (isWebToolbarMode() && data.activeSheet != '') {
+    updateWebSheetAnchor(data.activeSheet)
+  }
+})
+
+onUnload(() => {
+  clearToolbarHideTimer()
+  if (keyboardChangeListenerId != null) {
+    uni.offKeyboardHeightChange(keyboardChangeListenerId)
+    keyboardChangeListenerId = null
+  }
+})
+
+defineExpose({
+  data,
+  openMoreSheet,
+  openTitleSheet,
+  openStyleSheet,
+  openAlignSheet,
+  closeSheets,
+  setContents,
+  blur,
+  clear,
+  insertDivider,
+  undo,
+  redo,
+  insertImage,
+  removeFormat,
+  insertMention,
+  getCon
+})
 </script>
 
 <style>
-  @import "./editor-icon.css";
+@import './editor-icon.css';
 
-  .container {
-    flex: 1;
-    padding: 10px;
-    height: 100%;
-  }
+.page-shell {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f6f2;
+}
 
-  .editor-wrapper {
-    flex: 1;
-    background: #fff;
-  }
+.editor-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
 
-  .iconfont {
-    padding: 8px 8px;
-    font-size: 20px;
-  }
+.editor-field {
+  flex: 1;
+  background-color: #ffffff;
+  color: #1f1f1f;
+  font-size: 18px;
+  line-height: 30px;
+  padding-top: 24px;
+  padding-right: 20px;
+  padding-bottom: 24px;
+  padding-left: 20px;
+}
 
-  .toolbar {
-    height: 120px;
-    border-bottom: 0;
-  }
+.toolbar-wrap {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  bottom: 350px;
+  display: flex;
+  flex-direction: column;
+  z-index: 130;
+  box-shadow: 0px -5px 8px rgba(0,0,0,.05);
+}
 
-  .ql-container {
-    box-sizing: border-box;
-    padding: 12px 15px;
-    width: 100%;
-    min-height: 300px;
-    height: 100%;
-  }
+.toolbar-wrap-web {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  box-shadow: none;
+}
 
-  .ql-active {
-    color: #06c;
-  }
+.sheet-host {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  z-index: 131;
+}
+
+.sheet-backdrop-web {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 129;
+  background-color: transparent;
+}
+
+.sheet-host-web {
+  position: absolute;
+  left: 12px;
+  right: auto;
+  top: 74px;
+  bottom: auto;
+  z-index: 160;
+  box-shadow: 0px 10px 24px rgba(25, 25, 25, 0.05);
+  border-radius: 14px;
+}
+
+.toolbar-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.98);
+  border-width: 1px;
+  border-color: #ddd8cf;
+  padding-top: 14px;
+  padding-right: 14px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  /* box-shadow: 0px 10px 24px rgba(25, 25, 25, 0.12); */
+}
+
+.toolbar-panel-attached {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top-width: 0px;
+  /* box-shadow: 0px 10px 20px rgba(25, 25, 25, 0.08); */
+}
+
+/* #ifdef WEB */
+.toolbar-shell-web {
+  border-width: 1px;
+  border-top-width: 0px;
+  border-color: #ddd8cf;
+  background-color: rgba(255, 255, 255, 0.96);
+  box-shadow: 0px 12px 24px rgba(46, 41, 35, 0.06);
+}
+
+.toolbar-scroll-track-web {
+  width: 100%;
+}
+
+.toolbar-row-web {
+  width: 100%;
+  padding-top: 8px;
+  padding-right: 10px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+}
+
+.toolbar-panel-web {
+  position: relative;
+  height: auto;
+  border-width: 1px;
+  border-color: #d5cdbc;
+  border-radius: 14px;
+  padding-top: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  background-color: #fffdfa;
+  transition-property: transform, opacity;
+  transition-duration: 180ms;
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.toolbar-panel-web-attached {
+  border-top-width: 1px;
+}
+
+.toolbar-panel-web-entered {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.toolbar-panel-arrow {
+  position: absolute;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  background-color: #fffdfa;
+  border-width: 0px;
+  box-shadow: none;
+  transform: rotate(45deg);
+}
+
+.toolbar-panel-header-web {
+  margin-bottom: 8px;
+}
+
+.toolbar-panel-title-web {
+  font-size: 13px;
+}
+
+.toolbar-panel-subtitle-web {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.toolbar-panel-scroll-web {
+  flex: 0;
+}
+
+.toolbar-chip-row-web {
+  margin-left: -3px;
+  margin-right: -3px;
+}
+
+.toolbar-chip-row-web-compact {
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
+/* #endif */
+
+.toolbar-panel-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.toolbar-panel-title-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.toolbar-panel-title {
+  color: #2f2a24;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.toolbar-panel-subtitle {
+  color: #8a7d6d;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.toolbar-panel-close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background-color: #f3f1ec;
+}
+
+.toolbar-panel-close-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.toolbar-panel-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-panel-scroll {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-panel-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.toolbar-chip-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.toolbar-chip-cell {
+  width: 25%;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-bottom: 8px;
+}
+
+.toolbar-chip {
+  min-width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background-color: #f6f1e8;
+  padding-top: 10px;
+  padding-right: 12px;
+  padding-bottom: 10px;
+  padding-left: 12px;
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 8px;
+}
+
+.toolbar-chip-grid {
+  width: 100%;
+  min-width: 0px;
+  min-height: 72px;
+  justify-content: flex-start;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  padding-top: 12px;
+  padding-right: 8px;
+  padding-bottom: 10px;
+  padding-left: 8px;
+}
+
+.toolbar-chip-icon {
+  width: 18px;
+  height: 18px;
+  margin-bottom: 8px;
+}
+
+.toolbar-chip-badge {
+  min-width: 22px;
+  height: 22px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 11px;
+  background-color: #e9e1d3;
+  color: #6d6252;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 22px;
+  margin-bottom: 8px;
+}
+
+.toolbar-chip-badge-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.toolbar-chip-active {
+  background-color: #1f1f1f;
+  /* box-shadow: 0px 6px 14px rgba(31, 31, 31, 0.18); */
+}
+
+.toolbar-chip-text {
+  color: #2e2923;
+  font-size: 12px;
+  text-align: center;
+  line-height: 18px;
+}
+
+.toolbar-chip-text-active {
+  color: #ffffff;
+}
+
+.toolbar-color-section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.toolbar-color-title {
+  color: #72685a;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.toolbar-color-title-secondary {
+  margin-top: 6px;
+}
+
+.toolbar-shell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.98);
+  border-width: 1px;
+  border-color: #ddd8cf;
+}
+
+.toolbar-shell-attached {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.toolbar-scroll-track {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-row-scroll {
+  width: 420px;
+}
+
+.toolbar-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 10px;
+  padding-right: 72px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+}
+
+.toolbar-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.toolbar-group-side {
+  flex-shrink: 0;
+}
+
+.toolbar-group-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.toolbar-group-main-right {
+  justify-content: flex-end;
+}
+
+.toolbar-group-side-right {
+  margin-left: 0px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 28px;
+  background-color: #e8e2d9;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.toolbar-divider-center {
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.toolbar-divider-side {
+  flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.toolbar-divider-fixed {
+  flex-shrink: 0;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.toolbar-fixed-action {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  padding-top: 10px;
+  padding-right: 12px;
+  padding-bottom: 10px;
+  padding-left: 0px;
+  background-color: rgba(255, 255, 255, 0.98);
+  z-index: 2;
+}
+
+.toolbar-scroll-fade {
+  width: 16px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.98);
+  box-shadow: -8px 0px 12px rgba(255, 255, 255, 0.92);
+}
+
+.toolbar-fixed-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.toolbar-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: #f3f1ec;
+  margin-right: 6px;
+}
+
+.toolbar-button-right {
+  margin-right: 0;
+}
+.toolbar-button-active {
+  background-color: #1f1f1f;
+  /* box-shadow: 0px 6px 14px rgba(31, 31, 31, 0.18); */
+}
+
+.toolbar-button-dismiss {
+  background-color: #e7e0d3;
+  margin-right: 0px;
+  margin-left: 2px;
+}
+
+/* #ifdef WEB */
+.toolbar-chip-cell {
+  padding-left: 3px;
+  padding-right: 3px;
+  margin-bottom: 6px;
+}
+
+.toolbar-chip-cell-web-quarter {
+  width: 25%;
+}
+
+.toolbar-chip-cell-web-third {
+  width: 33.33%;
+}
+
+.toolbar-chip-cell-web-half {
+  width: 50%;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.toolbar-chip {
+  min-width: 0px;
+  border-radius: 10px;
+  padding-top: 7px;
+  padding-right: 8px;
+  padding-bottom: 7px;
+  padding-left: 8px;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 6px;
+}
+
+.toolbar-chip-grid {
+  min-height: 56px;
+  padding-top: 10px;
+  padding-right: 6px;
+  padding-bottom: 8px;
+  padding-left: 6px;
+}
+
+.color-row-web {
+  margin-left: -3px;
+  margin-right: -3px;
+}
+
+.toolbar-chip-badge {
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  font-size: 10px;
+  line-height: 20px;
+  margin-bottom: 6px;
+}
+
+.toolbar-chip-text {
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.toolbar-color-title {
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.toolbar-color-title-secondary {
+  margin-top: 4px;
+}
+
+.toolbar-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  margin-right: 4px;
+}
+
+.toolbar-divider {
+  height: 24px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+/* #endif */
+
+.toolbar-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.toolbar-iconfont {
+  font-size: 18px;
+  color: #433d35;
+  text-align: center;
+  line-height: 18px;
+}
+
+/* #ifdef WEB */
+.toolbar-iconfont {
+  font-size: 16px;
+  line-height: 16px;
+}
+/* #endif */
+
+.toolbar-iconfont-active {
+  color: #ffffff;
+}
+
+.color-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.color-swatch {
+  width: 48px;
+  height: 36px;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.06);
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 10px;
+}
+
+.color-swatch-active {
+  border-color: #1f1f1f;
+  border-width: 3px;
+  /* box-shadow: 0px 0px 0px 2px rgba(31, 31, 31, 0.12); */
+}
+
+.color-swatch-clear {
+  background-color: #ffffff;
+  border-color: #d9d3ca;
+}
 </style>
