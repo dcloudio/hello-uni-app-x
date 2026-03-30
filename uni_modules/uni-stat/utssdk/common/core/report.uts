@@ -375,13 +375,15 @@ export class Report {
       // "url": "", // 页面url
       "log": "" // 错误日志
     }
-
+    // #ifndef APP-IOS
     get_net().then((net : string) => {
       options.net = net
       this.crashRequest(options, crash_data)
     }).catch(() => {
       this.crashRequest(options, crash_data)
     })
+    // #endif
+
 
   }
 
@@ -566,6 +568,7 @@ export class Report {
    * @param {Object} type 是否上报
    */
   crashRequest(data : StatDefault, crash_data : string[]) {
+    // #ifndef APP-IOS
     // let data = JSON.parse(JSON.stringify(stata_data))
     const statConfig = Config.getOptions()
     let time = get_time()
@@ -634,6 +637,8 @@ export class Report {
     dbRemove('__UNI__STAT__DATA')
 
     this.sendRequest(optionsData, true)
+    // #endif
+
   }
   /**
    * 发送请求
@@ -641,6 +646,7 @@ export class Report {
    * @param {Object} type 类型
    */
   request(data : StatDefault, type : boolean = false) {
+    // #ifndef APP-IOS
     const statConfig = Config.getOptions()
     let time = get_time()
 
@@ -716,9 +722,12 @@ export class Report {
     dbRemove('__UNI__STAT__DATA')
 
     this.sendRequest(optionsData)
+    // #endif
+
   }
 
   sendRequest(options : RequestData, delCrash : boolean = false) {
+    // #ifndef APP-IOS
     const statConfig = Config.getOptions()
 
     if (Report.uniCloudInstance != null) {
@@ -765,6 +774,7 @@ export class Report {
           console.log('=== 统计上报错误 :', JSON.stringify(err))
         })
     }
+    // #endif
 
   }
 }
