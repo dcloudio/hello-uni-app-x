@@ -561,29 +561,12 @@
     menuVisible.value = false
     activeIndex.value = -1
 
-    let itemElements = listRef.value!.querySelectorAll('.item-wrapper')!
-    // #ifdef VUE3-VAPOR && APP
-    // TODO 底层处理querySelectorAll顺序问题后移除此排序逻辑
-    itemElements = itemElements.sort((itemElement1, itemElement2) => {
-      return itemElement1.getBoundingClientRect().top - itemElement2.getBoundingClientRect().top
-    })
-    // #endif
-    // #ifdef WEB
-    // WEB平台itemElements并非普通数组，需要转换为数组后才能使用indexOf等方法，为方便后续操作我们转换一下
-    itemElements = Array.from(itemElements)
-    // #endif
-    // 按照删除项位置计算上下偏移目标
-    const itemRenderIndex = itemElements.indexOf(currentListItemElement!)
-    if (itemRenderIndex == -1) return
-    const lastItemElement = itemElements[itemElements.length - 1]
-    const lastItemRect = lastItemElement.getBoundingClientRect()
-    const lastItemBottom = lastItemRect.top + lastItemRect.height
-    const listRect = listRef.value!.getBoundingClientRect()
-    const listBottom = listRect.top + listRect.height
-    const lastItemOffsetBottom = Math.max(0, lastItemBottom - listBottom)
-    if (lastItemOffsetBottom < deletedItemHeight) {
-      deleteAnimationTargetBelow = lastItemOffsetBottom
-      deleteAnimationTargetAbove = deletedItemHeight - lastItemOffsetBottom
+    const listElement = listRef.value!
+    const listRect = listElement.getBoundingClientRect()
+    const scrollOffsetBottom = Math.max(0, listElement.scrollHeight - listElement.scrollTop - listRect.height)
+    if (scrollOffsetBottom < deletedItemHeight) {
+      deleteAnimationTargetBelow = scrollOffsetBottom
+      deleteAnimationTargetAbove = deletedItemHeight - scrollOffsetBottom
     } else {
       deleteAnimationTargetBelow = deletedItemHeight
       deleteAnimationTargetAbove = 0
@@ -593,25 +576,8 @@
     deleteAnimationTargetHorizontal = -(MENU_WIDTH + 400)
     deleteAnimationIndexToDelete = indexToDelete
 
-    visibleStartIndex = indexToDelete
-    visibleEndIndex = indexToDelete
-    for (let i = itemRenderIndex - 1; i >= 0; i--) {
-      const itemElement = itemElements[i]
-      const itemRect = itemElement.getBoundingClientRect()
-      const itemBottom = itemRect.top + itemRect.height
-      if (itemBottom <= listRect.top || i == 0) {
-        visibleStartIndex = Math.max(0, indexToDelete - itemRenderIndex + i - 1)
-        break
-      }
-    }
-    for (let i = itemRenderIndex + 1; i < itemElements.length; i++) {
-      const itemElement = itemElements[i]
-      const itemRect = itemElement.getBoundingClientRect()
-      if (itemRect.top >= listRect.bottom || i == itemElements.length - 1) {
-        visibleEndIndex = Math.min(indexToDelete + i - itemRenderIndex + 1, items.value.length - 1)
-        break
-      }
-    }
+    visibleStartIndex = Math.max(0, indexToDelete - 15)
+    visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + 15)
     // 开始动画
     scheduleNextAnimationFrame()
   }
