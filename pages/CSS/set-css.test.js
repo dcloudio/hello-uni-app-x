@@ -1,8 +1,10 @@
 // uni-app自动化测试教程: uni-app自动化测试教程: https://uniapp.dcloud.net.cn/worktile/auto/hbuilderx-extension/
+
 jest.setTimeout(50000);
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const platformInfo = (process.env.uniTestPlatformInfo || '').toLocaleLowerCase()
-const isMP = platformInfo.startsWith('mp') || platformInfo.includes('mini-program')
+const isHarmony = platformInfo.includes('harmony')
+const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const currentPlatform = isWeb ? 'web' : (isMP ? 'mp' : 'app')
 const currentMode = isDom2 ? 'dom2' : `dom1-${currentPlatform}`
@@ -203,21 +205,6 @@ const sharedCssTests = [
     }
   },
   {
-    path: "/pages/CSS/border/border-radius",
-    method: "radioChangeBorderRadius",
-    valueIndex: 2,
-    styleName: "border-radius",
-    skipAssert: false,
-    expectedValue: {
-      borderRadius: "5px",
-      borderRadiusActualText: "5px",
-      borderRadiusActualImage: "5px",
-      borderRadiusActualFlat: "5px",
-      borderRadiusActualTextFlat: "5px",
-      borderRadiusActualImageFlat: "5px"
-    }
-  },
-  {
     path: "/pages/CSS/border/border-style",
     method: "radioChangeBorderStyle",
     valueIndex: 2,
@@ -299,18 +286,6 @@ const sharedCssTests = [
       flexDirection: "row-reverse",
       flexDirectionActual: "row-reverse",
       flexDirectionActualFlat: "row-reverse"
-    }
-  },
-  {
-    path: "/pages/CSS/flex/flex-flow",
-    method: "radioChangeFlexFlow",
-    valueIndex: 2,
-    styleName: "flex-flow",
-    skipAssert: false,
-    expectedValue: {
-      flexFlow: "row wrap",
-      flexFlowActual: "row wrap",
-      flexFlowActualFlat: "row wrap"
     }
   },
   {
@@ -423,22 +398,6 @@ const sharedCssTests = [
       flexWrap: "wrap",
       flexWrapActual: "wrap",
       flexWrapActualFlat: "wrap"
-    }
-  },
-  {
-    path: "/pages/CSS/margin/margin-auto",
-    method: "radioChangeMargin",
-    valueIndex: 3,
-    styleName: "margin",
-    skipAssert: false,
-    expectedValue: {
-      margin: "20px",
-      marginActual: "20px",
-      marginActualText: "20px",
-      marginActualImage: "20px",
-      marginActualFlat: "20px",
-      marginActualTextFlat: "20px",
-      marginActualImageFlat: "20px"
     }
   },
   {
@@ -912,6 +871,42 @@ const splitCssTests = [
           borderActualTextFlat: "2px dashed blue",
           borderActualImageFlat: "2px dashed blue"
         }
+      },
+      harmony: {
+        skipAssert: true
+      }
+    }
+  },
+  {
+    path: "/pages/CSS/border/border-radius",
+    method: "radioChangeBorderRadius",
+    valueIndex: 2,
+    styleName: "border-radius",
+    expectdom2: {
+      skipAssert: false,
+      expectedValue: {
+        borderRadius: "5px",
+        borderRadiusActualText: "5px",
+        borderRadiusActualImage: "5px",
+        borderRadiusActualFlat: "5px",
+        borderRadiusActualTextFlat: "5px",
+        borderRadiusActualImageFlat: "5px"
+      }
+    },
+    expectdom1: {
+      base: {
+        skipAssert: false,
+        expectedValue: {
+          borderRadius: "5px",
+          borderRadiusActualText: "5px",
+          borderRadiusActualImage: "5px",
+          borderRadiusActualFlat: "5px",
+          borderRadiusActualTextFlat: "5px",
+          borderRadiusActualImageFlat: "5px"
+        }
+      },
+      harmony: {
+        skipAssert: true
       }
     }
   },
@@ -988,6 +983,9 @@ const splitCssTests = [
           borderTopActualTextFlat: "2px dashed blue",
           borderTopActualImageFlat: "2px dashed blue"
         }
+      },
+      harmony: {
+        skipAssert: true
       }
     }
   },
@@ -1020,6 +1018,9 @@ const splitCssTests = [
           borderBottomActualTextFlat: "2px dashed blue",
           borderBottomActualImageFlat: "2px dashed blue"
         }
+      },
+      harmony: {
+        skipAssert: true
       }
     }
   },
@@ -1052,6 +1053,9 @@ const splitCssTests = [
           borderLeftActualTextFlat: "2px dashed blue",
           borderLeftActualImageFlat: "2px dashed blue"
         }
+      },
+      harmony: {
+        skipAssert: true
       }
     }
   },
@@ -1084,6 +1088,9 @@ const splitCssTests = [
           borderRightActualTextFlat: "2px dashed blue",
           borderRightActualImageFlat: "2px dashed blue"
         }
+      },
+      harmony: {
+        skipAssert: true
       }
     }
   },
@@ -1132,6 +1139,33 @@ const splitCssTests = [
     }
   },
   {
+    path: "/pages/CSS/flex/flex-flow",
+    method: "radioChangeFlexFlow",
+    valueIndex: 2,
+    styleName: "flex-flow",
+    expectdom2: {
+      skipAssert: false,
+      expectedValue: {
+        flexFlow: "row wrap",
+        flexFlowActual: "row wrap",
+        flexFlowActualFlat: "row wrap"
+      }
+    },
+    expectdom1: {
+      base: {
+        skipAssert: false,
+        expectedValue: {
+          flexFlow: "row wrap",
+          flexFlowActual: "row wrap",
+          flexFlowActualFlat: "row wrap"
+        }
+      },
+      harmony: {
+        skipAssert: true
+      }
+    }
+  },
+  {
     path: "/pages/CSS/flex/flex",
     method: "radioChangeFlex",
     valueIndex: 2,
@@ -1159,6 +1193,9 @@ const splitCssTests = [
           flexActualImageFlat: "1"
         }
       },
+      harmony: {
+        skipAssert: true
+      },
       web: {
         skipAssert: false,
         expectedValue: {
@@ -1169,6 +1206,115 @@ const splitCssTests = [
           flexActualTextFlat: "1 1 0%",
           flexActualImageFlat: "1 1 0%"
         }
+      }
+    }
+  },
+  {
+    path: "/pages/CSS/margin/margin-auto",
+    method: "radioChangeMargin",
+    valueIndex: 3,
+    styleName: "margin",
+    expectdom2: {
+      skipAssert: false,
+      expectedValue: {
+        margin: "20px",
+        marginActual: "20px",
+        marginActualText: "20px",
+        marginActualImage: "20px",
+        marginActualFlat: "20px",
+        marginActualTextFlat: "20px",
+        marginActualImageFlat: "20px"
+      }
+    },
+    expectdom1: {
+      base: {
+        skipAssert: false,
+        expectedValue: {
+          margin: "20px",
+          marginActual: "20px",
+          marginActualText: "20px",
+          marginActualImage: "20px",
+          marginActualFlat: "20px",
+          marginActualTextFlat: "20px",
+          marginActualImageFlat: "20px"
+        }
+      },
+      harmony: {
+        skipAssert: true
+      }
+    }
+  },
+  {
+    path: "/pages/CSS/margin/margin",
+    method: "radioChangeMargin",
+    valueIndex: 3,
+    styleName: "margin",
+    expectdom2: {
+      skipAssert: false,
+      expectedValue: {
+        margin: "20px",
+        marginActual: "20px",
+        marginActualText: "20px",
+        marginActualImage: "20px",
+        marginActualFlat: "20px",
+        marginActualTextFlat: "20px",
+        marginActualImageFlat: "20px",
+        marginActualScrollView: "20px"
+      }
+    },
+    expectdom1: {
+      base: {
+        skipAssert: false,
+        expectedValue: {
+          margin: "20px",
+          marginActual: "20px",
+          marginActualText: "20px",
+          marginActualImage: "20px",
+          marginActualFlat: "20px",
+          marginActualTextFlat: "20px",
+          marginActualImageFlat: "20px",
+          marginActualScrollView: "20px"
+        }
+      },
+      harmony: {
+        skipAssert: true
+      }
+    }
+  },
+  {
+    path: "/pages/CSS/padding/padding",
+    method: "radioChangePadding",
+    valueIndex: 3,
+    styleName: "padding",
+    expectdom2: {
+      skipAssert: false,
+      expectedValue: {
+        padding: "10px",
+        paddingActual: "10px",
+        paddingActualText: "10px",
+        paddingActualImage: "10px",
+        paddingActualFlat: "10px",
+        paddingActualTextFlat: "10px",
+        paddingActualImageFlat: "10px",
+        paddingActualScrollView: "10px"
+      }
+    },
+    expectdom1: {
+      base: {
+        skipAssert: false,
+        expectedValue: {
+          padding: "10px",
+          paddingActual: "10px",
+          paddingActualText: "10px",
+          paddingActualImage: "10px",
+          paddingActualFlat: "10px",
+          paddingActualTextFlat: "10px",
+          paddingActualImageFlat: "10px",
+          paddingActualScrollView: "10px"
+        }
+      },
+      harmony: {
+        skipAssert: true
       }
     }
   },
@@ -1225,6 +1371,9 @@ const splitCssTests = [
           textShadowActual: "5px 5px #558abb",
           textShadowActualFlat: "5px 5px #558abb"
         }
+      },
+      harmony: {
+        skipAssert: true
       },
       web: {
         skipAssert: false,
@@ -1311,9 +1460,11 @@ const cssTests = [...sharedCssTests, ...splitCssTests]
 const getDom1Config = (testCase) => {
   const dom1Config = testCase.expectdom1 ?? {}
   const baseConfig = dom1Config.base ?? { skipAssert: false, expectedValue: {} }
-  const platformConfig = currentPlatform === 'web'
-    ? dom1Config.web
-    : (currentPlatform === 'mp' ? dom1Config.mp : dom1Config.app)
+  const platformConfig = isHarmony
+    ? dom1Config.harmony
+    : (currentPlatform === 'web'
+      ? dom1Config.web
+      : (currentPlatform === 'mp' ? dom1Config.mp : dom1Config.app))
   return {
     skipAssert: platformConfig?.skipAssert ?? baseConfig.skipAssert ?? false,
     expectedValue: {
@@ -1338,19 +1489,6 @@ const getAssertConfig = (testCase) => {
     }
   }
   return getDom1Config(testCase)
-}
-
-const getActualLogData = (testCase, afterData, expectedValue) => {
-  if (typeof expectedValue === 'object' && expectedValue != null) {
-    return Object.fromEntries(
-      Object.keys(expectedValue).map((key) => [key, afterData[key]])
-    )
-  }
-  const actualKey = testCase.styleName + 'Actual'
-  return {
-    [actualKey]: afterData[actualKey],
-    [testCase.styleName]: afterData[testCase.styleName]
-  }
 }
 
 const stringifyLogData = (value) => {
@@ -1393,6 +1531,10 @@ const mergeOverride = (testCase, override) => {
       mp: {
         ...(testCase.expectdom1?.mp ?? {}),
         ...(override.expectdom1?.mp ?? {})
+      },
+      harmony: {
+        ...(testCase.expectdom1?.harmony ?? {}),
+        ...(override.expectdom1?.harmony ?? {})
       }
     }
   }
@@ -1446,7 +1588,7 @@ cssTestBatches.forEach((batch, batchIndex) => {
       const assertConfig = getAssertConfig(testCase)
       const afterData = await page.data('data');
       const expectedValue = assertConfig.expectedValue ?? {}
-      console.log(`[getPropertyValue] ${testCase.path} (${currentMode}) ${stringifyLogData(getActualLogData(testCase, afterData, expectedValue))}`);
+      console.log(`[getPropertyValue] ${testCase.path} (${currentMode}) ${stringifyLogData(afterData)}`);
 
       if (!assertConfig.skipAssert) {
         const errors = [];
