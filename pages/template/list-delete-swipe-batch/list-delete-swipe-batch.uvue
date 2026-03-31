@@ -8,7 +8,8 @@
         <!-- 多选模式下显示 checkbox -->
         <checkbox v-if="isMultiSelectMode" style="margin-left: 10px;" :checked="selectedIds.includes(item.id)"
           @click="toggleSelect(item.id)" />
-        <view class="item-content" :style="{ height: item.height + 'px', transform: 'translateX(' + itemMetas[index].translateX + 'px)' }">
+        <view class="item-content"
+          :style="{ height: item.height + 'px', transform: 'translateX(' + itemMetas[index].translateX + 'px)' }">
           <text class="item-text">试试左滑和长按 {{ item.id + 1 }}</text>
           <text class="item-info">高度: {{ item.height }}px</text>
           <view class="item-sub-items">
@@ -20,8 +21,7 @@
       </list-item>
     </list-view>
     <!-- 全局侧滑菜单（始终渲染，通过 visibility 控制显示） -->
-    <view class="swipe-menu"
-      :style="{ transform: menuTransform, height: menuHeight + 'px' }">
+    <view class="swipe-menu" :style="{ transform: menuTransform, height: menuHeight + 'px' }">
       <view class="menu-item delete-btn" @click="onDeleteClick">
         <text class="menu-text">删除</text>
       </view>
@@ -206,7 +206,7 @@
     // 获取 安全区高度
     const containerEle = uni.getElementById('container')
     const containerRect = containerEle?.getBoundingClientRect()
-    if(containerRect != null) {
+    if (containerRect != null) {
       containerTop = containerRect.top
     }
   })
@@ -237,7 +237,7 @@
     if (currentListItemElement == null) return
     if (currentIndex == -1 || currentIndex >= items.value.length) return
 
-    if(!menuVisible.value) {
+    if (!menuVisible.value) {
       // 获取列表项的位置，如下值在一次menu显示期间仅需更新一次
       menuVisible.value = true
       const rect = currentListItemElement!.getBoundingClientRect()
@@ -364,7 +364,7 @@
     } else {
       // #ifdef WEB
       // 滚动已经开始等情况时，web端不可阻止默认行为。去除此if会在控制台告警
-      if(e.cancelable) {
+      if (e.cancelable) {
         e.preventDefault()
       }
       // #endif
@@ -512,7 +512,7 @@
     menuShowWidth.value = 0
     currentListItemElement = null
     deleteAnimationIndexToDelete = -1
-    
+
     items.value.splice(indexToDelete, 1)
     itemMetas.value.splice(indexToDelete, 1)
     resetAllItemMetas()
@@ -617,8 +617,8 @@
   }
 
   type DataType = {
-    listTop: number
-    listWidth: number
+    listTop : number
+    listWidth : number
   }
   const data = reactive({
     listTop: 0,
