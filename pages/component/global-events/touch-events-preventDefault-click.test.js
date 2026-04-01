@@ -3,6 +3,8 @@
 describe('test preventDefault click', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isWeb = platformInfo.startsWith('web')
+  const isHarmony = platformInfo.startsWith('harmony')
+  const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
   if (isWeb) {
     it('other platform', () => {
       expect(1).toBe(1)
@@ -15,31 +17,34 @@ describe('test preventDefault click', () => {
     await page.waitFor(3000);
   });
 
-  // 都没有拦截的情况下
-  it('preventDefault with click', async () => {
-    await page.setData({
-      data: {
-        isParentPreventDefault: false,
-        isPreventDefault: false,
-        isParentClickTrigger: false,
-        isClickTrigger: false,
-      }
-    })
-    var eventDomRect = await page.data("data.eventDomRect")
-    await page.waitFor(300);
-    let x = eventDomRect.x + eventDomRect.width / 2.0
-    let y = eventDomRect.y + eventDomRect.height / 2.0
-    await program.tap({
-      x: x,
-      y: y,
-      duration: 100
-    })
-    await page.waitFor(200);
-    const isClickTrigger = await page.data("data.isClickTrigger");
-    expect(isClickTrigger).toEqual(true);
-    const isParentClickTrigger = await page.data("data.isParentClickTrigger");
-    expect(isParentClickTrigger).toEqual(true);
-  });
+  if (!(isHarmony && !isDom2)) {
+    // TODO: dom1 harmony 暂不支持 touch 事件中 preventDefault 阻止 click
+    // 都没有拦截的情况下
+    it('preventDefault with click', async () => {
+      await page.setData({
+        data: {
+          isParentPreventDefault: false,
+          isPreventDefault: false,
+          isParentClickTrigger: false,
+          isClickTrigger: false,
+        }
+      })
+      var eventDomRect = await page.data("data.eventDomRect")
+      await page.waitFor(300);
+      let x = eventDomRect.x + eventDomRect.width / 2.0
+      let y = eventDomRect.y + eventDomRect.height / 2.0
+      await program.tap({
+        x: x,
+        y: y,
+        duration: 100
+      })
+      await page.waitFor(200);
+      const isClickTrigger = await page.data("data.isClickTrigger");
+      expect(isClickTrigger).toEqual(true);
+      const isParentClickTrigger = await page.data("data.isParentClickTrigger");
+      expect(isParentClickTrigger).toEqual(true);
+    });
+  }
   // 子调用preventDefault
   it('child preventDefault without click', async () => {
     await page.setData({
