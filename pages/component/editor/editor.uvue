@@ -1,15 +1,113 @@
 <template>
-  <view id="editor-page-shell" class="page-shell">
+  <view id="editor-page-shell" :class="getPageShellClass()">
+    <view id="editor-layout" :class="getEditorLayoutClass()">
     <view
-     class="toolbar-wrap"
-     :class="isWebToolbarMode() ? 'toolbar-wrap toolbar-wrap-web' : 'toolbar-wrap'"
-     :style="getToolbarWrapStyle()"
+      class="toolbar-wrap"
+      :class="isWebToolbarMode() ? 'toolbar-wrap toolbar-wrap-web' : 'toolbar-wrap toolbar-wrap-mobile'"
+      :style="getToolbarWrapStyle()"
      v-if="isToolbarRendered()"
-     @touchstart="onToolbarTouchStart"
-     <!--#ifdef WEB -->
-     @mousedown="onToolbarMouseDown"
-     <!--#endif-->
+      @touchstart="onToolbarTouchStart"
+      <!--#ifdef WEB -->
+      @mousedown="onToolbarMouseDown"
+      <!--#endif-->
     >
+      <!-- #ifdef WEB -->
+      <view v-if="isWebToolbarMode()" class="desktop-toolbar-wrap">
+        <view :class="getDesktopToolbarShellClass()" @mousemove="hideToolbarTooltip">
+        <view :class="getDesktopToolbarGroupClass(true)">
+          <view id="toolbar-button-title" @click="openTitleSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-title', '标题与列表')" :class="isTitleSheetHighlighted() ? 'toolbar-web-select toolbar-web-select-active' : 'toolbar-web-select'">
+            <text :class="isTitleSheetHighlighted() ? 'toolbar-web-select-label toolbar-web-select-label-active' : 'toolbar-web-select-label'">{{ getDesktopTitleLabel() }}</text>
+            <view :class="isTitleSheetHighlighted() ? 'toolbar-web-select-arrow toolbar-web-select-arrow-active' : 'toolbar-web-select-arrow'"></view>
+          </view>
+        </view>
+
+        <view :class="getDesktopToolbarDividerClass()"></view>
+
+        <view :class="getDesktopToolbarGroupClass(false)">
+          <view id="toolbar-button-bold" @click="toggleBold" @mousemove.stop="showToolbarTooltip('toolbar-button-bold', '加粗')" :class="data.formats.bold ? 'toolbar-web-icon-button toolbar-web-icon-button-active' : 'toolbar-web-icon-button'">
+            <text :class="data.formats.bold ? 'toolbar-web-icon-text toolbar-web-icon-text-active iconfont' : 'toolbar-web-icon-text iconfont'">{{"&#xec8a;"}}</text>
+          </view>
+          <view id="toolbar-button-underline" @click="toggleUnderline" @mousemove.stop="showToolbarTooltip('toolbar-button-underline', '下划线')" :class="data.formats.underline ? 'toolbar-web-icon-button toolbar-web-icon-button-active' : 'toolbar-web-icon-button'">
+            <text :class="data.formats.underline ? 'toolbar-web-icon-text toolbar-web-icon-text-active iconfont' : 'toolbar-web-icon-text iconfont'">{{"&#xec8e;"}}</text>
+          </view>
+          <view id="toolbar-button-italic" @click="toggleItalic" @mousemove.stop="showToolbarTooltip('toolbar-button-italic', '斜体')" :class="data.formats.italic ? 'toolbar-web-icon-button toolbar-web-icon-button-active' : 'toolbar-web-icon-button'">
+            <text :class="data.formats.italic ? 'toolbar-web-icon-text toolbar-web-icon-text-active iconfont' : 'toolbar-web-icon-text iconfont'">{{"&#xec8f;"}}</text>
+          </view>
+          <view id="toolbar-button-strike" @click="toggleStrike" @mousemove.stop="showToolbarTooltip('toolbar-button-strike', '删除线')" :class="data.formats.strike ? 'toolbar-web-icon-button toolbar-web-icon-button-active' : 'toolbar-web-icon-button'">
+            <text :class="data.formats.strike ? 'toolbar-web-icon-text toolbar-web-icon-text-active iconfont' : 'toolbar-web-icon-text iconfont'">{{"&#xec8b;"}}</text>
+          </view>
+          <view id="toolbar-button-text-color" @click="openTextColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-text-color', '文字颜色')" :class="isTextColorSheetHighlighted() ? 'toolbar-web-color-button toolbar-web-color-button-active' : 'toolbar-web-color-button'">
+            <text :class="isTextColorSheetHighlighted() ? 'toolbar-web-color-symbol toolbar-web-color-symbol-active iconfont icon-text_color' : 'toolbar-web-color-symbol iconfont icon-text_color'">{{"&#xe72c;"}}</text>
+            <view class="toolbar-web-color-chip" :style="getToolbarTextColorChipStyle()"></view>
+            <view :class="isTextColorSheetHighlighted() ? 'toolbar-web-color-arrow toolbar-web-color-arrow-active' : 'toolbar-web-color-arrow'"></view>
+          </view>
+          <view id="toolbar-button-background-color" @click="openBackgroundColorSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-background-color', '背景颜色')" :class="isBackgroundColorSheetHighlighted() ? 'toolbar-web-color-button toolbar-web-color-button-active' : 'toolbar-web-color-button'">
+            <text :class="isBackgroundColorSheetHighlighted() ? 'toolbar-web-color-symbol toolbar-web-color-symbol-active iconfont icon-fontbgcolor' : 'toolbar-web-color-symbol iconfont icon-fontbgcolor'">{{"&#xe678;"}}</text>
+            <view class="toolbar-web-color-chip" :style="getToolbarBackgroundColorChipStyle()"></view>
+            <view :class="isBackgroundColorSheetHighlighted() ? 'toolbar-web-color-arrow toolbar-web-color-arrow-active' : 'toolbar-web-color-arrow'"></view>
+          </view>
+
+        </view>
+
+        <view :class="getDesktopToolbarDividerClass()"></view>
+
+        <view :class="getDesktopToolbarGroupClass(false)">
+                <view id="toolbar-button-line-height" @click="openLineHeightSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-line-height', '行间距')" :class="isLineHeightSheetHighlighted() ? 'toolbar-web-select toolbar-web-select-compact toolbar-web-select-active' : 'toolbar-web-select toolbar-web-select-compact'">
+                  <text :class="isLineHeightSheetHighlighted() ? 'toolbar-web-select-label toolbar-web-select-label-active' : 'toolbar-web-select-label'">{{ getDesktopLineHeightLabel() }}</text>
+                  <view :class="isLineHeightSheetHighlighted() ? 'toolbar-web-select-arrow toolbar-web-select-arrow-active' : 'toolbar-web-select-arrow'"></view>
+                </view>
+                <view id="toolbar-button-letter-spacing" @click="openLetterSpacingSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-letter-spacing', '字间距')" :class="isLetterSpacingSheetHighlighted() ? 'toolbar-web-select toolbar-web-select-compact toolbar-web-select-active' : 'toolbar-web-select toolbar-web-select-compact'">
+                  <text :class="isLetterSpacingSheetHighlighted() ? 'toolbar-web-select-label toolbar-web-select-label-active' : 'toolbar-web-select-label'">{{ getDesktopLetterSpacingLabel() }}</text>
+                  <view :class="isLetterSpacingSheetHighlighted() ? 'toolbar-web-select-arrow toolbar-web-select-arrow-active' : 'toolbar-web-select-arrow'"></view>
+                </view>
+                <view id="toolbar-button-align" @click="openAlignSheet" @mousemove.stop="showToolbarTooltip('toolbar-button-align', '对齐方式')" :class="isAlignSheetHighlighted() ? 'toolbar-web-select toolbar-web-select-compact toolbar-web-select-active' : 'toolbar-web-select toolbar-web-select-compact'">
+                  <text :class="isAlignSheetHighlighted() ? 'toolbar-web-select-label toolbar-web-select-label-active' : 'toolbar-web-select-label'">{{ getDesktopAlignLabel() }}</text>
+                  <view :class="isAlignSheetHighlighted() ? 'toolbar-web-select-arrow toolbar-web-select-arrow-active' : 'toolbar-web-select-arrow'"></view>
+                </view>
+             </view>
+
+        <view :class="getDesktopToolbarDividerClass()"></view>
+
+        <view :class="getDesktopToolbarGroupClass(false)">
+          <view id="toolbar-button-checklist" @click="toggleChecklistTool" @mousemove.stop="showToolbarTooltip('toolbar-button-checklist', '待办清单')" :class="data.formats.list == 'check' ? 'toolbar-web-icon-button toolbar-web-icon-button-active' : 'toolbar-web-icon-button'">
+            <text :class="data.formats.list == 'check' ? 'toolbar-web-icon-text toolbar-web-icon-text-active iconfont' : 'toolbar-web-icon-text iconfont'">{{"&#xe664;"}}</text>
+          </view>
+
+         <view id="toolbar-button-mention" @click="insertMention" @mousemove.stop="showToolbarTooltip('toolbar-button-mention', '提及')" class="toolbar-web-icon-button">
+           <text class="toolbar-web-icon-text">@</text>
+         </view>
+         <view id="toolbar-button-image" @click="chooseInsertImage" @mousemove.stop="showToolbarTooltip('toolbar-button-image', '插入图片')" class="toolbar-web-icon-button">
+             <text class="toolbar-web-icon-text iconfont">&#xec82;</text>
+           </view>
+            <view id="toolbar-button-divider" @click="insertDivider" @mousemove.stop="showToolbarTooltip('toolbar-button-divider', '插入分割线')" class="toolbar-web-icon-button">
+              <text class="toolbar-web-icon-text iconfont">&#xec7f;</text>
+            </view>
+            <view id="toolbar-button-clear-format" @click="clearFormatting" @mousemove.stop="showToolbarTooltip('toolbar-button-clear-format', '清除样式')" class="toolbar-web-icon-button">
+              <text class="toolbar-web-icon-text iconfont">{{"&#xe67e;"}}</text>
+            </view>
+        </view>
+        <view :class="getDesktopToolbarDividerClass()"></view>
+
+        <view :class="getDesktopToolbarGroupClass(false)">
+          <view id="toolbar-button-undo" @click="undo" @mousemove.stop="showToolbarTooltip('toolbar-button-undo', '撤销')" class="toolbar-web-icon-button">
+            <text class="toolbar-web-icon-text iconfont">{{"&#xe633;"}}</text>
+          </view>
+          <view id="toolbar-button-redo" @click="redo" @mousemove.stop="showToolbarTooltip('toolbar-button-redo', '重做')" class="toolbar-web-icon-button">
+            <text class="toolbar-web-icon-text iconfont">{{"&#xe627;"}}</text>
+          </view>
+        </view>
+        </view>
+        <view v-if="data.tooltipVisible" class="toolbar-web-tooltip" :style="getToolbarTooltipStyle()">
+          <view class="toolbar-web-tooltip-arrow"></view>
+          <view class="toolbar-web-tooltip-bubble">
+            <text class="toolbar-web-tooltip-text">{{ data.tooltipText }}</text>
+          </view>
+        </view>
+      </view>
+      <!-- #endif -->
+
+      <!-- #ifndef WEB -->
+      <view class="mobile-toolbar-wrap">
       <view :class="getToolbarShellClass()">
         <scroll-view :class="getToolbarScrollTrackClass()" direction="horizontal" :show-scrollbar="false">
           <view :class="getToolbarRowClass()">
@@ -25,7 +123,7 @@
               <view id="toolbar-button-title" @click="openTitleSheet" :class="isTitleSheetHighlighted() ? 'toolbar-button toolbar-button-active' : 'toolbar-button'">
                 <text :class="isTitleSheetHighlighted() ? 'toolbar-iconfont toolbar-iconfont-active iconfont' : 'toolbar-iconfont iconfont'">&#xec8d;</text>
               </view>
-              <view id="toolbar-button-style" @click="openStyleSheet" :class="isStyleSheetHighlighted() ? 'toolbar-button toolbar-button-active' : 'toolbar-button'">
+              <view id="toolbar-button-style" @click="openStyleSheet" :class="getMobileStyleButtonClass()">
                 <text :class="isStyleSheetHighlighted() ? 'toolbar-iconfont toolbar-iconfont-active iconfont' : 'toolbar-iconfont iconfont'">&#xec8a;</text>
               </view>
               <view id="toolbar-button-align" @click="openAlignSheet" :class="isAlignSheetHighlighted() ? 'toolbar-button toolbar-button-active toolbar-button-right' : 'toolbar-button toolbar-button-right'">
@@ -33,20 +131,17 @@
               </view>
             </view>
 
-            <view class="toolbar-divider toolbar-divider-center"></view>
+            <view class="toolbar-divider toolbar-divider-side"></view>
 
-            <view class="toolbar-group toolbar-group-main toolbar-group-main-right">
-              <view @click="chooseInsertImage" class="toolbar-button">
-                <text class="toolbar-iconfont iconfont">&#xec82;</text>
-              </view>
-              <view @click="insertDivider" class="toolbar-button">
-                <text class="toolbar-iconfont iconfont">&#xec7f;</text>
-              </view>
+            <view class="toolbar-group toolbar-group-main">
               <!-- #ifndef MP -->
               <view @click="insertMention" class="toolbar-button">
-                <text class="toolbar-iconfont iconfont">@</text>
+                <text class="toolbar-iconfont">@</text>
               </view>
               <!-- #endif -->
+              <view @click="chooseInsertImage" class="toolbar-button">
+                <text class="toolbar-iconfont iconfont">{{"&#xec82;"}}</text>
+              </view>
             </view>
           </view>
         </scroll-view>
@@ -62,6 +157,8 @@
         </view>
         <!-- #endif -->
       </view>
+      </view>
+      <!-- #endif -->
     </view>
 
     <!-- #ifdef WEB -->
@@ -93,56 +190,120 @@
         <scroll-view :class="getToolbarPanelScrollClass()" direction="vertical" :show-scrollbar="false">
           <view class="toolbar-panel-section" v-if="data.activeSheet == 'title'">
             <view :class="getToolbarChipRowClass()">
-              <view :class="getToolbarChipCellClass()"><view @click="setParagraph" :class="isParagraphActive() ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="isParagraphActive() ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">P</text><text :class="isParagraphActive() ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">正文</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(1)" :class="data.formats.header == 1 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 1 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H1</text><text :class="data.formats.header == 1 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题1</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(2)" :class="data.formats.header == 2 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 2 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H2</text><text :class="data.formats.header == 2 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题2</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(3)" :class="data.formats.header == 3 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 3 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H3</text><text :class="data.formats.header == 3 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题3</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(4)" :class="data.formats.header == 4 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 4 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H4</text><text :class="data.formats.header == 4 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题4</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(5)" :class="data.formats.header == 5 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 5 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H5</text><text :class="data.formats.header == 5 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题5</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(6)" :class="data.formats.header == 6 ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.header == 6 ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">H6</text><text :class="data.formats.header == 6 ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">大标题6</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setOrderedList" :class="data.formats.list == 'ordered' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.list == 'ordered' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">1.</text><text :class="data.formats.list == 'ordered' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">有序列表</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setBulletList" :class="data.formats.list == 'bullet' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.list == 'bullet' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">•</text><text :class="data.formats.list == 'bullet' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">无序列表</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setParagraph" :class="getDesktopMenuItemClass(isParagraphActive())"><text :class="getDesktopMenuBadgeClass(isParagraphActive())">P</text><text :class="getDesktopMenuTextClass(isParagraphActive())">正文</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(1)" :class="getDesktopMenuItemClass(data.formats.header == 1)"><text :class="getDesktopMenuBadgeClass(data.formats.header == 1)">H1</text><text :class="getDesktopMenuTextClass(data.formats.header == 1)">大标题1</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(2)" :class="getDesktopMenuItemClass(data.formats.header == 2)"><text :class="getDesktopMenuBadgeClass(data.formats.header == 2)">H2</text><text :class="getDesktopMenuTextClass(data.formats.header == 2)">大标题2</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(3)" :class="getDesktopMenuItemClass(data.formats.header == 3)"><text :class="getDesktopMenuBadgeClass(data.formats.header == 3)">H3</text><text :class="getDesktopMenuTextClass(data.formats.header == 3)">大标题3</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(4)" :class="getDesktopMenuItemClass(data.formats.header == 4)"><text :class="getDesktopMenuBadgeClass(data.formats.header == 4)">H4</text><text :class="getDesktopMenuTextClass(data.formats.header == 4)">大标题4</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(5)" :class="getDesktopMenuItemClass(data.formats.header == 5)"><text :class="getDesktopMenuBadgeClass(data.formats.header == 5)">H5</text><text :class="getDesktopMenuTextClass(data.formats.header == 5)">大标题5</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setHeadingLevel(6)" :class="getDesktopMenuItemClass(data.formats.header == 6)"><text :class="getDesktopMenuBadgeClass(data.formats.header == 6)">H6</text><text :class="getDesktopMenuTextClass(data.formats.header == 6)">大标题6</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setOrderedList" :class="getDesktopMenuItemClass(data.formats.list == 'ordered')"><text :class="getDesktopMenuBadgeClass(data.formats.list == 'ordered')">1.</text><text :class="getDesktopMenuTextClass(data.formats.list == 'ordered')">有序列表</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setBulletList" :class="getDesktopMenuItemClass(data.formats.list == 'bullet')"><text :class="getDesktopMenuBadgeClass(data.formats.list == 'bullet')">•</text><text :class="getDesktopMenuTextClass(data.formats.list == 'bullet')">无序列表</text></view></view>
               <!-- <view class="toolbar-chip-cell"><view @click="toggleBlockquote" :class="data.formats.blockquote ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.blockquote ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">\"</text><text :class="data.formats.blockquote ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">引用</text></view></view> -->
             </view>
           </view>
 
           <view class="toolbar-panel-section" v-if="data.activeSheet == 'style'">
             <view :class="getToolbarChipRowClass()">
-              <view :class="getToolbarChipCellClass()"><view @click="toggleBoldAndClose" :class="data.formats.bold ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.bold ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">B</text><text :class="data.formats.bold ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">加粗</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="toggleItalicAndClose" :class="data.formats.italic ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.italic ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">I</text><text :class="data.formats.italic ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">斜体</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="toggleUnderlineAndClose" :class="data.formats.underline ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.underline ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">U</text><text :class="data.formats.underline ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">下划线</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="toggleStrikeAndClose" :class="data.formats.strike ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.strike ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">S</text><text :class="data.formats.strike ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">删除线</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleBoldAndClose" :class="getDesktopMenuItemClass(data.formats.bold)"><text :class="getDesktopMenuBadgeClass(data.formats.bold)">B</text><text :class="getDesktopMenuTextClass(data.formats.bold)">加粗</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleItalicAndClose" :class="getDesktopMenuItemClass(data.formats.italic)"><text :class="getDesktopMenuBadgeClass(data.formats.italic)">I</text><text :class="getDesktopMenuTextClass(data.formats.italic)">斜体</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleUnderlineAndClose" :class="getDesktopMenuItemClass(data.formats.underline)"><text :class="getDesktopMenuBadgeClass(data.formats.underline)">U</text><text :class="getDesktopMenuTextClass(data.formats.underline)">下划线</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="toggleStrikeAndClose" :class="getDesktopMenuItemClass(data.formats.strike)"><text :class="getDesktopMenuBadgeClass(data.formats.strike)">S</text><text :class="getDesktopMenuTextClass(data.formats.strike)">删除线</text></view></view>
             </view>
 
             <view class="toolbar-color-section">
               <text class="toolbar-color-title">文字颜色</text>
               <view :class="getColorRowClass()">
-                <view @click="setTextColorAndClose('')" :class="data.formats.color == '' ? 'color-swatch color-swatch-clear color-swatch-active' : 'color-swatch color-swatch-clear'"></view>
-                <view @click="setTextColorAndClose('#1f1f1f')" :class="data.formats.color == '#1f1f1f' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #1f1f1f;"></view>
-                <view @click="setTextColorAndClose('#3553ff')" :class="data.formats.color == '#3553ff' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #3553ff;"></view>
-                <view @click="setTextColorAndClose('#ef4444')" :class="data.formats.color == '#ef4444' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #ef4444;"></view>
-                <view @click="setTextColorAndClose('#16a34a')" :class="data.formats.color == '#16a34a' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #16a34a;"></view>
-                <view @click="setTextColorAndClose('#f59e0b')" :class="data.formats.color == '#f59e0b' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #f59e0b;"></view>
+                <view @click="setTextColorAndClose('')" :class="getClearColorSwatchClass(data.formats.color == '')"></view>
+                <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @click="setTextColorAndClose(color)" :class="getFilledColorSwatchClass(data.formats.color == color)" :style="'background-color: ' + color + ';'"></view>
               </view>
+            </view>
 
-              <text class="toolbar-color-title toolbar-color-title-secondary">文字背景颜色</text>
+            <view class="toolbar-color-section">
+              <text class="toolbar-color-title">背景颜色</text>
               <view :class="getColorRowClass()">
-                <view @click="setBackgroundColorAndClose('')" :class="data.formats.backgroundColor == '' ? 'color-swatch color-swatch-clear color-swatch-active' : 'color-swatch color-swatch-clear'"></view>
-                <view @click="setBackgroundColorAndClose('#fff4bf')" :class="data.formats.backgroundColor == '#fff4bf' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #fff4bf;"></view>
-                <view @click="setBackgroundColorAndClose('#dbeafe')" :class="data.formats.backgroundColor == '#dbeafe' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #dbeafe;"></view>
-                <view @click="setBackgroundColorAndClose('#fee2e2')" :class="data.formats.backgroundColor == '#fee2e2' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #fee2e2;"></view>
-                <view @click="setBackgroundColorAndClose('#dcfce7')" :class="data.formats.backgroundColor == '#dcfce7' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #dcfce7;"></view>
-                <view @click="setBackgroundColorAndClose('#f3e8ff')" :class="data.formats.backgroundColor == '#f3e8ff' ? 'color-swatch color-swatch-active' : 'color-swatch'" style="background-color: #f3e8ff;"></view>
+                <view @click="setBackgroundColorAndClose('')" :class="getClearColorSwatchClass(data.formats.backgroundColor == '')"></view>
+                <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @click="setBackgroundColorAndClose(color)" :class="getFilledColorSwatchClass(data.formats.backgroundColor == color)" :style="'background-color: ' + color + ';'"></view>
+              </view>
+            </view>
+
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">行间距</text>
+              <view :class="getToolbarChipRowClass()">
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '')">A</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '')">默认</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('1.5')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '1.5')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '1.5')">1.5</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '1.5')">紧凑</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('1.8')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '1.8')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '1.8')">1.8</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '1.8')">舒适</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('2')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '2')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '2')">2.0</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '2')">宽松</text></view></view>
+              </view>
+            </view>
+
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">字间距</text>
+              <view :class="getToolbarChipRowClass()">
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '')">Aa</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '')">默认</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('0px')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '0px')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '0px')">0</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '0px')">标准</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('1px')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '1px')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '1px')">+1</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '1px')">微松</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('2px')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '2px')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '2px')">+2</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '2px')">通透</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'line-height'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">行间距</text>
+              <view :class="getToolbarChipRowClass()">
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '')">A</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '')">默认</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('1.5')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '1.5')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '1.5')">1.5</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '1.5')">紧凑</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('1.8')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '1.8')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '1.8')">1.8</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '1.8')">舒适</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLineHeightAndClose('2')" :class="getDesktopMenuItemClass(data.formats.lineHeight == '2')"><text :class="getDesktopMenuBadgeClass(data.formats.lineHeight == '2')">2.0</text><text :class="getDesktopMenuTextClass(data.formats.lineHeight == '2')">宽松</text></view></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'letter-spacing'">
+            <view class="toolbar-panel-group">
+              <text class="toolbar-color-title">字间距</text>
+              <view :class="getToolbarChipRowClass()">
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '')">Aa</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '')">默认</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('0px')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '0px')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '0px')">0</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '0px')">标准</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('1px')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '1px')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '1px')">+1</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '1px')">微松</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="setLetterSpacingAndClose('2px')" :class="getDesktopMenuItemClass(data.formats.letterSpacing == '2px')"><text :class="getDesktopMenuBadgeClass(data.formats.letterSpacing == '2px')">+2</text><text :class="getDesktopMenuTextClass(data.formats.letterSpacing == '2px')">通透</text></view></view>
               </view>
             </view>
           </view>
 
           <view class="toolbar-panel-section" v-if="data.activeSheet == 'align'">
             <view :class="getToolbarChipRowClass()">
-              <view :class="getToolbarChipCellClass()"><view @click="clearAlign" :class="data.formats.align == '' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == '' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">D</text><text :class="data.formats.align == '' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">默认</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setAlignLeft" :class="data.formats.align == 'left' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == 'left' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">L</text><text :class="data.formats.align == 'left' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">居左</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setAlignCenter" :class="data.formats.align == 'center' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == 'center' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">C</text><text :class="data.formats.align == 'center' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">居中</text></view></view>
-              <view :class="getToolbarChipCellClass()"><view @click="setAlignRight" :class="data.formats.align == 'right' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.align == 'right' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">R</text><text :class="data.formats.align == 'right' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">居右</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="clearAlign" :class="getDesktopMenuItemClass(data.formats.align == '')"><text :class="getDesktopMenuBadgeClass(data.formats.align == '')">D</text><text :class="getDesktopMenuTextClass(data.formats.align == '')">默认</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setAlignLeft" :class="getDesktopMenuItemClass(data.formats.align == 'left')"><text :class="getDesktopMenuBadgeClass(data.formats.align == 'left')">L</text><text :class="getDesktopMenuTextClass(data.formats.align == 'left')">居左</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setAlignCenter" :class="getDesktopMenuItemClass(data.formats.align == 'center')"><text :class="getDesktopMenuBadgeClass(data.formats.align == 'center')">C</text><text :class="getDesktopMenuTextClass(data.formats.align == 'center')">居中</text></view></view>
+              <view :class="getToolbarChipCellClass()"><view @click="setAlignRight" :class="getDesktopMenuItemClass(data.formats.align == 'right')"><text :class="getDesktopMenuBadgeClass(data.formats.align == 'right')">R</text><text :class="getDesktopMenuTextClass(data.formats.align == 'right')">居右</text></view></view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'text-color'">
+            <view class="toolbar-color-section">
+              <view class="desktop-color-sheet-label">
+                <view class="desktop-color-sheet-icon"></view>
+                <text class="desktop-color-sheet-label-text">默认颜色</text>
+              </view>
+              <view :class="getColorRowClass()">
+                <view @click="setTextColorAndClose('')" :class="getClearColorSwatchClass(data.formats.color == '')"></view>
+                <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @click="setTextColorAndClose(color)" :class="getFilledColorSwatchClass(data.formats.color == color)" :style="'background-color: ' + color + ';'"></view>
+              </view>
+            </view>
+          </view>
+
+          <view class="toolbar-panel-section" v-if="data.activeSheet == 'background-color'">
+            <view class="toolbar-color-section">
+              <view class="desktop-color-sheet-label">
+                <view class="desktop-color-sheet-icon"></view>
+                <text class="desktop-color-sheet-label-text">默认背景</text>
+              </view>
+              <view :class="getColorRowClass()">
+                <view @click="setBackgroundColorAndClose('')" :class="getClearColorSwatchClass(data.formats.backgroundColor == '')"></view>
+                <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @click="setBackgroundColorAndClose(color)" :class="getFilledColorSwatchClass(data.formats.backgroundColor == color)" :style="'background-color: ' + color + ';'"></view>
+              </view>
             </view>
           </view>
 
@@ -150,18 +311,17 @@
             <view class="toolbar-panel-group">
               <text class="toolbar-color-title">插入内容</text>
               <view :class="getToolbarChipRowClass()">
-                <view :class="getToolbarChipCellClass()"><view @click="chooseInsertImage" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">IMG</text><text class="toolbar-chip-text">图片</text></view></view>
-                <view :class="getToolbarChipCellClass()"><view @click="toggleChecklistTool" :class="data.formats.list == 'check' ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'"><text :class="data.formats.list == 'check' ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'">TODO</text><text :class="data.formats.list == 'check' ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'">TODO</text></view></view>
-                <view :class="getToolbarChipCellClass()"><view @click="insertDivider" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">---</text><text class="toolbar-chip-text">分割线</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="toggleChecklistTool" :class="getDesktopMenuItemClass(data.formats.list == 'check')"><text :class="getDesktopMenuBadgeClass(data.formats.list == 'check')">TODO</text><text :class="getDesktopMenuTextClass(data.formats.list == 'check')">TODO</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="insertDivider" :class="getDesktopMenuItemClass(false)"><text :class="getDesktopMenuBadgeClass(false)">---</text><text :class="getDesktopMenuTextClass(false)">分割线</text></view></view>
               </view>
             </view>
 
             <view class="toolbar-panel-group">
               <text class="toolbar-color-title">编辑操作</text>
               <view :class="getToolbarChipRowClass()">
-                <view :class="getToolbarChipCellClass()"><view @click="clearFormatting" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">CLR</text><text class="toolbar-chip-text">清除样式</text></view></view>
-                <view :class="getToolbarChipCellClass()"><view @click="undo" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">↶</text><text class="toolbar-chip-text">撤销</text></view></view>
-                <view :class="getToolbarChipCellClass()"><view @click="redo" class="toolbar-chip toolbar-chip-grid"><text class="toolbar-chip-badge">↷</text><text class="toolbar-chip-text">重做</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="clearFormatting" :class="getDesktopMenuItemClass(false)"><text :class="getDesktopMenuBadgeClass(false)">CLR</text><text :class="getDesktopMenuTextClass(false)">清除样式</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="undo" :class="getDesktopMenuItemClass(false)"><text :class="getDesktopMenuBadgeClass(false)">↶</text><text :class="getDesktopMenuTextClass(false)">撤销</text></view></view>
+                <view :class="getToolbarChipCellClass()"><view @click="redo" :class="getDesktopMenuItemClass(false)"><text :class="getDesktopMenuBadgeClass(false)">↷</text><text :class="getDesktopMenuTextClass(false)">重做</text></view></view>
               </view>
             </view>
           </view>
@@ -173,6 +333,7 @@
       <editor
         id="editor"
         class="editor-field"
+        :style="getEditorFieldStyle()"
         placeholder="请输入正文内容..."
         show-img-size
         show-img-toolbar
@@ -182,6 +343,7 @@
         @blur="onEditorBlur"
         @statuschange="onStatusChange"
       />
+    </view>
     </view>
   </view>
 </template>
@@ -197,9 +359,31 @@ type Formats = {
   header: number;
   list: string;
   align: string;
+  lineHeight: string;
+  letterSpacing: string;
   color: string;
   backgroundColor: string;
 }
+
+const TEXT_COLOR_PRESETS: string[] = [
+  '#000000', '#3f3f3f', '#6a6a6a', '#949494', '#bfbfbf', '#d8d8d8', '#ececec', '#f5f5f5', '#ffffff',
+  '#f03a37', '#f26c2e', '#f59a33', '#f7d447', '#7bc943', '#59c3c3', '#4a90e2', '#3d5ed7', '#6f42c1', '#d13f96',
+  '#f3ddd8', '#f7e8da', '#f7ecd3', '#fbf4d0', '#e5f1d4', '#d9eeea', '#d8eaf6', '#dbe3f4', '#e4ddf1', '#f1dde8',
+  '#ff9d9a', '#ffb389', '#ffcf8a', '#fff17a', '#b8e986', '#7ed6d4', '#8cc8f6', '#9fb6f0', '#c3a5ea', '#f09ac5',
+  '#ff4d57', '#ff7a45', '#ffad47', '#ffe44d', '#7edc3f', '#32c5c0', '#4aa8f0', '#5b7bea', '#9556d9', '#ec4fa3',
+  '#d0021b', '#d9480f', '#df7b00', '#d9b300', '#38a000', '#1398a0', '#1769d2', '#2946c7', '#5b2db5', '#c2187a',
+  '#98001a', '#952700', '#9a4b00', '#8a6a00', '#1f6f00', '#0d5c63', '#0d47a1', '#16269a', '#3c177c', '#8e105f'
+]
+
+const BACKGROUND_COLOR_PRESETS: string[] = [
+  '#ffffff', '#e8e8e8', '#d9d9d9', '#c4c4c4', '#a8a8a8', '#8a8a8a', '#6d6d6d', '#4f4f4f', '#2f2f2f',
+  '#fff1f0', '#fff4ec', '#fff7e8', '#fffbe6', '#f4fde8', '#edfdfb', '#eef7ff', '#f1f4ff', '#f5f0ff', '#fff0f7',
+  '#ffd9d6', '#ffe3cf', '#ffecc8', '#fff5bf', '#e6f7c9', '#d8f3f2', '#d9ecff', '#dfe6ff', '#eadfff', '#ffd9ee',
+  '#ffb8b5', '#ffc89f', '#ffd997', '#fff08a', '#d0f0a8', '#b8e9e7', '#b8dcff', '#c4d2ff', '#d9c2ff', '#ffb9de',
+  '#ff8b87', '#ffa96f', '#ffc15f', '#ffe65c', '#a9e45f', '#86d9d5', '#8fc4ff', '#9eb5ff', '#c29af5', '#ff8cc8',
+  '#ff5f5b', '#ff8a3d', '#ffaa2b', '#ffd400', '#7fd13b', '#42bebc', '#5da9ff', '#738ef5', '#9a68e0', '#ef5aae',
+  '#ffdede', '#ffe9dd', '#fff1e0', '#fff7db', '#edf8df', '#e1f5f3', '#e3f0ff', '#e7ebff', '#efe8ff', '#ffe5f3'
+]
 
 type DataType = {
   toolbarVisible: boolean;
@@ -207,6 +391,10 @@ type DataType = {
   keyboardHeight: number;
   pageWindowHeight: number;
   pageWindowWidth: number;
+  tooltipVisible: boolean;
+  tooltipText: string;
+  tooltipLeft: number;
+  tooltipTop: number;
   sheetHeight: number;
   sheetTop: number;
   sheetLeft: number;
@@ -226,12 +414,16 @@ type DataType = {
   formats: Formats;
 }
 
-const data = reactive({
+const data = reactive<DataType>({
   toolbarVisible: false,
   toolbarBottom: 0,
   keyboardHeight: 0,
   pageWindowHeight: 0,
   pageWindowWidth: 0,
+  tooltipVisible: false,
+  tooltipText: '',
+  tooltipLeft: 0,
+  tooltipTop: 0,
   sheetHeight: 320,
   sheetTop: 74,
   sheetLeft: 12,
@@ -257,10 +449,12 @@ const data = reactive({
     header: 0,
     list: '',
     align: '',
+    lineHeight: '',
+    letterSpacing: '',
     color: '',
     backgroundColor: ''
   }
-} as DataType)
+})
 
 const editorContext = ref<EditorContext | null>(null)
 
@@ -310,6 +504,28 @@ function getToolbarWrapStyle() : string {
   return `bottom:${data.toolbarBottom}px;`
 }
 
+function getToolbarTooltipStyle() : string {
+  return `left:${data.tooltipLeft}px;top:${data.tooltipTop}px;`
+}
+
+function isWideLayout() : boolean {
+  return data.pageWindowWidth >= 1120
+}
+
+function getPageShellClass() : string {
+  if (isWideLayout()) {
+    return 'page-shell page-shell-wide'
+  }
+  return 'page-shell'
+}
+
+function getEditorLayoutClass() : string {
+  if (isWideLayout()) {
+    return 'editor-layout editor-layout-wide'
+  }
+  return 'editor-layout'
+}
+
 function getSheetPanelStyle() : string {
   if (isWebToolbarMode()) {
     return ''
@@ -327,15 +543,21 @@ function getWebSheetWidth() : number {
     return maxWidth
   }
   if (data.activeSheet == 'title') {
-    return maxWidth < 520 ? maxWidth : 520
-  }
-  if (data.activeSheet == 'style') {
-    return maxWidth < 420 ? maxWidth : 420
-  }
-  if (data.activeSheet == 'align') {
     return maxWidth < 280 ? maxWidth : 280
   }
-  return maxWidth < 360 ? maxWidth : 360
+  if (data.activeSheet == 'style') {
+    return maxWidth < 440 ? maxWidth : 440
+  }
+  if (data.activeSheet == 'text-color' || data.activeSheet == 'background-color') {
+    return maxWidth < 372 ? maxWidth : 372
+  }
+  if (data.activeSheet == 'line-height' || data.activeSheet == 'letter-spacing') {
+    return maxWidth < 220 ? maxWidth : 220
+  }
+  if (data.activeSheet == 'align') {
+    return maxWidth < 220 ? maxWidth : 220
+  }
+  return maxWidth < 260 ? maxWidth : 260
 }
 
 function getSheetHostStyle() : string {
@@ -363,6 +585,49 @@ function getToolbarShellClass() : string {
     return 'toolbar-shell toolbar-shell-attached'
   }
   return 'toolbar-shell'
+}
+
+function isCompactWebToolbar() : boolean {
+  if (!isWebToolbarMode()) {
+    return false
+  }
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  return windowWidth < 760
+}
+
+function getDesktopToolbarShellClass() : string {
+  if (isCompactWebToolbar()) {
+    return 'toolbar-web-shell toolbar-web-shell-compact'
+  }
+  return 'toolbar-web-shell'
+}
+
+function getDesktopToolbarGroupClass(isLeading: boolean) : string {
+  let className = 'toolbar-web-group'
+  if (isLeading) {
+    className += ' toolbar-web-group-leading'
+  }
+  if (isCompactWebToolbar()) {
+    className += ' toolbar-web-group-compact'
+    if (isLeading) {
+      className += ' toolbar-web-group-leading-compact'
+    }
+  }
+  return className
+}
+
+function getDesktopToolbarDividerClass() : string {
+  if (isCompactWebToolbar()) {
+    return 'toolbar-web-divider toolbar-web-divider-hidden'
+  }
+  return 'toolbar-web-divider'
+}
+
+function getMobileStyleButtonClass() : string {
+  if (isStyleSheetHighlighted()) {
+    return 'toolbar-button toolbar-button-active toolbar-button-format-active'
+  }
+  return 'toolbar-button'
 }
 
 function getToolbarScrollTrackClass() : string {
@@ -432,14 +697,34 @@ function getToolbarChipCellClass() : string {
   if (!isWebToolbarMode()) {
     return 'toolbar-chip-cell'
   }
-  const panelWidth = getWebSheetWidth()
-  if (panelWidth <= 300) {
-    return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-half'
+  if (data.activeSheet == 'title' || data.activeSheet == 'align' || data.activeSheet == 'more' || data.activeSheet == 'line-height' || data.activeSheet == 'letter-spacing') {
+    return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-full'
   }
-  if (panelWidth <= 420) {
+  if (data.activeSheet == 'style') {
     return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-third'
   }
   return 'toolbar-chip-cell toolbar-chip-cell-web toolbar-chip-cell-web-quarter'
+}
+
+function getDesktopMenuItemClass(active: boolean) : string {
+  if (!isWebToolbarMode()) {
+    return active ? 'toolbar-chip toolbar-chip-grid toolbar-chip-active' : 'toolbar-chip toolbar-chip-grid'
+  }
+  return active ? 'desktop-menu-item desktop-menu-item-active' : 'desktop-menu-item'
+}
+
+function getDesktopMenuBadgeClass(active: boolean) : string {
+  if (!isWebToolbarMode()) {
+    return active ? 'toolbar-chip-badge toolbar-chip-badge-active' : 'toolbar-chip-badge'
+  }
+  return active ? 'desktop-menu-badge desktop-menu-badge-active' : 'desktop-menu-badge'
+}
+
+function getDesktopMenuTextClass(active: boolean) : string {
+  if (!isWebToolbarMode()) {
+    return active ? 'toolbar-chip-text toolbar-chip-text-active' : 'toolbar-chip-text'
+  }
+  return active ? 'desktop-menu-text desktop-menu-text-active' : 'desktop-menu-text'
 }
 
 function getColorRowClass() : string {
@@ -447,6 +732,29 @@ function getColorRowClass() : string {
     return 'color-row'
   }
   return 'color-row color-row-web'
+}
+
+function getClearColorSwatchClass(isActive: boolean) : string {
+  let className = 'color-swatch'
+  if (isWebToolbarMode()) {
+    className += ' color-swatch-web'
+  }
+  className += ' color-swatch-clear'
+  if (isActive) {
+    className += ' color-swatch-active'
+  }
+  return className
+}
+
+function getFilledColorSwatchClass(isActive: boolean) : string {
+  let className = 'color-swatch'
+  if (isWebToolbarMode()) {
+    className += ' color-swatch-web'
+  }
+  if (isActive) {
+    className += ' color-swatch-active'
+  }
+  return className
 }
 
 function refocusEditorAfterToolbarAction() {
@@ -469,6 +777,9 @@ function updatePageWindowHeight() {
 
 function getSheetButtonId(sheet: string) : string {
   if (sheet == 'more') {
+    if (isWebToolbarMode()) {
+      return 'toolbar-button-align'
+    }
     return 'toolbar-button-more'
   }
   if (sheet == 'title') {
@@ -476,6 +787,18 @@ function getSheetButtonId(sheet: string) : string {
   }
   if (sheet == 'style') {
     return 'toolbar-button-style'
+  }
+  if (sheet == 'text-color') {
+    return 'toolbar-button-text-color'
+  }
+  if (sheet == 'background-color') {
+    return 'toolbar-button-background-color'
+  }
+  if (sheet == 'line-height') {
+    return 'toolbar-button-line-height'
+  }
+  if (sheet == 'letter-spacing') {
+    return 'toolbar-button-letter-spacing'
   }
   return 'toolbar-button-align'
 }
@@ -485,20 +808,19 @@ function updateWebSheetAnchor(sheet: string) {
     return
   }
   updatePageWindowHeight()
-  const pageShellElement = uni.getElementById('editor-page-shell')
+  const layoutElement = uni.getElementById('editor-layout')
   const buttonElement = uni.getElementById(getSheetButtonId(sheet))
-  if (buttonElement == null || pageShellElement == null) {
+  if (buttonElement == null || layoutElement == null) {
     data.sheetTop = 74
     data.sheetLeft = 12
     data.sheetArrowLeft = 32
     return
   }
-  const pageRect = pageShellElement.getBoundingClientRect()
+  const pageRect = layoutElement.getBoundingClientRect()
   const rect = buttonElement.getBoundingClientRect()
   const panelWidth = getWebSheetWidth()
-  const pageWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
   let panelLeft = rect.left - pageRect.left + rect.width / 2 - panelWidth / 2
-  let maxLeft = pageWidth - panelWidth - 12
+  let maxLeft = pageRect.width - panelWidth - 12
   if (maxLeft < 12) {
     maxLeft = 12
   }
@@ -521,7 +843,7 @@ function updateWebSheetAnchor(sheet: string) {
 }
 
 function onEditorReady() {
-  uni.createEditorContextAsync({
+  const options: CreateEditorContextAsyncOptions = {
     id: 'editor',
     success: (context: EditorContext) => {
       editorContext.value = context
@@ -529,10 +851,11 @@ function onEditorReady() {
     fail: (error: UniError) => {
       console.log('createEditorContextAsync fail', error)
     }
-  } as CreateEditorContextAsyncOptions)
+  }
+  uni.createEditorContextAsync(options)
 }
 
-function applyFormat(name: string, value: string | number | boolean | null) {
+function applyFormat(name: string, value: string | number | null) {
   const editor = getEditor()
   if (editor == null) {
     return
@@ -600,6 +923,9 @@ function syncToolbarVisibility() {
 function closeSheets() {
   if (isWebToolbarMode()) {
     data.sheetAnimated = false
+    // #ifdef WEB
+    hideToolbarTooltip()
+    // #endif
   }
   data.activeSheet = ''
   syncToolbarBottom()
@@ -646,6 +972,22 @@ function openStyleSheet() {
   toggleSheet('style')
 }
 
+function openTextColorSheet() {
+  toggleSheet('text-color')
+}
+
+function openBackgroundColorSheet() {
+  toggleSheet('background-color')
+}
+
+function openLineHeightSheet() {
+  toggleSheet('line-height')
+}
+
+function openLetterSpacingSheet() {
+  toggleSheet('letter-spacing')
+}
+
 function openAlignSheet() {
   toggleSheet('align')
 }
@@ -656,6 +998,18 @@ function getPanelTitle() : string {
   }
   if (data.activeSheet == 'style') {
     return '设置字格式'
+  }
+  if (data.activeSheet == 'text-color') {
+    return '设置文字颜色'
+  }
+  if (data.activeSheet == 'background-color') {
+    return '设置背景颜色'
+  }
+  if (data.activeSheet == 'line-height') {
+    return '设置行间距'
+  }
+  if (data.activeSheet == 'letter-spacing') {
+    return '设置字间距'
   }
   if (data.activeSheet == 'align') {
     return '居中设置'
@@ -679,6 +1033,19 @@ function getTitleSummary() : string {
   return '当前为正文'
 }
 
+function getDesktopTitleLabel() : string {
+  if (data.formats.list == 'ordered') {
+    return '有序列表'
+  }
+  if (data.formats.list == 'bullet') {
+    return '无序列表'
+  }
+  if (data.formats.header > 0) {
+    return `标题 ${data.formats.header}`
+  }
+  return '正文'
+}
+
 function getStyleSummary() : string {
   const names: string[] = []
   if (data.formats.bold) {
@@ -693,8 +1060,11 @@ function getStyleSummary() : string {
   if (data.formats.strike) {
     names.push('删除线')
   }
-  if (data.formats.color != '') {
-    names.push('已设颜色')
+  if (data.formats.lineHeight != '') {
+    names.push(`行间距 ${data.formats.lineHeight}`)
+  }
+  if (data.formats.letterSpacing != '') {
+    names.push(`字间距 ${data.formats.letterSpacing}`)
   }
   if (names.length == 0) {
     return '当前未设置字格式'
@@ -715,12 +1085,85 @@ function getAlignSummary() : string {
   return '当前为居左'
 }
 
+function getDesktopAlignLabel() : string {
+  if (data.formats.align == 'center') {
+    return '居中'
+  }
+  if (data.formats.align == 'right') {
+    return '居右'
+  }
+  if (data.formats.align == 'justify') {
+    return '两端'
+  }
+  return '居左'
+}
+
+function getDesktopLineHeightLabel() : string {
+  if (data.formats.lineHeight == '1.5') {
+    return '1.5'
+  }
+  if (data.formats.lineHeight == '1.8') {
+    return '1.8'
+  }
+  if (data.formats.lineHeight == '2') {
+    return '2.0'
+  }
+  return '行间距'
+}
+
+function getDesktopLetterSpacingLabel() : string {
+  if (data.formats.letterSpacing == '0px') {
+    return '0px'
+  }
+  if (data.formats.letterSpacing == '1px') {
+    return '1px'
+  }
+  if (data.formats.letterSpacing == '2px') {
+    return '2px'
+  }
+  return '字间距'
+}
+
+function getToolbarTextColorChipStyle() : string {
+  const color = data.formats.color != '' ? data.formats.color : '#111827'
+  return `background-color:${color};`
+}
+
+function getToolbarBackgroundColorChipStyle() : string {
+  const color = data.formats.backgroundColor != '' ? data.formats.backgroundColor : '#f3f4f6'
+  return `background-color:${color};`
+}
+
 function getPanelSubtitle() : string {
   if (data.activeSheet == 'title') {
     return getTitleSummary()
   }
   if (data.activeSheet == 'style') {
     return getStyleSummary()
+  }
+  if (data.activeSheet == 'text-color') {
+    if (data.formats.color == '') {
+      return '当前使用默认文字颜色'
+    }
+    return `当前文字颜色 ${data.formats.color}`
+  }
+  if (data.activeSheet == 'background-color') {
+    if (data.formats.backgroundColor == '') {
+      return '当前未设置文字背景颜色'
+    }
+    return `当前背景颜色 ${data.formats.backgroundColor}`
+  }
+  if (data.activeSheet == 'line-height') {
+    if (data.formats.lineHeight == '') {
+      return '当前使用默认行间距'
+    }
+    return `当前行间距 ${data.formats.lineHeight}`
+  }
+  if (data.activeSheet == 'letter-spacing') {
+    if (data.formats.letterSpacing == '') {
+      return '当前使用默认字间距'
+    }
+    return `当前字间距 ${data.formats.letterSpacing}`
   }
   if (data.activeSheet == 'align') {
     return getAlignSummary()
@@ -729,7 +1172,7 @@ function getPanelSubtitle() : string {
 }
 
 function hasInlineStyleActive() : boolean {
-  return data.formats.bold || data.formats.italic || data.formats.underline || data.formats.strike || data.formats.color != ''
+  return data.formats.bold || data.formats.italic || data.formats.underline || data.formats.strike || data.formats.lineHeight != '' || data.formats.letterSpacing != ''
 }
 
 function hasTitleFormatActive() : boolean {
@@ -741,11 +1184,30 @@ function isTitleSheetHighlighted() : boolean {
 }
 
 function isStyleSheetHighlighted() : boolean {
+  if (isWebToolbarMode()) {
+    return false
+  }
   return data.activeSheet == 'style' || hasInlineStyleActive()
 }
 
 function isAlignSheetHighlighted() : boolean {
   return data.activeSheet == 'align' || data.formats.align != ''
+}
+
+function isLineHeightSheetHighlighted() : boolean {
+  return data.activeSheet == 'line-height' || data.formats.lineHeight != ''
+}
+
+function isLetterSpacingSheetHighlighted() : boolean {
+  return data.activeSheet == 'letter-spacing' || data.formats.letterSpacing != ''
+}
+
+function isTextColorSheetHighlighted() : boolean {
+  return data.activeSheet == 'text-color' || data.formats.color != ''
+}
+
+function isBackgroundColorSheetHighlighted() : boolean {
+  return data.activeSheet == 'background-color' || data.formats.backgroundColor != ''
 }
 
 function isParagraphActive() : boolean {
@@ -849,11 +1311,31 @@ function setTextColorAndClose(color: string) {
 }
 
 function setBackgroundColor(color: string) {
-  applyFormat('background', color == '' ? null : color)
+  applyFormat('backgroundColor', color == '' ? null : color)
 }
 
 function setBackgroundColorAndClose(color: string) {
   setBackgroundColor(color)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setLineHeight(value: string) {
+  applyFormat('lineHeight', value == '' ? null : value)
+}
+
+function setLineHeightAndClose(value: string) {
+  setLineHeight(value)
+  closeSheets()
+  refocusEditorAfterToolbarAction()
+}
+
+function setLetterSpacing(value: string) {
+  applyFormat('letterSpacing', value == '' ? null : value)
+}
+
+function setLetterSpacingAndClose(value: string) {
+  setLetterSpacing(value)
   closeSheets()
   refocusEditorAfterToolbarAction()
 }
@@ -1101,6 +1583,9 @@ function hideEditorKeyboard() {
   uni.hideKeyboard()
   data.isFocused = false
   data.toolbarKeepVisible = false
+  // #ifdef WEB
+  hideToolbarTooltip()
+  // #endif
   closeSheets()
   syncToolbarBottom()
   syncToolbarVisibility()
@@ -1108,9 +1593,30 @@ function hideEditorKeyboard() {
 }
 
 // #ifdef WEB
+function showToolbarTooltip(buttonId: string, text: string) {
+  const buttonElement = uni.getElementById(buttonId)
+  if (buttonElement == null) {
+    return
+  }
+  const rect = buttonElement.getBoundingClientRect()
+  data.tooltipText = text
+  data.tooltipVisible = true
+  data.tooltipLeft = rect.left + rect.width / 2
+  data.tooltipTop = rect.bottom + 8
+}
+
+function hideToolbarTooltip() {
+  if (!data.tooltipVisible && data.tooltipText == '') {
+    return
+  }
+  data.tooltipVisible = false
+  data.tooltipText = ''
+}
+
 function onToolbarMouseDown(event: UniMouseEvent) {
   clearToolbarHideTimer()
   data.toolbarVisible = true
+  hideToolbarTooltip()
   event.preventDefault()
 }
 
@@ -1127,6 +1633,9 @@ function onToolbarTouchStart(event: UniTouchEvent) {
 function onEditorFocus(event: UniEditorFocusEvent) {
   console.log('onEditorFocus')
   clearToolbarHideTimer()
+  // #ifdef WEB
+  hideToolbarTooltip()
+  // #endif
   if (data.activeSheet != '') {
     data.activeSheet = ''
   }
@@ -1165,8 +1674,31 @@ function onStatusChange(event: UniEditorStatusChangeEvent) {
   data.formats.header = formats.header != null ? formats.header : 0
   data.formats.list = formats.list != null ? formats.list : ''
   data.formats.align = formats.align != null ? formats.align : ''
+  data.formats.lineHeight = formats.lineHeight != null ? formats.lineHeight : ''
+  data.formats.letterSpacing = formats.letterSpacing != null ? formats.letterSpacing : ''
   data.formats.color = formats.color != null ? formats.color : ''
   data.formats.backgroundColor = formats.backgroundColor != null ? formats.backgroundColor : ''
+}
+
+function getEditorFieldStyle() : string {
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  let paddingHorizontal = 20
+  let paddingTop = 24
+  let fontSize = 18
+  let lineHeight = 30
+  if (windowWidth >= 960) {
+    paddingHorizontal = 40
+    paddingTop = 32
+    fontSize = 19
+    lineHeight = 34
+  }
+  if (windowWidth >= 1320) {
+    paddingHorizontal = 56
+    paddingTop = 36
+    fontSize = 20
+    lineHeight = 38
+  }
+  return `padding-top:${paddingTop}px;padding-right:${paddingHorizontal}px;padding-bottom:28px;padding-left:${paddingHorizontal}px;font-size:${fontSize}px;line-height:${lineHeight}px;letter-spacing:0.2px;`
 }
 
 onLoad(() => {
@@ -1248,26 +1780,59 @@ defineExpose({
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #f7f6f2;
+  background-color: #edf1f4;
+  padding-top: 16px;
+  padding-right: 12px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+}
+
+.page-shell-wide {
+  padding-top: 24px;
+  padding-right: 24px;
+  padding-bottom: 20px;
+  padding-left: 24px;
+}
+
+.editor-layout {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1320px;
+  align-self: center;
+}
+
+.editor-layout-wide {
+  max-width: 1360px;
 }
 
 .editor-stage {
   flex: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  /* max-width: 1120px; */
+  align-self: center;
   background-color: #ffffff;
+  border-width: 1px;
+  border-color: #d6dde4;
+  border-radius: 0px;
+  /* box-shadow: 0px 18px 36px rgba(15, 23, 42, 0.07); */
+  overflow: hidden;
 }
+
+/* #ifdef WEB */
+.editor-stage {
+  border-radius: 22px;
+}
+/* #endif */
 
 .editor-field {
   flex: 1;
   background-color: #ffffff;
-  color: #1f1f1f;
-  font-size: 18px;
-  line-height: 30px;
-  padding-top: 24px;
-  padding-right: 20px;
-  padding-bottom: 24px;
-  padding-left: 20px;
+  color: #111827;
 }
 
 .toolbar-wrap {
@@ -1286,7 +1851,25 @@ defineExpose({
   left: auto;
   right: auto;
   bottom: auto;
+  width: 100%;
+  margin-bottom: 16px;
   box-shadow: none;
+}
+
+.toolbar-wrap-mobile {
+  box-shadow: 0px -5px 8px rgba(0,0,0,.05);
+}
+
+.desktop-toolbar-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-toolbar-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .sheet-host {
@@ -1326,7 +1909,7 @@ defineExpose({
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.98);
   border-width: 1px;
-  border-color: #ddd8cf;
+  border-color: #d6dde4;
   padding-top: 14px;
   padding-right: 14px;
   padding-bottom: 12px;
@@ -1342,12 +1925,292 @@ defineExpose({
 }
 
 /* #ifdef WEB */
+.toolbar-web-shell {
+  width: 100%;
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #cfd6dd;
+  border-radius: 8px;
+  padding-top: 6px;
+  padding-right: 8px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  box-shadow: 0px 8px 18px rgba(15, 23, 42, 0.04);
+}
+
+.toolbar-web-shell-compact {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.toolbar-web-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.toolbar-web-group-compact {
+  width: 100%;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.toolbar-web-group-leading {
+  min-width: 120px;
+}
+
+.toolbar-web-group-leading-compact {
+  margin-top: 0px;
+}
+
+.toolbar-web-group-actions {
+  margin-left: auto;
+}
+
+.toolbar-web-group-actions .toolbar-web-icon-button {
+  margin-left: 2px;
+  margin-right: 0px;
+}
+
+.toolbar-web-divider {
+  width: 1px;
+  height: 28px;
+  background-color: #dde4ea;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.toolbar-web-divider-hidden {
+  display: none;
+}
+
+.toolbar-web-select {
+  min-width: 116px;
+  height: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 4px;
+  background-color: #ffffff;
+  padding-left: 10px;
+  padding-right: 8px;
+  transition-property: background-color, border-color;
+  transition-duration: 160ms;
+}
+
+.toolbar-web-select-compact {
+  min-width: 84px;
+}
+
+.toolbar-web-select-active {
+  background-color: #eef3f8;
+  border-color: #ccd6e0;
+}
+
+.toolbar-web-select-label {
+  color: #1f2937;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.toolbar-web-select-label-active {
+  color: #0f172a;
+}
+
+.toolbar-web-select-arrow {
+  width: 6px;
+  height: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: #6b7280;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #6b7280;
+  margin-left: 8px;
+  margin-top: -2px;
+  transform: rotate(45deg);
+}
+
+.toolbar-web-select-arrow-active {
+  border-right-color: #475569;
+  border-bottom-color: #475569;
+}
+
+.toolbar-web-icon-button {
+  width: 36px;
+  height: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 4px;
+  background-color: transparent;
+  margin-right: 2px;
+  transition-property: background-color, border-color;
+  transition-duration: 160ms;
+}
+
+.toolbar-web-color-button {
+  min-width: 56px;
+  height: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 4px;
+  background-color: #ffffff;
+  margin-left: 4px;
+  padding-left: 8px;
+  padding-right: 8px;
+  transition-property: background-color, border-color;
+  transition-duration: 160ms;
+}
+
+.toolbar-web-color-button-active {
+  border-color: #ccd6e0;
+  background-color: #eef3f8;
+}
+
+.toolbar-web-color-label {
+  color: #334155;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 700;
+}
+
+.toolbar-web-color-label-active {
+  color: #111827;
+}
+
+.toolbar-web-color-symbol {
+  color: #334155;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: 600;
+}
+
+.toolbar-web-color-symbol-active {
+  color: #111827;
+}
+
+.toolbar-web-color-chip {
+  width: 16px;
+  height: 16px;
+  border-width: 1px;
+  border-color: rgba(15, 23, 42, 0.12);
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.toolbar-web-color-arrow {
+  width: 6px;
+  height: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: #6b7280;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #6b7280;
+  margin-left: 6px;
+  margin-top: -2px;
+  transform: rotate(45deg);
+}
+
+.toolbar-web-color-arrow-active {
+  border-right-color: #475569;
+  border-bottom-color: #475569;
+}
+
+.toolbar-web-icon-button-active {
+  background-color: #eef3f8;
+  border-color: #ccd6e0;
+}
+
+.toolbar-web-icon-text {
+  color: #374151;
+  font-size: 17px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.toolbar-web-icon-text-active {
+  color: #0f172a;
+}
+
+/* #ifdef WEB */
+.toolbar-web-tooltip {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transform: translateX(-50%);
+}
+
+.toolbar-web-tooltip-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.92);
+  border-radius: 6px;
+  padding-top: 6px;
+  padding-right: 10px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+  box-shadow: 0px 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.toolbar-web-tooltip-text {
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.toolbar-web-tooltip-arrow {
+  width: 10px;
+  height: 10px;
+  margin-bottom: -5px;
+  background-color: rgba(15, 23, 42, 0.92);
+  transform: rotate(45deg);
+}
+
+.toolbar-web-select:hover,
+.toolbar-web-icon-button:hover,
+.toolbar-web-color-button:hover {
+  background-color: #f4f7fb;
+}
+/* #endif */
+
 .toolbar-shell-web {
   border-width: 1px;
   border-top-width: 0px;
-  border-color: #ddd8cf;
+  border-color: #d6dde4;
   background-color: rgba(255, 255, 255, 0.96);
-  box-shadow: 0px 12px 24px rgba(46, 41, 35, 0.06);
+  box-shadow: 0px 12px 24px rgba(15, 23, 42, 0.06);
+  border-radius: 20px;
 }
 
 .toolbar-scroll-track-web {
@@ -1366,17 +2229,22 @@ defineExpose({
   position: relative;
   height: auto;
   border-width: 1px;
-  border-color: #d5cdbc;
-  border-radius: 14px;
-  padding-top: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  background-color: #fffdfa;
+  border-color: #cfd6dd;
+  border-radius: 8px;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  background-color: #ffffff;
+  box-shadow: 0px 10px 24px rgba(15, 23, 42, 0.08);
   transition-property: transform, opacity;
   transition-duration: 180ms;
   opacity: 0;
   transform: translateY(-8px);
+}
+
+.toolbar-panel-section .desktop-color-sheet-label {
+  display: none;
 }
 
 .toolbar-panel-web-attached {
@@ -1393,18 +2261,18 @@ defineExpose({
   top: -7px;
   width: 14px;
   height: 14px;
-  background-color: #fffdfa;
+  background-color: #ffffff;
   border-width: 0px;
   box-shadow: none;
   transform: rotate(45deg);
 }
 
 .toolbar-panel-header-web {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .toolbar-panel-title-web {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .toolbar-panel-subtitle-web {
@@ -1417,13 +2285,92 @@ defineExpose({
 }
 
 .toolbar-chip-row-web {
-  margin-left: -3px;
-  margin-right: -3px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .toolbar-chip-row-web-compact {
-  margin-left: -2px;
-  margin-right: -2px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.toolbar-panel-section .desktop-color-sheet-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.desktop-color-sheet-icon {
+  width: 14px;
+  height: 14px;
+  border-width: 1px;
+  border-color: #6b7280;
+  border-radius: 2px;
+  margin-right: 10px;
+  transform: rotate(45deg);
+}
+
+.desktop-color-sheet-label-text {
+  color: #374151;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.desktop-menu-item {
+  width: 100%;
+  min-width: 0px;
+  min-height: 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 6px;
+  background-color: #ffffff;
+  padding-top: 8px;
+  padding-right: 10px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 4px;
+}
+
+.desktop-menu-item-active {
+  background-color: #eef3f8;
+  border-color: #ccd6e0;
+}
+
+.desktop-menu-badge {
+  min-width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 24px;
+  margin-right: 10px;
+}
+
+.desktop-menu-badge-active {
+  background-color: #dbe7f3;
+  color: #0f172a;
+}
+
+.desktop-menu-text {
+  color: #1f2937;
+  font-size: 13px;
+  text-align: left;
+  line-height: 18px;
+  letter-spacing: 0px;
+}
+
+.desktop-menu-text-active {
+  color: #0f172a;
 }
 
 /* #endif */
@@ -1443,15 +2390,17 @@ defineExpose({
 }
 
 .toolbar-panel-title {
-  color: #2f2a24;
+  color: #0f172a;
   font-size: 14px;
   font-weight: 600;
+  letter-spacing: 0.4px;
 }
 
 .toolbar-panel-subtitle {
-  color: #8a7d6d;
+  color: #64748b;
   font-size: 11px;
   margin-top: 4px;
+  line-height: 16px;
 }
 
 .toolbar-panel-close {
@@ -1510,7 +2459,9 @@ defineExpose({
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background-color: #f6f1e8;
+  background-color: #f3f6f9;
+  border-width: 1px;
+  border-color: #d6dde4;
   padding-top: 10px;
   padding-right: 12px;
   padding-bottom: 10px;
@@ -1546,8 +2497,8 @@ defineExpose({
   padding-left: 4px;
   padding-right: 4px;
   border-radius: 11px;
-  background-color: #e9e1d3;
-  color: #6d6252;
+  background-color: #e2e8f0;
+  color: #475569;
   font-size: 11px;
   font-weight: 700;
   text-align: center;
@@ -1561,15 +2512,17 @@ defineExpose({
 }
 
 .toolbar-chip-active {
-  background-color: #1f1f1f;
+  background-color: #111827;
+  border-color: #111827;
   /* box-shadow: 0px 6px 14px rgba(31, 31, 31, 0.18); */
 }
 
 .toolbar-chip-text {
-  color: #2e2923;
+  color: #1f2937;
   font-size: 12px;
   text-align: center;
   line-height: 18px;
+  letter-spacing: 0.2px;
 }
 
 .toolbar-chip-text-active {
@@ -1583,9 +2536,10 @@ defineExpose({
 }
 
 .toolbar-color-title {
-  color: #72685a;
+  color: #64748b;
   font-size: 12px;
   margin-bottom: 8px;
+  letter-spacing: 0.3px;
 }
 
 .toolbar-color-title-secondary {
@@ -1599,7 +2553,8 @@ defineExpose({
   position: relative;
   background-color: rgba(255, 255, 255, 0.98);
   border-width: 1px;
-  border-color: #ddd8cf;
+  border-color: #d6dde4;
+  border-radius: 0px;
 }
 
 .toolbar-shell-attached {
@@ -1614,7 +2569,7 @@ defineExpose({
 }
 
 .toolbar-row-scroll {
-  width: 420px;
+  width: 368px;
 }
 
 .toolbar-row {
@@ -1622,7 +2577,7 @@ defineExpose({
   flex-direction: row;
   align-items: center;
   padding-top: 10px;
-  padding-right: 72px;
+  padding-right: 68px;
   padding-bottom: 10px;
   padding-left: 10px;
 }
@@ -1655,7 +2610,7 @@ defineExpose({
 .toolbar-divider {
   width: 1px;
   height: 28px;
-  background-color: #e8e2d9;
+  background-color: #d8e0e7;
   margin-left: 6px;
   margin-right: 6px;
 }
@@ -1713,7 +2668,9 @@ defineExpose({
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background-color: #f3f1ec;
+  background-color: #f3f6f9;
+  border-width: 1px;
+  border-color: #d6dde4;
   margin-right: 6px;
 }
 
@@ -1721,12 +2678,18 @@ defineExpose({
   margin-right: 0;
 }
 .toolbar-button-active {
-  background-color: #1f1f1f;
+  background-color: #111827;
+  border-color: #111827;
   /* box-shadow: 0px 6px 14px rgba(31, 31, 31, 0.18); */
 }
 
+.toolbar-button-format-active {
+  background-color: #111827;
+  border-color: #111827;
+}
+
 .toolbar-button-dismiss {
-  background-color: #e7e0d3;
+  background-color: #e2e8f0;
   margin-right: 0px;
   margin-left: 2px;
 }
@@ -1740,6 +2703,10 @@ defineExpose({
 
 .toolbar-chip-cell-web-quarter {
   width: 25%;
+}
+
+.toolbar-chip-cell-web-full {
+  width: 100%;
 }
 
 .toolbar-chip-cell-web-third {
@@ -1773,8 +2740,10 @@ defineExpose({
 }
 
 .color-row-web {
-  margin-left: -3px;
-  margin-right: -3px;
+  width: 340px;
+  align-self: center;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .toolbar-chip-badge {
@@ -1822,7 +2791,7 @@ defineExpose({
 
 .toolbar-iconfont {
   font-size: 18px;
-  color: #433d35;
+  color: #334155;
   text-align: center;
   line-height: 18px;
 }
@@ -1853,20 +2822,30 @@ defineExpose({
   border-radius: 10px;
   border-width: 2px;
   border-style: solid;
-  border-color: rgba(0, 0, 0, 0.06);
+  border-color: rgba(15, 23, 42, 0.08);
   margin-left: 4px;
   margin-right: 4px;
   margin-bottom: 10px;
 }
 
+.color-swatch.color-swatch-web {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border-width: 1px;
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-bottom: 10px;
+}
+
 .color-swatch-active {
-  border-color: #1f1f1f;
+  border-color: #111827;
   border-width: 3px;
   /* box-shadow: 0px 0px 0px 2px rgba(31, 31, 31, 0.12); */
 }
 
 .color-swatch-clear {
   background-color: #ffffff;
-  border-color: #d9d3ca;
+  border-color: #cbd5e1;
 }
 </style>

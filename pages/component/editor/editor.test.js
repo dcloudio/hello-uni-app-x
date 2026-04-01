@@ -103,6 +103,8 @@ describe('editor.uvue', () => {
       header: 0,
       list: '',
       align: '',
+      lineHeight: '',
+      letterSpacing: '',
       color: '',
       backgroundColor: ''
     })
