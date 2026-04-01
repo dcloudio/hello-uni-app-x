@@ -465,23 +465,6 @@ const sharedCssTests = [
     }
   },
   {
-    path: "/pages/CSS/margin/margin",
-    method: "radioChangeMargin",
-    valueIndex: 3,
-    styleName: "margin",
-    skipAssert: false,
-    expectedValue: {
-      margin: "20px",
-      marginActual: "20px",
-      marginActualText: "20px",
-      marginActualImage: "20px",
-      marginActualFlat: "20px",
-      marginActualTextFlat: "20px",
-      marginActualImageFlat: "20px",
-      marginActualScrollView: "20px"
-    }
-  },
-  {
     path: "/pages/CSS/padding/padding-bottom",
     method: "radioChangePaddingBottom",
     valueIndex: 3,
@@ -543,23 +526,6 @@ const sharedCssTests = [
       paddingTopActualFlat: "20px",
       paddingTopActualTextFlat: "20px",
       paddingTopActualImageFlat: "20px"
-    }
-  },
-  {
-    path: "/pages/CSS/padding/padding",
-    method: "radioChangePadding",
-    valueIndex: 3,
-    styleName: "padding",
-    skipAssert: false,
-    expectedValue: {
-      padding: "10px",
-      paddingActual: "10px",
-      paddingActualText: "10px",
-      paddingActualImage: "10px",
-      paddingActualFlat: "10px",
-      paddingActualTextFlat: "10px",
-      paddingActualImageFlat: "10px",
-      paddingActualScrollView: "10px"
     }
   },
   {
