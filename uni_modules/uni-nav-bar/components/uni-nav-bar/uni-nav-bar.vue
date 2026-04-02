@@ -13,7 +13,7 @@
       <slot name="left" v-else></slot>
     </view>
 
-    <view :style="{'position': 'absolute', 'height': '44px', 'flex-direction': 'row', 'align-items': 'center', 'justify-content': isLeft ? 'flex-start' : 'center'}" class="uni-mid-class-buildin" :class="midClass" flatten>
+    <view style="position: absolute; height: 44px; flex-direction: row; align-items: center;" class="uni-mid-class-buildin" :class="midClass" flatten>
       <text v-if="slots['mid']==null" :style="{ color: foreColor }" flatten> {{ title }} </text>
 			<slot name="mid" v-else></slot>
     </view>
@@ -36,22 +36,17 @@
     navigationBarTextStyle: { type: String, default: "" },
     leftClass: { type: String, default: "" },
     midClass: { type: String, default: "" },
-    rightClass: { type: String, default: "" },
-    isLeft: { type: Boolean, default: false },
+    rightClass: { type: String, default: "" }
     // stat: { type: Boolean, default: false }
   })
   const slots = useSlots();
 
 // #ifndef MP
   const currentPage = getCurrentInstance()?.proxy?.$page
-  const foreColor = computed((): string => {
-    return (props.navigationBarTextStyle=="") ? currentPage?.getPageStyle()["navigationBarTextStyle"] as string : props.navigationBarTextStyle; //如果外部没有传入前景色，从pageStyle获取
-  });
+  const foreColor = (props.navigationBarTextStyle=="") ? currentPage?.getPageStyle()["navigationBarTextStyle"] : props.navigationBarTextStyle; //如果外部没有传入前景色，从pageStyle获取
 // #endif
 // #ifdef MP
-	const foreColor = computed((): string => {
-    return props.navigationBarTextStyle; //小程序端无法获取pageStyle，需要显式传入前景色
-  });
+	const foreColor = props.navigationBarTextStyle; //小程序端无法获取pageStyle，需要显式传入前景色
 // #endif
   // let statusBarHeight = ref(0)
   onMounted(() => {
