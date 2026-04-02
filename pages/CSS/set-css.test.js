@@ -9,12 +9,11 @@ const isWeb = platformInfo.startsWith('web')
 const currentPlatform = isWeb ? 'web' : (isMP ? 'mp' : 'app')
 const currentMode = isDom2 ? 'dom2' : `dom1-${currentPlatform}`
 
+// skipAssert: true, 时跳过 expectedValue 断言
+
 // 调试用：临时覆盖某些页面的测试参数，不需要时置为 null
 // 可以写多个页面，例如只跑 color 相关的页面：
 const TEST_OVERRIDE = null
-
-// const TEST_OVERRIDE = [
-// ]
 
 // dom1 和 dom2 断言一致的页面
 const sharedCssTests = [
@@ -23,7 +22,6 @@ const sharedCssTests = [
     method: "radioChangeWidth",
     valueIndex: 3,
     styleName: "width",
-    skipAssert: false,
     expectedValue: {
       width: "50px",
       widthActual: "50px",
@@ -39,7 +37,6 @@ const sharedCssTests = [
     method: "radioChangeMinWidth",
     valueIndex: 4,
     styleName: "min-width",
-    skipAssert: false,
     expectedValue: {
       minWidth: "120px",
       minWidthActual: "120px",
@@ -55,7 +52,6 @@ const sharedCssTests = [
     method: "radioChangeMaxWidth",
     valueIndex: 4,
     styleName: "max-width",
-    skipAssert: false,
     expectedValue: {
       maxWidth: "120px",
       maxWidthActual: "120px",
@@ -71,7 +67,6 @@ const sharedCssTests = [
     method: "radioChangeHeight",
     valueIndex: 4,
     styleName: "height",
-    skipAssert: false,
     expectedValue: {
       height: "150px",
       heightActual: "150px",
@@ -87,7 +82,6 @@ const sharedCssTests = [
     method: "radioChangeMinHeight",
     valueIndex: 3,
     styleName: "min-height",
-    skipAssert: false,
     expectedValue: {
       minHeight: "50px",
       minHeightActual: "50px",
@@ -103,7 +97,6 @@ const sharedCssTests = [
     method: "radioChangeMaxHeight",
     valueIndex: 3,
     styleName: "max-height",
-    skipAssert: false,
     expectedValue: {
       maxHeight: "100px",
       maxHeightActual: "100px",
@@ -119,7 +112,6 @@ const sharedCssTests = [
     method: "radioChangeVisibility",
     valueIndex: 2,
     styleName: "visibility",
-    skipAssert: false,
     expectedValue: {
       visibility: "visible",
       visibilityActual: "hidden",
@@ -132,7 +124,6 @@ const sharedCssTests = [
     method: "radioChangeTop",
     valueIndex: 3,
     styleName: "top",
-    skipAssert: false,
     expectedValue: {
       top: "10px",
       topActual: "10px",
@@ -148,7 +139,6 @@ const sharedCssTests = [
     method: "radioChangeBottom",
     valueIndex: 3,
     styleName: "bottom",
-    skipAssert: false,
     expectedValue: {
       bottom: "10px",
       bottomActual: "10px",
@@ -164,7 +154,6 @@ const sharedCssTests = [
     method: "radioChangeLeft",
     valueIndex: 3,
     styleName: "left",
-    skipAssert: false,
     expectedValue: {
       left: "10px",
       leftActual: "10px",
@@ -180,7 +169,6 @@ const sharedCssTests = [
     method: "radioChangeRight",
     valueIndex: 3,
     styleName: "right",
-    skipAssert: false,
     expectedValue: {
       right: "20px",
       rightActual: "20px",
@@ -196,7 +184,6 @@ const sharedCssTests = [
     method: "radioChangePosition",
     valueIndex: 2,
     styleName: "position",
-    skipAssert: false,
     expectedValue: {
       position: "relative",
       positionActual: "relative",
@@ -209,7 +196,6 @@ const sharedCssTests = [
     method: "radioChangeBorderStyle",
     valueIndex: 2,
     styleName: "border-style",
-    skipAssert: false,
     expectedValue: {
       borderStyleValue: "solid",
       borderStyleActual: "solid",
@@ -225,7 +211,6 @@ const sharedCssTests = [
     method: "radioChangeBorderWidth",
     valueIndex: 3,
     styleName: "border-width",
-    skipAssert: false,
     expectedValue: {
       borderWidth: "3px",
       borderWidthActual: "3px",
@@ -241,7 +226,6 @@ const sharedCssTests = [
     method: "radioChangeBoxSizing",
     valueIndex: 2,
     styleName: "box-sizing",
-    skipAssert: false,
     expectedValue: {
       boxSizing: "border-box",
       boxSizingActual: "border-box",
@@ -257,7 +241,6 @@ const sharedCssTests = [
     method: "radioChangeDisplay",
     valueIndex: 1,
     styleName: "display",
-    skipAssert: false,
     expectedValue: {
       displayActual: "flex",
       displayActualText: "flex",
@@ -269,7 +252,6 @@ const sharedCssTests = [
     method: "radioChangeDisplay",
     valueIndex: 2,
     styleName: "display",
-    skipAssert: false,
     expectedValue: {
       displayActual: "none",
       displayActualText: "none",
@@ -281,7 +263,6 @@ const sharedCssTests = [
     method: "radioChangeFlexDirection",
     valueIndex: 2,
     styleName: "flex-direction",
-    skipAssert: false,
     expectedValue: {
       flexDirection: "row-reverse",
       flexDirectionActual: "row-reverse",
@@ -293,7 +274,6 @@ const sharedCssTests = [
     method: "radioChangeJustifyContent",
     valueIndex: 3,
     styleName: "justify-content",
-    skipAssert: false,
     expectedValue: {
       justifyContent: "center",
       justifyContentActual: "center",
@@ -305,7 +285,6 @@ const sharedCssTests = [
     method: "radioChangeAlignContent",
     valueIndex: 3,
     styleName: "align-content",
-    skipAssert: false,
     expectedValue: {
       alignContent: "center",
       alignContentActual: "center",
@@ -317,7 +296,6 @@ const sharedCssTests = [
     method: "radioChangeAlignItems",
     valueIndex: 3,
     styleName: "align-items",
-    skipAssert: false,
     expectedValue: {
       alignItems: "center",
       alignItemsActual: "center",
@@ -329,7 +307,6 @@ const sharedCssTests = [
     method: "radioChangeFlexBasis",
     valueIndex: 3,
     styleName: "flex-basis",
-    skipAssert: false,
     expectedValue: {
       flexBasis: "50px",
       flexBasisActual: "50px",
@@ -345,7 +322,6 @@ const sharedCssTests = [
     method: "radioChangeFlexGrow",
     valueIndex: 3,
     styleName: "flex-grow",
-    skipAssert: false,
     expectedValue: {
       flexGrow: "1",
       flexGrowActual: "1",
@@ -361,7 +337,6 @@ const sharedCssTests = [
     method: "radioChangeFlexShrink",
     valueIndex: 2,
     styleName: "flex-shrink",
-    skipAssert: false,
     expectedValue: {
       flexShrink: "1",
       flexShrinkActual: "1",
@@ -377,7 +352,6 @@ const sharedCssTests = [
     method: "radioChangeAlignSelf",
     valueIndex: 2,
     styleName: "align-self",
-    skipAssert: false,
     expectedValue: {
       alignSelf: "center",
       alignSelfActual: "center",
@@ -393,7 +367,6 @@ const sharedCssTests = [
     method: "radioChangeFlexWrap",
     valueIndex: 2,
     styleName: "flex-wrap",
-    skipAssert: false,
     expectedValue: {
       flexWrap: "wrap",
       flexWrapActual: "wrap",
@@ -405,7 +378,6 @@ const sharedCssTests = [
     method: "radioChangeMarginBottom",
     valueIndex: 3,
     styleName: "margin-bottom",
-    skipAssert: false,
     expectedValue: {
       marginBottom: "20px",
       marginBottomActual: "20px",
@@ -421,7 +393,6 @@ const sharedCssTests = [
     method: "radioChangeMarginLeft",
     valueIndex: 3,
     styleName: "margin-left",
-    skipAssert: false,
     expectedValue: {
       marginLeft: "20px",
       marginLeftActual: "20px",
@@ -437,7 +408,6 @@ const sharedCssTests = [
     method: "radioChangeMarginRight",
     valueIndex: 3,
     styleName: "margin-right",
-    skipAssert: false,
     expectedValue: {
       marginRight: "20px",
       marginRightActual: "20px",
@@ -453,7 +423,6 @@ const sharedCssTests = [
     method: "radioChangeMarginTop",
     valueIndex: 3,
     styleName: "margin-top",
-    skipAssert: false,
     expectedValue: {
       marginTop: "20px",
       marginTopActual: "20px",
@@ -469,7 +438,6 @@ const sharedCssTests = [
     method: "radioChangePaddingBottom",
     valueIndex: 3,
     styleName: "padding-bottom",
-    skipAssert: false,
     expectedValue: {
       paddingBottom: "40px",
       paddingBottomActual: "40px",
@@ -485,7 +453,6 @@ const sharedCssTests = [
     method: "radioChangePaddingLeft",
     valueIndex: 3,
     styleName: "padding-left",
-    skipAssert: false,
     expectedValue: {
       paddingLeft: "20px",
       paddingLeftActual: "20px",
@@ -501,7 +468,6 @@ const sharedCssTests = [
     method: "radioChangePaddingRight",
     valueIndex: 3,
     styleName: "padding-right",
-    skipAssert: false,
     expectedValue: {
       paddingRight: "20px",
       paddingRightActual: "20px",
@@ -517,7 +483,6 @@ const sharedCssTests = [
     method: "radioChangePaddingTop",
     valueIndex: 3,
     styleName: "padding-top",
-    skipAssert: false,
     expectedValue: {
       paddingTop: "20px",
       paddingTopActual: "20px",
@@ -533,7 +498,6 @@ const sharedCssTests = [
     method: "radioChangeTextAlign",
     valueIndex: 2,
     styleName: "text-align",
-    skipAssert: false,
     expectedValue: {
       textAlign: "center",
       textAlignActual: "center",
@@ -545,7 +509,6 @@ const sharedCssTests = [
     method: "radioChangeFontFamily",
     valueIndex: 5,
     styleName: "font-family",
-    skipAssert: false,
     expectedValue: {
       fontFamily: "UniFontFamily",
       fontFamilyActual: "UniFontFamily",
@@ -557,7 +520,6 @@ const sharedCssTests = [
     method: "radioChangeFontSize",
     valueIndex: 4,
     styleName: "font-size",
-    skipAssert: false,
     expectedValue: {
       fontSizeProp: "20px",
       fontSizeActual: "20px",
@@ -569,7 +531,6 @@ const sharedCssTests = [
     method: "radioChangeFontWeight",
     valueIndex: 4,
     styleName: "font-weight",
-    skipAssert: false,
     expectedValue: {
       fontWeight: "200",
       fontWeightActual: "200",
@@ -581,7 +542,6 @@ const sharedCssTests = [
     method: "radioChangeTextDecorationLine",
     valueIndex: 2,
     styleName: "text-decoration-line",
-    skipAssert: false,
     expectedValue: {
       textDecorationLine: "underline",
       textDecorationLineActual: "underline",
@@ -593,7 +553,6 @@ const sharedCssTests = [
     method: "radioChangeTextOverflow",
     valueIndex: 2,
     styleName: "text-overflow",
-    skipAssert: false,
     expectedValue: {
       textOverflow: "ellipsis",
       textOverflowActual: "ellipsis",
@@ -605,7 +564,6 @@ const sharedCssTests = [
     method: "radioChangeLetterSpacing",
     valueIndex: 5,
     styleName: "letter-spacing",
-    skipAssert: false,
     expectedValue: {
       letterSpacing: "5px",
       letterSpacingActual: "5px",
@@ -617,7 +575,6 @@ const sharedCssTests = [
     method: "radioChangeLineHeight",
     valueIndex: 3,
     styleName: "line-height",
-    skipAssert: false,
     expectedValue: {
       lineHeight: "25px",
       lineHeightActual: "25px",
@@ -629,7 +586,6 @@ const sharedCssTests = [
     method: "radioChangeWhiteSpace",
     valueIndex: 3,
     styleName: "white-space",
-    skipAssert: false,
     expectedValue: {
       whiteSpace: "pre",
       whiteSpaceActual: "pre",
@@ -641,7 +597,6 @@ const sharedCssTests = [
     method: "radioChangeFontStyle",
     valueIndex: 2,
     styleName: "font-style",
-    skipAssert: false,
     expectedValue: {
       fontStyle: "italic",
       fontStyleActual: "italic",
@@ -653,7 +608,6 @@ const sharedCssTests = [
     method: "radioChangeTransform",
     valueIndex: 3,
     styleName: "transform",
-    skipAssert: false,
     expectedValue: {
       transformValueDynamic: "rotate(90deg)",
       transformActual: "rotate(90deg)",
@@ -669,7 +623,6 @@ const sharedCssTests = [
     method: "radioChangeTransformOrigin",
     valueIndex: 6,
     styleName: "transform-origin",
-    skipAssert: false,
     expectedValue: {
       transformOrigin: "10px 10px",
       transformOriginActual: "10px 10px",
@@ -685,7 +638,6 @@ const sharedCssTests = [
     method: "radioChangeTransform",
     valueIndex: 4,
     styleName: "transform",
-    skipAssert: false,
     expectedValue: {
       transformValueDynamic: "translate(50px, 50px)",
       transformActual: "translate(50px, 50px)",
@@ -701,7 +653,6 @@ const sharedCssTests = [
     method: "radioChangeTransitionDelay",
     valueIndex: 3,
     styleName: "transition-delay",
-    skipAssert: false,
     expectedValue: {
       transitionDelayActual: "1s",
       transitionDelayActualText: "1s",
@@ -711,14 +662,13 @@ const sharedCssTests = [
 ]
 
 // dom1 和 dom2 断言存在差异或已知不稳定的页面
-const splitCssTests = [
-  {
+const splitCssTests = [{
     path: "/pages/CSS/layout/opacity",
     method: "radioChangeOpacity",
     valueIndex: 3,
     styleName: "opacity",
     expectdom2: {
-      skipAssert: true,// 获取的值0.50
+      skipAssert: true, // 获取的值0.50
       expectedValue: {
         opacity: "0.5",
         opacityActual: "0.5",
@@ -731,7 +681,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           opacity: "0.5",
           opacityActual: "0.5",
@@ -750,7 +699,7 @@ const splitCssTests = [
     valueIndex: 4,
     styleName: "z-index",
     expectdom2: {
-      skipAssert: true,// 获取还是旧的默认值5
+      skipAssert: true, // 获取还是旧的默认值5
       expectedValue: {
         zIndexActual: "10",
         zIndexActualText: "10",
@@ -759,7 +708,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           zIndexActual: "10",
           zIndexActualText: "10",
@@ -767,7 +715,6 @@ const splitCssTests = [
         }
       },
       mp: {
-        skipAssert: false,
         expectedValue: {
           zIndexActual: 10,
           zIndexActualText: "10",
@@ -782,7 +729,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "background-color",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         backgroundColor: "rgb(0, 255, 0)",
         backgroundColorActual: "#00FF00FF",
@@ -795,7 +741,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           backgroundColor: "rgb(0, 255, 0)",
           backgroundColorActual: "rgb(0, 255, 0)",
@@ -814,7 +759,7 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border",
     expectdom2: {
-      skipAssert: true,// 获取的还是上一次的值 5px solid #00FFFFFF
+      skipAssert: true, // 获取的还是上一次的值 5px solid #00FFFFFF
       expectedValue: {
         border: "2px dashed blue",
         borderActual: "2px dashed blue",
@@ -827,7 +772,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           border: "2px dashed blue",
           borderActual: "2px dashed blue",
@@ -849,7 +793,6 @@ const splitCssTests = [
     valueIndex: 2,
     styleName: "border-radius",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         borderRadius: "5px",
         borderRadiusActualText: "5px",
@@ -861,7 +804,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           borderRadius: "5px",
           borderRadiusActualText: "5px",
@@ -882,7 +824,6 @@ const splitCssTests = [
     valueIndex: 2,
     styleName: "border-color",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         borderColor: "#0000ff",
         borderColorActual: "#0000FFFF",
@@ -895,7 +836,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           borderColor: "#0000ff",
           borderColorActual: "#0000ff",
@@ -907,7 +847,6 @@ const splitCssTests = [
         }
       },
       web: {
-        skipAssert: false,
         expectedValue: {
           borderColor: "#0000ff",
           borderColorActual: "rgb(0, 0, 255)",
@@ -926,7 +865,7 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-top",
     expectdom2: {
-      skipAssert: true,// 获取的还是上一次的值 5px solid #800080FF
+      skipAssert: true, // 获取的还是上一次的值 5px solid #800080FF
       expectedValue: {
         borderTop: "2px dashed blue",
         borderTopActual: "2px dashed blue",
@@ -939,7 +878,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           borderTop: "2px dashed blue",
           borderTopActual: "2px dashed blue",
@@ -961,7 +899,7 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-bottom",
     expectdom2: {
-      skipAssert: true,// 获取的还是上一次的值 5px solid #800080FF
+      skipAssert: true, // 获取的还是上一次的值 5px solid #800080FF
       expectedValue: {
         borderBottom: "2px dashed blue",
         borderBottomActual: "2px dashed blue",
@@ -974,7 +912,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           borderBottom: "2px dashed blue",
           borderBottomActual: "2px dashed blue",
@@ -996,7 +933,7 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-left",
     expectdom2: {
-      skipAssert: true,// 获取的还是上一次的值 5px solid #FFC0CBFF
+      skipAssert: true, // 获取的还是上一次的值 5px solid #FFC0CBFF
       expectedValue: {
         borderLeft: "2px dashed blue",
         borderLeftActual: "2px dashed blue",
@@ -1009,7 +946,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           borderLeft: "2px dashed blue",
           borderLeftActual: "2px dashed blue",
@@ -1031,7 +967,7 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-right",
     expectdom2: {
-      skipAssert: true,// 获取的还是上一次的值 5px solid #FFC0CBFF
+      skipAssert: true, // 获取的还是上一次的值 5px solid #FFC0CBFF
       expectedValue: {
         borderRight: "2px dashed blue",
         borderRightActual: "2px dashed blue",
@@ -1044,7 +980,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           borderRight: "2px dashed blue",
           borderRightActual: "2px dashed blue",
@@ -1064,7 +999,7 @@ const splitCssTests = [
     path: "/pages/CSS/box-shadow/box-shadow",
     method: "radioChangeBoxShadow",
     valueIndex: 3,
-    styleName: "box-shadow",// 获取值 5.00px 5.00px 5.00px #000000FF
+    styleName: "box-shadow", // 获取值 5.00px 5.00px 5.00px #000000FF
     expectdom2: {
       skipAssert: true,
       expectedValue: {
@@ -1079,7 +1014,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           boxShadow: "5px 5px 5px black",
           boxShadowActual: "5px 5px 5px black",
@@ -1091,7 +1025,6 @@ const splitCssTests = [
         }
       },
       web: {
-        skipAssert: false,
         expectedValue: {
           boxShadow: "5px 5px 5px black",
           boxShadowActual: "black 5px 5px 5px",
@@ -1110,7 +1043,6 @@ const splitCssTests = [
     valueIndex: 2,
     styleName: "flex-flow",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         flexFlow: "row wrap",
         flexFlowActual: "row wrap",
@@ -1119,7 +1051,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           flexFlow: "row wrap",
           flexFlowActual: "row wrap",
@@ -1137,7 +1068,6 @@ const splitCssTests = [
     valueIndex: 2,
     styleName: "flex",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         flexActual: "1 1 0%",
         flexActualFlat: "1 1 0%",
@@ -1149,7 +1079,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           flexActual: "1",
           flexActualFlat: "1",
@@ -1163,7 +1092,6 @@ const splitCssTests = [
         skipAssert: true
       },
       web: {
-        skipAssert: false,
         expectedValue: {
           flexActual: "1 1 0%",
           flexActualFlat: "1 1 0%",
@@ -1181,7 +1109,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "margin",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         margin: "20px",
         marginActual: "20px",
@@ -1194,7 +1121,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           margin: "20px",
           marginActual: "20px",
@@ -1216,7 +1142,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "margin",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         margin: "20px",
         marginActual: "20px",
@@ -1230,7 +1155,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           margin: "20px",
           marginActual: "20px",
@@ -1253,7 +1177,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "padding",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         padding: "10px",
         paddingActual: "10px",
@@ -1267,7 +1190,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           padding: "10px",
           paddingActual: "10px",
@@ -1290,7 +1212,6 @@ const splitCssTests = [
     valueIndex: 2,
     styleName: "color",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         color: "#942192",
         colorActual: "#942192FF",
@@ -1299,7 +1220,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           color: "#942192",
           colorActual: "#942192",
@@ -1307,7 +1227,6 @@ const splitCssTests = [
         }
       },
       web: {
-        skipAssert: false,
         expectedValue: {
           color: "#942192",
           colorActual: "rgb(148, 33, 146)",
@@ -1322,7 +1241,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "text-shadow",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         textShadow: "5px 5px #558abb",
         textShadowActual: "5px 5px 0px #558ABBFF",
@@ -1331,7 +1249,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           textShadow: "5px 5px #558abb",
           textShadowActual: "5px 5px #558abb",
@@ -1342,7 +1259,6 @@ const splitCssTests = [
         skipAssert: true
       },
       web: {
-        skipAssert: false,
         expectedValue: {
           textShadow: "5px 5px #558abb",
           textShadowActual: "rgb(85, 138, 187) 5px 5px",
@@ -1357,7 +1273,6 @@ const splitCssTests = [
     valueIndex: 2,
     styleName: "transform",
     expectdom2: {
-      skipAssert: false,
       expectedValue: {
         transformValueDynamic: "scale(0.5,0.5)",
         transformActual: "scale(0.5, 0.5)",
@@ -1370,7 +1285,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           transformValueDynamic: "scale(0.5,0.5)",
           transformActual: "scale(0.5,0.5)",
@@ -1382,15 +1296,14 @@ const splitCssTests = [
         }
       },
       web: {
-        skipAssert: false,
         expectedValue: {
-          transformValueDynamic:"scale(0.5,0.5)",
-          transformActual:"scale(0.5, 0.5)",
-          transformActualText:"scale(0.5, 0.5)",
-          transformActualImage:"scale(0.5, 0.5)",
-          transformActualFlat:"scale(0.5, 0.5)",
-          transformActualTextFlat:"scale(0.5, 0.5)",
-          transformActualImageFlat:"scale(0.5, 0.5)"
+          transformValueDynamic: "scale(0.5,0.5)",
+          transformActual: "scale(0.5, 0.5)",
+          transformActualText: "scale(0.5, 0.5)",
+          transformActualImage: "scale(0.5, 0.5)",
+          transformActualFlat: "scale(0.5, 0.5)",
+          transformActualTextFlat: "scale(0.5, 0.5)",
+          transformActualImageFlat: "scale(0.5, 0.5)"
         }
       }
     }
@@ -1401,7 +1314,7 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "transition-timing-function",
     expectdom2: {
-      skipAssert: true,//设置和获取不一致，获取ease
+      skipAssert: true, //设置和获取不一致，获取ease
       expectedValue: {
         transitionTimingFunctionActual: "ease-out",
         transitionTimingFunctionActualText: "ease-out",
@@ -1410,7 +1323,6 @@ const splitCssTests = [
     },
     expectdom1: {
       base: {
-        skipAssert: false,
         expectedValue: {
           transitionTimingFunctionActual: "ease-out",
           transitionTimingFunctionActualText: "ease-out",
@@ -1425,12 +1337,15 @@ const cssTests = [...sharedCssTests, ...splitCssTests]
 
 const getDom1Config = (testCase) => {
   const dom1Config = testCase.expectdom1 ?? {}
-  const baseConfig = dom1Config.base ?? { skipAssert: false, expectedValue: {} }
-  const platformConfig = isHarmony
-    ? dom1Config.harmony
-    : (currentPlatform === 'web'
-      ? dom1Config.web
-      : (currentPlatform === 'mp' ? dom1Config.mp : dom1Config.app))
+  const baseConfig = dom1Config.base ?? {
+    skipAssert: false,
+    expectedValue: {}
+  }
+  const platformConfig = isHarmony ?
+    dom1Config.harmony :
+    (currentPlatform === 'web' ?
+      dom1Config.web :
+      (currentPlatform === 'mp' ? dom1Config.mp : dom1Config.app))
   return {
     skipAssert: platformConfig?.skipAssert ?? baseConfig.skipAssert ?? false,
     expectedValue: {
@@ -1506,17 +1421,17 @@ const mergeOverride = (testCase, override) => {
   }
 }
 
-const overrideMap = TEST_OVERRIDE
-  ? Object.fromEntries(TEST_OVERRIDE.map(o => [o.path, o]))
-  : null
+const overrideMap = TEST_OVERRIDE ?
+  Object.fromEntries(TEST_OVERRIDE.map(o => [o.path, o])) :
+  null
 const overridePaths = overrideMap ? Object.keys(overrideMap) : null
 
 const filterPath = process.env.TEST_PATH;
-const filteredTests = (filterPath
-  ? cssTests.filter(t => t.path === filterPath)
-  : overridePaths
-    ? cssTests.filter(t => overridePaths.includes(t.path))
-    : cssTests
+const filteredTests = (filterPath ?
+  cssTests.filter(t => t.path === filterPath) :
+  overridePaths ?
+  cssTests.filter(t => overridePaths.includes(t.path)) :
+  cssTests
 ).map(t => overrideMap?.[t.path] ? mergeOverride(t, overrideMap[t.path]) : t);
 
 const BATCH_SIZE = 15;
@@ -1528,15 +1443,15 @@ for (let i = 0; i < filteredTests.length; i += BATCH_SIZE) {
 cssTestBatches.forEach((batch, batchIndex) => {
   describe(`CSS setProperty compatible ${currentMode} Batch ${batchIndex + 1}`, () => {
     beforeAll(async () => {
-      console.log(`Starting CSS compatible ${currentMode} batch ${batchIndex + 1} with ${batch.length} tests`);
+      // console.log(`Starting CSS compatible ${currentMode} batch ${batchIndex + 1} with ${batch.length} tests`);
     });
 
     afterAll(async () => {
-      console.log(`Finished CSS compatible ${currentMode} batch ${batchIndex + 1}`);
+      // console.log(`Finished CSS compatible ${currentMode} batch ${batchIndex + 1}`);
     });
 
     test.each(batch)("%s", async (testCase) => {
-      console.log(`Testing: ${testCase.path}`);
+      // console.log(`Testing: ${testCase.path}`);
 
       const page = await program.reLaunch(testCase.path);
       await page.waitFor(3000);
@@ -1544,10 +1459,12 @@ cssTestBatches.forEach((batch, batchIndex) => {
       await page.callMethod(testCase.method, testCase.valueIndex);
       await page.waitFor(100);
 
-      const image = await program.screenshot({ fullPage: true });
+      const image = await program.screenshot({
+        fullPage: true
+      });
       expect(image).toSaveImageSnapshot({
         customSnapshotIdentifier() {
-          return `__set-css-compatible-test__/${currentMode}/${testCase.path.replace(/\//g, "-").substring(1)}`
+          return `__set-css__/${currentMode}/${testCase.path.replace(/\//g, "-").substring(1)}`
         }
       });
 
