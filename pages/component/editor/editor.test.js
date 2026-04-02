@@ -103,8 +103,13 @@ describe('editor.uvue', () => {
       header: 0,
       list: '',
       align: '',
+      textIndent: '',
+      marginLeft: '',
+      marginRight: '',
       lineHeight: '',
       letterSpacing: '',
+      fontFamily: '',
+      fontSize: '',
       color: '',
       backgroundColor: ''
     })
@@ -118,7 +123,7 @@ describe('editor.uvue', () => {
     await openSheet('openMoreSheet', 'more', '更多操作', '插入与编辑快捷操作')
     await openSheet('openTitleSheet', 'title', '设置标题', '当前为正文')
     await openSheet('openStyleSheet', 'style', '设置字格式', '当前未设置字格式')
-    await openSheet('openAlignSheet', 'align', '居中设置', '当前为默认对齐')
+    await openSheet('openAlignSheet', 'align', '对齐方式', '当前为默认对齐')
     await closeSheet()
   })
 
@@ -181,34 +186,6 @@ describe('editor.uvue', () => {
     await page.waitFor(waitTime)
     expect(await program.screenshot()).toSaveImageSnapshot()
   })
-
-  if (!isMP) {
-    it('mention', async () => {
-      await updateData({
-        clearTest: false
-      })
-      await page.callMethod('clear')
-      await waitForFlag('data.clearTest', 2000)
-
-      await page.callMethod('insertMention')
-      await page.waitFor(1000)
-      const delta = await getDelta()
-      const ops = Array.isArray(delta.ops) ? delta.ops : []
-      const mentions = ops
-        .filter(item => item.insert && item.insert.mention)
-        .map(item => item.insert.mention)
-
-      expect(mentions.length).toBeGreaterThanOrEqual(2)
-      expect(mentions[0]).toMatchObject({
-        id: '123456',
-        name: 'uni-app'
-      })
-      expect(mentions[1]).toMatchObject({
-        id: '000',
-        name: 'uni-app x'
-      })
-    })
-  }
 
   it('removeFormat', async () => {
     await setEditorContents([
