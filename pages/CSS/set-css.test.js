@@ -662,7 +662,8 @@ const sharedCssTests = [
 ]
 
 // dom1 和 dom2 断言存在差异或已知不稳定的页面
-const splitCssTests = [{
+const splitCssTests = [
+  {
     path: "/pages/CSS/layout/opacity",
     method: "radioChangeOpacity",
     valueIndex: 3,
