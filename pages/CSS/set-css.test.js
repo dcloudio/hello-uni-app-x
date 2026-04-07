@@ -730,12 +730,12 @@ const splitCssTests = [
     expectdom2: {
       expectedValue: {
         backgroundColor: "rgb(0, 255, 0)",
-        backgroundColorActual: "#00FF00FF",
-        backgroundColorActualText: "#00FF00FF",
-        backgroundColorActualImage: "#00FF00FF",
-        backgroundColorActualFlat: "#00FF00FF",
-        backgroundColorActualTextFlat: "#00FF00FF",
-        backgroundColorActualImageFlat: "#00FF00FF"
+        backgroundColorActual: "rgb(0, 255, 0)",
+        backgroundColorActualText: "rgb(0, 255, 0)",
+        backgroundColorActualImage: "rgb(0, 255, 0)",
+        backgroundColorActualFlat: "rgb(0, 255, 0)",
+        backgroundColorActualTextFlat: "rgb(0, 255, 0)",
+        backgroundColorActualImageFlat: "rgb(0, 255, 0)"
       }
     },
     expectdom1: {
@@ -824,12 +824,12 @@ const splitCssTests = [
     expectdom2: {
       expectedValue: {
         borderColor: "#0000ff",
-        borderColorActual: "#0000FFFF",
-        borderColorActualText: "#0000FFFF",
-        borderColorActualImage: "#0000FFFF",
-        borderColorActualFlat: "#0000FFFF",
-        borderColorActualTextFlat: "#0000FFFF",
-        borderColorActualImageFlat: "#0000FFFF"
+        borderColorActual: "#0000ff",
+        borderColorActualText: "#0000ff",
+        borderColorActualImage: "#0000ff",
+        borderColorActualFlat: "#0000ff",
+        borderColorActualTextFlat: "#0000ff",
+        borderColorActualImageFlat: "#0000ff"
       }
     },
     expectdom1: {
@@ -1062,12 +1062,12 @@ const splitCssTests = [
     styleName: "flex",
     expectdom2: {
       expectedValue: {
-        flexActual: "1 1 0%",
-        flexActualFlat: "1 1 0%",
-        flexActualText: "1 1 0%",
-        flexActualImage: "1 1 0%",
-        flexActualTextFlat: "1 1 0%",
-        flexActualImageFlat: "1 1 0%"
+        flexActual: "1",
+        flexActualFlat: "1",
+        flexActualText: "1",
+        flexActualImage: "1",
+        flexActualTextFlat: "1",
+        flexActualImageFlat: "1"
       }
     },
     expectdom1: {
@@ -1207,8 +1207,8 @@ const splitCssTests = [
     expectdom2: {
       expectedValue: {
         color: "#942192",
-        colorActual: "#942192FF",
-        colorActualFlat: "#942192FF"
+        colorActual: "#942192",
+        colorActualFlat: "#942192"
       }
     },
     expectdom1: {
@@ -1236,8 +1236,8 @@ const splitCssTests = [
     expectdom2: {
       expectedValue: {
         textShadow: "5px 5px #558abb",
-        textShadowActual: "5px 5px 0px #558ABBFF",
-        textShadowActualFlat: "5px 5px 0px #558ABBFF"
+        textShadowActual: "5px 5px #558abb",
+        textShadowActualFlat: "5px 5px #558abb"
       }
     },
     expectdom1: {
@@ -1268,12 +1268,12 @@ const splitCssTests = [
     expectdom2: {
       expectedValue: {
         transformValueDynamic: "scale(0.5,0.5)",
-        transformActual: "scale(0.5, 0.5)",
-        transformActualText: "scale(0.5, 0.5)",
-        transformActualImage: "scale(0.5, 0.5)",
-        transformActualFlat: "scale(0.5, 0.5)",
-        transformActualTextFlat: "scale(0.5, 0.5)",
-        transformActualImageFlat: "scale(0.5, 0.5)"
+        transformActual: "scale(0.5,0.5)",
+        transformActualText: "scale(0.5,0.5)",
+        transformActualImage: "scale(0.5,0.5)",
+        transformActualFlat: "scale(0.5,0.5)",
+        transformActualTextFlat: "scale(0.5,0.5)",
+        transformActualImageFlat: "scale(0.5,0.5)"
       }
     },
     expectdom1: {
