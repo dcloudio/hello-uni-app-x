@@ -669,7 +669,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "opacity",
     expectdom2: {
-      skipAssert: true, // 获取的值0.50
       expectedValue: {
         opacity: "0.5",
         opacityActual: "0.5",
@@ -700,7 +699,6 @@ const splitCssTests = [
     valueIndex: 4,
     styleName: "z-index",
     expectdom2: {
-      skipAssert: true, // 获取还是旧的默认值5
       expectedValue: {
         zIndexActual: "10",
         zIndexActualText: "10",
@@ -760,7 +758,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border",
     expectdom2: {
-      skipAssert: true, // 获取的还是上一次的值 5px solid #00FFFFFF
       expectedValue: {
         border: "2px dashed blue",
         borderActual: "2px dashed blue",
@@ -866,7 +863,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-top",
     expectdom2: {
-      skipAssert: true, // 获取的还是上一次的值 5px solid #800080FF
       expectedValue: {
         borderTop: "2px dashed blue",
         borderTopActual: "2px dashed blue",
@@ -900,7 +896,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-bottom",
     expectdom2: {
-      skipAssert: true, // 获取的还是上一次的值 5px solid #800080FF
       expectedValue: {
         borderBottom: "2px dashed blue",
         borderBottomActual: "2px dashed blue",
@@ -934,7 +929,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-left",
     expectdom2: {
-      skipAssert: true, // 获取的还是上一次的值 5px solid #FFC0CBFF
       expectedValue: {
         borderLeft: "2px dashed blue",
         borderLeftActual: "2px dashed blue",
@@ -968,7 +962,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "border-right",
     expectdom2: {
-      skipAssert: true, // 获取的还是上一次的值 5px solid #FFC0CBFF
       expectedValue: {
         borderRight: "2px dashed blue",
         borderRightActual: "2px dashed blue",
@@ -1000,17 +993,16 @@ const splitCssTests = [
     path: "/pages/CSS/box-shadow/box-shadow",
     method: "radioChangeBoxShadow",
     valueIndex: 3,
-    styleName: "box-shadow", // 获取值 5.00px 5.00px 5.00px #000000FF
+    styleName: "box-shadow",
     expectdom2: {
-      skipAssert: true,
       expectedValue: {
         boxShadow: "5px 5px 5px black",
-        boxShadowActual: "black 5px 5px 5px",
-        boxShadowActualText: "black 5px 5px 5px",
-        boxShadowActualImage: "black 5px 5px 5px",
-        boxShadowActualFlat: "black 5px 5px 5px",
-        boxShadowActualTextFlat: "black 5px 5px 5px",
-        boxShadowActualImageFlat: "black 5px 5px 5px"
+        boxShadowActual: "5px 5px 5px black",
+        boxShadowActualText: "5px 5px 5px black",
+        boxShadowActualImage: "5px 5px 5px black",
+        boxShadowActualFlat: "5px 5px 5px black",
+        boxShadowActualTextFlat: "5px 5px 5px black",
+        boxShadowActualImageFlat: "5px 5px 5px black"
       }
     },
     expectdom1: {
@@ -1315,7 +1307,6 @@ const splitCssTests = [
     valueIndex: 3,
     styleName: "transition-timing-function",
     expectdom2: {
-      skipAssert: true, //设置和获取不一致，获取ease
       expectedValue: {
         transitionTimingFunctionActual: "ease-out",
         transitionTimingFunctionActualText: "ease-out",
