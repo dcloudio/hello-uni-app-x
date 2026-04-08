@@ -13,7 +13,7 @@
       <slot name="left" v-else></slot>
     </view>
 
-    <view style="position: absolute; height: 44px; flex-direction: row; align-items: center;" :style="{ 'justify-content': isLeft ? 'flex-start' : 'center' }" class="uni-mid-class-buildin" :class="midClass" flatten>
+    <view style="position: absolute; height: 44px; flex-direction: row; align-items: center;" class="uni-mid-class-buildin" :class="midClass" flatten>
       <text v-if="slots['mid']==null" :style="{ color: foreColor }" flatten> {{ title }} </text>
 			<slot name="mid" v-else></slot>
     </view>
@@ -35,7 +35,6 @@
     // navigationBarTextStyle: { type: "#000000" | "#ffffff" | "#000" | "#fff" | "black" | "white" | "", default: "" },
     navigationBarTextStyle: { type: String, default: "" },
     leftClass: { type: String, default: "" },
-    isLeft: { type: Boolean, default: false },
     midClass: { type: String, default: "" },
     rightClass: { type: String, default: "" }
     // stat: { type: Boolean, default: false }
