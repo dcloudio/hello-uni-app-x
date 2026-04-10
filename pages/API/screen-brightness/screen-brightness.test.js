@@ -1,5 +1,4 @@
-const PAGE_PATH = '/pages/index/index'
-
+const PAGE_PATH = '/pages/API/screen-brightness/screen-brightness'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
