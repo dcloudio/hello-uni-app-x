@@ -18,7 +18,7 @@
               :hover-class="page.enable == false ? '' : 'is--active'" v-for="(page, key) in item.pages" :key="key"
               @click="goDetailPage(page)">
               <text class="uni-navigate-text"
-                :class="{'left-win-active': leftWinActive === page.url  && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
+                :class="{'left-win-active': leftWinActive === getPageKey(page.url)  && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
               <view class="right_arrow"></view>
             </view>
           </uni-collapse-item>
@@ -302,6 +302,36 @@
     },
     // #endif
     {
+      id: 'uni-ui',
+      url: 'uni-ui',
+      name: 'uni-ui',
+      open: false,
+      pages: [
+        {
+          name: 'uni-time-format 时间格式化',
+          url: '/pages/uni-ui/time-format/time-format'
+        },
+        {
+          name: 'uni-refresh-box 下拉刷新组件',
+          url: '/pages/uni-ui/refresh-box/refresh-box'
+        },
+        {
+          name: 'uni-number-box 数字输入框',
+          url: '/pages/uni-ui/number-box/number-box'
+        },
+        {
+          name: 'uni-fab-button 悬浮按钮',
+          url: '/pages/uni-ui/fab-button/fab-button'
+        },
+        // #ifndef MP-WEIXIN
+        {
+          name: 'uni-index-bar 索引栏',
+          url: '/pages/uni-ui/index-bar/index-bar'
+        },
+        // #endif
+      ] as Page[],
+    },
+    {
       id: 'about',
       url: 'about',
       name: '关于',
@@ -322,6 +352,23 @@
     return state.netless
   })
 
+  function getPageKey(url : string) : string {
+    if (url.indexOf('/pages/') == 0) {
+      const parts = url.split('/')
+      if (parts.length > 1) {
+        return parts[parts.length - 2]
+      }
+    }
+    return url
+  }
+
+  function resolvePageUrl(url : string) : string {
+    if (url.indexOf('platform') > -1 || url.indexOf('/pages/') == 0) {
+      return url
+    }
+    return `/pages/template/${url}/${url}`
+  }
+
   function goDetailPage(e : Page) {
     if (e.enable == false) {
       uni.showToast({
@@ -330,10 +377,7 @@
       })
       return
     }
-    const url =
-      e.url.indexOf('platform') > -1
-        ? e.url
-        : `/pages/template/${e.url}/${e.url}`
+    const url = resolvePageUrl(e.url)
     if (hasLeftWin.value) {
       uni.reLaunch({ url })
     } else {
@@ -387,7 +431,7 @@
       for (const item of list.value) {
         if (Array.isArray(item.pages)) {
           for (const page of item.pages) {
-            if (page.url && page.url === path) {
+            if (page.url && getPageKey(page.url) === path) {
               item.open = true
             }
           }
