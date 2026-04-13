@@ -15,7 +15,7 @@
       <view v-if="isWebToolbarMode()" class="desktop-toolbar-wrap">
         <view :class="getDesktopToolbarShellClass()" @mousemove="hideToolbarTooltip">
           <view :class="getDesktopToolbarGroupClass()">
-            <view id="toolbar-button-undo" @click="undo" @mousemove.stop="showToolbarTooltip('toolbar-button-undo', '撤回')" :class="toolbar-web-icon-button">
+            <view id="toolbar-button-undo" @click="undo" @mousemove.stop="showToolbarTooltip('toolbar-button-undo', '撤回')" class="toolbar-web-icon-button">
               <text class="toolbar-web-icon-text iconfont">{{"&#xe6a3;"}}</text>
             </view>
             <view id="toolbar-button-redo" @click="redo" @mousemove.stop="showToolbarTooltip('toolbar-button-redo', '重做')" class="toolbar-web-icon-button">
@@ -67,7 +67,7 @@
                 <text :class="isBackgroundColorSheetHighlighted() ? 'toolbar-web-color-symbol toolbar-web-color-symbol-active iconfont' : 'toolbar-web-color-symbol iconfont'">{{"&#xe6bb;"}}</text>
                 <view class="toolbar-web-color-underline" :style="getToolbarBackgroundColorChipStyle()"></view>
               </view>
-              <text :class="isBackgroundColorSheetHighlighted() ? 'toolbar-web-color-arrow toolbar-web-color-arrow-active iconfont' : 'toolbar-web-color-arrow iconfont'">{{"&#xe6be;"}}</text>
+              <text :class="isBackgroundColorSheetHighlighted() ? 'toolbar-web-color-arrow toolbar-web-color-arrow-active iconfont' : 'toolbar-web-color-arrow iconfont'" style="margin-left: 2px">{{"&#xe6be;"}}</text>
             </view>
           </view>
           <view :class="getDesktopToolbarDividerClass()"></view>
@@ -1040,7 +1040,7 @@ function onEditorReady() {
   uni.createEditorContextAsync(options)
 }
 
-function applyFormat(name: string, value: string | number | boolean | null) {
+function applyFormat(name: string, value: string | number | null | undefined) {
   const editor = getEditor()
   if (editor == null) {
     return
@@ -1115,7 +1115,7 @@ function setLocalFormat(name: string, value: string | number | boolean | null) {
   }
 }
 
-function applyFormatWithState(name: string, value: string | number | boolean | null) {
+function applyFormatWithState(name: string, value: string | number | null | undefined) {
   setLocalFormat(name, value)
   applyFormat(name, value)
 }
@@ -1200,10 +1200,18 @@ function applyCopiedFormats() {
   applyFormat('fontSize', copied.fontSize != '' ? copied.fontSize : null)
   applyFormat('color', copied.color != '' ? copied.color : null)
   applyFormat('backgroundColor', copied.backgroundColor != '' ? copied.backgroundColor : null)
-  applyFormat('bold', copied.bold)
-  applyFormat('italic', copied.italic)
-  applyFormat('underline', copied.underline)
-  applyFormat('strike', copied.strike)
+  if (copied.bold != data.formats.bold) {
+    applyFormat('bold', null)
+  }
+  if (copied.italic != data.formats.italic) {
+    applyFormat('italic', null)
+  }
+  if (copied.underline != data.formats.underline) {
+    applyFormat('underline', null)
+  }
+  if (copied.strike != data.formats.strike) {
+    applyFormat('strike', null)
+  }
 }
 
 function toggleFormatPainter() {
@@ -2168,6 +2176,8 @@ function onEditorBlur(event: UniEditorBlurEvent) {
 
 function onStatusChange(event: UniEditorStatusChangeEvent) {
   const formats = event.detail
+  console.log(formats)
+
   data.formats.bold = formats.bold == true
   data.formats.italic = formats.italic == true
   data.formats.underline = formats.underline == true
@@ -2539,13 +2549,13 @@ defineExpose({
 .toolbar-web-size-label {
   font-size: 14px;
   line-height: 18px;
-  padding: 0px 5px;
+  /* padding: 0px 5px; */
 }
 
 .toolbar-web-select-font-label {
   font-size: 12px;
   line-height: 16px;
-  padding: 0px 5px;
+  /* padding: 0px 5px; */
 }
 
 .toolbar-web-select-mini-label {
@@ -2582,7 +2592,7 @@ defineExpose({
 
 
 .toolbar-web-select-arrow {
-  min-width: 12px;
+  min-width: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2590,7 +2600,7 @@ defineExpose({
   color: #6b7280;
   font-size: 4px;
   line-height: 12px;
-  margin-left: 5px;
+  margin-left: 2px;
   margin-top: 1px;
 }
 
@@ -2667,7 +2677,6 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-right: 5px;
 }
 
 .toolbar-web-color-underline {
@@ -2683,7 +2692,7 @@ defineExpose({
 }
 
 .toolbar-web-color-arrow {
-  min-width: 12px;
+  min-width: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2691,7 +2700,7 @@ defineExpose({
   color: #6b7280;
   font-size: 4px;
   line-height: 12px;
-  margin-left: 4px;
+  margin-left: 0px;
   margin-top: 1px;
 }
 
