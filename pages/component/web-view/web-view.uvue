@@ -318,10 +318,12 @@
     webviewContext?.reload();
   }
 
+  const currentInstance = getCurrentInstance()
+
   onReady(() => {
     // #ifdef APP
     // TODO web 实现createWebviewContext
-    webviewContext = uni.createWebViewContext('web-view', this)
+    webviewContext = uni.createWebViewContext('web-view', currentInstance?.proxy)
     console.log("webviewContext:",webviewContext)
     // NOTE 绑定到 this 上会被代理导致无法调用方法
     webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
