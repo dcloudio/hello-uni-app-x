@@ -1,0 +1,119 @@
+<template>
+  <!-- #ifdef APP -->
+  <scroll-view style="flex: 1;" enable-back-to-top="true">
+  <!-- #endif -->
+    <view class="uni-container" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+      <view v-if="!hasLeftWin" class="uni-header-logo">
+        <image class="uni-header-image" src="/static/componentIndex.png"></image>
+      </view>
+      <view v-if="!hasLeftWin" class="uni-text-box">
+        <text class="hello-text">以下是 uni-ui 示例：</text>
+      </view>
+      <view class="uni-panel">
+        <view style="padding-left: 18px;" class="uni-navigate-item"
+          :hover-class="page.enable == false ? '' : 'is--active'" v-for="(page, index) in list" :key="index"
+          @click="goDetailPage(page)">
+          <text class="uni-navigate-text"
+            :class="{'left-win-active': leftWinActive === getPageKey(page.url) && hasLeftWin,'text-disabled' : page.enable == false}">{{ page.name }}</text>
+          <view class="right_arrow"></view>
+        </view>
+      </view>
+    </view>
+  <!-- #ifdef APP -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  defineOptions({
+    styleIsolation: 'app'
+  })
+
+  type Page = {
+    name : string
+    enable ?: boolean
+    url : string
+  }
+
+  import { state } from '@/store/index.uts'
+
+  const list = ref<Page[]>([
+    {
+      name: 'uni-time-format 时间格式化',
+      url: '/pages/uni-ui/time-format/time-format'
+    },
+    {
+      name: 'uni-refresh-box 下拉刷新组件',
+      url: '/pages/uni-ui/refresh-box/refresh-box'
+    },
+    {
+      name: 'uni-number-box 数字输入框',
+      url: '/pages/uni-ui/number-box/number-box'
+    },
+    {
+      name: 'uni-fab-button 悬浮按钮',
+      url: '/pages/uni-ui/fab-button/fab-button'
+    },
+    // #ifndef MP-WEIXIN
+    {
+      name: 'uni-index-bar 索引栏',
+      url: '/pages/uni-ui/index-bar/index-bar'
+    },
+    // #endif
+  ] as Page[])
+
+  const hasLeftWin = computed(() : boolean => {
+    return !state.noMatchLeftWindow
+  })
+  const leftWinActive = computed(() : string => {
+    return state.leftWinActive.split('/')[3]
+  })
+  const isDarkMode = computed(() : boolean => {
+    return state.isDarkMode
+  })
+
+  function getPageKey(url : string) : string {
+    if (url.indexOf('/pages/') == 0) {
+      const parts = url.split('/')
+      if (parts.length > 1) {
+        return parts[parts.length - 2]
+      }
+    }
+    return url
+  }
+
+  function goDetailPage(page : Page) {
+    if (page.enable == false) {
+      uni.showToast({
+        icon: 'none',
+        title: '暂不支持',
+      })
+      return
+    }
+    if (hasLeftWin.value) {
+      uni.reLaunch({ url: page.url })
+    } else {
+      uni.navigateTo({
+        url: page.url,
+        fail() {
+          console.log('页面跳转失败：' + page.url)
+        }
+      })
+    }
+  }
+</script>
+
+<style>
+  .right_arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 12px;
+    transform: rotate(-45deg);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: var(--text-color, #999999);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--text-color, #999999);
+  }
+</style>
