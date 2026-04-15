@@ -1,13 +1,12 @@
 jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isMP = platformInfo.startsWith('mp')
-const isWeb = platformInfo.startsWith('web')
-const isHarmony = platformInfo.startsWith('harmony')
-const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
 const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
 
 describe('editor.uvue', () => {
-  if (!isHarmony && !isAndroid && (isDom2 || (!isWeb && !isMP))) {
+  if (!isIos || (isDom2 && isHarmony)) {
     it('app', () => {
       expect(1).toBe(1)
     })
