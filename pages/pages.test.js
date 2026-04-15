@@ -8,6 +8,7 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 // 【勿动】pages 由 const 改为 let，因为在其它任务会修改 pages 的值
 let pageIndex = 0
 let pages = [
@@ -367,6 +368,9 @@ if (!isAppWebView) {
     )
   }
   if(isIos || isAndroid){
+    if(!isDom2) {
+      pages.push('/pages/template/native-button-bridge/native-button-bridge')
+    }
     pages.push(
       // 非 UI 相关不截图
       // '/pages/API/theme-change/theme-change',
@@ -380,7 +384,6 @@ if (!isAppWebView) {
       // '/pages/component/waterflow/waterflow-fit-height',
       // 非 UI 相关不截图
       // '/pages/API/share-with-system/share-with-system',
-      '/pages/template/native-button-bridge/native-button-bridge',
       '/pages/component/loading/loading',
     )
   }
