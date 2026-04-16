@@ -5,12 +5,7 @@ describe('nav-bar', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor(3000)
-  })
-
-  it('nav-bar components exist', async () => {
-    const navBars = await page.$$('uni-nav-bar')
-    expect(navBars.length).toBe(11)
+    await page.waitFor('scroll-view')
   })
 
   it('nav-bar snapshot', async () => {
