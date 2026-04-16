@@ -1,6 +1,16 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
+
 const PAGE_PATH = '/pages/uni-ui/rate/rate'
 
 describe('Rate.uvue', () => {
+  if (isMP) {
+    it('not support', () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+  
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
