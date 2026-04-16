@@ -5,6 +5,25 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 const isHarmony = platformInfo.startsWith('harmony')
 const isWeb = platformInfo.startsWith('web')
 
+const defaultFormats = {
+  bold: false,
+  italic: false,
+  underline: false,
+  strike: false,
+  header: 0,
+  list: '',
+  align: '',
+  textIndent: '',
+  marginLeft: '',
+  marginRight: '',
+  lineHeight: '',
+  letterSpacing: '',
+  fontFamily: '',
+  fontSize: '',
+  color: '',
+  backgroundColor: ''
+}
+
 describe('editor.uvue', () => {
   if (!isIos || (isDom2 && isHarmony)) {
     it('app', () => {
@@ -15,6 +34,17 @@ describe('editor.uvue', () => {
 
   let page
   let editor
+
+  async function loadPage() {
+    page = await program.reLaunch('/pages/component/editor/editor')
+    await page.waitFor('view')
+    await page.waitFor(isWeb ? 3000 : 6000)
+    editor = await page.$('#editor')
+    await updateData({
+      autoTest: true
+    })
+    await ensureToolbarVisible()
+  }
 
   async function waitForData(path, matcher, timeout = 3000) {
     const start = Date.now()
@@ -28,6 +58,10 @@ describe('editor.uvue', () => {
     await page.setData({
       data: partial
     })
+  }
+
+  async function applyToolbarPresetState(preset) {
+    await page.callMethod('applyToolbarPresetForTest', preset)
   }
 
   async function ensureToolbarVisible() {
@@ -59,6 +93,22 @@ describe('editor.uvue', () => {
     expect(await page.data(path)).toBe(true)
   }
 
+  async function waitForFormats(partial, timeout = 3000) {
+    const keys = Object.keys(partial)
+    await waitForData('data.formats', value => {
+      return keys.every(key => value != null && value[key] === partial[key])
+    }, timeout)
+    expect(await page.data('data.formats')).toMatchObject(partial)
+  }
+
+  async function waitForChecklistFormat(timeout = 3000) {
+    await waitForData('data.formats', value => {
+      return value != null && (value.list === 'check' || value.list === 'unchecked')
+    }, timeout)
+    const formats = await page.data('data.formats')
+    expect(['check', 'unchecked']).toContain(formats.list)
+  }
+
   async function setBlur() {
     await updateData({
       blurTest: false
@@ -82,36 +132,13 @@ describe('editor.uvue', () => {
   }
 
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/component/editor/editor')
-    await page.waitFor('view')
-    await page.waitFor(isWeb ? 3000 : 6000)
-    editor = await page.$('#editor')
-    await updateData({
-      autoTest: true
-    })
-    await ensureToolbarVisible()
+    await loadPage()
   })
 
   it('editor-wrapper', async () => {
+    await loadPage()
     expect(await page.data('data.activeSheet')).toBe('')
-    expect(await page.data('data.formats')).toEqual({
-      bold: false,
-      italic: false,
-      underline: false,
-      strike: false,
-      header: 0,
-      list: '',
-      align: '',
-      textIndent: '',
-      marginLeft: '',
-      marginRight: '',
-      lineHeight: '',
-      letterSpacing: '',
-      fontFamily: '',
-      fontSize: '',
-      color: '',
-      backgroundColor: ''
-    })
+    expect(await page.data('data.formats')).toEqual(defaultFormats)
     if (isWeb) {
       expect(await editor.attribute('placeholder')).toBe('请输入正文内容...')
     }
@@ -119,20 +146,136 @@ describe('editor.uvue', () => {
   })
 
   it('editor-toolbar', async () => {
+    await loadPage()
     await openSheet('openMoreSheet', 'more', '更多操作', '插入与编辑快捷操作')
     await openSheet('openTitleSheet', 'title', '设置标题', '当前为正文')
     await openSheet('openStyleSheet', 'style', '设置字格式', '当前未设置字格式')
+    await openSheet('openTextColorSheet', 'text-color', '设置文字颜色', '当前使用默认文字颜色')
+    await openSheet('openBackgroundColorSheet', 'background-color', '设置背景颜色', '当前未设置文字背景颜色')
+    await openSheet('openLineHeightSheet', 'line-height', '设置行间距', '当前使用默认行间距')
+    await openSheet('openLetterSpacingSheet', 'letter-spacing', '设置字间距', '当前使用默认字间距')
+    await openSheet('openFontSizeSheet', 'font-size', '设置字号', '当前使用默认字号 17px')
+    await openSheet('openFontFamilySheet', 'font-family', '设置字体', '当前使用默认字体')
     await openSheet('openAlignSheet', 'align', '对齐方式', '当前为默认对齐')
+    await openSheet('openBlockIndentSheet', 'block-indent', '设置两端缩进', '当前未设置两端缩进')
+    await openSheet('openListSheet', 'list', '设置列表', '当前未设置列表')
     await closeSheet()
   })
 
   it('editor-screenshot', async () => {
+    await loadPage()
     await openSheet('openStyleSheet', 'style', '设置字格式', '当前未设置字格式')
     expect(await program.screenshot()).toSaveImageSnapshot()
     await closeSheet()
   })
 
+  it('title-toolbar-actions', async () => {
+    await loadPage()
+    await applyToolbarPresetState('title-h2')
+    await waitForFormats({
+      header: 2,
+      list: ''
+    })
+    await openSheet('openTitleSheet', 'title', '设置标题', '当前为大标题2')
+    await closeSheet()
+    await applyToolbarPresetState('title-h1')
+    await waitForFormats({
+      header: 1,
+      list: ''
+    })
+    await openSheet('openTitleSheet', 'title', '设置标题', '当前为大标题1')
+    await closeSheet()
+  })
+
+  it('style-toolbar-actions', async () => {
+    await loadPage()
+    await page.callMethod('toggleBold')
+    await page.callMethod('toggleItalic')
+    await page.callMethod('toggleUnderline')
+    await page.callMethod('toggleStrike')
+    await waitForFormats({
+      bold: true,
+      italic: true,
+      underline: true,
+      strike: true
+    })
+    await openSheet('openStyleSheet', 'style', '设置字格式', '加粗 / 斜体 / 下划线 / 删除线')
+    await page.callMethod('toggleBold')
+    await page.callMethod('toggleItalic')
+    await page.callMethod('toggleUnderline')
+    await page.callMethod('toggleStrike')
+    await waitForFormats({
+      bold: false,
+      italic: false,
+      underline: false,
+      strike: false
+    })
+    await closeSheet()
+  })
+
+  it('extended-style-toolbar-actions', async () => {
+    await loadPage()
+    await page.callMethod('setTextColorAndClose', '#3553ff')
+    await waitForFormats({ color: '#3553ff' })
+    await openSheet('openTextColorSheet', 'text-color', '设置文字颜色', '当前文字颜色 #3553ff')
+    await page.callMethod('setBackgroundColorAndClose', '#fff7db')
+    await waitForFormats({ backgroundColor: '#fff7db' })
+    await openSheet('openBackgroundColorSheet', 'background-color', '设置背景颜色', '当前背景颜色 #fff7db')
+    await page.callMethod('setLineHeightAndClose', '1.8')
+    await page.callMethod('setLetterSpacingAndClose', '2px')
+    await page.callMethod('setFontSizeAndClose', '24px')
+    await page.callMethod('setFontFamilyAndClose', 'Georgia')
+    await waitForFormats({
+      lineHeight: '1.8',
+      letterSpacing: '2px',
+      fontSize: '24px',
+      fontFamily: 'Georgia'
+    })
+    await openSheet('openStyleSheet', 'style', '设置字格式', '行间距 1.8 / 字间距 2px / 字号 24px / 字体 Geo')
+    await closeSheet()
+  })
+
+  it('layout-toolbar-actions', async () => {
+    await loadPage()
+    await page.callMethod('setAlignCenter')
+    await waitForFormats({ align: 'center' })
+    await openSheet('openAlignSheet', 'align', '对齐方式', '当前为居中')
+    await page.callMethod('toggleTextIndent')
+    await waitForFormats({ textIndent: '2em' })
+    await page.callMethod('setBlockIndentAndClose', '16px')
+    await waitForFormats({
+      marginLeft: '16px',
+      marginRight: '16px'
+    })
+    await openSheet('openBlockIndentSheet', 'block-indent', '设置两端缩进', '当前两端缩进 16px')
+    await closeSheet()
+  })
+
+  it('list-toolbar-actions', async () => {
+    await loadPage()
+    await applyToolbarPresetState('list-bullet')
+    await waitForFormats({
+      header: 0,
+      list: 'bullet'
+    })
+    await openSheet('openListSheet', 'list', '设置列表', '当前列表 无序列表')
+    await closeSheet()
+    await applyToolbarPresetState('list-ordered')
+    await waitForFormats({
+      header: 0,
+      list: 'ordered'
+    })
+    await openSheet('openListSheet', 'list', '设置列表', '当前列表 有序列表')
+    await closeSheet()
+    await applyToolbarPresetState('list-unchecked')
+    await waitForChecklistFormat()
+    await applyToolbarPresetState('list-none')
+    await waitForFormats({ list: '' })
+    await closeSheet()
+  })
+
   it('clear', async () => {
+    await loadPage()
     await setEditorContents([
       { insert: '清空前的内容' },
       { insert: '\n' }
@@ -151,6 +294,7 @@ describe('editor.uvue', () => {
   })
 
   it('undo-redo', async () => {
+    await loadPage()
     await setEditorContents([
       { insert: '撤销重做验证' },
       { insert: '\n' }
@@ -168,6 +312,7 @@ describe('editor.uvue', () => {
   })
 
   it('insertImage', async () => {
+    await loadPage()
     await updateData({
       insertImageTest: false
     })
@@ -187,6 +332,7 @@ describe('editor.uvue', () => {
   })
 
   it('removeFormat', async () => {
+    await loadPage()
     await setEditorContents([
       {
         insert: '设置字体样式',

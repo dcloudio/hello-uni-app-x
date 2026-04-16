@@ -1120,6 +1120,37 @@ function applyFormatWithState(name: string, value: string | number | null | unde
   applyFormat(name, value)
 }
 
+function setToolbarFormatsForTest(header: number, list: string) {
+  setLocalFormat('header', header)
+  setLocalFormat('list', list)
+}
+
+function applyToolbarPresetForTest(preset: string) {
+  if (preset == 'title-h2') {
+    setToolbarFormatsForTest(2, '')
+    return
+  }
+  if (preset == 'title-h1') {
+    setToolbarFormatsForTest(1, '')
+    return
+  }
+  if (preset == 'list-bullet') {
+    setToolbarFormatsForTest(0, 'bullet')
+    return
+  }
+  if (preset == 'list-ordered') {
+    setToolbarFormatsForTest(0, 'ordered')
+    return
+  }
+  if (preset == 'list-unchecked') {
+    setToolbarFormatsForTest(0, 'unchecked')
+    return
+  }
+  if (preset == 'list-none') {
+    setToolbarFormatsForTest(0, '')
+  }
+}
+
 function toggleInlineFormat(name: string) {
   if (name == 'bold') {
     setLocalFormat('bold', !data.formats.bold)
@@ -2253,8 +2284,39 @@ defineExpose({
   openMoreSheet,
   openTitleSheet,
   openStyleSheet,
+  openTextColorSheet,
+  openBackgroundColorSheet,
+  openLineHeightSheet,
+  openLetterSpacingSheet,
+  openBlockIndentSheet,
+  openListSheet,
+  openFontSizeSheet,
+  openFontFamilySheet,
   openAlignSheet,
   closeSheets,
+  setToolbarFormatsForTest,
+  applyToolbarPresetForTest,
+  setParagraph,
+  setHeadingLevel,
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrike,
+  setTextColorAndClose,
+  setBackgroundColorAndClose,
+  setLineHeightAndClose,
+  setLetterSpacingAndClose,
+  setFontSizeAndClose,
+  setFontFamilyAndClose,
+  toggleTextIndent,
+  setBlockIndentAndClose,
+  setAlignLeft,
+  setAlignCenter,
+  setAlignRight,
+  setAlignJustify,
+  setBulletList,
+  setOrderedList,
+  toggleChecklistTool,
   setContents,
   blur,
   clear,
