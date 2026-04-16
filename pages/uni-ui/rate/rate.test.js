@@ -1,7 +1,3 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isWeb = platformInfo.startsWith('web')
-const isMP = platformInfo.startsWith('mp')
-
 const PAGE_PATH = '/pages/uni-ui/rate/rate'
 
 describe('Rate.uvue', () => {
