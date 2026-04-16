@@ -1,0 +1,37 @@
+const PAGE_PATH = '/pages/uni-ui/time-format/time-format'
+
+describe('time-format', () => {
+  let page
+
+  beforeEach(async () => {
+    page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view')
+  })
+
+  async function setPageData(newData) {
+    return await page.setData(newData)
+  }
+
+  it('time-format value', async () => {
+    expect((await page.data('relativeDateTimeText.value')).length).toBe(19)
+    expect(Number.isNaN(await page.data('invalidTimestamp.value'))).toBe(true)
+
+    await setPageData({
+      relativeDateTimeText: '2024-01-02 03:04:05'
+    })
+    expect(await page.data('relativeDateTimeText.value')).toBe('2024-01-02 03:04:05')
+
+    await setPageData({
+      relativeDateTimeText: 'invalid'
+    })
+    expect(await page.data('relativeDateTimeText.value')).toBe('invalid')
+    expect(Number.isNaN(await page.data('inputRelativeTimestamp.value'))).toBe(true)
+  })
+
+  it('time-format snapshot', async () => {
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toSaveImageSnapshot()
+  })
+})
