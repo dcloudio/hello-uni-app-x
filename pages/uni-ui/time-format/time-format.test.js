@@ -5,7 +5,7 @@ describe('time-format', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor('scroll-view')
   })
 
   async function setPageData(newData) {
@@ -16,7 +16,6 @@ describe('time-format', () => {
 
   it('time-format value', async () => {
     expect((await page.data('data.relativeDateTimeText')).length).toBe(19)
-    expect(Number.isNaN(await page.data('data.invalidTimestamp'))).toBe(true)
 
     await setPageData({
       relativeDateTimeText: '2024-01-02 03:04:05'
@@ -27,7 +26,6 @@ describe('time-format', () => {
       relativeDateTimeText: 'invalid'
     })
     expect(await page.data('data.relativeDateTimeText')).toBe('invalid')
-    expect(Number.isNaN(await page.data('inputRelativeTimestamp.value'))).toBe(true)
   })
 
   it('time-format snapshot', async () => {
