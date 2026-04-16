@@ -9,22 +9,24 @@ describe('time-format', () => {
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('time-format value', async () => {
-    expect((await page.data('relativeDateTimeText.value')).length).toBe(19)
-    expect(Number.isNaN(await page.data('invalidTimestamp.value'))).toBe(true)
+    expect((await page.data('data.relativeDateTimeText')).length).toBe(19)
+    expect(Number.isNaN(await page.data('data.invalidTimestamp'))).toBe(true)
 
     await setPageData({
       relativeDateTimeText: '2024-01-02 03:04:05'
     })
-    expect(await page.data('relativeDateTimeText.value')).toBe('2024-01-02 03:04:05')
+    expect(await page.data('data.relativeDateTimeText')).toBe('2024-01-02 03:04:05')
 
     await setPageData({
       relativeDateTimeText: 'invalid'
     })
-    expect(await page.data('relativeDateTimeText.value')).toBe('invalid')
+    expect(await page.data('data.relativeDateTimeText')).toBe('invalid')
     expect(Number.isNaN(await page.data('inputRelativeTimestamp.value'))).toBe(true)
   })
 

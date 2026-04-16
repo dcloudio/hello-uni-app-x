@@ -5,20 +5,22 @@ describe('link', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(3000)
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('link state', async () => {
-    expect(await page.data('lastEvent.value')).toBe('暂无事件')
+    expect(await page.data('data.lastEvent')).toBe('暂无事件')
 
     await setPageData({
       lastEvent: 'error: empty href'
     })
-    expect(await page.data('lastEvent.value')).toBe('error: empty href')
+    expect(await page.data('data.lastEvent')).toBe('error: empty href')
   })
 
   it('link snapshot', async () => {

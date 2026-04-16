@@ -5,7 +5,7 @@ describe('number-box', () => {
 
 	beforeEach(async () => {
 		page = await program.reLaunch(PAGE_PATH)
-		await page.waitFor('view')
+		await page.waitFor(3000)
 	})
 
 	async function setPageData(newData) {

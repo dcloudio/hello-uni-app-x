@@ -5,31 +5,33 @@ describe('rate', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(3000)
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('rate model value', async () => {
-    expect(await page.data('vModelRateValue.value')).toBe(0)
-    expect(await page.data('rateValue.value')).toBe(0)
+    expect(await page.data('data.vModelRateValue')).toBe(0)
+    expect(await page.data('data.rateValue')).toBe(0)
 
     await setPageData({
       vModelRateValue: 2
     })
-    expect(await page.data('vModelRateValue.value')).toBe(2)
+    expect(await page.data('data.vModelRateValue')).toBe(2)
 
     await setPageData({
       vModelRateValue: 4
     })
-    expect(await page.data('vModelRateValue.value')).toBe(4)
+    expect(await page.data('data.vModelRateValue')).toBe(4)
 
     await setPageData({
       rateValue: 5
     })
-    expect(await page.data('rateValue.value')).toBe(5)
+    expect(await page.data('data.rateValue')).toBe(5)
   })
 
   it('rate snapshot', async () => {
