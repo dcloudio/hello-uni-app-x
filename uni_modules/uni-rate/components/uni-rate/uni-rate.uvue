@@ -1,7 +1,7 @@
 <template>
 	<!-- TODO  Android/iOS平台不支持裁剪显示半个文字，高性能场景包裹一层view不合适，需要等App平台解决-->
 	<text v-if="props.full!=true" class="active-color" :class="props.starActiveClass ?? ''" :style="props.starActiveStyle ?? ''">{{ stars }}</text> <!-- 高性能，单层，只读，不显示灰星，不支持小数。必须给value-->
-  <view v-else style="position: relative;align-self: flex-start;" @click="onTap">
+  <view v-else :id="containerId" style="position: relative;align-self: flex-start;" @click="onTap">
     <text class="stars-pos gray-stars" :class="props.starClass ?? ''" :style="props.starStyle ?? ''">{{ stars }}</text> <!-- 背景灰星-->
     <!-- Android/iOS平台不支持裁剪显示半个文字，需通过包裹一层view裁剪实现 -->
 		<view class="stars-pos active-init-width" :style="'width:'+calculatedWidth">
@@ -69,6 +69,9 @@ const emit = defineEmits<{
   'update:modelValue': [value: number]
 }>()
 
+const instance = getCurrentInstance()
+const containerId = `uni_rate_${instance?.uid || 'default'}`
+
 // 响应式数据 - 优先使用modelValue，其次使用value
 const currentValue = ref<number>(0)
 currentValue.value = props.modelValue ?? props.value ?? 0
@@ -103,29 +106,32 @@ const calculatedWidth = computed(() => {
 })
 
 // 处理点击事件
-function onTap(event: UniPointerEvent) : void {
+async function onTap(event: UniPointerEvent) : Promise<void> {
   // 如果是禁用模式，不处理点击
   if (props.readonly == true) {
     return
   }
 
-  // 获取点击位置 - 优化的事件处理
-  let clickX = event.x
-
-  // 获取容器宽度 - 使用 currentTarget 获取绑定事件的 view 容器，而不是被点击的 text 元素
-  let containerWidth = 0
-  try {
-    if (event.currentTarget?.offsetWidth != null && (event.currentTarget as UniElement).offsetWidth > 0) {
-      containerWidth = (event.currentTarget as UniElement).offsetWidth
-    }
-  } catch (e) {
-    // 忽略错误，使用默认值
-		console.log('e: ',e);
+  // #ifndef MP
+  const rect = uni.getElementById(containerId)?.getBoundingClientRect()
+  // #endif
+  // #ifdef MP
+  const rect = await uni.getElementById(containerId)?.getBoundingClientRectAsync()
+  // #endif
+  if (rect == null || rect.width <= 0) {
+    return
   }
-	// console.log("containerWidth:" + 	containerWidth);
+
+  const localX = event.clientX - rect.left
+  if (!isFinite(localX)) {
+    return
+  }
+
+  // 将点击坐标限制在组件内部，避免页面坐标或边界点击导致计算越界。
+  const clampedX = Math.max(0, Math.min(rect.width, localX))
 
   // 计算点击的是第几颗星（从0开始）
-  const finalValue = Math.round(clickX / containerWidth * 5)
+  const finalValue = Math.max(0, Math.min(5, Math.round(clampedX / rect.width * 5)))
 	// console.log('finalValue: ',finalValue);
 
 	// 计算每颗星的宽度
