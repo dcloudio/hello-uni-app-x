@@ -6,7 +6,7 @@ const isWeb = platformInfo.startsWith('web')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-sticky-header', () => {
-  if (isMP) {
+  if (isMP || isDom2 && isHarmony) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})

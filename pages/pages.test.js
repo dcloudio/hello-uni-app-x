@@ -9,9 +9,8 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
-// 【勿动】pages 由 const 改为 let，因为在其它任务会修改 pages 的值
 let pageIndex = 0
-let pages = [
+const pages = [
   // tabBar  //改动频繁，不再测试
   // '/pages/tabBar/component',
   // '/pages/tabBar/API',
@@ -109,6 +108,8 @@ let pages = [
   // '/pages/component/nested-scroll-body/nested-scroll-body',
   // 单独测试例截图
   // '/pages/component/swiper/swiper-list-view',
+  // 单独测试例截图
+  // '/pages/component/list-view/issue-2199',
 
   // API
   // 非 UI 相关不截图
@@ -287,44 +288,46 @@ let pages = [
   // 单独测试例截图
   // '/pages/CSS/variable/variable',
   '/pages/CSS/overflow/overflow-visible-event',
+  '/pages/CSS/overflow/issue-21223',
 
   // template
   // 网络资源加载，单独测试例截图
-  // '/pages/template/news-feed-list/news-feed-list',
+  // '/pages/template/list-news/list-news',
   // 依赖网络资源加载
-  // '/pages/template/news-feed-list/detail/detail',
+  // '/pages/template/list-news/detail/detail',
   // 动画页面
-  // '/pages/template/swipe-card-stack/swipe-card-stack',
-  '/pages/template/swipe-tabs-underline/swipe-tabs-underline',
-  '/pages/template/swipe-tabs-scale-highlight/swipe-tabs-scale-highlight',
+  // '/pages/template/drop-card/drop-card',
+  '/pages/template/swiper-list/swiper-list',
+  '/pages/template/swiper-list2/swiper-list2',
   // 单独测试例截图
-  // '/pages/template/vertical-video-feed/vertical-video-feed',
+  // '/pages/template/swiper-vertical-video/swiper-vertical-video',
   // 单独测试例截图
-  // '/pages/template/scroll-collapse-navbar/scroll-collapse-navbar',
+  // '/pages/template/scroll-fold-nav/scroll-fold-nav',
   // 单独测试例截图
-  // '/pages/template/draggable-half-modal/draggable-half-modal',
+  // '/pages/template/half-screen/half-screen',
   // 动态内容
-  // '/pages/template/search-header-long-list/search-header-long-list',
+  // '/pages/template/long-list/long-list',
   // 动态内容
-  // '/pages/template/banner-tabs-feed-nested-scroll/banner-tabs-feed-nested-scroll',
+  // '/pages/template/long-list2/long-list2',
   // harmony 整体测试时截图异常，单独测试例截图
-  // '/pages/template/pull-zoom-profile-page/pull-zoom-profile-page',
-  '/pages/template/custom-navbar-search/custom-navbar-search',
-  '/pages/template/tabbar-center-action/tabbar-center-action',
+  // '/pages/template/pull-zoom-image/pull-zoom-image',
+  '/pages/template/navbar-lite/navbar-lite',
+  '/pages/template/custom-tab-bar/custom-tab-bar',
   // 动态内容
   // '/pages/template/calendar/calendar',
   // 不同平台存在差异，且页面简单
-  // '/pages/template/external-link-launch/external-link-launch',
+  // '/pages/template/schema/schema',
   // '/uni_modules/uni-pay-x/pages/success/success',
   // 依赖 onload 参数获取 web-view src
   // '/uni_modules/uni-pay-x/pages/ad-interactive-webview/ad-interactive-webview',
   // '/uni_modules/uni-pay-x/pages/pay-desk/pay-desk',
   // 页面内容不稳定
-  // '/pages/template/recycle-long-list/recycle-long-list',
+  // '/pages/template/custom-long-list/custom-long-list',
   // 单独测试例截图
   // '/pages/template/slider-100/slider-100',
   // 动态内容
-  // '/pages/template/banner-tabs-long-list-nested-scroll/banner-tabs-long-list-nested-scroll',
+  // '/pages/template/long-list-nested/long-list-nested',
+  '/pages/template/issue-25934/issue-25934'
 ]
 
 // if (!isIos) {
@@ -365,7 +368,7 @@ if (!isAppWebView) {
       // '/pages/API/get-uni-verify-manager/get-uni-verify-manager',
       // 非 UI 相关不截图
       // '/pages/API/request-payment/request-payment',
-      '/pages/template/scroll-view-sticky-section/scroll-view-sticky-section',
+      '/pages/template/scroll-sticky/scroll-sticky',
     )
   }
   if(isIos || isAndroid){
@@ -382,7 +385,7 @@ if (!isAppWebView) {
       // '/pages/component/waterflow/waterflow-fit-height',
       // 非 UI 相关不截图
       // '/pages/API/share-with-system/share-with-system',
-      '/pages/template/native-button-bridge/native-button-bridge',
+      '/pages/template/test-uts-button/test-uts-button',
       '/pages/component/loading/loading',
     )
   }
@@ -436,7 +439,7 @@ if (isWeb) {
     '/pages/component/canvas/canvas',
     // 动态内容
     // '/pages/component/canvas/canvas/ball',
-    '/pages/template/browser-built-in-elements/browser-built-in-elements',
+    '/pages/template/browser-element/browser-element',
   )
 }
 

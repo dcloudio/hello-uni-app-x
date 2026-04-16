@@ -6,8 +6,8 @@
       :show-fullscreen-btn="data.showFullscreenBtn && fullscreenShowFullscreenBtn" :show-play-btn="data.showPlayBtn && fullscreenShowPlayBtn" :show-center-play-btn="data.showCenterPlayBtn"
       :show-loading="data.showLoading" :enable-progress-gesture="data.enableProgressGesture" :object-fit="data.objectFit"
       :poster="data.poster" :show-mute-btn="data.showMuteBtn && fullscreenShowMuteBtn" :title="data.title" :enable-play-gesture="data.enablePlayGesture"
-      :vslide-gesture="data.vslideGesture" :vslide-gesture-in-fullscreen="data.vslideGestureInFullscreen"
-      :http-cache="data.httpCache" :danmu-list="data.danmuList" @play="onPlay" @pause="onPause"
+      :vslide-gesture="data.vslideGesture" :vslide-gesture-in-fullscreen="data.vslideGestureInFullscreen" :codec="data.codec"
+      :http-cache="data.httpCache" :play-strategy="data.playStrategy" :danmu-list="data.danmuList" @play="onPlay" @pause="onPause"
       @ended="onEnded" @timeupdate="onTimeUpdate" @waiting="onWaiting" @error="onError" @progress="onProgress"
       @fullscreenclick="onFullScreenClick" @controlstoggle="onControlsToggle" @fullscreenchange="onFullScreenChange">
 
@@ -22,22 +22,14 @@
       <!-- #ifdef APP-HARMONY -->
       <template #controls>
         <view  v-if="data.subCompControlsShow" class="video-fullscreen_controls">
-          <view style="flex-direction: row;justify-content: center;align-items: center;">
-            <view class="control-btn" @click="togglePlay">
-              <text class="control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
-            </view>
-            <view class="control-btn" @click="toggleDanmu">
-              <text class="control-icon">{{ data.enableDanmu ? ICON_DANMU_ACTIVE : ICON_DANMU }}</text>
-            </view>
-            <view class="control-btn" @click="toggleMute">
-              <text class="control-icon">{{ data.muted ? ICON_VOLUME_MUTE : ICON_VOLUME }}</text>
-            </view>
+          <view class="control-btn" @click="togglePlay">
+            <text class="control-icon">{{ data.isPlaying ? ICON_PAUSH : ICON_PLAY }}</text>
           </view>
-
-          <view>
-            <view class="control-btn" @click="toggleFullscreen">
-              <text class="control-icon">{{ data.isFullscreen ? ICON_FULLSCREEN_CLOSE : ICON_FULLSCREEN }}</text>
-            </view>
+          <view class="control-btn" @click="toggleDanmu">
+            <text class="control-icon">{{ data.enableDanmu ? ICON_DANMU_ACTIVE : ICON_DANMU }}</text>
+          </view>
+          <view class="control-btn" @click="toggleMute">
+            <text class="control-icon">{{ data.muted ? ICON_VOLUME_MUTE : ICON_VOLUME }}</text>
           </view>
         </view>
       </template>
@@ -144,6 +136,9 @@
       <!-- #ifndef APP-HARMONY -->
       <boolean-data title="设置是否对http、https视频源开启本地缓存（仅 Android、iOS 平台，播放前设置有效）" :defaultValue="data.httpCache"
         @change="onHttpCacheChange"></boolean-data>
+      <enum-data title="设置解码器（仅 Android、iOS 平台，播放前设置有效）" :items="data.codecItemTypes" @change="onCodecChange"></enum-data>
+      <enum-data title="设置播放策略（仅 Android、iOS 平台，播放前设置有效）" :items="data.playStrategyItemTypes"
+        @change="onPlayStrategyChange"></enum-data>
       <!-- #endif -->
     </scroll-view>
   </view>
@@ -187,7 +182,13 @@
     enablePlayGesture: boolean;
     vslideGesture: boolean;
     vslideGestureInFullscreen: boolean;
+    codec: string;
+    codecItemTypes: ItemType[];
+    codecItems: string[];
     httpCache: boolean;
+    playStrategy: number;
+    playStrategyItemTypes: ItemType[];
+    playStrategyItems: number[];
     header: UTSJSONObject;
     // API
     pos: number;
@@ -200,7 +201,6 @@
     subCompControlsEnable: boolean;
     subCompShow: boolean;
     subCompControlsShow: boolean;
-    isFullscreen: boolean;
     curPos: number;
     endPos: number;
     // 自动化测试
@@ -227,8 +227,6 @@
   const ICON_DANMU_ACTIVE = '\uea27';
   const ICON_VOLUME = '\uea30';
   const ICON_VOLUME_MUTE = '\uea31';
-  const ICON_FULLSCREEN_CLOSE = '\uea28';
-  const ICON_FULLSCREEN = '\uea29';
 
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -283,7 +281,13 @@
     enablePlayGesture: false,
     vslideGesture: false,
     vslideGestureInFullscreen: true,
+    codec: "hardware",
+    codecItemTypes: [{ "value": 0, "name": "hardware(硬解码)" }, { "value": 1, "name": "software(软解码)" }],
+    codecItems: ["hardware", "software"],
     httpCache: true,
+    playStrategy: 0,
+    playStrategyItemTypes: [{ "value": 0, "name": "0(普通模式)" }, { "value": 1, "name": "1(平滑播放模式)" }, { "value": 2, "name": "2(M3U8优化模式)" }],
+    playStrategyItems: [0, 1, 2],
     header: {
       'User-Agent': 'User-Agent test',
       'header': 'header test',
@@ -303,7 +307,6 @@
     subCompControlsEnable: false,
     subCompShow: false,
     subCompControlsShow: false,
-    isFullscreen: false,
     curPos: 0,
     endPos: 0,
     // 自动化测试
@@ -421,14 +424,6 @@
 
   const toggleMute = () => {
     data.muted = !data.muted;
-  }
-
-  const toggleFullscreen = () => {
-    if (data.isFullscreen) {
-      exitFullScreen()
-    } else {
-      requestFullScreen();
-    }
   }
 
   const fastBackward = () => {
@@ -596,9 +591,19 @@
     console.log("vslideGestureInFullscreen -> " + data.vslideGestureInFullscreen)
   }
 
+  const onCodecChange = (value : number) => {
+    data.codec = data.codecItems[value];
+    console.log("codec -> " + data.codec)
+  }
+
   const onHttpCacheChange = (value : boolean) => {
     data.httpCache = value;
     console.log("httpCache -> " + data.httpCache)
+  }
+
+  const onPlayStrategyChange = (value : number) => {
+    data.playStrategy = data.playStrategyItems[value];
+    console.log("playStrategy -> " + data.playStrategy)
   }
 
   const onHeaderComfirm = (event : UniInputConfirmEvent) => {
@@ -683,7 +688,6 @@
     const detail = res.detail
     console.log(res.type + " -> " + JSON.stringify(detail));
     data.subCompShow = detail.fullScreen;
-    data.isFullscreen = detail.fullScreen;
     isHorizontalFullscreen.value = detail.fullScreen && detail.direction === 'horizontal'
     if (data.autoTest) {
       data.eventFullscreenchange = {
@@ -772,9 +776,8 @@
 
   // #ifdef APP-ANDROID
   const hasSubComponent = () : boolean => {
-    const element = uni.getElementById('video')?.querySelector('.uni-video-slots');
-    if (element == null) return false;
-    return element.children.length > 0;
+    const view = uni.getElementById('video')?.getAndroidView<ViewGroup>();
+    return view == null ? false : view.getChildAt(0) instanceof ViewGroup;
   }
   // #endif
 
@@ -847,20 +850,18 @@
   }
 
   .video-fullscreen_controls {
-    padding-left: var(--uni-safe-area-inset-left);
-    padding-right: var(--uni-safe-area-inset-right);
     position: absolute;
     left: 0;
     right: 0;
     bottom: 8px;
     height: 50px;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
   }
 
   .control-btn {
-    width: 50px;
+    width: 60px;
     height: 100%;
     justify-content: center;
     align-items: center;

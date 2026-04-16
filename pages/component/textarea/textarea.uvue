@@ -20,7 +20,6 @@
     placeholder_value: string;
     defaultModel: string;
     textareaMaxLengthValue: string;
-    textareaPlaceholderClass: string.ClassString;
     isSelectionFocus: boolean;
     selectionStart: number;
     selectionEnd: number;
@@ -52,7 +51,6 @@
     placeholder_value: "请输入",
     defaultModel: '123',
     textareaMaxLengthValue: "",
-    textareaPlaceholderClass: "placeholder-class",
     isSelectionFocus: false,
     selectionStart: -1,
     selectionEnd: -1,
@@ -73,10 +71,6 @@
     data.textareaRect!.y += uni.getSystemInfoSync().safeArea.top + 44
   })
   // #endif
-
-  const togglePlaceholderClass = () => {
-    data.textareaPlaceholderClass = data.textareaPlaceholderClass == "placeholder-class" ? "" : "placeholder-class"
-  }
 
   const textarea_click = () => { console.log("组件被点击时触发") }
   const textarea_touchstart = () => { console.log("手指触摸动作开始") }
@@ -304,16 +298,7 @@
         <textarea class="textarea-instance" @confirm="()=>{}"></textarea>
       </view>
 
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" placeholder="占位符字体大小为15px" />
-      </view>
-      <view class="textarea-wrap">
-        <textarea class="textarea-instance" :placeholder="`占位符字体大小为${data.textareaPlaceholderClass == '' ? '15px' : '30px'}`" :placeholder-class="data.textareaPlaceholderClass"  />
-      </view>
-      <view class="textarea-wrap">
-        <button @click="togglePlaceholderClass">切换 placeholder-class</button>
-      </view>
-      <view class="uni-title-text">
+      <view class="title-wrap">
         <text>style 设置 font-size:20px</text>
       </view>
       <view class="textarea-wrap">
@@ -324,8 +309,7 @@
         <text>placeholder-class 设置 30px</text>
       </view>
       <view class="textarea-wrap">
-        <textarea id="textarea-placeholder-class-dynamic" class="textarea-instance" style="height: 60px;font-size:20px"
-          :placeholder-class="data.textareaPlaceholderClass" placeholder="placeholder" />
+        <textarea class="textarea-instance" style="height: 60px;font-size:20px" placeholder-class="placeholder-class" placeholder="placeholder" />
       </view>
       <view style="padding-left: 10px;flex-direction: column;">
         <text>style 设置 font-size:20px</text>
@@ -382,7 +366,6 @@
     flex: 1;
     border: 1px solid #666;
     margin: 10px;
-    font-size: 15px;
   }
 
   .placeholder {
