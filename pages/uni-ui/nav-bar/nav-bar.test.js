@@ -5,7 +5,7 @@ describe('nav-bar', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('scroll-view')
+    await page.waitFor(3000)
   })
 
   it('nav-bar components exist', async () => {

@@ -5,18 +5,20 @@ describe('refresh-box', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(3000)
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('refresh-box state', async () => {
-    expect(await page.data('listCount1.value')).toBe(3)
-    expect(await page.data('refreshing1.value')).toBe(false)
-    expect(await page.data('pullingDistance1.value')).toBe(0)
-    expect(await page.data('listCount4.value')).toBe(3)
+    expect(await page.data('data.listCount1')).toBe(3)
+    expect(await page.data('data.refreshing1')).toBe(false)
+    expect(await page.data('data.pullingDistance1')).toBe(0)
+    expect(await page.data('data.listCount4')).toBe(3)
 
     await setPageData({
       listCount1: 8,
@@ -27,12 +29,12 @@ describe('refresh-box', () => {
       pullingDistance4: 30
     })
 
-    expect(await page.data('listCount1.value')).toBe(8)
-    expect(await page.data('refreshing1.value')).toBe(true)
-    expect(await page.data('pullingDistance1.value')).toBe(45)
-    expect(await page.data('listCount4.value')).toBe(6)
-    expect(await page.data('refreshing4.value')).toBe(true)
-    expect(await page.data('pullingDistance4.value')).toBe(30)
+    expect(await page.data('data.listCount1')).toBe(8)
+    expect(await page.data('data.refreshing1')).toBe(true)
+    expect(await page.data('data.pullingDistance1')).toBe(45)
+    expect(await page.data('data.listCount4')).toBe(6)
+    expect(await page.data('data.refreshing4')).toBe(true)
+    expect(await page.data('data.pullingDistance4')).toBe(30)
   })
 
   it('refresh-box snapshot', async () => {

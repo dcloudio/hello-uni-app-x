@@ -5,7 +5,7 @@ describe('fab-button', () => {
 
 	beforeEach(async () => {
 		page = await program.reLaunch(PAGE_PATH)
-		await page.waitFor('view')
+		await page.waitFor(3000)
 	})
 
     it('fab-button snapshot', async () => {

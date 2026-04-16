@@ -5,18 +5,20 @@ describe('drag-cell', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(3000);
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('drag-cell model value', async () => {
-    expect(await page.data('tagList.value')).toEqual(['标签1', '标签2', '标签3', '标签4'])
-    expect((await page.data('gridList3.value')).length).toBe(9)
-    expect((await page.data('deleteList.value')).length).toBe(5)
-    expect(await page.data('handleList.value')).toEqual(['微信支付', '支付宝', 'Apple Pay'])
+    expect(await page.data('data.tagList')).toEqual(['标签1', '标签2', '标签3', '标签4'])
+    expect((await page.data('data.gridList3')).length).toBe(9)
+    expect((await page.data('data.deleteList')).length).toBe(5)
+    expect(await page.data('data.handleList')).toEqual(['微信支付', '支付宝', 'Apple Pay'])
 
     await setPageData({
       tagList: ['新标签1', '新标签2'],
@@ -25,10 +27,10 @@ describe('drag-cell', () => {
       handleList: ['卡1', '卡2']
     })
 
-    expect(await page.data('tagList.value')).toEqual(['新标签1', '新标签2'])
-    expect(await page.data('deleteList.value')).toEqual(['A', 'B', 'C'])
-    expect(await page.data('imageList.value')).toEqual(['https://example.com/a.png'])
-    expect(await page.data('handleList.value')).toEqual(['卡1', '卡2'])
+    expect(await page.data('data.tagList')).toEqual(['新标签1', '新标签2'])
+    expect(await page.data('data.deleteList')).toEqual(['A', 'B', 'C'])
+    expect(await page.data('data.imageList')).toEqual(['https://example.com/a.png'])
+    expect(await page.data('data.handleList')).toEqual(['卡1', '卡2'])
   })
 
   it('drag-cell snapshot', async () => {

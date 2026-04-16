@@ -15,17 +15,19 @@ describe('index-bar', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(3000)
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('index-bar state', async () => {
-    expect(await page.data('useCustomStyle.value')).toBe(false)
-    expect(await page.data('useCustomIndexs.value')).toBe(false)
-    expect(await page.data('indexViewID.value')).toBe('')
+    expect(await page.data('data.useCustomStyle')).toBe(false)
+    expect(await page.data('data.useCustomIndexs')).toBe(false)
+    expect(await page.data('data.indexViewID')).toBe('')
 
     await setPageData({
       useCustomStyle: true,
@@ -33,9 +35,9 @@ describe('index-bar', () => {
       indexViewID: 'idx-A'
     })
 
-    expect(await page.data('useCustomStyle.value')).toBe(true)
-    expect(await page.data('useCustomIndexs.value')).toBe(true)
-    expect(await page.data('indexViewID.value')).toBe('idx-A')
+    expect(await page.data('data.useCustomStyle')).toBe(true)
+    expect(await page.data('data.useCustomIndexs')).toBe(true)
+    expect(await page.data('data.indexViewID')).toBe('idx-A')
     expect(await page.data('currentIndexs.value')).toContain('☆')
   })
 

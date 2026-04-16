@@ -15,25 +15,27 @@ describe('badge', () => {
 
   beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
+    await page.waitFor(3000)
   })
 
   async function setPageData(newData) {
-    return await page.setData(newData)
+    return await page.setData({
+      data: newData
+    })
   }
 
   it('badge dynamic text value', async () => {
-    expect(await page.data('dynamicBadgeText.value')).toBe('0')
+    expect(await page.data('data.dynamicBadgeText')).toBe('0')
 
     await setPageData({
       dynamicBadgeText: '8'
     })
-    expect(await page.data('dynamicBadgeText.value')).toBe('8')
+    expect(await page.data('data.dynamicBadgeText')).toBe('8')
 
     await setPageData({
       dynamicBadgeText: ''
     })
-    expect(await page.data('dynamicBadgeText.value')).toBe('')
+    expect(await page.data('data.dynamicBadgeText')).toBe('')
   })
 
   it('badge snapshot', async () => {

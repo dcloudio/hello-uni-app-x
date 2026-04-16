@@ -5,7 +5,7 @@ describe('collapse', () => {
 
 	beforeEach(async () => {
 		page = await program.reLaunch(PAGE_PATH)
-		await page.waitFor('scroll-view')
+		await page.waitFor(3000)
 	})
 
 	async function setPageData(newData) {
