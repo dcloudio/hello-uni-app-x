@@ -1,0 +1,122 @@
+<template>
+	<uni-tab style="flex: 1" :active-index="activeIndex" :tab-bar-height="40" @change="handleChange">
+		<uni-tab-content>
+			<view class="custom-panel custom-panel-emerald"></view>
+		</uni-tab-content>
+		<uni-tab-content>
+			<view class="custom-panel custom-panel-sand"></view>
+		</uni-tab-content>
+		<uni-tab-content>
+			<view class="custom-panel custom-panel-ink"></view>
+		</uni-tab-content>
+
+		<uni-tab-bar class="custom-tab-list-shell custom-tab-list-root">
+			<uni-tab-item>
+				<view class="custom-tab-cell">
+					<text class="custom-tab-label" :class="activeIndex == 0 ? 'custom-tab-label-active' : ''">精选</text>
+				</view>
+			</uni-tab-item>
+			<uni-tab-item>
+				<view class="custom-tab-cell">
+					<text class="custom-tab-label" :class="activeIndex == 1 ? 'custom-tab-label-active' : ''">趋势</text>
+				</view>
+			</uni-tab-item>
+			<uni-tab-item>
+				<view class="custom-tab-cell">
+					<text class="custom-tab-label" :class="activeIndex == 2 ? 'custom-tab-label-active' : ''">我的</text>
+				</view>
+			</uni-tab-item>
+		</uni-tab-bar>
+	</uni-tab>
+</template>
+
+<script setup lang="uts">
+	import uniTab from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/uni-tab.uvue'
+	import uniTabBar from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/uni-tab-bar.uvue'
+	import uniTabItem from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/uni-tab-item.uvue'
+	import uniTabContent from '@/uni_modules/uni-tab-bar/components/uni-tab-bar/uni-tab-content.uvue'
+
+	const activeIndex = ref<number>(0)
+
+	function syncNavigationBar(index : number) : void {
+		switch (index) {
+			case 0:
+				uni.setNavigationBarTitle({ title: '精选' })
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#dff3e8'
+				})
+				break
+			case 1:
+				uni.setNavigationBarTitle({ title: '趋势' })
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#f6ddbf'
+				})
+				break
+			case 2:
+				uni.setNavigationBarTitle({ title: '我的' })
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#dde7ea'
+				})
+				break
+		}
+	}
+
+	function handleChange(index : number) : void {
+		activeIndex.value = index
+		syncNavigationBar(index)
+	}
+
+	onLoad(() => {
+		syncNavigationBar(activeIndex.value)
+	})
+</script>
+
+<style>
+	.custom-panel {
+		flex: 1;
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	.custom-panel-emerald {
+		background-color: #dff3e8;
+	}
+
+	.custom-panel-sand {
+		background-color: #f6ddbf;
+	}
+
+	.custom-panel-ink {
+		background-color: #dde7ea;
+	}
+
+	.custom-tab-list-shell {
+		background-color: #f4efe6;
+	}
+
+	.custom-tab-list-root {
+		background: linear-gradient(to right, #f7d9a8, #c6ece3);
+		height: 40px;
+		border-top-width: 0px;
+	}
+
+	.custom-tab-cell {
+		width: 100%;
+		height: 100%;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.custom-tab-label {
+		font-size: 14px;
+		color: rgba(34,51,59,0.58);
+	}
+
+	.custom-tab-label-active {
+		color: #1d9f5f;
+	}
+</style>
