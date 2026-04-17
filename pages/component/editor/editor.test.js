@@ -2,10 +2,13 @@ jest.setTimeout(30000);
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
+const isiOS = platformInfo.startsWith('ios')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('editor.uvue', () => {
-  if (isDom2 || (!isWeb && !isMP)) {
+  if (!isHarmony && !isAndroid && (isDom2 || (!isWeb && !isMP))) {
     it('app', () => {
       expect(1).toBe(1)
     })
@@ -19,7 +22,9 @@ describe('editor.uvue', () => {
     await page.waitFor(time);
     editor = await page.$('#editor');
     await page.setData({
-      data:{autoTest: true}
+      data: {
+        autoTest: true
+      }
     })
   });
 
@@ -32,11 +37,13 @@ describe('editor.uvue', () => {
   }
 
   it('editor-wrapper', async () => {
-    expect(await editor.attribute("placeholder")).toBe("开始输入...")
-    if(isMP){
-      expect(await page.data("data.readOnly")).toBe(false)
-    }else{
-      expect(await editor.attribute("read-only")).toBe("false")
+    if (isWeb || isMP) {
+      expect(await editor.attribute("placeholder")).toBe("开始输入...")
+      if (isMP) {
+        expect(await page.data("data.readOnly")).toBe(false)
+      } else {
+        expect(await editor.attribute("read-only")).toBe("false")
+      }
     }
     expect(await program.screenshot()).toSaveImageSnapshot();
   });
@@ -47,14 +54,15 @@ describe('editor.uvue', () => {
       await iconfontsEl[i].tap()
       // await page.waitFor(500)
       const getFormats = await page.data('data.formats')
-      const name = await iconfontsEl[i].attribute('data-name')
       options.push({
-        insert: '文本内容' + name,
+        insert: '文本内容font',
         attributes: getFormats
       })
       await page.callMethod('setContents', options)
       await page.setData({
-        data:{formats: {}}
+        data: {
+          formats: null
+        }
       })
       await iconfontsEl[i].tap()
     }
@@ -68,7 +76,13 @@ describe('editor.uvue', () => {
 
   it('clear', async () => {
     await page.callMethod('clear')
-    expect(await editor.attribute("placeholder")).toBe("开始输入...")
+    const start = Date.now();
+    await page.waitFor(async () => {
+      return await page.data('data.clearTest') === true || (Date.now() - start > 2000)
+    })
+    if (isWeb || isMP) {
+      expect(await editor.attribute("placeholder")).toBe("开始输入...")
+    }
   })
 
   it('undo-redo', async () => {
@@ -78,7 +92,7 @@ describe('editor.uvue', () => {
     await page.waitFor(1000)
     expect(await page.data('data.undoTest')).toBe(true)
     await page.callMethod('redo')
-    if(isMP){await page.waitFor(1000)}
+    await page.waitFor(1000)
     expect(await page.data('data.redoTest')).toBe(true)
   })
 
@@ -98,6 +112,42 @@ describe('editor.uvue', () => {
     expect(await program.screenshot()).toSaveImageSnapshot();
   })
 
+  if (!isMP) {
+    it('mention', async () => {
+      await page.setData({
+        data: {
+          clearTest: false
+        }
+      })
+      await page.callMethod('clear')
+      const start = Date.now();
+      await page.waitFor(async () => {
+        return await page.data('data.clearTest') === true || (Date.now() - start > 2000)
+      })
+
+      await page.callMethod('insertMention')
+      await page.waitFor(1000)
+      await page.callMethod('getCon')
+      await page.waitFor(1000)
+      const start1 = Date.now();
+      await page.waitFor(async () => {
+        return await page.data('data.getContentDeltaTest') || (Date.now() - start1 > 2000)
+      })
+
+      const delta = await page.data('data.getContentDeltaTest')
+      const ops = delta.ops
+      expect(ops.length).toBeGreaterThanOrEqual(2)
+      expect(ops[0].insert.mention).toMatchObject({
+        "id": "123456",
+        "name": "uni-app"
+      })
+      expect(ops[1].insert.mention).toMatchObject({
+        "id": "000",
+        "name": "uni-app x"
+      })
+    })
+  }
+
   it('removeFormat', async () => {
     const bgcolorEl = await page.$('.icon-fontbgcolor');
     await bgcolorEl.tap()
@@ -109,9 +159,31 @@ describe('editor.uvue', () => {
     }])
     await page.waitFor(500)
     await page.callMethod('removeFormat')
-    if(isMP){await page.waitFor(1000)}
+    await page.waitFor(1000)
     expect(await page.data('data.removeFormatTest')).toBe(true)
-    expect(await page.data('data.formats')).toEqual({})
+    if (!isAndroid) {
+      expect(await page.data('data.formats')).toEqual({})
+    } else {
+      expect(await page.data('data.formats')).toEqual({
+        bold: null,
+        italic: null,
+        underline: null,
+        strike: null,
+        align: null,
+        lineHeight: null,
+        letterSpacing: null,
+        marginTop: null,
+        marginBottom: null,
+        fontFamily: null,
+        fontSize: null,
+        color: null,
+        backgroundColor: null,
+        list: null,
+        header: null,
+        script: null,
+        direction: null,
+      })
+    }
   })
 
 });

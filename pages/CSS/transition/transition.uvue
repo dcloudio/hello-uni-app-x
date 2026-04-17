@@ -80,6 +80,12 @@
       <view class="base-style transition-position" id="stylePosition" @click="changestylePosition"></view>
     </view>
     <view class="container">
+      <text class="text">点击修改bottom</text>
+      <view>
+        <view class="base-style transition-bottom" id="styleBottom" @click="changeStyleBottom"></view>
+      </view>
+    </view>
+    <view class="container">
       <text class="text">点击修改Scale
       </text>
       <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
@@ -108,6 +114,14 @@
       <text class="text">测试在style中同时修改transform和width</text>
       <view style="width:100%;height: 100%;">
         <view class="base-style transition-transform-width" :style="{transform:`translateX(${lineLeft}px)`,width:`${lineWidth}px`}" @click="changeTransform61">
+        </view>
+      </view>
+    </view>
+
+    <view class="container">
+      <text class="text">测试在style中同时修改transform的translateX/Y的百分比</text>
+      <view style="width:100%;height: 100%;">
+        <view class="base-style transition-transform-translate" :style="{transform:`translateX(${translatePercent}) translateY(${translatePercent})`}" @click="changeTransform27520">
         </view>
       </view>
     </view>
@@ -298,6 +312,8 @@
   let styleBorder: UniElement | null = null
   let isTransitionstylePosition = false
   let stylePosition: UniElement | null = null
+  let isTransitionStyleBottom = false
+  let styleBottom: UniElement | null = null
   let isSetTransition = false
   let isTransitionpropertystyleBackground = false
   let propertyStyleBackground: UniElement | null = null
@@ -314,6 +330,7 @@
   let isTransitionAll = false
   const lineLeft = ref(0)
   const lineWidth = ref(200)
+  const translatePercent = ref('0%')
   let changeWidthInEnd: UniElement | null = null
   let changeWidthInEndCount = 0
   let isTextTransform = false
@@ -347,6 +364,7 @@
     styleTransform = uni.getElementById("styleTransform")
     styleBorder = uni.getElementById("styleBorder")
     stylePosition = uni.getElementById("stylePosition")
+    styleBottom = uni.getElementById("styleBottom")
     propertyStyleBackground = uni.getElementById("propertyStyleBackground")
     styleTransformWithOrigin = uni.getElementById("styleTransformWithOrigin")
     styleTransformWithWidth = uni.getElementById("styleTransformWithWidth")
@@ -523,6 +541,18 @@
     isTransitionstylePosition = !isTransitionstylePosition
   }
 
+  const changeStyleBottom = () => {
+    styleBottom?.style?.setProperty("bottom", isTransitionStyleBottom
+      ? '0px'
+      : '-60px'
+    )
+    isTransitionStyleBottom = !isTransitionStyleBottom
+  }
+
+  const getStyleBottom = (): string => {
+    return styleBottom?.style?.getPropertyValue('bottom') ?? ''
+  }
+
   const changestyleScale = () => {
     const el = uni.getElementById("styleChangScale")
     el?.style.setProperty("transition-duration", "0ms")
@@ -583,6 +613,14 @@
     } else {
       lineLeft.value = 0
       lineWidth.value = 200
+    }
+  }
+
+  const changeTransform27520 = () => {
+    if (translatePercent.value === '0%') {
+      translatePercent.value = '50%'
+    } else {
+      translatePercent.value = '0%'
     }
   }
 
@@ -818,9 +856,11 @@
 	  changeTransformWithOrigin,
 	  changeBorder,
 	  changestylePosition,
+	  changeStyleBottom,
 	  changeTransitionAll,
 	  changeWidthInEndFun,
 	  getChangeWidthInEndCount,
+    getStyleBottom,
     changeBorderAndBackgroundColor,
 	  data
 	})
@@ -906,9 +946,21 @@
     transition-duration: 1s;
   }
 
+  .transition-bottom {
+    position: relative;
+    bottom: 0px;
+    transition-property: bottom;
+    transition-duration: 1s;
+  }
+
   .transition-transform-width {
     transform: rotate(0deg);
     transition-property: transform, width;
+    transition-duration: 1s;
+  }
+
+  .transition-transform-translate {
+    transition-property: transform;
     transition-duration: 1s;
   }
 
