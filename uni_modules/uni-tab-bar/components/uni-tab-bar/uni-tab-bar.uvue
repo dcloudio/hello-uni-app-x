@@ -27,6 +27,13 @@ const tabBarStyle = computed(() => {
 	}
 })
 
+const tabBarStyle = computed(() => {
+	return {
+		height: tabBarLayout.value.tabListBaseHeight + 'px',
+		paddingBottom: tabBarLayout.value.safeAreaInsetBottom + 'px'
+	}
+})
+
 const validMidButtonLayout = computed(() : boolean => {
 	return hasMidButtonItem.value && itemCount.value > 0 && itemCount.value % 2 == 0 && midButtonWidth.value > 0
 })
@@ -57,6 +64,29 @@ function getItemLayout(index : number) : UniTabListItemLayout {
 
 	return {
 		width: containerWidth.value / itemCount.value,
+		marginLeft: 0
+	} as UniTabListItemLayout
+	// #endif
+
+	// #ifndef WEB
+	if (itemCount.value <= 0 || tabBarLayout.value.windowWidth <= 0) {
+		return {
+			width: 0,
+			marginLeft: 0
+		} as UniTabListItemLayout
+	}
+
+	if (validMidButtonLayout.value) {
+		const itemWidth = (tabBarLayout.value.windowWidth - midButtonWidth.value) / itemCount.value
+		const middleIndex = itemCount.value / 2
+		return {
+			width: itemWidth,
+			marginLeft: index == middleIndex ? midButtonWidth.value : 0
+		} as UniTabListItemLayout
+	}
+
+	return {
+		width: tabBarLayout.value.windowWidth / itemCount.value,
 		marginLeft: 0
 	} as UniTabListItemLayout
 	// #endif
