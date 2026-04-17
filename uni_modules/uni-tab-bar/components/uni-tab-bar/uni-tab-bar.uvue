@@ -1,5 +1,5 @@
 <template>
-	<view :style="{ height: tabBarLayout.tabListBaseHeight + 'px', paddingBottom: tabBarLayout.safeAreaInsetBottom + 'px' }"
+	<view ref="tabBarRef" :style="{ height: tabBarLayout.tabListBaseHeight + 'px', paddingBottom: tabBarLayout.safeAreaInsetBottom + 'px' }"
 		class="uni-tab-list-root">
 		<slot></slot>
 	</view>
@@ -18,6 +18,8 @@ const changeTab = inject<(index: number) => void>('uniTabBarChangeTab', (index: 
 const itemCount = ref<number>(0)
 const hasMidButtonItem = ref<boolean>(false)
 const midButtonWidth = ref<number>(0)
+const containerWidth = ref<number>(0)
+const tabBarRef = ref<UniElement | null>(null)
 
 const validMidButtonLayout = computed(() : boolean => {
 	return hasMidButtonItem.value && itemCount.value > 0 && itemCount.value % 2 == 0 && midButtonWidth.value > 0
@@ -30,6 +32,30 @@ function registerItem() : number {
 }
 
 function getItemLayout(index : number) : UniTabListItemLayout {
+	// #ifdef WEB
+	if (itemCount.value <= 0 || containerWidth.value <= 0) {
+		return {
+			width: 0,
+			marginLeft: 0
+		} as UniTabListItemLayout
+	}
+
+	if (validMidButtonLayout.value) {
+		const itemWidth = (containerWidth.value - midButtonWidth.value) / itemCount.value
+		const middleIndex = itemCount.value / 2
+		return {
+			width: itemWidth,
+			marginLeft: index == middleIndex ? midButtonWidth.value : 0
+		} as UniTabListItemLayout
+	}
+
+	return {
+		width: containerWidth.value / itemCount.value,
+		marginLeft: 0
+	} as UniTabListItemLayout
+	// #endif
+
+	// #ifndef WEB
 	if (itemCount.value <= 0 || tabBarLayout.windowWidth <= 0) {
 		return {
 			width: 0,
@@ -50,6 +76,20 @@ function getItemLayout(index : number) : UniTabListItemLayout {
 		width: tabBarLayout.windowWidth / itemCount.value,
 		marginLeft: 0
 	} as UniTabListItemLayout
+	// #endif
+}
+
+async function syncContainerWidth() : Promise<void> {
+	const tabBarElement = tabBarRef.value
+	if (tabBarElement == null) {
+		return
+	}
+
+	// #ifdef WEB
+	if (tabBarElement.offsetWidth > 0) {
+		containerWidth.value = tabBarElement.offsetWidth
+	}
+	// #endif
 }
 
 function registerMidButton(width : number, height : number) : void {
@@ -68,14 +108,29 @@ function syncOccupiedHeight() : void {
 
 onMounted(() => {
 	syncOccupiedHeight()
+	// #ifdef WEB
+	nextTick(() => {
+		syncContainerWidth()
+	})
+	// #endif
 })
 
 watch(() : number => itemCount.value, () => {
 	syncOccupiedHeight()
+	// #ifdef WEB
+	nextTick(() => {
+		syncContainerWidth()
+	})
+	// #endif
 })
 
 watch(() : boolean => hasMidButtonItem.value, () => {
 	syncOccupiedHeight()
+	// #ifdef WEB
+	nextTick(() => {
+		syncContainerWidth()
+	})
+	// #endif
 })
 
 provide('uniTabListRegisterItem', registerItem)
