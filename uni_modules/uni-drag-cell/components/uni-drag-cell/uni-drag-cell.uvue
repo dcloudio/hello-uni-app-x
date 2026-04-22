@@ -7,9 +7,9 @@
 			class="drag-cell-item"
 			:style="getItemStyle(index)"
 			@touchstart.stop="onItemTouchStart($event, index)"
-			@touchmove="onItemTouchMove"
-			@touchend="onItemTouchEnd"
-			@touchcancel="onItemTouchEnd">
+			@touchmove="onItemTouchMove($event, index)"
+			@touchend="onItemTouchEnd($event, index)"
+			@touchcancel="onItemTouchEnd($event, index)">
 			<view class="drag-cell-item-inner">
 				<view class="drag-cell-slot-content">
 					<slot :item="item" :index="index"></slot>
@@ -32,7 +32,7 @@
 		<view v-if="showDeleteBar" class="drag-cell-delete-bar" :class="overDeleteBar ? 'drag-cell-delete-bar-active' : ''">
 			<text class="drag-cell-delete-text">{{ deleteBarText }}</text>
 		</view>
-		<!-- #ifdef APP-ANDROID && !VUE3-VAPOR || APP && VUE3-VAPOR -->
+		<!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR || APP && VUE3-VAPOR -->
 		<view
 			v-if="showDeleteProxy"
 			class="drag-cell-delete-proxy"
@@ -83,22 +83,41 @@
 	}
 
 	const props = defineProps({
+		/**
+		 * @description 可拖拽排序的数据源，支持 v-model 双向绑定，内部会在拖拽结束后更新顺序
+		 */
 		modelValue: {
 			type: Array,
 			required: false
 		},
+		/**
+		 * @description 网格列数。大于 0 时按网格排布，等于 0 时按一行流式排布
+		 * @default 0
+		 */
 		column: {
 			type: Number,
 			default: 0
 		},
+		/**
+		 * @description 是否显示拖拽到底部删除栏，开启后可将 item 拖入底部删除
+		 * @default false
+		 */
 		showClose: {
 			type: Boolean,
 			default: false
 		},
+		/**
+		 * @description 是否显示末尾的 append 插槽（非拖拽状态下）
+		 * @default true
+		 */
 		showAppend: {
 			type: Boolean,
 			default: true
 		},
+		/**
+		 * @description 是否启用拖拽手柄模式，仅点击 handle 插槽才能触发拖拽
+		 * @default false
+		 */
 		handleMode: {
 			type: Boolean,
 			default: false
@@ -157,8 +176,8 @@
 		return handleModeEnabled.value ? 1 : dragActiveScale
 	})
 	let useDeleteProxyForDeleteDrag = false
-	// #ifdef APP-ANDROID && !VUE3-VAPOR || APP && VUE3-VAPOR
-	// 安卓平台非蒸汽模式切换为fixed时会触发touchcancel。蒸汽模式scroll-view内的元素由fixed切换为非fixed无法回到原位置（Bug待修复）。这两种情况暂不使用fixed方案
+	// #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR || APP && VUE3-VAPOR
+	// 安卓平台非蒸汽模式切换为fixed时会触发touchcancel。蒸汽模式scroll-view内的元素由fixed切换为非fixed无法回到原位置（Bug待修复）。iOS平台切换为fixed后无法通过preventDefault阻止滚动。
 	useDeleteProxyForDeleteDrag = true
 	// #endif
 	const showDeleteProxy = computed(() : boolean => {
@@ -600,10 +619,6 @@
 		}, longPressDuration)
 	}
 
-
-
-
-
 	const moveDrag = (clientX : number, clientY : number) => {
 		if (dragging.value == true && activeIndex.value >= 0) {
 			dragOffsetX.value = clientX - startTouchX.value
@@ -673,21 +688,30 @@
 		if (handleModeEnabled.value == true) {
 			return
 		}
+		if (dragging.value == true) {
+			return
+		}
 		const touchEvent = event as UniTouchEvent
 		const touch = touchEvent.touches[0]
 		scheduleLongPress(index, touch.clientX, touch.clientY)
 	}
 
-	const onItemTouchMove = (event : any) => {
+	const onItemTouchMove = (event : any, index : number) => {
 		const touchEvent = event as UniTouchEvent
 		const touch = touchEvent.touches[0]
 		if (dragging.value == true) {
 			touchEvent.preventDefault()
+			if (index != activeIndex.value) {
+				return
+			}
 		}
 		moveDrag(touch.clientX, touch.clientY)
 	}
 
-	const onItemTouchEnd = (_event : any) => {
+	const onItemTouchEnd = (_event : any, index : number) => {
+		if (index != activeIndex.value) {
+			return
+		}
 		finishDrag()
 	}
 
