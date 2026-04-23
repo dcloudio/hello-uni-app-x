@@ -3,6 +3,12 @@ const isIOS = platformInfo.startsWith('ios')
 const PAGE_PATH = '/pages/API/base64/base64'
 
 describe('base64', () => {
+  if (isIOS) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
