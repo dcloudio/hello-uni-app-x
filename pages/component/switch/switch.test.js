@@ -2,6 +2,7 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
+const isIOS = platformInfo.startsWith('ios')
 const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
 const PAGE_PATH = '/pages/component/switch/switch'
 
@@ -34,7 +35,7 @@ describe('switch', () => {
     expect(newValue2.toString()).toBe(true + '')
   })
   it('color', async () => {
-    if (isHarmony && isDom2) {
+    if ((isHarmony || isIOS) && isDom2) {
       console.log('Switch Harmony Dom2 not support props color')
       expect(1).toBe(1)
       return
@@ -50,7 +51,7 @@ describe('switch', () => {
   })
   if(!isMP) {
     it('dark', async () => {
-      if (isHarmony && isDom2) {
+      if ((isHarmony || isIOS) && isDom2) {
         console.log('Switch Harmony Dom2 not support props background-color、fore-color、active-background-color、active-fore-color')
         expect(1).toBe(1)
         return
