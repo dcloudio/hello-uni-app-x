@@ -53,13 +53,6 @@ describe('showActionSheet', () => {
         topSafeArea = 38
       }
     }
-    deviceShotOptions = {
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44,
-      },
-    };
 
 		page = await program.reLaunch(isDom2 && !isHarmony ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
     await page.waitFor('view');
