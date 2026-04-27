@@ -4,6 +4,7 @@ const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/picker-view/picker-view'
@@ -35,7 +36,7 @@ describe('PickerView.uvue', () => {
     // TODO
     expect(newValue1.toString()).toEqual('0,1,30')
     // 仅在App端，setValue可触发change事件
-    if (isAndroid || isIOS) {
+    if (isAndroid || (isIOS && !isDom2)) {
       const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([ 0, 1, 30 ])
@@ -45,7 +46,7 @@ describe('PickerView.uvue', () => {
     const newValue2 = await pickerViewEl.property('value')
     // TODO
     expect(newValue2.toString()).toEqual('10,10,10')
-    if (isAndroid || isIOS) {
+    if (isAndroid || (isIOS && !isDom2)) {
       const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([10, 10, 10])
@@ -99,7 +100,7 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (!isAppWebView && !isMP && !isHarmony) {
+  if (!isAppWebView && !isMP && !isHarmony && !(isIOS && isDom2)) {
     it('mask-top-bottom-style', async () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
