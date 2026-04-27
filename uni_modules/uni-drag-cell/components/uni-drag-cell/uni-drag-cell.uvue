@@ -7,9 +7,9 @@
 			class="drag-cell-item"
 			:style="getItemStyle(index)"
 			@touchstart.stop="onItemTouchStart($event, index)"
-			@touchmove="onItemTouchMove"
-			@touchend="onItemTouchEnd"
-			@touchcancel="onItemTouchEnd">
+			@touchmove="onItemTouchMove($event, index)"
+			@touchend="onItemTouchEnd($event, index)"
+			@touchcancel="onItemTouchEnd($event, index)">
 			<view class="drag-cell-item-inner">
 				<view class="drag-cell-slot-content">
 					<slot :item="item" :index="index"></slot>
@@ -19,8 +19,8 @@
 					class="drag-cell-handle"
 					:class="getHandleClass(index)"
 					@touchstart.stop="onHandleTouchStart($event, index)"
-					@touchend.stop="onHandleTouchEnd"
-					@touchcancel.stop="onHandleTouchEnd">
+					@touchend.stop="onHandleTouchEnd($event, index)"
+					@touchcancel.stop="onHandleTouchEnd($event, index)">
 					<!-- 此处item、index参数除传递参数之外，还会激活编译到小程序的scopedSlot特殊处理逻辑，使外部使用时能正常循环创建插槽内容。需要注意的是使用此插槽是也需要声明参数来激活特殊逻辑 -->
 					<slot name="handle" :item="item" :index="index"></slot>
 				</view>
@@ -32,7 +32,7 @@
 		<view v-if="showDeleteBar" class="drag-cell-delete-bar" :class="overDeleteBar ? 'drag-cell-delete-bar-active' : ''">
 			<text class="drag-cell-delete-text">{{ deleteBarText }}</text>
 		</view>
-		<!-- #ifdef APP-ANDROID && !VUE3-VAPOR || APP && VUE3-VAPOR -->
+		<!-- #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR || APP && VUE3-VAPOR -->
 		<view
 			v-if="showDeleteProxy"
 			class="drag-cell-delete-proxy"
@@ -83,22 +83,41 @@
 	}
 
 	const props = defineProps({
+		/**
+		 * @description 可拖拽排序的数据源，支持 v-model 双向绑定，内部会在拖拽结束后更新顺序
+		 */
 		modelValue: {
 			type: Array,
 			required: false
 		},
+		/**
+		 * @description 网格列数。大于 0 时按网格排布，等于 0 时按一行流式排布
+		 * @default 0
+		 */
 		column: {
 			type: Number,
 			default: 0
 		},
+		/**
+		 * @description 是否显示拖拽到底部删除栏，开启后可将 item 拖入底部删除
+		 * @default false
+		 */
 		showClose: {
 			type: Boolean,
 			default: false
 		},
+		/**
+		 * @description 是否显示末尾的 append 插槽（非拖拽状态下）
+		 * @default true
+		 */
 		showAppend: {
 			type: Boolean,
 			default: true
 		},
+		/**
+		 * @description 是否启用拖拽手柄模式，仅点击 handle 插槽才能触发拖拽
+		 * @default false
+		 */
 		handleMode: {
 			type: Boolean,
 			default: false
@@ -117,6 +136,7 @@
 	const previewItemIds = ref<number[]>([])
 	const settling = ref(false)
 	const dragging = ref(false)
+	// TODO XXXIndex存的太多了，后续优化
 	const activeIndex = ref(-1)
 	const hoverIndex = ref(-1)
 	const dragOffsetX = ref(0)
@@ -136,6 +156,17 @@
 	const pressCancelDistance = 10
 	const dragActiveScale = 1.12
 	const deleteBarHeight = 56
+
+	let touchVersion = 0
+
+	class TouchContext {
+		index : number
+		version : number
+		constructor(index : number) {
+			this.index = index
+			this.version = touchVersion
+		}
+	}
 
 	const columnCount = computed(() : number => {
 		const currentColumn = props.column as number
@@ -157,8 +188,8 @@
 		return handleModeEnabled.value ? 1 : dragActiveScale
 	})
 	let useDeleteProxyForDeleteDrag = false
-	// #ifdef APP-ANDROID && !VUE3-VAPOR || APP && VUE3-VAPOR
-	// 安卓平台非蒸汽模式切换为fixed时会触发touchcancel。蒸汽模式scroll-view内的元素由fixed切换为非fixed无法回到原位置（Bug待修复）。这两种情况暂不使用fixed方案
+	// #ifdef (APP-ANDROID || APP-IOS) && !VUE3-VAPOR || APP && VUE3-VAPOR
+	// 安卓平台非蒸汽模式切换为fixed时会触发touchcancel。蒸汽模式scroll-view内的元素由fixed切换为非fixed无法回到原位置（Bug待修复）。iOS平台切换为fixed后无法通过preventDefault阻止滚动。
 	useDeleteProxyForDeleteDrag = true
 	// #endif
 	const showDeleteProxy = computed(() : boolean => {
@@ -556,10 +587,13 @@
 		applyPreviewOrder(createIdentityOrder(innerList.value.length))
 	}
 
-	const beginHandleDrag = (index : number, clientX : number, clientY : number) => {
+	const beginHandleDrag = (context : TouchContext, clientX : number, clientY : number) => {
 		measureLayouts().then(() => {
-			setDragContext(index, clientX, clientY)
-			beginDrag(index, clientX, clientY)
+			if (context.version !== touchVersion) {
+				return
+			}
+			setDragContext(context.index, clientX, clientY)
+			beginDrag(context.index, clientX, clientY)
 		})
 	}
 
@@ -586,23 +620,23 @@
 		}
 	}
 
-	const scheduleLongPress = (index : number, clientX : number, clientY : number) => {
+	const scheduleLongPress = (context : TouchContext, clientX : number, clientY : number) => {
+		const currentTouchVersion = touchVersion
 		clearLongPressTimer()
-		pendingIndex.value = index
+		pendingIndex.value = context.index
 		startTouchX.value = clientX
 		startTouchY.value = clientY
 		longPressTimer = setTimeout(() => {
 			longPressTimer = 0
 			measureLayouts().then(() => {
-				setDragContext(index, clientX, clientY)
-				beginDrag(index, clientX, clientY)
+				if (touchVersion !== context.version) {
+					return
+				}
+				setDragContext(context.index, clientX, clientY)
+				beginDrag(context.index, clientX, clientY)
 			})
 		}, longPressDuration)
 	}
-
-
-
-
 
 	const moveDrag = (clientX : number, clientY : number) => {
 		if (dragging.value == true && activeIndex.value >= 0) {
@@ -669,26 +703,43 @@
 		})
 	}
 
+	let currentTouchContext: TouchContext | null = null
 	const onItemTouchStart = (event : any, index : number) => {
 		if (handleModeEnabled.value == true) {
 			return
 		}
+		if (dragging.value == true) {
+			return
+		}
+		currentTouchContext = new TouchContext(index)
 		const touchEvent = event as UniTouchEvent
 		const touch = touchEvent.touches[0]
-		scheduleLongPress(index, touch.clientX, touch.clientY)
+		scheduleLongPress(currentTouchContext!, touch.clientX, touch.clientY)
 	}
 
-	const onItemTouchMove = (event : any) => {
+	const onItemTouchMove = (event : any, index : number) => {
 		const touchEvent = event as UniTouchEvent
 		const touch = touchEvent.touches[0]
 		if (dragging.value == true) {
 			touchEvent.preventDefault()
+			if (index != activeIndex.value) {
+				return
+			}
+			moveDrag(touch.clientX, touch.clientY)
 		}
-		moveDrag(touch.clientX, touch.clientY)
 	}
 
-	const onItemTouchEnd = (_event : any) => {
-		finishDrag()
+	const onItemTouchEnd = (_event : any, index : number) => {
+		if (currentTouchContext && currentTouchContext!.index === index) {
+			touchVersion++
+			currentTouchContext = null
+		}
+		if (index != activeIndex.value) {
+			return
+		}
+		if (dragging.value == true) {
+			finishDrag()
+		}
 	}
 
 	const onHandleTouchStart = (event : any, index : number) => {
@@ -697,10 +748,15 @@
 		}
 		const touchEvent = event as UniTouchEvent
 		const touch = touchEvent.touches[0]
-		beginHandleDrag(index, touch.clientX, touch.clientY)
+		currentTouchContext = new TouchContext(index)
+		beginHandleDrag(currentTouchContext!, touch.clientX, touch.clientY)
 	}
 
-	const onHandleTouchEnd = (_event : any) => {
+	const onHandleTouchEnd = (_event : any, index : number) => {
+		if(currentTouchContext && currentTouchContext!.index === index) {
+			touchVersion++
+			currentTouchContext = null
+		}
 		if (dragging.value == true) {
 			finishDrag()
 			return

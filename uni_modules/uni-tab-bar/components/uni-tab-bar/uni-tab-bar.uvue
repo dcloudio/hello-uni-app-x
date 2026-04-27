@@ -83,29 +83,6 @@ function getItemLayout(index : number) : UniTabListItemLayout {
 		marginLeft: 0
 	} as UniTabListItemLayout
 	// #endif
-
-	// #ifndef WEB
-	if (itemCount.value <= 0 || tabBarLayout.value.windowWidth <= 0) {
-		return {
-			width: 0,
-			marginLeft: 0
-		} as UniTabListItemLayout
-	}
-
-	if (validMidButtonLayout.value) {
-		const itemWidth = (tabBarLayout.value.windowWidth - midButtonWidth.value) / itemCount.value
-		const middleIndex = itemCount.value / 2
-		return {
-			width: itemWidth,
-			marginLeft: index == middleIndex ? midButtonWidth.value : 0
-		} as UniTabListItemLayout
-	}
-
-	return {
-		width: tabBarLayout.value.windowWidth / itemCount.value,
-		marginLeft: 0
-	} as UniTabListItemLayout
-	// #endif
 }
 
 async function syncContainerWidth() : Promise<void> {
@@ -175,7 +152,6 @@ provide('uniTabListChangeTab', changeTab)
 		position: absolute;
 		bottom: 0;
 		box-sizing: content-box;
-		background-color: #ffffff;
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
