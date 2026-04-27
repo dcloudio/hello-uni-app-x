@@ -36,7 +36,7 @@ describe('Checkbox.uvue', () => {
   })
   it('length', async () => {
     const checkboxGroupElements = await page.$$('.checkbox-group')
-    if (isHarmony && isDom2) {
+    if ((isHarmony || isIOS) && isDom2) {
       expect(checkboxGroupElements.length).toBe(5)
     } else {
       expect(checkboxGroupElements.length).toBe(4)
