@@ -4,6 +4,7 @@ const isIOS = platformInfo.startsWith('ios')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isIOS || isAndroid || isHarmony
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('test title', () => {
   if (!isApp) {
@@ -56,7 +57,7 @@ describe('test title', () => {
     expect(image).toSaveImageSnapshot();
   });
 
-  if (!isHarmony) {
+  if (!(isHarmony && !isDom2)) {
     it('finish event', async () => {
       await page.callMethod('startAnimate');
       await page.waitFor(5100);
