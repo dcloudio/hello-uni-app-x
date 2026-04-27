@@ -4,7 +4,7 @@ const isWeb = platformInfo.startsWith('web')
 const isIos = platformInfo.startsWith('ios')
 
 describe('choose-video', () => {
-  if (isAppWebView || isWeb || isIos) {
+  if (isAppWebView || isWeb) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
