@@ -369,7 +369,7 @@ if (!isAppWebView) {
   }
   if(isIos || isAndroid){
     if(!isDom2) {
-      pages.push('/pages/template/native-button-bridge/native-button-bridge')
+      // pages.push('/pages/template/native-button-bridge/native-button-bridge')
     }
     pages.push(
       // 非 UI 相关不截图
