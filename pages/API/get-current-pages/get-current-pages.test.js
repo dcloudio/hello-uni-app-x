@@ -41,7 +41,7 @@ describe('getCurrentPages', () => {
         }, waitTime)
       })
     }
-    page = isDom2 ? await program.redirectTo(HOME_PAGE_PATH) : await program.switchTab(HOME_PAGE_PATH)
+    page = isDom2 && !isHarmony ? await program.reLaunch(HOME_PAGE_PATH) : await program.switchTab(HOME_PAGE_PATH)
     await page.waitFor(1000)
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(1000)
