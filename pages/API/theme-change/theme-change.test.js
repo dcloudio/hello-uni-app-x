@@ -6,7 +6,7 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 describe('API-theme-change', () => {
   let page;
   let originalTheme;
-  if (!isAndroid || !isIos || isAppWebView) {
+  if (!(isAndroid || isIos) || isAppWebView) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })

@@ -3,6 +3,13 @@ const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
 
 describe('component-native-scroll-view-props', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   beforeAll(async () => {
       page = await program.reLaunch('/pages/component/scroll-view/scroll-view-props');

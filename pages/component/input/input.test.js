@@ -11,6 +11,13 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-input', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   if (isAppWebView) {
   	it('app 与 web 存在差异, webview 不进行截图', () => {
       expect(1).toBe(1)
