@@ -9,11 +9,13 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const PAGE_PATH = '/pages/API/oauth/oauth'
 
 describe('API-OAuth', () => {
-  // 微信小程序截图无法截到弹框
-  it('not support', () => {
-    expect(1).toBe(1)
-  })
-  return
+  if (isMP) {
+    // 微信小程序截图无法截到弹框
+    it('not support', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
