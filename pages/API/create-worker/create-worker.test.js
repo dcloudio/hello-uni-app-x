@@ -4,7 +4,6 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
-const isMP = platformInfo.startsWith('mp')
 
 describe('Api-createWorker', () => {
   if(isIOS || isMP) {
