@@ -16,11 +16,13 @@ describe('editor.uvue', () => {
 
   let page
   let editor
+
   const defaultFormats = {
     bold: false,
     italic: false,
     underline: false,
     strike: false,
+    blockquote: false,
     header: 0,
     list: '',
     align: '',
@@ -48,6 +50,7 @@ describe('editor.uvue', () => {
 
   async function resetPageState() {
     await page.callMethod('closeSheets')
+    await page.callMethod('resetFormatsForTest')
     await updateData({
       autoTest: true,
       undoTest: false,
@@ -59,8 +62,7 @@ describe('editor.uvue', () => {
       getContentDeltaTest: null,
       formatPainterActive: false,
       activeSheet: '',
-      toolbarKeepVisible: false,
-      formats: { ...defaultFormats }
+      toolbarKeepVisible: false
     })
     await setEditorContents([
       { insert: '\n' }
