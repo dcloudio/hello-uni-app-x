@@ -29,6 +29,7 @@ describe('editor.uvue', () => {
     underline: false,
     strike: false,
     blockquote: false,
+    link: '',
     header: 0,
     list: '',
     align: '',
