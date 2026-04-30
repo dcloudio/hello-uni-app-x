@@ -1971,6 +1971,17 @@ function clearListFormat() {
 }
 
 function toggleBlockquote() {
+  const nextValue = !data.formats.blockquote
+  const isListFormat = data.formats.list != ''
+  const isHeadFormat = data.formats.header != 0
+
+  if (nextValue && isListFormat) {
+    applyFormat('list', null)
+  }
+  if (nextValue && isHeadFormat) {
+    applyFormat('header', 0)
+  }
+
   applyFormat('blockquote', data.formats.blockquote ? false : true)
   closeSheets()
   refocusEditorAfterToolbarAction()
