@@ -230,13 +230,18 @@
   const loading = (event: UniWebViewLoadingEvent) => {
     data.loadingCount++
     // console.log(JSON.stringify(event.detail));
+    // #ifndef APP-HARMONY
+    // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     if (data.autoTest) {
+    // #endif
       data.eventLoading = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "src": event.detail.src
       };
+    // #ifndef APP-HARMONY
     }
+    // #endif
   }
 
   const load = (event: UniWebViewLoadEvent) => {
@@ -245,14 +250,19 @@
     data.canGoBack = canWebViewGoBack('web-view');
     data.canGoForward = canWebViewGoForward('web-view');
     // #endif
+    // #ifndef APP-HARMONY
+    // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     if (data.autoTest) {
+    // #endif
       data.eventLoad = {
         "tagName": event.target?.tagName,
         "type": event.type,
         "src": event.detail.src,
         "url": event.detail.url,
       };
+    // #ifndef APP-HARMONY
     }
+    // #endif
   }
 
   const download = (event: UniWebViewDownloadEvent) => {
@@ -318,7 +328,10 @@
   }
 
   const checkLoadingCount = () => {
+    // #ifndef APP-HARMONY
+    // 鸿蒙平台在页面加载完成后，重复调用 reload 不会触发 loading 事件
     data.loadingCount = 0
+    // #endif
     // webviewContext?.reload();
     webviewContext?.reload();
   }
@@ -326,9 +339,14 @@
   const currentInstance = getCurrentInstance()
 
   onReady(() => {
-    // #ifdef APP
     // TODO web 实现createWebviewContext
+    // #ifdef APP
+    // #ifdef VUE3-VAPOR
     webviewContext = uni.createWebViewContext('web-view', currentInstance?.proxy)
+    // #endif
+    // #ifdef VUE3-VAPOR
+    webviewContext = uni.createWebviewContext('web-view', currentInstance?.proxy)
+    // #endif
     console.log("webviewContext:",webviewContext)
     // NOTE 绑定到 this 上会被代理导致无法调用方法
     webviewElement = uni.getElementById('web-view') as UniWebViewElement //推荐使用element，功能更丰富
