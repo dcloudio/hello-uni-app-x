@@ -244,25 +244,6 @@
 		return seconds
 	}
 
-	function pushLog(line : string) : void {
-		logItems.value.unshift(line)
-		if (logItems.value.length > 8) {
-			logItems.value.splice(8)
-		}
-	}
-
-	function updateResult(action : string, status : string, payload : string) : void {
-		lastAction.value = action
-		lastStatus.value = status
-		lastPayload.value = payload
-		pushLog(`${action} -> ${status}`)
-	}
-
-	function handleCalendarSuccess(action : string, res : CalendarSuccess) : void {
-		const errMsg = res.errMsg != null ? res.errMsg as string : `${action}:ok`
-		updateResult(action, '成功', errMsg)
-	}
-
 	function describeCalendarError(errCode : number) : string {
 		switch (errCode) {
 			case 601:
@@ -285,12 +266,47 @@
 				return '未知错误'
 		}
 	}
+  
+	function pushLog(line : string) : void {
+		logItems.value.unshift(line)
+		if (logItems.value.length > 8) {
+			logItems.value.splice(8)
+		}
+	}
 
-	function handleCalendarFail(action : string, error : CalendarFail) : void {
-		const subject = error.errSubject != null ? error.errSubject : 'uni-calendar'
-		const message = error.errMsg != null ? error.errMsg : ''
-		const errorDescription = describeCalendarError(error.errCode)
-		updateResult(action, `失败 (${error.errCode})`, `${errorDescription}; errSubject=${subject}; errCode=${error.errCode}; errMsg=${message}`)
+	function updateResult(action : string, status : string, payload : string) : void {
+		lastAction.value = action
+		lastStatus.value = status
+		lastPayload.value = payload
+		pushLog(`${action} -> ${status}`)
+	}
+
+	function handleCalendarSuccessResult(action : string, errMsg : string | null) : void {
+		const resultMessage = errMsg != null ? errMsg : `${action}:ok`
+		updateResult(action, '成功', resultMessage)
+	}
+
+	function handleAddPhoneCalendarSuccess(action : string, res : AddPhoneCalendarSuccess) : void {
+		handleCalendarSuccessResult(action, res.errMsg)
+	}
+
+	function handleAddPhoneRepeatCalendarSuccess(action : string, res : AddPhoneRepeatCalendarSuccess) : void {
+		handleCalendarSuccessResult(action, res.errMsg)
+	}
+
+	function handleCalendarFailResult(action : string, errSubject : string | null, errCode : number, errMsg : string | null) : void {
+		const subject = errSubject != null ? errSubject : 'uni-calendar'
+		const message = errMsg != null ? errMsg : ''
+		const errorDescription = describeCalendarError(errCode)
+		updateResult(action, `失败 (${errCode})`, `${errorDescription}; errSubject=${subject}; errCode=${errCode}; errMsg=${message}`)
+	}
+
+	function handleAddPhoneCalendarFail(action : string, error : AddPhoneCalendarFail) : void {
+		handleCalendarFailResult(action, error.errSubject, error.errCode, error.errMsg)
+	}
+
+	function handleAddPhoneRepeatCalendarFail(action : string, error : AddPhoneRepeatCalendarFail) : void {
+		handleCalendarFailResult(action, error.errSubject, error.errCode, error.errMsg)
 	}
 
 	function fillDefaultForm() : void {
@@ -401,10 +417,10 @@
 			path: path.value,
 			signature: signature.value,
 			success: (res) => {
-				handleCalendarSuccess('addPhoneCalendar', res)
+				handleAddPhoneCalendarSuccess('addPhoneCalendar', res)
 			},
 			fail: (error) => {
-				handleCalendarFail('addPhoneCalendar', error)
+				handleAddPhoneCalendarFail('addPhoneCalendar', error)
 			}
 		}
 
@@ -430,10 +446,10 @@
 			repeatInterval: repeatCalendarValue,
 			repeatEndTime: repeatEndTime,
 			success: (res) => {
-				handleCalendarSuccess('addPhoneRepeatCalendar', res)
+				handleAddPhoneRepeatCalendarSuccess('addPhoneRepeatCalendar', res)
 			},
 			fail: (error) => {
-				handleCalendarFail('addPhoneRepeatCalendar', error)
+				handleAddPhoneRepeatCalendarFail('addPhoneRepeatCalendar', error)
 			}
 		}
 
