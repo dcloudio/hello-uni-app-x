@@ -8,6 +8,40 @@
 </template>
 
 <script lang="uts" setup>
+  /**
+   * 索引列表
+   * @description 索引列表组件
+   * @uniPlatform {
+   *   "app": {
+   *     "android": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.0",
+   *       "unixvVer": "x"
+   *     },
+   *     "ios": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.0",
+   *       "unixvVer": "x"
+   *     },
+   *     "harmony": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.0",
+   *       "unixvVer": "5.08"
+   *     }
+   *   },
+   *   "mp": {
+   *     "weixin": {
+   *       "uniVer": "x",
+   *       "unixVer": "5.08"
+   *     }
+   *   },
+   *   "web": {
+   *     "uniVer": "x",
+   *     "unixVer": "5.0"
+   *   }
+   * }
+   */
+
 	defineOptions({
 		externalClasses: ['indicator-view-class', 'indicator-text-class']
 	})
@@ -140,6 +174,14 @@
 	}
 
 	const onTouchMove = (e : UniTouchEvent) => {
+		// #ifdef APP && UNI-APP-X
+		e.preventDefault()
+		// #endif
+		// #ifdef WEB && UNI-APP-X
+		if (e.cancelable) {
+			e.preventDefault()
+		}
+		// #endif
 		const touch = e.touches[0]
 		const idx = getIndexFromY(touch.clientY)
 		const newIndex = cachedIndexList[idx]
