@@ -8,12 +8,11 @@ const isWeb = platformInfo.startsWith('web')
 
 describe('editor.uvue', () => {
   /**
-   * 1. mp-weixin 自动化测试截图报错
-   * 2. vapor harmonyOS 自动化测试闪退
+   * mp-weixin 自动化测试截图报错
    *
    * 暂时跳过相关平台的测试，后续根据平台能力完善测试用例
    */
-  if (isMP || (isDom2 && isHarmony) || (isDom2 && isIos)) {
+  if (isMP || (isDom2 && isIos)) {
     it('skip', () => {
       expect(1).toBe(1)
     })
