@@ -35,6 +35,7 @@
     reservedMB: 0
   } as PageState)
 
+  let callbackId = 0
   let memoryWarningNativeCallback: OnMemoryWarningCallback | null = null
   let memoryPressureBuffers: ArrayBuffer[] = []
 
@@ -92,7 +93,7 @@
       console.log('onMemoryWarning', res)
     }
     memoryWarningNativeCallback = callback
-    uni.onMemoryWarning(callback)
+    callbackId = uni.onMemoryWarning(callback)
     state.listening = true
     state.status = '监听中，等待系统触发内存告警'
     appendRecord('已注册 uni.onMemoryWarning')
@@ -100,14 +101,14 @@
 
   function stopListen(): void {
     if (memoryWarningNativeCallback == null) {
-      uni.offMemoryWarning(null)
+      uni.offMemoryWarning(callbackId)
       state.listening = false
       state.status = '监听已停止'
       appendRecord('已清空所有监听器')
       return
     }
     const nativeCallback = memoryWarningNativeCallback!
-    uni.offMemoryWarning(nativeCallback)
+    uni.offMemoryWarning(callbackId)
     memoryWarningNativeCallback = null
     state.listening = false
     state.status = '监听已停止'
@@ -146,7 +147,7 @@
   onUnload(() => {
     if (memoryWarningNativeCallback != null) {
       const nativeCallback = memoryWarningNativeCallback!
-      uni.offMemoryWarning(nativeCallback)
+      uni.offMemoryWarning(callbackId)
       memoryWarningNativeCallback = null
     }
     memoryPressureBuffers = []
