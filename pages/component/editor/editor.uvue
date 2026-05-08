@@ -719,43 +719,6 @@ function syncToolbarChipClasses() {
   data.toolbarChipCellClass = 'toolbar-chip-cell toolbar-chip-cell-quarter'
 }
 
-function shouldPreserveSelectionWhenOpenSheet(sheet: string) : boolean {
-  if (sheet == 'title') {
-    return true
-  }
-  if (sheet == 'style') {
-    return true
-  }
-  if (sheet == 'text-color') {
-    return true
-  }
-  if (sheet == 'background-color') {
-    return true
-  }
-  if (sheet == 'line-height') {
-    return true
-  }
-  if (sheet == 'letter-spacing') {
-    return true
-  }
-  if (sheet == 'font-size') {
-    return true
-  }
-  if (sheet == 'font-family') {
-    return true
-  }
-  if (sheet == 'block-indent') {
-    return true
-  }
-  if (sheet == 'align') {
-    return true
-  }
-  if (sheet == 'list') {
-    return true
-  }
-  return false
-}
-
 function getSheetHostStyle() : string {
   // #ifndef WEB
   return ''
@@ -1287,13 +1250,8 @@ function toggleSheet(sheet: string) {
       data.sheetAnimated = true
     }
   }, 16)
-  // App 端打开格式面板时如果主动收起键盘，会丢失 editor 当前选区，
-  // 后续再调用 format 只能作用到光标位置，无法作用到已选中文本。
-  if (shouldPreserveSelectionWhenOpenSheet(sheet)) {
-    data.isFocused = true
-  } else {
-    hideKeyboardForSheet()
-  }
+
+  hideKeyboardForSheet()
   syncToolbarBottom()
   syncToolbarVisibility()
 }
