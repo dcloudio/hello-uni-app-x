@@ -171,7 +171,9 @@ describe('editor.uvue', () => {
     if (isWeb) {
       expect(await editor.attribute('placeholder')).toBe('请输入正文内容...')
     }
-    expect(await program.screenshot()).toSaveImageSnapshot()
+    expect(await program.screenshot({
+      fullPage: true
+    })).toSaveImageSnapshot()
   })
 
   it('editor-toolbar', async () => {
@@ -192,7 +194,9 @@ describe('editor.uvue', () => {
 
   it('editor-screenshot', async () => {
     await openSheet('openStyleSheet', 'style', '设置字格式', '当前未设置字格式')
-    expect(await program.screenshot()).toSaveImageSnapshot()
+    expect(await program.screenshot({
+      fullPage: true
+    })).toSaveImageSnapshot()
     await closeSheet()
   })
 
@@ -384,7 +388,9 @@ describe('editor.uvue', () => {
     await setBlur()
     const waitTime = process.env.uniTestPlatformInfo.includes('firefox') ? 5000 : 2000
     await page.waitFor(waitTime)
-    expect(await program.screenshot()).toSaveImageSnapshot()
+    expect(await program.screenshot({
+      fullPage: true
+    })).toSaveImageSnapshot()
   })
 
   it('removeFormat', async () => {
