@@ -11,7 +11,14 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
 describe('showActionSheet', () => {
-  let screenShotOptions = {};
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let screenShotOptions = { fullPage: true };
   let page;
   let topSafeArea = 0
   

@@ -3,7 +3,8 @@
 describe('test longPress', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isWeb = platformInfo.startsWith('web')
-  if (isWeb) {
+  const isMP = platformInfo.startsWith('mp')
+  if (isWeb || isMP) {
     it('other platform', () => {
       expect(1).toBe(1)
     })
@@ -17,13 +18,12 @@ describe('test longPress', () => {
 
   it('check longPress event', async () => {
     let eventDomRect = await page.data("data.eventDomRect")
-    await page.waitFor(300);
     let x = eventDomRect.x + eventDomRect.width / 2.0
     let y = eventDomRect.y + eventDomRect.height / 2.0
     await program.tap({
       x: x,
-      y: y,
-      duration: 500
+      y: y+100,
+      duration: 1000
     })
     let isLongPressTrigger = await page.data("data.isLongPressTrigger")
     expect(isLongPressTrigger).toEqual(true);

@@ -8,30 +8,38 @@
       </view>
       <view v-if="!hasLeftWin" class="uni-text-box">
         <text class="hello-text">uni-app x内置组件，展示样式仅供参考，文档详见：</text>
-        <u-link class="hello-text" :href="'https://doc.dcloud.net.cn/uni-app-x/component/'"
-          :text="'https://doc.dcloud.net.cn/uni-app-x/component/'" :inWhiteList="true"></u-link>
+        <!-- #ifndef MP -->
+        <uni-link class="hello-text" href="https://doc.dcloud.net.cn/uni-app-x/component/" target="_blank">
+          https://doc.dcloud.net.cn/uni-app-x/component/
+        </uni-link>
+        <!-- #endif -->
+        <!-- #ifdef MP -->
+        <uni-link class="hello-text" href="https://doc.dcloud.net.cn/uni-app-x/component/">
+          https://doc.dcloud.net.cn/uni-app-x/component/
+        </uni-link>
+        <!-- #endif -->
       </view>
       <uni-collapse>
         <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
-          class="uni-panel">
+          :open="menuItem.id == 'view-container'" class="uni-panel">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
-            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item pl" hover-class="is--active"
+            <view v-if="childMenuItem.items.length==0" class="uni-navigate-item" hover-class="is--active"
               @click="goPage(`/${childMenuItem.path}`)">
               <text class="uni-navigate-text" :class="{
                   'left-win-active': leftWinActive === childMenuItem.path && hasLeftWin,
                 }">{{ childMenuItem.style["navigationBarTitleText"] }}</text>
-              <image :src="arrowRightIcon" class="uni-icon-size"></image>
+              <view class="right_arrow"></view>
             </view>
-            <uni-collapse v-else style="width: 100%;border-top: 1px solid #f0f0f0;">
+            <uni-collapse v-else style="width: 100%;border-top: 1px solid var(--border-color);" class="pl-4 pr-4">
               <uni-collapse-item :title="childMenuItem.name" class="uni-panel" style="margin-bottom: 0;">
-                <view class="uni-navigate-item pl" hover-class="is--active"
+                <view class="uni-navigate-item" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
                   <text class="uni-navigate-text" :class="{
                       'left-win-active':
                         leftWinActive === grandChildMenuItem.path && hasLeftWin,
                     }">{{ grandChildMenuItem.style["navigationBarTitleText"] }}</text>
-                  <image :src="arrowRightIcon" class="uni-icon-size"></image>
+                  <view class="right_arrow"></view>
                 </view>
               </uni-collapse-item>
             </uni-collapse>
@@ -64,7 +72,6 @@
   const categoryRef = ref<ComponentPublicInstance[] | null>(null)
 
   const menu = ref(menuData as MenuItem[])
-  const arrowRightIcon = ref('/static/icons/arrow-right.png' as string.ImageURIString)
   const pageHiden = ref(false)
 
   const hasLeftWin = computed((): boolean => {
@@ -136,7 +143,11 @@
   // #ifdef WEB
   watch(() => (instance as any).$route, (newRoute: any) => {
     if (newRoute && newRoute.matched.length) {
-      const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => leftWinActive.value !== "" && leftWinActive.value === item?.path))
+      const routePath = newRoute.path.slice(1)
+      if (!routePath.startsWith('pages/component/')) {
+        return
+      }
+      const activeCategoryIndex = menu.value.findIndex(menuItem => menuItem?.items.some(item => routePath === item?.path))
       if (activeCategoryIndex > -1) {
         nextTick(() => {
           const categoryRefs = categoryRef.value
@@ -152,10 +163,6 @@
 </script>
 
 <style>
-  .pl {
-    padding-left: 18px
-  }
-
   /* web端适配暗黑主题 */
   /* #ifdef WEB */
   .uni-container.theme-dark {
@@ -163,4 +170,17 @@
   }
 
   /* #endif */
+
+  .right_arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 12px;
+    transform: rotate(-45deg);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: var(--arrow-color, #999999);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
+  }
 </style>
