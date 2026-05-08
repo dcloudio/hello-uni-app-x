@@ -424,6 +424,7 @@
     <!-- #endif -->
 
     <view class="editor-stage" :style="editorStageStyle">
+      <!-- editor 切换 hidekeyboard: 注释掉 type -->
       <editor
         id="editor"
         class="editor-field"
@@ -1266,6 +1267,9 @@ function getEditorStageStyle() : string {
 }
 
 function hideKeyboardForSheet() {
+  // editor 切换 hidekeyboard: 下边注释放开
+  // uni.hideKeyboard()
+
   data.editorInputType = 'none'
   data.isFocused = false
 }
@@ -1275,6 +1279,14 @@ function toggleSheet(sheet: string) {
     closeSheets()
     return
   }
+
+  // #ifdef APP-ANDROID
+  uni.showToast({
+    title: '请手动收起键盘后选择操作',
+    icon: 'none'
+  })
+  // #endif
+
   updateSheetAnchor(sheet)
   data.activeSheet = sheet
   syncToolbarChipClasses()
