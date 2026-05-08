@@ -144,7 +144,7 @@
     >
       <view :class="toolbarPanelClass" :style="sheetPanelStyle">
         <!-- #ifdef WEB -->
-        <view class="toolbar-panel-arrow" :style="toolbarPanelArrowStyle"></view>
+        <view v-if="!webPhoneLayout" class="toolbar-panel-arrow" :style="toolbarPanelArrowStyle"></view>
         <!-- #endif -->
         <view :class="toolbarPanelHeaderClass">
           <view class="toolbar-panel-title-wrap">
@@ -180,7 +180,7 @@
 
             <view class="toolbar-color-section">
               <text class="toolbar-color-title">文字颜色</text>
-              <view :class="data.colorRowClass">
+              <view class="color-row color-row-panel">
                 <view @tap="setTextColorAndClose('')" :class="(data.formats.color == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @tap="setTextColorAndClose(color)" :class="(data.formats.color == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
@@ -188,7 +188,7 @@
 
             <view class="toolbar-color-section">
               <text class="toolbar-color-title">背景颜色</text>
-              <view :class="data.colorRowClass">
+              <view class="color-row color-row-panel">
                 <view @tap="setBackgroundColorAndClose('')" :class="(data.formats.backgroundColor == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @tap="setBackgroundColorAndClose(color)" :class="(data.formats.backgroundColor == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
@@ -294,7 +294,7 @@
                 <view class="desktop-color-sheet-icon"></view>
                 <text class="desktop-color-sheet-label-text">默认颜色</text>
               </view>
-              <view :class="data.colorRowClass">
+              <view class="color-row color-row-panel">
                 <view @tap="setTextColorAndClose('')" :class="(data.formats.color == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in TEXT_COLOR_PRESETS" :key="color" @tap="setTextColorAndClose(color)" :class="(data.formats.color == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
@@ -307,7 +307,7 @@
                 <view class="desktop-color-sheet-icon"></view>
                 <text class="desktop-color-sheet-label-text">默认背景</text>
               </view>
-              <view :class="data.colorRowClass">
+              <view class="color-row color-row-panel">
                 <view @tap="setBackgroundColorAndClose('')" :class="(data.formats.backgroundColor == '') ? clearColorSwatchActiveClass : clearColorSwatchClass"></view>
                 <view v-for="color in BACKGROUND_COLOR_PRESETS" :key="color" @tap="setBackgroundColorAndClose(color)" :class="(data.formats.backgroundColor == color) ? filledColorSwatchActiveClass : filledColorSwatchClass" :style="'background-color: ' + color + ';'"></view>
               </view>
@@ -432,6 +432,7 @@
         show-img-size
         show-img-toolbar
         show-img-resize
+        :type="data.editorInputType"
         @ready="onEditorReady"
         @focus="onEditorFocus"
         @blur="onEditorBlur"
@@ -491,7 +492,6 @@ type DataType = {
   pageWindowWidth: number;
   toolbarChipRowClass: string;
   toolbarChipCellClass: string;
-  colorRowClass: string;
   tooltipVisible: boolean;
   tooltipText: string;
   tooltipLeft: number;
@@ -501,6 +501,7 @@ type DataType = {
   sheetLeft: number;
   sheetArrowLeft: number;
   sheetAnimated: boolean;
+  editorInputType: string;
   isFocused: boolean;
   ignoreNextBlur: boolean;
   activeSheet: string;
@@ -575,7 +576,6 @@ const data = reactive<DataType>({
   pageWindowWidth: 0,
   toolbarChipRowClass: 'toolbar-chip-row',
   toolbarChipCellClass: 'toolbar-chip-cell',
-  colorRowClass: 'color-row',
   tooltipVisible: false,
   tooltipText: '',
   tooltipLeft: 0,
@@ -585,6 +585,7 @@ const data = reactive<DataType>({
   sheetLeft: 12,
   sheetArrowLeft: 32,
   sheetAnimated: false,
+  editorInputType: '',
   isFocused: false,
   ignoreNextBlur: false,
   activeSheet: '',
@@ -646,6 +647,14 @@ function isWideLayout() : boolean {
   return data.pageWindowWidth >= 1120
 }
 
+function isWebPhoneLayout() : boolean {
+  // #ifdef WEB
+  const windowWidth = data.pageWindowWidth > 0 ? data.pageWindowWidth : uni.getWindowInfo().windowWidth
+  return windowWidth < 760
+  // #endif
+  return false
+}
+
 
 function syncToolbarBottom() {
 }
@@ -699,8 +708,6 @@ function getSheetWidth() : number {
 }
 
 function syncToolbarChipClasses() {
-  data.colorRowClass = 'color-row color-row-panel'
-
   const panelWidth = getSheetWidth()
   if (panelWidth <= 300) {
     data.toolbarChipRowClass = 'toolbar-chip-row toolbar-chip-row-panel toolbar-chip-row-panel-compact'
@@ -723,12 +730,19 @@ function getSheetHostStyle() : string {
   // #ifndef WEB
   return ''
   // #endif
+  if (isWebPhoneLayout()) {
+    syncToolbarChipClasses()
+    return ''
+  }
   syncToolbarChipClasses()
   return `left:${data.sheetLeft}px;top:${data.sheetTop}px;width:${getSheetWidth()}px;`
 }
 
 function getSheetHostClass() : string {
   // #ifdef WEB
+  if (isWebPhoneLayout()) {
+    return 'sheet-host sheet-host-mobile-web'
+  }
   return 'sheet-host sheet-host-floating'
   // #endif
   return 'sheet-host'
@@ -819,6 +833,9 @@ function getToolbarPanelClass() : string {
   // #ifndef WEB
   return 'toolbar-panel toolbar-panel-attached'
   // #endif
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel toolbar-panel-mobile-web'
+  }
   if (data.sheetAnimated) {
     return 'toolbar-panel toolbar-panel-attached toolbar-panel-floating toolbar-panel-floating-attached toolbar-panel-floating-entered'
   }
@@ -829,6 +846,9 @@ function getToolbarPanelHeaderClass() : string {
   // #ifndef WEB
   return 'toolbar-panel-header'
   // #endif
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-header toolbar-panel-header-mobile-web'
+  }
   return 'toolbar-panel-header toolbar-panel-header-floating'
 }
 
@@ -836,6 +856,9 @@ function getToolbarPanelTitleClass() : string {
   // #ifndef WEB
   return 'toolbar-panel-title'
   // #endif
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-title toolbar-panel-title-mobile-web'
+  }
   return 'toolbar-panel-title toolbar-panel-title-floating'
 }
 
@@ -843,6 +866,9 @@ function getToolbarPanelSubtitleClass() : string {
   // #ifndef WEB
   return 'toolbar-panel-subtitle'
   // #endif
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-subtitle toolbar-panel-subtitle-mobile-web'
+  }
   return 'toolbar-panel-subtitle toolbar-panel-subtitle-floating'
 }
 
@@ -850,6 +876,9 @@ function getToolbarPanelScrollClass() : string {
   // #ifndef WEB
   return 'toolbar-panel-scroll'
   // #endif
+  if (isWebPhoneLayout()) {
+    return 'toolbar-panel-scroll toolbar-panel-scroll-mobile-web'
+  }
   return 'toolbar-panel-scroll toolbar-panel-scroll-floating'
 }
 
@@ -867,6 +896,7 @@ function getDesktopMenuTextClass(active: boolean) : string {
 
 function closeSheets() {
   data.sheetAnimated = false
+  data.editorInputType = ''
   // #ifdef WEB
   hideToolbarTooltip()
   // #endif
@@ -950,6 +980,12 @@ function getSheetButtonId(sheet: string) : string {
 
 function updateSheetAnchor(sheet: string) {
   updatePageWindowHeight()
+  // #ifndef WEB
+  data.sheetTop = 74
+  data.sheetLeft = 12
+  data.sheetArrowLeft = 32
+  return
+  // #endif
   const layoutElement = uni.getElementById('editor-layout')
   const buttonElement = uni.getElementById(getSheetButtonId(sheet))
   if (buttonElement == null || layoutElement == null) {
@@ -958,8 +994,8 @@ function updateSheetAnchor(sheet: string) {
     data.sheetArrowLeft = 32
     return
   }
-  const pageRect = layoutElement.getBoundingClientRect()
-  const rect = buttonElement.getBoundingClientRect()
+  const pageRect = layoutElement!.getBoundingClientRect()
+  const rect = buttonElement!.getBoundingClientRect()
   const panelWidth = getSheetWidth()
   let panelLeft = rect.left - pageRect.left + rect.width / 2 - panelWidth / 2
   let maxLeft = pageRect.width - panelWidth - 12
@@ -1230,10 +1266,8 @@ function getEditorStageStyle() : string {
 }
 
 function hideKeyboardForSheet() {
+  data.editorInputType = 'none'
   data.isFocused = false
-  // #ifndef WEB
-  uni.hideKeyboard()
-  // #endif
 }
 
 function toggleSheet(sheet: string) {
@@ -1754,6 +1788,7 @@ const clearColorSwatchClass = computed((): string => getClearColorSwatchClass(fa
 const clearColorSwatchActiveClass = computed((): string => getClearColorSwatchClass(true))
 const filledColorSwatchClass = computed((): string => getFilledColorSwatchClass(false))
 const filledColorSwatchActiveClass = computed((): string => getFilledColorSwatchClass(true))
+const webPhoneLayout = computed((): boolean => isWebPhoneLayout())
 
 function clearTitleFormats() {
   applyFormat('blockquote', null)
@@ -2495,7 +2530,7 @@ function showToolbarTooltip(buttonId: string, text: string) {
   if (buttonElement == null) {
     return
   }
-  const rect = buttonElement.getBoundingClientRect()
+  const rect = buttonElement!.getBoundingClientRect()
   data.tooltipText = text
   data.tooltipVisible = true
   data.tooltipLeft = rect.left + rect.width / 2
@@ -2529,6 +2564,7 @@ function onToolbarMouseDown(event: UniMouseEvent) {
 function onEditorFocus(event: UniEditorFocusEvent) {
   console.log('onEditorFocus')
   clearToolbarHideTimer()
+  data.editorInputType = ''
   // #ifdef WEB
   hideToolbarTooltip()
   // #endif
@@ -2555,6 +2591,7 @@ function onEditorBlur(event: UniEditorBlurEvent) {
     data.isFocused = true
     return
   }
+  data.editorInputType = ''
   data.isFocused = false
   if (data.activeSheet == '') {
     syncToolbarBottom()
@@ -2833,6 +2870,12 @@ defineExpose({
   z-index: 160;
   box-shadow: 0px 10px 24px rgba(25, 25, 25, 0.05);
   border-radius: 14px;
+}
+
+.sheet-host-mobile-web {
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
 }
 
 .toolbar-panel {
@@ -3516,6 +3559,19 @@ defineExpose({
   transform: translateY(0px);
 }
 
+.toolbar-panel-mobile-web {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-width: 1px;
+  padding-top: 16px;
+  padding-right: 12px;
+  padding-bottom: 16px;
+  padding-left: 12px;
+  box-shadow: 0px -10px 30px rgba(15, 23, 42, 0.12);
+}
+
 .toolbar-panel-arrow {
   position: absolute;
   top: -7px;
@@ -3531,8 +3587,16 @@ defineExpose({
   margin-bottom: 6px;
 }
 
+.toolbar-panel-header-mobile-web {
+  margin-bottom: 10px;
+}
+
 .toolbar-panel-title-floating {
   font-size: 12px;
+}
+
+.toolbar-panel-title-mobile-web {
+  font-size: 15px;
 }
 
 .toolbar-panel-subtitle-floating {
@@ -3540,8 +3604,18 @@ defineExpose({
   margin-top: 2px;
 }
 
+.toolbar-panel-subtitle-mobile-web {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
 .toolbar-panel-scroll-floating {
   flex: 0;
+}
+
+.toolbar-panel-scroll-mobile-web {
+  flex: 0;
+  /* max-height: 62vh; */
 }
 
 .toolbar-chip-row-panel {
