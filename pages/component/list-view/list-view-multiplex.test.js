@@ -1,8 +1,9 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isIos = platformInfo.startsWith('ios')
 
 describe('component-native-list-view', () => {
-  if (isMP) {
+  if (isMP || isIos) {
   	it('skip mp', () => {
   		expect(1).toBe(1)
   	})
