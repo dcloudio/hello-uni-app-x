@@ -19,7 +19,7 @@ describe('touch-events-test', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view');
-    await page.waitFor(500);
+    await page.waitFor(2000);
   })
 
   it('touch-event-bubbles-test1', async () => {
