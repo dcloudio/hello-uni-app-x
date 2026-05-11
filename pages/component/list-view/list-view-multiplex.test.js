@@ -3,7 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isIos = platformInfo.startsWith('ios')
 
 describe('component-native-list-view', () => {
-  if (isMP || isIos) {
+  if (isMP) {
   	it('skip mp', () => {
   		expect(1).toBe(1)
   	})
