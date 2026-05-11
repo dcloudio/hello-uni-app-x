@@ -4,7 +4,7 @@ const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isIos = platformInfo.startsWith('ios')
 
 describe('list-view-multiplex-input', () => {
-  if (isMP || isAppWebView || isIos) {
+  if (isMP || isAppWebView) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})

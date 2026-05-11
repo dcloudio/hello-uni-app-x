@@ -7,7 +7,7 @@ const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('component-native-nested-scroll-body', () => {
-  if (isMP || isWeb || isAppWebView || isIOS) {
+  if (isMP || isWeb || isAppWebView) {
     it('dummyTest', () => {
       expect(1).toBe(1)
     })
