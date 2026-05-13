@@ -5,6 +5,8 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web') || platformInfo.startsWith('h5')
 const isMP = platformInfo.startsWith('mp')
 const isiOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
+const isSimulator = platformInfo.includes('模拟器')
 const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('editor-props.uvue', () => {
@@ -32,18 +34,18 @@ describe('editor-props.uvue', () => {
     })
   }
 
-  async function getEditorTapPoint(offsetX = 0, offsetY = 0) {
+  async function getEditorTapPoint(offsetX = null, offsetY = null) {
     const editorX = await page.data('data.editorX')
     const editorY = await page.data('data.editorY')
     const editorWidth = await page.data('data.editorWidth')
     const editorHeight = await page.data('data.editorHeight')
     return {
-      x: editorX + (offsetX > 0 ? offsetX : editorWidth / 2),
-      y: editorY + (offsetY > 0 ? offsetY : editorHeight / 2)
+      x: editorX + (offsetX != null ? offsetX : editorWidth / 2),
+      y: editorY + (offsetY != null ? offsetY : editorHeight / 2)
     }
   }
 
-  async function tapEditor(offsetX = 0, offsetY = 0) {
+  async function tapEditor(offsetX = null, offsetY = null) {
     const point = await getEditorTapPoint(offsetX, offsetY)
     console.log('=>>>>>>>>>>> point: ',point);
     await program.tap(point)
@@ -166,7 +168,16 @@ describe('editor-props.uvue', () => {
     await waitForData('data.readyCount', value => value >= previousReadyCount + 1, 8000)
 
     await page.callMethod('insertSampleImage')
-    await tapEditor(50, 60)
+    if (isSimulator) {
+      await tapEditor(50, 60)
+    } else {
+      if (isAndroid) {
+        // 小米 4 真机测试，编辑器位置有误，调整偏移
+        await tapEditor(50, 10)
+      } else {
+        await tapEditor(50, 60)
+      }
+    }
 
     await screenshot('editor-props-image-controls-true')
 
@@ -186,7 +197,16 @@ describe('editor-props.uvue', () => {
     expect(await page.data('data.appliedShowImgResize')).toBe(false)
 
     await page.callMethod('insertSampleImage')
-    await tapEditor(50, 60)
+    if (isSimulator) {
+      await tapEditor(50, 60)
+    } else {
+      if (isAndroid) {
+        // 小米 4 真机测试，编辑器位置有误，调整偏移
+        await tapEditor(50, 10)
+      } else {
+        await tapEditor(50, 60)
+      }
+    }
 
     await screenshot('editor-props-image-controls-false')
   })
