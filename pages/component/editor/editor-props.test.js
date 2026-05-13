@@ -139,8 +139,6 @@ describe('editor-props.uvue', () => {
     await waitForData('data.readOnly', value => value === false, 3000)
   })
 
-  return
-
   it('type 切换后截图', async () => {
     expect(await page.data('data.editorType')).toBeFalsy()
     expect(await page.callMethod('getTypeLabel')).toBe('null（聚焦弹键盘）')
