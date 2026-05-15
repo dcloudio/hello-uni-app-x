@@ -18,7 +18,9 @@
       </view>
       <uni-collapse>
         <uni-collapse-item ref="categoryRef" v-for="menuItem in menu" :key="menuItem.id" :title="menuItem.name"
-          class="uni-panel">
+          class="uni-panel" title-wrap-class="component-collapse-title-wrap"
+          title-class="component-collapse-title" content-wrap-class="component-collapse-content-wrap"
+          arrow-class="component-collapse-arrow">
           <template v-for="childMenuItem in menuItem.items" :key="childMenuItem.id">
             <view v-if="childMenuItem.items.length==0" class="uni-navigate-item"
               hover-class="is--active" @click="goPage(`/${childMenuItem.path}`)">
@@ -29,7 +31,9 @@
             </view>
             <uni-collapse v-else style="width: 100%;border-top: 1px solid var(--border-color);" class="pl-4 pr-4">
               <uni-collapse-item :title="childMenuItem.name" class="uni-panel"
-                style="margin-bottom: 0;">
+                style="margin-bottom: 0;" title-wrap-class="component-collapse-title-wrap"
+                title-class="component-collapse-title" content-wrap-class="component-collapse-content-wrap"
+                arrow-class="component-collapse-arrow">
                 <view class="uni-navigate-item" hover-class="is--active"
                   v-for="grandChildMenuItem in childMenuItem.items" :key="grandChildMenuItem.path"
                   @click="goPage(`/${grandChildMenuItem.path}`)">
@@ -116,6 +120,23 @@
     border-right-color: var(--arrow-color, #999999);
     border-bottom-width: 1px;
     border-bottom-style: solid;
+    border-bottom-color: var(--arrow-color, #999999);
+  }
+
+  .component-collapse-title-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-title {
+    color: var(--text-color, #333333);
+  }
+
+  .component-collapse-content-wrap {
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .component-collapse-arrow {
+    border-right-color: var(--arrow-color, #999999);
     border-bottom-color: var(--arrow-color, #999999);
   }
 </style>
