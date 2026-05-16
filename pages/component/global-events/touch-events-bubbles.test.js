@@ -50,8 +50,8 @@ describe('touch-events-test', () => {
     if (isHarmony && viewEleRect.x < 20) {
       viewEleRect.x = 144
     }
-    let x = viewEleRect.x + 10
-    let y = viewEleRect.y + 25
+    let x = Math.ceil(viewEleRect.x + 10)
+    let y = Math.ceil(viewEleRect.y + 25)
 
     // 滑动事件
     await program.swipe({
