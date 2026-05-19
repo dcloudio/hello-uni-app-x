@@ -1,14 +1,15 @@
 <template>
   <view class="popup-box" v-if="show" @click="onMaskClick">
     <view class="popup-mask"></view>
-    <view class="comment-panel" @click.stop>
+    <view ref="commentPanelRef" class="comment-panel" @click.stop
+      @touchstart="onPanelTouchStart" @touchmove="onPanelTouchMove" @touchend="onPanelTouchEnd">
       <view class="comment-panel-header">
         <text class="comment-panel-title">评论 {{commentList.length}}</text>
         <view class="comment-panel-close" @click="handleClose">
           <text class="close-text">✕</text>
         </view>
       </view>
-      <scroll-view class="comment-scroll" direction="vertical">
+      <scroll-view ref="commentScrollRef" class="comment-scroll" :direction="scrollDirection" bounces="true">
         <view class="comment-list">
           <view class="comment-item" v-for="(comment, index) in commentList" :key="index">
             <view class="comment-avatar">
@@ -60,6 +61,18 @@ const commentList = ref([] as CommentItem[])
 const commentInput = ref("" as string)
 const keyboardHeight = ref(0 as number)
 
+// 滚动到顶再下拉关闭（与 half-screen 一致）
+let panelMove = false
+let panelStartY = 0
+let panelOffset = 0
+let panelHeight = 0
+let lastTouchY = 0
+let lastTouchY2 = 0
+let bAnimating = false
+const commentPanelRef = ref<UniElement | null>(null)
+const commentScrollRef = ref<UniScrollViewElement | null>(null)
+const scrollDirection = ref('vertical')
+
 // 计算是否可以发送
 const canSend = computed(() => {
   return commentInput.value.trim().length > 0
@@ -84,7 +97,109 @@ function initComments() {
 
 function handleClose() {
   keyboardHeight.value = 0
+  panelMove = false
+  panelStartY = 0
+  panelOffset = 0
+  // #ifdef APP
+  commentScrollRef.value?.setAttribute('direction', 'vertical')
+  // #endif
+  // #ifdef WEB || MP
+  scrollDirection.value = 'vertical'
+  // #endif
+  commentPanelRef.value?.style?.setProperty('transform', '')
+  commentPanelRef.value?.style?.setProperty('transition-property', 'none')
   emit('close')
+}
+
+function measurePanelHeight() {
+  commentPanelRef.value?.getBoundingClientRectAsync()?.then((rect: DOMRect) => {
+    panelHeight = rect.height
+  })
+}
+
+function onPanelTouchStart(_event : TouchEvent) {
+  commentPanelRef.value?.style?.setProperty('transition-duration', '0')
+}
+
+function onPanelTouchMove(e : TouchEvent) {
+  if (bAnimating) return
+  let top : number = commentScrollRef.value?.scrollTop ?? 0
+  let p = e.touches[0]
+  lastTouchY2 = lastTouchY
+  lastTouchY = p.screenY
+  if (top <= 0.01 || panelMove) {
+    if (panelStartY == 0) {
+      panelStartY = p.screenY
+    }
+    let offset = p.screenY - panelStartY
+    if (offset > 0) {
+      panelMove = true
+      // #ifdef APP
+      commentScrollRef.value?.setAttribute('direction', 'none')
+      // #endif
+      // #ifdef WEB || MP
+      scrollDirection.value = 'none'
+      // #endif
+      commentPanelRef.value?.style?.setProperty('transform', 'translateY(' + offset.toFixed(2) + 'px)')
+      panelOffset = offset
+    } else if (panelOffset > 0) {
+      offset = panelStartY - p.screenY
+      if (offset > panelOffset) {
+        offset = 0
+        panelMove = false
+      }
+      // #ifdef APP
+      commentScrollRef.value?.setAttribute('direction', 'vertical')
+      // #endif
+      // #ifdef WEB || MP
+      scrollDirection.value = 'vertical'
+      // #endif
+      commentPanelRef.value?.style?.setProperty('transform', 'translateY(' + offset.toFixed(2) + 'px)')
+      panelOffset = offset
+    }
+  }
+  // #ifdef WEB
+  e.preventDefault()
+  // #endif
+}
+
+function resumePanel() {
+  const time = 300
+  commentPanelRef.value?.style?.setProperty('transition-duration', time.toString() + 'ms')
+  commentPanelRef.value?.style?.setProperty('transition-timing-function', 'ease-in-out')
+  commentPanelRef.value?.style?.setProperty('transition-property', 'transform')
+  commentPanelRef.value?.style?.setProperty('transform', 'translateY(0px)')
+  panelMove = false
+  // #ifdef APP
+  commentScrollRef.value?.setAttribute('direction', 'vertical')
+  // #endif
+  // #ifdef WEB || MP
+  scrollDirection.value = 'vertical'
+  // #endif
+  panelStartY = 0
+  panelOffset = 0
+  setTimeout(() => {
+    bAnimating = false
+    commentPanelRef.value?.style?.setProperty('transition-property', 'none')
+  }, time)
+  bAnimating = true
+}
+
+function onPanelTouchEnd(_event : TouchEvent) {
+  panelStartY = 0
+  if (bAnimating) return
+  let top : number = commentScrollRef.value?.scrollTop ?? 0
+  let bHide = panelHeight > 0 && (panelHeight - panelOffset) < panelHeight / 4
+  if (bHide) {
+    bHide = lastTouchY2 > 0 && lastTouchY2 <= lastTouchY
+  } else if (top <= 0.01) {
+    bHide = (lastTouchY - lastTouchY2) > 3
+  }
+  if (bHide) {
+    handleClose()
+  } else if (panelOffset > 0) {
+    resumePanel()
+  }
 }
 
 function onMaskClick() {
@@ -109,6 +224,15 @@ function submitComment() {
   commentInput.value = ""
   emit('countChange', commentList.value.length)
 }
+
+// 弹窗打开时测量面板高度（用于下拉关闭阈值）
+watch((): boolean => props.show, (val: boolean) => {
+  if (val) {
+    nextTick(() => {
+      measurePanelHeight()
+    })
+  }
+})
 
 // 初始化
 initComments()
