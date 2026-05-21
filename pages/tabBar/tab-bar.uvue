@@ -50,7 +50,7 @@
 
 	const windowInfo = uni.getWindowInfo()
 	// tab内容区域高度 = 窗口高度 - tab-bar高度(50) - 底部安全区
-	const tabContentHeight = ref<number>(windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom))
+	let tabContentHeight = ref<number>(windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom))
 	const activeIndex = ref<number>(0)
 	// 记录每个tab是否初始化过，未激活过的tab先不创建，等首次激活再创建
 	let isTabInitArray = ref<boolean[]>([true, false, false, false, false])
@@ -58,6 +58,11 @@
 	const darkTextClass = computed((): string => {
 		return state.isDarkMode ? 'tab-label-dark' : ''
 	})
+
+  onResize(()=> {
+    const windowInfo = uni.getWindowInfo()
+    tabContentHeight.value = windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom)
+  })
 
 	const tabBarBgColor = computed((): string => {
 		return state.isDarkMode ? '#1F1F1F' : '#F8F8F8'
