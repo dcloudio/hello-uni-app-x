@@ -59,14 +59,32 @@
 		return state.isDarkMode ? 'tab-label-dark' : ''
 	})
 
+	const tabBarBgColor = computed((): string => {
+		return state.isDarkMode ? '#1F1F1F' : '#F8F8F8'
+	})
+
+	function syncAndroidNavigationStyle() : void {
+		// #ifdef APP-ANDROID
+		const pages = getCurrentPages()
+		if (pages.length == 0) {
+			return
+		}
+		const currentPage = pages[pages.length - 1]
+		currentPage.setPageStyle({
+			androidThreeButtonNavigationBackgroundColor: tabBarBgColor.value,
+			androidThreeButtonNavigationStyle: state.isDarkMode ? 'white' : 'black'
+		})
+		// #endif
+	}
+
   onResize(()=> {
     const windowInfo = uni.getWindowInfo()
     tabContentHeight.value = windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom)
   })
 
-	const tabBarBgColor = computed((): string => {
-		return state.isDarkMode ? '#1F1F1F' : '#F8F8F8'
-	})
+  onShow(() => {
+      syncAndroidNavigationStyle()
+  })
 
 	// uni-tab-item 点击后由 <uni-tab> 抛出 change 事件，携带新激活的索引
 	function handleChange(index : number) : void {
