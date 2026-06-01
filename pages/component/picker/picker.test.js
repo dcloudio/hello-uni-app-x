@@ -1,4 +1,3 @@
-const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const PAGE_PATH = '/pages/component/picker/picker'
 
 describe('Picker.uvue', () => {
