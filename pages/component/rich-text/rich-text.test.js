@@ -64,11 +64,51 @@ describe('rich-text-test', () => {
     expect(image).toSaveImageSnapshot()
     // 重置为默认
     await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
       fontSizeIndex: 0,
-      currentFontSize: '默认',
+      colorIndex: 0,
+      lineHeightIndex: 0,
+      fontFamilyIndex: 0,
       richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
     })
     await page.waitFor(300)
+  })
+
+  it('test style color-red', async () => {
+    await page.callMethod('changeColor')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+
+  it('test style color-blue', async () => {
+    await page.callMethod('changeColor')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+    // 重置为默认
+    await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
+      fontSizeIndex: 0,
+      colorIndex: 0,
+      lineHeightIndex: 0,
+      fontFamilyIndex: 0,
+      richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
+    })
+    await page.waitFor(300)
+  })
+
+  it('test style font-family-serif', async () => {
+    await page.callMethod('changeFontFamily')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
   })
 
   it('test style line-height-1', async () => {
@@ -85,8 +125,14 @@ describe('rich-text-test', () => {
     expect(image).toSaveImageSnapshot()
     // 重置为默认
     await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
+      fontSizeIndex: 0,
+      colorIndex: 0,
       lineHeightIndex: 0,
-      currentLineHeight: '默认',
+      fontFamilyIndex: 0,
       richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
     })
     await page.waitFor(300)
@@ -106,8 +152,14 @@ describe('rich-text-test', () => {
     expect(image).toSaveImageSnapshot()
     // 重置为默认
     await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
+      fontSizeIndex: 0,
+      colorIndex: 0,
+      lineHeightIndex: 0,
       fontFamilyIndex: 0,
-      currentFontFamily: '默认',
       richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
     })
     await page.waitFor(300)
