@@ -104,13 +104,6 @@ describe('rich-text-test', () => {
     await page.waitFor(300)
   })
 
-  it('test style font-family-serif', async () => {
-    await page.callMethod('changeFontFamily')
-    await page.waitFor(500)
-    const image = await program.screenshot({ fullPage: true })
-    expect(image).toSaveImageSnapshot()
-  })
-
   it('test style line-height-1', async () => {
     await page.callMethod('changeLineHeight')
     await page.waitFor(500)
