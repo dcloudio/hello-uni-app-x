@@ -1,0 +1,305 @@
+<template>
+	<view class="chat-textarea-box">
+    <view class="chat-header">
+      <text class="chat-title">@ 提及演示</text>
+      <text class="chat-subtitle">在输入框中敲 @ 选择联系人</text>
+    </view>
+
+    <scroll-view class="message-area" direction="vertical" :show-scrollbar="false">
+      <view class="hint-card">
+        <text class="hint-title">使用说明</text>
+        <text class="hint-item">· 在下方输入框输入 @ 唤起联系人列表</text>
+        <text class="hint-item">· 点击联系人即可插入 @提及</text>
+        <text class="hint-item">· 删除 @ 后列表会自动收起</text>
+      </view>
+      <view class="preview-label">
+        <text class="preview-label-text"></text>
+      </view>
+    </scroll-view>
+
+    <view class="user-list-mask" v-if="showUserList" @click="closeUserList"></view>
+    <view class="user-list-panel" :class="{ 'user-list-panel-show': showUserList }">
+      <view class="user-list-header">
+        <text class="user-list-title">选择联系人</text>
+        <text class="user-list-count">{{ userList.length }} 人</text>
+      </view>
+      <scroll-view class="user-list-scroll" direction="vertical" :show-scrollbar="false">
+        <view class="user-list-item" v-for="item in userList" :key="item.id" @click="insertAt(item.id)">
+          <view class="user-avatar" :style="{ backgroundColor: getAvatarColor(item.name) }">
+            <text class="user-avatar-text">{{ item.name.substring(0, 1) }}</text>
+          </view>
+          <text class="user-name">{{ item.name }}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="input-area">
+      <view class="input-wrapper">
+        <editor
+          class="preview-editor"
+          id="editor-props-demo"
+          placeholder="输入消息，敲 @ 提及联系人"
+          @ready="onEditorReady"
+          @input="onEditorInput"
+        />
+      </view>
+      <view class="safe-area-inset-bottom"></view>
+    </view>
+	</view>
+</template>
+
+<script setup>
+  let editorCtx: null | EditorContext = null
+  function onEditorReady() {
+    const options: CreateEditorContextAsyncOptions = {
+      id: 'editor-props-demo',
+      success: (context: EditorContext) => {
+        editorCtx = context
+      },
+      fail: (error: UniError) => {
+        console.error('error', `createEditorContextAsync fail: ${error.errMsg}`)
+      }
+    }
+    uni.createEditorContextAsync(options)
+  }
+  const showUserList = ref(false)
+  type User = {
+    id: string
+    name: string
+  }
+  const userList = reactive<User[]>([
+    { id: '000', name: '张三' },
+    { id: '001', name: '李四' },
+    { id: '002', name: '王五' },
+    { id: '003', name: '赵六' },
+    { id: '004', name: '孙七' },
+    { id: '005', name: '周八' },
+    { id: '006', name: '吴九' },
+    { id: '007', name: '郑十' }
+  ])
+
+  const avatarColors = ['#3c99ff', '#52c41a', '#fa8c16', '#722ed1', '#eb2f96', '#13c2c2', '#faad14', '#597ef7']
+
+  function getAvatarColor(name: string): string {
+    const code = name.charCodeAt(0)
+    return avatarColors[code % avatarColors.length]
+  }
+
+  function closeUserList() {
+    showUserList.value = false
+  }
+
+  // 往编辑器中插入@xxx
+  function insertAt(id: string) {
+    // 先撤回原来敲的@符号
+    editorCtx?.undo()
+    const user = userList.find(item => item.id === id)!
+    editorCtx?.insertMention({
+      id: id,
+      name: user.name,
+      success: (res: any) => {
+        console.log('insert mention success', res)
+      }
+    })
+    showUserList.value = false
+  }
+
+  let lastText = ''
+  function onEditorInput(event) {
+    // console.log('onEditorInput', event.detail.text)
+    // 判断是不是敲了@，通过判断本次是否包含@ + 上一次文本@的个数是否一致
+    if(event.detail.text.includes('@')) {
+      const lastTextAtCount = lastText.split('@').length - 1
+      const currentTextAtCount = event.detail.text.split('@').length - 1
+      if (lastTextAtCount === currentTextAtCount) {
+        // 没有新敲 @
+      } else if (lastTextAtCount > currentTextAtCount) {
+        showUserList.value = false
+      } else if (lastTextAtCount < currentTextAtCount) {
+        showUserList.value = true
+      }
+    } else {
+      showUserList.value = false
+    }
+    lastText = event.detail.text
+  }
+</script>
+
+<style>
+.chat-textarea-box {
+  flex: 1;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.chat-header {
+  padding: 16px 16px 12px;
+  background-color: #ffffff;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #ebebeb;
+}
+
+.chat-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 24px;
+}
+
+.chat-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #999999;
+  line-height: 18px;
+}
+
+.message-area {
+  flex: 1;
+  padding: 12px 16px;
+}
+
+.hint-card {
+  padding: 14px 16px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  flex-direction: column;
+}
+
+.hint-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.hint-item {
+  font-size: 13px;
+  color: #666666;
+  line-height: 22px;
+}
+
+.preview-label {
+  margin-top: 16px;
+  padding: 0 4px;
+}
+
+.preview-label-text {
+  font-size: 12px;
+  color: #bbbbbb;
+}
+
+.user-list-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 998;
+}
+
+.user-list-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 280px;
+  background-color: #ffffff;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  flex-direction: column;
+  z-index: 999;
+  transform: translateY(100%);
+  transition-property: transform;
+  transition-duration: 0.25s;
+  transition-timing-function: ease-out;
+}
+
+.user-list-panel-show {
+  transform: translateY(0);
+}
+
+.user-list-header {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #f0f0f0;
+}
+
+.user-list-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333333;
+}
+
+.user-list-count {
+  font-size: 12px;
+  color: #bbbbbb;
+}
+
+.user-list-scroll {
+  flex: 1;
+  max-height: 220px;
+}
+
+.user-list-item {
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #f5f5f5;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.user-name {
+  flex: 1;
+  margin-left: 12px;
+  font-size: 15px;
+  color: #333333;
+}
+
+.input-area {
+  background-color: #ffffff;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: #e5e5e5;
+  padding: 10px 12px 0;
+}
+
+.input-wrapper {
+  min-height: 44px;
+  max-height: 120px;
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+.preview-editor {
+  min-height: 28px;
+  font-size: 15px;
+  color: #333333;
+}
+
+.safe-area-inset-bottom {
+  height: env(safe-area-inset-bottom);
+  min-height: 8px;
+}
+</style>
