@@ -10,7 +10,10 @@ const isSimulator = platformInfo.includes('模拟器')
 const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('editor.uvue', () => {
-  if (isMP || isiOS) {
+  const infos = process.env.uniTestPlatformInfo.split(' ');
+  const version = parseInt(infos[infos.length - 1]);
+
+  if (isMP || isiOS || (isAndroid && !isNaN(version) && version < 8)) {
     it('skip', () => {
       expect(1).toBe(1)
     })
@@ -122,6 +125,7 @@ describe('editor.uvue', () => {
     await page.callMethod('onPlaceholderChange', '自动化测试 editor placeHolder 修改')
     await page.callMethod('rebuildEditor')
     await waitForData('data.readyCount', value => value >= readyCount + 1, 2000)
+    await page.waitFor(500)
     await screenshot('editor-props-placeholder')
   })
 

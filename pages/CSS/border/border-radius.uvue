@@ -101,6 +101,14 @@
       </view>
 
       <view>
+        <text>border-radius: 999px（border-radius超出边界形成正圆）</text>
+        <view class="demo-box">
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;"></view>
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>border-radius: 10px（包含子视图）</text>
         <view class="demo-box">
           <view class="common" style="margin-left: 5px;border-radius: 10px">
@@ -286,6 +294,7 @@
     data.borderRadiusActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderRadius = (value: string) => {
     data.borderRadius = value
     viewRef.value?.style.setProperty('border-radius', value)
@@ -297,7 +306,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderRadius = (index: number) => {
@@ -338,6 +347,11 @@
     width: 150px;
     height: 150px;
     background-color: gray;
+  }
+
+  .square {
+    width: 150px;
+    height: 150px;
   }
 
   .text-radius {
