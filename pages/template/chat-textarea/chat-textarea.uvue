@@ -5,7 +5,7 @@
       <text class="chat-subtitle">在输入框中敲 @ 选择联系人</text>
     </view>
 
-    <scroll-view class="message-area" direction="vertical" :show-scrollbar="false">
+    <scroll-view class="message-area" direction="vertical" :show-scrollbar="false" @click="hideKeyboard">
       <view class="hint-card">
         <text class="hint-title">使用说明</text>
         <text class="hint-item">· 在下方输入框输入 @ 唤起联系人列表</text>
@@ -44,11 +44,14 @@
         />
       </view>
       <view class="safe-area-inset-bottom"></view>
+      <view class="keyboard-placeholder" :style="{ height: keyboardHeight + 'px' }"></view>
     </view>
 	</view>
 </template>
 
 <script setup>
+  const keyboardHeight = ref(0)
+
   let editorCtx: null | EditorContext = null
   function onEditorReady() {
     const options: CreateEditorContextAsyncOptions = {
@@ -89,6 +92,11 @@
     showUserList.value = false
   }
 
+  function hideKeyboard() {
+    keyboardHeight.value = 0
+    uni.hideKeyboard()
+  }
+
   // 往编辑器中插入@xxx
   function insertAt(id: string) {
     // 先撤回原来敲的@符号
@@ -117,12 +125,24 @@
         showUserList.value = false
       } else if (lastTextAtCount < currentTextAtCount) {
         showUserList.value = true
+        hideKeyboard()
       }
     } else {
       showUserList.value = false
     }
     lastText = event.detail.text
   }
+
+  onLoad(() => {
+    uni.onKeyboardHeightChange((res) => {
+      keyboardHeight.value = res.height
+    })
+  })
+
+  onUnload(() => {
+    keyboardHeight.value = 0
+    uni.offKeyboardHeightChange()
+  })
 </script>
 
 <style>
@@ -301,5 +321,9 @@
 .safe-area-inset-bottom {
   height: env(safe-area-inset-bottom);
   min-height: 8px;
+}
+
+.keyboard-placeholder {
+  height: 0;
 }
 </style>
