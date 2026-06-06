@@ -54,7 +54,7 @@
 	const activeIndex = ref<number>(0)
 	// 记录每个tab是否初始化过，未激活过的tab先不创建，等首次激活再创建
 	let isTabInitArray = ref<boolean[]>([true, false, false, false, false])
-
+  const currentPage = getCurrentInstance()?.proxy?.$page
 	const darkTextClass = computed((): string => {
 		return state.isDarkMode ? 'tab-label-dark' : ''
 	})
@@ -66,10 +66,9 @@
 	function syncAndroidNavigationStyle() : void {
 		// #ifdef APP-ANDROID
 		const pages = getCurrentPages()
-		if (pages.length == 0) {
+		if (pages.length == 0 || currentPage == null) {
 			return
 		}
-		const currentPage = pages[pages.length - 1]
 		currentPage.setPageStyle({
 			androidThreeButtonNavigationBackgroundColor: tabBarBgColor.value,
 			androidThreeButtonNavigationStyle: state.isDarkMode ? 'white' : 'black'
@@ -77,14 +76,18 @@
 		// #endif
 	}
 
+	watch((): boolean => state.isDarkMode, () => {
+		syncAndroidNavigationStyle()
+	})
+
   onResize(()=> {
     const windowInfo = uni.getWindowInfo()
     tabContentHeight.value = windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom)
   })
 
-  onShow(() => {
-      syncAndroidNavigationStyle()
-  })
+	onReady(() => {
+		syncAndroidNavigationStyle()
+	})
 
 	// uni-tab-item 点击后由 <uni-tab> 抛出 change 事件，携带新激活的索引
 	function handleChange(index : number) : void {
