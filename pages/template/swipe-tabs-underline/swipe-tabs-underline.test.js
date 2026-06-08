@@ -1,6 +1,8 @@
 const PAGE_PATH = '/pages/template/swipe-tabs-underline/swipe-tabs-underline'
 const ACTIVE_COLORS = ['rgb(0, 122, 255)', '#007AFF']
 const INACTIVE_COLORS = ['rgb(85, 85, 85)', '#555555']
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('template-swipe-tabs-underline', () => {
   let page
@@ -75,13 +77,18 @@ describe('template-swipe-tabs-underline', () => {
     const tabs = await getTabs()
     const indicator = await getIndicator()
     const beforeTransform = await indicator.style('transform')
+    const beforeWidth = (await indicator.size()).width
     await tabs[3].tap()
     await waitForSwiperCurrent(3)
     const swiper = await getSwiper()
     expect(await swiper.property('current')).toBe(3)
     expectOneOfColor(await tabs[3].style('color'), ACTIVE_COLORS)
     expectOneOfColor(await tabs[0].style('color'), INACTIVE_COLORS)
-    expect(await indicator.style('transform')).not.toBe(beforeTransform)
+    if (isMP) {
+      expect((await indicator.size()).width).not.toBe(beforeWidth)
+    } else {
+      expect(await indicator.style('transform')).not.toBe(beforeTransform)
+    }
   })
 
   it('keeps tabs in sync after swiper changes current', async () => {
