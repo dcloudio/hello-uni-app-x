@@ -196,8 +196,8 @@
     meta.translateX = 0
     meta.translateY = 0
     meta.zIndex = 0
-    meta.wrapperTransition = ''
-    meta.contentTransition = ''
+    meta.wrapperTransition = 'none'
+    meta.contentTransition = 'none'
   }
 
   const resetAllItemMetas = () => {
@@ -243,6 +243,11 @@
     return `translateY(${menuTop.value}px) translateX(${-menuShowWidth.value}px)`
   })
 
+
+  watch(menuTransition, () => {
+    console.log('menuTransition changed:', menuTransition.value)
+  })
+
   // 关闭菜单（需要在调用之前定义）
   const closeMenu = () => {
     if (swipingMetaIndex != -1) {
@@ -254,7 +259,7 @@
     }
     menuVisible.value = false
     menuShowWidth.value = 0
-    menuTransition.value = ''
+    menuTransition.value = 'none'
     activeIndex.value = -1
     currentListItemElement = null
   }
@@ -268,7 +273,6 @@
       // 获取列表项的位置，如下值在一次menu显示期间仅需更新一次
       menuVisible.value = true
       const rect = currentListItemElement!.getBoundingClientRect()
-      console.log('item rect:', rect)
       const item = items.value[currentIndex]
       menuTop.value = rect.top - containerTop
       menuHeight.value = item.height
@@ -501,7 +505,7 @@
     isDeleting = false
     isDeleteAnimating.value = false
     menuShowWidth.value = 0
-    menuTransition.value = ''
+    menuTransition.value = 'none'
     currentListItemElement = null
     deleteAnimationIndexToDelete = -1
 
