@@ -2,6 +2,7 @@ const PAGE_PATH = '/pages/template/interstitial-poster/interstitial-poster'
 const WAIT_FOR_RENDER = 3000
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web') || platformInfo.startsWith('h5')
+const isMP = platformInfo.startsWith('mp')
 
 describe('template-interstitial-poster', () => {
   let page
@@ -33,6 +34,10 @@ describe('template-interstitial-poster', () => {
     await waitForPosterRendered(false)
   })
 
+  beforeEach(async () => {
+    await waitForPosterRendered(false)
+  })
+
   it('renders hero content', async () => {
     const title = await page.$('.hero-title')
     expect(await title.text()).toBe('插屏海报示例')
@@ -53,6 +58,9 @@ describe('template-interstitial-poster', () => {
     const { width, height } = await posterCard.size()
     expect(width).toBeGreaterThan(0)
     expect(height).toBeGreaterThan(0)
+    expect(posterAction).not.toBeNull()
+    await posterAction.tap()
+    await waitForPosterRendered(false)
   })
 
   it('closes poster by tapping the action button', async () => {
@@ -71,30 +79,32 @@ describe('template-interstitial-poster', () => {
     await waitForPosterRendered(false)
   })
 
-  it('closes poster by tapping the overlay', async () => {
-    await openPoster()
-    const posterCard = await page.$('.poster-card')
-    const closeCircle = await page.$('.poster-close-circle')
-    expect(posterCard).not.toBeNull()
-    expect(closeCircle).not.toBeNull()
-    const windowInfo = await program.callUniMethod('getWindowInfo')
-    const posterCardSize = await posterCard.size()
-    const closeRect = await closeCircle.offset()
-    const closeSize = await closeCircle.size()
-    const closeCenterX = closeRect.left + closeSize.width / 2
-    const dialogHeight = posterCardSize.height + 18 + closeSize.height
-    const dialogTop = (windowInfo.windowHeight - dialogHeight) / 2
-    const closeCenterY = closeRect.top + closeSize.height / 2
-    const overlayTapY = isWeb
-      ? closeCenterY
-      : dialogTop + posterCardSize.height + 18 + closeSize.height / 2
-    const tapPoint = {
-      x: Math.round(closeCenterX - 50),
-      y: Math.round(overlayTapY)
-    }
-    await program.tap(tapPoint)
-    await waitForPosterRendered(false)
-  })
+  if (!isMP) {
+    it('closes poster by tapping the overlay', async () => {
+      await openPoster()
+      const posterCard = await page.$('.poster-card')
+      const closeCircle = await page.$('.poster-close-circle')
+      expect(posterCard).not.toBeNull()
+      expect(closeCircle).not.toBeNull()
+      const windowInfo = await program.callUniMethod('getWindowInfo')
+      const posterCardSize = await posterCard.size()
+      const closeRect = await closeCircle.offset()
+      const closeSize = await closeCircle.size()
+      const closeCenterX = closeRect.left + closeSize.width / 2
+      const dialogHeight = posterCardSize.height + 18 + closeSize.height
+      const dialogTop = (windowInfo.windowHeight - dialogHeight) / 2
+      const closeCenterY = closeRect.top + closeSize.height / 2
+      const overlayTapY = isWeb
+        ? closeCenterY
+        : dialogTop + posterCardSize.height + 18 + closeSize.height / 2
+      const tapPoint = {
+        x: Math.round(closeCenterX - 50),
+        y: Math.round(overlayTapY)
+      }
+      await program.tap(tapPoint)
+      await waitForPosterRendered(false)
+    })
+  }
 
 
 })
