@@ -2,14 +2,15 @@
   <view class="container" id="container">
     <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
       <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
-        :style="{ backgroundColor: item.bgColor, transform: 'translateY(' + itemMetas[index].translateY + 'px)', zIndex: itemMetas[index].zIndex }"
+        :style="{ backgroundColor: item.bgColor, transform: 'translateY(' + itemMetas[index].translateY + 'px)', transition: itemMetas[index].wrapperTransition, zIndex: itemMetas[index].zIndex }"
         @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
         @touchcancel="onTouchEnd" @longpress="onLongPress">
         <!-- 多选模式下显示 checkbox -->
         <checkbox v-if="isMultiSelectMode" style="margin-left: 10px;" :checked="selectedIds.includes(item.id)"
           @click="toggleSelect(item.id)" />
         <view class="item-content"
-          :style="{ height: item.height + 'px', transform: 'translateX(' + itemMetas[index].translateX + 'px)' }">
+          :style="{ height: item.height + 'px', transform: 'translateX(' + itemMetas[index].translateX + 'px)', transition: itemMetas[index].contentTransition }"
+          @transitionend="() => onDeleteItemTransitionEnd(index)">
           <text class="item-text">试试左滑和长按 {{ item.id + 1 }}</text>
           <text class="item-info">高度: {{ item.height }}px</text>
           <view class="item-sub-items">
@@ -21,7 +22,7 @@
       </list-item>
     </list-view>
     <!-- 全局侧滑菜单（始终渲染，通过 visibility 控制显示） -->
-    <view class="swipe-menu" :style="{ transform: menuTransform, height: menuHeight + 'px' }">
+    <view class="swipe-menu" :style="{ transform: menuTransform, transition: menuTransition, height: menuHeight + 'px' }">
       <view class="menu-item delete-btn" @click="onDeleteClick">
         <text class="menu-text">删除</text>
       </view>
@@ -61,7 +62,20 @@
   type ListItemMeta = {
     translateX : number,
     translateY : number,
-    zIndex : number
+    zIndex : number,
+    wrapperTransition : string,
+    contentTransition : string
+  }
+
+  const createListItemMeta = () : ListItemMeta => {
+    const meta : ListItemMeta = {
+      translateX: 0,
+      translateY: 0,
+      zIndex: 0,
+      wrapperTransition: '',
+      contentTransition: ''
+    }
+    return meta
   }
 
   // 10个主色的基础RGB值（深色版本）
@@ -107,18 +121,19 @@
           bgColor: generateColor(groupIndex, j)
         })
       }
-      result.push({
+      const item : ListItemData = {
         id: i,
         height: height,
         bgColor: bgColor,
         subItems: subItems
-      } as ListItemData)
+      }
+      result.push(item)
     }
     return result
   }
 
   const items = ref<ListItemData[]>(generateItems())
-  const itemMetas = ref<ListItemMeta[]>(items.value.map((item) => ({ translateX: 0, translateY: 0, zIndex: 0 } as ListItemMeta)))
+  const itemMetas = ref<ListItemMeta[]>(items.value.map(() : ListItemMeta => createListItemMeta()))
   const listRef = ref<UniElement | null>(null)
 
   // 侧滑相关状态
@@ -145,16 +160,14 @@
   const menuHeight = ref(0)
   const menuVisible = ref(false)
   const menuShowWidth = ref(0) // 菜单显示宽度，用于同步滑出效果
+  const menuTransition = ref('')
   const activeIndex = ref(-1)
 
   // 删除动画状态
   let isDeleting = false
   const isDeleteAnimating = ref(false) // 删除动画进行中（用于控制菜单显示）
   let deletingIndex = -1 // 正在删除的索引
-  let deleteAnimationOffsetBelow = 0 // 下方列表项向上移动的偏移量
-  let deleteAnimationOffsetAbove = 0 // 上方列表项向下移动的偏移量
   let deletedItemHeight = 0 // 被删除项的高度
-  let deleteItemOffsetX = 0 // 被删除项向左移出的偏移量
 
   // 多选模式状态
   const isMultiSelectMode = ref(false)
@@ -175,6 +188,8 @@
     meta.translateX = 0
     meta.translateY = 0
     meta.zIndex = 0
+    meta.wrapperTransition = ''
+    meta.contentTransition = ''
   }
 
   const resetAllItemMetas = () => {
@@ -190,11 +205,14 @@
     for (let i = start; i <= end; i++) {
       const meta = itemMetas.value[i]
       if (i > deletingIndex) {
-        meta.translateY = -deleteAnimationOffsetBelow
+        meta.wrapperTransition = DELETE_ANIMATION_TRANSITION
+        meta.translateY = -deleteAnimationTargetBelow
       } else if (i < deletingIndex) {
-        meta.translateY = deleteAnimationOffsetAbove
+        meta.wrapperTransition = DELETE_ANIMATION_TRANSITION
+        meta.translateY = deleteAnimationTargetAbove
       } else {
-        meta.translateX = deleteItemOffsetX
+        meta.contentTransition = DELETE_ANIMATION_TRANSITION
+        meta.translateX = deleteAnimationTargetHorizontal
       }
     }
   }
@@ -228,6 +246,7 @@
     }
     menuVisible.value = false
     menuShowWidth.value = 0
+    menuTransition.value = ''
     activeIndex.value = -1
     currentListItemElement = null
   }
@@ -294,7 +313,7 @@
     // 从后往前删除，避免索引错位
     const idsToDelete = [...selectedIds.value]
     items.value = items.value.filter((item) : boolean => !idsToDelete.includes(item.id))
-    itemMetas.value = items.value.map((item) => ({ translateX: 0, translateY: 0, zIndex: 0 } as ListItemMeta))
+    itemMetas.value = items.value.map(() : ListItemMeta => createListItemMeta())
 
     // 清空选中列表
     selectedIds.value = []
@@ -466,51 +485,23 @@
   }
 
   // 删除动画相关变量
-  let deleteAnimationStartTime = 0
   let deleteAnimationTargetBelow = 0
   let deleteAnimationTargetAbove = 0
   let deleteAnimationTargetHorizontal = 0
-  let deleteAnimationStartHorizontal = 0
   let deleteAnimationIndexToDelete = -1
   const DELETE_ANIMATION_DURATION = 280
-
-  // 删除动画单帧执行
-  const executeDeleteAnimationFrame = () => {
-    const elapsed = Date.now() - deleteAnimationStartTime
-    const progress = Math.min(elapsed / DELETE_ANIMATION_DURATION, 1)
-
-    // 使用 ease-out 缓动函数
-    const easeOut = 1 - Math.pow(1 - progress, 2)
-
-    // 下方列表项向上移动
-    deleteAnimationOffsetBelow = deleteAnimationTargetBelow * easeOut
-    // 上方列表项向下移动
-    deleteAnimationOffsetAbove = deleteAnimationTargetAbove * easeOut
-
-    // 被删除项继续向左移出（速度略慢，让下方项能覆盖住）
-    const horizontalProgress = Math.min(progress * 0.85, 1)
-    const horizontalEaseOut = 1 - Math.pow(1 - horizontalProgress, 2)
-    deleteItemOffsetX = deleteAnimationStartHorizontal + (deleteAnimationTargetHorizontal - deleteAnimationStartHorizontal) * horizontalEaseOut
-
-    // 菜单也跟随向左移出，并逐渐变窄
-    menuShowWidth.value = Math.max(0, MENU_WIDTH * (1 - easeOut))
-    applyDeleteAnimationMetas()
-
-    return progress < 1
-  }
+  const DELETE_ANIMATION_TRANSITION = 'transform ' + DELETE_ANIMATION_DURATION + 'ms ease-out'
 
   // 删除动画完成处理
   const finishDeleteAnimation = () => {
     const indexToDelete = deleteAnimationIndexToDelete
     // 重置动画状态
-    deleteAnimationOffsetBelow = 0
-    deleteAnimationOffsetAbove = 0
     deletingIndex = -1
     deletedItemHeight = 0
-    deleteItemOffsetX = 0
     isDeleting = false
     isDeleteAnimating.value = false
     menuShowWidth.value = 0
+    menuTransition.value = ''
     currentListItemElement = null
     deleteAnimationIndexToDelete = -1
 
@@ -519,14 +510,11 @@
     resetAllItemMetas()
   }
 
-  // 先声明函数变量并初始化，然后重新赋值（UTS递归调用的解决方案）
-  let scheduleNextAnimationFrame : () => void = () : void => { }
-  scheduleNextAnimationFrame = () : void => {
-    if (executeDeleteAnimationFrame()) {
-      setTimeout(scheduleNextAnimationFrame, 16)
-    } else {
-      finishDeleteAnimation()
-    }
+  const onDeleteItemTransitionEnd = (index : number) => {
+    if (!isDeleting) return
+    if (index != deleteAnimationIndexToDelete) return
+    // 删除动画结束后立即清理临时 transition，避免后续手势继续带过渡效果。
+    finishDeleteAnimation()
   }
 
   // 删除按钮点击
@@ -534,14 +522,10 @@
     if (activeIndex.value == -1 || isDeleting) return
 
     const indexToDelete = activeIndex.value
-    const itemToDelete = items.value[indexToDelete]
 
     // 保存删除项信息用于动画
     deletingIndex = indexToDelete
     deletedItemHeight = currentListItemElement!.getBoundingClientRect().height
-    deleteAnimationOffsetBelow = 0
-    deleteAnimationOffsetAbove = 0
-    deleteItemOffsetX = -MENU_WIDTH // 从当前展开位置开始
     isDeleting = true
     isDeleteAnimating.value = true
 
@@ -572,15 +556,14 @@
       deleteAnimationTargetBelow = deletedItemHeight
       deleteAnimationTargetAbove = 0
     }
-    deleteAnimationStartTime = Date.now()
-    deleteAnimationStartHorizontal = -MENU_WIDTH
     deleteAnimationTargetHorizontal = -(MENU_WIDTH + 400)
     deleteAnimationIndexToDelete = indexToDelete
 
     visibleStartIndex = Math.max(0, indexToDelete - 15)
     visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + 15)
-    // 开始动画
-    scheduleNextAnimationFrame()
+    menuTransition.value = DELETE_ANIMATION_TRANSITION
+    applyDeleteAnimationMetas()
+    menuShowWidth.value = 0
   }
 
   type DataType = {
