@@ -243,11 +243,6 @@
     return `translateY(${menuTop.value}px) translateX(${-menuShowWidth.value}px)`
   })
 
-
-  watch(menuTransition, () => {
-    console.log('menuTransition changed:', menuTransition.value)
-  })
-
   // 关闭菜单（需要在调用之前定义）
   const closeMenu = () => {
     if (swipingMetaIndex != -1) {
@@ -508,10 +503,10 @@
     menuTransition.value = 'none'
     currentListItemElement = null
     deleteAnimationIndexToDelete = -1
+    resetAllItemMetas()
 
     items.value.splice(indexToDelete, 1)
     itemMetas.value.splice(indexToDelete, 1)
-    resetAllItemMetas()
   }
 
   const onDeleteItemTransitionEnd = (index : number) => {
