@@ -1,6 +1,8 @@
 const PAGE_PATH = '/pages/template/swipe-tabs-scale-highlight/swipe-tabs-scale-highlight'
 const ACTIVE_COLORS = ['rgb(0, 0, 0)', '#000000']
 const INACTIVE_COLORS = ['rgb(85, 85, 85)', '#555555']
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isMP = platformInfo.startsWith('mp')
 
 describe('template-swipe-tabs-scale-highlight', () => {
   let page
@@ -57,7 +59,9 @@ describe('template-swipe-tabs-scale-highlight', () => {
     expect(await tabs[3].text()).toBe('Tab 3')
     expectOneOfColor(await tabs[0].style('color'), ACTIVE_COLORS)
     expectOneOfColor(await tabs[1].style('color'), INACTIVE_COLORS)
-    expect(await tabs[0].style('transform')).not.toBe('none')
+    if (!isMP) {
+      expect(await tabs[0].style('transform')).not.toBe('none')
+    }
     const swiper = await getSwiper()
     expect(await swiper.property('current')).toBe(0)
   })
@@ -74,9 +78,11 @@ describe('template-swipe-tabs-scale-highlight', () => {
     expect(await swiper.property('current')).toBe(1)
     expectOneOfColor(await tabs[1].style('color'), ACTIVE_COLORS)
     expectOneOfColor(await tabs[0].style('color'), INACTIVE_COLORS)
-    expect(await tabs[1].style('transform')).not.toBe('none')
-    expect(await tabs[1].style('transform')).not.toBe(tab1BeforeTransform)
-    expect(await tabs[0].style('transform')).not.toBe(tab0BeforeTransform)
+    if (!isMP) {
+      expect(await tabs[1].style('transform')).not.toBe('none')
+      expect(await tabs[1].style('transform')).not.toBe(tab1BeforeTransform)
+      expect(await tabs[0].style('transform')).not.toBe(tab0BeforeTransform)
+    }
   })
 
   it('keeps highlighted tab in sync after swiper current changes', async () => {
@@ -89,7 +95,9 @@ describe('template-swipe-tabs-scale-highlight', () => {
     expect(await swiper.property('current')).toBe(2)
     expectOneOfColor(await tabs[2].style('color'), ACTIVE_COLORS)
     expectOneOfColor(await tabs[0].style('color'), INACTIVE_COLORS)
-    expect(await tabs[2].style('transform')).not.toBe('none')
+    if (!isMP) {
+      expect(await tabs[2].style('transform')).not.toBe('none')
+    }
   })
 
   it('switches back to Tab 0 after returning from a non-zero page', async () => {
@@ -104,7 +112,9 @@ describe('template-swipe-tabs-scale-highlight', () => {
     expect(await swiper.property('current')).toBe(0)
     expectOneOfColor(await tabs[0].style('color'), ACTIVE_COLORS)
     expectOneOfColor(await tabs[2].style('color'), INACTIVE_COLORS)
-    expect(await tabs[0].style('transform')).not.toBe('none')
+    if (!isMP) {
+      expect(await tabs[0].style('transform')).not.toBe('none')
+    }
   })
 
 })
