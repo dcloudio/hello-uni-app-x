@@ -133,11 +133,19 @@
   }
 
   const items = ref<ListItemData[]>(generateItems())
-  const itemMetas = ref<ListItemMeta[]>(items.value.map(() : ListItemMeta => createListItemMeta()))
+  const itemMetas = ref<ListItemMeta[]>(items.value.map((item) : ListItemMeta => createListItemMeta()))
   const listRef = ref<UniElement | null>(null)
 
   // 侧滑相关状态
   const MENU_WIDTH = 80 // 菜单宽度
+
+  // 删除动画相关变量
+  let deleteAnimationTargetBelow = 0
+  let deleteAnimationTargetAbove = 0
+  let deleteAnimationTargetHorizontal = 0
+  let deleteAnimationIndexToDelete = -1
+  const DELETE_ANIMATION_DURATION = 280
+  const DELETE_ANIMATION_TRANSITION = 'transform ' + DELETE_ANIMATION_DURATION + 'ms ease-out'
 
   // 滚动状态
   let isScrolling = false
@@ -313,7 +321,7 @@
     // 从后往前删除，避免索引错位
     const idsToDelete = [...selectedIds.value]
     items.value = items.value.filter((item) : boolean => !idsToDelete.includes(item.id))
-    itemMetas.value = items.value.map(() : ListItemMeta => createListItemMeta())
+    itemMetas.value = items.value.map((item) : ListItemMeta => createListItemMeta())
 
     // 清空选中列表
     selectedIds.value = []
@@ -483,14 +491,6 @@
     // 标记滚动结束
     isScrolling = false
   }
-
-  // 删除动画相关变量
-  let deleteAnimationTargetBelow = 0
-  let deleteAnimationTargetAbove = 0
-  let deleteAnimationTargetHorizontal = 0
-  let deleteAnimationIndexToDelete = -1
-  const DELETE_ANIMATION_DURATION = 280
-  const DELETE_ANIMATION_TRANSITION = 'transform ' + DELETE_ANIMATION_DURATION + 'ms ease-out'
 
   // 删除动画完成处理
   const finishDeleteAnimation = () => {
