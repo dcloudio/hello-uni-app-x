@@ -297,8 +297,10 @@ describe('component-native-input', () => {
     const image1 = await program.screenshot({
       deviceShot: true,
       area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44,
+        x: 120,
+        y: windowInfo.safeAreaInsets.top + 44 + 150,
+        width: 20,
+        height: 25,
       },
     })
     expect(image1).toSaveImageSnapshot()
@@ -306,8 +308,10 @@ describe('component-native-input', () => {
     const image2 = await program.screenshot({
       deviceShot: true,
       area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44,
+        x: 120,
+        y: windowInfo.safeAreaInsets.top + 44 + 150,
+        width: 20,
+        height: 25,
       },
     })
     expect(image2).toSaveImageSnapshot()
