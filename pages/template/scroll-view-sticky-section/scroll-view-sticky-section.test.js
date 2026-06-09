@@ -1,5 +1,9 @@
 const PAGE_PATH = '/pages/template/scroll-view-sticky-section/scroll-view-sticky-section'
-
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 describe('template-scroll-view-sticky-section', () => {
   if (!isApp) {
     it('not support', () => {
