@@ -22,7 +22,8 @@
       </list-item>
     </list-view>
     <!-- 全局侧滑菜单（始终渲染，通过 visibility 控制显示） -->
-    <view class="swipe-menu" :style="{ transform: menuTransform, transition: menuTransition, height: menuHeight + 'px' }">
+    <view class="swipe-menu"
+      :style="{ transform: menuTransform, transition: menuTransition, height: menuHeight + 'px' }">
       <view class="menu-item delete-btn" @click="onDeleteClick">
         <text class="menu-text">删除</text>
       </view>
@@ -190,19 +191,21 @@
   let visibleEndIndex = -1
   const VISIBLE_RANGE_BUFFER = 2
 
-  const resetItemMeta = (index : number) => {
+  function resetItemMeta(index : number, ignoreKeys : string[] = []) {
     if (index < 0 || index >= itemMetas.value.length) return
     const meta = itemMetas.value[index]
     meta.translateX = 0
     meta.translateY = 0
     meta.zIndex = 0
     meta.wrapperTransition = 'none'
-    meta.contentTransition = 'none'
+    if (!ignoreKeys.includes('contentTransition')) {
+      meta.contentTransition = 'none'
+    }
   }
 
-  const resetAllItemMetas = () => {
+  function resetAllItemMetas(ignoreKeys : string[] = []) {
     for (let i = 0; i < itemMetas.value.length; i++) {
-      resetItemMeta(i)
+      resetItemMeta(i, ignoreKeys)
     }
   }
 
@@ -503,10 +506,13 @@
     menuTransition.value = 'none'
     currentListItemElement = null
     deleteAnimationIndexToDelete = -1
-    resetAllItemMetas()
+    resetAllItemMetas(['contentTransition'])
 
     items.value.splice(indexToDelete, 1)
     itemMetas.value.splice(indexToDelete, 1)
+    nextTick(() => {
+      resetAllItemMetas()
+    })
   }
 
   const onDeleteItemTransitionEnd = (index : number) => {
