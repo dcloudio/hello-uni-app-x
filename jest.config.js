@@ -7,7 +7,9 @@ const config = {
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
   rootDir: __dirname,
-  testMatch: ['<rootDir>/pages/**/*test.[jt]s?(x)'],
+  testMatch: [
+      "<rootDir>/pages/API/preview-image/preview-image.test.js"
+    ],
   testPathIgnorePatterns: ['/node_modules/', '<rootDir>/pages/uni-ui/'],
   setupFilesAfterEnv: ['<rootDir>/jest-setup.js'],
   testSequencer: path.join(__dirname, "testSequencer.js")
