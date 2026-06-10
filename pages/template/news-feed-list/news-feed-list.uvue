@@ -143,9 +143,6 @@
     title.value = detail.title;
     // 窄屏时通过路由参数跳转，宽屏时直接更新右侧详情组件
     if (!isWideScreen.value) {
-      // #ifdef APP-ANDROID
-      coverValue = btoa(coverValue);
-      // #endif
       uni.navigateTo({
         url: '/pages/template/news-feed-list/detail/detail?post_id=' + post_id.value + "&cover=" + coverValue + "&title=" + title.value + "&shareKey=image_" + key
       });
@@ -206,10 +203,7 @@
   function bannerClick(e:UTSJSONObject) {
     // const detail = e;
     const post_id_val = e.post_id as string;
-    let cover_val = e.cover as string;
-    // #ifdef APP-ANDROID
-    cover_val = btoa(cover_val);
-    // #endif
+    const cover_val = e.cover as string;
     const title_val = e.title;
     uni.navigateTo({
       url: '/pages/template/news-feed-list/detail/detail?post_id=' + post_id_val + "&cover=" + cover_val + "&title=" + title_val
