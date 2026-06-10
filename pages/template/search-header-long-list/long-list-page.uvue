@@ -68,6 +68,51 @@ const isEnded = ref(false)
 const loadingError = ref('')
 const currentPage = ref(1)
 
+// 自动化测试辅助
+const mockEnabled = ref(false)
+
+function createMockItems(page : number) : ListItem[] {
+  if (page > 2) {
+    return []
+  }
+
+  const items : ListItem[] = []
+  const baseIndex = (page - 1) * PAGE_SIZE
+  for (let i = 0; i < PAGE_SIZE; i++) {
+    const itemIndex = baseIndex + i + 1
+    items.push({
+      plugin_id: itemIndex,
+      plugin_img_link: '/static/logo.png',
+      plugin_name: `${props.type} mock ${itemIndex}`,
+      plugin_intro: `${props.type} mock intro ${itemIndex}`,
+      score: 90,
+      tags: ['mock', props.type],
+      update_date: `2026-06-${(itemIndex < 10 ? '0' : '') + itemIndex}`,
+      author_name: 'uni-agent'
+    } as ListItem)
+  }
+  return items
+}
+
+function loadMockData(loadComplete : (() => void) | null) {
+  if (loadingRef.value || isEnded.value) {
+    return
+  }
+
+  loadingRef.value = true
+  const items = createMockItems(currentPage.value)
+  dataList.value.push(...items)
+  if (items.length == 0) {
+    isEnded.value = true
+  } else {
+    currentPage.value++
+  }
+  loadingRef.value = false
+  if (loadComplete != null) {
+    loadComplete()
+  }
+}
+
 /* const loadingText = computed((): string => {
   if (loadingRef.value) {
     return "加载中..."
@@ -139,50 +184,6 @@ onMounted(() => {
 })
 
 // 自动化测试辅助
-const mockEnabled = ref(false)
-
-function createMockItems(page : number) : ListItem[] {
-  if (page > 2) {
-    return []
-  }
-
-  const items : ListItem[] = []
-  const baseIndex = (page - 1) * PAGE_SIZE
-  for (let i = 0; i < PAGE_SIZE; i++) {
-    const itemIndex = baseIndex + i + 1
-    items.push({
-      plugin_id: itemIndex,
-      plugin_img_link: '/static/logo.png',
-      plugin_name: `${props.type} mock ${itemIndex}`,
-      plugin_intro: `${props.type} mock intro ${itemIndex}`,
-      score: 90,
-      tags: ['mock', props.type],
-      update_date: `2026-06-${(itemIndex < 10 ? '0' : '') + itemIndex}`,
-      author_name: 'uni-agent'
-    } as ListItem)
-  }
-  return items
-}
-
-function loadMockData(loadComplete : (() => void) | null) {
-  if (loadingRef.value || isEnded.value) {
-    return
-  }
-
-  loadingRef.value = true
-  const items = createMockItems(currentPage.value)
-  dataList.value.push(...items)
-  if (items.length == 0) {
-    isEnded.value = true
-  } else {
-    currentPage.value++
-  }
-  loadingRef.value = false
-  if (loadComplete != null) {
-    loadComplete()
-  }
-}
-
 function jest_useMockData(reload : boolean) {
   mockEnabled.value = true
   dataList.value.length = 0
