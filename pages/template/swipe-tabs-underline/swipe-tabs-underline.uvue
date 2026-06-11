@@ -124,6 +124,8 @@ function onSwiperTransition(e : SwiperTransitionEvent) {
   }
   const percentage = Math.abs(current_offset_x) / swiperWidth.value
   if (current_index != move_to_index) {
+    // transition 会覆盖点击或手势产生的最新目标页，避免残留目标误伤后续完成事件。
+    swiperTargetIndex.value = move_to_index
     updateTabIndicator(current_index, move_to_index, percentage)
   }
 }
