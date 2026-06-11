@@ -91,6 +91,10 @@
       <view class="base-style transition-transform" id="styleChangScale" @click="changestyleScale"></view>
     </view>
     <view class="container">
+      <text class="text">点击修改scale和opacity(cubic-bezier回弹)</text>
+      <view class="base-style transition-scale-opacity" id="styleScaleOpacity" @click="changeScaleOpacity"></view>
+    </view>
+    <view class="container">
       <text class="text">仅指定transition-duration背影有动画为正常</text>
       <view style="width: 100%;height: 50px;" :style="changestyleTransitionDuration"
         @click="doChangeTransitionDuration">
@@ -328,6 +332,8 @@
   const changestyleTransitionDuration = ref('background-color:brown;')
   let styleTransitionAll: UniElement | null = null
   let isTransitionAll = false
+  let isTransitionScaleOpacity = false
+  let styleScaleOpacity: UniElement | null = null
   const lineLeft = ref(0)
   const lineWidth = ref(200)
   const translatePercent = ref('0%')
@@ -371,6 +377,7 @@
     styleTransformTranslate = uni.getElementById("transformTranslate")
     styleTransformTranslateScale = uni.getElementById("styleTransformTranslateScale")
     styleTransitionAll = uni.getElementById("styleTransitionAll")
+    styleScaleOpacity = uni.getElementById("styleScaleOpacity")
     widthOrHeightAuto = uni.getElementById("widthOrHeightAuto")
     changeWidthInEnd = uni.getElementById("changeWidthInEnd")
     textTransform = uni.getElementById("textTransform")
@@ -563,6 +570,18 @@
       el?.style.setProperty("transition-duration", "200ms")
       el?.style.setProperty("transform", "translate(10px,10px) scale(0.5)")
     }, 200)
+  }
+
+  const changeScaleOpacity = () => {
+    styleScaleOpacity?.style?.setProperty("opacity", isTransitionScaleOpacity
+      ? '1'
+      : '0.4'
+    )
+    styleScaleOpacity?.style?.setProperty("transform", isTransitionScaleOpacity
+      ? 'scale(1)'
+      : 'scale(0.5)'
+    )
+    isTransitionScaleOpacity = !isTransitionScaleOpacity
   }
 
   const handleTouchStart = (e : UniTouchEvent) => {
@@ -933,6 +952,14 @@
     transform: translate(0%, 0%) scaleX(1) rotate(0deg);
     transition-property: transform;
     transition-duration: 1s;
+  }
+
+  .transition-scale-opacity {
+    opacity: 1;
+    transform: scale(1);
+    transition-property: transform, opacity;
+    transition-duration: 800ms;
+    transition-timing-function: cubic-bezier(0.2, 1.8, 0.3, 1);
   }
 
   .transition-border {
