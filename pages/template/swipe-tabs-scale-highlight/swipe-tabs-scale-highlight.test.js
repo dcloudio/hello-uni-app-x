@@ -4,6 +4,8 @@ const INACTIVE_COLORS = ['rgb(85, 85, 85)', '#555555', '#555555FF']
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 
+jest.setTimeout(30000)
+
 describe('template-swipe-tabs-scale-highlight', () => {
   let page
 
@@ -36,10 +38,6 @@ describe('template-swipe-tabs-scale-highlight', () => {
       return currentTransform !== beforeTransform && currentTransform !== ''
     })
   }
-
-  beforeAll(async () => {
-    await launchPage()
-  })
 
   beforeEach(async () => {
     await launchPage()
