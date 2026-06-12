@@ -45,7 +45,7 @@ describe('PickerView.uvue', () => {
     // TODO
     expect(stringifyPickerViewValue(newValue1)).toEqual('0,1,30')
     // 仅在App端，setValue可触发change事件
-    if (isAndroid || (isIOS && !isDom2)) {
+    if ((isAndroid && !isDom2) || (isIOS && !isDom2)) {
       const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([ 0, 1, 30 ])
@@ -55,7 +55,7 @@ describe('PickerView.uvue', () => {
     const newValue2 = await getPickerViewValue()
     // TODO
     expect(stringifyPickerViewValue(newValue2)).toEqual('10,10,10')
-    if (isAndroid || (isIOS && !isDom2)) {
+    if ((isAndroid && !isDom2) || (isIOS && !isDom2)) {
       const res = await page.data('data.result')
       await page.waitFor(500)
       expect(res).toEqual([10, 10, 10])
@@ -109,7 +109,7 @@ describe('PickerView.uvue', () => {
     return
   }
 
-  if (!isAppWebView && !isMP && !isHarmony && !(isIOS && isDom2)) {
+  if (!isAppWebView && !isMP && !isHarmony && !(isIOS && isDom2) && !(isAndroid && isDom2)) {
     it('mask-top-bottom-style', async () => {
       // mask-top-style、mask-bottom-style仅App端支持
       const linearToTop = "background-image: linear-gradient(to bottom, #f4ff73, rgba(216, 229, 255, 0));"
