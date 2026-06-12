@@ -1,3 +1,4 @@
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const PAGE_PATH = '/pages/API/get-app-base-info/get-app-base-info'
 
