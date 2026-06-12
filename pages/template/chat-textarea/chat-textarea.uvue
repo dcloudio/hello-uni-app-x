@@ -236,6 +236,29 @@
     updateEmojiPanelHeight()
   })
 
+  function jest_setShowUserList(val : boolean) {
+    showUserList.value = val
+  }
+
+  // 模拟编辑器输入，用于测试 @ 提及触发逻辑
+  function jest_simulateAtInput(text : string) {
+    const lastAtCount = lastText.split('@').length - 1
+    const newAtCount = text.split('@').length - 1
+    if (text.includes('@')) {
+      if (newAtCount > lastAtCount) {
+        showUserList.value = true
+        showEmojiList.value = false
+      } else if (newAtCount < lastAtCount) {
+        showUserList.value = false
+      }
+    } else {
+      showUserList.value = false
+    }
+    lastText = text
+  }
+
+  defineExpose({ jest_setShowUserList, jest_simulateAtInput })
+
   onUnload(() => {
     keyboardHeight.value = 0
     uni.offKeyboardHeightChange()
