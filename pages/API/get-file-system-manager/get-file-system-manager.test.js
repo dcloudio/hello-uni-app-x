@@ -1497,7 +1497,7 @@ describe('ExtApi-FileManagerTest', () => {
         basePath: 'file:///android_asset/uni-app-x',
         logAble: false,
         readFileRet: "",
-        readFile: '/version.json'
+        readFile: '/hxversion.data'
       })
       let btnReadFileButton = await page.$('#btn-read-file-sync')
       await btnReadFileButton.tap()
