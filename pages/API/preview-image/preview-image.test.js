@@ -76,6 +76,8 @@ describe('preview-image', () => {
         deviceShot: true,
       });
       expect(image).toSaveImageSnapshot()
+      await page.callMethod('closePreviewImage')
+      await page.waitFor(300)
     })
   }
 });
