@@ -1,0 +1,202 @@
+<template>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1;">
+  <!-- #endif -->
+    <page-head title="rich-text-highlight"></page-head>
+    <page-intro content="本页用于测试 rich-text 中文字颜色与背景色相同时，长按选择文本后的系统高亮覆盖情况。"></page-intro>
+    <!-- #ifdef APP-ANDROID || (APP-HARMONY && VUE3-VAPOR) || (APP-IOS && VUE3-VAPOR) -->
+    <enum-data title="设置mode（仅Android和鸿蒙蒸汽模式支持，默认值为web）" :items="modeItemTypes" @change="onModeChange"></enum-data>
+    <!-- #endif -->
+    <view class="uni-padding-wrap uni-common-mt">
+      <view class="toolbar">
+        <view class="toolbar-row">
+          <text class="toolbar-label">当前模式：{{ data.mode }}</text>
+          <text class="toolbar-label">当前用例：{{ data.caseName }}</text>
+        </view>
+        <view class="case-row">
+          <button :class="data.caseName == '同色蓝' ? 'case-button case-button-active' : 'case-button'" @click="setSameBlue">同色蓝</button>
+          <button :class="data.caseName == '同色橙' ? 'case-button case-button-active' : 'case-button'" @click="setSameOrange">同色橙</button>
+          <button :class="data.caseName == '同色黄' ? 'case-button case-button-active' : 'case-button'" @click="setSameYellow">同色黄</button>
+        </view>
+        <view class="case-row">
+          <button :class="data.caseName == '白字蓝底' ? 'case-button case-button-active' : 'case-button'" @click="setWhiteOnBlue">白字蓝底</button>
+          <button :class="data.caseName == '黑字黄底' ? 'case-button case-button-active' : 'case-button'" @click="setBlackOnYellow">黑字黄底</button>
+          <button :class="data.caseName == '高亮色白底' ? 'case-button case-button-active' : 'case-button'" @click="setHighlightColorOnWhite">高亮色白底</button>
+        </view>
+        <text class="tip-text">操作方式：长按下方 rich-text 文本并拖动选择范围，观察系统选择高亮是否能覆盖文字色、背景色以及文字背景同色区域。</text>
+      </view>
+
+      <view class="content-card">
+        <rich-text id="highlight-rich-text" class="rich-text-content" :nodes="htmlString" :selectable="true" :mode="data.mode"></rich-text>
+      </view>
+
+      <view class="legend">
+        <text class="legend-text">观察点：</text>
+        <text class="legend-text">1. 同色用例中文字色和背景色完全一致，未选中时文字不可辨认。</text>
+        <text class="legend-text">2. 长按选择后，检查系统选择高亮是否覆盖原 background-color。</text>
+        <text class="legend-text">3. 切换 web/native mode 后重复选择，比较不同渲染模式的覆盖效果。</text>
+      </view>
+    </view>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  import { ItemType } from '@/components/enum-data/enum-data-types';
+
+  type DataType = {
+    mode : string,
+    caseName : string,
+    textColor : string,
+    backgroundColor : string
+  }
+
+  const modeItems = ['web', 'native']
+  const modeItemTypes = ref([{ 'value': 0, 'name': 'web', 'checked': true }, { 'value': 1, 'name': 'native' }] as ItemType[])
+
+  const data = reactive({
+    mode: 'web',
+    caseName: '同色蓝',
+    textColor: '#1677ff',
+    backgroundColor: '#1677ff'
+  } as DataType)
+
+  const htmlString = ref('')
+
+  watch(() : string => data.mode, (mode : string) : void => {
+    modeItemTypes.value.forEach((item : ItemType) : void => {
+      item.checked = item.name == mode
+    })
+  })
+
+  function buildHtml() : string {
+    const targetStyle = 'color: ' + data.textColor + '; background-color: ' + data.backgroundColor + ';'
+    return '<p><span>当前测试：</span><span style="' + targetStyle + '">' + data.caseName + '</span></p>' +
+      '<p><span>目标区域：</span><span style="' + targetStyle + '">长按选择这一段文字，检查选择高亮是否覆盖原文字色与背景色。</span></p>' +
+      '<p><span style="' + targetStyle + '">这是一段更长的目标文本，用于拖动扩大选区；可以从句首拖动到句尾，观察选区边界和整段背景的覆盖情况。</span></p>' +
+      '<p><span>固定对照：</span><span style="color: #ffffff; background-color: #1677ff;">白字蓝底</span><span> </span><span style="color: #222222; background-color: #ffd60a;">黑字黄底</span><span> </span><span style="color: #4285F44D; background-color: #ffffff;">高亮色白底</span><span> </span><span style="color: #fa541c; background-color: #fa541c;">橙色同色</span></p>' +
+      '<p><span style="color: #444444;">普通文本区域：用于对比无背景色文本被选择时的默认高亮效果。</span></p>'
+  }
+
+  function updateHtmlString() {
+    htmlString.value = buildHtml()
+  }
+
+  function setCase(caseName : string, textColor : string, backgroundColor : string) {
+    data.caseName = caseName
+    data.textColor = textColor
+    data.backgroundColor = backgroundColor
+    updateHtmlString()
+  }
+
+  function setSameBlue() {
+    setCase('同色蓝', '#1677ff', '#1677ff')
+  }
+
+  function setSameOrange() {
+    setCase('同色橙', '#fa541c', '#fa541c')
+  }
+
+  function setSameYellow() {
+    setCase('同色黄', '#ffd60a', '#ffd60a')
+  }
+
+  function setWhiteOnBlue() {
+    setCase('白字蓝底', '#ffffff', '#1677ff')
+  }
+
+  function setBlackOnYellow() {
+    setCase('黑字黄底', '#222222', '#ffd60a')
+  }
+
+  function setHighlightColorOnWhite() {
+    setCase('高亮色白底', '#4285F44D', '#ffffff')
+  }
+
+  function onModeChange(value : number) {
+    data.mode = modeItems[value]
+  }
+
+  updateHtmlString()
+
+  defineExpose({
+    data,
+    setSameBlue,
+    setSameOrange,
+    setSameYellow,
+    setWhiteOnBlue,
+    setBlackOnYellow,
+    setHighlightColorOnWhite
+  })
+</script>
+
+<style>
+  .toolbar {
+    padding: 12px;
+    background-color: #ffffff;
+    border-radius: 8px;
+  }
+
+  .toolbar-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .toolbar-label {
+    font-size: 14px;
+    color: #333333;
+  }
+
+  .case-row {
+    flex-direction: row;
+    margin-bottom: 8px;
+  }
+
+  .case-button {
+    flex: 1;
+    margin-right: 6px;
+    font-size: 13px;
+  }
+
+  .case-button-active {
+    background-color: #1677ff;
+    color: #ffffff;
+  }
+
+  .tip-text {
+    font-size: 13px;
+    color: #666666;
+    line-height: 20px;
+  }
+
+  .content-card {
+    margin-top: 12px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d8d8d8;
+    border-radius: 8px;
+  }
+
+  .rich-text-content {
+    width: 100%;
+    min-height: 240px;
+  }
+
+  .legend {
+    margin-top: 12px;
+    padding: 12px;
+    background-color: #ffffff;
+    border-radius: 8px;
+  }
+
+  .legend-text {
+    font-size: 13px;
+    color: #555555;
+    line-height: 22px;
+  }
+</style>
