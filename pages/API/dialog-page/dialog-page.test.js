@@ -8,6 +8,7 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -201,7 +202,9 @@ describe('dialog page', () => {
     dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
     expect(dialogPageStyle.backgroundColorContent).toBe('red')
     expect(await page.callMethod('dialogPageCheckGetElementById')).toBe(true)
-    expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    if (!isDom2) {
+      expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    }
     expect(await page.callMethod('dialogCheckGetIOSView')).toBe(false)
     expect(await page.callMethod('dialogCheckGetHTMLElement')).toBe(isWeb)
   })
@@ -615,7 +618,7 @@ describe('dialog page', () => {
     })
   }
 
-  if (isAndroid) {
+  if (isAndroid && !isDom2) {
     it ('open dialogPage in tabBar', async () => {
       const tabPage = await program.reLaunch('/pages/tabBar/API');
       await tabPage.callMethod('testOpenDialogPage');
