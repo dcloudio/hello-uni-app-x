@@ -3,9 +3,6 @@ const PAGE_PATH = '/pages/component/scroll-view/scroll-view-custom-refresher-pro
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
-const isiOS = platformInfo.startsWith('ios')
-const isAndroid = platformInfo.startsWith('android')
-const isHarmony = platformInfo.startsWith('harmony')
 
 describe('scroll-view-custom-refresher-props-test', () => {
   //TODO：临时方案

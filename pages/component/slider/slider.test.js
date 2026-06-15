@@ -12,7 +12,6 @@ describe('slider', () => {
 
   const isAndroid = platformInfo.startsWith('android')
   const isIOS = platformInfo.startsWith('ios')
-  const isWeb = platformInfo.startsWith('web')
   const isHarmony = platformInfo.startsWith('harmony')
   const isDom2 = process.env.UNI_APP_X_DOM2 == 'true'
 
