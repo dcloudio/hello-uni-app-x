@@ -191,21 +191,19 @@
   let visibleEndIndex = -1
   const VISIBLE_RANGE_BUFFER = 2
 
-  function resetItemMeta(index : number, ignoreKeys : string[] = []) {
+  function resetItemMeta(index : number) {
     if (index < 0 || index >= itemMetas.value.length) return
     const meta = itemMetas.value[index]
     meta.translateX = 0
     meta.translateY = 0
     meta.zIndex = 0
     meta.wrapperTransition = 'none'
-    if (!ignoreKeys.includes('contentTransition')) {
-      meta.contentTransition = 'none'
-    }
+    meta.contentTransition = 'none'
   }
 
-  function resetAllItemMetas(ignoreKeys : string[] = []) {
+  function resetAllItemMetas() {
     for (let i = 0; i < itemMetas.value.length; i++) {
-      resetItemMeta(i, ignoreKeys)
+      resetItemMeta(i)
     }
   }
 
@@ -506,19 +504,15 @@
     menuTransition.value = 'none'
     currentListItemElement = null
     deleteAnimationIndexToDelete = -1
-    resetAllItemMetas(['contentTransition'])
+    resetAllItemMetas()
 
     items.value.splice(indexToDelete, 1)
     itemMetas.value.splice(indexToDelete, 1)
-    nextTick(() => {
-      resetAllItemMetas()
-    })
   }
 
   const onDeleteItemTransitionEnd = (index : number) => {
     if (!isDeleting) return
     if (index != deleteAnimationIndexToDelete) return
-    // 删除动画结束后立即清理临时 transition，避免后续手势继续带过渡效果。
     finishDeleteAnimation()
   }
 
