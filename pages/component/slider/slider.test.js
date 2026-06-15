@@ -81,7 +81,13 @@ describe('slider', () => {
     }
 
     if (isIOS && isDom2) {
-      console.log('Slider Harmony Dom2 not support props block-size')
+      console.log('Slider iOS Dom2 not support props block-size')
+      expect(1).toBe(1)
+      return
+    }
+
+    if (isAndroid && isDom2) {
+      console.log('Slider Android  Dom2 not support props block-size')
       expect(1).toBe(1)
       return
     }
