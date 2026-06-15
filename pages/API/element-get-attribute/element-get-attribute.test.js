@@ -20,6 +20,7 @@ describe('test element-get-attribute', () => {
   });
   it('check setStyle getAttributeStyle', async () => {
     await page.callMethod('setStyle')
+    await page.waitFor(500)
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
