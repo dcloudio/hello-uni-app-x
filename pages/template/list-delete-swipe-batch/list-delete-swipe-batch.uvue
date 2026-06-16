@@ -585,10 +585,12 @@
 
     const listElement = listRef.value!
     const listRect = listElement.getBoundingClientRect()
-    const scrollOffsetBottom = Math.max(0, listElement.scrollHeight - listElement.scrollTop - listRect.height)
+    const scrollTop = listElement.scrollTop
+    const scrollOffsetBottom = Math.max(0, listElement.scrollHeight - scrollTop - listRect.height)
+    const scrollOffsetTop = scrollTop
     if (scrollOffsetBottom < deletedItemHeight) {
       deleteAnimationTargetBelow = scrollOffsetBottom
-      deleteAnimationTargetAbove = deletedItemHeight - scrollOffsetBottom
+      deleteAnimationTargetAbove = Math.min(scrollOffsetTop, deletedItemHeight - scrollOffsetBottom)
     } else {
       deleteAnimationTargetBelow = deletedItemHeight
       deleteAnimationTargetAbove = 0
