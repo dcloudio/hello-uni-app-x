@@ -210,6 +210,7 @@
 
   const applyDeleteAnimationMetas = () => {
     if (deletingIndex == -1) return
+    // #ifndef APP && VUE3-VAPOR
     const start = Math.max(0, visibleStartIndex - VISIBLE_RANGE_BUFFER)
     const end = Math.min(itemMetas.value.length - 1, visibleEndIndex + VISIBLE_RANGE_BUFFER)
     for (let i = start; i <= end; i++) {
@@ -225,6 +226,28 @@
         meta.translateX = deleteAnimationTargetHorizontal
       }
     }
+    // #endif
+    // #ifdef APP || VUE3-VAPOR
+    const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
+    sortedListItems.sort((a, b) => {
+      return a.getBoundingClientRect().top - b.getBoundingClientRect().top
+    })
+    const currentListItemRenderIndex = sortedListItems.findIndex(el => el === currentListItemElement)
+    if(currentListItemRenderIndex === -1) {
+      return
+    }
+    for(let i = 0; i < sortedListItems.length; i++) {
+      if (i > currentListItemRenderIndex) {
+        sortedListItems[i].style.setProperty('transition', DELETE_ANIMATION_TRANSITION)
+        sortedListItems[i].style.setProperty('transform', `translateY(${-deleteAnimationTargetBelow}px)`)
+      } else if (i < currentListItemRenderIndex) {
+        sortedListItems[i].style.setProperty('transition', DELETE_ANIMATION_TRANSITION)
+        sortedListItems[i].style.setProperty('transform', `translateY(${deleteAnimationTargetAbove}px)`)
+      }
+    }
+    itemMetas.value[deletingIndex].contentTransition = DELETE_ANIMATION_TRANSITION
+    itemMetas.value[deletingIndex].translateX = deleteAnimationTargetHorizontal
+    // #endif
   }
 
   let containerTop = 0
@@ -503,12 +526,25 @@
     isDeleteAnimating.value = false
     menuShowWidth.value = 0
     menuTransition.value = 'none'
-    currentListItemElement = null
     deleteAnimationIndexToDelete = -1
-    resetAllItemMetas()
+    currentListItemElement = null
 
     items.value.splice(indexToDelete, 1)
     itemMetas.value.splice(indexToDelete, 1)
+    resetAllItemMetas()
+    // #ifdef APP && VUE3-VAPOR
+    const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
+    sortedListItems.sort((a, b) => {
+      return a.getBoundingClientRect().top - b.getBoundingClientRect().top
+    })
+    // items.value.splice(indexToDelete, 1)触发到list-view cppsdk updateList会经过一次flushJobs，此处增加一个nextTick让reset translate的操作和updateList引发的item位置变动更接近，尽量落在同一帧
+    nextTick(() => {
+      for(let i = 0; i < sortedListItems.length; i++) {
+        sortedListItems[i].style.setProperty('transition', 'none')
+        sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
+      }
+    })
+    // #endif
   }
 
   const onDeleteItemTransitionEnd = (index : number) => {
