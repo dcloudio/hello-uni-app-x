@@ -39,7 +39,7 @@
 
     <view class="foot-box">
       <view class="foot-box-main">
-        <view class="input-wrapper">
+        <view class="input-wrapper" @click="onEditorTap">
           <editor
             class="preview-editor"
             id="editor-props-demo"
@@ -48,6 +48,7 @@
             placeholder="输入消息，敲 @ 提及联系人"
             @ready="onEditorReady"
             @focus="onEditorFocus"
+            @click="onEditorTap"
             @input="onEditorInput"
           />
         </view>
@@ -59,7 +60,7 @@
       <view
         class="emoji-panel"
         :class="{ 'emoji-panel-show': showEmojiList, 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
-        :style="{ height: (showEmojiList ? emojiPanelHeight : 0) + 'px', marginTop: (showEmojiList ? 10 : 0) + 'px' }"
+        :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
       >
         <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
           <view class="emoji-grid">
@@ -70,7 +71,7 @@
         </scroll-view>
       </view>
       <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
-      <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0"></view>
+      <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
     </view>
 
 	</view>
@@ -81,16 +82,22 @@
   import KeyboardIcon from './keyboard-icon.uvue'
 
   const keyboardHeight = ref(0)
+  const keyboardMaxHeight = ref(0)
+  const emojiPanelMarginTop = 10
   const enableFootBoxAnimation = ref(false)
-  const emojiPanelHeight = ref(0)
+  const emojiPanelFallbackHeight = ref(0)
   const showUserList = ref(false)
   const showEmojiList = ref(false)
   const editorReadOnly = ref(false)
   const editorKeyboardType = computed((): string | null => {
     return showEmojiList.value ? 'none' : null
   })
+  const emojiPanelDisplayHeight = computed((): number => {
+    const targetHeight = keyboardMaxHeight.value > 0 ? keyboardMaxHeight.value : emojiPanelFallbackHeight.value
+    return targetHeight > emojiPanelMarginTop ? targetHeight - emojiPanelMarginTop : 0
+  })
   const emojiScrollHeight = computed((): number => {
-    return emojiPanelHeight.value > 20 ? emojiPanelHeight.value - 20 : 0
+    return emojiPanelDisplayHeight.value > 20 ? emojiPanelDisplayHeight.value - 20 : 0
   })
 
   let editorCtx: null | EditorContext = null
@@ -136,7 +143,19 @@
 
   function updateEmojiPanelHeight() {
     const windowInfo = uni.getWindowInfo()
-    emojiPanelHeight.value = Math.floor(windowInfo.windowHeight / 2)
+    emojiPanelFallbackHeight.value = Math.floor(windowInfo.windowHeight / 2)
+  }
+
+  function updateKeyboardMaxHeight(height: number) {
+    if (height > keyboardMaxHeight.value) {
+      keyboardMaxHeight.value = height
+    }
+  }
+
+  function setKeyboardPlaceholderToMaxHeight() {
+    if (keyboardMaxHeight.value > 0) {
+      keyboardHeight.value = keyboardMaxHeight.value
+    }
   }
 
   function getAvatarColor(name: string): string {
@@ -155,7 +174,12 @@
 
   function onEditorFocus() {
     editorReadOnly.value = false
+    setKeyboardPlaceholderToMaxHeight()
     closeEmojiList()
+  }
+
+  function onEditorTap() {
+    setKeyboardPlaceholderToMaxHeight()
   }
 
   function onAnimationSwitchChange(event: UniSwitchChangeEvent) {
@@ -166,6 +190,7 @@
     showEmojiList.value = !showEmojiList.value
     if (showEmojiList.value) {
       closeUserList()
+      updateEmojiPanelHeight()
       hideKeyboard()
     }
   }
@@ -233,9 +258,12 @@
   onLoad(() => {
     updateEmojiPanelHeight()
     uni.onKeyboardHeightChange((res) => {
-      keyboardHeight.value = res.height
       if (res.height > 0) {
+        updateKeyboardMaxHeight(res.height)
+        keyboardHeight.value = keyboardMaxHeight.value
         showEmojiList.value = false
+      } else if (!showEmojiList.value) {
+        keyboardHeight.value = 0
       }
     })
   })
