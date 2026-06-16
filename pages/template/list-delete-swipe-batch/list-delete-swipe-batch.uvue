@@ -139,6 +139,7 @@
 
   // 侧滑相关状态
   const MENU_WIDTH = 80 // 菜单宽度
+  const MIN_ITEM_HEIGHT = 60 // 最小列表项高度（用于计算侧滑菜单高度）
 
   // 删除动画相关变量
   let deleteAnimationTargetBelow = 0
@@ -524,7 +525,8 @@
 
     // 保存删除项信息用于动画
     deletingIndex = indexToDelete
-    deletedItemHeight = currentListItemElement!.getBoundingClientRect().height
+    const currentListItemRect = currentListItemElement!.getBoundingClientRect()
+    deletedItemHeight = currentListItemRect.height
     isDeleting = true
     isDeleteAnimating.value = true
 
@@ -558,8 +560,15 @@
     deleteAnimationTargetHorizontal = -(MENU_WIDTH + 400)
     deleteAnimationIndexToDelete = indexToDelete
 
-    visibleStartIndex = Math.max(0, indexToDelete - 15)
-    visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + 15)
+    const visibleHeightTop = Math.max(0, currentListItemRect.top - listRect.top)
+    const visibleHeightBottom = Math.max(0, listRect.bottom - currentListItemRect.bottom)
+    const visibleItemCountTop = Math.ceil(visibleHeightTop / currentListItemRect.height)
+    const visibleItemCountBottom = Math.ceil(visibleHeightBottom / currentListItemRect.height)
+    console.log('visibleItemCountTop:', visibleItemCountTop, 'visibleItemCountBottom:', visibleItemCountBottom)
+
+    // 减少计算量，直接推测可见区域
+    visibleStartIndex = Math.max(0, indexToDelete - visibleItemCountTop)
+    visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + visibleItemCountBottom)
     menuTransition.value = DELETE_ANIMATION_TRANSITION
     applyDeleteAnimationMetas()
     menuShowWidth.value = 0
