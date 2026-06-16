@@ -44,6 +44,7 @@
             class="preview-editor"
             id="editor-props-demo"
             :type="editorKeyboardType"
+            :read-only="editorReadOnly"
             placeholder="输入消息，敲 @ 提及联系人"
             @ready="onEditorReady"
             @focus="onEditorFocus"
@@ -84,6 +85,7 @@
   const emojiPanelHeight = ref(0)
   const showUserList = ref(false)
   const showEmojiList = ref(false)
+  const editorReadOnly = ref(false)
   const editorKeyboardType = computed((): string | null => {
     return showEmojiList.value ? 'none' : null
   })
@@ -144,6 +146,7 @@
 
   function closeUserList() {
     showUserList.value = false
+    editorReadOnly.value = false
   }
 
   function closeEmojiList() {
@@ -151,6 +154,7 @@
   }
 
   function onEditorFocus() {
+    editorReadOnly.value = false
     closeEmojiList()
   }
 
@@ -172,6 +176,12 @@
     })
   }
 
+  function hideEditorKeyboardForUserList() {
+    keyboardHeight.value = 0
+    editorReadOnly.value = true
+    uni.hideKeyboard()
+  }
+
   function hideKeyboard() {
     keyboardHeight.value = 0
     uni.hideKeyboard()
@@ -187,13 +197,16 @@
   // 往编辑器中插入@xxx
   function insertAt(id: string) {
     // 先撤回原来敲的@符号
-    editorCtx?.undo()
     const user = userList.find(item => item.id === id)!
-    editorCtx?.insertMention({
-      id: id,
-      name: user.name
-    })
     showUserList.value = false
+    editorReadOnly.value = false
+    setTimeout(() => {
+      editorCtx?.undo()
+      editorCtx?.insertMention({
+        id: id,
+        name: user.name
+      })
+    }, 0)
   }
 
   let lastText = ''
@@ -210,7 +223,7 @@
       } else if (lastTextAtCount < currentTextAtCount) {
         showUserList.value = true
         showEmojiList.value = false
-        hideKeyboard()
+        hideEditorKeyboardForUserList()
       }
     } else {
       showUserList.value = false
