@@ -33,7 +33,7 @@ describe('API-loading', () => {
 
   beforeAll(async () => {
     const windowInfo = await program.callUniMethod('getWindowInfo');
-    let topSafeArea = windowInfo.safeAreaInsets.top;
+    let topSafeArea = windowInfo.statusBarHeight;
     if (isAppWebView) {
       if (isIos) {
         topSafeArea = 59
