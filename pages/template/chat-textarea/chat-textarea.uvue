@@ -151,9 +151,7 @@
   }
 
   function onEditorFocus() {
-    if (!showEmojiList.value) {
-      closeEmojiList()
-    }
+    closeEmojiList()
   }
 
   function onAnimationSwitchChange(event: UniSwitchChangeEvent) {
@@ -179,10 +177,11 @@
     uni.hideKeyboard()
   }
 
-  // 点击列表关闭键盘和表情包面板
-  function tapList(){
-    hideKeyboard();
-    toggleEmojiList()
+  // 点击消息区时收起底部浮层，避免误触后反向打开面板
+  function tapList() {
+    hideKeyboard()
+    closeEmojiList()
+    closeUserList()
   }
 
   // 往编辑器中插入@xxx
@@ -192,10 +191,7 @@
     const user = userList.find(item => item.id === id)!
     editorCtx?.insertMention({
       id: id,
-      name: user.name,
-      success: (res: any) => {
-        console.log('insert mention success', res)
-      }
+      name: user.name
     })
     showUserList.value = false
   }
