@@ -1,6 +1,18 @@
 const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
+const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
+const isAndroid = platformInfo.startsWith('android')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isApp = isAndroid || isIos || isHarmony
 
 describe('/pages/CSS/selector/selector.uvue', () => {
+  if (!isApp) {
+    it('skip non-app platform', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   if (!isDom2) {
     it('skip non-dom2', () => {
       expect(1).toBe(1)
