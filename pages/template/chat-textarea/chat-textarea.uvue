@@ -165,7 +165,7 @@
   function toggleEmojiList() {
     showEmojiList.value = !showEmojiList.value
     if (showEmojiList.value) {
-      showUserList.value = false
+      closeUserList()
       hideKeyboard()
     }
   }
@@ -198,8 +198,7 @@
   function insertAt(id: string) {
     // 先撤回原来敲的@符号
     const user = userList.find(item => item.id === id)!
-    showUserList.value = false
-    editorReadOnly.value = false
+    closeUserList()
     setTimeout(() => {
       editorCtx?.undo()
       editorCtx?.insertMention({
@@ -219,14 +218,14 @@
       if (lastTextAtCount === currentTextAtCount) {
         // 没有新敲 @
       } else if (lastTextAtCount > currentTextAtCount) {
-        showUserList.value = false
+        closeUserList()
       } else if (lastTextAtCount < currentTextAtCount) {
         showUserList.value = true
         showEmojiList.value = false
         hideEditorKeyboardForUserList()
       }
     } else {
-      showUserList.value = false
+      closeUserList()
     }
     lastText = event.detail.text
   }
