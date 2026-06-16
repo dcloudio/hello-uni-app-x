@@ -125,24 +125,22 @@ describe('component-native-list-view', () => {
     expect(value).toBe(true)
   })
 
-  //检测横向可滚动区域 备注：iOS不支持list-view横向滚动
-  it('check_scroll_width', async () => {
-    if(isHarmony) {
-      // 鸿蒙平台list-view的暂不支持一次计算出scrollWidth
-      expect(1).toBe(1)
-      return
-    }
-    if(await page.data('data.scroll_x_boolean') === false) {
-        await page.callMethod('change_scroll_x_boolean', true)
-        await page.callMethod('change_scroll_y_boolean', false)
-        await page.waitFor(600)
-    }
-    await page.callMethod('change_scroll_y_boolean', false)
-    await page.callMethod('change_scroll_x_boolean', true)
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_width')
-    expect(value).toBe(true)
-  })
+
+  //检测横向可滚动区域 备注：iOS不支持list-view横向滚动、鸿蒙非蒸汽模式暂不支持一次计算出scrollWidth、蒸汽模式不支持横向滚动。
+  if(!isHarmony && !isIOS && !isDom2) {
+    it('check_scroll_width', async () => {
+      if(await page.data('data.scroll_x_boolean') === false) {
+          await page.callMethod('change_scroll_x_boolean', true)
+          await page.callMethod('change_scroll_y_boolean', false)
+          await page.waitFor(600)
+      }
+      await page.callMethod('change_scroll_y_boolean', false)
+      await page.callMethod('change_scroll_x_boolean', true)
+      await page.waitFor(600)
+      const value = await page.callMethod('check_scroll_width')
+      expect(value).toBe(true)
+    })
+  }
 
   //检测下拉刷新 备注：iOS本地测试结果正确，但是自动化测试结果错误
   it('check_refresher', async () => {
