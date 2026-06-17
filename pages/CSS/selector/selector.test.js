@@ -27,11 +27,18 @@ describe('/pages/CSS/selector/selector.uvue', () => {
     await page.waitFor('view')
   })
 
-  it('get page node background-color', async () => {
+  it('get page node padding from css variable', async () => {
     const pageElement = await page.$('.uni-non-public-page')
     expect(pageElement).toBeTruthy()
 
-    const backgroundColor = await pageElement.style('background-color')
-    expect(['#0000FFFF', 'rgb(0,0,255)', 'rgb(0, 0, 255)']).toContain(backgroundColor)
+    const expectedPadding = ['16px']
+    const paddingTop = await pageElement.style('padding-top')
+    const paddingRight = await pageElement.style('padding-right')
+    const paddingBottom = await pageElement.style('padding-bottom')
+    const paddingLeft = await pageElement.style('padding-left')
+    expect(expectedPadding).toContain(paddingTop)
+    expect(expectedPadding).toContain(paddingRight)
+    expect(expectedPadding).toContain(paddingBottom)
+    expect(expectedPadding).toContain(paddingLeft)
   })
 })
