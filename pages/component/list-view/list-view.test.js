@@ -33,22 +33,24 @@ describe('component-native-list-view', () => {
   })
 
 
-  //检测横向scrollLeft属性赋值 备注：iOS不支持list-view横向滚动
-  it('check_scroll_left', async () => {
-    if(await page.data('data.scroll_x_boolean') === false) {
-        await page.callMethod('change_scroll_x_boolean', true)
-        await page.callMethod('change_scroll_y_boolean', false)
-        await page.waitFor(600)
-    }
-    await page.callMethod('confirm_scroll_left_input', 600)
-    await page.waitFor(600)
-    const listElement = await page.$('#listview')
-    const scrollLeft = await listElement.attribute("scrollLeft")
-    console.log("check_scroll_left---"+scrollLeft)
-    expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
-    await page.callMethod('confirm_scroll_left_input', 0)
-    await page.waitFor(600)
-  })
+  //检测横向scrollLeft属性赋值 备注：iOS不支持list-view横向滚动、dom2不支持横向滚动
+  if (!isDom2) {
+    it('check_scroll_left', async () => {
+      if(await page.data('data.scroll_x_boolean') === false) {
+          await page.callMethod('change_scroll_x_boolean', true)
+          await page.callMethod('change_scroll_y_boolean', false)
+          await page.waitFor(600)
+      }
+      await page.callMethod('confirm_scroll_left_input', 600)
+      await page.waitFor(600)
+      const listElement = await page.$('#listview')
+      const scrollLeft = await listElement.attribute("scrollLeft")
+      console.log("check_scroll_left---"+scrollLeft)
+      expect(scrollLeft-600).toBeGreaterThanOrEqual(0)
+      await page.callMethod('confirm_scroll_left_input', 0)
+      await page.waitFor(600)
+    })
+  }
 
   it('Event check_scroll', async () => {
     await page.callMethod('change_scroll_y_boolean', true)
