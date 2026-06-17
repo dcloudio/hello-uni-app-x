@@ -101,6 +101,8 @@
   })
 
   let editorCtx: null | EditorContext = null
+  // 记录最近一次键盘恢复任务，避免快速切换时旧回调误触发
+  let focusEditorKeyboardTaskId = 0
   function onEditorReady() {
     const options: CreateEditorContextAsyncOptions = {
       id: 'editor-props-demo',
@@ -192,7 +194,34 @@
       closeUserList()
       updateEmojiPanelHeight()
       hideKeyboard()
+    } else {
+      focusEditorKeyboard()
     }
+  }
+
+  function focusEditorKeyboard() {
+    const taskId = ++focusEditorKeyboardTaskId
+    setKeyboardPlaceholderToMaxHeight()
+    // editor 隐藏键盘后仍可能保持焦点，先切只读再恢复可重复拉起键盘
+    editorReadOnly.value = true
+    setTimeout(() => {
+      if (taskId != focusEditorKeyboardTaskId || showEmojiList.value) {
+        if (!showUserList.value) {
+          editorReadOnly.value = false
+        }
+        return
+      }
+      editorReadOnly.value = false
+      setTimeout(() => {
+        if (taskId != focusEditorKeyboardTaskId || showEmojiList.value) {
+          return
+        }
+        // 通过 read-only 状态切换后再触发 editor，保证每次都能重新拉起键盘
+        editorCtx?.insertText({
+          text: ''
+        })
+      }, 0)
+    }, 0)
   }
 
   function insertEmoji(emoji: string) {
@@ -202,13 +231,17 @@
   }
 
   function hideEditorKeyboardForUserList() {
+    focusEditorKeyboardTaskId++
     keyboardHeight.value = 0
     editorReadOnly.value = true
     uni.hideKeyboard()
   }
 
   function hideKeyboard() {
+    focusEditorKeyboardTaskId++
     keyboardHeight.value = 0
+    // 主动 blur 让 editor 焦点状态和键盘隐藏状态保持一致
+    editorCtx?.blur({})
     uni.hideKeyboard()
   }
 
