@@ -1,0 +1,39 @@
+<template>
+  <native-view @init="onviewinit"></native-view>
+</template>
+<script setup lang="uts">
+  import { TestNativeView } from "@/uni_modules/test-native-view";
+  let view : TestNativeView | null = null
+
+  // Style样式监听
+  const style = useComputedStyle({
+    properties: ['background-color'],
+    filterProperties: true
+  } as UseComputedStyleOptions)
+  const backgroundColor = computed<string>(() => {
+    return style.get('background-color')?.toString() ?? '#FFFFFF'
+  })
+
+  /**
+   * 监听background-color变化
+   */
+  watch([backgroundColor], () => {
+    view?.updateBackground(backgroundColor.value)
+  })
+
+  /**
+   * native-view组件初始化时触发
+   * 用于绑定App平台原生View
+   */
+  function onviewinit(e : UniNativeViewInitEvent) {
+    view = new TestNativeView(e.detail.element)
+    view?.updateBackground(backgroundColor.value)
+  }
+
+  /**
+   * App平台主动释放资源
+   */
+  function onUnmounted() {
+    view?.destroy()
+  }
+</script>
