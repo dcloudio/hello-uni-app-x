@@ -42,6 +42,7 @@ describe('component-native-sticky-section', () => {
     });
     page.waitFor(600)
     await page.callMethod('listViewScrollByY', 1000)
+    await page.waitFor(1000)
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
