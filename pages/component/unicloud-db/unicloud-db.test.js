@@ -3,7 +3,7 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 // 仅测试dom2
 describe('unicloud-db', () => {
-  if (isDom2) {
+  if (!isDom2) {
     it('not support', () => {
       expect(1).toBe(1)
     })
