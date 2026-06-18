@@ -137,6 +137,33 @@ onPullDownRefresh(() => {
     }
   })
 })
+
+// #ifdef VUE3-VAPOR
+let checkMethods = false
+
+function checkUdbRefMethods() : boolean {
+  const udb = udbRef.value
+  if (udb == null) {
+    checkMethods = false
+    return checkMethods
+  }
+
+  const hasLoadData = udb.loadData != null
+  const hasLoadMore = udb.loadMore != null
+  const hasAdd = udb.add != null
+  const hasRemove = udb.remove != null
+  const hasUpdate = udb.update != null
+
+  checkMethods = hasLoadData && hasLoadMore && hasAdd && hasRemove && hasUpdate
+  return checkMethods
+}
+
+defineExpose({
+  checkUdbRefMethods
+})
+
+// #endif
+
 </script>
 
 <style>
