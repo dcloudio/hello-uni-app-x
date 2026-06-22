@@ -27,18 +27,28 @@ describe('/pages/CSS/selector/selector.uvue', () => {
     await page.waitFor('view')
   })
 
-  it('get page node padding from css variable', async () => {
+  const expectPagePadding = async (expectedPadding) => {
     const pageElement = await page.$('.uni-non-public-page')
     expect(pageElement).toBeTruthy()
 
-    const expectedPadding = ['16px']
     const paddingTop = await pageElement.style('padding-top')
     const paddingRight = await pageElement.style('padding-right')
     const paddingBottom = await pageElement.style('padding-bottom')
     const paddingLeft = await pageElement.style('padding-left')
-    expect(expectedPadding).toContain(paddingTop)
-    expect(expectedPadding).toContain(paddingRight)
-    expect(expectedPadding).toContain(paddingBottom)
-    expect(expectedPadding).toContain(paddingLeft)
+    expect([expectedPadding]).toContain(paddingTop)
+    expect([expectedPadding]).toContain(paddingRight)
+    expect([expectedPadding]).toContain(paddingBottom)
+    expect([expectedPadding]).toContain(paddingLeft)
+  }
+
+  it('get page node padding from css variable', async () => {
+    await expectPagePadding('16px')
+  })
+
+  it('change page node padding from css variable', async () => {
+    const button = await page.$('#setPagePaddingButton')
+    await button.tap()
+    await page.waitFor(500)
+    await expectPagePadding('20px')
   })
 })
