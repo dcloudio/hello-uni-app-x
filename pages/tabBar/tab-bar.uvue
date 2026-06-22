@@ -1,17 +1,21 @@
 <template>
-	<uni-tab style="flex: 1;height: 100%;" :active-index="activeIndex" :tab-content-height-full="true" @change="handleChange">
+	<uni-tab style="flex: 1;height: 100%;" :active-index="activeIndex" @change="handleChange">
 		<!-- 内容区域 -->
-    <!-- 注意tab的逻辑是：第一次使用v-if创建，创建之后不再使用v-if，而是设置visibility来隐藏和显示。不能设置tab的v-if为false，因为销毁再创建影响性能 -->
-		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==0?'visible':'hidden'),height: (tabContentHeight + 'px')}"
-     > <componenttab /> </view>
-		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==1?'visible':'hidden'),height: (tabContentHeight + 'px')}"
-    v-if="isTabInitArray[1]" > <apitab /> </view>
-		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==2?'visible':'hidden'),height: (tabContentHeight + 'px')}"
-    v-if="isTabInitArray[2]" > <csstab /> </view>
-		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==3?'visible':'hidden'),height: (tabContentHeight + 'px')}"
-    v-if="isTabInitArray[3]" > <uniuitab /> </view>
-		<view style="width: 100%;height: 100%;position: absolute;" :style="{visibility:(activeIndex==4?'visible':'hidden'),height: (tabContentHeight + 'px')}"
-    v-if="isTabInitArray[4]" > <templatetab /> </view>
+		<uni-tab-content>
+			<componenttab />
+		</uni-tab-content>
+		<uni-tab-content>
+			<apitab />
+		</uni-tab-content>
+		<uni-tab-content>
+			<csstab />
+		</uni-tab-content>
+		<uni-tab-content>
+			<uniuitab />
+		</uni-tab-content>
+		<uni-tab-content>
+			<templatetab />
+		</uni-tab-content>
 
 		<!-- 底部选项卡 -->
 		<uni-tab-bar :style="{ backgroundColor: tabBarBgColor }">
@@ -48,13 +52,8 @@
 	import uniuitab from './uni-ui.uvue'
 	import { state } from '@/store/index.uts'
 
-	const windowInfo = uni.getWindowInfo()
-	// tab内容区域高度 = 窗口高度 - tab-bar高度(50) - 底部安全区
-	let tabContentHeight = ref<number>(windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom))
 	const activeIndex = ref<number>(0)
-	// 记录每个tab是否初始化过，未激活过的tab先不创建，等首次激活再创建
-	let isTabInitArray = ref<boolean[]>([true, false, false, false, false])
-  const currentPage = getCurrentInstance()?.proxy?.$page
+	const currentPage = getCurrentInstance()?.proxy?.$page
 	const darkTextClass = computed((): string => {
 		return state.isDarkMode ? 'tab-label-dark' : ''
 	})
@@ -80,11 +79,6 @@
 		syncAndroidNavigationStyle()
 	})
 
-  onResize(()=> {
-    const windowInfo = uni.getWindowInfo()
-    tabContentHeight.value = windowInfo.windowHeight - 50 - (windowInfo.safeAreaInsets.bottom)
-  })
-
 	onReady(() => {
 		syncAndroidNavigationStyle()
 	})
@@ -98,19 +92,15 @@
 				break
 			case 1:
 				uni.setNavigationBarTitle({ title: 'API' })
-				isTabInitArray.value[1] = true
 				break
 			case 2:
 				uni.setNavigationBarTitle({ title: 'CSS' })
-				isTabInitArray.value[2] = true
 				break
 			case 3:
 				uni.setNavigationBarTitle({ title: 'uni-ui' })
-				isTabInitArray.value[3] = true
 				break
 			case 4:
 				uni.setNavigationBarTitle({ title: '模板' })
-				isTabInitArray.value[4] = true
 				break
 		}
 	}
