@@ -173,12 +173,8 @@ describe('Buttonstatus.uvue', () => {
   })
 
   test('button-hover', async () => {
-    if (isApp && !isDom2) {
-      expect(1).toBe(1)
-      return
-    }
     const btn = await page.$('#test-button-hover-class')
-    if (isApp && isDom2) {
+    if (isApp) {
       const rect = await page.callMethod('getHoverButtonRect')
       const tapPoint = {
         x: Math.round(rect.left + rect.width / 2.0),
