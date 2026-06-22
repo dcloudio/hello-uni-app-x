@@ -233,10 +233,10 @@
       return a.getBoundingClientRect().top - b.getBoundingClientRect().top
     })
     const currentListItemRenderIndex = sortedListItems.findIndex(el => el === currentListItemElement)
-    if(currentListItemRenderIndex === -1) {
+    if (currentListItemRenderIndex === -1) {
       return
     }
-    for(let i = 0; i < sortedListItems.length; i++) {
+    for (let i = 0; i < sortedListItems.length; i++) {
       if (i > currentListItemRenderIndex) {
         sortedListItems[i].style.setProperty('transition', DELETE_ANIMATION_TRANSITION)
         sortedListItems[i].style.setProperty('transform', `translateY(${-deleteAnimationTargetBelow}px)`)
@@ -534,16 +534,22 @@
     resetAllItemMetas()
     // #ifdef APP && VUE3-VAPOR
     const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
-    sortedListItems.sort((a, b) => {
-      return a.getBoundingClientRect().top - b.getBoundingClientRect().top
+    // #ifndef APP-ANDROID
+    for (let i = 0; i < sortedListItems.length; i++) {
+      sortedListItems[i].style.setProperty('transition', 'none')
+      sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
+    }
+    // #endif
+    // #ifdef APP-ANDROID
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        for (let i = 0; i < sortedListItems.length; i++) {
+          sortedListItems[i].style.setProperty('transition', 'none')
+          sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
+        }
+      })
     })
-    // items.value.splice(indexToDelete, 1)触发到list-view cppsdk updateList会经过一次flushJobs，此处增加一个nextTick让reset translate的操作和updateList引发的item位置变动更接近，尽量落在同一帧
-    nextTick(() => {
-      for(let i = 0; i < sortedListItems.length; i++) {
-        sortedListItems[i].style.setProperty('transition', 'none')
-        sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
-      }
-    })
+    // #endif
     // #endif
   }
 
