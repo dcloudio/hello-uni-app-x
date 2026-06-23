@@ -1,7 +1,6 @@
 ﻿jest.setTimeout(60000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isWeb = platformInfo.startsWith('web')
 const isMiniProgram = platformInfo.startsWith('mp') || platformInfo.startsWith('weixin') || platformInfo.includes('小程序')
 
 const PAGE_PATH = '/pages/template/swipe-card-stack/swipe-card-stack'
@@ -25,7 +24,7 @@ describe('template-swipe-card-stack', () => {
     try {
       page = await program.reLaunch(PAGE_PATH)
     } catch (error) {
-      if (!isWeb) {
+      if (!platformInfo.startsWith('web')) {
         throw error
       }
       page = await program.currentPage()
@@ -122,19 +121,21 @@ describe('template-swipe-card-stack', () => {
     return await dragCard(await getTopCardInfo(), offsetX, offsetY, options)
   }
 
-  async function getMaxOpacity(selector) {
-    const icons = await page.$$(selector)
-    const opacities = []
-    for (let i = 0; i < icons.length; i++) {
-      const opacityText = await icons[i].style('opacity')
-      opacities.push(parseFloat(opacityText || '0'))
-    }
-    return Math.max(...opacities)
-  }
-
   function expectTransformMoved(transform) {
-    if (transform.includes('translate')) {
-      expect(transform).toContain('translate')
+    const translateMatched = transform.match(/translate(?:3d)?\(\s*([-0-9.]+)px(?:\s*,\s*([-0-9.]+)px)?/)
+    if (translateMatched != null) {
+      const translateX = parseFloat(translateMatched[1] || '0')
+      const translateY = parseFloat(translateMatched[2] || '0')
+      expect(Math.abs(translateX) + Math.abs(translateY)).toBeGreaterThan(0)
+      return
+    }
+
+    const matrix3dMatched = transform.match(/matrix3d\(([^)]+)\)/)
+    if (matrix3dMatched != null) {
+      const matrixValues = matrix3dMatched[1].split(',').map((value) => parseFloat(value.trim()))
+      const translateX = matrixValues[12] || 0
+      const translateY = matrixValues[13] || 0
+      expect(Math.abs(translateX) + Math.abs(translateY)).toBeGreaterThan(0)
       return
     }
 
@@ -146,18 +147,20 @@ describe('template-swipe-card-stack', () => {
     expect(Math.abs(translateX) + Math.abs(translateY)).toBeGreaterThan(0)
   }
 
-  async function expectCardIsDragging(card, direction) {
+  async function expectCardIsDragging(card) {
     await page.waitFor(WAIT_FOR_DRAG_RENDER)
     const transform = await card.style('transform')
     expectTransformMoved(transform)
+  }
 
-    if (direction == 'right') {
-      expect(await getMaxOpacity('.like')).toBeGreaterThan(0)
-      expect(await getMaxOpacity('.dislike')).toBe(0)
-    } else {
-      expect(await getMaxOpacity('.dislike')).toBeGreaterThan(0)
-      expect(await getMaxOpacity('.like')).toBe(0)
-    }
+  async function expectDragFeedbackSnapshot() {
+    const image = await program.screenshot()
+    expect(image).toSaveImageSnapshot()
+  }
+
+  async function expectCardSwitchedSnapshot() {
+    const image = await program.screenshot()
+    expect(image).toSaveImageSnapshot()
   }
 
   beforeAll(async () => {
@@ -190,15 +193,15 @@ describe('template-swipe-card-stack', () => {
     await dragCard(backCardInfo, Math.round(windowInfo.screenWidth * 0.35), 0, { release: false })
 
     expect(await backCardInfo.card.style('transform')).toBe(beforeTransform)
-    expect(await getMaxOpacity('.like')).toBe(0)
-    expect(await getMaxOpacity('.dislike')).toBe(0)
+    await expectDragFeedbackSnapshot()
   })
 
   it('keeps current card after a short drag and release', async () => {
     const topCardIndexBefore = await getTopCardIndex()
     const draggedCard = await dragTopCard(20, 0, { release: false })
 
-    await expectCardIsDragging(draggedCard, 'right')
+    await expectCardIsDragging(draggedCard)
+    await expectDragFeedbackSnapshot()
     await draggedCard.touchend(createTouchEvent(windowInfo.screenWidth / 2 + 20, windowInfo.screenHeight / 2, true))
     await page.waitFor(WAIT_FOR_RELEASE)
 
@@ -206,35 +209,49 @@ describe('template-swipe-card-stack', () => {
     expect((await getCards()).length).toBe(3)
   })
 
-  it('shows like feedback while dragging the top card right', async () => {
+  it('right drag feedback screenshot', async () => {
     const topCardIndexBefore = await getTopCardIndex()
     const draggedCard = await dragTopCard(Math.round(windowInfo.screenWidth * 0.45), 0, { release: false })
 
-    await expectCardIsDragging(draggedCard, 'right')
+    await expectCardIsDragging(draggedCard)
+    await expectDragFeedbackSnapshot()
+
+    expect(await getTopCardIndex()).toBe(topCardIndexBefore)
+    expect((await getCards()).length).toBe(3)
+  })
+
+  it('right drag switched-to-next-card screenshot', async () => {
+    const topCardIndexBefore = await getTopCardIndex()
+    const draggedCard = await dragTopCard(Math.round(windowInfo.screenWidth * 0.45), 0, { release: false })
+
     await draggedCard.touchend(createTouchEvent(windowInfo.screenWidth * 0.95, windowInfo.screenHeight / 2, true))
     await page.waitFor(WAIT_FOR_RELEASE)
 
     expect((await getCards()).length).toBe(3)
-    if (isWeb) {
-      expect(await getTopCardIndex()).not.toBe(topCardIndexBefore)
-    } else {
-      expect(await getTopCardIndex()).toBe(topCardIndexBefore)
-    }
+    expect(await getTopCardIndex()).not.toBe(topCardIndexBefore)
+    await expectCardSwitchedSnapshot()
   })
 
-  it('shows dislike feedback while dragging the top card left', async () => {
+  it('left drag feedback screenshot', async () => {
     const topCardIndexBefore = await getTopCardIndex()
     const draggedCard = await dragTopCard(Math.round(windowInfo.screenWidth * -0.45), 0, { release: false })
 
-    await expectCardIsDragging(draggedCard, 'left')
+    await expectCardIsDragging(draggedCard)
+    await expectDragFeedbackSnapshot()
+
+    expect(await getTopCardIndex()).toBe(topCardIndexBefore)
+    expect((await getCards()).length).toBe(3)
+  })
+
+  it('left drag switched-to-next-card screenshot', async () => {
+    const topCardIndexBefore = await getTopCardIndex()
+    const draggedCard = await dragTopCard(Math.round(windowInfo.screenWidth * -0.45), 0, { release: false })
+
     await draggedCard.touchend(createTouchEvent(windowInfo.screenWidth * 0.05, windowInfo.screenHeight / 2, true))
     await page.waitFor(WAIT_FOR_RELEASE)
 
     expect((await getCards()).length).toBe(3)
-    if (isWeb) {
-      expect(await getTopCardIndex()).not.toBe(topCardIndexBefore)
-    } else {
-      expect(await getTopCardIndex()).toBe(topCardIndexBefore)
-    }
+    expect(await getTopCardIndex()).not.toBe(topCardIndexBefore)
+    await expectCardSwitchedSnapshot()
   })
 })
