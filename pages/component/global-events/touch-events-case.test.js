@@ -59,8 +59,8 @@ describe('touch-events-test', () => {
   it('test swiper preventDefault stopPropagation', async () => {
     await page.waitFor(1500);
     await page.callMethod('resetEvent')
-    let x = 125
-    let y = 250
+    let x = 25
+    let y = 150
 
     // 滑动事件
     await program.swipe({
