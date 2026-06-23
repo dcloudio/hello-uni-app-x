@@ -33,7 +33,7 @@ describe('web-map', () => {
   if (isApp) {
     it('handleMoveToLocation', async () => {
       await page.callMethod('handleMoveToLocation',false)
-      await page.waitFor(500);
+      await page.waitFor(1000);
       const moveToLocationRes = await page.data('jestResult')
       expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
     });
