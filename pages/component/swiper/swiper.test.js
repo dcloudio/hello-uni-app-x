@@ -1,5 +1,3 @@
-// @Author-APP-ANDROID:DCloud_Android_DQQ
-jest.setTimeout(30000);
 describe('test swiper', () => {
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
   const isMP = platformInfo.startsWith('mp')

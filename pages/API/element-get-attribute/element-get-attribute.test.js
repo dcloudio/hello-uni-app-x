@@ -1,4 +1,3 @@
-jest.setTimeout(30000);
 describe('test element-get-attribute', () => {
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()

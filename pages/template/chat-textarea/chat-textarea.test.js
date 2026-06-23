@@ -3,8 +3,6 @@ const isWeb = platformInfo.startsWith('web')
 
 const PAGE_PATH = '/pages/template/chat-textarea/chat-textarea'
 
-jest.setTimeout(20000)
-
 describe('chat-textarea', () => {
   if (!isWeb) {
     it('skip', () => { expect(1).toBe(1) })
