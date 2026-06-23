@@ -118,14 +118,17 @@ describe('component-native-list-view', () => {
     expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
-  //检测竖向可滚动区域
-  it('check_scroll_height', async () => {
-    await page.callMethod('change_scroll_y_boolean', true)
-    await page.callMethod('change_scroll_x_boolean', false)
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_height')
-    expect(value).toBe(true)
-  })
+  // 蒸汽模式不会对所有item排版并渲染，无法计算准确scrollHeight，屏蔽此测试
+  if(!isDom2) {
+    //检测竖向可滚动区域
+    it('check_scroll_height', async () => {
+      await page.callMethod('change_scroll_y_boolean', true)
+      await page.callMethod('change_scroll_x_boolean', false)
+      await page.waitFor(600)
+      const value = await page.callMethod('check_scroll_height')
+      expect(value).toBe(true)
+    })
+  }
 
 
   //检测横向可滚动区域 备注：iOS不支持list-view横向滚动、鸿蒙非蒸汽模式暂不支持一次计算出scrollWidth、蒸汽模式不支持横向滚动。

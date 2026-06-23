@@ -110,16 +110,19 @@ describe('component-native-waterflow', () => {
     expect(endDetail.scrollWidth).toBeGreaterThan(0)
   })
 
-  //检测竖向可滚动区域
-  it('check_scroll_height', async () => {
-    if (await isNonVaporHarmonyOSLowerThanApi20()) {
-      expect(1).toBe(1)
-      return
-    }
-    await page.waitFor(600)
-    const value = await page.callMethod('check_scroll_height')
-    expect(value).toBe(true)
-  })
+  // 蒸汽模式不会对所有item排版并渲染，无法计算准确scrollHeight，屏蔽此测试
+  if(!isDom2) {
+    //检测竖向可滚动区域
+    it('check_scroll_height', async () => {
+      if (await isNonVaporHarmonyOSLowerThanApi20()) {
+        expect(1).toBe(1)
+        return
+      }
+      await page.waitFor(600)
+      const value = await page.callMethod('check_scroll_height')
+      expect(value).toBe(true)
+    })
+  }
 
   //检测下拉刷新
   it('check_refresher', async () => {
