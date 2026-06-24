@@ -1,21 +1,23 @@
 <template>
-	<uni-tab style="flex: 1;height: 100%;" :active-index="activeIndex" @change="handleChange">
+	<uni-tab class="tab-page-root" :style="{ height: tabPageHeight + 'px' }" :active-index="activeIndex" @change="handleChange">
 		<!-- 内容区域 -->
-		<uni-tab-content>
-			<componenttab />
-		</uni-tab-content>
-		<uni-tab-content>
-			<apitab />
-		</uni-tab-content>
-		<uni-tab-content>
-			<csstab />
-		</uni-tab-content>
-		<uni-tab-content>
-			<uniuitab />
-		</uni-tab-content>
-		<uni-tab-content>
-			<templatetab />
-		</uni-tab-content>
+		<view class="tab-content-stage">
+			<uni-tab-content>
+				<componenttab />
+			</uni-tab-content>
+			<uni-tab-content>
+				<apitab />
+			</uni-tab-content>
+			<uni-tab-content>
+				<csstab />
+			</uni-tab-content>
+			<uni-tab-content>
+				<uniuitab />
+			</uni-tab-content>
+			<uni-tab-content>
+				<templatetab />
+			</uni-tab-content>
+		</view>
 
 		<!-- 底部选项卡 -->
 		<uni-tab-bar :style="{ backgroundColor: tabBarBgColor }">
@@ -52,6 +54,7 @@
 	import uniuitab from './uni-ui.uvue'
 	import { state } from '@/store/index.uts'
 
+	const tabPageHeight = ref<number>(uni.getWindowInfo().windowHeight)
 	const activeIndex = ref<number>(0)
 	const currentPage = getCurrentInstance()?.proxy?.$page
 	const darkTextClass = computed((): string => {
@@ -75,11 +78,20 @@
 		// #endif
 	}
 
+	function syncTabPageHeight() : void {
+		tabPageHeight.value = uni.getWindowInfo().windowHeight
+	}
+
 	watch((): boolean => state.isDarkMode, () => {
 		syncAndroidNavigationStyle()
 	})
 
+	onResize(() => {
+		syncTabPageHeight()
+	})
+
 	onReady(() => {
+		syncTabPageHeight()
 		syncAndroidNavigationStyle()
 	})
 
@@ -107,6 +119,20 @@
 </script>
 
 <style>
+	.tab-page-root {
+		width: 100%;
+		flex: 1;
+	}
+
+	.tab-content-stage {
+		width: 100%;
+		flex: 1;
+		min-height: 0px;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		overflow: hidden;
+	}
 
 	.tab-icon-image {
 		height: 24px;
