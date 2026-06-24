@@ -30,7 +30,7 @@ describe('scroll-collapse-navbar', () => {
           topSafeArea = 25
         } else if (platformInfo.startsWith('android 11')) {
           topSafeArea = 52
-        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 14') || platformInfo.startsWith('android 15')) {
+        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
           topSafeArea = 49
         }
       } else if (isHarmony) {
