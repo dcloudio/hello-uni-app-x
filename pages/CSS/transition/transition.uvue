@@ -204,7 +204,7 @@
 
       <view class="test-item">
         <text class="uni-subtitle-text">text 组件</text>
-        <text class="uni-info">设置值: {{data.transitionValue}}</text>
+        <text class="uni-info">设置值 sdf: {{data.transitionValue}}</text>
         <text class="uni-info">获取值: {{data.transitionActualText}}</text>
         <view class="test-box">
           <text ref="textRefTransition" class="common-text" :style="{ transition: data.transitionValue }" @click="triggerTransitionText">点击text</text>
@@ -265,7 +265,6 @@
       <test-native-view ref="nativeView2" class="base-style" style="transition: width 2s ease-in-out;" @click="changeNativeViewWidth2"></test-native-view>
     </view>
 
-    <!-- #ifndef APP-ANDROID -->
 		<view style="margin: 7px; height: 60px;">
 			<navigator url="/pages/CSS/transition/transition-transform" hover-class="none">
 				<button type="primary">
@@ -273,7 +272,6 @@
 				</button>
 			</navigator>
 		</view>
-		<!-- #endif -->
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
@@ -296,8 +294,8 @@
   const scrollView2 = ref(null as UniElement | null)
   let isNativeViewWidth1 = false
   let isNativeViewWidth2 = false
-  const nativeView1 = ref(null as UniElement | null)
-  const nativeView2 = ref(null as UniElement | null)
+  const nativeView1 = ref<ComponentPublicInstance|null>(null)
+  const nativeView2 = ref<ComponentPublicInstance|null>(null)
   let isTranstionChangeMargin = false
   let styleMargin: UniElement | null = null
   let isTransitionStylePadding = false
@@ -427,12 +425,12 @@
   }
 
   const changeNativeViewWidth1 = () => {
-    nativeView1.value?.style.setProperty("width", isNativeViewWidth1 ? '100px' : '150px')
+    nativeView1.value?.$el.style.setProperty("width", isNativeViewWidth1 ? '100px' : '150px')
     isNativeViewWidth1 = !isNativeViewWidth1
   }
 
   const changeNativeViewWidth2 = () => {
-    nativeView2.value?.style.setProperty("width", isNativeViewWidth2 ? '100px' : '150px')
+    nativeView2.value?.$el.style.setProperty("width", isNativeViewWidth2 ? '100px' : '150px')
     isNativeViewWidth2 = !isNativeViewWidth2
   }
 
