@@ -162,9 +162,6 @@
   let swipeStarted = false
   let currentListItemElement : UniElement | null = null
 
-  // 当前滑动的列表项索引（用于定向重置元数据）
-  let swipingMetaIndex = -1
-
   // 菜单状态
   const menuTop = ref(0)
   const menuHeight = ref(0)
@@ -175,7 +172,6 @@
 
   // 删除动画状态
   let isDeleting = false
-  const isDeleteAnimating = ref(false) // 删除动画进行中（用于控制菜单显示）
   let deletingIndex = -1 // 正在删除的索引
   let deletedItemHeight = 0 // 被删除项的高度
 
@@ -210,24 +206,29 @@
 
   const applyDeleteAnimationMetas = () => {
     if (deletingIndex == -1) return
-    // #ifndef APP && VUE3-VAPOR
     const start = Math.max(0, visibleStartIndex - VISIBLE_RANGE_BUFFER)
     const end = Math.min(itemMetas.value.length - 1, visibleEndIndex + VISIBLE_RANGE_BUFFER)
     for (let i = start; i <= end; i++) {
       const meta = itemMetas.value[i]
       if (i > deletingIndex) {
+        // #ifndef APP-ANDROID && VUE3-VAPOR
         meta.wrapperTransition = DELETE_ANIMATION_TRANSITION
         meta.translateY = -deleteAnimationTargetBelow
+        // #endif
+        meta.zIndex = 1
       } else if (i < deletingIndex) {
+        // #ifndef APP-ANDROID && VUE3-VAPOR
         meta.wrapperTransition = DELETE_ANIMATION_TRANSITION
         meta.translateY = deleteAnimationTargetAbove
+        // #endif
+        meta.zIndex = 1
       } else {
         meta.contentTransition = DELETE_ANIMATION_TRANSITION
         meta.translateX = deleteAnimationTargetHorizontal
+        meta.zIndex = 0
       }
     }
-    // #endif
-    // #ifdef APP && VUE3-VAPOR
+    // #ifdef APP-ANDROID && VUE3-VAPOR
     const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
     sortedListItems.sort((a, b) => {
       return a.getBoundingClientRect().top - b.getBoundingClientRect().top
@@ -245,8 +246,6 @@
         sortedListItems[i].style.setProperty('transform', `translateY(${deleteAnimationTargetAbove}px)`)
       }
     }
-    itemMetas.value[deletingIndex].contentTransition = DELETE_ANIMATION_TRANSITION
-    itemMetas.value[deletingIndex].translateX = deleteAnimationTargetHorizontal
     // #endif
   }
 
@@ -270,10 +269,6 @@
 
   // 关闭菜单（需要在调用之前定义）
   const closeMenu = () => {
-    if (swipingMetaIndex != -1) {
-      resetItemMeta(swipingMetaIndex)
-      swipingMetaIndex = -1
-    }
     if (activeIndex.value != -1) {
       resetItemMeta(activeIndex.value)
     }
@@ -385,7 +380,6 @@
     if (activeIndex.value == index) {
       const meta = itemMetas.value[index]
       meta.translateX = -MENU_WIDTH
-      swipingMetaIndex = index
       menuShowWidth.value = MENU_WIDTH
     }
   }
@@ -436,13 +430,8 @@
 
     // 限制范围：最多左滑菜单宽度，不能右滑超过0
     offsetX = Math.max(-MENU_WIDTH, Math.min(0, offsetX))
-
-    if (swipingMetaIndex != -1 && swipingMetaIndex != currentIndex) {
-      resetItemMeta(swipingMetaIndex)
-    }
     const meta = itemMetas.value[currentIndex]
     meta.translateX = offsetX
-    swipingMetaIndex = currentIndex
 
     // 更新菜单位置和宽度（同步滑出效果）
     if (offsetX < 0) {
@@ -523,34 +512,28 @@
     deletingIndex = -1
     deletedItemHeight = 0
     isDeleting = false
-    isDeleteAnimating.value = false
-    menuShowWidth.value = 0
     menuTransition.value = 'none'
     deleteAnimationIndexToDelete = -1
+    const tempCurrentListItemElement = currentListItemElement
     currentListItemElement = null
 
     items.value.splice(indexToDelete, 1)
     itemMetas.value.splice(indexToDelete, 1)
     resetAllItemMetas()
-    // #ifdef APP && VUE3-VAPOR
+    // #ifdef APP-ANDROID && VUE3-VAPOR
     const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
-    // #ifndef APP-ANDROID
-    for (let i = 0; i < sortedListItems.length; i++) {
-      sortedListItems[i].style.setProperty('transition', 'none')
-      sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
-    }
-    // #endif
-    // #ifdef APP-ANDROID
-    // TODO 临时方案，需调整为更健壮的方案
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         for (let i = 0; i < sortedListItems.length; i++) {
-          sortedListItems[i].style.setProperty('transition', 'none')
-          sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
+          const element = sortedListItems[i]
+          if (tempCurrentListItemElement === element) {
+            continue
+          }
+          element.style.setProperty('transition', 'none')
+          element.style.setProperty('transform', `translateY(0px)`)
         }
       })
     })
-    // #endif
     // #endif
   }
 
@@ -571,22 +554,6 @@
     const currentListItemRect = currentListItemElement!.getBoundingClientRect()
     deletedItemHeight = currentListItemRect.height
     isDeleting = true
-    isDeleteAnimating.value = true
-
-    // 设置初始元数据：被删除项继续向左，邻项提升层级
-    if (swipingMetaIndex != -1) {
-      resetItemMeta(swipingMetaIndex)
-      swipingMetaIndex = -1
-    }
-    itemMetas.value[indexToDelete].translateX = -MENU_WIDTH
-    if (indexToDelete + 1 < itemMetas.value.length) {
-      itemMetas.value[indexToDelete + 1].zIndex = 1
-    }
-    if (indexToDelete - 1 >= 0) {
-      itemMetas.value[indexToDelete - 1].zIndex = 1
-    }
-
-    // 关闭菜单状态但保持显示（通过 isDeleteAnimating）
     menuVisible.value = false
     activeIndex.value = -1
 
@@ -614,8 +581,8 @@
     visibleStartIndex = Math.max(0, indexToDelete - visibleItemCountTop)
     visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + visibleItemCountBottom)
     menuTransition.value = DELETE_ANIMATION_TRANSITION
-    applyDeleteAnimationMetas()
     menuShowWidth.value = 0
+    applyDeleteAnimationMetas()
   }
 
   type DataType = {
