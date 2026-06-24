@@ -233,10 +233,10 @@
       return a.getBoundingClientRect().top - b.getBoundingClientRect().top
     })
     const currentListItemRenderIndex = sortedListItems.findIndex(el => el === currentListItemElement)
-    if(currentListItemRenderIndex === -1) {
+    if (currentListItemRenderIndex === -1) {
       return
     }
-    for(let i = 0; i < sortedListItems.length; i++) {
+    for (let i = 0; i < sortedListItems.length; i++) {
       if (i > currentListItemRenderIndex) {
         sortedListItems[i].style.setProperty('transition', DELETE_ANIMATION_TRANSITION)
         sortedListItems[i].style.setProperty('transform', `translateY(${-deleteAnimationTargetBelow}px)`)
@@ -535,17 +535,16 @@
     // #ifdef APP && VUE3-VAPOR
     const sortedListItems = Array.from(listRef.value!.querySelectorAll('.item-wrapper'))
     // #ifndef APP-ANDROID
-    requestAnimationFrame(() => {
-      for(let i = 0; i < sortedListItems.length; i++) {
-        sortedListItems[i].style.setProperty('transition', 'none')
-        sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
-      }
-    })
+    for (let i = 0; i < sortedListItems.length; i++) {
+      sortedListItems[i].style.setProperty('transition', 'none')
+      sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
+    }
     // #endif
     // #ifdef APP-ANDROID
+    // TODO 临时方案，需调整为更健壮的方案
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        for(let i = 0; i < sortedListItems.length; i++) {
+        for (let i = 0; i < sortedListItems.length; i++) {
           sortedListItems[i].style.setProperty('transition', 'none')
           sortedListItems[i].style.setProperty('transform', `translateY(0px)`)
         }
@@ -615,8 +614,8 @@
     visibleStartIndex = Math.max(0, indexToDelete - visibleItemCountTop)
     visibleEndIndex = Math.min(items.value.length - 1, indexToDelete + visibleItemCountBottom)
     menuTransition.value = DELETE_ANIMATION_TRANSITION
-    menuShowWidth.value = 0
     applyDeleteAnimationMetas()
+    menuShowWidth.value = 0
   }
 
   type DataType = {
