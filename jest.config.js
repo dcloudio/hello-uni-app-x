@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 const config = {
-  testTimeout: 30000,
+  testTimeout: 15000,
   reporters: ['default'],
   watchPathIgnorePatterns: ['/node_modules/', '/dist/', '/.git/'],
   moduleFileExtensions: ['js', 'json'],
