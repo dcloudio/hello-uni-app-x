@@ -11,9 +11,12 @@
     <list-item style="padding: 10px; margin: 5px 0;align-items: center;" :type=20>
       <button @click="deleteSection()" size="mini">删除第一组 section</button>
     </list-item>
-    <sticky-section class="content-section" style="align-items: stretch; align-content: stretch;" v-for="(section) in pageData.sectionArray" :key="section.name"
+    <sticky-section class="content-section" ref="sectionRefs" style="align-items: stretch; align-content: stretch;" v-for="(section) in pageData.sectionArray" :key="section.name"
       <!-- #ifndef APP && VUE3-VAPOR -->
       :padding="pageData.sectionPadding"
+      <!-- #endif -->
+      <!-- #ifdef APP && VUE3-VAPOR -->
+      :preload="true"
       <!-- #endif -->
       :push-pinned-header="true">
       <sticky-header :id="section.name">
@@ -61,6 +64,7 @@
   } as DataType)
 
   const listViewRef = ref<UniElement | null>(null)
+  const sectionRefs = ref<UniElement[] | null>(null)
 
   const initSectionArray = () => {
     pageData.sectionArray = []
@@ -139,12 +143,19 @@
     }, 1000)
   }
 
+  const jest_checkPreload = () => {
+    return sectionRefs.value?.every(sectionElement => {
+      return sectionElement.querySelectorAll(".content-item").length > 0;
+    }) ?? false;
+  }
+
   defineExpose({
     pageData,
     deleteSection,
     listViewScrollByY,
     toTop,
-    gotoStickyHeader
+    gotoStickyHeader,
+    jest_checkPreload
   })
 </script>
 
