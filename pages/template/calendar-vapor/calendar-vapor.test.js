@@ -18,14 +18,11 @@ describe('calendar-vapor', () => {
     await page.waitFor(300)
   }
 
-  async function getState() {
-    return await page.callMethod('jest_getState')
-  }
-
   async function switchToMonth(year, month) {
-    await page.callMethod('jest_switchToMonth', year, month)
+    const value = `${year}-${month.toString().padStart(2, '0')}`
+    await page.callMethod('jest_pickMonth', value)
     await page.waitFor(100)
-    return await getState()
+    return await page.callMethod('jest_getState')
   }
 
   function getNextMonth(year, month) {
@@ -70,7 +67,7 @@ describe('calendar-vapor', () => {
     const monthText = await page.$('.month-text')
     const weekdayTexts = await page.$$('.weekday-text')
     const dayTexts = await page.$$('.day-text')
-    const state = await getState()
+    const state = await page.callMethod('jest_getState')
 
     expect(headerYear).not.toBeNull()
     expect(headerDate).not.toBeNull()
@@ -92,7 +89,7 @@ describe('calendar-vapor', () => {
     let changed = await page.callMethod('jest_selectDay', 15)
     await page.waitFor(100)
 
-    let state = await getState()
+    let state = await page.callMethod('jest_getState')
     let headerDate = await page.$('.header-date')
 
     expect(changed).toBe(true)
@@ -106,7 +103,7 @@ describe('calendar-vapor', () => {
     changed = await page.callMethod('jest_selectDay', 20)
     await page.waitFor(100)
 
-    state = await getState()
+    state = await page.callMethod('jest_getState')
     headerDate = await page.$('.header-date')
 
     expect(changed).toBe(true)
@@ -119,13 +116,13 @@ describe('calendar-vapor', () => {
   it('switches month with arrow actions and updates header text', async () => {
     await openPage()
 
-    const initialState = await getState()
+    const initialState = await page.callMethod('jest_getState')
     const expectedNext = getNextMonth(initialState.currentYear, initialState.currentMonth)
 
-    await page.callMethod('jest_nextMonth')
+    await page.callMethod('nextMonth')
     await page.waitFor(100)
 
-    let state = await getState()
+    let state = await page.callMethod('jest_getState')
     let monthText = await page.$('.month-text')
 
     expect(state.currentYear).toBe(expectedNext.year)
@@ -135,10 +132,10 @@ describe('calendar-vapor', () => {
     expect(state.visibleDayCount).toBeLessThanOrEqual(31)
 
     const expectedPrev = getPrevMonth(state.currentYear, state.currentMonth)
-    await page.callMethod('jest_prevMonth')
+    await page.callMethod('prevMonth')
     await page.waitFor(100)
 
-    state = await getState()
+    state = await page.callMethod('jest_getState')
     monthText = await page.$('.month-text')
 
     expect(state.currentYear).toBe(expectedPrev.year)
@@ -158,20 +155,20 @@ describe('calendar-vapor', () => {
     expect(state.currentMonth).toBe(12)
     expect(await monthText.text()).toBe('2025年12月')
 
-    await page.callMethod('jest_nextMonth')
+    await page.callMethod('nextMonth')
     await page.waitFor(100)
 
-    state = await getState()
+    state = await page.callMethod('jest_getState')
     monthText = await page.$('.month-text')
 
     expect(state.currentYear).toBe(2026)
     expect(state.currentMonth).toBe(1)
     expect(await monthText.text()).toBe('2026年1月')
 
-    await page.callMethod('jest_prevMonth')
+    await page.callMethod('prevMonth')
     await page.waitFor(100)
 
-    state = await getState()
+    state = await page.callMethod('jest_getState')
     monthText = await page.$('.month-text')
 
     expect(state.currentYear).toBe(2025)
@@ -182,7 +179,7 @@ describe('calendar-vapor', () => {
   it('switches to target year and keeps date selection available', async () => {
     await openPage()
 
-    const initialState = await getState()
+    const initialState = await page.callMethod('jest_getState')
     const targetYear = initialState.currentYear + 1
     const targetMonth = initialState.currentMonth == 12 ? 6 : initialState.currentMonth + 1
 
@@ -201,7 +198,7 @@ describe('calendar-vapor', () => {
     const changed = await page.callMethod('jest_selectDay', 10)
     await page.waitFor(100)
 
-    state = await getState()
+    state = await page.callMethod('jest_getState')
     headerYear = await page.$('.header-year')
     headerDate = await page.$('.header-date')
 

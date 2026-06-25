@@ -489,17 +489,13 @@
 		}
 	}
 
-	function jest_prevMonth() : void {
-		prevMonth()
-	}
-
-	function jest_nextMonth() : void {
-		nextMonth()
-	}
-
-	function jest_switchToMonth(year : number, month : number) : void {
+	function jest_pickMonth(value : string) : void {
 		swiperCurrent.value = 1
-		switchToMonth(year, month, 1)
+		onPickerChange({
+			detail: {
+				value: value
+			}
+		} as UniPickerChangeEvent)
 	}
 
 	function jest_selectDay(day : number) : boolean {
@@ -517,10 +513,10 @@
 	}
 
 	defineExpose({
+		prevMonth,
+		nextMonth,
 		jest_getState,
-		jest_prevMonth,
-		jest_nextMonth,
-		jest_switchToMonth,
+		jest_pickMonth,
 		jest_selectDay
 	})
 </script>
