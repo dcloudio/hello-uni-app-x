@@ -1,0 +1,66 @@
+import View from "android.view.View"
+import Color from "android.graphics.Color"
+
+
+/**
+ * 颜色转换，仅支持#开头的格式
+ *  uni-app x 蒸汽模式8位时格式为 #RRGGBBAA
+ *  鸿蒙平台需要的是 #AARRGGBB
+ */
+class ColorUtils {
+  static fromUniColor(color: string): string | null {
+    if(color.startsWith("#")){
+      const len = color.length
+      if(len >= 9){//#RRGGBBAA
+        let rgb = color.substring(1, 7)
+        let a = color.substring(7, 9)
+        return `#${a}${rgb}`
+      }else if(len == 5){//#RGBA
+        let rgb = color.substring(1,4)
+        let a = color.substring(4, 5)
+        return `#${a}${rgb}`
+      }else if(len < 3){
+        return null
+      }
+      return color
+    }
+    return null
+  }
+}
+
+export class TestNativeView {
+  $element : UniNativeViewElement
+  view : View | null = null
+
+  constructor(element : UniNativeViewElement) {
+    this.$element = element
+    this.bindView()
+  }
+
+  bindView() {
+    // 构建原生view
+    this.view = new View(this.$element.getAndroidActivity()!)
+    this.view.setBackgroundColor(Color.WHITE)
+    // 绑定原生view
+    this.$element.bindAndroidView(this.view!)
+  }
+
+  destroy() {
+    this.view = null
+  }
+
+  /**
+   * 更新背景颜色
+   * 仅支持#RRGGBB格式颜色字符串
+   */
+  updateBackground(color: string) {
+    try{
+    let c = ColorUtils.fromUniColor(color)
+    if(null != c){
+      this.view?.setBackgroundColor(Color.parseColor(c))
+    }
+    }catch(e){
+      //Nothing to do
+    }
+  }
+}

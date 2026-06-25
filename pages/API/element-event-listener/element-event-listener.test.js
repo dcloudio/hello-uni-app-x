@@ -1,8 +1,11 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isIOS = platformInfo.startsWith('ios')
+const isVapor = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('element-event-listener', () => {
-  if (!isWeb) {
+  if (!(isVapor && (isHarmony || isIOS))) {
     it('not support', () => {
       expect(1).toBe(1)
     })

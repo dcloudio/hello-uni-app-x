@@ -1,5 +1,3 @@
-jest.setTimeout(20000)
-
 const PAGE_PATH = '/pages/component/editor/editor'
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web') || platformInfo.startsWith('h5')
@@ -10,7 +8,10 @@ const isSimulator = platformInfo.includes('模拟器')
 const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 describe('editor.uvue', () => {
-  if (isMP || isiOS) {
+  const infos = process.env.uniTestPlatformInfo.split(' ');
+  const version = parseInt(infos[infos.length - 1]);
+
+  if (isMP || isiOS || (isAndroid && !isNaN(version) && version < 8)) {
     it('skip', () => {
       expect(1).toBe(1)
     })

@@ -1,4 +1,3 @@
-jest.setTimeout(30000);
 describe('test element-get-attribute', () => {
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -20,6 +19,7 @@ describe('test element-get-attribute', () => {
   });
   it('check setStyle getAttributeStyle', async () => {
     await page.callMethod('setStyle')
+    await page.waitFor(500)
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
@@ -81,4 +81,12 @@ describe('test element-get-attribute', () => {
       expect(scaledViewHeight).toBeGreaterThan(99.5);
     })
   }
+
+  it('scroll offset', async () => {
+    const scrollOffset = await page.data("scrollOffset")
+    expect(scrollOffset.scrollTop).toBe(0)
+    // expect(scrollOffset.scrollHeight).toBe(150)
+    expect(scrollOffset.scrollWidth).toBe(scrollOffset.width)
+    expect(scrollOffset.scrollLeft).toBe(0)
+  })
 });
