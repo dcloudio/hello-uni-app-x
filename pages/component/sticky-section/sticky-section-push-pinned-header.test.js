@@ -15,7 +15,7 @@ describe('component-native-sticky-section', () => {
 
   let page
   beforeAll(async () => {
-    page = await program.reLaunch('/pages/component/sticky-section-push-pinned-header/sticky-section-push-pinned-header')
+    page = await program.reLaunch('/pages/component/sticky-section/sticky-section-push-pinned-header')
     await page.waitFor('view')
     await page.waitFor(1000);
   })
@@ -24,12 +24,12 @@ describe('component-native-sticky-section', () => {
     // 滚动到B，期望headerB在headerA之下
     await page.callMethod('testScroll')
     await page.waitFor(1000)
-    const image = await program.screenshot({fullPage: true});
-    expect(image).toSaveImageSnapshot();
+    const image1 = await program.screenshot({fullPage: true});
+    expect(image1).toSaveImageSnapshot();
     // 滚动到C，期望headerC在headerA之下，且将headerB顶出可视区，因为headerB对应的section的push-pinned-header为true
     await page.callMethod('testScroll')
     await page.waitFor(1000)
-    const image = await program.screenshot({fullPage: true});
-    expect(image).toSaveImageSnapshot();
+    const image2 = await program.screenshot({fullPage: true});
+    expect(image2).toSaveImageSnapshot();
   })
 })
