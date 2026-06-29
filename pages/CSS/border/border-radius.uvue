@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1">
@@ -15,8 +15,8 @@
       <view>
         <text>border-radius: 10% 和阴影</text>
         <view class="demo-box" style="height: 60px;">
-          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px  rgba(0, 0, 0, .3);"></view>
-          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px  rgba(0, 0, 0, .3);" flatten></view>
+          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);"></view>
+          <view class="common" style="border-radius: 10%;box-shadow: 5px 5px rgba(0, 0, 0, .3);" flatten></view>
         </view>
       </view>
 
@@ -97,6 +97,14 @@
         <view class="demo-box">
           <view class="common-square" style="border-radius: 150px"></view>
           <view class="common-square" style="border-radius: 150px" flatten></view>
+        </view>
+      </view>
+
+      <view>
+        <text>border-radius: 999px（border-radius超出边界形成正圆）</text>
+        <view class="demo-box">
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;"></view>
+          <view class="square" style="border-radius: 999px; border: 1px solid green; border-top-color: red;" flatten></view>
         </view>
       </view>
 
@@ -244,7 +252,7 @@
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -286,6 +294,7 @@
     data.borderRadiusActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border-radius') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorderRadius = (value: string) => {
     data.borderRadius = value
     viewRef.value?.style.setProperty('border-radius', value)
@@ -297,7 +306,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorderRadius = (index: number) => {
@@ -338,6 +347,11 @@
     width: 150px;
     height: 150px;
     background-color: gray;
+  }
+
+  .square {
+    width: 150px;
+    height: 150px;
   }
 
   .text-radius {

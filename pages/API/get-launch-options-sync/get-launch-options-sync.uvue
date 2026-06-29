@@ -24,18 +24,18 @@
     testResult: boolean;
   }
 
-  const data = reactive({
-    checked: false,
-    // #ifdef VUE3-VAPOR
-    homePagePath: 'pages/tabBar/tab-bar',
-    // #endif
-    // #ifndef VUE3-VAPOR
-    homePagePath: 'pages/tabBar/component',
-    // #endif
-    launchOptionsPath: '',
-    launchOptionsString: '',
-    testResult: false
-  } as DataType)
+	const data = reactive<DataType>({
+		checked: false,
+		// #ifdef VUE3-VAPOR && !APP-HARMONY && !APP-IOS
+		homePagePath: 'pages/tabBar/tab-bar',
+		// #endif
+		// #ifdef !VUE3-VAPOR || APP-HARMONY || APP-IOS
+		homePagePath: 'pages/tabBar/component',
+		// #endif
+		launchOptionsPath: '',
+		launchOptionsString: '',
+		testResult: false
+	})
 
   const compareOnLaunchRes = () => {
     const launchOptions = uni.getLaunchOptionsSync();

@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -153,7 +153,7 @@
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -200,6 +200,7 @@
     data.borderActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border') ?? ''
   }
 
+  const ins = getCurrentInstance()
   const changeBorder = (value: string) => {
     data.border = value
     viewRef.value?.style.setProperty('border', value)
@@ -211,7 +212,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeBorder = (index: number) => {
@@ -227,6 +228,11 @@
 
   onReady(() => {
     getPropertyValues()
+  })
+
+  defineExpose({
+    radioChangeBorder,
+    data
   })
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <template v-if="autoTestData.begin">
@@ -59,7 +59,7 @@
           <input-data :defaultValue="data.letterSpacing" title="letter-spacing 自定义值" type="text" @confirm="inputChangeLetterSpacing"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -91,6 +91,8 @@
 		data.letterSpacingActualFlat = textRefFlat.value?.style.getPropertyValue('letter-spacing') ?? ''
 	}
 
+	const ins = getCurrentInstance()
+
 	const changeLetterSpacing = (value: string) => {
 		data.letterSpacing = value
 		textRef.value?.style.setProperty('letter-spacing', value)
@@ -98,7 +100,7 @@
 		// 使用 nextTick 确保样式已应用后再获取值
 		nextTick(() => {
 			getPropertyValues()
-		})
+		}, ins)
 	}
 
 	const radioChangeLetterSpacing = (index: number) => {
@@ -143,6 +145,7 @@
     getLetterSpacing,
     plusLetterSpacing,
     minusLetterSpacing,
+    radioChangeLetterSpacing,
     data
   })
   /**

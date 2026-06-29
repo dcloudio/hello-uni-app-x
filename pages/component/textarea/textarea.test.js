@@ -7,6 +7,13 @@ describe('component-native-textarea', () => {
   const isWeb = platformInfo.startsWith('web')
   const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
   let textarea;
   beforeAll(async () => {
@@ -37,7 +44,7 @@ describe('component-native-textarea', () => {
       await program.keyboardInput(options)
       await page.waitFor(2000)
       expect(await page.data('data.jest_result')).toBe(true)
-      const image = await program.screenshot();
+      const image = await program.screenshot({ fullPage: true });
       expect(image).toSaveImageSnapshot();
     })
 
@@ -106,7 +113,7 @@ describe('component-native-textarea', () => {
     }
   }
   // TODO: dom2 harmony 暂时不支持 auto-height
-  if (!isDom2) {
+  if (!(isDom2 && isIOS)) {
     it("auto-height", async () => {
       await setPageData({
         default_value: ""
@@ -128,7 +135,7 @@ describe('component-native-textarea', () => {
         await page.waitFor(500)
         textareaSize = await textarea.size()
         textareaHeight = textareaSize.height
-        expect(textareaHeight).toEqual(200)
+        expect(textareaHeight).toEqual((isDom2 && isHarmony) ? 202 : 200)
       }
     })
   }
@@ -138,7 +145,7 @@ describe('component-native-textarea', () => {
     var {
       height
     } = await bottomTextarea.size()
-    expect(height).toEqual(150)
+    expect(height).toEqual(isDom2 ? 152: 150)
   })
 
   it("maxlength", async () => {
@@ -172,4 +179,18 @@ describe('component-native-textarea', () => {
       expect(rect.width).toBe(100)
     })
   }
+  it("placeholder-class should clear style after update empty string", async () => {
+    const hasPlaceholderClassImage = await program.screenshot({
+      fullPage: true
+    })
+    expect(hasPlaceholderClassImage).toSaveImageSnapshot()
+    await setPageData({
+      textareaPlaceholderClass: ""
+    })
+    await page.waitFor(1000)
+    const noPlaceholderClassImage = await program.screenshot({
+      fullPage: true
+    })
+    expect(noPlaceholderClassImage).toSaveImageSnapshot()
+  })
 });

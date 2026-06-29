@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -45,7 +45,7 @@
         </view>
       </scroll-view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -88,6 +88,8 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
     data.whiteSpaceActualFlat = textRefFlat.value?.style.getPropertyValue('white-space') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeWhiteSpace = (value: string) => {
     data.whiteSpace = value
     textRef.value?.style.setProperty('white-space', value)
@@ -95,7 +97,7 @@ HBuilderX，轻巧、极速，极客编辑器；uni-app x，终极跨平台方�
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeWhiteSpace = (index: number) => {

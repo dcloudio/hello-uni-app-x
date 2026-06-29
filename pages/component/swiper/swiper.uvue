@@ -31,7 +31,11 @@
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">定制指示器颜色</view>
-          <switch :checked="data.indicatorColorSelect" @change="indicatorColorChange" />
+          <switch :checked="data.indicatorColorSelect"
+            <!-- #ifndef (APP && VUE3-VAPOR) -->
+            :disabled="true"
+            <!-- #endif -->
+            @change="indicatorColorChange" />
         </view>
         <view class="uni-list-cell uni-list-cell-padding">
           <view class="uni-list-cell-db">禁止 touch 操作</view>
@@ -115,11 +119,14 @@
         	</button>
         </navigator>
         <!-- #endif -->
-        <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+        <!-- #ifdef VUE3-VAPOR -->
         <navigator url="/pages/component/swiper/swiper-more" style="margin-top: 10px;">
         	<button type="primary">
         		更多 swiper
         	</button>
+        </navigator>
+        <navigator url="/pages/component/swiper/swiper-item-100" style="margin-top: 10px;">
+          <button>组件性能测试</button>
         </navigator>
         <!-- #endif -->
       </view>

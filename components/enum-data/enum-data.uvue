@@ -1,6 +1,6 @@
 <script setup lang="uts">
 import { ItemType } from './enum-data-types'
-import { state } from '@/store/index.uts'
+import { isDarkMode, darkModeClass } from '@/composables/useDark.uts'
 // 样式隔离配置，app: 受全局样式影响
 defineOptions({
   styleIsolation: 'app'
@@ -19,10 +19,13 @@ const props = defineProps({
   compact: {
     type: Boolean,
     default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
-const isDarkMode = computed(() => state.isDarkMode)
 const current = ref(0)
 
 // @ts-ignore
@@ -41,14 +44,14 @@ function _change(e : RadioGroupChangeEvent) {
 </script>
 
 <template>
-  <view class="uni-padding-wrap" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="uni-padding-wrap" :class="darkModeClass">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-list uni-common-pl" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="uni-list uni-common-pl" :class="darkModeClass">
     <radio-group @change="_change" :class="[{'compact-container': compact}]">
-      <radio class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
+      <radio :disabled="props.disabled" class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
         :class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
          :value="item.value + ''" :checked="item.checked" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
         <text class="radio-text">{{ item.name }}</text>

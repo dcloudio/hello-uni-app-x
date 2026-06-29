@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="background-color: #EEE;">
@@ -44,25 +44,25 @@
           <text class="uni-subtitle-text">selectable属性（鸿蒙蒸汽暂不支持）</text>
         </view>
         <view class="text-box">
-          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifdef APP-ANDROID -->
           <text :selectable="true">{{ singleLineText }}</text>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifndef APP-ANDROID -->
           <text>{{ singleLineText }}</text>
           <!-- #endif -->
         </view>
 
         <view class="uni-title">
-          <text class="uni-subtitle-text">space属性（鸿蒙蒸汽不支持，推荐改用css white-space）</text>
+          <text class="uni-subtitle-text">space属性（App平台蒸汽模式不支持，推荐改用css white-space）</text>
           <text class="uni-subtitle-text">依次为nbsp ensp emsp效果</text>
         </view>
         <view class="text-box">
-          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifndef VUE3-VAPOR && APP -->
           <text space="nbsp">{{ singleLineText }}</text>
           <text space="ensp">{{ singleLineText }}</text>
           <text space="emsp">{{ singleLineText }}</text>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifdef VUE3-VAPOR && APP -->
           <text>{{ singleLineText }}</text>
           <text>{{ singleLineText }}</text>
           <text>{{ singleLineText }}</text>
@@ -70,17 +70,17 @@
         </view>
 
         <view class="uni-title">
-          <text class="uni-subtitle-text">decode属性（鸿蒙蒸汽暂不支持）</text>
+          <text class="uni-subtitle-text">decode属性（App平台蒸汽模式不支持）</text>
           <text class="uni-subtitle-text">依次为lt gt amp apos nbsp ensp emsp效果</text>
         </view>
         <view class="text-box">
-          <!-- #ifndef VUE3-VAPOR && APP-HARMONY -->
-          <text :decode="true">{{ decodeStr }}</text>
-          <text :decode="true">uni-app&nbsp;x，终极跨平台方案</text>
-          <text :decode="true">uni-app&ensp;x，终极跨平台方案</text>
-          <text :decode="true">uni-app&emsp;x，终极跨平台方案</text>
+          <!-- #ifndef VUE3-VAPOR && APP -->
+          <text :decode="data.decode">{{ decodeStr }}</text>
+          <text :decode="data.decode">uni-app&nbsp;x，终极跨平台方案</text>
+          <text :decode="data.decode">uni-app&ensp;x，终极跨平台方案</text>
+          <text :decode="data.decode">uni-app&emsp;x，终极跨平台方案</text>
           <!-- #endif -->
-          <!-- #ifdef VUE3-VAPOR && APP-HARMONY -->
+          <!-- #ifdef VUE3-VAPOR && APP -->
           <text>{{ decodeStr }}</text>
           <text>uni-app&nbsp;x，终极跨平台方案</text>
           <text>uni-app&ensp;x，终极跨平台方案</text>
@@ -200,7 +200,7 @@
         </view>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -257,6 +257,7 @@ type DataType = {
   heightText: string,
   isNestedText1TapTriggered: boolean,
   isNestedText2TapTriggered: boolean,
+  decode: boolean
 }
 
 // 自动化测试
@@ -267,6 +268,7 @@ const data = reactive({
   heightText: '设置高度文本',
   isNestedText1TapTriggered: false,
   isNestedText2TapTriggered: false,
+  decode: true
 } as DataType)
 
 function nestedText1Tap() {

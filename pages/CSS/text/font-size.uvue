@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="flex-grow: 1;">
@@ -47,7 +47,7 @@
           <input-data :defaultValue="data.fontSizeProp" title="font-size 自定义值" type="text" @confirm="inputChangeFontSize"></input-data>
       </view>
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -65,11 +65,6 @@
   const setFontSize = () => {
     data.fontSize = '30px'
   }
-
-  defineExpose({
-    setFontSize,
-    data
-  })
 
   const fontSizeEnum: ItemType[] = [
     { value: 0, name: '' },
@@ -89,6 +84,8 @@
     data.fontSizeActualFlat = textRefFlat.value?.style.getPropertyValue('font-size') ?? ''
   }
 
+  const ins = getCurrentInstance()
+
   const changeFontSize = (value: string) => {
     data.fontSizeProp = value
     textRef.value?.style.setProperty('font-size', value)
@@ -96,7 +93,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    })
+    }, ins)
   }
 
   const radioChangeFontSize = (index: number) => {
@@ -112,6 +109,12 @@
 
   onReady(() => {
     getPropertyValues()
+  })
+
+  defineExpose({
+    setFontSize,
+    radioChangeFontSize,
+    data
   })
 </script>
 

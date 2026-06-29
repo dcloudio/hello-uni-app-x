@@ -3,23 +3,30 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
-const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query'
-
-const RECT_LEFT = 15;
-const RECT_WIDTH = 150;
-const RECT_HEIGHT = 100;
-
 describe('nodes-info', () => {
+  if (isMP) {
+	  it('skip', () => {
+	    expect(1).toBe(1)
+	  })
+	  return
+	}
+
+  const PAGE_PATH = '/pages/API/create-selector-query/create-selector-query'
+  const RECT_LEFT = 15;
+  const RECT_WIDTH = 150;
+  const RECT_HEIGHT = 100;
+
   let page
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
   })
 
-  it("screenshot", async () => {
-    const image = await program.screenshot({ fullPage: true });
-    expect(image).toSaveImageSnapshot();
-  })
+  // 查询到的元素涉及设备精度问题，截图对比差异较大，不在截图对比，已有值断言比较
+  // it("screenshot", async () => {
+  //   const image = await program.screenshot({ fullPage: true });
+  //   expect(image).toSaveImageSnapshot();
+  // })
 
   it('get-root-node-info', async () => {
     // 测试 class 选择器

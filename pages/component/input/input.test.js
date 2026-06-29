@@ -1,15 +1,23 @@
 jest.setTimeout(50000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isIOS = platformInfo.startsWith('ios')
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
+const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isAndroid = platformInfo.startsWith('android')
+const isAPP = isIOS || isAndroid || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-input', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   if (isAppWebView) {
   	it('app 与 web 存在差异, webview 不进行截图', () => {
       expect(1).toBe(1)
@@ -98,10 +106,12 @@ describe('component-native-input', () => {
   it("type", async () => {
     const text = await page.$('#uni-input-type-text');
     const number = await page.$('#uni-input-type-number');
+    const numberPasswordFalse = await page.$('#uni-input-type-number-password-false');
     const digit = await page.$('#uni-input-type-digit');
     const tel = await page.$('#uni-input-type-tel');
     expect(await text.attribute('type')).toEqual("text")
     expect(await number.attribute('type')).toEqual("number")
+    expect(await numberPasswordFalse.attribute('type')).toEqual("number")
     expect(await digit.attribute('type')).toEqual("digit")
     expect(await tel.attribute('type')).toEqual("tel")
   })
@@ -202,9 +212,41 @@ describe('component-native-input', () => {
       await setPageData({cursor_color: "red"})
       await page.waitFor(500)
       expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
+      await setPageData({
+        focus: false,
+        cursorInputFocus: false,
+        cursorColorInputFocus: true,
+        selectionInputFocus: false,
+        inputMaxLengthFocus: false,
+        firstInputFocus: false,
+        numberPasswordFalseFocus: false,
+      })
+      // 等待键盘上推
+      await page.waitFor(1000)
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image1 = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 70,
+          y: windowInfo.safeAreaInsets.top + 44 + 100,
+          width: 30,
+          height: 40,
+        },
+      })
+      expect(image1).toSaveImageSnapshot()
+      // 两张截图，避免光标闪烁截不到
+      const image2 = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 70,
+          y: windowInfo.safeAreaInsets.top + 44 + 100,
+          width: 30,
+          height: 40,
+        },
+      })
+      expect(image2).toSaveImageSnapshot()
     })
   }
-
 
   // it("maxlength", async () => {
   //   const input = await page.$('.uni-input-maxlength');
@@ -287,8 +329,10 @@ describe('component-native-input', () => {
     const image1 = await program.screenshot({
       deviceShot: true,
       area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44,
+        x: 120,
+        y: windowInfo.safeAreaInsets.top + 44 + 150,
+        width: 20,
+        height: 25,
       },
     })
     expect(image1).toSaveImageSnapshot()
@@ -296,8 +340,10 @@ describe('component-native-input', () => {
     const image2 = await program.screenshot({
       deviceShot: true,
       area: {
-        x: 0,
-        y: windowInfo.safeAreaInsets.top + 44,
+        x: 120,
+        y: windowInfo.safeAreaInsets.top + 44 + 150,
+        width: 20,
+        height: 25,
       },
     })
     expect(image2).toSaveImageSnapshot()
@@ -315,10 +361,88 @@ describe('component-native-input', () => {
     expect(await input2.value()).toEqual("123")
   })
 
-  it("afterAllTestScreenshot", async () => {
+  it("screenshot full page", async () => {
     const image = await program.screenshot({
       fullPage: true
     })
     expect(image).toSaveImageSnapshot()
   })
+  it("placeholder-class should clear style after update empty string", async () => {
+    await setPageData({
+      inputPlaceHolderClass: ""
+    })
+    await page.waitFor(1000)
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toSaveImageSnapshot()
+  })
+  if (isAPP) {
+    it("type number password false focus with soft keyboard screenshot", async () => {
+      await setPageData({
+        focus: false,
+        cursorInputFocus: false,
+        cursorColorInputFocus: false,
+        selectionInputFocus: false,
+        inputMaxLengthFocus: false,
+        firstInputFocus: false,
+        typeNoneFocus: false,
+        focusedForKeyboardHeightChangeTest: false,
+        numberPasswordFalseFocus: false,
+      })
+      await program.tap({ x: 100, y: 50 })
+      await page.waitFor(1000)
+      await program.pageScrollTo(0)
+      await page.waitFor(1000)
+      await setPageData({
+        numberPasswordFalseFocus: true,
+      })
+      await page.waitFor(1500)
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.safeAreaInsets.top + 44,
+        }
+      })
+      expect(image).toSaveImageSnapshot()
+      await setPageData({
+        numberPasswordFalseFocus: false,
+      })
+      if (isHarmony) {
+        await program.tap({ x: 100, y: 50 })
+        await page.waitFor(1000);
+      }
+    })
+
+    it("type none focus should not show keyboard", async () => {
+      // 确保其他 input 失焦
+      await setPageData({
+        focus: false,
+        cursorInputFocus: false,
+        cursorColorInputFocus: false,
+        selectionInputFocus: false,
+        inputMaxLengthFocus: false,
+        firstInputFocus: false,
+        numberPasswordFalseFocus: false,
+      })
+      await program.tap({ x: 100, y: 50 })
+      // type none input 获取焦点后不应该弹出键盘，等待一段时间截图确认
+      await setPageData({
+        typeNoneFocus: true,
+      })
+      await page.waitFor(1000
+      )
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.safeAreaInsets.top + 44,
+        }
+      })
+      expect(image).toSaveImageSnapshot()
+    })
+  }
 });

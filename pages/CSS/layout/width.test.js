@@ -1,6 +1,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isHarmony = platformInfo.startsWith('harmony')
+const isiOS = platformInfo.startsWith('ios')
+const isAndroid = platformInfo.startsWith('android')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 describe('/pages/CSS/layout/width.uvue', () => {
   let page;
@@ -20,7 +22,7 @@ describe('/pages/CSS/layout/width.uvue', () => {
 
   it('test width height', async () => {
     const emptyValues = await page.data('emptyElementValues')
-    if(isDom2 && isHarmony){
+    if(isDom2 && (isHarmony || isiOS || isAndroid)){
       expect(emptyValues).toMatchObject({
         emptyViewWidth: 'auto',
         emptyViewHeight: 'auto',
@@ -33,7 +35,8 @@ describe('/pages/CSS/layout/width.uvue', () => {
         emptyNativeViewWidth: 'auto',
         emptyNativeViewHeight: 'auto'
       })
-    }else{
+    }
+    else{
       expect(emptyValues).toMatchObject({
         emptyViewWidth: '',
         emptyViewHeight: '',

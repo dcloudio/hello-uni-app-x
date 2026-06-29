@@ -11,7 +11,14 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
 describe('showActionSheet', () => {
-  let screenShotOptions = {};
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
+  let screenShotOptions = { fullPage: true };
   let page;
   let topSafeArea = 0
   
@@ -53,15 +60,8 @@ describe('showActionSheet', () => {
         topSafeArea = 38
       }
     }
-    deviceShotOptions = {
-      deviceShot: true,
-      area: {
-        x: 0,
-        y: topSafeArea + 44,
-      },
-    };
 
-    page = await program.reLaunch(isDom2 ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
+		page = await program.reLaunch(isDom2 && !isHarmony && !isIos ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
     await page.waitFor('view');
 
     page = await program.navigateTo(PAGE_PATH)

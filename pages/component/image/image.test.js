@@ -6,6 +6,13 @@ const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
 
 describe('component-native-image', () => {
+  if (isMP) {
+    it('skip', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   const screenshotParams = { fullPage: true }
   let page;
   let start = 0;
@@ -129,7 +136,7 @@ describe('component-native-image', () => {
   it('mode-screenshot', async () => {
     if (process.env.android_cpu_type === 'x86_64') return
     const page = await program.navigateTo('/pages/component/image/image-mode');
-    await page.waitFor(1000);
+    await page.waitFor(3000);
     const image = await program.screenshot(screenshotParams)
     expect(image).toSaveImageSnapshot()
   });

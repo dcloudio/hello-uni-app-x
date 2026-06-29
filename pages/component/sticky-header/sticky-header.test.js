@@ -6,7 +6,7 @@ const isWeb = platformInfo.startsWith('web')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('component-native-sticky-header', () => {
-  if (isMP || isDom2 && isHarmony) {
+  if (isMP) {
   	it('skip', () => {
   		expect(1).toBe(1)
   	})
@@ -14,7 +14,7 @@ describe('component-native-sticky-header', () => {
   }
 
   let page
-  const screenshotParams = { }
+  const screenshotParams = { fullPage: true }
 
   beforeAll(async () => {
     if (!isAppWebView) {
