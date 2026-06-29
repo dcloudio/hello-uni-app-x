@@ -317,7 +317,7 @@ const template = [
   '/pages/template/swipe-tabs-underline/swipe-tabs-underline',
   '/pages/template/swipe-tabs-scale-highlight/swipe-tabs-scale-highlight',
   // 单独测试例截图
-  // '/pages/template/custom-navbar-search/custom-navbar-search',
+  // '/pages/template/keyboard-adjust/keyboard-adjust',
   // 网络资源加载，单独测试例截图
   // '/pages/template/news-feed-list/news-feed-list',
   // 依赖网络资源加载
