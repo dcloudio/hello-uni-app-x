@@ -381,6 +381,25 @@ describe('component-native-video', () => {
       });
       expect(image).toSaveImageSnapshot();
     });
+
+    it('test continuous send danmu track', async () => {
+      await setPageData({
+        enableDanmu: true
+      });
+      await page.callMethod('play');
+      await page.waitFor(2000);
+      await page.callMethod('continuousSendDanmu');
+      await page.waitFor(3000);
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.statusBarHeight + 44
+        }
+      });
+      expect(image).toSaveImageSnapshot();
+    });
   }
 
   it('test dialog video', async () => {
