@@ -2,7 +2,7 @@
 export function buildButton(params: ESObject) {
   Button(params.text, { type: ButtonType.Normal, stateEffect: true })
     .borderRadius(8)
-    .backgroundColor(params.bgColor)
+    .backgroundColor(0x317aff)
     .onClick(() => {
         params.onClick()
     })

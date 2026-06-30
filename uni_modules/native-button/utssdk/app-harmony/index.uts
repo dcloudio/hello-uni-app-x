@@ -6,7 +6,6 @@ import { INativeButtonContext } from "../interface.uts"
 // 定义 buildButton 的参数类型
 interface NativeButtonOptions {
     text : string
-    bgColor: string
     onClick : () => void
 }
 
@@ -16,7 +15,6 @@ export class NativeButton {
     // 初始化 buildButton 默认参数
     private params : NativeButtonOptions = {
         text: '',
-        bgColor: '#317aff',
         onClick: () => {
             this.$element.dispatchEvent(new UniNativeViewEvent("customClick", {}))
         }
@@ -36,15 +34,11 @@ export class NativeButton {
         this.builder?.update(this.params)
     }
 
-    updateBgColor(color: string) {
-      this.params.bgColor = UTSHarmony.colorWithString(color)
-      this.builder?.update(this.params)
-    }
-
     destroy() {
      //数据回收
     }
 }
+
 
 class NativeButtonContext implements INativeButtonContext {
     private controller : NativeButton
@@ -55,9 +49,6 @@ class NativeButtonContext implements INativeButtonContext {
     updateText(text : string) {
         // 调用 controller 来更新文字
         this.controller?.updateText(text)
-    }
-    updateBgColor(color : string) : void {
-        this.controller?.updateBgColor(color)
     }
 }
 /**

@@ -2,7 +2,7 @@
   <!--建议只存在一个根节点，如果native-view存在兄弟节点则需要将其包裹处理-->
   <view>
     <native-view style="height: 100px;" @init="onviewinit" @customClick="ontap"></native-view>
-    <button v-if="props.showTestButton" style="width: 50%;margin: 10px 0px;align-self: center;">测试按钮</button>
+    <button style="width: 50%;margin: 10px 0px;align-self: center;">测试按钮</button>
   </view>
 </template>
 <script setup lang="uts">
@@ -10,20 +10,7 @@
   let button : NativeButton | null = null
 
   //声明属性
-  const props = defineProps({
-    text: {
-      type: String,
-      default: ""
-    },
-    bgColor: {
-      type: String,
-      default: "#317aff",
-    },
-    showTestButton: {
-      type: Boolean,
-      default: true
-    }
-  })
+  const props = defineProps<{ text : string }>()
 
   //声明事件
   const emit = defineEmits<{
@@ -36,20 +23,10 @@
     button?.updateText(value)
   }
 
-  function updateBgColor(color: string) {
-    button?.updateBgColor(color)
-  }
-
   //监听属性变化
   watchEffect(() => {
     const text = props.text
     updateText(text)
-  })
-
-  //监听属性变化
-  watchEffect(() => {
-    const bgColor = props.bgColor
-    updateBgColor(bgColor)
   })
 
   /**
@@ -60,7 +37,6 @@
     //获取UniNativeViewElement 传递给NativeButton对象
     button = new NativeButton(e.detail.element);
     updateText(props.text)
-    updateBgColor(props.bgColor)
     emit("load")
   }
 
