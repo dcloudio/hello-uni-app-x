@@ -27,6 +27,16 @@ describe('native-view.uvue', () => {
     }
   }
 
+  it('image snapshot', async () => {
+    page = await program.reLaunch('/pages/component/native-view/native-view')
+    await page.waitFor('view')
+
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toSaveImageSnapshot();
+  })
+
   it('native-view检测init函数是否响应', async () => {
     page = await program.reLaunch('/pages/component/native-view/native-view')
     await page.waitFor('view')
