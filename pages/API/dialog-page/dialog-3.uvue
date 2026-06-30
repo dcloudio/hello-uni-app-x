@@ -21,18 +21,20 @@
           </view>
           <view class="mt-10" v-else-if="item.type == 'string'">
             <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-              <radio class="ml-10" v-for="(item2, index2) in item.value" :key="index2" :value="item2"
-                :checked="currentPageStyle[item.key] == item2">{{ item2 }}
-              </radio>
+              <label class="ml-10" v-for="(item2, index2) in item.value" :key="index2">
+                <radio :value="item2" :checked="currentPageStyle[item.key] == item2" />
+                <text>{{ item2 }}</text>
+              </label>
             </radio-group>
           </view>
         </view>
       </template>
       <text class="mt-10 choose-close-animation-type-title">choose close dialogPage animationType</text>
       <radio-group class="choose-close-animation-type-radio-group" @change="handleChooseAnimationType">
-        <radio class="ml-10 mt-10" v-for="item in closeAnimationTypeList" :key="item" :value="item"
-          :checked="closeAnimationType == item">{{ item }}
-        </radio>
+        <label class="ml-10 mt-10" v-for="item in closeAnimationTypeList" :key="item">
+          <radio :value="item" :checked="closeAnimationType == item" />
+          <text>{{ item }}</text>
+        </label>
       </radio-group>
       <button class="mt-10" @click="closeThisDialog">
         closeThisDialog

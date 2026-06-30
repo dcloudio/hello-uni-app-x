@@ -158,13 +158,14 @@
 
 <template>
   <view class="main">
-    <radio :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
-      :backgroundColor="data.backgroundColor_input" :borderColor="data.borderColor_input"
-      :activeBackgroundColor="data.activeBackgroundColor_input" :activeBorderColor="data.activeBorderColor_input"
-      :iconColor="data.iconColor_input" @click="radio_click" @touchstart="radio_touchstart" @touchmove="radio_touchmove"
-      @touchcancel="radio_touchcancel" @touchend="radio_touchend" @tap="radio_tap" @longpress="radio_longpress">
+    <label>
+      <radio :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
+        :backgroundColor="data.backgroundColor_input" :borderColor="data.borderColor_input"
+        :activeBackgroundColor="data.activeBackgroundColor_input" :activeBorderColor="data.activeBorderColor_input"
+        :iconColor="data.iconColor_input" @click="radio_click" @touchstart="radio_touchstart" @touchmove="radio_touchmove"
+        @touchcancel="radio_touchcancel" @touchend="radio_touchend" @tap="radio_tap" @longpress="radio_longpress" />
       <text>uni-app-x</text>
-    </radio>
+    </label>
   </view>
 
   <scroll-view style="flex: 1">
@@ -181,16 +182,19 @@
           <text class="uni-title-text"> 默认样式 </text>
         </view>
         <radio-group class="uni-row radio-group" @change="testChange" style="flex-wrap: wrap">
-          <radio id="trigger-change" value="r" :checked="data.checked" :color="data.color" style="margin-right: 15px"
-            class="radio r">选中
-          </radio>
-          <radio value="r1" style="margin-right: 15px" class="radio r1">{{
-            data.text
-          }}</radio>
-          <radio value="r2" :disabled="data.disabled" class="radio r2">禁用</radio>
-          <radio value="r3" class="radio r3" style="margin-top: 10px">{{
-            data.wrapText
-          }}</radio>
+          <label style="margin-right: 15px" class="radio r" :checked="data.checked" :color="data.color">
+            <radio id="trigger-change" value="r" :checked="data.checked" :color="data.color" />
+            <text>选中</text>
+          </label>
+          <label style="margin-right: 15px" class="radio r1">
+            <radio value="r1" />
+            <text>{{ data.text }}</text>
+          </label>
+          <label class="radio r2" :disabled="data.disabled"><radio value="r2" :disabled="data.disabled" /><text>禁用</text></label>
+          <label class="radio r3" style="margin-top: 10px">
+            <radio value="r3" />
+            <text>{{ data.wrapText }}</text>
+          </label>
         </radio-group>
       </view>
 
@@ -200,16 +204,18 @@
         </view>
         <radio-group class="uni-row radio-group">
           <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
-          <radio value="r1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
-            class="radio">选中
-          </radio>
-          <radio value="r2" color="#FFCC33" style="transform: scale(0.7)" class="radio">未选中</radio>
+          <label style="transform: scale(0.7); margin-right: 15px" class="radio">
+            <radio value="r1" :checked="true" color="#FFCC33" />
+            <text>选中</text>
+          </label>
+          <label style="transform: scale(0.7)" class="radio"><radio value="r2" color="#FFCC33" /><text>未选中</text></label>
           <!-- #endif -->
           <!-- #ifdef VUE3-VAPOR && !MP -->
-          <radio value="r1" :checked="true" radio-active-class="radio-active" style="transform: scale(0.7); margin-right: 15px"
-            class="radio">选中
-          </radio>
-          <radio value="r2" id="radio-vapor" radio-active-class="radio-active" style="transform: scale(0.7)" class="radio">未选中</radio>
+          <label style="transform: scale(0.7); margin-right: 15px" class="radio">
+            <radio value="r1" :checked="true" radio-active-class="radio-active" />
+            <text>选中</text>
+          </label>
+          <label style="transform: scale(0.7)" class="radio"><radio value="r2" id="radio-vapor" radio-active-class="radio-active" /><text>未选中</text></label>
           <!-- #endif -->
         </radio-group>
       </view>
@@ -220,7 +226,7 @@
           <text class="uni-title-text"> 两端对齐样式测试 </text>
         </view>
         <radio-group class="uni-row radio-group">
-          <radio class="justify-test">justify-content样式测试</radio>
+          <label class="justify-test"><radio /><text>justify-content样式测试</text></label>
         </radio-group>
       </view>
 
@@ -231,11 +237,11 @@
       </view>
       <view class="uni-list uni-common-pl">
         <radio-group @change="radioChange" class="radio-group">
-          <radio class="uni-list-cell uni-list-cell-pd radio recommand" v-for="(item, index) in data.items" :key="item.value"
-            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item.value"
-            :checked="index === data.current">
-            {{ item.name }}
-          </radio>
+          <label class="uni-list-cell uni-list-cell-pd radio recommand" v-for="(item, index) in data.items" :key="item.value"
+            :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''">
+            <radio :value="item.value" :checked="index === data.current" />
+            <text>{{ item.name }}</text>
+          </label>
         </radio-group>
       </view>
     </view>
