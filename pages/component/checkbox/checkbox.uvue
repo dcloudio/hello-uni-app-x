@@ -174,12 +174,15 @@
 
 <template>
   <view class="main">
-    <checkbox :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
-      :iconColor="data.iconColor_input" :foreColor="data.foreColor_input" :backgroundColor="data.backgroundColor_input"
-      :borderColor="data.borderColor_input" :activeBackgroundColor="data.activeBackgroundColor_input"
-      :activeBorderColor="data.activeBorderColor_input" @click="checkbox_click" @touchstart="checkbox_touchstart"
-      @touchmove="checkbox_touchmove" @touchcancel="checkbox_touchcancel" @touchend="checkbox_touchend"
-      @tap="checkbox_tap" @longpress="checkbox_longpress"><text>uni-app-x</text></checkbox>
+    <view class="control-row">
+      <checkbox :disabled="data.disabled_boolean" :checked="data.checked_boolean" :color="data.color_input"
+        :iconColor="data.iconColor_input" :foreColor="data.foreColor_input" :backgroundColor="data.backgroundColor_input"
+        :borderColor="data.borderColor_input" :activeBackgroundColor="data.activeBackgroundColor_input"
+        :activeBorderColor="data.activeBorderColor_input" @click="checkbox_click" @touchstart="checkbox_touchstart"
+        @touchmove="checkbox_touchmove" @touchcancel="checkbox_touchcancel" @touchend="checkbox_touchend"
+        @tap="checkbox_tap" @longpress="checkbox_longpress" />
+      <text class="control-row-text">uni-app-x</text>
+    </view>
   </view>
 
   <scroll-view style="flex: 1">
@@ -197,14 +200,24 @@
         </view>
         <view>
           <checkbox-group class="uni-row checkbox-group" @change="testChange" style="flex-wrap: wrap">
-            <checkbox value="cb" :checked="data.checked" :color="data.color" :iconColor="data.iconColor"
-              :foreColor="data.foreColor" style="margin-right: 15px" class="checkbox cb">选中
-            </checkbox>
-            <checkbox value="cb1" style="margin-right: 15px" class="checkbox cb1">{{ data.text }}</checkbox>
-            <checkbox value="cb2" :disabled="data.disabled" class="checkbox cb2">禁用</checkbox>
-            <checkbox value="cb3" style="margin-top: 10px" class="checkbox cb3">
-              {{ data.wrapText }}
-            </checkbox>
+            <label style="margin-right: 15px" class="checkbox cb" :checked="data.checked" :color="data.color"
+              :iconColor="data.iconColor" :foreColor="data.foreColor">
+              <checkbox value="cb" :checked="data.checked" :color="data.color" :iconColor="data.iconColor"
+                :foreColor="data.foreColor" />
+              <text>选中</text>
+            </label>
+            <label style="margin-right: 15px" class="checkbox cb1">
+              <checkbox value="cb1" />
+              <text>{{ data.text }}</text>
+            </label>
+            <label :disabled="data.disabled" class="checkbox cb2">
+              <checkbox value="cb2" :disabled="data.disabled" />
+              <text>禁用</text>
+            </label>
+            <label style="margin-top: 10px" class="checkbox cb3">
+              <checkbox value="cb3" />
+              <text>{{ data.wrapText }}</text>
+            </label>
           </checkbox-group>
         </view>
         <view class="uni-title uni-common-mt">
@@ -213,17 +226,25 @@
         <view>
           <checkbox-group class="uni-row checkbox-group">
             <!-- #ifdef !VUE3-VAPOR || (VUE3-VAPOR && MP) -->
-            <checkbox value="cb1" :checked="true" color="#FFCC33" style="transform: scale(0.7); margin-right: 15px"
-              class="checkbox">选中
-            </checkbox>
-            <checkbox value="cb" color="#FFCC33" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
+            <label style="transform: scale(0.7); margin-right: 15px" class="checkbox">
+              <checkbox value="cb1" :checked="true" color="#FFCC33" />
+              <text>选中</text>
+            </label>
+            <label style="transform: scale(0.7)" class="checkbox">
+              <checkbox value="cb" color="#FFCC33" />
+              <text>未选中</text>
+            </label>
             <!-- #endif -->
 
             <!-- #ifdef VUE3-VAPOR && !MP -->
-            <checkbox value="cb1" :checked="true" icon-class="custom-icon"
-              style="transform: scale(0.7); margin-right: 15px" class="checkbox">选中
-            </checkbox>
-            <checkbox value="cb" icon-class="custom-icon" style="transform: scale(0.7)" class="checkbox">未选中</checkbox>
+            <label style="transform: scale(0.7); margin-right: 15px" class="checkbox">
+              <checkbox value="cb1" :checked="true" icon-class="custom-icon" />
+              <text>选中</text>
+            </label>
+            <label style="transform: scale(0.7)" class="checkbox">
+              <checkbox value="cb" icon-class="custom-icon" />
+              <text>未选中</text>
+            </label>
             <!-- #endif -->
           </checkbox-group>
         </view>
@@ -232,7 +253,10 @@
         </view>
         <view>
           <checkbox-group class="uni-row checkbox-group">
-            <checkbox class="justify-test">justify-content样式测试</checkbox>
+            <label class="justify-test">
+              <checkbox />
+              <text>justify-content样式测试</text>
+            </label>
           </checkbox-group>
         </view>
       </view>
@@ -255,13 +279,14 @@
       </view>
       <view class="uni-list uni-common-pl">
         <checkbox-group @change="checkboxChange" class="checkbox-group" id="trigger-change">
-          <checkbox class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in data.items"
-            :key="item.value" :value="item.value" :checked="item.checked" :class="[
+          <label class="uni-list-cell uni-list-cell-pd checkbox" v-for="(item, index) in data.items"
+            :key="item.value" :class="[
               index < data.items.length - 1 ? 'uni-list-cell-line' : '',
               'checkbox-item-' + index,
             ]">
-            {{ item.name }}
-          </checkbox>
+            <checkbox :value="item.value" :checked="item.checked" />
+            <text>{{ item.name }}</text>
+          </label>
         </checkbox-group>
       </view>
     </view>
@@ -301,6 +326,15 @@
 
   .uni-list-cell {
     justify-content: flex-start;
+  }
+
+  .control-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .control-row-text {
+    margin-left: 5px;
   }
 
   .justify-test {
