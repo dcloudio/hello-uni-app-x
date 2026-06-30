@@ -33,9 +33,15 @@ describe('showActionSheet', () => {
     await page.waitFor(1000);
   }
 
-  async function screenshot() {
+  async function screenshot(fileName) {
     const image = await program.screenshot(screenShotOptions);
-    expect(image).toSaveImageSnapshot();
+    const options = fileName ? {
+      customSnapshotIdentifier() {
+        return fileName
+      }
+    } : {}
+    expect(image).toMatchImageSnapshot(options);
+    expect(image).toSaveImageSnapshot(options);
   }
 
   beforeAll(async () => {
@@ -168,7 +174,7 @@ describe('showActionSheet', () => {
   it("showActionSheet 并在回调中再次 showActionSheet", async () => {
     await page.callMethod('showActionSheetAndShowAgainInCallback')
     await page.waitFor(1000);
-    await screenshot();
+    await screenshot('showActionSheetAndShowAgainInCallback1');
     if (isApp) {
       await program.tap({
         x: 200,
@@ -178,7 +184,7 @@ describe('showActionSheet', () => {
       await page.callMethod('closeWebActionSheet')
     }
     await page.waitFor(1000);
-    await screenshot();
+    await screenshot('showActionSheetAndShowAgainInCallback2');
   })
   if (!isMP) {
     it("hideActionSheet", async () => {
