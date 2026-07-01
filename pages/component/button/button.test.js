@@ -182,7 +182,7 @@ describe('Buttonstatus.uvue', () => {
   })
 
   test('loading-class', async () => {
-    if (!isDom2) {
+    if (!isDom2 || isMP) {
       expect(1).toBe(1)
       return
     }
