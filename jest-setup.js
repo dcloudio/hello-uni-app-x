@@ -4,15 +4,16 @@ const {
     configureToMatchImageSnapshot
 } = require('jest-image-snapshot');
 let saveImageSnapshotDir = process.env.saveImageSnapshotDir || path.join(__dirname, '__snapshot__');
+const MATCH_IMAGE_SNAPSHOTS_DIR = "__image_snapshots_for_match__";
+const toMatchImageSnapshotBase = configureToMatchImageSnapshot({
+    customSnapshotIdentifier(args) {
+        return args.currentTestName.replace(/\//g, "-").replace(" ", "-");
+    },
+    customDiffDir: path.join(saveImageSnapshotDir, "diff"),
+});
 
 expect.extend({
-    toMatchImageSnapshot: configureToMatchImageSnapshot({
-        customSnapshotIdentifier(args) {
-            return args.currentTestName.replace(/\//g, "-").replace(" ", "-");
-        },
-        customSnapshotsDir: process.env.saveImageSnapshotDir,
-        customDiffDir: path.join(saveImageSnapshotDir, "diff"),
-    }),
+    toMatchImageSnapshot,
     toSaveSnapshot,
     toSaveImageSnapshot,
 });
@@ -22,6 +23,21 @@ const testCaseToSnapshotFilePath =
 
 if (!fs.existsSync(testCaseToSnapshotFilePath)) {
     fs.writeFileSync(testCaseToSnapshotFilePath, "{}");
+}
+
+function toMatchImageSnapshot(received, options = {}) {
+    const {
+        testPath,
+    } = this;
+    const snapshotOptions = {
+        ...options,
+        customSnapshotsDir: options.customSnapshotsDir || createSnapshotDir({
+            testPath,
+            SNAPSHOTS_DIR: MATCH_IMAGE_SNAPSHOTS_DIR,
+        }),
+    };
+
+    return toMatchImageSnapshotBase.call(this, received, snapshotOptions);
 }
 
 function writeTestCaseToSnapshotFile(testCaseName, snapshotFilePath) {
