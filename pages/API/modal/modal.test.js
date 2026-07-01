@@ -83,7 +83,7 @@ describe('modal', () => {
         x: 0,
         y: topSafeArea + 44,
         // 规避底部手势导航栏的影响
-        height: windowInfo.windowHeight
+        height: windowInfo.safeArea.height-50
       },
     };
 
