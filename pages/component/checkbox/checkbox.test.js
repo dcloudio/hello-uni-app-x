@@ -128,7 +128,7 @@ describe('Checkbox.uvue', () => {
     })
   }
 
-  if ((isHarmony || isIOS || isAndroid) && isDom2) {
+  if (isDom2 && !isMP) {
     it('externalClasses', async () => {
       const checkbox = await page.$('#checkbox-vapor')
       expect(await checkbox.attribute('checkbox-class')).toContain('custom-checkbox')
