@@ -77,7 +77,6 @@ describe('API-toast', () => {
     const icons = await page.$$('.radio-icon')
     for (let i = 0; i < icons.length; i++) {
       await icons[i].tap()
-      await page.waitFor(30);
       await page.callMethod('toast1Tap')
       await page.waitFor(100);
       const iconText = await icons[i].text()
