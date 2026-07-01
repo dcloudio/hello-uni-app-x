@@ -102,7 +102,7 @@ describe('Radio.uvue', () => {
     })
   }
 
-  if ((isHarmony || isIOS || isAndroid) && isDom2) {
+  if (isDom2 && !isMP) {
     it('externalClasses', async () => {
       const radio = await page.$('#radio-vapor')
       expect(await radio.attribute('radio-active-class')).toContain('radio-active')
