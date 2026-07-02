@@ -2,49 +2,6 @@ import { UIView, UIColor } from "UIKit"
 import { CGFloat } from 'CoreFoundation';
 
 
-/**
- * 颜色转换
- *  uni-app x 蒸汽模式8位时格式为 #RRGGBBAA
- *  iOS平台需要的是 UIColor
- */
-class ColorUtils {
-  static fromUniColor(hex: string): UIColor | null {
-    let cleanedHex = hex.trim().toUpperCase()
-
-    if (cleanedHex.startsWith("#")) {
-      cleanedHex = cleanedHex.substring(1)
-    }
-
-    const isValidLength = cleanedHex.length == 6 || cleanedHex.length == 8
-    if (!isValidLength) {
-      return null
-    }
-
-    const rgbValue = parseInt(cleanedHex, 16)
-    if (isNaN(rgbValue)) {
-      return null
-    }
-
-    let r: number = 0
-    let g: number = 0
-    let b: number = 0
-    let a: number = 1
-
-    if (cleanedHex.length == 6) {
-      r = ((rgbValue & 0xFF0000) >> 16) / 255.0
-      g = ((rgbValue & 0x00FF00) >> 8) / 255.0
-      b = (rgbValue & 0x0000FF) / 255.0
-    } else {
-      r = ((rgbValue & 0xFF000000) >> 24) / 255.0
-      g = ((rgbValue & 0x00FF0000) >> 16) / 255.0
-      b = ((rgbValue & 0x0000FF00) >> 8) / 255.0
-      a = (rgbValue & 0x000000FF) / 255.0
-    }
-
-    return UIColor(red = CGFloat(r), green = CGFloat(g), blue = CGFloat(b), alpha = CGFloat(a))
-  }
-}
-
 export class TestNativeView {
   $element : UniNativeViewElement;
   view : UIView | null = null;
@@ -73,9 +30,6 @@ export class TestNativeView {
    * 仅支持#RRGGBB格式颜色字符串
    */
   updateBackground(color : string) {
-    let uc = ColorUtils.fromUniColor(color)
-    if(null != uc && null != this.view){
-      this.view!.backgroundColor = uc
-    }
+    this.view!.backgroundColor = UTSiOS.colorWithString(color)
   }
 }
