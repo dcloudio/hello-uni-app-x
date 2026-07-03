@@ -60,15 +60,16 @@ describe('test title', () => {
     });
   }
 
+  if (isApp && !(isHarmony && !isDom2)) {
+    it('finish event', async () => {
+      await page.callMethod('startAnimate');
+      await page.waitFor(5100);
+      var testTriggerFinishEvent = await page.data('data.testTriggerFinishEvent')
+      expect(testTriggerFinishEvent).toEqual(true)
+    });
+  }
+
   if (!(isHarmony && !isDom2) || isMP) {
-    if (!isMP) {
-      it('finish event', async () => {
-        await page.callMethod('startAnimate');
-        await page.waitFor(5100);
-        var testTriggerFinishEvent = await page.data('data.testTriggerFinishEvent')
-        expect(testTriggerFinishEvent).toEqual(true)
-      });
-    }
     it('cancel event', async () => {
       await page.callMethod('startAnimate');
       await page.waitFor(1100);
