@@ -9,7 +9,7 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 describe('test title', () => {
   if (!(isApp || isMP)) {
-    it('not app skip', async () => {
+    it('not supported skip', async () => {
       expect(1).toBe(1)
     })
     return
