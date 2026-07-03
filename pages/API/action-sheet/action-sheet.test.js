@@ -34,7 +34,7 @@ describe('showActionSheet', () => {
   }
 
   async function screenshot(fileName) {
-    const image = await program.screenshot(screenShotOptions);
+    const image = isWeb ? await program.screenshot(screenShotOptions) : await program.device.screenshot(screenShotOptions);
     const options = fileName ? {
       customSnapshotIdentifier() {
         return fileName
@@ -78,17 +78,12 @@ describe('showActionSheet', () => {
       }
 
       screenShotOptions = {
-        deviceShot: true,
         area: {
           x: 0,
           y: topSafeArea + 44,
           // 规避底部手势导航栏的影响
           height: windowInfo.safeArea.height-30
         },
-      }
-    } else if (isWeb){
-      screenShotOptions = {
-        fullPage: true
       }
     }
   });
@@ -178,10 +173,7 @@ describe('showActionSheet', () => {
     await page.waitFor(1000);
     await screenshot('showActionSheetAndShowAgainInCallback1');
     if (isApp) {
-      await program.tap({
-        x: 200,
-        y: 700,
-      })
+      await program.device.tap(200, 700,)
     } else if (isWeb) {
       await page.callMethod('closeWebActionSheet')
     }
@@ -202,10 +194,7 @@ describe('showActionSheet', () => {
       const originLifeCycleNum = await page.callMethod('getLifeCycleNum');
       await page.callMethod('showActionSheetAndNavigateBackInSuccessCallback');
       await page.waitFor(1000);
-      await program.tap({
-        x: 100,
-        y: 700 + topSafeArea,
-      });
+      await program.device.tap(100, 700 + topSafeArea);
       // success callback + 1
       // 等待 back 完成
       await page.waitFor(1000);
