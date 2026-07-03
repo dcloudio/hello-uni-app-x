@@ -81,7 +81,9 @@ describe('showActionSheet', () => {
         deviceShot: true,
         area: {
           x: 0,
-          y: topSafeArea + 44
+          y: topSafeArea + 44,
+          // 规避底部手势导航栏的影响
+          height: windowInfo.safeArea.height-30
         },
       }
     } else if (isWeb){
