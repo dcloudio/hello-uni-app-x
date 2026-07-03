@@ -51,30 +51,27 @@
             @input="onEditorInput"
           />
         </view>
-        <view class="emoji-toggle" :class="{ 'emoji-toggle-active': showEmojiList }" @click="toggleEmojiList">
+        <view class="emoji-toggle" @click="toggleEmojiList">
           <KeyboardIcon v-if="showEmojiList" />
           <EmojiIcon v-else />
         </view>
       </view>
-
-    </view>
-
-    <view
-      class="emoji-panel"
-      :class="{ 'emoji-panel-show': showEmojiList, 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
-      :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
-    >
-      <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
-        <view class="emoji-grid">
-          <view class="emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
-            <text class="emoji-item-text">{{ emoji }}</text>
+      <view class="emoji-panel"
+        :class="{ 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
+        :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
+      >
+        <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
+          <view class="emoji-grid">
+            <view class="emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
+              <text class="emoji-item-text">{{ emoji }}</text>
+            </view>
           </view>
-        </view>
-      </scroll-view>
-    </view>
+        </scroll-view>
+      </view>
 
-    <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
-    <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
+      <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
+      <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
+    </view>
 	</view>
 </template>
 
@@ -302,7 +299,7 @@
 .chat-textarea-box {
   flex: 1;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: #ededed;
 }
 
 .chat-header {
@@ -330,6 +327,7 @@
 .message-area {
   flex: 1;
   padding: 12px 16px;
+  background-color: #ededed;
 }
 
 .hint-card {
@@ -466,29 +464,29 @@
 }
 
 .foot-box {
-  background-color: #ffffff;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-top-color: #e5e5e5;
-  padding: 10px 12px 0;
+  background-color: #f6f6f6;
 }
 
 .foot-box-main {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 0 15px;
 }
 
 .input-wrapper {
   flex: 1;
   min-height: 44px;
   max-height: 120px;
-  padding: 8px 12px;
-  background-color: #f0f0f0;
+  padding: 8px 14px;
+  background-color: #ffffff;
   border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
 }
 
 .preview-editor {
+  flex: 1;
   min-height: 28px;
   font-size: 15px;
   color: #333333;
@@ -499,29 +497,12 @@
   height: 44px;
   margin-left: 10px;
   border-radius: 22px;
-  background-color: #f7f7f7;
   align-items: center;
   justify-content: center;
 }
 
-.emoji-toggle-active {
-  background-color: #fff2d8;
-}
-
 .emoji-panel {
-  height: 0;
-  margin-top: 0;
-  opacity: 0;
-  overflow: hidden;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-top-color: transparent;
   flex-direction: column;
-}
-
-.emoji-panel-show {
-  opacity: 1;
-  border-top-color: #f0f0f0;
 }
 
 .emoji-panel-animate {
@@ -537,7 +518,9 @@
 }
 
 .emoji-scroll {
-  height: 0;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: #ebebeb;
 }
 
 .emoji-grid {
@@ -555,7 +538,7 @@
 }
 
 .emoji-item-text {
-  font-size: 26px;
+  font-size: 30px;
   line-height: 44px;
 }
 
