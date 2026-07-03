@@ -31,13 +31,13 @@ function toMatchImageSnapshot(received, options = {}) {
         ...options,
         customSnapshotsDir:
             options.customSnapshotsDir ||
-            process.env.saveImageSnapshotDir ||
+            process.env.UNI_BASE_SNAPSHOT_DEVICE_DIR ||
             createSnapshotDir({
                 testPath,
                 SNAPSHOTS_DIR: MATCH_IMAGE_SNAPSHOTS_DIR,
             }),
         customDiffDir: options.customDiffDir || path.join(
-            getSaveImageSnapshotDir(),
+            getMatchImageSnapshotDir(),
             "diff"
         ),
     };
@@ -45,8 +45,8 @@ function toMatchImageSnapshot(received, options = {}) {
     return toMatchImageSnapshotBase.call(this, received, snapshotOptions);
 }
 
-function getSaveImageSnapshotDir() {
-    return process.env.saveImageSnapshotDir || path.join(__dirname, "__snapshot__");
+function getMatchImageSnapshotDir() {
+    return process.env.UNI_BASE_SNAPSHOT_DEVICE_DIR || path.join(__dirname, "__snapshot__");
 }
 
 function writeTestCaseToSnapshotFile(testCaseName, snapshotFilePath) {
