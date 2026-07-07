@@ -33,13 +33,15 @@ import { createNativeButtonContext } from "@/uni_modules/native-button";
 const buttonText = ref("native-button")
 let isLoad = false
 let clickCount = 0
+let buttonTapValue = ""
 
-function ontap() {
+function ontap(e : UniNativeViewEvent) {
   uni.showToast({
     title: "按钮被点击了"
   })
   clickCount ++
   buttonText.value = "native-button"+clickCount
+  buttonTapValue = e.detail["value"] as string
 }
 
 function onload() {
@@ -50,6 +52,11 @@ function onload() {
 //用于自动化测试
 function getIsLoadTest():boolean {
   return isLoad
+}
+
+//用于自动化测试
+function getButtonTapValueTest():string {
+  return buttonTapValue
 }
 
 function testCallMethod() {
@@ -64,7 +71,7 @@ function gotoTimePicker() {
   })
 }
 
-defineExpose({getIsLoadTest})
+defineExpose({getIsLoadTest, getButtonTapValueTest})
 
 </script>
 

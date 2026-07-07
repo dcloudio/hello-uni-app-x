@@ -44,7 +44,6 @@
             class="preview-editor"
             id="editor-props-demo"
             :type="editorKeyboardType"
-            :read-only="editorReadOnly"
             placeholder="输入消息，敲 @ 提及联系人"
             @ready="onEditorReady"
             @focus="onEditorFocus"
@@ -52,30 +51,27 @@
             @input="onEditorInput"
           />
         </view>
-        <view class="emoji-toggle" :class="{ 'emoji-toggle-active': showEmojiList }" @click="toggleEmojiList">
+        <view class="emoji-toggle" @click="toggleEmojiList">
           <KeyboardIcon v-if="showEmojiList" />
           <EmojiIcon v-else />
         </view>
       </view>
-
-    </view>
-
-    <view
-      class="emoji-panel"
-      :class="{ 'emoji-panel-show': showEmojiList, 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
-      :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
-    >
-      <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
-        <view class="emoji-grid">
-          <view class="emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
-            <text class="emoji-item-text">{{ emoji }}</text>
+      <view class="emoji-panel"
+        :class="{ 'emoji-panel-animate': enableFootBoxAnimation, 'emoji-panel-animate-show': enableFootBoxAnimation && showEmojiList }"
+        :style="{ height: (showEmojiList ? emojiPanelDisplayHeight : 0) + 'px', marginTop: (showEmojiList ? emojiPanelMarginTop : 0) + 'px' }"
+      >
+        <scroll-view class="emoji-scroll" direction="vertical" :show-scrollbar="false" :style="{ height: emojiScrollHeight + 'px' }">
+          <view class="emoji-grid">
+            <view class="emoji-item" v-for="emoji in emojiList" :key="emoji" @click="insertEmoji(emoji)">
+              <text class="emoji-item-text">{{ emoji }}</text>
+            </view>
           </view>
-        </view>
-      </scroll-view>
-    </view>
+        </scroll-view>
+      </view>
 
-    <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
-    <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
+      <view class="keyboard-placeholder" :class="{ 'keyboard-placeholder-animate': enableFootBoxAnimation }" :style="{ height: keyboardHeight + 'px' }"></view>
+      <view class="safe-area-inset-bottom" v-if="keyboardHeight == 0 && !showEmojiList"></view>
+    </view>
 	</view>
 </template>
 
@@ -90,9 +86,9 @@
   const emojiPanelFallbackHeight = ref(0)
   const showUserList = ref(false)
   const showEmojiList = ref(false)
-  const editorReadOnly = ref(false)
   const editorKeyboardType = computed((): string | null => {
-    return showEmojiList.value ? 'none' : null
+    if (showEmojiList.value || showUserList.value) return 'none'
+    return null
   })
   const emojiPanelDisplayHeight = computed((): number => {
     const targetHeight = keyboardMaxHeight.value > 0 ? keyboardMaxHeight.value : emojiPanelFallbackHeight.value
@@ -103,8 +99,6 @@
   })
 
   let editorCtx: null | EditorContext = null
-  // 记录最近一次键盘恢复任务，避免快速切换时旧回调误触发
-  let focusEditorKeyboardTaskId = 0
   function onEditorReady() {
     const options: CreateEditorContextAsyncOptions = {
       id: 'editor-props-demo',
@@ -156,12 +150,6 @@
     }
   }
 
-  function setKeyboardPlaceholderToMaxHeight() {
-    if (keyboardMaxHeight.value > 0) {
-      keyboardHeight.value = keyboardMaxHeight.value
-    }
-  }
-
   function getAvatarColor(name: string): string {
     const code = name.charCodeAt(0)
     return avatarColors[code % avatarColors.length]
@@ -169,7 +157,6 @@
 
   function closeUserList() {
     showUserList.value = false
-    editorReadOnly.value = false
   }
 
   function closeEmojiList() {
@@ -177,13 +164,29 @@
   }
 
   function onEditorFocus() {
-    editorReadOnly.value = false
-    setKeyboardPlaceholderToMaxHeight()
-    closeEmojiList()
+    if (showEmojiList.value) {
+      showEmojiList.value = false
+      if (keyboardMaxHeight.value > 0) {
+        keyboardHeight.value = keyboardMaxHeight.value
+      }
+      return
+    }
+    if (!showUserList.value && keyboardMaxHeight.value > 0) {
+      keyboardHeight.value = keyboardMaxHeight.value
+    }
   }
 
   function onEditorTap() {
-    setKeyboardPlaceholderToMaxHeight()
+    if (showEmojiList.value) {
+      showEmojiList.value = false
+      if (keyboardMaxHeight.value > 0) {
+        keyboardHeight.value = keyboardMaxHeight.value
+      }
+      return
+    }
+    if (!showUserList.value && keyboardMaxHeight.value > 0) {
+      keyboardHeight.value = keyboardMaxHeight.value
+    }
   }
 
   function onAnimationSwitchChange(event: UniSwitchChangeEvent) {
@@ -195,35 +198,9 @@
     if (showEmojiList.value) {
       closeUserList()
       updateEmojiPanelHeight()
-      hideKeyboard()
-    } else {
-      focusEditorKeyboard()
+      keyboardHeight.value = 0
+      uni.hideKeyboard()
     }
-  }
-
-  function focusEditorKeyboard() {
-    const taskId = ++focusEditorKeyboardTaskId
-    setKeyboardPlaceholderToMaxHeight()
-    // editor 隐藏键盘后仍可能保持焦点，先切只读再恢复可重复拉起键盘
-    editorReadOnly.value = true
-    setTimeout(() => {
-      if (taskId != focusEditorKeyboardTaskId || showEmojiList.value) {
-        if (!showUserList.value) {
-          editorReadOnly.value = false
-        }
-        return
-      }
-      editorReadOnly.value = false
-      setTimeout(() => {
-        if (taskId != focusEditorKeyboardTaskId || showEmojiList.value) {
-          return
-        }
-        // 通过 read-only 状态切换后再触发 editor，保证每次都能重新拉起键盘
-        editorCtx?.insertText({
-          text: ''
-        })
-      }, 0)
-    }, 0)
   }
 
   function insertEmoji(emoji: string) {
@@ -232,31 +209,14 @@
     })
   }
 
-  function hideEditorKeyboardForUserList() {
-    focusEditorKeyboardTaskId++
-    keyboardHeight.value = 0
-    editorReadOnly.value = true
-    uni.hideKeyboard()
-  }
-
-  function hideKeyboard() {
-    focusEditorKeyboardTaskId++
-    keyboardHeight.value = 0
-    // 主动 blur 让 editor 焦点状态和键盘隐藏状态保持一致
-    editorCtx?.blur({})
-    uni.hideKeyboard()
-  }
-
-  // 点击消息区时收起底部浮层，避免误触后反向打开面板
   function tapList() {
-    hideKeyboard()
+    keyboardHeight.value = 0
     closeEmojiList()
     closeUserList()
+    uni.hideKeyboard()
   }
 
-  // 往编辑器中插入@xxx
   function insertAt(id: string) {
-    // 先撤回原来敲的@符号
     const user = userList.find(item => item.id === id)!
     closeUserList()
     setTimeout(() => {
@@ -270,8 +230,6 @@
 
   let lastText = ''
   function onEditorInput(event) {
-    // console.log('onEditorInput', event.detail.text)
-    // 判断是不是敲了@，通过判断本次是否包含@ + 上一次文本@的个数是否一致
     if(event.detail.text.includes('@')) {
       const lastTextAtCount = lastText.split('@').length - 1
       const currentTextAtCount = event.detail.text.split('@').length - 1
@@ -282,7 +240,8 @@
       } else if (lastTextAtCount < currentTextAtCount) {
         showUserList.value = true
         showEmojiList.value = false
-        hideEditorKeyboardForUserList()
+        keyboardHeight.value = 0
+        uni.hideKeyboard()
       }
     } else {
       closeUserList()
@@ -295,9 +254,10 @@
     uni.onKeyboardHeightChange((res) => {
       if (res.height > 0) {
         updateKeyboardMaxHeight(res.height)
-        keyboardHeight.value = keyboardMaxHeight.value
-        showEmojiList.value = false
-      } else if (!showEmojiList.value) {
+        if (!showEmojiList.value && !showUserList.value) {
+          keyboardHeight.value = keyboardMaxHeight.value
+        }
+      } else if (!showEmojiList.value && !showUserList.value) {
         keyboardHeight.value = 0
       }
     })
@@ -311,7 +271,6 @@
     showUserList.value = val
   }
 
-  // 模拟编辑器输入，用于测试 @ 提及触发逻辑
   function jest_simulateAtInput(text : string) {
     const lastAtCount = lastText.split('@').length - 1
     const newAtCount = text.split('@').length - 1
@@ -340,7 +299,7 @@
 .chat-textarea-box {
   flex: 1;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: #ededed;
 }
 
 .chat-header {
@@ -368,6 +327,7 @@
 .message-area {
   flex: 1;
   padding: 12px 16px;
+  background-color: #ededed;
 }
 
 .hint-card {
@@ -504,29 +464,29 @@
 }
 
 .foot-box {
-  background-color: #ffffff;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-top-color: #e5e5e5;
-  padding: 10px 12px 0;
+  background-color: #f6f6f6;
 }
 
 .foot-box-main {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 0 15px;
 }
 
 .input-wrapper {
   flex: 1;
   min-height: 44px;
   max-height: 120px;
-  padding: 8px 12px;
-  background-color: #f0f0f0;
+  padding: 8px 14px;
+  background-color: #ffffff;
   border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
 }
 
 .preview-editor {
+  flex: 1;
   min-height: 28px;
   font-size: 15px;
   color: #333333;
@@ -537,29 +497,12 @@
   height: 44px;
   margin-left: 10px;
   border-radius: 22px;
-  background-color: #f7f7f7;
   align-items: center;
   justify-content: center;
 }
 
-.emoji-toggle-active {
-  background-color: #fff2d8;
-}
-
 .emoji-panel {
-  height: 0;
-  margin-top: 0;
-  opacity: 0;
-  overflow: hidden;
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-top-color: transparent;
   flex-direction: column;
-}
-
-.emoji-panel-show {
-  opacity: 1;
-  border-top-color: #f0f0f0;
 }
 
 .emoji-panel-animate {
@@ -575,7 +518,9 @@
 }
 
 .emoji-scroll {
-  height: 0;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: #ebebeb;
 }
 
 .emoji-grid {
@@ -593,7 +538,7 @@
 }
 
 .emoji-item-text {
-  font-size: 26px;
+  font-size: 30px;
   line-height: 44px;
 }
 

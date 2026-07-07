@@ -87,7 +87,7 @@ describe('switch', () => {
     // expect(testVerifyEvent).toBe(true)
   })
 
-  if ((isHarmony || isIOS || isAndroid) && isDom2) {
+  if (isDom2 && !isMP) {
     it('externalClasses', async () => {
       const switchElement = await page.$('#darkChecked')
       expect(await switchElement.attribute('switch-active-class')).toContain('custom-switch-active')

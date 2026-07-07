@@ -1,7 +1,7 @@
 ﻿jest.setTimeout(60000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
-const isMiniProgram = platformInfo.startsWith('mp') || platformInfo.startsWith('weixin') || platformInfo.includes('小程序')
+const isMP = platformInfo.startsWith('mp')
 
 const PAGE_PATH = '/pages/template/swipe-card-stack/swipe-card-stack'
 const WAIT_FOR_CARD_INIT = 800
@@ -10,7 +10,7 @@ const WAIT_FOR_RELEASE = 800
 
 describe('template-swipe-card-stack', () => {
   // TODO: 小程序端待补充适配后放开。
-  if (isMiniProgram) {
+  if (isMP) {
     it('skip', () => {
       expect(1).toBe(1)
     })
@@ -153,13 +153,10 @@ describe('template-swipe-card-stack', () => {
     expectTransformMoved(transform)
   }
 
-  async function expectDragFeedbackSnapshot() {
-    const image = await program.screenshot()
-    expect(image).toSaveImageSnapshot()
-  }
-
-  async function expectCardSwitchedSnapshot() {
-    const image = await program.screenshot()
+  async function screenShot() {
+    const image = await program.screenshot({
+      fullPage: true
+    })
     expect(image).toSaveImageSnapshot()
   }
 
@@ -193,7 +190,7 @@ describe('template-swipe-card-stack', () => {
     await dragCard(backCardInfo, Math.round(windowInfo.screenWidth * 0.35), 0, { release: false })
 
     expect(await backCardInfo.card.style('transform')).toBe(beforeTransform)
-    await expectDragFeedbackSnapshot()
+    await screenShot()
   })
 
   it('keeps current card after a short drag and release', async () => {
@@ -201,7 +198,7 @@ describe('template-swipe-card-stack', () => {
     const draggedCard = await dragTopCard(20, 0, { release: false })
 
     await expectCardIsDragging(draggedCard)
-    await expectDragFeedbackSnapshot()
+    await screenShot()
     await draggedCard.touchend(createTouchEvent(windowInfo.screenWidth / 2 + 20, windowInfo.screenHeight / 2, true))
     await page.waitFor(WAIT_FOR_RELEASE)
 
@@ -214,7 +211,7 @@ describe('template-swipe-card-stack', () => {
     const draggedCard = await dragTopCard(Math.round(windowInfo.screenWidth * 0.45), 0, { release: false })
 
     await expectCardIsDragging(draggedCard)
-    await expectDragFeedbackSnapshot()
+    await screenShot()
 
     expect(await getTopCardIndex()).toBe(topCardIndexBefore)
     expect((await getCards()).length).toBe(3)
@@ -229,7 +226,7 @@ describe('template-swipe-card-stack', () => {
 
     expect((await getCards()).length).toBe(3)
     expect(await getTopCardIndex()).not.toBe(topCardIndexBefore)
-    await expectCardSwitchedSnapshot()
+    await screenShot()
   })
 
   it('left drag feedback screenshot', async () => {
@@ -237,7 +234,7 @@ describe('template-swipe-card-stack', () => {
     const draggedCard = await dragTopCard(Math.round(windowInfo.screenWidth * -0.45), 0, { release: false })
 
     await expectCardIsDragging(draggedCard)
-    await expectDragFeedbackSnapshot()
+    await screenShot()
 
     expect(await getTopCardIndex()).toBe(topCardIndexBefore)
     expect((await getCards()).length).toBe(3)
@@ -252,6 +249,6 @@ describe('template-swipe-card-stack', () => {
 
     expect((await getCards()).length).toBe(3)
     expect(await getTopCardIndex()).not.toBe(topCardIndexBefore)
-    await expectCardSwitchedSnapshot()
+    await screenShot()
   })
 })

@@ -1,6 +1,6 @@
 <template>
   <view class="container" id="container">
-    <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd">
+    <list-view ref="listRef" class="list" @scroll="onListScroll" @scrollend="onScrollEnd" :scroll-with-animation="true">
       <list-item v-for="(item, index) in items" :key="item.id" class="item-wrapper"
         :style="{ backgroundColor: item.bgColor, transform: 'translateY(' + itemMetas[index].translateY + 'px)', transition: itemMetas[index].wrapperTransition, zIndex: itemMetas[index].zIndex }"
         @touchstart="(e: TouchEvent) => onTouchStart(e, index)" @touchmove="onTouchMove" @touchend="onTouchEnd"
@@ -598,8 +598,23 @@
     data.listTop = listRect.top
     data.listWidth = listRect.width
   }
+  async function jest_batchDeleteItem() {
+    listRef.value!.scrollTop = 1000000
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true)
+      }, 1000)
+    })
+    const itemsToDelete = items.value.slice(0, items.value.length - 1)
+    const idsToDelete = itemsToDelete.map((item) : number => item.id)
+    items.value = items.value.filter((item) : boolean => {
+      return !idsToDelete.includes(item.id)
+    })
+    itemMetas.value = items.value.map((item) : ListItemMeta => createListItemMeta())
+  }
   defineExpose({
     jest_getListRect,
+    jest_batchDeleteItem,
     data
   })
 </script>

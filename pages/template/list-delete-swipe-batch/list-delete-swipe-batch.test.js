@@ -46,4 +46,10 @@ describe('/pages/template/list-delete-swipe-batch/list-delete-swipe-batch.uvue',
     expect(image2).toSaveImageSnapshot();
   });
 
+  it('batch delete item', async () => {
+    await page.callMethod('jest_batchDeleteItem')
+    await page.waitFor(1000)
+    const image = await program.screenshot({ fullPage: true });
+    expect(image).toSaveImageSnapshot();
+  })
 });

@@ -22,10 +22,11 @@ describe('nodes-info', () => {
     await page.waitFor('view')
   })
 
-  it("screenshot", async () => {
-    const image = await program.screenshot({ fullPage: true });
-    expect(image).toSaveImageSnapshot();
-  })
+  // 查询到的元素涉及设备精度问题，截图对比差异较大，不在截图对比，已有值断言比较
+  // it("screenshot", async () => {
+  //   const image = await program.screenshot({ fullPage: true });
+  //   expect(image).toSaveImageSnapshot();
+  // })
 
   it('get-root-node-info', async () => {
     // 测试 class 选择器
@@ -81,15 +82,12 @@ describe('nodes-info', () => {
     })
   }
 
-  // x dom2 暂时不支持组件多根节点查询
-  if (!isDom2) {
-    it('multi-child', async () => {
-      const pageData = await page.data('data')
-      console.log('multi-child.pageData', pageData)
-      expect(pageData.selectCount).toBe(1)
-      expect(pageData.selectAllCount).toBe(2)
-    })
-  }
+  it('multi-child', async () => {
+    const pageData = await page.data('data')
+    console.log('multi-child.pageData', pageData)
+    expect(pageData.selectCount).toBe(1)
+    expect(pageData.selectAllCount).toBe(2)
+  })
 
   // #ifdef APP
   //检测onResize获取BoundingClientRect信息是否有效

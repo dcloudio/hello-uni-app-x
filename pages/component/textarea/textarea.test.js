@@ -35,13 +35,13 @@ describe('component-native-textarea', () => {
 
   if (!isMP) {
     it("input event should triggered", async () => {
-      const options = { text: '1' }
+      const options = {}
       if (isHarmony) {
         const textareaRect = await page.data('data.textareaRect');
         options.x = textareaRect.x + textareaRect.width / 2.0;
         options.y = textareaRect.y + textareaRect.height - (isDom2 ? 20 : 10);
       }
-      await program.keyboardInput(options)
+      await program.device.keyboard.input('1', options)
       await page.waitFor(2000)
       expect(await page.data('data.jest_result')).toBe(true)
       const image = await program.screenshot({ fullPage: true });
