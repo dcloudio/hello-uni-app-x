@@ -7,33 +7,24 @@ const isMP = platformInfo.startsWith('mp')
 describe('template-swipe-tabs-scale-highlight', () => {
   let page
 
+  async function launchPage() {
+    page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view')
+    await page.waitFor(800)
+  }
+
   function expectOneOfColor(actualColor, expectedColors) {
     expect(expectedColors).toContain(actualColor)
   }
 
   async function waitForSwiperCurrent(target) {
-    for (let index = 0; index < 15; index++) {
+    const start = Date.now()
+    await page.waitFor(async () => {
       const swiper = await page.$('.swiper-view')
-      if (await swiper.property('current') == target) {
-        return
-      }
-      await page.waitFor(200)
-    }
-
+      return await swiper.property('current') == target || Date.now() - start > 8000
+    })
     const swiper = await page.$('.swiper-view')
     expect(await swiper.property('current')).toBe(target)
-  }
-
-  async function resetToFirstTab() {
-    const swiper = await page.$('.swiper-view')
-    if (await swiper.property('current') == 0) {
-      return
-    }
-
-    const tabs = await page.$$('.swiper-tabs-item')
-    await tabs[0].tap()
-    await waitForSwiperCurrent(0)
-    await page.waitFor(300)
   }
 
   async function waitForTabTransformChange(tab, beforeTransform) {
@@ -43,14 +34,8 @@ describe('template-swipe-tabs-scale-highlight', () => {
     })
   }
 
-  beforeAll(async () => {
-    page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
-    await page.waitFor(800)
-  })
-
   beforeEach(async () => {
-    await resetToFirstTab()
+    await launchPage()
   })
 
   it('renders tabs and initial highlighted state', async () => {

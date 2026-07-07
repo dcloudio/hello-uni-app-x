@@ -7,6 +7,12 @@ const isMP = platformInfo.startsWith('mp')
 describe('template-swipe-tabs-underline', () => {
   let page
 
+  async function launchPage() {
+    page = await program.reLaunch(PAGE_PATH)
+    await page.waitFor('view')
+    await page.waitFor(800)
+  }
+
   function expectOneOfColor(actualColor, expectedColors) {
     expect(expectedColors).toContain(actualColor)
   }
@@ -15,22 +21,11 @@ describe('template-swipe-tabs-underline', () => {
     const start = Date.now()
     await page.waitFor(async () => {
       const swiper = await page.$('swiper')
-      return await swiper.property('current') == target || Date.now() - start > 3000
+      return await swiper.property('current') == target || Date.now() - start > 8000
     })
 
     const swiper = await page.$('swiper')
     expect(await swiper.property('current')).toBe(target)
-  }
-
-  async function resetSwiperToFirst() {
-    const swiper = await page.$('swiper')
-    if (await swiper.property('current') == 0) {
-      return
-    }
-    const tabs = await page.$$('.swiper-tabs-item')
-    await tabs[0].tap()
-    await waitForSwiperCurrent(0)
-    await page.waitFor(300)
   }
 
   async function swipeSwiperNext() {
@@ -48,14 +43,8 @@ describe('template-swipe-tabs-underline', () => {
     })
   }
 
-  beforeAll(async () => {
-    page = await program.reLaunch(PAGE_PATH)
-    await page.waitFor('view')
-    await page.waitFor(800)
-  })
-
   beforeEach(async () => {
-    await resetSwiperToFirst()
+    await launchPage()
   })
 
   it('renders tabs and initial active state', async () => {

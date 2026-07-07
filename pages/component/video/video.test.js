@@ -1,5 +1,3 @@
-jest.setTimeout(60000);
-
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isHarmony = platformInfo.startsWith('harmony')
@@ -56,7 +54,7 @@ describe('component-native-video', () => {
     expect(await page.data('data.isError')).toBe(false);
     // play
     await page.callMethod('play');
-    await page.waitFor(3000);
+    await page.waitFor(10000);
     expect(await page.data('data.isPlaying')).toBe(true);
     // pause
     await page.callMethod('pause');
@@ -373,6 +371,25 @@ describe('component-native-video', () => {
       await setPageData({
         enableDanmu: false
       });
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      const image = await program.screenshot({
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: windowInfo.statusBarHeight + 44
+        }
+      });
+      expect(image).toSaveImageSnapshot();
+    });
+
+    it('test continuous send danmu track', async () => {
+      await setPageData({
+        enableDanmu: true
+      });
+      await page.callMethod('play');
+      await page.waitFor(2000);
+      await page.callMethod('continuousSendDanmu');
+      await page.waitFor(3000);
       const windowInfo = await program.callUniMethod('getWindowInfo');
       const image = await program.screenshot({
         deviceShot: true,

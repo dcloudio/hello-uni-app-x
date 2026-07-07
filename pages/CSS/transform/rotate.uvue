@@ -1,5 +1,5 @@
 <template>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view class="pages">
@@ -225,7 +225,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 transform (rotate) </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -299,15 +299,15 @@
       <text class="uni-title-text uni-common-mt uni-common-mb">native-view 组件</text>
       <view class="demo-box">
         <view class="scroll-view-item">
-          <native-view class="scroll-view-base transform" style="transform: rotate(45deg);"></native-view>
+          <test-native-view class="scroll-view-base transform-native" style="transform: rotate(45deg);"></test-native-view>
         </view>
         <view class="scroll-view-item">
-          <native-view class="scroll-view-base transform" style="transform: rotateX(30deg);"></native-view>
+          <test-native-view class="scroll-view-base transform-native" style="transform: rotateX(30deg);"></test-native-view>
         </view>
       </view>
 
     </view>
-  <!-- #ifdef APP -->
+  <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
   <!-- #endif -->
 </template>
@@ -353,7 +353,6 @@
     data.transformActualImageFlat = imageRefDynamicFlat.value?.style.getPropertyValue('transform') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeTransformDynamic = (value: string) => {
     console.log('value',value)
@@ -367,7 +366,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeTransform = (index: number) => {
@@ -519,6 +518,10 @@
     height: 80px;
     padding: 10px;
     background-color: gray;
+  }
+
+  .transform-native {
+    background-color: #00FFFF80;
   }
 
 </style>
