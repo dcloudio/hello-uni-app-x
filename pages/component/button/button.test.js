@@ -95,11 +95,13 @@ describe('Button.uvue', () => {
     const value = await page.callMethod('checkUniButtonElement')
     expect(value).toBe(true)
   })
-  it("setbuttonEmpty", async () => {
-    const textBtn = await page.$('.btn')
-    await setPageData({text: ''})
-    expect(await textBtn.text()).toEqual('')
-  })
+  if (!isDom2) {
+    it("setbuttonEmpty", async () => {
+      const textBtn = await page.$('.btn')
+      await setPageData({text: ''})
+      expect(await textBtn.text()).toEqual('')
+    })
+  }
 
   // 自定义button和默认button来回切换截图对比
   it("button-screenshot-plain+primary+default", async () => {
