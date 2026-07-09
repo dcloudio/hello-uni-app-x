@@ -92,7 +92,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style>
 	/* #ifndef APP-NVUE */
 	@import './uniicons.css';
 
