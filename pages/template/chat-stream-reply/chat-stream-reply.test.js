@@ -5,7 +5,16 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
+const isMP = platformInfo.startsWith('mp')
+
 describe('chat-stream-reply', () => {
+  if (isMP) {
+    it('not supported in mp', () => {
+      expect(1).toBe(1)
+    })
+    return
+  }
+
   let page;
 
   beforeAll(async () => {
