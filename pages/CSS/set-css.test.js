@@ -747,13 +747,13 @@ describe('set css', () => {
       expectdom1: {
         base: {
           expectedValue: {
-            backgroundColor: "rgb(0, 255, 0)",
-            backgroundColorActual: "rgb(0, 255, 0)",
-            backgroundColorActualText: "rgb(0, 255, 0)",
-            backgroundColorActualImage: "rgb(0, 255, 0)",
-            backgroundColorActualFlat: "rgb(0, 255, 0)",
-            backgroundColorActualTextFlat: "rgb(0, 255, 0)",
-            backgroundColorActualImageFlat: "rgb(0, 255, 0)"
+              backgroundColor: "#00f8",
+              backgroundColorActual: "#00f8",
+              backgroundColorActualText: "#00f8",
+              backgroundColorActualImage: "#00f8",
+              backgroundColorActualFlat: "#00f8",
+              backgroundColorActualTextFlat: "#00f8",
+              backgroundColorActualImageFlat: "#00f8"
           }
         }
       }
