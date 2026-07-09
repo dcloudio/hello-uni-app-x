@@ -1,3 +1,6 @@
+// 多次截图 增加超时时间
+jest.setTimeout(60000)
+
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
