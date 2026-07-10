@@ -54,7 +54,6 @@
 		iosSpinner : boolean;
 	}
 
-	let autoHideLoadingTimer : number | null = null
 
 	const data = reactive({
 		title: 'loading',
@@ -101,15 +100,7 @@
 		data.iosSpinner = e.detail.value
 	}
 
-	const clearAutoHideLoadingTimer = () => {
-		if (autoHideLoadingTimer != null) {
-			clearTimeout(autoHideLoadingTimer)
-			autoHideLoadingTimer = null
-		}
-	}
-
 	const hideLoading = () => {
-		clearAutoHideLoadingTimer()
 		uni.hideLoading();
 	}
 	const noParamLoading = () => {
@@ -222,10 +213,8 @@
 				iosSpinner: data.iosSpinner,
 			});
 		}
-		clearAutoHideLoadingTimer()
-		autoHideLoadingTimer = setTimeout(() => {
-			autoHideLoadingTimer = null
-			uni.hideLoading();
+		setTimeout(() => {
+			hideLoading();
 		}, 3000);
 	}
 
