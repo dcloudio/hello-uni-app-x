@@ -83,7 +83,6 @@ describe('editor.uvue', () => {
     }
     await page.callMethod('blurEditor')
     await page.callMethod('hideKeyboardForTest')
-    await waitForData('data.keyboardHeight', value => value === 0, 3000)
     await page.waitFor(600)
   }
 
@@ -91,8 +90,8 @@ describe('editor.uvue', () => {
     if (isWeb) {
       return
     }
-    const beforeKeyboardHeight = await page.data('data.keyboardHeight')
-    const beforeKeyboardHeightChangeCount = await page.data('data.keyboardHeightChangeCount')
+    /* const beforeKeyboardHeight = await page.data('data.keyboardHeight')
+    const beforeKeyboardHeightChangeCount = await page.data('data.keyboardHeightChangeCount') */
     await tapEditor()
     // TODO 不再依赖键盘高度变化了，改为设备截图判断；安卓上运行自动化测试时 onKeyboardChagne 不触发
     /* await waitForData('data.keyboardHeight', value => value > beforeKeyboardHeight, 5000)
