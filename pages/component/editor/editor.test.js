@@ -94,14 +94,15 @@ describe('editor.uvue', () => {
     const beforeKeyboardHeight = await page.data('data.keyboardHeight')
     const beforeKeyboardHeightChangeCount = await page.data('data.keyboardHeightChangeCount')
     await tapEditor()
-    await waitForData('data.keyboardHeight', value => value > beforeKeyboardHeight, 5000)
+    // TODO 不再依赖键盘高度变化了，改为设备截图判断；安卓上运行自动化测试时 onKeyboardChagne 不触发
+    /* await waitForData('data.keyboardHeight', value => value > beforeKeyboardHeight, 5000)
     await waitForData('data.keyboardHeightChangeCount', value => value > beforeKeyboardHeightChangeCount, 5000)
     expect(await page.data('data.keyboardHeight')).toBeGreaterThan(beforeKeyboardHeight)
-    expect(await page.data('data.keyboardHeightChangeCount')).toBeGreaterThan(beforeKeyboardHeightChangeCount)
+    expect(await page.data('data.keyboardHeightChangeCount')).toBeGreaterThan(beforeKeyboardHeightChangeCount) */
   }
 
-  async function screenshot(name) {
-    const image = await program.screenshot({ fullPage: true })
+  async function screenshot(name, deviceShot = false) {
+    const image = await program.screenshot({ deviceShot, fullPage: true })
     expect(image).toSaveImageSnapshot({
       customSnapshotIdentifier() {
         return name
@@ -143,7 +144,7 @@ describe('editor.uvue', () => {
     expect(await page.data('data.readOnly')).toBe(false)
     expect(await page.data('data.editorType')).toBeFalsy()
     await assertKeyboardHeightChange()
-    await screenshot('editor-props-read-only-false')
+    await screenshot('editor-props-read-only-false', true)
 
     await hideKeyboard()
 
@@ -160,7 +161,7 @@ describe('editor.uvue', () => {
     expect(await page.callMethod('getTypeLabel')).toBe('null（聚焦弹键盘）')
     await assertKeyboardHeightChange()
 
-    await screenshot('editor-props-type-null')
+    await screenshot('editor-props-type-null', true)
 
     await hideKeyboard()
 
