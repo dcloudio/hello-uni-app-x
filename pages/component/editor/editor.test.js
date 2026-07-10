@@ -110,6 +110,19 @@ describe('editor.uvue', () => {
     })
   }
 
+  async function getInserImageSize() {
+    await waitForData('data.insertImageWidth', value => value > 0, 2000)
+    await waitForData('data.insertImageHeight', value => value > 0, 2000)
+    const width = await page.data('data.insertImageWidth')
+    const height = await page.data('data.insertImageHeight')
+    if (width === 0) width = 50
+    if (height === 0) width = 30
+    return {
+      width,
+      height
+    }
+  }
+
   beforeAll(async () => {
     await loadPage()
   })
@@ -183,16 +196,8 @@ describe('editor.uvue', () => {
     await waitForData('data.readyCount', value => value >= previousReadyCount + 1, 8000)
 
     await page.callMethod('insertSampleImage')
-    if (isSimulator) {
-      await tapEditor(50, 60)
-    } else {
-      if (isAndroid) {
-        // 小米 4 真机测试，编辑器位置有误，调整偏移
-        await tapEditor(50, 10)
-      } else {
-        await tapEditor(50, 60)
-      }
-    }
+    let imageSize = await getInserImageSize()
+    await tapEditor(imageSize.width/2, imageSize.height/2)
 
     await screenshot('editor-props-image-controls-true')
 
@@ -200,7 +205,7 @@ describe('editor.uvue', () => {
     await page.callMethod('blurEditor')
     await waitForData('data.blurCount', value => value > 0, 3000)
     await page.callMethod('clearEditor')
-    await page.waitFor(600)
+    await page.waitFor(500)
     await page.callMethod('onDraftShowImgSizeChange', false)
     await page.callMethod('onDraftShowImgToolbarChange', false)
     await page.callMethod('onDraftShowImgResizeChange', false)
@@ -212,16 +217,8 @@ describe('editor.uvue', () => {
     expect(await page.data('data.appliedShowImgResize')).toBe(false)
 
     await page.callMethod('insertSampleImage')
-    if (isSimulator) {
-      await tapEditor(50, 60)
-    } else {
-      if (isAndroid) {
-        // 小米 4 真机测试，编辑器位置有误，调整偏移
-        await tapEditor(50, 10)
-      } else {
-        await tapEditor(50, 60)
-      }
-    }
+    imageSize = await getInserImageSize()
+    await tapEditor(imageSize.width/2, imageSize.height/2)
 
     await screenshot('editor-props-image-controls-false')
   })

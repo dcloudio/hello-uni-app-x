@@ -163,6 +163,8 @@ type EditorPropsPageData = {
   editorY: number
   editorWidth: number
   editorHeight: number
+  insertImageWidth: number
+  insertImageHeight: number
 }
 
 const SAMPLE_TEXT = '这是 editor 示例文本。你可以继续输入内容，也可以滚动下方属性区实时调整 editor 状态。'
@@ -201,7 +203,9 @@ const initialData: EditorPropsPageData = {
   editorX: 0,
   editorY: 0,
   editorWidth: 0,
-  editorHeight: 0
+  editorHeight: 0,
+  insertImageWidth: 0,
+  insertImageHeight: 0
 }
 
 const data = reactive<EditorPropsPageData>(initialData)
@@ -342,15 +346,31 @@ function insertSampleText() {
   })
 }
 
-function insertSampleImage() {
+const src = 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png'
+function insertImage() {
   data.editorCtx?.insertImage({
-    src: 'https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni-app.png',
+    src,
     alt: '示例图片',
     success: () => {
       appendLog('action', '已插入示例图片，请点击图片验证 show-img-*')
     },
     fail: () => {
       appendLog('error', '插入示例图片失败')
+    }
+  })
+}
+function insertSampleImage() {
+  uni.getImageInfo({
+    src,
+    success(res) {
+      console.log('res: ',res);
+      data.insertImageWidth = res.width
+      data.insertImageHeight = res.height
+      appendLog('network', `图片加载成功: ${summarizeText(src)}`)
+      insertImage()
+    },
+    fail() {
+      insertImage()
     }
   })
 }
