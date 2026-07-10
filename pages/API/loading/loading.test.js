@@ -80,8 +80,8 @@ describe('API-loading', () => {
     await page.callMethod('showLoading')
     await page.waitFor(300)
     await toScreenshot(`loading-title-${items[index].name}`)
-    await page.callMethod('hideLoading')
-    await page.waitFor(300)
+    // 等待 loading 关闭
+    await page.waitFor(3000)
   }
 
   it('showLoading with empty title', async () => {
