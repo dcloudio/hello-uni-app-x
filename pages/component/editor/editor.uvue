@@ -13,7 +13,6 @@
       </view>
 
       <view class="preview-state-row">
-        <text class="preview-state-text">keyboard height: {{ Math.floor(data.keyboardHeight) }}</text>
         <view v-if="showLogs">
           <text class="preview-state-text">X: {{ data.editorX }}</text>
           <text class="preview-state-text">Y: {{ data.editorY }}</text>
@@ -164,8 +163,6 @@ type EditorPropsPageData = {
   editorY: number
   editorWidth: number
   editorHeight: number
-  keyboardHeight: number
-  keyboardHeightChangeCount: number
 }
 
 const SAMPLE_TEXT = '这是 editor 示例文本。你可以继续输入内容，也可以滚动下方属性区实时调整 editor 状态。'
@@ -204,9 +201,7 @@ const initialData: EditorPropsPageData = {
   editorX: 0,
   editorY: 0,
   editorWidth: 0,
-  editorHeight: 0,
-  keyboardHeight: 0,
-  keyboardHeightChangeCount: 0
+  editorHeight: 0
 }
 
 const data = reactive<EditorPropsPageData>(initialData)
@@ -338,18 +333,6 @@ function onStatusChange(event: UniEditorStatusChangeEvent) {
   appendLog('statuschange', data.statusSummary)
 }
 
-onLoad(() => {
-  uni.onKeyboardHeightChange((res) => {
-    data.keyboardHeight = res.height
-    data.keyboardHeightChangeCount += 1
-    appendLog('keyboard', `height => ${res.height}`)
-  })
-})
-
-onUnload(() => {
-  uni.offKeyboardHeightChange()
-})
-
 function insertSampleText() {
   data.editorCtx?.insertText({
     text: SAMPLE_TEXT,
@@ -427,7 +410,6 @@ function blurEditor() {
 
 function hideKeyboardForTest() {
   uni.hideKeyboard()
-  data.keyboardHeight = 0
   appendLog('keyboard', '已请求隐藏键盘')
 }
 
