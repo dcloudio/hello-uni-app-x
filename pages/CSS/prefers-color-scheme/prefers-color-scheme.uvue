@@ -1,0 +1,161 @@
+<template>
+  <view class="page">
+    <view class="flex-row">
+      <view class="day">白天样式：默认效果</view>
+      <view class="day light-scheme">白天样式：系统为浅色时会变化</view>
+      <view class="day dark-scheme">白天样式：系统为深色时会变化</view>
+    </view>
+
+    <view class="flex-row" style="margin-top: 20px;">
+      <text class="night">夜间样式：默认效果</text>
+      <text class="night light-scheme">夜间样式：系统为浅色时会变化</text>
+      <text class="night dark-scheme">夜间样式：系统为深色时会变化</text>
+    </view>
+
+    <view class="flex-row">
+      <text>osTheme:</text>
+      <text id="theme">{{ data.osTheme }}</text>
+    </view>
+    <view class="flex-row">
+      <text>应用当前主题:</text>
+      <text id="theme">{{ data.appTheme }}</text>
+    </view>
+    <view class="uni-list uni-common-pl">
+      <radio-group @change="radioChange" class="radio-group">
+        <radio class="uni-list-cell uni-list-cell-pd radio" v-for="(item, index) in data.items" :key="item"
+          :class="index < data.items.length - 1 ? 'uni-list-cell-line' : ''" :value="item"
+          :checked="index === data.current">
+          {{ item }}
+        </radio>
+      </radio-group>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  type PageData = {
+    osThemeChangeId : number;
+    appThemeChangeId : number;
+    osTheme : string;
+    appTheme : string;
+    originalTheme : string;
+    current : number;
+    items : string[];
+  }
+
+  const data : PageData = reactive({
+    osThemeChangeId: 0,
+    appThemeChangeId: 0,
+    osTheme: 'light',
+    appTheme: 'light',
+    originalTheme: 'light',
+    current: 0,
+    items: [
+      'light',
+      'dark',
+      'auto'
+    ]
+  })
+
+  function bindOsThemeChange() : number {
+    return uni.onOsThemeChange((res : OsThemeChangeResult) => {
+      data.osTheme = res.osTheme
+    })
+  }
+
+  function bindAppThemeChange() : number {
+    // #ifdef APP
+    return uni.onAppThemeChange((res : AppThemeChangeResult) => {
+      data.appTheme = res.appTheme
+    })
+    // #endif
+    // #ifdef WEB || MP
+    return uni.onHostThemeChange((res : OnHostThemeChangeCallbackResult) => {
+      data.appTheme = res.hostTheme
+    })
+    // #endif
+  }
+
+  function setAppTheme(value : string) {
+    uni.setAppTheme({
+      theme: value as 'light' | 'dark' | 'auto',
+      success: function () {
+        console.log('设置appTheme为', value, '成功')
+      },
+      fail: function (e : IAppThemeFail) {
+        console.log('设置appTheme为', value, '失败,原因:', e.errMsg)
+      }
+    })
+  }
+
+  function radioChange(e : UniRadioGroupChangeEvent) {
+    const theme = e.detail.value
+    setAppTheme(theme)
+    uni.showToast({
+      icon: 'none',
+      title: '当前选中:' + theme,
+    })
+  }
+
+  onReady(() => {
+    uni.getSystemInfo({
+      success: (res : GetSystemInfoResult) => {
+        data.osTheme = res.osTheme!
+        data.originalTheme = res.appTheme!
+        data.appTheme = res.appTheme == 'auto' ? res.osTheme! : res.appTheme!
+        data.current = data.items.indexOf(res.appTheme!)
+      }
+    })
+  })
+</script>
+
+<style>
+  .page {
+    padding: 15px;
+    flex: 1;
+  }
+
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .day {
+    background: #eee;
+    color: black;
+  }
+
+  .night {
+    background: #333;
+    color: white;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .day.dark-scheme {
+      background: #333;
+      color: white;
+    }
+
+    .night.dark-scheme {
+      background: black;
+      color: #ddd;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    .day.light-scheme {
+      background: white;
+      color: #555;
+    }
+
+    .night.light-scheme {
+      background: #eee;
+      color: black;
+    }
+  }
+
+  .day,
+  .night {
+    padding: 12px;
+    width: 100px;
+  }
+</style>

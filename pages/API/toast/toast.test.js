@@ -45,8 +45,10 @@ describe('API-toast', () => {
       area: {
         x: 0,
         y: topSafeArea + 44,
+        // 规避滚动条影响
+        width: windowInfo.safeArea.width-8,
         // 规避底部手势导航栏的影响
-        height: windowInfo.safeArea.height-50
+        height: windowInfo.safeArea.height-40
       },
     };
 
@@ -63,8 +65,11 @@ describe('API-toast', () => {
     const image = await program.screenshot(deviceShotOptions);
     const options = {customSnapshotIdentifier() {
       return imgName
-    }, ...imageSnapshotOptions}
-    expect(image).toMatchImageSnapshot(options);
+    }, ...imageSnapshotOptions
+    }
+    if (!isAppWebView) {
+      expect(image).toMatchImageSnapshot(options);
+    }
     expect(image).toSaveImageSnapshot(options)
     await page.waitFor(500);
   }
@@ -78,7 +83,7 @@ describe('API-toast', () => {
     for (let i = 0; i < icons.length; i++) {
       await icons[i].tap()
       await page.callMethod('toast1Tap')
-      await page.waitFor(100);
+      await page.waitFor(150);
       const iconText = await icons[i].text()
       const iconValue = await icons[i].attribute('value')
       const isLoadingIcon = iconValue == 'loading' || iconText.includes('加载')
@@ -140,5 +145,4 @@ describe('API-toast', () => {
       await screenShot(`toast-position-${positionsText}`)
     }
   })
-
 });

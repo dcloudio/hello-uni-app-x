@@ -131,6 +131,13 @@ describe('component-native-input', () => {
     expect(await tel.attribute('type')).toEqual("tel")
   })
 
+  it("screenshot full page for password", async () => {
+    const image = await program.screenshot({
+      fullPage: true
+    })
+    expect(image).toSaveImageSnapshot()
+  })
+
   //  测试密码属性
   // it("password", async () => {
   //   const input = await page.$('.uni-input-password');
