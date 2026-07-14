@@ -1,0 +1,274 @@
+<template>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  <scroll-view style="flex: 1">
+  <!-- #endif -->
+    <view class="defer-page">
+      <page-head title="Teleport defer"></page-head>
+
+      <view class="intro-box">
+        <text class="intro-title">defer 专项测试</text>
+        <text class="intro-desc">切换目标位置和 defer 后点击按钮同时创建 Teleport 与目标节点，观察内容是否进入目标。</text>
+      </view>
+
+      <view class="control-panel">
+        <view class="control-row">
+          <view class="control-copy">
+            <text class="control-title">defer</text>
+            <text class="control-desc">{{ useDefer ? '延迟查找后置目标' : '立即查找目标' }}</text>
+          </view>
+          <switch :checked="useDefer" @change="onDeferChange" />
+        </view>
+        <view class="control-row">
+          <view class="control-copy">
+            <text class="control-title">目标位置</text>
+            <text class="control-desc">{{ targetAfter ? '后置目标' : '前置目标' }}</text>
+          </view>
+          <switch :checked="targetAfter" @change="onTargetAfterChange" />
+        </view>
+        <view class="button-row">
+          <button class="action-button" size="mini" type="primary"
+            @click="toggleTeleport">{{ showTeleport ? '销毁 Teleport' : '创建 Teleport' }}</button>
+        </view>
+      </view>
+
+      <view class="status-box">
+        <text class="status-text">当前：defer = {{ useDefer }}</text>
+        <text class="status-tip">目标 #teleport-defer-target 与 Teleport
+          同时创建，当前为{{ targetAfter ? '后置目标' : '前置目标' }}。</text>
+      </view>
+
+      <view class="case-box">
+        <view v-if="showTeleport && !targetAfter" id="teleport-defer-target" class="target-box">
+          <text class="target-title">前置目标</text>
+          <text class="target-desc">id="teleport-defer-target"，该节点在 Teleport 前方。</text>
+        </view>
+
+        <view class="origin-box">
+          <text class="box-title">Teleport 声明位置</text>
+          <text class="box-desc">Teleport 固定声明在这里，目标节点可切换到前方或后方。</text>
+
+          <Teleport v-if="showTeleport" to="#teleport-defer-target" :defer="useDefer">
+            <view class="teleport-card">
+              <text class="card-title">Teleport 内容</text>
+              <text class="card-desc">to: #teleport-defer-target</text>
+            </view>
+          </Teleport>
+
+          <view v-if="!showTeleport" class="empty-box">
+            <text class="empty-text">Teleport 已销毁</text>
+          </view>
+        </view>
+
+        <view v-if="showTeleport && targetAfter" id="teleport-defer-target" class="target-box">
+          <text class="target-title">后置目标</text>
+          <text class="target-desc">id="teleport-defer-target"，该节点在 Teleport 后方。</text>
+        </view>
+      </view>
+
+    </view>
+  <!-- #ifdef APP && !VUE3-VAPOR -->
+  </scroll-view>
+  <!-- #endif -->
+</template>
+
+<script setup lang="uts">
+  const useDefer = ref<boolean>(true)
+  const targetAfter = ref<boolean>(true)
+  const showTeleport = ref<boolean>(false)
+
+  function onDeferChange(e : UniSwitchChangeEvent) {
+    useDefer.value = e.detail.value
+  }
+
+  function onTargetAfterChange(e : UniSwitchChangeEvent) {
+    targetAfter.value = e.detail.value
+  }
+
+  function toggleTeleport() {
+    showTeleport.value = !showTeleport.value
+  }
+</script>
+
+<style>
+  .defer-page {
+    padding: 16px;
+    background-color: #f5f7fb;
+  }
+
+  .intro-box {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 12px;
+    background-color: #ffffff;
+  }
+
+  .intro-title {
+    font-size: 18px;
+    color: #111827;
+    font-weight: bold;
+  }
+
+  .intro-desc {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #4b5563;
+  }
+
+  .control-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 12px;
+    background-color: #ffffff;
+  }
+
+  .control-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .control-copy {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-right: 12px;
+  }
+
+  .control-title {
+    font-size: 16px;
+    color: #1f2937;
+    font-weight: bold;
+  }
+
+  .control-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .button-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 12px;
+  }
+
+  .action-button {
+    margin-right: 8px;
+  }
+
+  .status-box {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 12px;
+    background-color: #eef6ff;
+  }
+
+  .status-text {
+    font-size: 14px;
+    color: #0052cc;
+    font-weight: bold;
+  }
+
+  .status-tip {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #4b5563;
+  }
+
+  .case-box {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .origin-box {
+    display: flex;
+    flex-direction: column;
+    min-height: 136px;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 12px;
+    background-color: #fff7ed;
+  }
+
+  .box-title {
+    font-size: 16px;
+    color: #9a3412;
+    font-weight: bold;
+  }
+
+  .box-desc {
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #9a3412;
+  }
+
+  .teleport-card {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: #007aff;
+  }
+
+  .card-title {
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: bold;
+  }
+
+  .card-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #dbeafe;
+  }
+
+  .target-box {
+    display: flex;
+    flex-direction: column;
+    min-height: 116px;
+    padding: 12px;
+    margin-top: 12px;
+    border-width: 1px;
+    border-style: dashed;
+    border-color: #007aff;
+    border-radius: 12px;
+    background-color: #f0f7ff;
+  }
+
+  .target-title {
+    font-size: 16px;
+    color: #111827;
+    font-weight: bold;
+  }
+
+  .target-desc {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .empty-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    margin-top: 12px;
+    border-radius: 12px;
+    background-color: #ffffff;
+  }
+
+  .empty-text {
+    font-size: 13px;
+    color: #9ca3af;
+  }
+</style>
