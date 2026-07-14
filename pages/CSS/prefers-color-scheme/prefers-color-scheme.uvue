@@ -66,6 +66,7 @@
   function bindAppThemeChange() : number {
     // #ifdef APP
     return uni.onAppThemeChange((res : AppThemeChangeResult) => {
+      console.log(res);
       data.appTheme = res.appTheme
     })
     // #endif
@@ -106,7 +107,22 @@
         data.current = data.items.indexOf(res.appTheme!)
       }
     })
+    // #ifdef APP
+    data.osThemeChangeId = bindOsThemeChange()
+    // #endif
+    data.appThemeChangeId = bindAppThemeChange()
   })
+
+  onUnload(() => {
+    // #ifdef APP
+    uni.offAppThemeChange(data.appThemeChangeId)
+    uni.offOsThemeChange(data.osThemeChangeId)
+    // #endif
+    // #ifdef WEB || MP
+    uni.offHostThemeChange(data.appThemeChangeId)
+    // #endif
+  })
+
 </script>
 
 <style>
