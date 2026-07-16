@@ -14,31 +14,31 @@
         <view class="control-row">
           <view class="control-copy">
             <text class="control-title">defer</text>
-            <text class="control-desc">{{ data.useDefer ? '延迟查找后置目标' : '立即查找目标' }}</text>
+            <text class="control-desc">{{ useDefer ? '延迟查找后置目标' : '立即查找目标' }}</text>
           </view>
-          <switch :checked="data.useDefer" @change="onDeferChange" />
+          <switch :checked="useDefer" @change="onDeferChange" />
         </view>
         <view class="control-row">
           <view class="control-copy">
             <text class="control-title">目标位置</text>
-            <text class="control-desc">{{ data.targetAfter ? '后置目标' : '前置目标' }}</text>
+            <text class="control-desc">{{ targetAfter ? '后置目标' : '前置目标' }}</text>
           </view>
-          <switch :checked="data.targetAfter" @change="onTargetAfterChange" />
+          <switch :checked="targetAfter" @change="onTargetAfterChange" />
         </view>
         <view class="button-row">
           <button class="action-button" size="mini" type="primary"
-            @click="toggleTeleport">{{ data.showTeleport ? '销毁 Teleport' : '创建 Teleport' }}</button>
+            @click="toggleTeleport">{{ showTeleport ? '销毁 Teleport' : '创建 Teleport' }}</button>
         </view>
       </view>
 
       <view class="status-box">
-        <text class="status-text">当前：defer = {{ data.useDefer }}</text>
+        <text class="status-text">当前：defer = {{ useDefer }}</text>
         <text class="status-tip">目标 #teleport-defer-target 与 Teleport
-          同时创建，当前为{{ data.targetAfter ? '后置目标' : '前置目标' }}。</text>
+          同时创建，当前为{{ targetAfter ? '后置目标' : '前置目标' }}。</text>
       </view>
 
       <view class="case-box">
-        <view v-if="data.showTeleport && !data.targetAfter" id="teleport-defer-target" class="target-box">
+        <view v-if="targetVisible && !targetAfter" id="teleport-defer-target" class="target-box">
           <text class="target-title">前置目标</text>
           <text class="target-desc">id="teleport-defer-target"，该节点在 Teleport 前方。</text>
         </view>
@@ -47,19 +47,19 @@
           <text class="box-title">Teleport 声明位置</text>
           <text class="box-desc">Teleport 固定声明在这里，目标节点可切换到前方或后方。</text>
 
-          <Teleport v-if="data.showTeleport" to="#teleport-defer-target" :defer="data.useDefer">
+          <Teleport v-if="showTeleport" to="#teleport-defer-target" :defer="useDefer">
             <view id="teleport-defer-content" class="teleport-card">
               <text class="card-title">Teleport 内容</text>
               <text class="card-desc">to: #teleport-defer-target</text>
             </view>
           </Teleport>
 
-          <view v-if="!data.showTeleport" class="empty-box">
+          <view v-if="!showTeleport" class="empty-box">
             <text class="empty-text">Teleport 已销毁</text>
           </view>
         </view>
 
-        <view v-if="data.showTeleport && data.targetAfter" id="teleport-defer-target" class="target-box">
+        <view v-if="targetVisible && targetAfter" id="teleport-defer-target" class="target-box">
           <text class="target-title">后置目标</text>
           <text class="target-desc">id="teleport-defer-target"，该节点在 Teleport 后方。</text>
         </view>
@@ -72,22 +72,42 @@
 </template>
 
 <script setup lang="uts">
-  const data = reactive({
-    useDefer: true,
-    targetAfter: true,
-    showTeleport: false
-  })
+  const useDefer = ref<boolean>(true)
+  const targetAfter = ref<boolean>(true)
+  const targetVisible = ref<boolean>(false)
+  const showTeleport = ref<boolean>(false)
 
   function onDeferChange(e : UniSwitchChangeEvent) {
-    data.useDefer = e.detail.value
+    useDefer.value = e.detail.value
   }
 
   function onTargetAfterChange(e : UniSwitchChangeEvent) {
-    data.targetAfter = e.detail.value
+    targetAfter.value = e.detail.value
+  }
+
+  function setUseDefer(value : boolean) {
+    useDefer.value = value
+  }
+
+  function setTargetAfter(value : boolean) {
+    targetAfter.value = value
+  }
+
+  function setTargetVisible(value : boolean) {
+    targetVisible.value = value
+  }
+
+  function setShowTeleport(value : boolean) {
+    showTeleport.value = value
+    if (!value) {
+      targetVisible.value = false
+    }
   }
 
   function toggleTeleport() {
-    data.showTeleport = !data.showTeleport
+    const visible = !showTeleport.value
+    targetVisible.value = visible
+    showTeleport.value = visible
   }
 
   function getBoundingClientRectForTest(id : string) : DOMRect | null {
@@ -95,7 +115,10 @@
   }
 
   defineExpose({
-    data,
+    setUseDefer,
+    setTargetAfter,
+    setTargetVisible,
+    setShowTeleport,
     getBoundingClientRectForTest
   })
 </script>

@@ -20,16 +20,16 @@
         <view class="control-row">
           <view class="control-copy">
             <text class="control-title">disabled</text>
-            <text class="control-desc">{{ data.teleportDisabled ? '原位置渲染' : '传送到目标' }}</text>
+            <text class="control-desc">{{ teleportDisabled ? '原位置渲染' : '传送到目标' }}</text>
           </view>
-          <switch :checked="data.teleportDisabled" @change="onDisabledChange" />
+          <switch :checked="teleportDisabled" @change="onDisabledChange" />
         </view>
         <view class="control-row">
           <view class="control-copy">
             <text class="control-title">v-if</text>
-            <text class="control-desc">{{ data.showTeleport ? '创建 Teleport' : '销毁 Teleport' }}</text>
+            <text class="control-desc">{{ showTeleport ? '创建 Teleport' : '销毁 Teleport' }}</text>
           </view>
-          <switch :checked="data.showTeleport" @change="onShowChange" />
+          <switch :checked="showTeleport" @change="onShowChange" />
         </view>
         <button class="defer-link-button" size="mini" type="primary" @click="goDeferPage">defer 专项测试</button>
       </view>
@@ -43,14 +43,14 @@
         <text class="origin-title">Teleport 声明位置</text>
         <text class="origin-desc">disabled 开启时，内容会留在这里。</text>
 
-        <Teleport v-if="data.showTeleport" :key="currentTarget.title" :to="currentTarget.value" :disabled="data.teleportDisabled" :defer="true">
+        <Teleport v-if="showTeleport" :key="currentTarget.title" :to="currentTarget.value" :disabled="teleportDisabled" :defer="true">
           <view id="teleport-content" class="teleport-card">
             <text class="card-title">Teleport 内容</text>
             <text class="card-desc">to: {{ currentTarget.description }}</text>
           </view>
         </Teleport>
 
-        <view v-if="!data.showTeleport" class="empty-box">
+        <view v-if="!showTeleport" class="empty-box">
           <text class="empty-text">Teleport 已销毁</text>
         </view>
       </view>
@@ -73,7 +73,7 @@
       <view id="teleport-page-bottom-anchor" class="page-bottom-anchor"></view>
     </view>
     <!-- #ifdef APP && !VUE3-VAPOR -->
-    <!-- </scroll-view> -->
+    </scroll-view>
     <!-- #endif -->
 </template>
 
@@ -88,25 +88,24 @@
 
   const teleportRefTarget = ref<UniElement | null>(null)
   const instance = getCurrentInstance()!.proxy!
-
-  const data = reactive({
-    teleportDisabled: false,
-    showTeleport: false
-  })
+  const teleportDisabled = ref<boolean>(false)
+  const showTeleport = ref<boolean>(false)
 
   const targetList = [
-    { title: 'page', value: 'page', description: '页面根节点' },
     { title: '#id', value: '#teleport-id-target', description: '指定 id 容器' },
-    { title: 'ref', value: teleportRefTarget, description: '模板 ref 容器' }
+    { title: 'ref', value: teleportRefTarget, description: '模板 ref 容器' },
+    <!-- #ifdef APP && VUE3-VAPOR -->
+    { title: 'page', value: 'page', description: '页面根节点' }
+    <!-- #endif -->
   ] as TargetItem[]
 
-  const currentTarget = ref<TargetItem>(targetList[1])
+  const currentTarget = ref<TargetItem>(targetList[0])
 
   const teleportStatus = computed(() : string => {
-    if (!data.showTeleport) {
+    if (!showTeleport.value) {
       return 'v-if = false，Teleport 已销毁'
     }
-    if (data.teleportDisabled) {
+    if (teleportDisabled.value) {
       return 'disabled = true，内容留在声明位置'
     }
     return '传送到 ' + currentTarget.value.title
@@ -123,12 +122,20 @@
     currentTarget.value = targetList[index]
   }
 
+  function setTeleportDisabled(disabled : boolean) {
+    teleportDisabled.value = disabled
+  }
+
+  function setShowTeleport(show : boolean) {
+    showTeleport.value = show
+  }
+
   function onDisabledChange(e : UniSwitchChangeEvent) {
-    data.teleportDisabled = e.detail.value
+    teleportDisabled.value = e.detail.value
   }
 
   function onShowChange(e : UniSwitchChangeEvent) {
-    data.showTeleport = e.detail.value
+    showTeleport.value = e.detail.value
   }
 
   function goDeferPage() {
@@ -136,15 +143,13 @@
   }
 
   function getBoundingClientRectForTest(id : string) : DOMRect | null {
-    if (id == 'page') {
-      return instance.$el?.getBoundingClientRect() ?? null
-    }
     return uni.getElementById(id)?.getBoundingClientRect() ?? null
   }
 
   defineExpose({
-    data,
     setTargetByIndex,
+    setTeleportDisabled,
+    setShowTeleport,
     getBoundingClientRectForTest
   })
 </script>

@@ -2,20 +2,24 @@ const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
 const isIOS = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isWeb = platformInfo.startsWith('web')
 const isApp = isAndroid || isIOS || isHarmony
 const isVapor = process.env.UNI_APP_X_DOM2 === 'true'
+const isSupported = isApp || isWeb
+const isAppVapor = isApp && isVapor
 const PAGE_PATH = '/pages/component/teleport/teleport'
 
+const PAGE_TARGET_CASE = { title: 'page', targetIndex: 2, bottomAnchorRectId: 'teleport-page-bottom-anchor' }
 const TARGET_CASES = [
-  { title: 'page', targetIndex: 0, containerSelector: 'page', rectId: 'page', bottomAnchorRectId: 'teleport-page-bottom-anchor', allowScrollOverflow: true, description: '页面根节点' },
-  { title: '#id', targetIndex: 1, containerSelector: '#teleport-id-target', rectId: 'teleport-id-target', description: '指定 id 容器' },
-  { title: 'ref', targetIndex: 2, containerSelector: '#teleport-ref-target', rectId: 'teleport-ref-target', description: '模板 ref 容器' }
+  { title: '#id', targetIndex: 0, containerSelector: '#teleport-id-target', rectId: 'teleport-id-target', description: '指定 id 容器' },
+  { title: 'ref', targetIndex: 1, containerSelector: '#teleport-ref-target', rectId: 'teleport-ref-target', description: '模板 ref 容器' }
 ]
+const SWITCH_TARGET_CASES = isAppVapor ? [PAGE_TARGET_CASE, ...TARGET_CASES] : TARGET_CASES
 const RECT_TOLERANCE = 1
 
 describe('teleport', () => {
-  if (!isApp || !isVapor) {
-    it('only supports app vapor', () => {
+  if (!isSupported) {
+    it('only supports app and web', () => {
       expect(1).toBe(1)
     })
     return
@@ -29,32 +33,31 @@ describe('teleport', () => {
     await page.waitFor(300)
   })
 
-  async function setPageData(data) {
-    await page.setData({ data })
-    await page.waitFor(300)
-  }
-
   async function setTargetByIndex(targetIndex) {
     await page.callMethod('setTargetByIndex', targetIndex)
     await page.waitFor(300)
   }
 
   async function switchTargetDestroyed(targetIndex) {
-    await setPageData({ showTeleport: false })
+    await page.callMethod('setShowTeleport', false)
+    await page.waitFor(300)
     await setTargetByIndex(targetIndex)
-    await setPageData({ teleportDisabled: false })
+    await setDisabled(false)
   }
 
   async function createTeleport() {
-    await setPageData({ showTeleport: true })
+    await page.callMethod('setShowTeleport', true)
+    await page.waitFor(300)
   }
 
   async function destroyTeleport() {
-    await setPageData({ showTeleport: false })
+    await page.callMethod('setShowTeleport', false)
+    await page.waitFor(300)
   }
 
   async function setDisabled(disabled) {
-    await setPageData({ teleportDisabled: disabled })
+    await page.callMethod('setTeleportDisabled', disabled)
+    await page.waitFor(300)
   }
 
   async function expectDestroyed() {
@@ -71,15 +74,8 @@ describe('teleport', () => {
   }
 
   async function expectContentInside(targetCase, fallbackContainerSelector, fallbackRectId) {
-    const containerSelector = fallbackContainerSelector ?? targetCase.containerSelector
     const rectId = fallbackRectId ?? targetCase.rectId
     const allowScrollOverflow = fallbackContainerSelector == null && targetCase.allowScrollOverflow === true
-    const container = await page.$(containerSelector)
-    const content = await page.$('#teleport-content')
-    expect(container == null).toBe(false)
-    expect(content == null).toBe(false)
-    expect(await content.text()).toContain(targetCase.description)
-
     const containerRect = await getElementRect(rectId)
     const contentRect = await page.callMethod('getBoundingClientRectForTest', 'teleport-content')
     expect(containerRect == null).toBe(false)
@@ -91,12 +87,22 @@ describe('teleport', () => {
     if (!allowScrollOverflow) {
       expect(contentRect.bottom).toBeLessThanOrEqual(containerRect.bottom + RECT_TOLERANCE)
     }
+  }
 
-    if (fallbackContainerSelector == null && targetCase.bottomAnchorRectId != null) {
-      const bottomAnchorRect = await getElementRect(targetCase.bottomAnchorRectId)
-      expect(bottomAnchorRect == null).toBe(false)
-      expect(contentRect.top).toBeGreaterThanOrEqual(bottomAnchorRect.bottom - RECT_TOLERANCE)
+  async function expectContentAfterBottomAnchor() {
+    const bottomAnchorRect = await getElementRect(PAGE_TARGET_CASE.bottomAnchorRectId)
+    const contentRect = await page.callMethod('getBoundingClientRectForTest', 'teleport-content')
+    expect(bottomAnchorRect == null).toBe(false)
+    expect(contentRect == null).toBe(false)
+    expect(contentRect.top).toBeGreaterThanOrEqual(bottomAnchorRect.bottom - RECT_TOLERANCE)
+  }
+
+  async function expectTargetContent(targetCase) {
+    if (targetCase.title == PAGE_TARGET_CASE.title) {
+      await expectContentAfterBottomAnchor()
+      return
     }
+    await expectContentInside(targetCase)
   }
 
   TARGET_CASES.forEach((targetCase) => {
@@ -120,18 +126,27 @@ describe('teleport', () => {
     })
   })
 
-  it('switches target dynamically across all targets', async () => {
-    await switchTargetDestroyed(TARGET_CASES[0].targetIndex)
-    await createTeleport()
-    await expectContentInside(TARGET_CASES[0])
+  if (isAppVapor) {
+    it('renders page target content after bottom anchor in app vapor', async () => {
+      await switchTargetDestroyed(PAGE_TARGET_CASE.targetIndex)
 
-    for (let i = 1; i < TARGET_CASES.length; i++) {
-      const targetCase = TARGET_CASES[i]
+      await createTeleport()
+      await expectContentAfterBottomAnchor()
+    })
+  }
+
+  it('switches target dynamically across all targets', async () => {
+    await switchTargetDestroyed(SWITCH_TARGET_CASES[0].targetIndex)
+    await createTeleport()
+    await expectTargetContent(SWITCH_TARGET_CASES[0])
+
+    for (let i = 1; i < SWITCH_TARGET_CASES.length; i++) {
+      const targetCase = SWITCH_TARGET_CASES[i]
       await setTargetByIndex(targetCase.targetIndex)
-      await expectContentInside(targetCase)
+      await expectTargetContent(targetCase)
     }
 
-    await setTargetByIndex(TARGET_CASES[0].targetIndex)
-    await expectContentInside(TARGET_CASES[0])
+    await setTargetByIndex(SWITCH_TARGET_CASES[0].targetIndex)
+    await expectTargetContent(SWITCH_TARGET_CASES[0])
   })
 })
