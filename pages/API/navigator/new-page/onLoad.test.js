@@ -84,6 +84,7 @@ describe("onLoad", () => {
   });
   if (!isAppWebView) {
     it("navigateBack", async () => {
+        // harmony vapor 存在 https://issues.dcloud.net.cn/pages/issues/detail?id=31190 问题，导致这里测试失败
         page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
         await page.waitFor('view');
         await page.callMethod("navigateToOnLoadWithType", "navigateBack");
