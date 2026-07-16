@@ -43,7 +43,7 @@ describe('modal', () => {
 
   async function screenshot(isEditable) {
     const image = await program.screenshot(deviceShotOptions);
-    if (!isAppWebView && !isEditable) {
+    if (!isEditable) {
       expect(image).toMatchImageSnapshot();
     }
     if (isEditable && isAppWebView) return;
