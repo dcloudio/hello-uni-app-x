@@ -20,16 +20,16 @@
         <view class="control-row">
           <view class="control-copy">
             <text class="control-title">disabled</text>
-            <text class="control-desc">{{ teleportDisabled ? '原位置渲染' : '传送到目标' }}</text>
+            <text class="control-desc">{{ data.teleportDisabled ? '原位置渲染' : '传送到目标' }}</text>
           </view>
-          <switch :checked="teleportDisabled" @change="onDisabledChange" />
+          <switch :checked="data.teleportDisabled" @change="onDisabledChange" />
         </view>
         <view class="control-row">
           <view class="control-copy">
             <text class="control-title">v-if</text>
-            <text class="control-desc">{{ showTeleport ? '创建 Teleport' : '销毁 Teleport' }}</text>
+            <text class="control-desc">{{ data.showTeleport ? '创建 Teleport' : '销毁 Teleport' }}</text>
           </view>
-          <switch :checked="showTeleport" @change="onShowChange" />
+          <switch :checked="data.showTeleport" @change="onShowChange" />
         </view>
         <button class="defer-link-button" size="mini" type="primary" @click="goDeferPage">defer 专项测试</button>
       </view>
@@ -39,18 +39,18 @@
         <text class="status-tip">切换 target 时通过 key 重建 Teleport。</text>
       </view>
 
-      <view class="origin-box">
+      <view id="teleport-origin-box" class="origin-box">
         <text class="origin-title">Teleport 声明位置</text>
         <text class="origin-desc">disabled 开启时，内容会留在这里。</text>
 
-        <Teleport v-if="showTeleport" :key="currentTarget.title" :to="currentTarget.value" :disabled="teleportDisabled">
-          <view class="teleport-card">
+        <Teleport v-if="data.showTeleport" :key="currentTarget.title" :to="currentTarget.value" :disabled="data.teleportDisabled" :defer="true">
+          <view id="teleport-content" class="teleport-card">
             <text class="card-title">Teleport 内容</text>
             <text class="card-desc">to: {{ currentTarget.description }}</text>
           </view>
         </Teleport>
 
-        <view v-if="!showTeleport" class="empty-box">
+        <view v-if="!data.showTeleport" class="empty-box">
           <text class="empty-text">Teleport 已销毁</text>
         </view>
       </view>
@@ -65,10 +65,12 @@
         <text class="target-desc">to="#teleport-id-target" 指向当前容器。</text>
       </view>
 
-      <view ref="teleportRefTarget" class="target-box" :class="currentTarget.title == 'ref' ? 'target-box-active' : ''">
+      <view id="teleport-ref-target" ref="teleportRefTarget" class="target-box" :class="currentTarget.title == 'ref' ? 'target-box-active' : ''">
         <text class="target-title">ref</text>
         <text class="target-desc">:to="teleportRefTarget" 指向这个 ref 容器。</text>
       </view>
+
+      <view id="teleport-page-bottom-anchor" class="page-bottom-anchor"></view>
     </view>
     <!-- #ifdef APP && !VUE3-VAPOR -->
     <!-- </scroll-view> -->
@@ -84,9 +86,13 @@
     description : string
   }
 
-  const teleportDisabled = ref<boolean>(false)
-  const showTeleport = ref<boolean>(true)
   const teleportRefTarget = ref<UniElement | null>(null)
+  const instance = getCurrentInstance()!.proxy!
+
+  const data = reactive({
+    teleportDisabled: false,
+    showTeleport: false
+  })
 
   const targetList = [
     { title: 'page', value: 'page', description: '页面根节点' },
@@ -97,10 +103,10 @@
   const currentTarget = ref<TargetItem>(targetList[1])
 
   const teleportStatus = computed(() : string => {
-    if (!showTeleport.value) {
+    if (!data.showTeleport) {
       return 'v-if = false，Teleport 已销毁'
     }
-    if (teleportDisabled.value) {
+    if (data.teleportDisabled) {
       return 'disabled = true，内容留在声明位置'
     }
     return '传送到 ' + currentTarget.value.title
@@ -110,17 +116,37 @@
     currentTarget.value = target
   }
 
+  function setTargetByIndex(index : number) {
+    if (index < 0 || index >= targetList.length) {
+      return
+    }
+    currentTarget.value = targetList[index]
+  }
+
   function onDisabledChange(e : UniSwitchChangeEvent) {
-    teleportDisabled.value = e.detail.value
+    data.teleportDisabled = e.detail.value
   }
 
   function onShowChange(e : UniSwitchChangeEvent) {
-    showTeleport.value = e.detail.value
+    data.showTeleport = e.detail.value
   }
 
   function goDeferPage() {
     uni.navigateTo({ url: '/pages/component/teleport/teleport-defer' })
   }
+
+  function getBoundingClientRectForTest(id : string) : DOMRect | null {
+    if (id == 'page') {
+      return instance.$el?.getBoundingClientRect() ?? null
+    }
+    return uni.getElementById(id)?.getBoundingClientRect() ?? null
+  }
+
+  defineExpose({
+    data,
+    setTargetByIndex,
+    getBoundingClientRectForTest
+  })
 </script>
 
 <style>
@@ -230,6 +256,10 @@
     margin-top: 4px;
     font-size: 12px;
     color: #6b7280;
+  }
+
+  .page-bottom-anchor {
+    height: 1px;
   }
 
   .origin-box {
