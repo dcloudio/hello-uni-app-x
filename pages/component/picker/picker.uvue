@@ -18,6 +18,7 @@
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">多列选择器</text>
     </view>
@@ -34,6 +35,7 @@
         </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">time选择器</text>
@@ -99,6 +101,7 @@
       </view>
     </view>
 
+    <!-- #ifndef MP-ALIPAY -->
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">省市地区选择器</text>
       <text class="uni-picker-description">省市地区数据并没有内置到uni-app x框架中，仅微信下由微信内置了，其他平台需单独加载地区数据</text>
@@ -125,6 +128,7 @@
         </view>
       </view>
     </view>
+    <!-- #endif -->
 
     <view class="uni-picker-section-header">
       <text class="uni-title uni-picker-section-title">已禁用的picker，点击无效</text>
@@ -147,7 +151,7 @@
   <!-- #endif -->
 </template>
 <script setup lang="uts">
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
   import { cityData } from './city.uts'
   // #endif
 
@@ -229,7 +233,7 @@
     time: '12:01'
   } as PageDataType)
 
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
   function getSafeCityValue(column : number, index : number) : string {
     if (column < 0 || column >= data.cityArray.length) {
       return ''
@@ -366,7 +370,7 @@
     })
   }
 
-  // #ifndef MP-WEIXIN
+  // #ifndef MP-WEIXIN || MP-ALIPAY
   const bindCityPickerChange = (e : UniPickerChangeEvent) => {
     console.log('picker发送选择改变，携带值为：' + e.detail.value)
     const cityIndex = e.detail.value as number[]
