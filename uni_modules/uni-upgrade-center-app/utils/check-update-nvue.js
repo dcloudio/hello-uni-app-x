@@ -1,5 +1,5 @@
 function callCheckVersion() {
-	// #ifdef APP-PLUS
+	// #ifdef APP
 	return new Promise((resolve, reject) => {
 		plus.runtime.getProperty(plus.runtime.appid, function(widgetInfo) {
 			let data = {
@@ -21,7 +21,7 @@ function callCheckVersion() {
 		})
 	})
 	// #endif
-	// #ifndef APP-PLUS
+	// #ifndef APP
 	return new Promise((resolve, reject) => {})
 	// #endif
 }
@@ -30,7 +30,7 @@ function callCheckVersion() {
 const PACKAGE_INFO_KEY = '__package_info__'
 
 export default function() {
-	// #ifdef APP-PLUS
+	// #ifdef APP
 	return new Promise((resolve, reject) => {
 		callCheckVersion().then(async (e) => {
 			if (!e.result) return;
