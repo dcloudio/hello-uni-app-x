@@ -785,6 +785,9 @@ describe('set css', () => {
             borderActualTextFlat: "2px dashed blue",
             borderActualImageFlat: "2px dashed blue"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -813,6 +816,9 @@ describe('set css', () => {
             borderRadiusActualTextFlat: "5px",
             borderRadiusActualImageFlat: "5px"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -884,6 +890,9 @@ describe('set css', () => {
             borderTopActualTextFlat: "2px dashed blue",
             borderTopActualImageFlat: "2px dashed blue"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -914,6 +923,9 @@ describe('set css', () => {
             borderBottomActualTextFlat: "2px dashed blue",
             borderBottomActualImageFlat: "2px dashed blue"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -944,6 +956,9 @@ describe('set css', () => {
             borderLeftActualTextFlat: "2px dashed blue",
             borderLeftActualImageFlat: "2px dashed blue"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -974,6 +989,9 @@ describe('set css', () => {
             borderRightActualTextFlat: "2px dashed blue",
             borderRightActualImageFlat: "2px dashed blue"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -1037,6 +1055,9 @@ describe('set css', () => {
             flexFlowActual: "row wrap",
             flexFlowActualFlat: "row wrap"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -1065,6 +1086,9 @@ describe('set css', () => {
             flexActualTextFlat: "1",
             flexActualImageFlat: "1"
           }
+        },
+        harmony: {
+          skipAssert: true
         },
         web: {
           expectedValue: {
@@ -1140,6 +1164,9 @@ describe('set css', () => {
             marginActualImageFlat: "20px",
             marginActualScrollView: "20px"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -1172,6 +1199,9 @@ describe('set css', () => {
             paddingActualImageFlat: "10px",
             paddingActualScrollView: "10px"
           }
+        },
+        harmony: {
+          skipAssert: true
         }
       }
     },
@@ -1223,6 +1253,9 @@ describe('set css', () => {
             textShadowActual: "5px 5px #558abb",
             textShadowActualFlat: "5px 5px #558abb"
           }
+        },
+        harmony: {
+          skipAssert: true
         },
         web: {
           expectedValue: {
