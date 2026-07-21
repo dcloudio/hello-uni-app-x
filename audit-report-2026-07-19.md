@@ -1,8 +1,8 @@
 # hello uni-app x 文档、条件编译与 Jest 覆盖审计
 
-审计日期：2026-07-19  
-基线：HBuilderX `5.23.2026071804-dev`，仓库 `dev@46c58514e0cca99ef742be76f7a181c4f7573ba3`  
-用户指定文档快照：`C:\hbuilderx\hx_dev\plugins\hbuilderx-ai-chat\uni-agent\knowledges\uni-app-x\docs`  
+审计日期：2026-07-19
+基线：HBuilderX `5.23.2026071804-dev`，仓库 `dev@46c58514e0cca99ef742be76f7a181c4f7573ba3`
+用户指定文档快照：`C:\hbuilderx\hx_dev\plugins\hbuilderx-ai-chat\uni-agent\knowledges\uni-app-x\docs`
 当前 HBuilderX 5.23 权威知识库：`C:\Users\wa\AppData\Roaming\HBuilder X\extensions\hbuilderx-ai-chat\uni-agent\knowledge-repo\knowledges\uni-app-x\docs`
 
 两处文档目录不是同一快照。本报告先按用户指定目录完成对照，再用当前权威知识库校正最终结论；只在旧快照中成立的差异不作为项目确认错误。
@@ -37,7 +37,7 @@
 11. HarmonyOS Vapor 无条件使用 `@import`：[`App.uvue:179`](App.uvue#L179) 导入公共 CSS；当前文档 `at-rules.md:13` 标记 HarmonyOS Vapor 不支持。
 12. CSS selector 漏 Web/MP：[`selector.test.js:9`](pages/CSS/selector/selector.test.js#L9) 跳过 Web/MP。当前文档 `selector.md:3,11` 同时支持 Web/MP 的 `page` 和 App Vapor 的 `page`；因此 App Vapor 测试正确，确认缺口仅是 Web/MP。
 13. MP CSS 集中测试全部短路：[`set-css.test.js:11`](pages/CSS/set-css.test.js#L11) 对 MP 只执行恒真断言；当前文档 `css/README.md:9` 明确小程序支持 Web CSS。
-14. HarmonyOS DOM1 有 12 个 `skipAssert`：`border`、`border-radius`、`border-top/bottom/left/right`、`flex-flow`、`flex`、`margin`（两页）、`padding`、`text-shadow`，位置为 [`set-css.test.js:789`](pages/CSS/set-css.test.js#L789)、821、895、928、961、994、1060、1091、1134、1169、1204、1258。当前文档均声明 HarmonyOS 支持。
+14. HarmonyOS DOM1 有 12 个 `skipAssert`：`border`、`border-radius`、`border-top/bottom/left/right`、`flex-flow`、`flex`、`margin`（两页）、`padding`、`text-shadow`，位置为 [`set-css.test.js:789`](pages/CSS/set-css.test.js#L789)、821、895、928、961、994、1060、1091、1134、1169、1204、1258。当前文档均声明 HarmonyOS 支持。【harmony dom1，这些值setProperty 设置后，getPropertyValue 获取为空，所以skipAssert临时跳过】
 
 ### 2.2 遗留或待确认
 
