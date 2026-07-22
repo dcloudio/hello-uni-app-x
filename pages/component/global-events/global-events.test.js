@@ -255,6 +255,7 @@ describe('event trigger', () => {
       expect(await longPressChangedTouchScreenY.text()).toBe(longPressTouchTargetValue)
 
       if (isAndroid || isIos || isHarmony) {
+        console.log('tapParams', tapParams);
         await program.tap(tapParams)
         const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
         expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
