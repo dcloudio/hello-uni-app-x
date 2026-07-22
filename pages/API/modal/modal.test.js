@@ -63,15 +63,6 @@ describe('modal', () => {
         if (platformInfo.indexOf('15.5') != -1) {
           topSafeArea = 47
         }
-      } else if (isAndroid) {
-        topSafeArea = 24
-        if (platformInfo.startsWith('android 5')) {
-          topSafeArea = 25
-        } else if (platformInfo.startsWith('android 11')) {
-          topSafeArea = 52
-        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
-          topSafeArea = 49
-        }
       } else if (isHarmony) {
         // mate 60
         // topSafeArea = 33
