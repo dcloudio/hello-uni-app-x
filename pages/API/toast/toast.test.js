@@ -47,7 +47,7 @@ describe('API-toast', () => {
 
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor("view");
-    await page.waitFor(500);
+    await page.waitFor(1000);
   });
 
   async function screenShot(imgName) {

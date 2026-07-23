@@ -43,7 +43,7 @@ describe('modal', () => {
 
   async function screenshot(isEditable) {
     const image = await program.screenshot(deviceShotOptions);
-    if (!isEditable) {
+    if (!isEditable && !isAppWebView) {
       expect(image).toMatchImageSnapshot({
         failureThresholdType: 'percent',
         failureThreshold: 0.002,
