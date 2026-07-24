@@ -245,6 +245,9 @@ describe('component-native-video', () => {
     }
 
     it('test event fullscreenchange fullscreenclick controlstoggle', async () => {
+      if (isAndroid) {
+        await program.adbCommand('settings put secure immersive_mode_confirmations confirmed');
+      }
       await page.callMethod('requestFullScreen');
       start = Date.now();
       await page.waitFor(async () => {
@@ -257,7 +260,6 @@ describe('component-native-video', () => {
         direction: 'horizontal'
       });
       if (isAndroid) {
-        await program.adbCommand('settings put secure immersive_mode_confirmations confirmed');
         await page.waitFor(5000);
         const res = await program.adbCommand('wm size');
         const width = res.data.split(' ').at(-1).split('x')[0];
