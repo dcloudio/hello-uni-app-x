@@ -72,7 +72,7 @@
 </template>
 
 <script>
-// #ifdef APP
+// #ifdef APP-PLUS
 import { createNotificationProgress, cancelNotificationProgress, finishNotificationProgress } from '@/uni_modules/uts-progressNotification';
 // #endif
 import { compare, platform_iOS, platform_Android, platform_Harmony } from '../utils/utils'
@@ -117,7 +117,7 @@ export default {
 			downLoadBtnText: '立即下载更新',
 			downLoadingText: '安装包下载中，请稍后',
 
-			// #ifdef APP
+			// #ifdef APP-PLUS
 			shown: true,
 			// #endif
 			// #ifdef APP-HARMONY
@@ -193,7 +193,7 @@ export default {
 			for (let key in localPackageInfo) {
 				if (requiredKey.indexOf(key) !== -1 && !localPackageInfo[key]) {
 					console.error(`参数 ${key} 必填，请检查后重试`);
-					// #ifdef APP
+					// #ifdef APP-PLUS
 					uni.navigateBack();
 					// #endif
 					// #ifdef APP-HARMONY
@@ -259,7 +259,7 @@ export default {
 				await this.saveFile(this.tempFilePath, this.version);
 			}
 
-			// #ifdef APP
+			// #ifdef APP-PLUS
 			uni.navigateBack();
 			// #endif
 			// #ifdef APP-HARMONY
@@ -417,7 +417,7 @@ export default {
 			}
 		},
 		installPackage() {
-			// #ifdef APP || APP-HARMONY
+			// #ifdef APP-PLUS || APP-HARMONY
 			// wgt资源包安装
 			if (this.isWGT) {
 				this.installing = true;
@@ -435,7 +435,7 @@ export default {
 					if (this.isWGT) {
 						// 强制更新安装完成重启
 						if (this.is_mandatory) {
-							// #ifdef APP
+							// #ifdef APP-PLUS
 							uni.showLoading({
 								icon: 'none',
 								title: '安装成功，正在重启……'
@@ -443,7 +443,7 @@ export default {
 							// #endif
 
 							setTimeout(() => {
-								// #ifdef APP
+								// #ifdef APP-PLUS
 								uni.hideLoading();
 								// #endif
 								this.restart();
@@ -494,7 +494,7 @@ export default {
 				}
 			})
 			// #endif
-			// #ifdef APP
+			// #ifdef APP-PLUS
 			//更新完重启app
 			plus.runtime.restart();
 			// #endif

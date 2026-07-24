@@ -55,7 +55,7 @@ export default function () : Promise<UniUpgradeCenterResult> {
            * 官方适配的升级弹窗，可自行替换资源适配UI风格
            */
           // #ifndef UNI-APP-X
-					// #ifdef APP
+          // #ifdef APP-PLUS
           uni.setStorageSync(PACKAGE_INFO_KEY, uniUpgradeCenterResult)
           uni.navigateTo({
             url: `/uni_modules/uni-upgrade-center-app/pages/upgrade-popup?local_storage_key=${PACKAGE_INFO_KEY}`,
@@ -164,7 +164,7 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 					}, () => {
 						if (is_mandatory) {
 							//更新完重启app
-							// #ifdef APP
+							// #ifdef APP-PLUS
 							plus.runtime.restart();
 							// #endif
 							// #ifdef APP-HARMONY
@@ -184,7 +184,7 @@ function updateUseModal(packageInfo : UniUpgradeCenterResult) : void {
 							success: res => {
 								if (res.confirm) {
 									//更新完重启app
-									// #ifdef APP
+									// #ifdef APP-PLUS
 									plus.runtime.restart();
 									// #endif
 									// #ifdef APP-HARMONY
