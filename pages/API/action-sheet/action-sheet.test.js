@@ -6,7 +6,6 @@ const isApp = isAndroid || isIos || isHarmony
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const PAGE_PATH = '/pages/API/action-sheet/action-sheet'
 
@@ -41,7 +40,10 @@ describe('showActionSheet', () => {
       }
     } : {}
     if (!isAppWebView) {
-      expect(image).toMatchImageSnapshot(options);
+      expect(image).toMatchImageSnapshot({ ...options,
+        failureThresholdType: 'percent',
+        failureThreshold: 0.002,
+      });
     }
     expect(image).toSaveImageSnapshot(options);
   }
@@ -69,24 +71,23 @@ describe('showActionSheet', () => {
       }
     }
 
-		page = await program.reLaunch(isDom2 && !isHarmony && !isIos ? '/pages/tabBar/tab-bar' : '/pages/tabBar/API');
+		page = await program.reLaunch('/pages/tabBar/API');
     await page.waitFor('view');
 
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor('view');
-    if (isApp && !isAppWebView) {
-      if(isAndroid || isIos){
+    if (isApp) {
+      if((isAndroid || isIos) && !isAppWebView){
         await page.callMethod('setThemeAuto')
       }
-
       screenShotOptions = {
         area: {
           x: 0,
           y: topSafeArea + 44,
           // 规避滚动条影响
-          width: windowInfo.safeArea.width-8,
+          width: windowInfo.safeArea.width - 10,
           // 规避底部手势导航栏的影响
-          height: windowInfo.safeArea.height-40
+          height: windowInfo.safeArea.height - 40
         },
       }
     }

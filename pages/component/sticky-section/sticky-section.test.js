@@ -75,4 +75,16 @@ describe('component-native-sticky-section', () => {
     const image = await program.screenshot({fullPage: true});
     expect(image).toSaveImageSnapshot();
   })
+
+  //检测吸顶上推效果
+  it('check_sticky_section_with_list_footer', async () => {
+    await page.waitFor(async () => {
+      return await page.data('pageData.isReady') === true;
+    });
+    page.waitFor(600)
+    await page.callMethod('listViewScrollByY', 100000)
+    await page.waitFor(1000)
+    const image = await program.screenshot({fullPage: true});
+    expect(image).toSaveImageSnapshot();
+  })
 })
