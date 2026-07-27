@@ -1,5 +1,11 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
+const isApp = isAndroid || isIos || isHarmony
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/rich-text/rich-text'
 
@@ -12,13 +18,95 @@ describe('rich-text-test', () => {
   }
 
   let page
+  let deviceShotOptions = { fullPage: true }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(1500);
+
+    if (!isWeb) {
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      let topSafeArea = windowInfo.safeAreaInsets.top;
+      if (isAppWebView) {
+        if (isIos) {
+          topSafeArea = 59
+        } else if (isHarmony) {
+          // mate 60
+          // topSafeArea = 33
+          // mate 60 pro
+          topSafeArea = 38
+        }
+      }
+      deviceShotOptions = {
+        deviceShot: true,
+        area: {
+          x: 0,
+          y: topSafeArea + 44,
+          width: windowInfo.safeArea.width - 8,
+          // 规避底部手势导航栏的影响
+          height: windowInfo.safeArea.height - 40
+        },
+      }
+    }
   })
 
   async function setPageData(newData) {
     return await page.setData({ data: newData });
+  }
+
+  if (isApp) {
+    it('rich-text user-select true', async () => {
+      await setPageData({ userSelect: true })
+      await page.waitFor(300)
+      await program.pageScrollTo(99999)
+      await page.waitFor(500)
+      await page.callMethod('queryUserSelectRect')
+      await page.waitFor(500)
+      const rectX = await page.data('data.userSelectRectX')
+      const rectY = await page.data('data.userSelectRectY')
+      const rectWidth = await page.data('data.userSelectRectWidth')
+      const rectHeight = await page.data('data.userSelectRectHeight')
+      console.log('user-select true rect:', { rectX, rectY, rectWidth, rectHeight })
+      const tapPoint = {
+        x: Math.round(rectX + 20),
+        y: Math.round(rectY + 10)
+      }
+      console.log('user-select true tap point:', tapPoint)
+      await program.tap({
+        x: tapPoint.x,
+        y: tapPoint.y,
+        duration: 3000,
+      })
+      await page.waitFor(500)
+      const image = await program.screenshot({ fullPage: true })
+      expect(image).toSaveImageSnapshot()
+    })
+
+    it('rich-text user-select false', async () => {
+      await setPageData({ userSelect: false })
+      await page.waitFor(300)
+      await program.pageScrollTo(99999)
+      await page.waitFor(500)
+      await page.callMethod('queryUserSelectRect')
+      await page.waitFor(500)
+      const rectX = await page.data('data.userSelectRectX')
+      const rectY = await page.data('data.userSelectRectY')
+      const rectWidth = await page.data('data.userSelectRectWidth')
+      const rectHeight = await page.data('data.userSelectRectHeight')
+      console.log('user-select false rect:', { rectX, rectY, rectWidth, rectHeight })
+      const tapPoint = {
+        x: Math.round(rectX + 20),
+        y: Math.round(rectY + 10)
+      }
+      console.log('user-select false tap point:', tapPoint)
+      await program.tap({
+        x: tapPoint.x,
+        y: tapPoint.y,
+        duration: 3000,
+      })
+      await page.waitFor(500)
+      const image = await program.screenshot({ fullPage: true })
+      expect(image).toSaveImageSnapshot()
+    })
   }
 
   it('richt-text-height', async () => {
@@ -158,13 +246,11 @@ describe('rich-text-test', () => {
     await page.waitFor(300)
   })
 
-  if (!isMP) {
-    it('test dialogPage', async () => {
-      await page.callMethod('testOpenDialogPage');
-      await page.waitFor(1000);
-      const image = await program.screenshot({ deviceShot: true });
-      expect(image).toSaveImageSnapshot();
-      await page.callMethod('testCloseDialogPage');
-    })
-  }
+  it('test dialogPage', async () => {
+    await page.callMethod('testOpenDialogPage');
+    await page.waitFor(1000);
+    const image = await program.screenshot(deviceShotOptions);
+    expect(image).toSaveImageSnapshot();
+    await page.callMethod('testCloseDialogPage');
+  })
 })

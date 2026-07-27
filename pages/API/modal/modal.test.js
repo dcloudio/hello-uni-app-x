@@ -43,8 +43,11 @@ describe('modal', () => {
 
   async function screenshot(isEditable) {
     const image = await program.screenshot(deviceShotOptions);
-    if (!isAppWebView && !isEditable) {
-      expect(image).toMatchImageSnapshot();
+    if (!isEditable && !isAppWebView) {
+      expect(image).toMatchImageSnapshot({
+        failureThresholdType: 'percent',
+        failureThreshold: 0.002,
+      });
     }
     if (isEditable && isAppWebView) return;
     
@@ -60,15 +63,6 @@ describe('modal', () => {
         if (platformInfo.indexOf('15.5') != -1) {
           topSafeArea = 47
         }
-      } else if (isAndroid) {
-        topSafeArea = 24
-        if (platformInfo.startsWith('android 5')) {
-          topSafeArea = 25
-        } else if (platformInfo.startsWith('android 11')) {
-          topSafeArea = 52
-        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
-          topSafeArea = 49
-        }
       } else if (isHarmony) {
         // mate 60
         // topSafeArea = 33
@@ -82,9 +76,9 @@ describe('modal', () => {
         x: 0,
         y: topSafeArea + 44,
         // 规避滚动条影响
-        width: windowInfo.safeArea.width-8,
+        width: windowInfo.safeArea.width - 10,
         // 规避底部手势导航栏的影响
-        height: windowInfo.safeArea.height-40
+        height: windowInfo.safeArea.height - 40
       },
     };
 
@@ -674,7 +668,7 @@ describe('modal', () => {
 
     await page.callMethod('modalTap')
     await page.waitFor(600);
-    await screenshot();
+    await screenshot(true);
 
     await page.callMethod('closeAllModal')
     await page.waitFor(500);

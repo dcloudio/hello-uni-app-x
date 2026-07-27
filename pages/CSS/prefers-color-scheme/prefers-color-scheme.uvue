@@ -1,18 +1,20 @@
 <template>
   <view class="page">
+    <text class="title2">组件</text>
+    <view_text></view_text>
+    <text class="title2" style="margin-top: 30px;">页面</text>
     <view class="flex-row">
-      <view class="day">白天样式：默认效果</view>
-      <view class="day light-scheme">白天样式：系统为浅色时会变化</view>
-      <view class="day dark-scheme">白天样式：系统为深色时会变化</view>
+      <text class="day">白天样式：\n默认效果</text>
+      <text class="day light-scheme">白天样式：\n系统为浅色时会变化</text>
+      <text class="day dark-scheme">白天样式：\n系统为深色时会变化</text>
+    </view>
+    <view class="flex-row" style="margin-top: 1px;">
+      <text class="night">夜间样式：\n默认效果</text>
+      <text class="night light-scheme">夜间样式：\n系统为浅色时会变化</text>
+      <text class="night dark-scheme">夜间样式：\n系统为深色时会变化</text>
     </view>
 
-    <view class="flex-row" style="margin-top: 20px;">
-      <text class="night">夜间样式：默认效果</text>
-      <text class="night light-scheme">夜间样式：系统为浅色时会变化</text>
-      <text class="night dark-scheme">夜间样式：系统为深色时会变化</text>
-    </view>
-
-    <view class="flex-row">
+    <view class="flex-row" style="margin-top: 30px;">
       <text>osTheme:</text>
       <text id="theme">{{ data.osTheme }}</text>
     </view>
@@ -33,6 +35,7 @@
 </template>
 
 <script setup lang="uts">
+  import view_text from './view_text.uvue'
   type PageData = {
     osThemeChangeId : number;
     appThemeChangeId : number;
@@ -66,6 +69,7 @@
   function bindAppThemeChange() : number {
     // #ifdef APP
     return uni.onAppThemeChange((res : AppThemeChangeResult) => {
+      console.log(res);
       data.appTheme = res.appTheme
     })
     // #endif
@@ -89,12 +93,7 @@
   }
 
   function radioChange(e : UniRadioGroupChangeEvent) {
-    const theme = e.detail.value
-    setAppTheme(theme)
-    uni.showToast({
-      icon: 'none',
-      title: '当前选中:' + theme,
-    })
+    setAppTheme(e.detail.value)
   }
 
   onReady(() => {
@@ -106,6 +105,20 @@
         data.current = data.items.indexOf(res.appTheme!)
       }
     })
+    // #ifdef APP
+    data.osThemeChangeId = bindOsThemeChange()
+    // #endif
+    data.appThemeChangeId = bindAppThemeChange()
+  })
+
+  onUnload(() => {
+    // #ifdef APP
+    uni.offAppThemeChange(data.appThemeChangeId)
+    uni.offOsThemeChange(data.osThemeChangeId)
+    // #endif
+    // #ifdef WEB || MP
+    uni.offHostThemeChange(data.appThemeChangeId)
+    // #endif
   })
 </script>
 
@@ -119,12 +132,19 @@
     flex-direction: row;
   }
 
+  .title2 {
+    font-size: 16;
+    font-weight: bold;
+  }
+
   .day {
+    flex: 1;
     background: #eee;
     color: black;
   }
 
   .night {
+    flex: 1;
     background: #333;
     color: white;
   }
@@ -156,6 +176,5 @@
   .day,
   .night {
     padding: 12px;
-    width: 100px;
   }
 </style>

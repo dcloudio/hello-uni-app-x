@@ -3,8 +3,6 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
-const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 const PAGE_PATH = '/pages/tabBar/API'
 const COMPONENT_PAGE_PATH = '/pages/tabBar/component'
@@ -24,7 +22,7 @@ const DEFAULT_TAB_BAR_ITEM = {
 }
 
 describe('tab bar api screenshot', () => {
-  if (!isApp || (isDom2 && !isHarmony && !isIos)) {
+  if (!isApp) {
     it('not support', () => {
       expect(1).toBe(1)
     })

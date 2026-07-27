@@ -39,10 +39,10 @@
 				</view>
 			</view>
 			<view class="uni-title">
-				<text class="uni-subtitle-text">selectable</text>
+				<text class="uni-subtitle-text">user-select</text>
 			</view>
 			<view class="text-box2">
-				<rich-text style="height: 80px;" :selectable="true" :nodes="data.text"></rich-text>
+				<rich-text id="user-select-rich-text" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
 		</view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -65,6 +65,11 @@
 		colorIndex : number;
 		lineHeightIndex : number;
 		fontFamilyIndex : number;
+		userSelect : boolean;
+		userSelectRectX : number;
+		userSelectRectY : number;
+		userSelectRectWidth : number;
+		userSelectRectHeight : number;
 	}
 	// 定义各属性的可选值
 	const fontSizeList : string[] = ["默认", "12px", "16px", "20px", "24px", "32px"]
@@ -86,8 +91,17 @@
 		fontSizeIndex: 0,
 		colorIndex: 0,
 		lineHeightIndex: 0,
-		fontFamilyIndex: 0
+		fontFamilyIndex: 0,
+		userSelect: true,
+		userSelectRectX: 0,
+		userSelectRectY: 0,
+		userSelectRectWidth: 0,
+		userSelectRectHeight: 0
 	} as DataType)
+
+  const onUserSelectChange = (checked: boolean) => {
+    data.userSelect = checked
+  }
 
 	const updateRichTextHeight = () => {
 		if (data.richTextElement != null) {
@@ -188,6 +202,19 @@
 		uni.closeDialogPage();
 	}
 
+	function queryUserSelectRect() {
+		const el = uni.getElementById('user-select-rich-text')
+		const rect = el?.getBoundingClientRect()
+		if (rect != null) {
+			const windowInfo = uni.getWindowInfo()
+			const offsetY = windowInfo.safeAreaInsets.top + 44
+			data.userSelectRectX = rect.left
+			data.userSelectRectY = rect.top + offsetY
+			data.userSelectRectWidth = rect.width
+			data.userSelectRectHeight = rect.height
+		}
+	}
+
 	defineExpose({
 		data,
 		changeText,
@@ -197,7 +224,8 @@
 		changeFontFamily,
 		getBoundingClientRectForTest,
 		testOpenDialogPage,
-		testCloseDialogPage
+		testCloseDialogPage,
+		queryUserSelectRect
 	})
 </script>
 

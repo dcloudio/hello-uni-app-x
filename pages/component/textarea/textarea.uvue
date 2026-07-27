@@ -31,6 +31,7 @@
     isAutoTest: boolean;
     changeValue: string;
     textareaRect: DOMRect | null;
+    customFontValue: string;
   }
   // 使用reactive避免ref数据在自动化测试中无法访问
   const data = reactive({
@@ -62,7 +63,8 @@
     jest_result: false,
     isAutoTest: false,
     changeValue: "",
-    textareaRect: null
+    textareaRect: null,
+    customFontValue: "Textarea Font"
   } as DataType)
 
   // #ifdef APP
@@ -350,6 +352,14 @@
           textarea 性能测试
         </button>
       </navigator>
+
+      <view class="title-wrap">
+        <view>textarea 设置自定义字体</view>
+      </view>
+      <view class="textarea-wrap">
+        <textarea class="textarea-instance pacifico-font" v-model="data.customFontValue" :auto-height="true"
+          :adjust-position="true" />
+      </view>
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -357,6 +367,11 @@
 </template>
 
 <style>
+  @font-face {
+    font-family: Pacifico;
+    src: url('/static/font/Pacifico-Regular.ttf');
+  }
+
   .main {
     min-height: 100px;
     padding: 5px 0;
@@ -394,6 +409,11 @@
   }
   .placeholder-class{
     font-size: 30px;
+  }
+
+  .pacifico-font {
+    font-family: Pacifico;
+    font-size: 18px;
   }
 
   .textarea-all-styles {

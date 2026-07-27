@@ -1,7 +1,7 @@
 <template>
 	<view class="page-container">
 		<!-- #ifndef MP -->
-		<fps></fps>
+		<fps v-if="showFPS"></fps>
 		<!-- #endif -->
 		<!-- 打字机效果区域 -->
 		<view class="typewriter-container">
@@ -64,6 +64,10 @@
 		{ text: '进行开发～', className: 'text-small-gray-15' }
 	]
 
+	const showFPS = ref(true)
+	// #ifdef WEB
+	showFPS.value = window.self == window.top
+	// #endif
 	const showCursor = ref(true)
 	const displayedSegments = ref<TextSegment[]>([])
 	let typingTimer : number | null = null

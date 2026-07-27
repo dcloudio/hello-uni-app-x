@@ -30,7 +30,8 @@ describe('event trigger', () => {
   }
   beforeAll(async () => {
     page = await program.navigateTo(PAGE_PATH)
-    await page.waitFor('view')
+    // await page.waitFor('view')
+    await page.waitFor(1000)
     const windowInfo = await program.callUniMethod('getWindowInfo');
     topSafeArea = windowInfo.safeAreaInsets.top;
     const longPressTargetRect = await page.data('longPressTargetRect')
@@ -254,6 +255,7 @@ describe('event trigger', () => {
       expect(await longPressChangedTouchScreenY.text()).toBe(longPressTouchTargetValue)
 
       if (isAndroid || isIos || isHarmony) {
+        console.log('tapParams', tapParams);
         await program.tap(tapParams)
         const longPressTouchIdentifierText = await longPressTouchIdentifier.text()
         expect(longPressTouchIdentifierText).not.toBe(longPressTouchTargetIdentifier)
