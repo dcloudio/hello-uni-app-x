@@ -390,15 +390,15 @@
       </view>
 
       <view>
-        <text>点击动态切换尺寸，验证 box-shadow 会随 view 尺寸同步更新</text>
+        <text>初始小尺寸，延迟1秒自动变大，点击可重放，验证 box-shadow 会随 view 尺寸同步更新</text>
         <view class="row-container">
           <view class="row-item">
-            <view class="backgroundview-resize" @click="toggleShadowResize">
+            <view class="backgroundview-resize" @click="triggerShadowResizeDemo">
               <view :class="['resize-shadow-box', shadowResized ? 'resize-shadow-box-expanded' : 'resize-shadow-box-collapsed']"></view>
             </view>
           </view>
           <view class="row-item">
-            <view class="backgroundview-resize" @click="toggleShadowResize">
+            <view class="backgroundview-resize" @click="triggerShadowResizeDemo">
               <view :class="['resize-shadow-box', shadowResized ? 'resize-shadow-box-expanded' : 'resize-shadow-box-collapsed']" flatten></view>
             </view>
           </view>
@@ -674,13 +674,22 @@
 
   const disabled = ref(false)
   const shadowResized = ref(false)
+  const shadowResizeTimer = ref(-1)
 
   const changed = () => {
     disabled.value = disabled.value == false
   }
 
-  const toggleShadowResize = () => {
-    shadowResized.value = shadowResized.value == false
+  const triggerShadowResizeDemo = () => {
+    shadowResized.value = false
+    if (shadowResizeTimer.value >= 0) {
+      clearTimeout(shadowResizeTimer.value)
+      shadowResizeTimer.value = -1
+    }
+    shadowResizeTimer.value = setTimeout(() => {
+      shadowResized.value = true
+      shadowResizeTimer.value = -1
+    }, 1000)
   }
 
   const viewRef = ref(null as UniElement | null)
@@ -761,8 +770,16 @@
     nextTick(() => {
       const element = uni.getElementById("dynamic-height-textarea")
       element?.style.setProperty("height", "26px")
+      triggerShadowResizeDemo()
     })
     getPropertyValues(data.boxShadow as string)
+  })
+
+  onUnload(() => {
+    if (shadowResizeTimer.value >= 0) {
+      clearTimeout(shadowResizeTimer.value)
+      shadowResizeTimer.value = -1
+    }
   })
 
   defineExpose({
