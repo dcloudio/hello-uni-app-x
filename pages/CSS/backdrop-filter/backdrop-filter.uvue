@@ -1,0 +1,125 @@
+<template>
+	<view class="page">
+		<view class="image-wrap">
+			<view class="image-stage">
+				<image class="preview-image" src="/static/shuijiao.jpg" mode="widthFix"></image>
+				<view class="overlay-layer">
+					<view class="glass-box" style="backdrop-filter: blur(5px);">
+						<text class="glass-text" style="line-height:1.2em">静态\n毛玻璃</text>
+					</view>
+					<view class="glass-box" :style="glassBoxStyle">
+						<text class="glass-text">动态\n毛玻璃</text>
+					</view>
+				</view>
+			</view>
+			<view class="slider-row">
+				<text class="slider-title">模糊半径</text>
+				<slider class="blur-slider"
+					:min="0"
+					:max="15"
+					:step="1"
+					:value="blurValue"
+					:show-value="true"
+					@changing="updateBlurValue"
+					@change="updateBlurValue"
+				/>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="uts">
+	const blurValue = ref(5)
+	const glassBoxStyle = ref(`backdrop-filter: blur(${blurValue.value}px);`)
+
+	const updateBlurValue = (event : UniSliderChangeEvent) => {
+		blurValue.value = event.detail.value
+		glassBoxStyle.value = `backdrop-filter: blur(${blurValue.value}px);`
+	}
+</script>
+
+<style>
+.page {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding-top: 40px;
+	padding-right: 24px;
+	padding-bottom: 24px;
+	padding-left: 24px;
+	background-color: #ffffff;
+}
+
+.image-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.image-stage {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: flex-start;
+	padding: 30px 20px;
+}
+
+.preview-image {
+	width: 300px;
+	box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.5);
+	border-radius: 12px;
+}
+
+.overlay-layer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+.glass-box {
+	width: 100px;
+	height: 100px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(255, 255, 255, 0.22);
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgba(255, 255, 255, 0.4);
+	border-radius: 12px;
+}
+
+.glass-text {
+	color: #000000;
+  font-size: 25px;
+	font-weight: 700;
+	text-align: center;
+}
+
+.slider-title {
+	color: #000000;
+	font-weight: 600;
+	width: 72px;
+}
+
+.slider-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	width: 300px;
+}
+
+.blur-slider {
+	flex: 1;
+}
+</style>
