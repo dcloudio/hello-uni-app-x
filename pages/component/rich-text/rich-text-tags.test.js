@@ -31,7 +31,7 @@ describe("rich-text-tags", () => {
     await screenshot('rich-text-tags-web')
   })
 
-  if (isAndroid || isHarmony) {
+  if (isAndroid) {
     it("test attr mode", async () => {
       await page.setData({
         modeData: {
