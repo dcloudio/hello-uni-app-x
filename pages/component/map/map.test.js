@@ -40,6 +40,7 @@ describe('web-map', () => {
     it('Check EventDetail JsonStringify', async () => {
       const res = await page.data('jestResult')
       expect(res.eventDetailJsonStringify).not.toBe("{}");
+      expect(['begin', 'end']).toContain(res.regionChangeType)
     })
     return
   }
