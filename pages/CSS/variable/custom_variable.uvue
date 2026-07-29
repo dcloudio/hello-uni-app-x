@@ -69,6 +69,18 @@
       </view>
       <button id="toggleNestedParenFallbackButton" @tap="do_toggle_nested_paren_fallback()">切换 fallback 状态（当前：{{ nested_paren_fallback_state_text }}）</button>
     </view>
+    <view class="important_var_suite">
+      <text class="important_var_title">变量值包含 !important 测试</text>
+      <text class="important_var_desc">
+        场景：同一元素同时命中 .important_var_text_1 与 .important_var_text_2，前者定义 --important-color: blue !important，后者定义 --important-color: red。
+      </text>
+      <text class="important_var_desc">
+        当前测试预期：文本显示为红色，用于覆盖 CSS 变量值中包含 !important 的解析场景。
+      </text>
+      <view class="important_var_stage">
+        <text id="varImportantText" class="important_var_text_1 important_var_text_2 important_var_text">变量值包含 !important</text>
+      </view>
+    </view>
   </view>
 
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -350,5 +362,42 @@
   .nested_paren_box {
     width: 100px;
     height: 40px;
+  }
+
+  .important_var_suite {
+    margin-top: 24px;
+    padding: 12px;
+    border: 1px solid #d0d7de;
+    background-color: #f6f8fa;
+  }
+
+  .important_var_title {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .important_var_desc {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    color: #57606a;
+    font-size: 13px;
+  }
+
+  .important_var_stage {
+    padding: 8px;
+    background-color: #fff;
+  }
+
+  .important_var_text_1 {
+    --important-color: blue !important;
+  }
+
+  .important_var_text_2 {
+    --important-color: red;
+  }
+
+  .important_var_text {
+    color: var(--important-color);
+    font-size: 16px;
   }
 </style>

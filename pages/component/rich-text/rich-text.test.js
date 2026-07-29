@@ -29,21 +29,32 @@ describe('rich-text-test', () => {
       if (isAppWebView) {
         if (isIos) {
           topSafeArea = 59
+        } else if (isAndroid) {
+          topSafeArea = 24
+          if (platformInfo.startsWith('android 5')) {
+            topSafeArea = 25
+          } else if (platformInfo.startsWith('android 11')) {
+            topSafeArea = 52
+          } else if (platformInfo.startsWith('android 12')) {
+            topSafeArea = 24
+          } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
+            topSafeArea = 49
+          }
         } else if (isHarmony) {
-          // mate 60
-          // topSafeArea = 33
-          // mate 60 pro
           topSafeArea = 38
         }
       }
+      const top = topSafeArea + 44
+      const bottom = Math.min(top + windowInfo.windowHeight, windowInfo.safeArea.bottom)
+      const left = windowInfo.safeArea.left
+      const right = windowInfo.safeArea.right - 10
       deviceShotOptions = {
         deviceShot: true,
         area: {
-          x: 0,
-          y: topSafeArea + 44,
-          width: windowInfo.safeArea.width - 8,
-          // 规避底部手势导航栏的影响
-          height: windowInfo.safeArea.height - 40
+          x: left,
+          y: top,
+          width: right - left,
+          height: bottom - top
         },
       }
     }
@@ -53,7 +64,7 @@ describe('rich-text-test', () => {
     return await page.setData({ data: newData });
   }
 
-  if (isApp) {
+  if (isApp && !isAppWebView) {
     it('rich-text user-select true', async () => {
       await setPageData({ userSelect: true })
       await page.waitFor(300)

@@ -81,4 +81,11 @@ describe("css-custom-variable", () => {
     const image2 = await program.screenshot({ fullPage: true })
     expect(image2).toSaveImageSnapshot()
   })
+
+  it("test-var-important", async () => {
+    page = await program.reLaunch("/pages/CSS/variable/custom_variable")
+    await page.waitFor("view")
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
 })
