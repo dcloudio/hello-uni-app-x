@@ -5,6 +5,7 @@ describe('slider', () => {
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
+    await page.setData({ autoData: { showFps: false } });
     await page.waitFor(2000)
   })
   it('screenshot', async () => {

@@ -17,6 +17,7 @@ describe('input-performance', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input-performance')
     await page.waitFor('view');
+    await page.setData({ autoData: { showFps: false } });
   });
 
   // 测试页面加载速度及 placeholder 字体大小是否正常 issue/26417

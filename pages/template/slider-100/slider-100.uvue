@@ -3,7 +3,7 @@
   <scroll-view class="page">
   <!-- #endif -->
     <!-- #ifndef MP -->
-    <fps />
+    <fps v-if="autoData.showFps" />
     <!-- #endif -->
     <page-head :title="title"></page-head>
     <view class="grid-view">
@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="uts">
+  const autoData = reactive({ showFps: true })
 const title = ref('sliderx100通信性能测试(小程序卡为正常)')
 const sliderValue = ref(50)
 const sliderRef = ref<UniSliderElement[]>([])
@@ -46,7 +47,7 @@ function sliderChanging(e: UniSliderChangeEvent) {
 const updateSliderValueTest = (value : number) => {
   sliderValue.value = value
 }
-defineExpose({updateSliderValueTest})
+defineExpose({updateSliderValueTest, autoData})
 </script>
 
 <style>
