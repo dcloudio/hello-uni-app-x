@@ -5,9 +5,11 @@ const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isAndroid = platformInfo.startsWith('android')
 const isWeb = platformInfo.startsWith('web')
+const isHarmony = platformInfo.startsWith('harmony')
+const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 describe('component-native-image', () => {
-  if (isMP) {
+  if (isMP || (isHarmony && isPad)) {
     it('skip', () => {
       expect(1).toBe(1)
     })
