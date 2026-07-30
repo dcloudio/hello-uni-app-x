@@ -1,40 +1,121 @@
 <template>
 	<view class="page">
-		<view class="image-wrap">
-			<view class="image-stage">
-				<image class="preview-image" src="/static/shuijiao.jpg" mode="widthFix"></image>
-				<view class="overlay-layer">
-					<view class="glass-box" style="backdrop-filter: blur(5px);">
-						<text class="glass-text" style="line-height:1.2em">静态\n毛玻璃</text>
+		<view class="demo-section">
+			<view class="demo-row demo-row-three">
+				<view class="demo-item">
+					<view class="demo-stage">
+						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
+						<view class="glass-box glass-box-center" style="backdrop-filter: blur(4px);"></view>
 					</view>
-					<view class="glass-box" :style="glassBoxStyle">
-						<text class="glass-text">动态\n毛玻璃</text>
+					<text class="demo-label">静态 4px</text>
+				</view>
+				<view class="demo-item demo-item-spaced">
+					<view class="demo-stage">
+						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
+						<view class="glass-box glass-box-center" style="backdrop-filter: blur(8px);"></view>
 					</view>
+					<text class="demo-label">静态 8px</text>
+				</view>
+				<view class="demo-item demo-item-spaced">
+					<view class="demo-stage">
+						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
+						<view class="glass-box glass-box-center" style="backdrop-filter: blur(12px);"></view>
+					</view>
+					<text class="demo-label">静态 12px</text>
 				</view>
 			</view>
-			<view class="slider-row">
-				<text class="slider-title">模糊半径</text>
-				<slider class="blur-slider"
-					:min="0"
-					:max="15"
-					:step="1"
-					:value="blurValue"
-					:show-value="true"
-					@changing="updateBlurValue"
-					@change="updateBlurValue"
-				/>
+
+			<view class="demo-row demo-row-two">
+				<view class="demo-item">
+					<view class="demo-stage">
+						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
+						<view class="glass-box glass-box-center" :style="getDynamicBlurStyle()"></view>
+					</view>
+					<text class="demo-label">动态 {{ blurValue }}px</text>
+				</view>
+				<view class="demo-item demo-item-spaced">
+					<view class="demo-stage">
+						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
+						<view class="glass-box glass-box-center" :style="getDynamicRichStyle()"></view>
+					</view>
+					<text class="demo-label">动态 {{ blurValue }}px / {{ colorLabel }} / {{ borderWidthValue }}px</text>
+				</view>
+			</view>
+
+			<view class="control-section">
+				<view class="control-row control-row-column">
+					<text class="control-title">模糊半径</text>
+					<slider class="control-slider"
+						:min="0"
+						:max="15"
+						:step="1"
+						:value="blurValue"
+						:show-value="true"
+						@changing="updateBlurValue"
+						@change="updateBlurValue"
+					/>
+				</view>
+
+				<view class="control-row control-row-column">
+					<text class="control-title">背景颜色</text>
+					<radio-group class="radio-group" @change="updateBackgroundColor">
+						<radio class="radio-item" value="rgba(255, 255, 255, 0.24)" :checked="backgroundColor == 'rgba(255, 255, 255, 0.24)'">白色</radio>
+						<radio class="radio-item" value="rgba(80, 160, 255, 0.28)" :checked="backgroundColor == 'rgba(80, 160, 255, 0.28)'">蓝色</radio>
+						<radio class="radio-item" value="rgba(255, 110, 110, 0.28)" :checked="backgroundColor == 'rgba(255, 110, 110, 0.28)'">红色</radio>
+						<radio class="radio-item" value="rgba(110, 210, 180, 0.28)" :checked="backgroundColor == 'rgba(110, 210, 180, 0.28)'">绿色</radio>
+					</radio-group>
+				</view>
+
+				<view class="control-row control-row-column">
+					<text class="control-title">边框宽度</text>
+					<slider class="control-slider"
+						:min="0"
+						:max="10"
+						:step="1"
+						:value="borderWidthValue"
+						:show-value="true"
+						@changing="updateBorderWidth"
+						@change="updateBorderWidth"
+					/>
+				</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup lang="uts">
-	const blurValue = ref(5)
-	const glassBoxStyle = ref(`backdrop-filter: blur(${blurValue.value}px);`)
+	const blurValue = ref(8)
+	const borderWidthValue = ref(2)
+	const backgroundColor = ref('rgba(255, 255, 255, 0.24)')
+	const colorLabel = ref('白色')
+
+	const getDynamicBlurStyle = () : string => {
+		return `backdrop-filter: blur(${blurValue.value}px);`
+	}
+
+	const getDynamicRichStyle = () : string => {
+		return `backdrop-filter: blur(${blurValue.value}px); background-color: ${backgroundColor.value}; border-width: ${borderWidthValue.value}px;`
+	}
 
 	const updateBlurValue = (event : UniSliderChangeEvent) => {
 		blurValue.value = event.detail.value
-		glassBoxStyle.value = `backdrop-filter: blur(${blurValue.value}px);`
+	}
+
+	const updateBorderWidth = (event : UniSliderChangeEvent) => {
+		borderWidthValue.value = event.detail.value
+	}
+
+	const updateBackgroundColor = (event : UniRadioGroupChangeEvent) => {
+		backgroundColor.value = event.detail.value
+		if (event.detail.value == 'rgba(80, 160, 255, 0.28)') {
+			colorLabel.value = '蓝色'
+		} else if (event.detail.value == 'rgba(255, 110, 110, 0.28)') {
+			colorLabel.value = '红色'
+		} else if (event.detail.value == 'rgba(110, 210, 180, 0.28)') {
+			colorLabel.value = '绿色'
+		} else {
+			colorLabel.value = '白色'
+		}
 	}
 </script>
 
@@ -43,50 +124,69 @@
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	padding-top: 40px;
-	padding-right: 24px;
+	padding-top: 24px;
+	padding-right: 20px;
 	padding-bottom: 24px;
-	padding-left: 24px;
+	padding-left: 20px;
 	background-color: #ffffff;
 }
 
-.image-wrap {
+.demo-section {
+	display: flex;
+	flex-direction: column;
+}
+
+
+.demo-row {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.demo-item {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
+	flex: 1;
 }
 
-.image-stage {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	justify-content: flex-start;
-	padding: 30px 20px;
+.demo-item-spaced {
+	margin-left: 12px;
 }
 
 .preview-image {
-	width: 300px;
-	box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.5);
+	width: 100px;
+	height: 100px;
 	border-radius: 12px;
 }
 
-.overlay-layer {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+.demo-stage {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: space-evenly;
+	justify-content: center;
+	width: 100px;
+	height: 100px;
+	position: relative;
+}
+
+.glass-box-center {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin-top: 20px;
+	margin-left: 20px;
 }
 
 .glass-box {
-	width: 100px;
-	height: 100px;
+	width: 60px;
+	height: 60px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -95,31 +195,60 @@
 	border-width: 1px;
 	border-style: solid;
 	border-color: rgba(255, 255, 255, 0.4);
-	border-radius: 12px;
+	border-radius: 14px;
 }
 
-.glass-text {
+.demo-label {
+	width: 100%;
 	color: #000000;
-  font-size: 25px;
-	font-weight: 700;
+	font-size: 13px;
+	line-height: 18px;
+	font-weight: 500;
 	text-align: center;
+	margin-top: 10px;
 }
 
-.slider-title {
+.control-section {
+	display: flex;
+	flex-direction: column;
+	padding-top: 8px;
+}
+
+.control-row {
+	display: flex;
+	width: 100%;
+}
+
+.control-row-column {
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	margin-bottom: 18px;
+}
+
+.control-title {
 	color: #000000;
 	font-weight: 600;
-	width: 72px;
+	font-size: 14px;
+	margin-bottom: 10px;
 }
 
-.slider-row {
+.control-slider {
+	width: 100%;
+}
+
+.radio-group {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: flex-start;
-	width: 300px;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	width: 100%;
 }
 
-.blur-slider {
-	flex: 1;
+.radio-item {
+	font-size: 14px;
+	margin-right: 12px;
+	margin-bottom: 8px;
 }
 </style>
