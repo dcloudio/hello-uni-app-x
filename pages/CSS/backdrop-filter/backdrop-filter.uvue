@@ -1,254 +1,251 @@
 <template>
-	<view class="page">
-		<view class="demo-section">
-			<view class="demo-row demo-row-three">
-				<view class="demo-item">
-					<view class="demo-stage">
-						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
-						<view class="glass-box glass-box-center" style="backdrop-filter: blur(4px);"></view>
-					</view>
-					<text class="demo-label">静态 4px</text>
-				</view>
-				<view class="demo-item demo-item-spaced">
-					<view class="demo-stage">
-						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
-						<view class="glass-box glass-box-center" style="backdrop-filter: blur(8px);"></view>
-					</view>
-					<text class="demo-label">静态 8px</text>
-				</view>
-				<view class="demo-item demo-item-spaced">
-					<view class="demo-stage">
-						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
-						<view class="glass-box glass-box-center" style="backdrop-filter: blur(12px);"></view>
-					</view>
-					<text class="demo-label">静态 12px</text>
-				</view>
-			</view>
+  <scroll-view direction="vertical" :show-scrollbar="true">
+    <fps />
 
-			<view class="demo-row demo-row-two">
-				<view class="demo-item">
-					<view class="demo-stage">
-						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
-						<view class="glass-box glass-box-center" :style="getDynamicBlurStyle()"></view>
-					</view>
-					<text class="demo-label">动态 {{ blurValue }}px</text>
-				</view>
-				<view class="demo-item demo-item-spaced">
-					<view class="demo-stage">
-						<image class="preview-image" src="/static/mount_cook.jpg" mode="aspectFill"></image>
-						<view class="glass-box glass-box-center" :style="getDynamicRichStyle()"></view>
-					</view>
-					<text class="demo-label">动态 {{ blurValue }}px / {{ colorLabel }} / {{ borderWidthValue }}px</text>
-				</view>
-			</view>
+    <view class="background-content">
+      <view v-for="section in backgroundSections" :key="section" class="uni-common-mb">
+        <view class="logo-row">
+          <image v-for="logoIndex in logoIndexes" :key="logoIndex" class="logo-item" src="/static/test-image/logo.png" mode="widthFix"></image>
+        </view>
+        <view class="uni-row uni-common-mt">
+          <view v-for="(color, colorIndex) in solidColors1" :key="colorIndex" class="solid-box" :style="`background-color: ${color};`"></view>
+        </view>
+        <view class="uni-row">
+          <view v-for="(color, colorIndex) in solidColors2" :key="colorIndex" class="solid-box" :style="`background-color: ${color};`"></view>
+        </view>
+        <view class="uni-row uni-common-mt">
+          <view v-for="(gradientStyle, gradientIndex) in gradientStyles1" :key="gradientIndex" class="gradient-box" :style="gradientStyle"></view>
+        </view>
+        <view class="uni-row">
+          <view v-for="(gradientStyle, gradientIndex) in gradientStyles2" :key="gradientIndex" class="gradient-box" :style="gradientStyle"></view>
+        </view>
+        <view class="uni-common-mt uni-common-mb">
+          <text class="uni-common-mb" v-for="(line, lineIndex) in sampleLines" :key="lineIndex">{{ line }}</text>
+        </view>
+      </view>
+    </view>
 
-			<view class="control-section">
-				<view class="control-row control-row-column">
-					<text class="control-title">模糊半径</text>
-					<slider class="control-slider"
-						:min="0"
-						:max="15"
-						:step="1"
-						:value="blurValue"
-						:show-value="true"
-						@changing="updateBlurValue"
-						@change="updateBlurValue"
-					/>
-				</view>
+    <view class="floating-display-layer">
+      <view class="demo-section">
+        <view class="demo-slot">
+          <view class="glass-box" style="backdrop-filter: blur(4px);"></view>
+          <text class="demo-label">静态 4px</text>
+        </view>
+        <view class="demo-slot">
+          <view class="glass-box" style="backdrop-filter: blur(8px);"></view>
+          <text class="demo-label">静态 8px</text>
+        </view>
+        <view class="demo-slot">
+          <view class="glass-box" style="backdrop-filter: blur(12px);"></view>
+          <text class="demo-label">静态 12px</text>
+        </view>
+      </view>
 
-				<view class="control-row control-row-column">
-					<text class="control-title">背景颜色</text>
-					<radio-group class="radio-group" @change="updateBackgroundColor">
-						<radio class="radio-item" value="rgba(255, 255, 255, 0.24)" :checked="backgroundColor == 'rgba(255, 255, 255, 0.24)'">白色</radio>
-						<radio class="radio-item" value="rgba(80, 160, 255, 0.28)" :checked="backgroundColor == 'rgba(80, 160, 255, 0.28)'">蓝色</radio>
-						<radio class="radio-item" value="rgba(255, 110, 110, 0.28)" :checked="backgroundColor == 'rgba(255, 110, 110, 0.28)'">红色</radio>
-						<radio class="radio-item" value="rgba(110, 210, 180, 0.28)" :checked="backgroundColor == 'rgba(110, 210, 180, 0.28)'">绿色</radio>
-					</radio-group>
-				</view>
+      <view class="demo-section">
+        <view class="demo-slot">
+          <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px);`"></view>
+          <text class="demo-label">动态 {{ blurValue }}px</text>
+        </view>
+        <view class="demo-slot">
+          <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px); background-color: ${backgroundColor}; border-width: ${borderWidthValue}px;`"></view>
+          <view class="demo-label">
+            <text>动态 {{ blurValue }}px</text>
+            <text>{{ colorLabel }} / {{ borderWidthValue }}px</text>
+          </view>
+        </view>
+        <view class="demo-slot"></view>
+      </view>
+    </view>
 
-				<view class="control-row control-row-column">
-					<text class="control-title">边框宽度</text>
-					<slider class="control-slider"
-						:min="0"
-						:max="10"
-						:step="1"
-						:value="borderWidthValue"
-						:show-value="true"
-						@changing="updateBorderWidth"
-						@change="updateBorderWidth"
-					/>
-				</view>
-			</view>
-		</view>
-	</view>
+    <view class="floating-control-layer">
+      <view class="control-section">
+        <text class="control-label">模糊半径</text>
+        <slider class="control-wrapper"
+          :min="0"
+          :max="15"
+          :step="1"
+          :value="blurValue"
+          :show-value="true"
+          @changing="updateBlurValue"
+          @change="updateBlurValue"
+        />
+      </view>
+
+      <view class="control-section">
+        <text class="control-label">背景颜色</text>
+        <view class="control-wrapper">
+          <radio-group class="radio-group" @change="updateBackgroundColor">
+            <radio value="rgba(255, 255, 255, 0.3)" :checked="backgroundColor == 'rgba(255, 255, 255, 0.3)'">白色</radio>
+            <radio value="rgba(255, 0, 0, 0.3)" :checked="backgroundColor == 'rgba(255, 0, 0, 0.3)'">红色</radio>
+            <radio value="rgba(0, 255, 0, 0.3)" :checked="backgroundColor == 'rgba(0, 255, 0, 0.3)'">绿色</radio>
+            <radio value="rgba(0, 0, 255, 0.3)" :checked="backgroundColor == 'rgba(0, 0, 255, 0.3)'">蓝色</radio>
+          </radio-group>
+        </view>
+      </view>
+
+      <view class="control-section">
+        <text class="control-label">边框宽度</text>
+        <slider class="control-wrapper"
+          :min="0"
+          :max="10"
+          :step="1"
+          :value="borderWidthValue"
+          :show-value="true"
+          @changing="updateBorderWidth"
+          @change="updateBorderWidth"
+        />
+      </view>
+    </view>
+  </scroll-view>
 </template>
 
 <script setup lang="uts">
-	const blurValue = ref(8)
-	const borderWidthValue = ref(2)
-	const backgroundColor = ref('rgba(255, 255, 255, 0.24)')
-	const colorLabel = ref('白色')
+  const backgroundSections = [1, 2, 3, 4, 5, 6]
+  const logoIndexes = [1, 2, 3]
+  const solidColors1 = ['#ff0000', '#00ff00', '#ff0000', '#00ff00', '#ff0000', '#00ff00']
+  const solidColors2 = ['#0000ff', '#000000', '#0000ff', '#000000', '#0000ff', '#000000']
+  const gradientStyles1 = [
+    'background-image: linear-gradient(45deg, #ff0000, #ffffff);',
+    'background-image: linear-gradient(90deg, #00ff00, #ffffff);',
+    'background-image: linear-gradient(45deg, #ff0000, #ffffff);',
+    'background-image: linear-gradient(90deg, #00ff00, #ffffff);',
+    'background-image: linear-gradient(45deg, #ff0000, #ffffff);',
+    'background-image: linear-gradient(90deg, #00ff00, #ffffff);'
+  ]
+  const gradientStyles2 = [
+    'background-image: linear-gradient(0deg, #0000ff, #ffffff);',
+    'background-image: linear-gradient(135deg, #000000, #ffffff);',
+    'background-image: linear-gradient(0deg, #0000ff, #ffffff);',
+    'background-image: linear-gradient(135deg, #000000, #ffffff);',
+    'background-image: linear-gradient(0deg, #0000ff, #ffffff);',
+    'background-image: linear-gradient(135deg, #000000, #ffffff);'
+  ]
+  const sampleLines = [
+    '《13件内心强大的人不会做的事：收回力量，拥抱改变，面对恐惧，训练你的大脑，让它变得快乐和成功》',
+    '更好更大的精神力量可以帮助你克服挑战，从失败中振作起来，走出安全区一一这些都是让你过上最好生活的关键因素。',
+    '“……强大的精神力量意味着无论发生什么，你都会没事。无论你面对的是严重的个人问题，金融危机，还是家庭悲剧，当你精神强大时，你会为任何情况做好最好的准备。你不仅要准备好面对生活的现实，而且无论生活中遇到什么困难，你都能按照自己的价值观生活。”《13件内心强大的人不会做的事：收回力量，拥抱改变，面对恐惧，训练你的大脑，让它变得快乐和成功》一书的作者 Amy Morin 解释道。',
+    '意志坚强，能够在任何情况下都能执行或采取行动，这是一种可取的技能。好消息是，我们可以通过训练培养精神力量。就像身体力量一样，精神力量需要健康的习惯、适当的锻炼和纪律。',
+    '内心强大的人那不敏感的能力不是与生俱来的，他们都是普通人，只不过决心要通过培养日常习惯来过好自己的生活，而这些日常习惯能积极地增强他们的精神力量。精神力量足够强大意味着知道无论发生什么自己都会没事的。',
+    '这些习惯并不难养成，但它们确实需要持之以恒。那么，你如何才能拥有强大的精神力量呢？'
+  ]
 
-	const getDynamicBlurStyle = () : string => {
-		return `backdrop-filter: blur(${blurValue.value}px);`
-	}
+  const blurValue = ref(8)
+  const borderWidthValue = ref(2)
+  const backgroundColor = ref('rgba(255, 255, 255, 0.3)')
+  const colorLabel = ref('白色')
 
-	const getDynamicRichStyle = () : string => {
-		return `backdrop-filter: blur(${blurValue.value}px); background-color: ${backgroundColor.value}; border-width: ${borderWidthValue.value}px;`
-	}
+  const updateBlurValue = (event : UniSliderChangeEvent) => {
+    blurValue.value = event.detail.value
+  }
 
-	const updateBlurValue = (event : UniSliderChangeEvent) => {
-		blurValue.value = event.detail.value
-	}
+  const updateBorderWidth = (event : UniSliderChangeEvent) => {
+    borderWidthValue.value = event.detail.value
+  }
 
-	const updateBorderWidth = (event : UniSliderChangeEvent) => {
-		borderWidthValue.value = event.detail.value
-	}
-
-	const updateBackgroundColor = (event : UniRadioGroupChangeEvent) => {
-		backgroundColor.value = event.detail.value
-		if (event.detail.value == 'rgba(80, 160, 255, 0.28)') {
-			colorLabel.value = '蓝色'
-		} else if (event.detail.value == 'rgba(255, 110, 110, 0.28)') {
-			colorLabel.value = '红色'
-		} else if (event.detail.value == 'rgba(110, 210, 180, 0.28)') {
-			colorLabel.value = '绿色'
-		} else {
-			colorLabel.value = '白色'
-		}
-	}
+  const updateBackgroundColor = (event : UniRadioGroupChangeEvent) => {
+    backgroundColor.value = event.detail.value
+    if (event.detail.value == 'rgba(255, 0, 0, 0.3)') {
+      colorLabel.value = '红色'
+    } else if (event.detail.value == 'rgba(0, 255, 0, 0.3)') {
+      colorLabel.value = '绿色'
+    } else if (event.detail.value == 'rgba(0, 0, 255, 0.3)') {
+      colorLabel.value = '蓝色'
+    } else {
+      colorLabel.value = '白色'
+    }
+  }
 </script>
 
 <style>
-.page {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-	padding-top: 24px;
-	padding-right: 20px;
-	padding-bottom: 24px;
-	padding-left: 20px;
-	background-color: #ffffff;
+.background-content {
+  padding-top: 600px;
+  padding-bottom: 80px;
+  padding: 600px 20px 80px 20px;
+}
+
+.floating-display-layer {
+  position: fixed;
+  top: 64px;
+  left: 20px;
+  right: 20px;
+  pointer-events: none;
+}
+
+.floating-control-layer {
+  position: fixed;
+  top: 390px;
+  left: 30px;
+  right: 40px;
+  padding-right: 10px;
+}
+
+.logo-row {
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.logo-item {
+  width: 33%;
+}
+
+.solid-box {
+  flex: 1;
+  height: 64px;
+}
+
+.gradient-box {
+  flex: 1;
+  height: 64px;
 }
 
 .demo-section {
-	display: flex;
-	flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
-
-.demo-row {
-	display: flex;
-	flex-direction: row;
-	align-items: flex-start;
-	justify-content: space-between;
-	width: 100%;
-	margin-bottom: 20px;
-}
-
-.demo-item {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	flex: 1;
-}
-
-.demo-item-spaced {
-	margin-left: 12px;
-}
-
-.preview-image {
-	width: 100px;
-	height: 100px;
-	border-radius: 12px;
-}
-
-.demo-stage {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	width: 100px;
-	height: 100px;
-	position: relative;
-}
-
-.glass-box-center {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	margin-top: 20px;
-	margin-left: 20px;
-}
-
-.glass-box {
-	width: 60px;
-	height: 60px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	background-color: rgba(255, 255, 255, 0.22);
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(255, 255, 255, 0.4);
-	border-radius: 14px;
+.demo-slot {
+  flex: 1;
+  align-items: center;
 }
 
 .demo-label {
-	width: 100%;
-	color: #000000;
-	font-size: 13px;
-	line-height: 18px;
-	font-weight: 500;
-	text-align: center;
-	margin-top: 10px;
+  margin: 4px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 4px 6px;
+  white-space: nowrap;
+  box-shadow: 3px 3px 3px gray;
+}
+
+.glass-box {
+  width: 100px;
+  height: 100px;
+  background-color: rgba(255, 255, 255, 0.22);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
 }
 
 .control-section {
-	display: flex;
-	flex-direction: column;
-	padding-top: 8px;
+  margin-bottom: 6px;
+  box-shadow: 3px 3px 3px gray;
 }
 
-.control-row {
-	display: flex;
-	width: 100%;
+.control-label {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
 }
 
-.control-row-column {
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: flex-start;
-	margin-bottom: 18px;
-}
-
-.control-title {
-	color: #000000;
-	font-weight: 600;
-	font-size: 14px;
-	margin-bottom: 10px;
-}
-
-.control-slider {
-	width: 100%;
+.control-wrapper {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
 }
 
 .radio-group {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	width: 100%;
-}
-
-.radio-item {
-	font-size: 14px;
-	margin-right: 12px;
-	margin-bottom: 8px;
+  flex-direction: row;
+  justify-content: space-around;
 }
 </style>
