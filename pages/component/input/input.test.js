@@ -12,7 +12,7 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 describe('component-native-input', () => {
-  if (isMP || (isHarmony && isPad)) {
+  if (isMP) {
     it('skip', () => {
       expect(1).toBe(1)
     })

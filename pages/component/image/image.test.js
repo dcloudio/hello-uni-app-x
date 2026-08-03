@@ -9,7 +9,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 describe('component-native-image', () => {
-  if (isMP || (isHarmony && isPad)) {
+  if (isMP) {
     it('skip', () => {
       expect(1).toBe(1)
     })
