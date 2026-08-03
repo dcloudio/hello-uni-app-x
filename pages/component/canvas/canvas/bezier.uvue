@@ -1,0 +1,276 @@
+<template>
+  <view class="page-body">
+    <canvas id="bezier-canvas" class="canvas"></canvas>
+    <text class="fps">FPS: {{ fpsText }}</text>
+    <text class="summary">曲线数: {{ curveCount }} 段数: {{ segmentCount }}</text>
+    <view class="control-row">
+      <text class="control-label">曲线</text>
+      <button size="mini" @click="adjustCurveCount(-20)">-</button>
+      <text class="control-value">{{ curveCount }}</text>
+      <button size="mini" @click="adjustCurveCount(20)">+</button>
+    </view>
+    <view class="control-row">
+      <text class="control-label">每条段数</text>
+      <button size="mini" @click="adjustSegmentCount(-20)">-</button>
+      <text class="control-value">{{ segmentCount }}</text>
+      <button size="mini" @click="adjustSegmentCount(20)">+</button>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  let fpsText = ref("-/-ms")
+  let curveCount = ref(30)
+  let segmentCount = ref(20)
+
+  class Curve {
+    public baseY : number
+    public amplitude : number
+    public speed : number
+    public phase : number
+    public lineWidth : number
+    public color : string
+
+    constructor(baseY : number, amplitude : number, speed : number, phase : number, lineWidth : number, color : string) {
+      this.baseY = baseY
+      this.amplitude = amplitude
+      this.speed = speed
+      this.phase = phase
+      this.lineWidth = lineWidth
+      this.color = color
+    }
+  }
+
+  class BezierAnimation {
+    private ctx : CanvasRenderingContext2D
+    private canvasContext : CanvasContext
+    private curves : Array<Curve> = []
+    private width = 0
+    private height = 0
+    private runningFlag = false
+    private animateTaskId = 0
+    private frameCount = 0
+    private lastTime = 0
+    private _curveCount = 30
+    private _segmentCount = 20
+    private readonly colors : Array<string> = [
+      'rgba(0, 122, 255, 0.9)',
+      'rgba(52, 199, 89, 0.88)',
+      'rgba(255, 149, 0, 0.88)',
+      'rgba(175, 82, 222, 0.88)',
+      'rgba(255, 59, 48, 0.85)',
+      'rgba(90, 200, 250, 0.88)'
+    ]
+
+    constructor(canvasContext : CanvasContext) {
+      this.canvasContext = canvasContext
+      this.ctx = canvasContext.getContext('2d') as CanvasRenderingContext2D
+      this.width = this.ctx.canvas.offsetWidth
+      this.height = this.ctx.canvas.offsetHeight
+      this.ctx.lineCap = 'round'
+      this.ctx.lineJoin = 'round'
+      this.reset()
+    }
+
+    private normalizeCount(value : number, minValue : number) : number {
+      return Math.max(minValue, value)
+    }
+
+    private createCurve(index : number) : Curve {
+      const baseY = this.height / (this._curveCount + 1) * (index + 1)
+      const amplitude = 10 + (index % 6) * 5
+      const speed = 0.025 + (index % 5) * 0.006
+      const phase = index * 0.35
+      const lineWidth = 1 + index % 3
+      const color = this.colors[index % this.colors.length]
+      return new Curve(baseY, amplitude, speed, phase, lineWidth, color)
+    }
+
+    private initCurves() {
+      for (let i = 0; i < this._curveCount; i++) {
+        this.curves.push(this.createCurve(i))
+      }
+    }
+
+    private reset() {
+      this.curves.length = 0
+      this.initCurves()
+      fpsText.value = '-/-ms'
+      this.frameCount = 0
+      this.lastTime = 0
+    }
+
+    public get curveCount() : number {
+      return this._curveCount
+    }
+
+    public set curveCount(value : number) {
+      this._curveCount = this.normalizeCount(value, 1)
+      this.reset()
+    }
+
+    public get segmentCount() : number {
+      return this._segmentCount
+    }
+
+    public set segmentCount(value : number) {
+      this._segmentCount = this.normalizeCount(value, 2)
+      this.reset()
+    }
+
+    private drawCurve(curve : Curve) {
+      const segmentWidth = this.width / this._segmentCount
+      this.ctx.beginPath()
+      this.ctx.moveTo(0, curve.baseY)
+      for (let i = 0; i < this._segmentCount; i++) {
+        const startX = i * segmentWidth
+        const endX = startX + segmentWidth
+        const phase = curve.phase + i * 0.6
+        const cp1x = startX + segmentWidth * 0.3
+        const cp2x = startX + segmentWidth * 0.7
+        const cp1y = curve.baseY + Math.sin(phase) * curve.amplitude
+        const cp2y = curve.baseY + Math.cos(phase + 0.8) * curve.amplitude
+        const endY = curve.baseY + Math.sin(phase + 1.2) * curve.amplitude * 0.7
+        this.ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY)
+      }
+      this.ctx.strokeStyle = curve.color
+      this.ctx.lineWidth = curve.lineWidth
+      this.ctx.stroke()
+    }
+
+    private updateFPS(timestamp : number) {
+      this.frameCount++
+      if (timestamp - this.lastTime >= 1000) {
+        const timeOfFrame = 1000 / this.frameCount
+        fpsText.value = `${this.frameCount} / ${timeOfFrame.toFixed(3)}ms`
+        this.frameCount = 0
+        this.lastTime = timestamp
+      }
+    }
+
+    private animateFrame(timestamp : number) {
+      this.ctx.clearRect(0, 0, this.width, this.height)
+      for (let i = 0; i < this.curves.length; i++) {
+        const curve = this.curves[i]
+        curve.phase += curve.speed
+        this.drawCurve(curve)
+      }
+      this.updateFPS(timestamp)
+
+      if (!this.runningFlag) {
+        return
+      }
+      this.animateTaskId = this.canvasContext.requestAnimationFrame((nextTimestamp : number) => {
+        this.animateFrame(nextTimestamp)
+      })
+    }
+
+    public start() {
+      if (this.runningFlag) {
+        return
+      }
+      this.canvasContext.cancelAnimationFrame(this.animateTaskId)
+      this.runningFlag = true
+      this.animateTaskId = this.canvasContext.requestAnimationFrame((timestamp : number) => {
+        this.animateFrame(timestamp)
+      })
+    }
+
+    public stop() {
+      this.runningFlag = false
+      this.canvasContext.cancelAnimationFrame(this.animateTaskId)
+    }
+  }
+
+  let animation : BezierAnimation | null = null
+  const instance = getCurrentInstance()!.proxy!
+
+  function adjustCurveCount(delta : number) {
+    if (animation == null) {
+      return
+    }
+    animation.curveCount += delta
+    curveCount.value = animation.curveCount
+  }
+
+  function adjustSegmentCount(delta : number) {
+    if (animation == null) {
+      return
+    }
+    animation.segmentCount += delta
+    segmentCount.value = animation.segmentCount
+  }
+
+  onReady(() => {
+    uni.createCanvasContextAsync({
+      id: 'bezier-canvas',
+      component: instance,
+      success: (context : CanvasContext) => {
+        const renderingContext = context.getContext('2d')!
+        const canvas = renderingContext.canvas
+
+        const dpr = uni.getWindowInfo().pixelRatio
+        canvas.width = canvas.offsetWidth * dpr
+        canvas.height = canvas.offsetHeight * dpr
+        renderingContext.scale(dpr, dpr)
+
+        animation = new BezierAnimation(context)
+        animation.start()
+      }
+    })
+  })
+
+  onPageShow(() => {
+    animation?.start()
+  })
+
+  onPageHide(() => {
+    animation?.stop()
+  })
+
+  onUnload(() => {
+    animation?.stop()
+    animation = null
+  })
+</script>
+
+<style>
+  .page-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 15px;
+  }
+
+  .canvas {
+    flex: 1;
+    width: 100%;
+    height: 0;
+    background-color: #ffffff;
+  }
+
+  .fps {
+    margin-top: 30px;
+  }
+
+  .summary {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .control-row {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .control-label {
+    margin-right: auto;
+  }
+
+  .control-value {
+    width: 60px;
+    text-align: center;
+    color: cornflowerblue;
+  }
+</style>
