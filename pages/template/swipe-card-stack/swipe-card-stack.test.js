@@ -13,7 +13,7 @@ const WAIT_FOR_RELEASE = 800
 
 describe('template-swipe-card-stack', () => {
   // TODO: 小程序端待补充适配后放开。
-  if (isMP || (isHarmony && isPad)) {
+  if (isMP) {
     it('skip', () => {
       expect(1).toBe(1)
     })
@@ -191,8 +191,8 @@ describe('template-swipe-card-stack', () => {
 
   it('renders card stack', async () => {
     const cards = await getCards()
-    const images = await page.$$('.card-img')
-    expect(images.length).toBe(3)
+    const contents = await page.$$('.card-content')
+    expect(contents.length).toBe(3)
 
     for (let i = 0; i < cards.length; i++) {
       const rect = await cards[i].offset()
