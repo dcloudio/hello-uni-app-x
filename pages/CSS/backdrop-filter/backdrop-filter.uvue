@@ -1,63 +1,8 @@
 <template>
-  <scroll-view direction="vertical" :show-scrollbar="true">
+  <view class="page-root">
     <fps />
 
-    <view class="background-content">
-      <view v-for="section in backgroundSections" :key="section" class="uni-common-mb">
-        <view class="logo-row">
-          <image v-for="logoIndex in logoIndexes" :key="logoIndex" class="logo-item" src="/static/test-image/logo.png" mode="widthFix"></image>
-        </view>
-        <view class="uni-row uni-common-mt">
-          <view v-for="(color, colorIndex) in solidColors1" :key="colorIndex" class="solid-box" :style="`background-color: ${color};`"></view>
-        </view>
-        <view class="uni-row">
-          <view v-for="(color, colorIndex) in solidColors2" :key="colorIndex" class="solid-box" :style="`background-color: ${color};`"></view>
-        </view>
-        <view class="uni-row uni-common-mt">
-          <view v-for="(gradientStyle, gradientIndex) in gradientStyles1" :key="gradientIndex" class="gradient-box" :style="gradientStyle"></view>
-        </view>
-        <view class="uni-row">
-          <view v-for="(gradientStyle, gradientIndex) in gradientStyles2" :key="gradientIndex" class="gradient-box" :style="gradientStyle"></view>
-        </view>
-        <view class="uni-common-mt uni-common-mb">
-          <text class="uni-common-mb" v-for="(line, lineIndex) in sampleLines" :key="lineIndex">{{ line }}</text>
-        </view>
-      </view>
-    </view>
-
-    <view class="floating-display-layer">
-      <view class="demo-section">
-        <view class="demo-slot">
-          <view class="glass-box" style="backdrop-filter: blur(4px);"></view>
-          <text class="demo-label">静态 4px</text>
-        </view>
-        <view class="demo-slot">
-          <view class="glass-box" style="backdrop-filter: blur(8px);"></view>
-          <text class="demo-label">静态 8px</text>
-        </view>
-        <view class="demo-slot">
-          <view class="glass-box" style="backdrop-filter: blur(12px);"></view>
-          <text class="demo-label">静态 12px</text>
-        </view>
-      </view>
-
-      <view class="demo-section">
-        <view class="demo-slot">
-          <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px);`"></view>
-          <text class="demo-label">动态 {{ blurValue }}px</text>
-        </view>
-        <view class="demo-slot">
-          <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px); background-color: ${backgroundColor}; border-width: ${borderWidthValue}px;`"></view>
-          <view class="demo-label">
-            <text>动态 {{ blurValue }}px</text>
-            <text>{{ colorLabel }} / {{ borderWidthValue }}px</text>
-          </view>
-        </view>
-        <view class="demo-slot"></view>
-      </view>
-    </view>
-
-    <view class="floating-control-layer">
+    <view class="control-panel">
       <view class="control-section">
         <text class="control-label">模糊半径</text>
         <slider class="control-wrapper"
@@ -87,7 +32,7 @@
         <text class="control-label">边框宽度</text>
         <slider class="control-wrapper"
           :min="0"
-          :max="10"
+          :max="20"
           :step="1"
           :value="borderWidthValue"
           :show-value="true"
@@ -96,7 +41,66 @@
         />
       </view>
     </view>
-  </scroll-view>
+
+    <view class="scroll-panel">
+      <view class="floating-display-layer">
+        <view class="demo-section">
+          <view class="demo-slot">
+            <view class="glass-box" style="backdrop-filter: blur(4px);"></view>
+            <text class="demo-label">静态 4px</text>
+          </view>
+          <view class="demo-slot">
+            <view class="glass-box" style="backdrop-filter: blur(8px);"></view>
+            <text class="demo-label">静态 8px</text>
+          </view>
+          <view class="demo-slot">
+            <view class="glass-box" style="backdrop-filter: blur(12px);"></view>
+            <text class="demo-label">静态 12px</text>
+          </view>
+        </view>
+
+        <view class="demo-section">
+          <view class="demo-slot">
+            <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px);`"></view>
+            <text class="demo-label">动态 {{ blurValue }}px</text>
+          </view>
+          <view class="demo-slot">
+            <view class="glass-box" :style="`backdrop-filter: blur(${blurValue}px); background-color: ${backgroundColor}; border-width: ${borderWidthValue}px;`"></view>
+            <view class="demo-label demo-label-stack">
+              <text>动态 {{ blurValue }}px</text>
+              <text>{{ colorLabel }} / {{ borderWidthValue }}px</text>
+            </view>
+          </view>
+          <view class="demo-slot"></view>
+        </view>
+      </view>
+
+      <scroll-view class="content-scroll-view" direction="vertical" :show-scrollbar="true">
+        <view class="background-content">
+          <view v-for="section in backgroundSections" :key="section" class="uni-common-mb">
+            <view class="logo-row">
+              <image v-for="logoIndex in logoIndexes" :key="logoIndex" class="logo-item" src="/static/test-image/logo.png" mode="widthFix"></image>
+            </view>
+            <view class="uni-row uni-common-mt">
+              <view v-for="(color, colorIndex) in solidColors1" :key="colorIndex" class="color-box" :style="`background-color: ${color};`"></view>
+            </view>
+            <view class="uni-row">
+              <view v-for="(color, colorIndex) in solidColors2" :key="colorIndex" class="color-box" :style="`background-color: ${color};`"></view>
+            </view>
+            <view class="uni-row uni-common-mt">
+              <view v-for="(gradientStyle, gradientIndex) in gradientStyles1" :key="gradientIndex" class="color-box" :style="gradientStyle"></view>
+            </view>
+            <view class="uni-row">
+              <view v-for="(gradientStyle, gradientIndex) in gradientStyles2" :key="gradientIndex" class="color-box" :style="gradientStyle"></view>
+            </view>
+            <view class="uni-common-mt uni-common-mb">
+              <text class="uni-common-mb" v-for="(line, lineIndex) in sampleLines" :key="lineIndex">{{ line }}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
 </template>
 
 <script setup lang="uts">
@@ -121,9 +125,11 @@
     'background-image: linear-gradient(135deg, #000000, #ffffff);'
   ]
   const sampleLines = [
-    '《13件内心强大的人不会做的事：收回力量，拥抱改变，面对恐惧，训练你的大脑，让它变得快乐和成功》',
-    '更好更大的精神力量可以帮助你克服挑战，从失败中振作起来，走出安全区一一这些都是让你过上最好生活的关键因素。',
-    '“……强大的精神力量意味着无论发生什么，你都会没事。无论你面对的是严重的个人问题，金融危机，还是家庭悲剧，当你精神强大时，你会为任何情况做好最好的准备。你不仅要准备好面对生活的现实，而且无论生活中遇到什么困难，你都能按照自己的价值观生活。”《13件内心强大的人不会做的事：收回力量，拥抱改变，面对恐惧，训练你的大脑，让它变得快乐和成功》一书的作者 Amy Morin 解释道。',
+    '作为一个理性和感性的人，在你的一生中，你会经历某种类型的危机。研究估计，几乎90%的人至少经历过一次创伤事件。危机带来了障碍、创伤或威胁，但它也提供了增长或衰退的机会。',
+    '每个人对事件、情况或压力的反应是不同的。想想你感到沮丧、焦虑、害怕、愤怒、心碎、创伤或孤独的时候。你是怎么处理的？',
+    '许多人梦想着妥善处理他们生活中遇到的每一件事。他们希望能够调节自己的思想，管理自己的情绪，积极行动，选择一种能够改善自己生活的方式，即使要经过努力奋斗。',
+    '更好更大的精神力量可以帮助你克服挑战，从失败中振作起来，走出安全区——这些都是让你过上最好生活的关键因素。',
+    '“……强大的精神力量意味着无论发生什么，你都会没事。无论你面对的是严重的个人问题，金融危机，还是家庭悲剧，当你精神强大时，你会为任何情况做好最好的准备。你不仅要准备好面对生活的现实，而且无论生活中遇到什么困难，你都能按照自己的价值观生活。”《13件内心强大的人不会做的事：收回力量，拥抱改变，面对恐惧，训练你的大脑，让它变得快乐和成功》（13 Things Mentally Strong People Don’t Do: Take Back Your Power, Embrace Change, Face Your Fears, and Train Your Brain for Happiness and Success）一书的作者Amy Morin解释道。',
     '意志坚强，能够在任何情况下都能执行或采取行动，这是一种可取的技能。好消息是，我们可以通过训练培养精神力量。就像身体力量一样，精神力量需要健康的习惯、适当的锻炼和纪律。',
     '内心强大的人那不敏感的能力不是与生俱来的，他们都是普通人，只不过决心要通过培养日常习惯来过好自己的生活，而这些日常习惯能积极地增强他们的精神力量。精神力量足够强大意味着知道无论发生什么自己都会没事的。',
     '这些习惯并不难养成，但它们确实需要持之以恒。那么，你如何才能拥有强大的精神力量呢？'
@@ -157,26 +163,34 @@
 </script>
 
 <style>
+.page-root {
+  flex: 1;
+}
+
+.control-panel {
+  padding: 20px;
+}
+
+.scroll-panel {
+  flex: 1;
+  position: relative;
+}
+
+.content-scroll-view {
+  flex: 1;
+}
+
 .background-content {
-  padding-top: 600px;
-  padding-bottom: 80px;
-  padding: 600px 20px 80px 20px;
+  padding: 10px 20px 80px 20px;
 }
 
 .floating-display-layer {
-  position: fixed;
-  top: 64px;
+  position: absolute;
+  top: 20px;
   left: 20px;
   right: 20px;
   pointer-events: none;
-}
-
-.floating-control-layer {
-  position: fixed;
-  top: 390px;
-  left: 30px;
-  right: 40px;
-  padding-right: 10px;
+  z-index: 10;
 }
 
 .logo-row {
@@ -189,12 +203,7 @@
   width: 33%;
 }
 
-.solid-box {
-  flex: 1;
-  height: 64px;
-}
-
-.gradient-box {
+.color-box {
   flex: 1;
   height: 64px;
 }
@@ -214,23 +223,25 @@
   margin: 4px;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 4px 6px;
-  white-space: nowrap;
   box-shadow: 3px 3px 3px gray;
 }
 
 .glass-box {
   width: 100px;
   height: 100px;
-  background-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.3);
   border-width: 1px;
   border-style: solid;
   border-color: rgba(255, 255, 255, 0.4);
   border-radius: 16px;
 }
 
+.demo-label-stack {
+  align-items: center;
+}
+
 .control-section {
   margin-bottom: 6px;
-  box-shadow: 3px 3px 3px gray;
 }
 
 .control-label {
