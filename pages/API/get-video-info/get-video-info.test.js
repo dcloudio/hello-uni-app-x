@@ -3,10 +3,11 @@ const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAndroid = platformInfo.startsWith('android')
+const isHarmony = platformInfo.startsWith('harmony')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 describe('API-getVideoInfo', () => {
-  if (isWeb || isMP || isIOS) {
+  if (isWeb || isMP) {
     // web平台在自动化测试场景下API调用失败
     it('pass', async () => {
       expect(1).toBe(1);
@@ -42,7 +43,7 @@ describe('API-getVideoInfo', () => {
     }
     const infos = process.env.uniTestPlatformInfo.split(' ');
     const version = parseInt(infos[infos.length - 1]);
-    if (isAndroid && version > 5) {
+    if (isAndroid && version > 5 || isIOS || isHarmony) {
       var videoInfo = await page.data('testState.videoInfoForTest')
       expect(videoInfo.orientation).toEqual("up")
       expect(videoInfo.type).toEqual("video/mp4")
