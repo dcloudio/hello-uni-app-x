@@ -54,20 +54,34 @@ describe('showActionSheet', () => {
     if (isAppWebView) {
       if (isIos) {
         topSafeArea = 59
+        if (platformInfo.includes('26')) {
+          topSafeArea = 62
+        }
       } else if (isAndroid) {
         topSafeArea = 24
+        windowInfo.safeArea.bottom = 867
         if (platformInfo.startsWith('android 5')) {
           topSafeArea = 25
+        }if (platformInfo.startsWith('android 6')) {
+          windowInfo.safeArea.bottom = 592
+        }if (platformInfo.startsWith('android 8')) {
+          windowInfo.safeArea.bottom = 534
         } else if (platformInfo.startsWith('android 11')) {
           topSafeArea = 52
+        } else if (platformInfo.startsWith('android 12')) {
+          topSafeArea = 24
+          windowInfo.safeArea.bottom = 716
         } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
           topSafeArea = 49
+          windowInfo.safeArea.bottom = 891
+        } else if (platformInfo.startsWith('android 14')) {
+          windowInfo.safeArea.bottom = 891
         }
       } else if (isHarmony) {
-        // mate 60
-        // topSafeArea = 33
-        // mate 60 pro
-        topSafeArea = 38
+        topSafeArea = 39
+        if (platformInfo.includes('nova_12')) {
+          topSafeArea = 35
+        }
       }
     }
 
@@ -80,14 +94,18 @@ describe('showActionSheet', () => {
       if((isAndroid || isIos) && !isAppWebView){
         await page.callMethod('setThemeAuto')
       }
+      const top = topSafeArea + 44
+      // actionSheet overlays the page window and can extend below its content area.
+      const bottom = windowInfo.safeArea.bottom
+      const left = windowInfo.safeArea.left
+      const right = windowInfo.safeArea.right - 10
       screenShotOptions = {
+        deviceShot: true,
         area: {
-          x: 0,
-          y: topSafeArea + 44,
-          // 规避滚动条影响
-          width: windowInfo.safeArea.width - 10,
-          // 规避底部手势导航栏的影响
-          height: windowInfo.safeArea.height - 40
+          x: left,
+          y: top,
+          width: right - left,
+          height: bottom - top
         },
       }
     }

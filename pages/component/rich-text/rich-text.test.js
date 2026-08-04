@@ -3,6 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/rich-text/rich-text'
@@ -27,21 +28,47 @@ describe('rich-text-test', () => {
       if (isAppWebView) {
         if (isIos) {
           topSafeArea = 59
+          if (platformInfo.includes('26')) {
+            topSafeArea = 62
+          }
+        } else if (isAndroid) {
+          topSafeArea = 24
+          windowInfo.safeArea.bottom = 867
+          if (platformInfo.startsWith('android 5')) {
+            topSafeArea = 25
+          }if (platformInfo.startsWith('android 6')) {
+            windowInfo.safeArea.bottom = 592
+          }if (platformInfo.startsWith('android 8')) {
+            windowInfo.safeArea.bottom = 534
+          } else if (platformInfo.startsWith('android 11')) {
+            topSafeArea = 52
+          } else if (platformInfo.startsWith('android 12')) {
+            topSafeArea = 24
+            windowInfo.safeArea.bottom = 716
+          } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
+            topSafeArea = 49
+            windowInfo.safeArea.bottom = 891
+          } else if (platformInfo.startsWith('android 14')) {
+            windowInfo.safeArea.bottom = 891
+          }
         } else if (isHarmony) {
-          // mate 60
-          // topSafeArea = 33
-          // mate 60 pro
-          topSafeArea = 38
+          topSafeArea = 39
+          if (platformInfo.includes('nova_12')) {
+            topSafeArea = 35
+          }
         }
       }
+      const top = topSafeArea + 44
+      const bottom = Math.min(top + windowInfo.windowHeight, windowInfo.safeArea.bottom)
+      const left = windowInfo.safeArea.left
+      const right = windowInfo.safeArea.right - 10
       deviceShotOptions = {
         deviceShot: true,
         area: {
-          x: 0,
-          y: topSafeArea + 44,
-          width: windowInfo.safeArea.width - 8,
-          // 规避底部手势导航栏的影响
-          height: windowInfo.safeArea.height - 40
+          x: left,
+          y: top,
+          width: right - left,
+          height: bottom - top
         },
       }
     }
