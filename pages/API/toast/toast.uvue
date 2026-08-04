@@ -107,14 +107,23 @@
     ],
   } as DataType)
 
+  let isAutoTest = false
+
+  onLoad((options : OnLoadOptions) => {
+    isAutoTest = options['autoTest'] == 'true'
+  })
+
   onMounted(() => {
+    const duration = isAutoTest ? 10000 : 3000
     uni.showToast({
       title: 'onMounted 调用示例,3秒后消失',
-      duration: 3000
+      duration: duration
     })
-    setTimeout(function () {
-      uni.hideToast()
-    }, 3000);
+    if (!isAutoTest) {
+      setTimeout(function () {
+        uni.hideToast()
+      }, duration);
+    }
   })
 
   //自动化测试例专用
@@ -192,6 +201,7 @@
     uni.showToast({
       title: "显示一段轻提示,position:" + positionValue,
       position: positionValue,
+      duration: data.intervalSelect,
       success: (res) => {
         data.exeRet = "success:" + JSON.stringify(res)
       },

@@ -1,4 +1,4 @@
-jest.setTimeout(30000)
+jest.setTimeout(40000)
 
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isAndroid = platformInfo.startsWith('android')
@@ -17,7 +17,11 @@ describe('API-toast', () => {
     return;
   }
 
-  const PAGE_PATH = '/pages/API/toast/toast'
+  const PAGE_PATH = '/pages/API/toast/toast?autoTest=true'
+  const TOAST_DURATION = 5000
+  const TOAST_SHOW_SETTLE_TIME = 1000
+  const TOAST_HIDE_SETTLE_TIME = 1000
+  const OPTION_SETTLE_TIME = 200
   let page;
   let deviceShotOptions = {}
   beforeAll(async () => {
@@ -74,6 +78,13 @@ describe('API-toast', () => {
     }
   });
 
+  afterEach(async () => {
+    if (page != null) {
+      await page.callMethod('hideToast')
+      await page.waitFor(TOAST_HIDE_SETTLE_TIME)
+    }
+  })
+
   async function screenShot(imgName) {
     const image = await program.screenshot(deviceShotOptions);
     const options = {customSnapshotIdentifier() {
@@ -87,51 +98,64 @@ describe('API-toast', () => {
       });
     }
     expect(image).toSaveImageSnapshot(options)
-    await page.waitFor(500);
+  }
+
+  async function resetToastOptions(options = {}) {
+    await page.callMethod('hideToast')
+    await page.waitFor(TOAST_HIDE_SETTLE_TIME)
+    await page.setData({
+      data: {
+        imageSelect: false,
+        maskSelect: false,
+        intervalSelect: TOAST_DURATION,
+        icon_current: 0,
+        position_current: 0,
+        ...options,
+      }
+    })
+    await page.waitFor(OPTION_SETTLE_TIME)
+  }
+
+  async function showToastAndScreenShot(methodName, imgName) {
+    await page.callMethod(methodName)
+    await page.waitFor(TOAST_SHOW_SETTLE_TIME)
+    await screenShot(imgName)
+    await page.callMethod('hideToast')
+    await page.waitFor(TOAST_HIDE_SETTLE_TIME)
   }
 
   it("onload-toast-test", async () => {
     await screenShot('toast-onload')
-    await page.waitFor(2000);
   })
 
   it("icon-toast-test", async () => {
+    await resetToastOptions()
     const icons = await page.$$('.radio-icon')
     for (let i = 0; i < icons.length; i++) {
       await icons[i].tap()
-      await page.waitFor(500);
-      await page.callMethod('toast1Tap')
-      await page.waitFor(500);
+      await page.waitFor(OPTION_SETTLE_TIME)
       const iconText = await icons[i].text()
-      const iconValue = await icons[i].attribute('value')
-      const isLoadingIcon = iconValue == 'loading' || iconText.includes('加载')
-      await screenShot(`${iconText}-toast`)
+      await showToastAndScreenShot('toast1Tap', `${iconText}-toast`)
     }
   })
 
   it("icon=none-mask=true-toast-test", async () => {
-    await page.setData({data:{maskSelect: true}})
-    await page.callMethod('toast3Tap')
-    await page.waitFor(300);
-    await screenShot('icon=none-mask=true-toast-image')
+    await resetToastOptions({maskSelect: true})
+    await showToastAndScreenShot('toast3Tap', 'icon=none-mask=true-toast-image')
   })
 
   it("image-toast-test", async () => {
-    await page.setData({data:{imageSelect: true}})
-    await page.waitFor(300);
-    await page.callMethod('toast1Tap')
-    await page.waitFor(500);
-    await screenShot('toast-image')
+    await resetToastOptions({imageSelect: true})
+    await showToastAndScreenShot('toast1Tap', 'toast-image')
   })
 
   it("duration-toast-test", async () => {
-    await page.setData({data:{intervalSelect: 4000}})
+    await resetToastOptions({intervalSelect: 4000})
     await page.callMethod('toast1Tap')
     await page.waitFor(2000);
     await screenShot('toast-duration-2000')
-    await page.waitFor(1000);
     await page.callMethod('hideToast')
-    await page.waitFor(300);
+    await page.waitFor(TOAST_HIDE_SETTLE_TIME)
     await screenShot('toast-duration-end')
   })
 
@@ -152,15 +176,13 @@ describe('API-toast', () => {
       }
     }
 
+    await resetToastOptions()
     const positions = await page.$$('.radio-position')
     for (let i = 0;i < positions.length;i++) {
-      // 等待上一个 toast 消失
-      await page.waitFor(2000);
       await positions[i].tap()
+      await page.waitFor(OPTION_SETTLE_TIME)
       const positionsText = await positions[i].attribute('value')
-      await page.callMethod('toast2Tap')
-      await page.waitFor(500);
-      await screenShot(`toast-position-${positionsText}`)
+      await showToastAndScreenShot('toast2Tap', `toast-position-${positionsText}`)
     }
   })
 });
