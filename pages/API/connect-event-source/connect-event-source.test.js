@@ -19,8 +19,9 @@ describe('sse', () => {
   it('sse_open', async () => {
     await page.callMethod('connect')
     await page.waitFor(2500)
-    const data = await page.data('data')
-    expect(data.open).toBe(true)
-    expect(data.receiveMessage).toBe(true)
+
+    expect(await page.data('data.open')).toBe(true)
+    expect(await page.data('data.receiveMessage')).toBe(true)
+    await page.callMethod('close')
   })
 })
