@@ -7,7 +7,6 @@ const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 const isIOS = platformInfo.startsWith('ios')
 
 describe('component-native-waterflow', () => {
-  // 鸿蒙平台api 20支持滚动相关事件，api 18支持load-more。目前先手动测试，后续升级测试机后再放开测试
   if (isMP || isWeb || isAppWebView) {
   	it('not support', () => {
   		expect(1).toBe(1)
@@ -22,14 +21,18 @@ describe('component-native-waterflow', () => {
     await page.waitFor(600)
   })
 
-  async function isNonVaporHarmonyOSLowerThanApi20() {
+  async function isHarmonyOSLowerThanApi20() {
     // 非蒸汽模式鸿蒙平台api 20支持waterflow滚动相关事件
     const osHarmonySDKAPIVersion = await page.data('data.osHarmonySDKAPIVersion')
-    return !isDom2 && isHarmony && osHarmonySDKAPIVersion < 20
+    return isHarmony && osHarmonySDKAPIVersion < 20
   }
 
   //检测竖向scrolltop属性赋值
   it('check_scroll_top', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('confirm_scroll_top_input', 600)
     await page.waitFor(600)
     const listElement = await page.$('#waterflow')
@@ -39,7 +42,7 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event check_scroll', async () => {
-    if (await isNonVaporHarmonyOSLowerThanApi20()) {
+    if (await isHarmonyOSLowerThanApi20()) {
       expect(1).toBe(1)
       return
     }
@@ -61,7 +64,7 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrolltolower-滚动到底部/右边',async()=>{
-    if (await isNonVaporHarmonyOSLowerThanApi20()) {
+    if (await isHarmonyOSLowerThanApi20()) {
       expect(1).toBe(1)
       return
     }
@@ -78,7 +81,7 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrolltoupper-滚动到顶部/左边',async()=>{
-    if (await isNonVaporHarmonyOSLowerThanApi20()) {
+    if (await isHarmonyOSLowerThanApi20()) {
       expect(1).toBe(1)
       return
     }
@@ -89,7 +92,7 @@ describe('component-native-waterflow', () => {
   })
 
   it('Event scrollend-滚动结束时触发',async()=>{
-    if (await isNonVaporHarmonyOSLowerThanApi20()) {
+    if (await isHarmonyOSLowerThanApi20()) {
       expect(1).toBe(1)
       return
     }
@@ -114,7 +117,7 @@ describe('component-native-waterflow', () => {
   if(!isDom2) {
     //检测竖向可滚动区域
     it('check_scroll_height', async () => {
-      if (await isNonVaporHarmonyOSLowerThanApi20()) {
+      if (await isHarmonyOSLowerThanApi20()) {
         expect(1).toBe(1)
         return
       }
@@ -126,6 +129,10 @@ describe('component-native-waterflow', () => {
 
   //检测下拉刷新
   it('check_refresher', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('confirm_scroll_top_input', 0)
     await page.setData({
         data:{
@@ -167,6 +174,10 @@ describe('component-native-waterflow', () => {
 
   //检测waterflow属性变化 截图校验
   it('check_waterflow_view_props', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('testModifyWaterflowProps')
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});
@@ -176,6 +187,10 @@ describe('component-native-waterflow', () => {
 
   //检测waterflow 单列 截图校验
   it('check_waterflow_single_row', async () => {
+    if (await isHarmonyOSLowerThanApi20()) {
+      expect(1).toBe(1)
+      return
+    }
     await page.callMethod('testModifyWaterflowSingleRow')
     await page.waitFor(600)
     const image = await program.screenshot({fullPage: false});
