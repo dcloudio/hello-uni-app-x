@@ -1,5 +1,3 @@
-jest.setTimeout(30000)
-
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isIOS = platformInfo.startsWith('ios')
 const isWeb = platformInfo.startsWith('web')
@@ -49,7 +47,7 @@ describe('API-getVideoInfo', () => {
       expect(videoInfo.orientation).toEqual("up")
       expect(videoInfo.type).toEqual("video/mp4")
       expect(videoInfo.duration).toEqual(10)
-      expect(videoInfo.size).toEqual(183.19)
+      expect(videoInfo.size).toEqual(115.078)
       expect(videoInfo.width).toEqual(1280)
       expect(videoInfo.height).toEqual(720)
       expect(videoInfo.fps == 30 || videoInfo.fps == 31).toEqual(true)

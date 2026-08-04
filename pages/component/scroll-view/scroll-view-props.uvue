@@ -3,6 +3,9 @@
     <page-head title="非下拉刷新的scroll-view属性示例"></page-head>
     <!-- 暂时分成两个方向不同的滚动视图，原因为：scroll-view组件不支持动态改变direction。 -->
     <scroll-view v-if="data.scrollX" direction="horizontal" :scroll-top="data.scrollTop" :scroll-left="data.scrollLeft"
+      <!-- #ifdef APP-ANDROID && VUE3-VAPOR -->
+      :android-overscroll="data.androidOverscroll"
+      <!-- #endif -->
       :upper-threshold="data.upperThreshold" :lower-threshold="data.lowerThreshold" :scroll-into-view="data.scrollIntoView"
       :enable-back-to-top="data.enableBackToTop" :scroll-with-animation="data.scrollWithAnimation" style="flex-direction: row;"
       class="uni-margin-wrap" :show-scrollbar="data.showScrollbar" :bounces="data.bounces" @scrolltoupper="scrolltoupper"
@@ -36,8 +39,12 @@
         <switch :checked="data.showScrollbar" @change="data.showScrollbar=!data.showScrollbar"></switch>
       </view>
       <view class="uni-list-cell uni-list-cell-padding">
-        <text>是否有反弹效果</text>
-        <switch :checked="data.bounces" @change="data.bounces=!data.bounces"></switch>
+        <text>是否开启回弹效果</text>
+        <switch :checked="data.bounces" @change="handleBouncesChange"></switch>
+      </view>
+      <view class="uni-list-cell uni-list-cell-padding">
+        <text>是否开启弹簧回弹效果（仅Android蒸汽模式）</text>
+        <switch :checked="data.androidOverscroll" :disabled="!data.bounces" @change="handleAndroidOverscrollChange"></switch>
       </view>
       <view class="uni-list-cell uni-list-cell-padding">
         <text>是否开启滚动时使用动画过渡</text>
@@ -96,6 +103,7 @@ type DataType = {
   scrollX: boolean,
   scrollY: boolean,
   bounces: boolean,
+  androidOverscroll: boolean,
   scrollTop: number,
   scrollLeft: number,
   scrollChangeTop: number,
@@ -113,6 +121,7 @@ const data = reactive({
   scrollX: false,
   scrollY: true,
   bounces: false,
+  androidOverscroll: false,
   scrollTop: 0,
   scrollLeft: 0,
   scrollChangeTop: 0,
@@ -137,18 +146,14 @@ function handleChangeScrollTop(e : UniSliderChangeEvent) {
 
 function changeDirectionX() {
   data.scrollX = !data.scrollX
-  if (data.scrollX) {
-    data.scrollY = false
-  }
+  data.scrollY = !data.scrollX
   data.scrollTop = 0
   data.scrollLeft = 0
 }
 
 function changeDirectionY() {
   data.scrollY = !data.scrollY
-  if (data.scrollY) {
-    data.scrollX = false
-  }
+  data.scrollX = !data.scrollY
   data.scrollTop = 0
   data.scrollLeft = 0
 }
@@ -180,6 +185,17 @@ function handleLowerThresholdInput(e : InputEvent) {
   } else {
     data.lowerThreshold = parseInt(e.detail.value)
   }
+}
+
+function handleBouncesChange() {
+  data.bounces = !data.bounces
+  if(!data.bounces){
+    data.androidOverscroll = false;
+  }
+}
+
+function handleAndroidOverscrollChange() {
+  data.androidOverscroll = !data.androidOverscroll
 }
 
 function scrolltoupper() {

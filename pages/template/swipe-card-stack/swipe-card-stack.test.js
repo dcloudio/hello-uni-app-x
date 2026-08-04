@@ -3,6 +3,8 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web') || platformInfo.startsWith('h5')
 const isMP = platformInfo.startsWith('mp')
+const isHarmony = platformInfo.startsWith('harmony')
+const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 const PAGE_PATH = '/pages/template/swipe-card-stack/swipe-card-stack'
 const WAIT_FOR_CARD_INIT = 800
@@ -189,8 +191,8 @@ describe('template-swipe-card-stack', () => {
 
   it('renders card stack', async () => {
     const cards = await getCards()
-    const images = await page.$$('.card-img')
-    expect(images.length).toBe(3)
+    const contents = await page.$$('.card-content')
+    expect(contents.length).toBe(3)
 
     for (let i = 0; i < cards.length; i++) {
       const rect = await cards[i].offset()

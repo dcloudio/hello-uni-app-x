@@ -1,5 +1,3 @@
-jest.setTimeout(30000)
-
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
@@ -17,6 +15,7 @@ describe('input-performance', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/input/input-performance')
     await page.waitFor('view');
+    await page.setData({ autoData: { showFps: false } });
   });
 
   // 测试页面加载速度及 placeholder 字体大小是否正常 issue/26417

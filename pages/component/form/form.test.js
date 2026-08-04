@@ -1,5 +1,3 @@
-jest.setTimeout(30000)
-
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isHarmony = platformInfo.startsWith('harmony')
 const isMP = platformInfo.startsWith('mp')
@@ -35,7 +33,7 @@ describe('form', () => {
   }
 
   let page
-  beforeAll(async () => {
+  beforeEach(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
   })

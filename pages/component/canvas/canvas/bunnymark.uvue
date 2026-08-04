@@ -1,0 +1,297 @@
+<template>
+  <view class="page-body">
+    <canvas id="bunny-canvas" class="canvas" @click="spawnMore"></canvas>
+    <view class="footer">
+      <text class="footer-text">Bunnies: {{ bunnyCount }} FPS: {{ fpsText }}</text>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+  let fpsText = ref('-/-ms')
+  let bunnyCount = ref(0)
+  let spawnStep = ref(1000)
+
+  const WORLD_WIDTH = 720
+  const WORLD_HEIGHT = 720
+  const BUNNY_WIDTH = 25
+  const BUNNY_HEIGHT = 32
+
+  const BUNNY_IMAGE_PATHS : Array<string> = [
+    '/static/bunnymark/rabbitv3.png',
+    '/static/bunnymark/rabbitv3_ash.png',
+    '/static/bunnymark/rabbitv3_batman.png',
+    '/static/bunnymark/rabbitv3_bb8.png',
+    '/static/bunnymark/rabbitv3_frankenstein.png',
+    '/static/bunnymark/rabbitv3_neo.png',
+    '/static/bunnymark/rabbitv3_sonic.png',
+    '/static/bunnymark/rabbitv3_spidey.png',
+    '/static/bunnymark/rabbitv3_stormtrooper.png',
+    '/static/bunnymark/rabbitv3_superman.png',
+    '/static/bunnymark/rabbitv3_tron.png',
+    '/static/bunnymark/rabbitv3_wolverine.png'
+  ]
+
+  class Bunny {
+    public centerX : number
+    public centerY : number
+    public elapsed : number
+    public delay : number
+    public image : Image
+
+    constructor(centerX : number, centerY : number, elapsed : number, delay : number, image : Image) {
+      this.centerX = centerX
+      this.centerY = centerY
+      this.elapsed = elapsed
+      this.delay = delay
+      this.image = image
+    }
+  }
+
+  class BunnyMarkAnimation {
+    private ctx : CanvasRenderingContext2D
+    private canvasContext : CanvasContext
+    private bunnyList : Array<Bunny> = []
+    private bunnyImages : Array<Image>
+    private width = 0
+    private height = 0
+    private scaleX = 1.0
+    private scaleY = 1.0
+    private readonly animationDuration = 2.0
+    private readonly animationStartY = WORLD_HEIGHT
+    private readonly animationEndY = 40
+    private animateTaskId = 0
+    private runningFlag = false
+    private frameTimestamps : Array<number> = []
+    private lastFrameTimestamp = 0
+
+    constructor(canvasContext : CanvasContext, bunnyImages : Array<Image>) {
+      this.canvasContext = canvasContext
+      this.bunnyImages = bunnyImages
+      this.ctx = canvasContext.getContext('2d') as CanvasRenderingContext2D
+      this.width = this.ctx.canvas.offsetWidth
+      this.height = this.ctx.canvas.offsetHeight
+      this.scaleX = this.width / WORLD_WIDTH
+      this.scaleY = this.height / WORLD_HEIGHT
+    }
+
+    public get count() : number {
+      return this.bunnyList.length
+    }
+
+    private createBunny() : Bunny {
+      const imageIndex = Math.floor(Math.random() * this.bunnyImages.length)
+      const image = this.bunnyImages[imageIndex]
+      const startX = Math.random() * WORLD_WIDTH
+      const delay = Math.random()
+      return new Bunny(startX, this.animationStartY, 0, delay, image)
+    }
+
+    public add(count : number) {
+      const targetCount = Math.max(0, count)
+      for (let i = 0; i < targetCount; i++) {
+        this.bunnyList.push(this.createBunny())
+      }
+    }
+
+    public clear() {
+      this.bunnyList.length = 0
+      this.ctx.clearRect(0, 0, this.width, this.height)
+      fpsText.value = '-/-ms'
+      this.frameTimestamps.length = 0
+      this.lastFrameTimestamp = 0
+    }
+
+    private updateBunny(bunny : Bunny, deltaSeconds : number) {
+      bunny.elapsed += deltaSeconds
+      if (bunny.elapsed < bunny.delay) {
+        bunny.centerY = this.animationStartY
+        return
+      }
+
+      const animationElapsed = bunny.elapsed - bunny.delay
+      let phase = animationElapsed / this.animationDuration
+      while (phase >= 2) {
+        phase -= 2
+      }
+
+      const pingPong = phase <= 1 ? phase : 2 - phase
+      if (phase <= 1) {
+        const easedForward = pingPong * pingPong
+        bunny.centerY = this.animationStartY + (this.animationEndY - this.animationStartY) * easedForward
+      } else {
+        const reversePhase = phase - 1
+        const easedReverse = 1 - (1 - reversePhase) * (1 - reversePhase)
+        bunny.centerY = this.animationEndY + (this.animationStartY - this.animationEndY) * easedReverse
+      }
+    }
+
+    private drawBunny(bunny : Bunny) {
+      const drawX = (bunny.centerX - BUNNY_WIDTH * 0.5) * this.scaleX
+      const drawY = (WORLD_HEIGHT - bunny.centerY - BUNNY_HEIGHT * 0.5) * this.scaleY
+      const drawWidth = BUNNY_WIDTH * this.scaleX
+      const drawHeight = BUNNY_HEIGHT * this.scaleY
+      this.ctx.drawImage(bunny.image, drawX, drawY, drawWidth, drawHeight)
+    }
+
+    private updateFPS(timestamp : number) {
+      this.frameTimestamps.push(timestamp)
+      if (this.frameTimestamps.length > 61) {
+        this.frameTimestamps.shift()
+      }
+      if (this.frameTimestamps.length == 61) {
+        const frameDuration = (this.frameTimestamps[60] - this.frameTimestamps[0]) / 60
+        const fps = 1000 / frameDuration
+        fpsText.value = `${fps.toFixed(2)} FPS`
+      }
+    }
+
+    private animateFrame(timestamp : number) {
+      let deltaSeconds = 1 / 60
+      if (this.lastFrameTimestamp > 0) {
+        deltaSeconds = (timestamp - this.lastFrameTimestamp) / 1000
+      }
+      this.lastFrameTimestamp = timestamp
+
+      this.ctx.clearRect(0, 0, this.width, this.height)
+      for (let i = 0; i < this.bunnyList.length; i++) {
+        const bunny = this.bunnyList[i]
+        this.updateBunny(bunny, deltaSeconds)
+        this.drawBunny(bunny)
+      }
+      this.updateFPS(timestamp)
+
+      if (!this.runningFlag) {
+        return
+      }
+      this.animateTaskId = this.canvasContext.requestAnimationFrame((nextTimestamp : number) => {
+        this.animateFrame(nextTimestamp)
+      })
+    }
+
+    public start() {
+      if (this.runningFlag) {
+        return
+      }
+      this.canvasContext.cancelAnimationFrame(this.animateTaskId)
+      this.runningFlag = true
+      this.animateTaskId = this.canvasContext.requestAnimationFrame((timestamp : number) => {
+        this.animateFrame(timestamp)
+      })
+    }
+
+    public stop() {
+      this.runningFlag = false
+      this.canvasContext.cancelAnimationFrame(this.animateTaskId)
+    }
+
+    public isRunning() : boolean {
+      return this.runningFlag
+    }
+  }
+
+  let animation : BunnyMarkAnimation | null = null
+  const instance = getCurrentInstance()!.proxy!
+
+  function loadBunnyImages(canvasContext : CanvasContext, onComplete : (images : Array<Image>) => void) {
+    const images : Array<Image> = []
+    let loadedCount = 0
+
+    for (let i = 0; i < BUNNY_IMAGE_PATHS.length; i++) {
+      const image = canvasContext.createImage()
+      image.onload = () => {
+        images.push(image)
+        loadedCount++
+        if (loadedCount == BUNNY_IMAGE_PATHS.length) {
+          onComplete(images)
+        }
+      }
+      image.src = BUNNY_IMAGE_PATHS[i]
+    }
+  }
+
+  function updateCount() {
+    bunnyCount.value = animation == null ? 0 : animation.count
+  }
+
+  function addBunnies(count : number) {
+    animation?.add(count)
+    updateCount()
+  }
+
+  function spawnMore() {
+    addBunnies(spawnStep.value)
+  }
+
+  onReady(() => {
+    uni.createCanvasContextAsync({
+      id: 'bunny-canvas',
+      component: instance,
+      success: (context : CanvasContext) => {
+        const renderingContext = context.getContext('2d')!
+        const canvas = renderingContext.canvas
+
+        const dpr = uni.getWindowInfo().pixelRatio
+        canvas.width = canvas.offsetWidth * dpr
+        canvas.height = canvas.offsetHeight * dpr
+        renderingContext.scale(dpr, dpr)
+
+        loadBunnyImages(context, (images : Array<Image>) => {
+          animation = new BunnyMarkAnimation(context, images)
+          animation!.add(spawnStep.value)
+          animation!.start()
+          updateCount()
+        })
+      }
+    })
+  })
+
+  onPageShow(() => {
+    animation?.start()
+  })
+
+  onPageHide(() => {
+    animation?.stop()
+  })
+
+  onUnload(() => {
+    animation?.stop()
+    animation = null
+  })
+</script>
+
+<style>
+  .page-body {
+    flex: 1;
+    flex-direction: column;
+    position: relative;
+    background-color: #ffffff;
+  }
+
+  .canvas {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+  }
+
+  .footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top: 12px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    padding-left: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .footer-text {
+    color: #1f2937;
+    font-size: 15px;
+  }
+</style>

@@ -1,7 +1,7 @@
 <template>
   <view class="card" ref="card" @touchstart="touchstart($event as TouchEvent)"
     @touchmove="touchmove($event as TouchEvent)" @touchend="touchend" @touchcancel="touchend">
-    <image class="card-img" ref="cardImg" :src="img"></image>
+    <view class="card-content" ref="cardContent" :style="{ backgroundColor: color }"></view>
     <view class="state">
       <image class="state-icon like" ref="stateIconLike" src="/static/template/drop-card/like.png" mode="widthFix">
       </image>
@@ -19,15 +19,15 @@
  */
 // Template refs
 const card = ref<UniElement | null>(null)
-const cardImg = ref<UniElement | null>(null)
+const cardContent = ref<UniElement | null>(null)
 const stateIconLike = ref<UniElement | null>(null)
 const stateIconDislike = ref<UniElement | null>(null)
 
 // Props
 const props = defineProps({
-  img: {
+  color: {
     type: String,
-    default: "https://web-ext-storage.dcloud.net.cn/hello-uni-app-x/drop-card-1.jpg"
+    default: '#4F6D9B'
   },
   cardIndex: {
     type: Number,
@@ -69,8 +69,8 @@ function setElementStyle(refName : string, propertyName : string, propertyStyle 
     // Map ref name to corresponding ref variable
     if (refName == 'card') {
       element = card.value
-    } else if (refName == 'card-img') {
-      element = cardImg.value
+    } else if (refName == 'card-content') {
+      element = cardContent.value
     } else if (refName == 'state-icon-like') {
       element = stateIconLike.value
     } else if (refName == 'state-icon-dislike') {
@@ -205,7 +205,7 @@ onMounted(() => {
 
   setTimeout(() => {
     setElementStyle('card', 'height', screenHeight * 0.7 + 'px')
-    setElementStyle('card-img', 'height', screenHeight * 0.7 + 'px')
+    setElementStyle('card-content', 'height', screenHeight * 0.7 + 'px')
     initCardStyle()
   }, 200)
 
@@ -242,7 +242,7 @@ defineOptions({
     transition-timing-function: ease-in;
   }
 
-  .card-img {
+  .card-content {
     width: 100%;
     height: 0px;
     border-radius: 10px;

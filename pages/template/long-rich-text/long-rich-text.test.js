@@ -14,6 +14,7 @@ describe('long-rich-text', () => {
 
   beforeAll(async () => {
     page = await program.reLaunch('/pages/template/long-rich-text/long-rich-text')
+    await page.setData({ autoData: { showFps: false } });
   })
 
   // 页面启动后立即截图，验证 rich-text 内 image 的首屏加载中状态。
