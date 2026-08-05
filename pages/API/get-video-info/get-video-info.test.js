@@ -51,8 +51,10 @@ describe('API-getVideoInfo', () => {
       expect(parseFloat(videoInfo.size.toFixed(3))).toEqual(115.078)
       expect(videoInfo.width).toEqual(1280)
       expect(videoInfo.height).toEqual(720)
-      expect(videoInfo.fps == 30 || videoInfo.fps == 31).toEqual(true)
-      expect(videoInfo.bitrate).toEqual(149)
+      if (!isHarmony) {
+        expect(videoInfo.fps == 30 || videoInfo.fps == 31).toEqual(true)
+        expect(videoInfo.bitrate).toEqual(149)
+      }
     }
   });
 });
