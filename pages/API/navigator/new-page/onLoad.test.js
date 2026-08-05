@@ -32,6 +32,8 @@ describe("onLoad", () => {
     return
   }
 
+  const OVERLAY_SHOW_SETTLE_TIME = 1000
+  const OVERLAY_HIDE_SETTLE_TIME = 1000
   let deviceShotOptions = {}
   beforeAll(async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
@@ -86,6 +88,20 @@ describe("onLoad", () => {
     }
   })
 
+  async function navigateToOnLoadScreenshotCase(type) {
+    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH)
+    await page.waitFor('view')
+    await page.callMethod('navigateToOnLoadWithType', type, true)
+    await page.waitFor(OVERLAY_SHOW_SETTLE_TIME)
+    page = await program.currentPage()
+    expect(page.path).toBe(PAGE_PATH.substring(1))
+  }
+
+  async function saveScreenshot() {
+    const image = await program.screenshot(deviceShotOptions)
+    expect(image).toSaveImageSnapshot()
+  }
+
   it("adjustData", async () => {
     await page.callMethod("navigateToOnLoadWithType", "adjustData");
     await page.waitFor(1000);
@@ -139,53 +155,26 @@ describe("onLoad", () => {
   });
   }
   it("showToast", async () => {
-    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor("view");
-    await page.callMethod("navigateToOnLoadWithType", "showToast");
-    await page.waitFor(1000);
-    const image = await program.screenshot(deviceShotOptions);
-    expect(image).toSaveImageSnapshot({
-      failureThreshold: 0.05,
-      failureThresholdType: "percent",
-    });
-    await page.waitFor(2000);
+    await navigateToOnLoadScreenshotCase('showToast')
+    await saveScreenshot()
+    await page.callMethod('hideToast')
+    await page.waitFor(OVERLAY_HIDE_SETTLE_TIME)
   });
   it("showLoading", async () => {
-    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor("view");
-    await page.callMethod("navigateToOnLoadWithType", "showLoading");
-    await page.waitFor(1000);
-    const image = await program.screenshot(deviceShotOptions);
-    expect(image).toSaveImageSnapshot({
-      failureThreshold: 0.05,
-      failureThresholdType: "percent",
-    });
-    await page.waitFor(2000);
+    await navigateToOnLoadScreenshotCase('showLoading')
+    await saveScreenshot()
+    await page.callMethod('hideLoading')
+    await page.waitFor(OVERLAY_HIDE_SETTLE_TIME)
   });
   it("showModal", async () => {
-    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor("view");
-    await page.callMethod("navigateToOnLoadWithType", "showModal");
-    await page.waitFor(1000);
-    const image = await program.screenshot(deviceShotOptions);
-    expect(image).toSaveImageSnapshot({
-      failureThreshold: 0.05,
-      failureThresholdType: "percent",
-    });
+    await navigateToOnLoadScreenshotCase('showModal')
+    await saveScreenshot()
   });
   it("showActionSheet", async () => {
-    page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
-    await page.waitFor("view");
-    await page.callMethod("navigateToOnLoadWithType", "showActionSheet");
-    await page.waitFor(1000);
-    const image = await program.screenshot(deviceShotOptions);
-    expect(image).toSaveImageSnapshot({
-      failureThreshold: 0.05,
-      failureThresholdType: "percent",
-    });
-    page = await program.currentPage();
-    await page.callMethod("hideActionSheet");
-    await page.waitFor(1000);
+    await navigateToOnLoadScreenshotCase('showActionSheet')
+    await saveScreenshot()
+    await page.callMethod('hideActionSheet')
+    await page.waitFor(OVERLAY_HIDE_SETTLE_TIME)
   });
   it('onLoad 参数 decode', async () => {
     page = await program.reLaunch(PAGE_PATH);

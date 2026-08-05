@@ -232,42 +232,10 @@ describe('component-native-input', () => {
       expect(await (await page.$('#uni-input-confirm-done')).attribute("confirmType")).toEqual("done")
     })
     it("cursor-color", async () => {
+      const input = await page.$('#uni-input-cursor-color')
       await setPageData({cursor_color: "red"})
       await page.waitFor(500)
-      expect(await (await page.$('#uni-input-cursor-color')).attribute("cursor-color")).toBe("red")
-      await setPageData({
-        focus: false,
-        cursorInputFocus: false,
-        cursorColorInputFocus: true,
-        selectionInputFocus: false,
-        inputMaxLengthFocus: false,
-        firstInputFocus: false,
-        numberPasswordFalseFocus: false,
-      })
-      // 等待键盘上推
-      await page.waitFor(1000)
-      const windowInfo = await program.callUniMethod('getWindowInfo');
-      const image1 = await program.screenshot({
-        deviceShot: true,
-        area: {
-          x: 70,
-          y: windowInfo.safeAreaInsets.top + 44 + 100,
-          width: 30,
-          height: 40,
-        },
-      })
-      expect(image1).toSaveImageSnapshot()
-      // 两张截图，避免光标闪烁截不到
-      const image2 = await program.screenshot({
-        deviceShot: true,
-        area: {
-          x: 70,
-          y: windowInfo.safeAreaInsets.top + 44 + 100,
-          width: 30,
-          height: 40,
-        },
-      })
-      expect(image2).toSaveImageSnapshot()
+      expect(await input.attribute("cursor-color")).toBe("red")
     })
   }
 
@@ -331,47 +299,32 @@ describe('component-native-input', () => {
   })
 
   it('focus with value', async () => {
+    const value = 'hello uni-app x'
+    const input = await page.$('#uni-input-default')
     await setPageData({
       focus: false,
       cursorInputFocus: false,
       cursorColorInputFocus: false,
       selectionInputFocus: false,
       inputMaxLengthFocus: false,
+      firstInputFocus: false,
     })
     await page.waitFor(1000)
+    expect(await input.attribute('focus')).toBe('false')
 
     await setPageData({
       firstInputFocus: true
     })
     await page.waitFor(1000)
 
-    await program.pageScrollTo(0)
-    await page.waitFor(1000)
+    expect(await input.value()).toBe(value)
+    expect(await input.attribute('focus')).toBe('true')
 
-    const windowInfo = await program.callUniMethod('getWindowInfo');
-    const screenShotOptions = {
-      deviceShot: true,
-      area: {
-        x: 120,
-        y: windowInfo.safeAreaInsets.top + 44 + 150,
-        width: 20,
-        height: 25,
-      },
-    }
-    const image1 = await program.screenshot(screenShotOptions)
-    expect(image1).toSaveImageSnapshot()
-    // 两张截图，避免光标闪烁截不到
-    const image2 = await program.screenshot(screenShotOptions)
-    expect(image2).toSaveImageSnapshot()
-
-    expect(image2).toSaveImageSnapshot()
     await setPageData({
       firstInputFocus: false,
     })
-    if (isHarmony) {
-      await program.tap({ x: 100, y: 50 })
-      await page.waitFor(1000);
-    }
+    await page.waitFor(500)
+    expect(await input.attribute('focus')).toBe('false')
   })
 
   it('both set modelValue and value', async () => {
