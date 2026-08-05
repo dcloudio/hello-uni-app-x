@@ -9,7 +9,7 @@
       </view>
       <button id="login-button" class="login-button" @click="loginIn">本机号码一键登录</button>
       <view class="privacy">
-        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="false"></checkbox>
+        <checkbox id="privacy-checkbox" class="privacy-checkbox" ref="privacy-checkbox" :checked="privacyChecked"></checkbox>
         <text class="privacy-normal-text">登录即同意</text>
         <text id="privacy-text" class="privacy-text" @click="openLink">{{privacyName}}</text>
       </view>
@@ -30,6 +30,13 @@
   const privacyUrl = ref('')
   const closeIcon = ref('\uE650')
   const isLoading = ref(false)
+  const privacyChecked = ref(false)
+  // #ifdef APP-HARMONY
+  const data = reactive({
+    autoTest: false,
+    onceEventName: ''
+  })
+  // #endif
 
   function closePage() {
     uni.closeDialogPage({
@@ -112,6 +119,13 @@
         privacyTextElement: privacyTextElement,
         success: (res) => {
           console.log(res);
+          // #ifdef APP-HARMONY
+          if (data.autoTest) {
+            closePage()
+            uni.$emit(data.onceEventName)
+            return
+          }
+          // #endif
           takePhoneNumber(res.accessToken, res.openId);
         },
         fail: (error) => {
@@ -163,6 +177,18 @@
     slogan.value = options['slogan'] as string;
     privacyName.value = options['name'] as string;
     privacyUrl.value = options['link'] as string;
+
+    data.autoTest = (options['autoTest'] as string) === 'true'
+    data.onceEventName = options['onceEventName'] as string
+
+    // #ifdef APP-HARMONY
+    if (data.autoTest) {
+      nextTick(() => {
+        privacyChecked.value = true
+        loginIn()
+      })
+    }
+    // #endif
   })
 </script>
 
