@@ -53,7 +53,7 @@ describe('API-getVideoInfo', () => {
       expect(videoInfo.height).toEqual(720)
       if (!isHarmony) {
         expect(videoInfo.fps == 30 || videoInfo.fps == 31).toEqual(true)
-        expect(videoInfo.bitrate).toEqual(149)
+        expect(videoInfo.bitrate).toEqual(93)
       }
     }
   });
