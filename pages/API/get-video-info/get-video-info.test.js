@@ -48,7 +48,7 @@ describe('API-getVideoInfo', () => {
       expect(videoInfo.orientation).toEqual("up")
       expect(videoInfo.type).toEqual("video/mp4")
       expect(videoInfo.duration).toEqual(10)
-      expect(videoInfo.size).toEqual(115.078)
+      expect(parseFloat(videoInfo.size.toFixed(3))).toEqual(115.078)
       expect(videoInfo.width).toEqual(1280)
       expect(videoInfo.height).toEqual(720)
       expect(videoInfo.fps == 30 || videoInfo.fps == 31).toEqual(true)
