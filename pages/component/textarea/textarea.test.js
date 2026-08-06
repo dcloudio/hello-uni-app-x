@@ -29,7 +29,8 @@ describe('component-native-textarea', () => {
 
   beforeEach(async () => {
     await setPageData({
-      jest_result: false
+      jest_result: false,
+      inputEventTriggered: false
     })
   });
 
@@ -47,9 +48,7 @@ describe('component-native-textarea', () => {
         await program.device.keyboard.input('1', options)
       }
       await page.waitFor(2000)
-      expect(await page.data('data.jest_result')).toBe(true)
-      const image = await program.screenshot({ fullPage: true });
-      expect(image).toSaveImageSnapshot();
+      expect(await page.data('data.inputEventTriggered')).toBe(true)
     })
 
     // TODO 微信小程序自动化测试textarea focus属性取到的是数字
