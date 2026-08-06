@@ -7,6 +7,7 @@ const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+const isPad = process.env.UNI_AUTOMATOR_IS_PAD == 'true'
 
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -110,11 +111,11 @@ describe('dialog page', () => {
     if(isWeb){
       expect(await pageSafeAreaInsetsBottom.text()).toBe('0')
     }
-    if(isIos || isAndroid){
+    if(isApp){
       expect(parseInt(await pageSafeAreaInsetsBottom.text())).toBeGreaterThanOrEqual(0)
     }
     pageSafeAreaInsetsLeft = await page.$('#page-safe-area-insets-left')
-    expect(await pageSafeAreaInsetsLeft.text()).toBe('0')
+    expect(await pageSafeAreaInsetsLeft.text()).toBe((isHarmony && isPad) ? '34' : '0')
     pageSafeAreaInsetsRight = await page.$('#page-safe-area-insets-right')
     expect(await pageSafeAreaInsetsRight.text()).toBe('0')
 
