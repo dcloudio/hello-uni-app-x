@@ -9,6 +9,8 @@ const isWeb = platformInfo.startsWith('web')
 const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
+// 【勿动】此项目，某些设备，在自动化测试系统中，不需要运行pages.test.js。其值由自动化测试系统动态控制。
+const skipPagesTestJs = process.env.UNI_ACTION_SKIP_PAGES_TEST_JS;
 // 【勿动】pages 由 const 改为 let，因为在其它任务会修改 pages 的值
 let pageIndex = 0
 
@@ -455,6 +457,21 @@ function getWaitForTagName(pagePath) {
   return 'view'
 }
 
+async function preparePageForScreenshot(pagePath, page) {
+  if (pagePath === '/pages/component/picker/picker') {
+    await page.setData({
+      data: {
+        dayDate: '2026-08-05',
+        monthDate: '2026-08',
+        yearDate: '2026',
+        startDate: '1936-08-05',
+        endDate: '2036-08-05',
+      }
+    })
+    await page.waitFor(100)
+  }
+}
+
 // 将页面数组分组
 const BATCH_SIZE = 20;
 const pageBatches = [];
@@ -465,6 +482,12 @@ for (let i = 0; i < pages.length; i += BATCH_SIZE) {
 // 为每个批次创建独立的测试套件
 pageBatches.forEach((batch, batchIndex) => {
   describe(`Page Screenshot Batch ${batchIndex + 1}`, () => {
+    if (skipPagesTestJs == "Y") {
+      it('skip-current-device', async () => {
+        expect(1).toBe(1);
+      });
+      return;
+    };
     let localPageIndex = 0;
 
     beforeAll(async () => {
@@ -480,6 +503,8 @@ pageBatches.forEach((batch, batchIndex) => {
       const currentPagePath = batch[localPageIndex];
       page = await program.reLaunch(currentPagePath);
       await page.waitFor(getWaitForTagName(currentPagePath));
+      await page.waitFor(500)
+      await preparePageForScreenshot(currentPagePath, page)
       console.log("Taking screenshot: ", pageIndex, currentPagePath);
       let fullPage = true;
 

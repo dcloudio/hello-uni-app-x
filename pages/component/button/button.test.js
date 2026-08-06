@@ -18,9 +18,18 @@ describe('Button.uvue', () => {
   }
 
   let page
+  let screenShotOptions = { fullPage: true }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor('view')
+    const windowInfo = await program.callUniMethod('getWindowInfo')
+    screenShotOptions = {
+      fullPage: true,
+      area: {
+        x: windowInfo.safeArea.left,
+        width: windowInfo.safeArea.right - windowInfo.safeArea.left - 10
+      }
+    }
   })
 
   async function setPageData(newData) {
@@ -51,14 +60,14 @@ describe('Button.uvue', () => {
     const elements = await page.$$('.btn')
     expect(elements.length).toBe(1)
   })
-  if (!isDom2) {
-    it('text', async () => {
-      const textBtn = await page.$('.btn')
-      expect(await textBtn.text()).toEqual('uni-app-x')
-      await setPageData({text: 'uni-app-x button'})
-      expect(await textBtn.text()).toEqual('uni-app-x button')
-    })
-  }
+
+  it('text', async () => {
+    const textBtn = await page.$('.btn')
+    expect(await textBtn.text()).toEqual('uni-app-x')
+    await setPageData({text: 'uni-app-x button'})
+    expect(await textBtn.text()).toEqual('uni-app-x button')
+  })
+
   it('type', async () => {
     const btn = await page.$('.btn')
     expect(await btn.property('type')).toBe('default')
@@ -95,13 +104,11 @@ describe('Button.uvue', () => {
     const value = await page.callMethod('checkUniButtonElement')
     expect(value).toBe(true)
   })
-  if (!isDom2) {
-    it("setbuttonEmpty", async () => {
-      const textBtn = await page.$('.btn')
-      await setPageData({text: ''})
-      expect(await textBtn.text()).toEqual('')
-    })
-  }
+  it("setbuttonEmpty", async () => {
+    const textBtn = await page.$('.btn')
+    await setPageData({text: ''})
+    expect(await textBtn.text()).toEqual('')
+  })
 
   // 自定义button和默认button来回切换截图对比
   it("button-screenshot-plain+primary+default", async () => {
@@ -124,9 +131,7 @@ describe('Button.uvue', () => {
     expect(await btn.property('size')).toBe('default')
     expect(await btn.property('plain')).toBe(true)
     expect(await btn.property('type')).toBe('primary')
-    const image1 = await program.screenshot({
-      fullPage: true
-    });
+    const image1 = await program.screenshot(screenShotOptions);
     expect(image1).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'button-screenshot-plain+primary+default'
     }});
@@ -140,9 +145,7 @@ describe('Button.uvue', () => {
       default_style: true
     })
     await page.waitFor(100);
-    const image2 = await program.screenshot({
-      fullPage: true
-    });
+    const image2 = await program.screenshot(screenShotOptions);
     expect(image2).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'custom-button-screenshot-plain+primary+default'
     }});
@@ -156,9 +159,7 @@ describe('Button.uvue', () => {
       default_style: false
     })
     await page.waitFor(100);
-    const image3 = await program.screenshot({
-      fullPage: true
-    });
+    const image3 = await program.screenshot(screenShotOptions);
     expect(image3).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'custom-button-screenshot-plain+primary+default-changeToDefault'
     }});
@@ -169,22 +170,29 @@ describe('Button.uvue', () => {
 
 describe('Buttonstatus.uvue', () => {
   let page
+  let screenShotOptions = { fullPage: true }
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/button/buttonstatus')
     await page.waitFor('button')
+    const windowInfo = await program.callUniMethod('getWindowInfo')
+    screenShotOptions = {
+      fullPage: true,
+      area: {
+        x: windowInfo.safeArea.left,
+        width: windowInfo.safeArea.right - windowInfo.safeArea.left - 10
+      }
+    }
   })
 
   test('newline', async () => {
-    const image = await program.screenshot({
-      fullPage: true,
-    });
+    const image = await program.screenshot(screenShotOptions);
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'buttonstatus-newline'
     }});
   })
 
   test('loading-class', async () => {
-    if (!isDom2) {
+    if (!isDom2 || isMP) {
       expect(1).toBe(1)
       return
     }
@@ -199,9 +207,7 @@ describe('Buttonstatus.uvue', () => {
 
     await page.waitFor(100);
 
-    const image = await program.screenshot({
-      fullPage: true,
-    });
+    const image = await program.screenshot(screenShotOptions);
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'buttonstatus-disabled'
     }});
@@ -228,9 +234,7 @@ describe('Buttonstatus.uvue', () => {
       await btn.longpress()
     }
     await page.waitFor(400)
-    const image = await program.screenshot({
-      fullPage: true,
-    });
+    const image = await program.screenshot(screenShotOptions);
     expect(image).toSaveImageSnapshot({customSnapshotIdentifier() {
       return 'buttonstatus-button-hover-class-default-value'
     }});

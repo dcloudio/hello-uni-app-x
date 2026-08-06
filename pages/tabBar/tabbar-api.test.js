@@ -3,10 +3,9 @@ const isAndroid = platformInfo.startsWith('android')
 const isIos = platformInfo.startsWith('ios')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
-const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
-const isDom2 = process.env.UNI_APP_X_DOM2 === 'true'
 
 const PAGE_PATH = '/pages/tabBar/API'
+const COMPONENT_PAGE_PATH = '/pages/tabBar/component'
 const TAB_BAR_INDEX = 1
 const DEFAULT_TAB_BAR_STYLE = {
   color: '#7A7E83',
@@ -23,7 +22,7 @@ const DEFAULT_TAB_BAR_ITEM = {
 }
 
 describe('tab bar api screenshot', () => {
-  if (!isApp || (isDom2 && !isHarmony && !isIos)) {
+  if (!isApp) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -52,8 +51,8 @@ describe('tab bar api screenshot', () => {
     await page.waitFor(500)
   }
 
-  async function openPage() {
-    page = await program.reLaunch(PAGE_PATH)
+  async function openPage(path = PAGE_PATH) {
+    page = await program.reLaunch(path)
     await page.waitFor('view')
     await resetTabBar()
   }
@@ -133,5 +132,14 @@ describe('tab bar api screenshot', () => {
   it('hide tab bar screenshot', async () => {
     await callUniMethod('hideTabBar')
     await screenshot()
+  })
+
+  it('preview image dialogPage cover tab bar screenshot', async () => {
+    await openPage(COMPONENT_PAGE_PATH)
+    await screenshot()
+    await page.callMethod('openPreviewImageTest')
+    await screenshot()
+    await page.callMethod('closePreviewImageTest')
+    await page.waitFor(500)
   })
 })

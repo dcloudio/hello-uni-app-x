@@ -1,5 +1,4 @@
-jest.setTimeout(50000);
-
+jest.setTimeout(30000)
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
@@ -20,7 +19,7 @@ describe('web-map', () => {
   beforeAll(async () => {
     page = await program.reLaunch('/pages/component/map/map')
     await page.waitFor('view');
-    if(!isIos && !isHarmony){
+    if(!isIos && !isHarmony && !isWeb){
       await page.waitFor('map');
     }
     // 等待地图加载完成
@@ -33,7 +32,7 @@ describe('web-map', () => {
   if (isApp) {
     it('handleMoveToLocation', async () => {
       await page.callMethod('handleMoveToLocation',false)
-      await page.waitFor(500);
+      await page.waitFor(1000);
       const moveToLocationRes = await page.data('jestResult')
       expect(moveToLocationRes.moveToLocationMsg).toBe("moveToLocation:ok");
     });
@@ -49,7 +48,7 @@ describe('web-map', () => {
     const mapMethods = ['addControls', 'addMarkers', 'addMarkersLabel','removeMarker','addPolyline','removePolyline', 'addPolygons','removePolygon', 'addCircles','removeCircle','includePoint']
     for (var i = 0; i < mapMethods.length; i++) {
       await page.callMethod(mapMethods[i])
-      await page.waitFor(2000);
+      await page.waitFor(1000);
       expect(await program.screenshot()).toSaveImageSnapshot({customSnapshotIdentifier() {
         return 'map-' + mapMethods[i]
       }});

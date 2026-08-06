@@ -35,6 +35,14 @@
       </view>
 
       <view>
+        <text>border: 6rpx dashed #00f8</text>
+        <view class="demo-box">
+          <view class="common" style="border: 6rpx dashed #00f8;"></view>
+          <view class="common" style="border: 6rpx dashed #00f8;" flatten></view>
+        </view>
+      </view>
+
+      <view>
         <text>设置border的view，通过v-show控制显示</text>
         <view v-show="shown" class="demo-box">
           <view class="common" style="border: 5px dotted blue;"></view>
@@ -75,7 +83,7 @@
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 border </text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="test-container">
@@ -144,14 +152,6 @@
         <input-data :defaultValue="data.border" title="border 自定义值" type="text" @confirm="inputChangeBorder"></input-data>
       </view>
 
-      <view class="uni-common-mb">
-        <text>native-view组件: border: 5px dotted blue 和 5px solid cyan;</text>
-        <view class="demo-box">
-          <native-view class="common" style="border: 5px dotted blue;"></native-view>
-          <native-view class="common" style="border: 5px solid cyan;"></native-view>
-        </view>
-      </view>
-
     </view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
   </scroll-view>
@@ -171,7 +171,9 @@
     { value: 1, name: 'none' },
     { value: 2, name: '1px solid purple' },
     { value: 3, name: '2px dashed blue' },
-    { value: 4, name: '3px dotted green' }
+    { value: 4, name: '3px dotted green' },
+    { value: 5, name: '6rpx dashed #00f8' },
+    { value: 6, name: '8rpx solid #0000ff80' }
   ]
 
   const data = reactive({
@@ -200,7 +202,6 @@
     data.borderActualImageFlat = imageRefFlat.value?.style.getPropertyValue('border') ?? ''
   }
 
-  const ins = getCurrentInstance()
   const changeBorder = (value: string) => {
     data.border = value
     viewRef.value?.style.setProperty('border', value)
@@ -212,7 +213,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeBorder = (index: number) => {

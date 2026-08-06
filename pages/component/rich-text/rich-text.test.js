@@ -1,5 +1,10 @@
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isMP = platformInfo.startsWith('mp')
+const isWeb = platformInfo.startsWith('web')
+const isIos = platformInfo.startsWith('ios')
+const isHarmony = platformInfo.startsWith('harmony')
+const isAndroid = platformInfo.startsWith('android')
+const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 
 const PAGE_PATH = '/pages/component/rich-text/rich-text'
 
@@ -12,9 +17,61 @@ describe('rich-text-test', () => {
   }
 
   let page
+  let deviceShotOptions = { fullPage: true }
   beforeAll(async () => {
     page = await program.reLaunch(PAGE_PATH)
     await page.waitFor(1500);
+
+    if (!isWeb) {
+      const windowInfo = await program.callUniMethod('getWindowInfo');
+      let topSafeArea = windowInfo.safeAreaInsets.top;
+      if (isAppWebView) {
+        if (isIos) {
+          topSafeArea = 59
+          if (platformInfo.includes('26')) {
+            topSafeArea = 62
+          }
+        } else if (isAndroid) {
+          topSafeArea = 24
+          windowInfo.safeArea.bottom = 867
+          if (platformInfo.startsWith('android 5')) {
+            topSafeArea = 25
+          }if (platformInfo.startsWith('android 6')) {
+            windowInfo.safeArea.bottom = 592
+          }if (platformInfo.startsWith('android 8')) {
+            windowInfo.safeArea.bottom = 534
+          } else if (platformInfo.startsWith('android 11')) {
+            topSafeArea = 52
+          } else if (platformInfo.startsWith('android 12')) {
+            topSafeArea = 24
+            windowInfo.safeArea.bottom = 716
+          } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
+            topSafeArea = 49
+            windowInfo.safeArea.bottom = 891
+          } else if (platformInfo.startsWith('android 14')) {
+            windowInfo.safeArea.bottom = 891
+          }
+        } else if (isHarmony) {
+          topSafeArea = 39
+          if (platformInfo.includes('nova_12')) {
+            topSafeArea = 35
+          }
+        }
+      }
+      const top = topSafeArea + 44
+      const bottom = Math.min(top + windowInfo.windowHeight, windowInfo.safeArea.bottom)
+      const left = windowInfo.safeArea.left
+      const right = windowInfo.safeArea.right - 10
+      deviceShotOptions = {
+        deviceShot: true,
+        area: {
+          x: left,
+          y: top,
+          width: right - left,
+          height: bottom - top
+        },
+      }
+    }
   })
 
   async function setPageData(newData) {
@@ -64,8 +121,41 @@ describe('rich-text-test', () => {
     expect(image).toSaveImageSnapshot()
     // 重置为默认
     await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
       fontSizeIndex: 0,
-      currentFontSize: '默认',
+      colorIndex: 0,
+      lineHeightIndex: 0,
+      fontFamilyIndex: 0,
+      richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
+    })
+    await page.waitFor(300)
+  })
+
+  it('test style color-red', async () => {
+    await page.callMethod('changeColor')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+  })
+
+  it('test style color-blue', async () => {
+    await page.callMethod('changeColor')
+    await page.waitFor(500)
+    const image = await program.screenshot({ fullPage: true })
+    expect(image).toSaveImageSnapshot()
+    // 重置为默认
+    await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
+      fontSizeIndex: 0,
+      colorIndex: 0,
+      lineHeightIndex: 0,
+      fontFamilyIndex: 0,
       richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
     })
     await page.waitFor(300)
@@ -85,8 +175,14 @@ describe('rich-text-test', () => {
     expect(image).toSaveImageSnapshot()
     // 重置为默认
     await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
+      fontSizeIndex: 0,
+      colorIndex: 0,
       lineHeightIndex: 0,
-      currentLineHeight: '默认',
+      fontFamilyIndex: 0,
       richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
     })
     await page.waitFor(300)
@@ -106,20 +202,24 @@ describe('rich-text-test', () => {
     expect(image).toSaveImageSnapshot()
     // 重置为默认
     await setPageData({
+      currentFontSize: "默认",
+      currentColor: "默认",
+      currentLineHeight: "默认",
+      currentFontFamily: "默认",
+      fontSizeIndex: 0,
+      colorIndex: 0,
+      lineHeightIndex: 0,
       fontFamilyIndex: 0,
-      currentFontFamily: '默认',
       richTextStyle: 'border: 1px; border-style: solid; border-color: red;'
     })
     await page.waitFor(300)
   })
 
-  if (!isMP) {
-    it('test dialogPage', async () => {
-      await page.callMethod('testOpenDialogPage');
-      await page.waitFor(1000);
-      const image = await program.screenshot({ deviceShot: true });
-      expect(image).toSaveImageSnapshot();
-      await page.callMethod('testCloseDialogPage');
-    })
-  }
+  it('test dialogPage', async () => {
+    await page.callMethod('testOpenDialogPage');
+    await page.waitFor(1000);
+    const image = await program.screenshot(deviceShotOptions);
+    expect(image).toSaveImageSnapshot();
+    await page.callMethod('testCloseDialogPage');
+  })
 })

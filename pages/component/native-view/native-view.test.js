@@ -3,6 +3,7 @@ const isMP = platformInfo.startsWith('mp')
 const isWeb = platformInfo.startsWith('web')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isIOS = platformInfo.startsWith('ios')
+const NAV_BAR_HEIGHT = 44
 
 describe('native-view.uvue', () => {
   if (isMP || isWeb || isAppWebView) {
@@ -33,5 +34,22 @@ describe('native-view.uvue', () => {
 
     const isLoad = await page.callMethod('getIsLoadTest')
     expect(isLoad).toBe(true)
+  })
+
+  it('native-view点击事件透传自定义value', async () => {
+    page = await program.reLaunch('/pages/component/native-view/native-view')
+    await page.waitFor('view')
+
+    const nativeButton = await page.$('#helloView')
+    const rect = await nativeButton.offset()
+    const size = await nativeButton.size()
+    const windowInfo = await program.callUniMethod('getWindowInfo')
+    const x = Math.round(rect.left + size.width / 2)
+    const y = Math.round(rect.top + size.height / 2 + windowInfo.safeAreaInsets.top + NAV_BAR_HEIGHT)
+    await program.device.tap(x, y + 30)
+    await page.waitFor(100)
+
+    const buttonTapValue = await page.callMethod('getButtonTapValueTest')
+    expect(buttonTapValue).toBe('CustomValue')
   })
 })

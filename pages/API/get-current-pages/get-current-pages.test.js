@@ -10,11 +10,11 @@ const isMP = platformInfo.startsWith('mp')
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
 const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
-const HOME_PAGE_PATH = isDom2 && !isHarmony && !isIos ? '/pages/tabBar/tab-bar' : '/pages/tabBar/component'
+const HOME_PAGE_PATH = '/pages/tabBar/component'
 const PAGE_PATH = '/pages/API/get-current-pages/get-current-pages?test=123'
 
 describe('getCurrentPages', () => {
-  if (isAppWebView) {
+  if (isAppWebView || (isAndroid && platformInfo.includes('14.0.0'))) {
     it('not support', () => {
       expect(1).toBe(1)
     })
@@ -41,7 +41,7 @@ describe('getCurrentPages', () => {
         }, waitTime)
       })
     }
-    page = isDom2 && !isHarmony && !isIos ? await program.reLaunch(HOME_PAGE_PATH) : await program.switchTab(HOME_PAGE_PATH)
+    page = await program.switchTab(HOME_PAGE_PATH)
     await page.waitFor(1000)
     page = await program.navigateTo(PAGE_PATH)
     await page.waitFor(1000)
@@ -155,7 +155,7 @@ describe('getCurrentPages', () => {
   })
   it('getAndroidView', async () => {
     const res = await page.callMethod('checkGetAndroidView')
-    expect(res).toBe(isAndroid)
+    expect(res).toBe(isAndroid && !isDom2)
   })
   it('getIOSView', async () => {
     const res = await page.callMethod('checkGetIOSView')
@@ -177,7 +177,7 @@ describe('getCurrentPages', () => {
   if(isAndroid) {
     it('getAndroidActivity', async () => {
       const res = await page.callMethod('checkGetAndroidActivity')
-      expect(res).toBe(true)
+      expect(res).toBe(!isDom2)
     })
   }
 

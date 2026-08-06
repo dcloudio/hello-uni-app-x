@@ -1,4 +1,3 @@
-jest.setTimeout(30000);
 describe('test element-get-attribute', () => {
   let page;
   const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
@@ -20,6 +19,7 @@ describe('test element-get-attribute', () => {
   });
   it('check setStyle getAttributeStyle', async () => {
     await page.callMethod('setStyle')
+    await page.waitFor(500)
     if(isWeb||isMP){
       await page.callMethod('getAttributeStyle')
       const attrStyle = isMP?'background-color:#FFF000;':'background-color: rgb(255, 240, 0);'
@@ -30,12 +30,8 @@ describe('test element-get-attribute', () => {
     await page.callMethod('getPropertyValue')
     await page.waitFor(1000)
     const propertyValueData = await page.data('data.propertyValue')
-    if (isDom2) {
-      expect(['#FFF000FF', 'rgb(255,240,0)']).toContain(propertyValueData)
-    } else {
-      const propertyValue = isWeb?'rgb(255, 240, 0)': '#FFF000'
-      expect(propertyValueData).toEqual(propertyValue);
-    }
+    const value = isDom2 || isWeb ? 'rgb(255, 240, 0)' : '#FFF000'
+    expect(propertyValueData).toBe(value)
   });
 
   //暂时仅处理android平台和鸿蒙平台
@@ -43,7 +39,6 @@ describe('test element-get-attribute', () => {
 		it('check getScrollViewStyleMarginTop', async () => {
 			await page.waitFor(1000)
 		  const marginTop = await page.callMethod('getScrollViewStyleMarginTop')
-			console.log("getScrollViewStyleMarginTop", marginTop)
 		  expect(marginTop).toEqual(isDom2 ? "15px" : "15");
 		})
 	}

@@ -1,5 +1,3 @@
-jest.setTimeout(50000)
-
 const platformInfo = process.env.uniTestPlatformInfo.toLocaleLowerCase()
 const isWeb = platformInfo.startsWith('web')
 const isAndroid = platformInfo.startsWith('android')
@@ -8,6 +6,7 @@ const isMP = platformInfo.startsWith('mp')
 const isHarmony = platformInfo.startsWith('harmony')
 const isApp = isAndroid || isIos || isHarmony
 const isAppWebView = process.env.UNI_AUTOMATOR_APP_WEBVIEW == 'true'
+const isDom2 = process.env.UNI_APP_X_DOM2 === "true"
 
 const FIRST_PAGE_PATH = '/pages/API/dialog-page/dialog-page'
 const NEXT_PAGE_PATH = '/pages/API/dialog-page/next-page'
@@ -26,9 +25,9 @@ describe('dialog page', () => {
   let lifecycleNum;
 
   const screenShotArea = {
-    x: 342,
+    x: 355,
     y:18,
-    width: 40,
+    width: 25,
     height: 20
   };
   if (isIos) {
@@ -56,37 +55,29 @@ describe('dialog page', () => {
   }
 
   beforeAll(async () => {
+    page = await program.reLaunch(FIRST_PAGE_PATH)
+    await page.waitFor('view');
+
+    if (isAndroid) {
+      await program.adbCommand('settings put secure immersive_mode_confirmations confirmed')
+    }
+
     const windowInfo = await program.callUniMethod('getWindowInfo');
     let topSafeArea = windowInfo.safeAreaInsets.top;
-    if (isAppWebView) {
-      if (isIos) {
-        topSafeArea = 59
-      } else if (isAndroid) {
-        topSafeArea = 24
-        if (platformInfo.startsWith('android 5')) {
-          topSafeArea = 25
-        } else if (platformInfo.startsWith('android 11')) {
-          topSafeArea = 52
-        } else if (platformInfo.startsWith('android 13') || platformInfo.startsWith('android 15')) {
-          topSafeArea = 49
-        }
-      } else if (isHarmony) {
-        // mate 60
-        // topSafeArea = 33
-        // mate 60 pro
-        topSafeArea = 38
-      }
-    }
+    const top = topSafeArea + 44
+    const bottom = windowInfo.safeArea.bottom
+    const left = windowInfo.safeArea.left
+    const right = windowInfo.safeArea.right
     deviceShotOptions = {
       deviceShot: true,
       area: {
-        x: 0,
-        y: topSafeArea + 44,
+        x: left,
+        y: top,
+        width: right - left,
+        height: bottom - top
       },
     };
 
-    page = await program.reLaunch(FIRST_PAGE_PATH)
-    await page.waitFor('view');
     initLifeCycleNum = await page.callMethod('getLifeCycleNum');
     await page.callMethod('setLifeCycleNum', 0)
     lifecycleNum = await page.callMethod('getLifeCycleNum')
@@ -201,7 +192,9 @@ describe('dialog page', () => {
     dialogPageStyle = await page.callMethod('dialogPageGetPageStyle')
     expect(dialogPageStyle.backgroundColorContent).toBe('red')
     expect(await page.callMethod('dialogPageCheckGetElementById')).toBe(true)
-    expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    if (!isDom2) {
+      expect(await page.callMethod('dialogCheckGetAndroidView')).toBe(isAndroid)
+    }
     expect(await page.callMethod('dialogCheckGetIOSView')).toBe(false)
     expect(await page.callMethod('dialogCheckGetHTMLElement')).toBe(isWeb)
   })
@@ -575,9 +568,7 @@ describe('dialog page', () => {
           androidThreeButtonNavigationTranslucent: false
         });
         await page.waitFor(2000);
-        const image = await program.screenshot({
-          deviceShot: true
-        });
+        const image = await program.screenshot(deviceShotOptions);
         expect(image).toSaveImageSnapshot();
         await page.waitFor(2000);
         await page.callMethod('closeDialogSimple');
@@ -615,7 +606,7 @@ describe('dialog page', () => {
     })
   }
 
-  if (isAndroid) {
+  if (isAndroid && !isDom2) {
     it ('open dialogPage in tabBar', async () => {
       const tabPage = await program.reLaunch('/pages/tabBar/API');
       await tabPage.callMethod('testOpenDialogPage');

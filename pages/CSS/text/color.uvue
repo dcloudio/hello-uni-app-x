@@ -10,6 +10,8 @@
           <text class="common" style="color: rgba(0, 0, 255, 0.5);">color: rgba(0, 0, 255, 0.5)</text>
           <text class="common" style="color: #0000ff;">color: #0000ff</text>
           <text class="common" style="color: #00f;">color: #00f</text>
+          <text class="common" style="color: #00f8;">color: #00f8</text>
+          <text class="common" style="color: #0000ff80;">color: #0000ff80</text>
           <text class="common" style="color: blue;">color: blue</text>
         </view>
         <view class="box">
@@ -17,12 +19,14 @@
           <text class="common" style="color: rgba(0, 0, 255, 0.5);" flatten>color: rgba(0, 0, 255, 0.5)</text>
           <text class="common" style="color: #0000ff;" flatten>color: #0000ff</text>
           <text class="common" style="color: #00f;" flatten>color: #00f</text>
+          <text class="common" style="color: #00f8;" flatten>color: #00f8</text>
+          <text class="common" style="color: #0000ff80;" flatten>color: #0000ff80</text>
           <text class="common" style="color: blue;" flatten>color: blue</text>
         </view>
       </view>
 
       <view class="uni-common-mt">
-        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取 color 测试</text>
+        <text class="uni-title-text">setProperty 设置与 getPropertyValue 获取</text>
       </view>
 
       <view class="common-box">
@@ -67,8 +71,10 @@
     { value: 2, name: '#942192' },
     { value: 3, name: '#000' },
     { value: 4, name: '#0000ff' },
-    { value: 5, name: 'rgb(0, 255, 0)' },
-    { value: 6, name: 'rgba(0, 255, 0, 0.5)' }
+    { value: 5, name: '#00f8' },
+    { value: 6, name: '#0000ff80' },
+    { value: 7, name: 'rgb(0, 255, 0)' },
+    { value: 8, name: 'rgba(0, 255, 0, 0.5)' }
   ]
 
   const data = reactive({
@@ -84,7 +90,6 @@
     data.colorActualFlat = textRefFlat.value?.style.getPropertyValue('color') ?? ''
   }
 
-  const ins = getCurrentInstance()
 
   const changeColor = (value: string) => {
     data.color = value
@@ -93,7 +98,7 @@
     // 使用 nextTick 确保样式已应用后再获取值
     nextTick(() => {
       getPropertyValues()
-    }, ins)
+    })
   }
 
   const radioChangeColor = (index: number) => {
@@ -128,7 +133,7 @@
   }
   .box{
     flex:1;
-    height: 130px;
+    height: 190px;
     background-color: gray;
     justify-content: center;
     align-items: center;
