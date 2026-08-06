@@ -103,7 +103,7 @@ describe("onLoad", () => {
   }
 
   it("adjustData", async () => {
-    await page.callMethod("navigateToOnLoadWithType", "adjustData");
+    await page.callMethod("navigateToOnLoadWithType", "adjustData", false);
     await page.waitFor(1000);
     const image = await program.screenshot(deviceShotOptions);
     expect(image).toSaveImageSnapshot();
@@ -111,7 +111,7 @@ describe("onLoad", () => {
   it("navigateTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
-    await page.callMethod("navigateToOnLoadWithType", "navigateTo");
+    await page.callMethod("navigateToOnLoadWithType", "navigateTo", false);
     await page.waitFor(1000);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
@@ -121,7 +121,7 @@ describe("onLoad", () => {
         // harmony vapor 存在 https://issues.dcloud.net.cn/pages/issues/detail?id=31190 问题，导致这里测试失败
         page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
         await page.waitFor('view');
-        await page.callMethod("navigateToOnLoadWithType", "navigateBack");
+        await page.callMethod("navigateToOnLoadWithType", "navigateBack", false);
         await page.waitFor(1000);
         page = await program.currentPage();
         expect(page.path).toBe(INTERMEDIATE_PAGE_PATH.substring(1));
@@ -130,7 +130,7 @@ describe("onLoad", () => {
   it("redirectTo", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
-    await page.callMethod("navigateToOnLoadWithType", "redirectTo");
+    await page.callMethod("navigateToOnLoadWithType", "redirectTo", false);
     await page.waitFor(100);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
@@ -138,7 +138,7 @@ describe("onLoad", () => {
   it("reLaunch", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
-    await page.callMethod("navigateToOnLoadWithType", "reLaunch");
+    await page.callMethod("navigateToOnLoadWithType", "reLaunch", false);
     await page.waitFor(100);
     page = await program.currentPage();
     expect(page.path).toBe(TARGET_PAGE_PATH.substring(1));
@@ -148,7 +148,7 @@ describe("onLoad", () => {
   it("switchTab", async () => {
     page = await program.reLaunch(INTERMEDIATE_PAGE_PATH);
     await page.waitFor('view');
-    await page.callMethod("navigateToOnLoadWithType", "switchTab");
+    await page.callMethod("navigateToOnLoadWithType", "switchTab", false);
     await page.waitFor(100);
     page = await program.currentPage();
     expect(page.path).toBe("pages/tabBar/component");
