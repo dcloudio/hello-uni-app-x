@@ -3,6 +3,9 @@
   <scroll-view style="flex: 1">
   <!-- #endif -->
     <view style="padding-left: 8px; padding-right: 8px">
+      <!-- #ifndef MP-ALIPAY -->
+
+
       <view>
         <text class="text-desc">图片指示器样式</text>
         <radio-group class="cell-ct" style="background-color: white" @change="onIndicatorChanged">
@@ -30,6 +33,7 @@
           </view>
         </radio-group>
       </view>
+      <!-- #endif -->
       <view style="background-color: white">
         <text class="text-desc">点击图片开始预览</text>
         <view class="cell-ct" style="margin: 8px;">
@@ -75,8 +79,11 @@
 
   const imageList = ref([
     { src: "https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni@2x.png", error: false },
+    // 只支持 http 图片链接
+    // #ifndef MP-ALIPAY
     { src: "/static/test-image/logo.png", error: false },
     { src: "/static/test-image/logo.svg", error: false },
+    // #endif
     // #ifdef APP
     { src: "/static/uni2.png", error: false },
     // #endif
@@ -128,6 +135,10 @@
     uni.previewImage({
       urls: list,
       current: index,
+      // #ifdef MP-ALIPAY
+      enableSavePhoto:true,
+      // #endif
+      // #ifndef MP-ALIPAY
       indicator: currentIndicator.value,
       loop: isLoop.value,
       longPressActions: (isLongPress.value ? ({
@@ -146,6 +157,7 @@
           })
         }
       } as LongPressActionsOptions) : null)
+      // #endif
     })
   }
 
