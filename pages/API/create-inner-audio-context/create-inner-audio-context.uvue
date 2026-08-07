@@ -120,6 +120,14 @@
     onWaitingTest: false
   } as DataType)
 
+  const updateVolumeFromAudioContext = () => {
+    const volume = data._audioContext!.volume
+    // 避免拿到空值/无效值时 加音量计算出 NaN
+    if (typeof volume === 'number' && !isNaN(volume)) {
+      data.volume = volume
+    }
+  }
+
   const position = computed(() : number => {
     return data.isPlayEnd ? 0 : data.currentTime;
   })
@@ -142,7 +150,7 @@
       data.isCanplay = true;
       // #ifdef MP
       // 微信小程序安卓端过早的时机获取的volume为undefine，改为在此处获取
-      data.volume = data._audioContext!.volume;
+      updateVolumeFromAudioContext()
       // #endif
       // 当音频可以播放时，获取缓冲信息
       data.buffered = data._audioContext!.buffered;
@@ -305,7 +313,7 @@
   onReady(() => {
     data._audioContext = uni.createInnerAudioContext();
     data._audioContext!.src = audioUrl;
-    data.volume = data._audioContext!.volume;
+    updateVolumeFromAudioContext()
     onCanplay()
     data._audioContext!.onPlay(() => {
       data.isPaused = false;
