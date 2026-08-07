@@ -56,35 +56,18 @@ describe('component-native-input', () => {
     it('focus', async () => {
       const input = await page.$('#uni-input-focus');
       expect(await input.attribute('focus')).toBe("true")
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
       await setPageData({focus: false})
       expect(await input.attribute('focus')).toBe("false")
-      // await page.waitFor(1000)
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-      // await page.setData({
-      //   focus: true,
-      // })
-      // expect(await input.attribute('focus')).toBe(true)
-      // await page.waitFor(1000)
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-      // await page.setData({
-      //   focus: false,
-      // })
-      // expect(await input.attribute('focus')).toBe(false)
-      // await page.waitFor(1000)
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-      // await page.waitFor(1000)
     });
   }
-  // web ios 自动化测试时无法触发事件，手动测试可以
-  // TODO: dom2 harmony 暂时不支持 holdKeyboard
+  // web、iOS 自动化无法触发事件；Harmony Vapor 暂不支持通过 UniElement.focus() 触发 input focus
   if ((isHarmony && !isDom2) || isAndroid) {
     it("focus and blur event", async () => {
       if (isHarmony) {
         await program.tap({ x: 100, y: 50 })
         await page.waitFor(1000);
       }
-      await page.setData({
+      await setPageData({
         triggerFocus: false,
         triggerBlur: false,
       })
@@ -139,86 +122,24 @@ describe('component-native-input', () => {
     expect(image).toSaveImageSnapshot()
   })
 
-  //  测试密码属性
-  // it("password", async () => {
-  //   const input = await page.$('.uni-input-password');
-  //   expect(await input.attribute('password')).toBe(true)
-  //   await page.setData({
-  //     inputPassword: false,
-  //     inputPasswordValue: "inputPasswordValue"
-  //   })
-  //   expect(await input.attribute('password')).toBe(false)
-  //   await page.waitFor(500)
-  //   await page.setData({
-  //     inputPassword: true
-  //   })
-  // })
-  // 测试placeholder
-  // it("placeholder", async () => {
-  //   const placeholder1 = await page.$('.uni-input-placeholder1');
-  //   expect(await placeholder1.attribute("placeholder-style")).toMatchObject({
-  //     "color": "red"
-  //   })
-  //   expect(await placeholder1.attribute("placeholder")).toEqual("占位符文字颜色为红色")
-  //   await page.setData({
-  //     inputPlaceHolderStyle: "color:#CC00CC",
-  //   })
-  //   expect(await placeholder1.attribute("placeholder-style")).toMatchObject({
-  //     "color": "#CC00CC"
-  //   })
-
-  //   await page.setData({
-  //     inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0",
-  //   })
-  //   expect(await placeholder1.attribute("placeholder-style")).toMatchObject({
-  //     "color": "#CC19CC",
-  //     "backgroundColor": "#00b1c0"
-  //   })
-
-  //   await page.setData({
-  //     inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0;text-align:center;font-size:44px;font-weight:900",
-  //   })
-  //   expect(await placeholder1.attribute("placeholder-style")).toEqual({
-  //     "backgroundColor": "#00b1c0",
-  //     "color": "#CC19CC",
-  //     "fontSize": "44px",
-  //     "fontWeight": "900",
-  //     "textAlign": "center"
-  //   })
-
-  //   const placeholder2 = await page.$('.uni-input-placeholder2');
-  //   expect(await placeholder2.attribute("placeholder-class")).toMatchObject({
-  //     "backgroundColor": "#008000"
-  //   })
-  //   await page.setData({
-  //     inputPlaceHolderClass: "uni-input-placeholder-class-ts",
-  //   })
-  //   expect(await placeholder2.attribute("placeholder-class")).toMatchObject({
-  //     "backgroundColor": "#FFA500"
-  //   })
-  //   expect(await placeholder2.attribute("placeholder")).toEqual("占位符背景色为绿色")
-  // })
+  it("password updates dynamically", async () => {
+    const input = await page.$('#uni-input-password')
+    try {
+      expect(String(await input.attribute('password'))).toBe('true')
+      await setPageData({ inputPassword: false })
+      expect(String(await input.attribute('password'))).toBe('false')
+      await setPageData({ inputPassword: true })
+      expect(String(await input.attribute('password'))).toBe('true')
+    } finally {
+      await setPageData({ inputPassword: true })
+    }
+  })
 
   if(isMP) {
     it("disable", async () => {
       const input = await page.$('#uni-input-disable');
       expect(await input.property("disabled")).toBe(true)
     })
-    // 如下属性在自动化测试通过property、attribute + confirmType、confirm-type均无法获取
-    // it("confirm-type", async () => {
-    //   expect(await (await page.$('#uni-input-confirm-send')).attribute("confirm-type")).toEqual("send")
-    //   expect(await (await page.$('#uni-input-confirm-search')).property("confirmType")).toEqual("search")
-    //   expect(await (await page.$('#uni-input-confirm-next')).property("confirmType")).toEqual("next")
-    //   expect(await (await page.$('#uni-input-confirm-go')).property("confirmType")).toEqual("go")
-    //   expect(await (await page.$('#uni-input-confirm-done')).property("confirmType")).toEqual("done")
-    // })
-    // it("cursor-color", async () => {
-    //   await page.setData({
-    //     cursor_color: "red",
-    //   })
-    //   await page.waitFor(500)
-    //   expect(await (await page.$('#uni-input-cursor-color')).property("cursor-color")).toBe("red")
-    // })
   } else {
     it("disable", async () => {
       const input = await page.$('#uni-input-disable');
@@ -238,15 +159,6 @@ describe('component-native-input', () => {
       expect(await input.attribute("cursor-color")).toBe("red")
     })
   }
-
-  // it("maxlength", async () => {
-  //   const input = await page.$('.uni-input-maxlength');
-  //   await page.setData({
-  //     inputMaxLengthValue: "uni-input-maxlength"
-  //   })
-  //   await page.waitFor(500)
-  // })
-
 
   it("maxlength", async () => {
     const input = await page.$('#uni-input-maxlength');
