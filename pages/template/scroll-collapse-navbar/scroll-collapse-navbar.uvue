@@ -15,7 +15,12 @@
 
     <view ref="navigatorbarRef" class="navigatorbar">
       <view class="titlebar">
+        <!-- #ifndef MP-ALIPAY -->
         <uni-back-arrow-circle style="background-color: transparent;" arrow-class="arrow"></uni-back-arrow-circle>
+        <!-- #endif -->
+        <!-- #ifdef MP-ALIPAY -->
+        <view style="width:36px;"></view>
+        <!-- #endif -->
         <text ref="titleRef" class="title">DCloud 为开发者而生</text>
       </view>
       <view ref="searchbarRef" class="searchbar" @tap="search">
@@ -88,6 +93,18 @@ onLoad(() => {
 
 onReady(() => {
   setStyle();
+})
+
+
+onPageShow(() => {
+  // #ifdef MP-ALIPAY
+  // 支付宝小程序导航栏返回图标不可隐藏,当导航栏背景透明时，系统会默认使用白色前景色（即返回箭头为白色）通过frontColor设置黑色。
+  // frontColor 必须和 backgroundColor 一起传才能生效
+  uni.setNavigationBar({
+    frontColor: '#000000',
+    backgroundColor: '#ffffff',
+  })
+  // #endif
 })
 
 onResize((event : OnResizeOptions) => {
