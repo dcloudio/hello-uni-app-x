@@ -1,5 +1,5 @@
 <template>
-  <list-view :id="id" class="list" :bounces="false" :scroll-y="true" :custom-nested-scroll="true"
+  <list-view :id="id" class="list uni-theme-root" :bounces="false" :scroll-y="true" :custom-nested-scroll="true"
     @scrolltolower="loadData(null)" associative-container="nested-scroll-view">
     <list-item class="list-item" v-for="(item, _) in dataList" :key="item.plugin_id" type="10">
       <view class="list-item-icon">
@@ -220,13 +220,14 @@ defineExpose({
 <style>
   .list {
     flex: 1;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .list-item {
     flex-direction: row;
     margin-top: 10px;
     padding: 10px;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .list-item-icon {
@@ -243,9 +244,14 @@ defineExpose({
     margin-left: 15px;
   }
 
+  .title {
+    color: var(--text-color, #333333);
+  }
+
   .description-text {
     font-size: 13px;
-    color: #666;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
     line-height: 19px;
   }
 
@@ -287,6 +293,22 @@ defineExpose({
   .loading {
     padding: 30px;
     align-items: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-item {
+      background-color: #243a29;
+      color: #9bd3a3;
+    }
+
+    .update-date-text,
+    .update-date-value {
+      color: #b8b8b8;
+    }
+
+    .author {
+      color: #72d572;
+    }
   }
 
   .flex-row {

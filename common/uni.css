@@ -1,22 +1,61 @@
-/* 主题变量 */
-.theme-light {
+/* 公共主题变量 */
+/* #ifdef WEB || MP */
+page {
 	--list-background-color: #ffffff;
-	--background-color: #f8f8f8;
+	--background-color: #efeff4;
 	--active-color:#a0a0a0;
 	--active-background-color: #f8f8f8;
 	--text-color: #333333;
 	--arrow-color: #999999;
 	--border-color: rgba(0, 0, 0, .06);
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--tips-border-color: #91caff;
+	color: var(--text-color);
+}
+/* #endif */
+
+.uni-theme-root {
+	--list-background-color: #ffffff;
+	--background-color: #efeff4;
+	--active-color:#a0a0a0;
+	--active-background-color: #f8f8f8;
+	--text-color: #333333;
+	--arrow-color: #999999;
+	--border-color: rgba(0, 0, 0, .06);
+	--tips-color: #0958d9;
+	--tips-background-color: #e6f4ff;
+	--tips-border-color: #91caff;
+	color: var(--text-color);
 }
 
-.theme-dark {
-	--list-background-color: #2d2d2d;
-	--background-color: #1a1a1a;
-	--active-color:#8f8f8f;
-	--active-background-color: #3b3b3b;
-	--text-color: #ffffff;
-	--arrow-color: #ffffff;
-	--border-color: rgba(255, 255, 255, 0.1);
+@media (prefers-color-scheme: dark) {
+	/* #ifdef WEB || MP */
+	page {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color:#8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--border-color: rgba(255, 255, 255, 0.1);
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--tips-border-color: #1d39c4;
+	}
+	/* #endif */
+	.uni-theme-root {
+		--list-background-color: #2d2d2d;
+		--background-color: #1a1a1a;
+		--active-color:#8f8f8f;
+		--active-background-color: #3b3b3b;
+		--text-color: #ffffff;
+		--arrow-color: #ffffff;
+		--border-color: rgba(255, 255, 255, 0.1);
+		--tips-color: #91caff;
+		--tips-background-color: #0b1b3a;
+		--tips-border-color: #1d39c4;
+	}
 }
 
 .uni-h1 {
@@ -50,6 +89,7 @@
 
 .uni-title {
   padding: 10px 0;
+  color: var(--text-color, #333333);
 }
 
 .uni-title-text {
@@ -93,9 +133,9 @@
 
 .uni-tips{
   font-size: 13px;
-  color: #0958d9;
-  background-color: #e6f4ff;
-  border-left: 4px solid #91caff;
+  color: var(--tips-color, #0958d9);
+  background-color: var(--tips-background-color, #e6f4ff);
+  border-left: 4px solid var(--tips-border-color, #91caff);
   padding: 10px 12px;
   border-radius: 4px;
   margin: 10px;
@@ -109,6 +149,12 @@
   border-bottom: 1px solid #c8c7cc;
 }
 
+@media (prefers-color-scheme: dark) {
+  .uni-list {
+    border-bottom-color: #3a3a3c;
+  }
+}
+
 .uni-list-cell {
   position: relative;
   display: flex;
@@ -119,6 +165,7 @@
 
 .uni-list-cell-padding {
   padding: 10px 15px;
+  color: var(--text-color, #333333);
 }
 
 .uni-list-cell-line {
@@ -140,6 +187,7 @@
 .uni-list-cell-db,
 .uni-list-cell-right {
   flex: 1;
+  color: var(--text-color, #333333);
 }
 
 .uni-list-cell-db-text {
@@ -159,7 +207,7 @@
   font-size: 14px;
   flex: 1;
   box-sizing: content-box;
-  background: var(--list-background-color,#ffffff);
+  background-color: var(--list-background-color,#ffffff);
 }
 /*
 .uni-flex {
@@ -223,7 +271,6 @@
 
 .uni-container {
   padding: 15px;
-  background-color: var(--background-color,#f8f8f8);
 }
 
 .uni-header-logo {
@@ -268,7 +315,7 @@
 }
 
 .uni-panel-h-on {
-  background-color: #f0f0f0;
+  background-color: var(--active-background-color, #f0f0f0);
 }
 
 .uni-panel-text {
@@ -302,7 +349,7 @@
   width: 94%;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
 }
 
 /* left-windows */
@@ -321,12 +368,6 @@
 /* web端适配暗黑主题 */
 /* #ifdef WEB */
  @media (prefers-color-scheme: dark) {
-  /* 增加deep，穿透所有页面和组件 */
-  :deep(body),
-  :deep(uni-page-body) {
-    color: rgba(0, 0, 0, 0.9);
-  }
-
   .uni-top-window .tab-bar-flex :deep(.uni-tabbar){
     background-color: #2d2d2d!important;
   }
@@ -358,11 +399,6 @@
 /* #endif */
 
 
-/* #ifdef MP */
-page {
-  color: rgba(0, 0, 0, 0.9);
-}
-/* #endif */
 .pl-4{
   padding-left: 4px;
 }

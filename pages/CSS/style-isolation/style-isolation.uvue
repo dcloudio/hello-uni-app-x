@@ -1,8 +1,8 @@
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="uni-theme-root" style="flex: 1;">
   <!-- #endif -->
-    <view style="padding: 15px;">
+    <view class="style-isolation-page uni-theme-root">
       <text class="page-title">样式隔离</text>
       <view class="section">
         <text class="section-title">1. 全局样式 </text>
@@ -14,7 +14,7 @@
         <view class="test-item">
           <text class="label">使用全局class "global-box"：</text>
           <view class="global-box">
-            <text>这是应用了全局box样式的容器，背景色应为：蓝色</text>
+            <text class="global-box-label">这是应用了全局box样式的容器，背景色应为：蓝色</text>
           </view>
         </view>
       </view>
@@ -24,7 +24,7 @@
         <text class="section-desc">单根节点为view的自定义组件，可以直接透传hover-class相关属性</text>
         <view class="test-item">
           <child-hover-class id="view-hover" class="view-class" hover-class="hover-class" :hover-stay-time="data.stay_time">
-            <text class="text">抬起 1000 ms 后背景恢复</text>
+            <text class="demo-block-text">抬起 1000 ms 后背景恢复</text>
           </child-hover-class>
         </view>
       </view>
@@ -200,10 +200,14 @@
 </script>
 
 <style>
+  .style-isolation-page {
+    padding: 15px;
+  }
+
   .page-title {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color, #333333);
     text-align: center;
     margin-bottom: 20px;
   }
@@ -216,26 +220,26 @@
   .section-title {
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color, #333333);
     margin-bottom: 10px;
   }
 
   .section-desc {
     font-size: 13px;
-    color: #999;
+    color: var(--active-color, #999999);
     margin: 10px;
   }
 
   .test-item {
     margin-bottom: 15px;
     padding: 10px;
-    background-color: #FFFFFF;
+    background-color: var(--list-background-color, #ffffff);
     border-radius: 6px;
   }
 
   .label {
     font-size: 15px;
-    color: #555;
+    color: var(--text-color, #555555);
     margin-bottom: 8px;
   }
 
@@ -278,6 +282,10 @@
     color:red;
     font-size: 14px;
   }
+
+  .global-box-label {
+    color: #1a1a1a;
+  }
   .view-class {
     padding: 10px;
     margin: 10px;
@@ -286,6 +294,10 @@
     background-color: #e8f5e9;
     justify-content: center;
     align-items: center;
+  }
+
+  .demo-block-text {
+    color: #1a1a1a;
   }
   .hover-class {
     background-color: #00aaff;

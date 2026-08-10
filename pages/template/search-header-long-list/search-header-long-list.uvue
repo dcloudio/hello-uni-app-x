@@ -1,9 +1,9 @@
 <template>
-  <scroll-view ref="pageScrollView" class="page" :bounces="false"
+  <scroll-view ref="pageScrollView" class="page uni-theme-root" :bounces="false"
     @startnestedscroll="onStartNestedScroll" @nestedprescroll="onNestedPreScroll"
   :refresher-triggered="refresherTriggered" refresher-enabled="true" @refresherrefresh="onRefresherrefresh">
     <view ref="header" class="search-bar">
-      <input placeholder="搜索..." :maxlength="-1"/>
+      <input class="search-input" placeholder="搜索..." :maxlength="-1"/>
     </view>
     <view class="swiper-list">
       <scroll-view ref="tabScroll" class="swiper-tabs" direction="horizontal" :show-scrollbar="false">
@@ -358,20 +358,26 @@ defineExpose({
     padding: 10px;
   }
 
+  .search-input {
+    color: #333333;
+    background-color: #ffffff;
+  }
+
   .swiper-list {
     height: 100%;
+    background-color: var(--background-color, #f8f8f8);
     /* #ifdef WEB */
     flex: 1;
     /* #endif */
   }
 
   .swiper-tabs {
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
     flex-direction: column;
   }
 
   .swiper-tabs-item {
-    color: #555;
+    color: var(--text-color, #555555);
     font-size: 16px;
     padding: 12px 25px;
     white-space: nowrap;
@@ -394,5 +400,12 @@ defineExpose({
   .swiper-item {
     /* flex: 1; harmony 高度异常 */
     height: 100%;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .search-input {
+      color: #ffffff;
+      background-color: #2d2d2d;
+    }
   }
 </style>

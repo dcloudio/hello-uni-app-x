@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <scroll-view :class="isDarkMode ? 'theme-dark' : 'theme-light'" class="detail-container" style="flex: 1">
+  <scroll-view class="detail-container uni-theme-root" style="flex: 1">
   <!-- #endif -->
     <!-- 宽屏时不使用共享元素组件 -->
     <view v-if="isWideScreen">
@@ -22,7 +22,13 @@
     </view>
     <!-- #endif -->
 
+    <!-- #ifdef APP -->
+    <rich-text v-if="htmlNodes" class="rich-text rich-text-light" :nodes="htmlNodes" mode="native"></rich-text>
+    <rich-text v-if="darkHtmlNodes" class="rich-text rich-text-dark" :nodes="darkHtmlNodes" mode="native"></rich-text>
+    <!-- #endif -->
+    <!-- #ifndef APP -->
     <rich-text v-if="htmlNodes" class="rich-text" :nodes="htmlNodes" mode="native"></rich-text>
+    <!-- #endif -->
   <!-- #ifdef APP -->
   </scroll-view>
   <!-- #endif -->
@@ -32,10 +38,8 @@
   /**
    * @description: 支持新闻详情内容展示，并兼容宽屏分栏预览和窄屏独立详情页两种使用方式。
    * @logic: 页面接收新闻封面、标题、详情内容或文章 ID，优先复用预加载内容；无预加载内容时再请求接口拉取详情正文。
-   * @optimization: 宽屏场景下优先复用列表页传入的首条详情内容，减少首屏重复请求；同时统一在详情页内适配深色模式正文颜色。
+   * @optimization: 宽屏场景下优先复用列表页传入的首条详情内容，减少首屏重复请求；同时预处理深色正文，由媒体查询切换显示。
    */
-  import { state } from '@/store/index.uts'
-
   // 作为页面渲染时，props会接收url中的参数
   // 作为组件使用时，可以正常传递props
   const props = defineProps({
@@ -48,8 +52,8 @@
     firstDetailContent: { type: String, default: '' }
   })
 
-  const isDarkMode = computed(() => state.isDarkMode)
   const htmlNodes = ref("")
+  const darkHtmlNodes = ref("")
   // 标记是否已经用过firstDetailContent
   const usedContent = ref(false)
   const btCover = ref("")
@@ -116,14 +120,11 @@
   }
   // #endif
 
-  // 适配深色模式
-  function adaptContentForDarkMode(content: string): string {
+  function setHtmlContent(content: string) {
+    htmlNodes.value = content
     // #ifdef APP
-    if (isDarkMode.value) {
-      return processHtmlContent(content, '#ffffff')
-    }
+    darkHtmlNodes.value = processHtmlContent(content, '#ffffff')
     // #endif
-    return content
   }
 
   function getDetail(post_id: string) {
@@ -133,7 +134,7 @@
         if (data.statusCode == 200) {
           const result = data.data as UTSJSONObject
           let content = result["content"] as string
-          htmlNodes.value = adaptContentForDarkMode(content)
+          setHtmlContent(content)
         }
       },
       fail: () => {
@@ -148,7 +149,7 @@
       // 优先用传入的预载详情内容（只在第一个新闻时有值）
       if (props.firstDetailContent !== '') {
         let content = props.firstDetailContent
-        htmlNodes.value = adaptContentForDarkMode(content)
+        setHtmlContent(content)
         usedContent.value = true
       } else {
         getDetail(newVal)
@@ -161,7 +162,7 @@
   watch(():string => props.firstDetailContent, (newVal:string) => {
     if (!usedContent.value && newVal !== '') {
       let content = newVal
-      htmlNodes.value = adaptContentForDarkMode(content)
+      setHtmlContent(content)
       usedContent.value = true
     }
   })
@@ -174,9 +175,6 @@
 </script>
 
 <style>
-  .detail-container {
-    background-color: var(--background-color,#f8f8f8);
-  }
   .banner {
     height: 180px;
     overflow: hidden;
@@ -203,9 +201,21 @@
 
   .rich-text {
     padding: 3px 3px 0px;
-    /* #ifdef WEB */
     color: var(--text-color,#333333);
-    /* #endif */
+  }
+
+  .rich-text-dark {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .rich-text-light {
+      display: none;
+    }
+
+    .rich-text-dark {
+      display: flex;
+    }
   }
 
 </style>

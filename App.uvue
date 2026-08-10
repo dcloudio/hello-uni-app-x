@@ -1,5 +1,5 @@
 <script setup lang="uts">
-  import { state, updateGlobalData, setLifeCycleNum, checkSystemTheme } from '@/store/index.uts'
+  import { state, updateGlobalData, setLifeCycleNum } from '@/store/index.uts'
 
   // #ifdef APP-ANDROID || APP-HARMONY
   let firstBackTime = 0
@@ -45,8 +45,6 @@
       })
     }
     // #endif
-    // 获取系统主题
-    checkSystemTheme();
   })
 
   const getRedirectUrl = (scheme : string | null, ulink : string | null) : string | null => {
@@ -181,8 +179,10 @@
   @import "./common/uni.css";
 
   /* #ifdef WEB */
-  .uni-top-window uni-tabbar .uni-tabbar {
-    background-color: #fff !important;
+  @media (prefers-color-scheme: light) {
+    .uni-top-window uni-tabbar .uni-tabbar {
+      background-color: #fff !important;
+    }
   }
   /* #endif */
   /* #ifdef MP-WEIXIN */
@@ -192,7 +192,7 @@
   /* 适配暗黑模式 */
   @media (prefers-color-scheme: dark) {
     page {
-      background-color: #646464;
+      background-color: #1a1a1a;
     }
   }
   /* #endif */

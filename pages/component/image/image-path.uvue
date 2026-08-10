@@ -1,8 +1,8 @@
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="uni-theme-root" style="flex: 1;">
   <!-- #endif -->
-    <view>
+    <view class="uni-theme-root">
       <page-head :title="title"></page-head>
       <view class="uni-padding-wrap uni-common-mt">
         <view class="uni-title">
@@ -10,15 +10,15 @@
         </view>
         <test-image-path />
         <view>
-          <text class="uni-subtitle-text">非static目录的src静态路径：./logo.png</text>
-          <view class="uni-center" style="background:#FFFFFF;">
+          <text class="uni-subtitle-text image-description">非static目录的src静态路径：./logo.png</text>
+          <view class="uni-center image-bg">
             <image class="image" mode="widthFix" src="./logo.png"></image>
             <image class="image" mode="widthFix" src="./logo.png" flatten></image>
           </view>
         </view>
         <view v-for="(item,index) in data" :key="index">
-          <text class="uni-subtitle-text">{{item.description}}（右边为拍平测试）</text>
-          <view class="uni-center" style="background:#FFFFFF;">
+          <text class="uni-subtitle-text image-description">{{item.description}}（右边为拍平测试）</text>
+          <view class="uni-center image-bg">
             <image class="image" mode="widthFix" :src="item.errorImage == null ? item.src : item.errorImage"
               @error="imageErrorEvent(index, $event as ImageErrorEvent)"></image>
 
@@ -209,5 +209,19 @@
   .image {
     margin: 20px auto;
     width: 100px;
+  }
+
+  .image-bg {
+    background-color: #ffffff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .image-description {
+      color: #e5e5e5;
+    }
+
+    .image-bg {
+      background-color: #2d2d2d;
+    }
   }
 </style>

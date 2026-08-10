@@ -1,6 +1,6 @@
 <template>
   <page-head title="view"></page-head>
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
     <view class="uni-padding-wrap uni-common-mt">
       <!-- view样式大合集 -->
       <text class="uni-title-text">view样式大合集</text>
@@ -21,7 +21,7 @@
 
       <text class="uni-title-text uni-common-mt">Hover 点击态效果</text>
       <view id="view" class="main" :hover-class="data.hover_class ? 'is-parent-hover' : 'none'">
-        <view id="view-child1" class="test-view" :class="isDarkMode ? 'theme-dark' : 'theme-light'" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
+        <view id="view-child1" class="test-view" :hover-class="data.hover_class ? 'is-hover' : 'none'" :hover-stop-propagation="data.stop_propagation"
           :hover-start-time="data.start_time" :hover-stay-time="data.stay_time">
         </view>
       </view>
@@ -45,7 +45,6 @@
 </template>
 <script setup lang="uts">
   import { ItemType } from '@/components/enum-data/enum-data-types'
-  import { state } from '@/store/index.uts'
   import Child from './child.uvue'
 
   type DataType = {
@@ -66,10 +65,6 @@
     start_time_enum: [{ "value": 50, "name": "50毫秒" }, { "value": 200, "name": "200毫秒" }],
     stay_time_enum: [{ "value": 400, "name": "400毫秒" }, { "value": 200, "name": "200毫秒" }]
   } as DataType)
-
-  const isDarkMode = computed((): boolean => {
-    return state.isDarkMode
-  })
 
   const change_hover_class_boolean = (checked: boolean) => {
     data.hover_class = checked
@@ -95,7 +90,7 @@
 <style>
   .styled-view-row {
     flex-direction: row;
-    background: #fff;
+    background-color: var(--list-background-color, #ffffff);
     justify-content: space-around;
     height: 120px;
     align-items: center;
@@ -144,6 +139,12 @@
 
   .is-parent-hover {
     background-color: #aa0000;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .styled-view {
+      background-color: #0b1b3a;
+    }
   }
 
 </style>

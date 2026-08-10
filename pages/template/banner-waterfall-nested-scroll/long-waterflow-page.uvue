@@ -1,5 +1,5 @@
 <template>
-  <waterflow :id="id" class="grid" :bounces="false" :scroll-y="true" :custom-nested-scroll="true"
+  <waterflow :id="id" class="grid uni-theme-root" :bounces="false" :scroll-y="true" :custom-nested-scroll="true"
   	main-axis-gap="8px"	cross-axis-gap="8px" cross-axis-count=2
     @scrolltolower="loadData(null)" associative-container="nested-scroll-view">
     <flow-item class="flow-item" v-for="(item, _) in datagrid" :key="item.plugin_id" type=1>
@@ -28,8 +28,8 @@
     </flow-item type="20">
     <flow-item slot="load-more" class="loading" type=6>
       <!-- <uni-loading :loading="loading" color="#999" :text="loadingText"></uni-loading> -->
-      <loading v-if="loadingRef" style="color: #999"></loading>
-      <text v-if="isEnded" style="color: #999">到底了</text>
+      <loading v-if="loadingRef" class="loading-text"></loading>
+      <text v-if="isEnded" class="loading-text">到底了</text>
     </flow-item>
   </waterflow>
 </template>
@@ -143,13 +143,13 @@
 <style>
   .grid {
     flex: 1;
-    background-color: #f7f7f7;
+    background-color: var(--background-color, #f7f7f7);
   }
 
   .flow-item {
     flex-direction: column;
     border-radius: 5px;
-    background-color: #ffffff;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .flow-item-icon {
@@ -165,9 +165,14 @@
     padding: 5px;
   }
 
+  .title {
+    color: var(--text-color, #333333);
+  }
+
   .description-text {
     font-size: 13px;
-    color: #666;
+    color: var(--text-color, #666666);
+    opacity: 0.75;
     line-height: 19px;
   }
 
@@ -209,6 +214,27 @@
     padding: 30px;
     align-items: center;
     height: 80px;
+  }
+
+  .loading-text {
+    color: var(--active-color, #999999);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-item {
+      background-color: #243a29;
+      color: #9bd3a3;
+    }
+
+    .update-date-text,
+    .update-date-value,
+    .loading-text {
+      color: #b8b8b8;
+    }
+
+    .author {
+      color: #72d572;
+    }
   }
 
   .flex-row {

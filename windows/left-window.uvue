@@ -1,5 +1,5 @@
 <template>
-  <view class="left-window-style" :class="isDarkMode ? 'theme-dark' : 'theme-light'">
+  <view class="left-window-style uni-theme-root">
     <view class="second-menu">
       <keep-alive>
         <component :is="active" :hasLeftWin="hasLeftWin" :leftWinActive="leftWinActive"></component>
@@ -45,9 +45,6 @@
       },
       leftWinActive() : string {
         return state.leftWinActive.split('/')[3]
-      },
-      isDarkMode() : boolean {
-        return state.isDarkMode
       }
     },
     mounted() {
@@ -124,5 +121,11 @@
   .second-menu {
     width: 350px;
     background-color: #F8F8F8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .second-menu {
+      background-color: var(--background-color, #1a1a1a);
+    }
   }
 </style>

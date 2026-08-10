@@ -1,5 +1,5 @@
 <template>
-  <view :class="['uni-container', { 'flex-row': isWideScreen }, isDarkMode ? 'theme-dark' : 'theme-light']" style="flex: 1;padding: 0px;">
+  <view :class="['uni-container', 'uni-theme-root', { 'flex-row': isWideScreen }]" style="flex: 1;padding: 0px;">
     <!-- 列表区域 ：宽屏时在左侧显示，窄屏时只显示列表 -->
     <list-view class="list-container" :class="{'list-narrow': isWideScreen}" refresher-enabled
       @refresherrefresh="onRefresherrefresh" :refresher-triggered="refresherTriggered" enable-back-to-top>
@@ -61,7 +61,6 @@
    * @logic: 页面顶部展示 Banner，列表区提供排序筛选表头；点击列表项时，窄屏进入详情页，宽屏直接在右侧详情面板展示内容。
    * @optimization: 宽屏模式下预加载首条详情内容，并在切换设备宽度时复用同一套列表和详情数据，减少首屏等待。
    */
-  import { state } from '@/store/index.uts'
   // 导入详情组件，宽屏时，右侧直接展示详情内容
   import detail from './detail/detail.uvue'
 
@@ -236,7 +235,6 @@
     return ''
   })
 
-  const isDarkMode = computed(() => state.isDarkMode)
   // 自动化测试
   function jest_applyMockData() {
     jestMocked.value = true

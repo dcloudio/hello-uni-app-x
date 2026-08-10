@@ -1,12 +1,12 @@
 <template>
-  <view id="dialog3" class="dialog-container">
+  <view id="dialog3" class="dialog-container uni-theme-root">
     <scroll-view class="dialog-content">
-      <text>title: {{ title }}</text>
+      <text class="dialog-text">title: {{ title }}</text>
       <template v-for="(item, index) in PageStyleArray">
         <view class="page-style-item" v-if="currentPageStyle[item.key] != null" :key="index">
           <view class="item-text">
-            <text class="item-text-key">{{ item.key }}:</text>
-            <text class="item-text-value">{{
+            <text class="item-text-key dialog-text">{{ item.key }}:</text>
+            <text class="item-text-value dialog-text">{{
               currentPageStyle[item.key]
             }}</text>
           </view>
@@ -21,16 +21,16 @@
           </view>
           <view class="mt-10" v-else-if="item.type == 'string'">
             <radio-group class="radio-set-value" @change="radioChange(item.key, $event as RadioGroupChangeEvent)">
-              <radio class="ml-10" v-for="(item2, index2) in item.value" :key="index2" :value="item2"
+              <radio class="ml-10 dialog-radio" v-for="(item2, index2) in item.value" :key="index2" :value="item2"
                 :checked="currentPageStyle[item.key] == item2">{{ item2 }}
               </radio>
             </radio-group>
           </view>
         </view>
       </template>
-      <text class="mt-10 choose-close-animation-type-title">choose close dialogPage animationType</text>
+      <text class="mt-10 choose-close-animation-type-title dialog-text">choose close dialogPage animationType</text>
       <radio-group class="choose-close-animation-type-radio-group" @change="handleChooseAnimationType">
-        <radio class="ml-10 mt-10" v-for="item in closeAnimationTypeList" :key="item" :value="item"
+        <radio class="ml-10 mt-10 dialog-radio" v-for="item in closeAnimationTypeList" :key="item" :value="item"
           :checked="closeAnimationType == item">{{ item }}
         </radio>
       </radio-group>
@@ -144,7 +144,7 @@
     width: 90%;
     height: 500px;
     padding: 10px 6px;
-    background-color: #fff;
+    background-color: var(--list-background-color, #fff);
     border-radius: 6px;
   }
 
@@ -158,7 +158,7 @@
   .page-style-item {
     padding: 6px 0;
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: var(--active-background-color, #ffffff);
     border-radius: 5px;
   }
 
@@ -184,4 +184,9 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
-  </style
+
+  .dialog-text,
+  .dialog-radio {
+    color: var(--text-color, #333333);
+  }
+  </style>

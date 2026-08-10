@@ -1,7 +1,7 @@
 <template>
-  <view style="flex: 1;">
+  <view class="page uni-theme-root">
     <page-head :title="title"></page-head>
-    <view class="tips">滚动期间对子组件回收复用。此示例限制列表子项固定高度。注意回收复用引发的副作用，详情参考custom-recycle-view-buttons组件内的错误用法。</view>
+    <view class="tips"><text class="tips-text">滚动期间对子组件回收复用。此示例限制列表子项固定高度。注意回收复用引发的副作用，详情参考custom-recycle-view-buttons组件内的错误用法。</text></view>
     <uni-recycle-view :itemHeight="140" :list="list" style="flex: 1;" @scrolltolower="onScrollToLower"
       @refresherrefresh="onRefresherRefresh" :refresher-enabled="refresherEnabled"
       :refresher-triggered="refresherTriggered">
@@ -113,19 +113,30 @@
 </script>
 
 <style>
+  .page {
+    flex: 1;
+  }
+
   .tips {
     margin: 10px;
     border-radius: 5px;
     padding: 10px;
-    background-color: white;
+    background-color: var(--list-background-color, #ffffff);
+  }
+
+  .tips-text {
+    color: var(--text-color, #333333);
   }
 
   .item-wrapper {
     height: 140px;
     justify-content: center;
     box-sizing: border-box;
-    border-bottom: solid 1px #cccccc;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--border-color, #cccccc);
     padding: 0px 15px;
+    background-color: var(--list-background-color, #ffffff);
   }
 
   .item-content {
@@ -146,6 +157,7 @@
 
   .item-name {
     font-size: 14px;
+    color: var(--text-color, #333333);
   }
 
   .item-info {
@@ -160,7 +172,7 @@
   }
 
   .item-tag {
-    background-color: aliceblue;
+    background-color: var(--active-background-color, aliceblue);
     color: #999999;
     border: solid 1px #999999;
     border-radius: 3px;
@@ -175,5 +187,12 @@
     font-size: 12px;
     text-align: center;
     line-height: 50px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .item-tag {
+      color: #b8b8b8;
+      border-color: #777777;
+    }
   }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1;">
+  <scroll-view class="uni-theme-root" style="flex: 1;">
   <!-- #endif -->
-		<view class="uni-padding-wrap uni-common-mt">
+		<view class="rich-text-page uni-padding-wrap uni-common-mt uni-theme-root">
       <navigator url="/pages/component/rich-text/rich-text-tags" class="uni-btn-v">
         <button>rich-text渲染单个HTML标签示例</button>
       </navigator>
@@ -31,18 +31,18 @@
 				<button type="default" @click="changeFontFamily">切换 font-family ({{ data.currentFontFamily }})</button>
 			</view>
 			<view class="text-box" id="rich-text-parent" @click="richTextParentClick">
-				<rich-text id='rich-text' :style="data.richTextStyle" :nodes="data.text" mode="native">
+				<rich-text id='rich-text' class="rich-text-content" :style="data.richTextStyle" :nodes="data.text" mode="native">
 				</rich-text>
 				<view>
-					<text>rich-text-parent</text>
-					<text id='rich-text-str'>{{ data.richTextStr }}</text>
+					<text class="rich-text-label">rich-text-parent</text>
+					<text id='rich-text-str' class="rich-text-label">{{ data.richTextStr }}</text>
 				</view>
 			</view>
 			<view class="uni-title">
 				<text class="uni-subtitle-text">user-select</text>
 			</view>
 			<view class="text-box2">
-				<rich-text id="user-select-rich-text" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
+				<rich-text id="user-select-rich-text" class="rich-text-content" style="height: 80px;" :user-select="data.userSelect" :nodes="data.text"></rich-text>
 			</view>
 		</view>
   <!-- #ifdef APP && !VUE3-VAPOR -->
@@ -232,11 +232,16 @@
 <style>
 	.text-box {
 		padding: 20px 0;
-		background-color: white;
+		background-color: var(--list-background-color, #ffffff);
 	}
 
 	.text-box2 {
 		top: 20px;
-		background-color: white;
+		background-color: var(--list-background-color, #ffffff);
+	}
+
+	.rich-text-content,
+	.rich-text-label {
+		color: var(--text-color, #333333);
 	}
 </style>

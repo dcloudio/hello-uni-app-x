@@ -1,5 +1,5 @@
 <template>
-  <scroll-view :scroll-top="testState.scrollTop" @scroll="onScroll" class="page" show-scrollbar="false">
+  <scroll-view :scroll-top="testState.scrollTop" @scroll="onScroll" class="page uni-theme-root" show-scrollbar="false">
     <view ref="seatbarRef" class="seatbar"></view>
     <view class="content">
       <view class="content-item">
@@ -117,7 +117,6 @@ defineExpose({
 <style>
 .page {
   flex: 1;
-  background-color: #f5f5f5;
 }
 .navigatorbar {
   position: fixed;
@@ -128,9 +127,11 @@ defineExpose({
 /* #ifdef WEB */
   height: 88px;
 /* #endif */
-  border-bottom: 1px solid #efefef;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border-color, #efefef);
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: var(--background-color, #f5f5f5);
 }
 .titlebar {
   flex-direction: row;
@@ -146,13 +147,14 @@ defineExpose({
 
 .title {
   margin: 0px 2px;
+  color: var(--text-color, #333333);
 }
 .searchbar {
   position: absolute;
   bottom: 2px;
   left: 0px;
   right: 0px;
-  background-color: #FFFFFF;
+  background-color: var(--list-background-color, #ffffff);
   border: 1px solid #fbdf0d;
   height: 32px;
   border-radius: 100px;
@@ -191,13 +193,25 @@ defineExpose({
 .content-item {
   padding: 15px;
   margin: 5px 0;
-  background-color: #fff;
+  background-color: var(--list-background-color, #ffffff);
   border-radius: 5px;
 }
 .text {
   font-size: 14px;
-  color: #666;
+  color: var(--text-color, #666666);
+  opacity: 0.75;
   line-height: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .arrow {
+    border-left-color: #ffffff !important;
+    border-bottom-color: #ffffff !important;
+  }
+
+  .searchinput {
+    color: #b8b8b8;
+  }
 }
 
 </style>

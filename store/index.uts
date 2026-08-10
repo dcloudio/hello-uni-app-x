@@ -48,8 +48,6 @@ type State = {
   agreeToPrivacy: boolean | null
   // 是否同意截屏
   allowCapture: boolean,
-  // 是否暗黑主题（适配web端）
-  isDarkMode: boolean
   // 是否无网环境
   netless: boolean,
   // 登录用户信息
@@ -108,7 +106,6 @@ export const state = reactive({
   },
   agreeToPrivacy: getAgreePrivacy(),
   allowCapture: true,
-  isDarkMode:false,
   netless: false,
   userInfo: null
 } as State)
@@ -156,29 +153,6 @@ export const setAgreeToPrivacy = (agree: boolean) => {
 
 export const setAllowCapture = (allow: boolean) => {
   state.allowCapture = allow
-}
-
-// 检查系统主题
-export const checkSystemTheme = () => {
-  // #ifdef WEB || MP-WEIXIN
-  const info = uni.getAppBaseInfo();
-  state.isDarkMode = info.hostTheme === 'dark';
-  uni.onHostThemeChange((result) => {
-    state.isDarkMode = result.hostTheme === 'dark';
-  });
-  // #endif
-  // web和小程序只支持监听宿主的主题，不支持自行设置与宿主不同的主题。但App端支持自行设置主题，因此单独处理
-  // #ifdef APP
-  uni.getSystemInfo({
-    success: (res : GetSystemInfoResult) => {
-      const appTheme = res.appTheme == "auto" ? res.osTheme! : res.appTheme!
-      state.isDarkMode = appTheme == 'dark';
-    }
-  })
-  uni.onAppThemeChange((res : AppThemeChangeResult) => {
-    state.isDarkMode = res.appTheme == 'dark';
-  })
-  // #endif
 }
 
 export const setNetless = (netless: boolean) => {

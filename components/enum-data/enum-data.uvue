@@ -1,6 +1,5 @@
 <script setup lang="uts">
 import { ItemType } from './enum-data-types'
-import { isDarkMode, darkModeClass } from '@/composables/useDark.uts'
 // 样式隔离配置，app: 受全局样式影响
 defineOptions({
   styleIsolation: 'app'
@@ -44,16 +43,16 @@ function _change(e : RadioGroupChangeEvent) {
 </script>
 
 <template>
-  <view class="uni-padding-wrap" :class="darkModeClass">
+  <view class="uni-padding-wrap uni-theme-root">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="uni-list uni-common-pl" :class="darkModeClass">
+  <view class="uni-list uni-common-pl uni-theme-root">
     <radio-group @change="_change" :class="[{'compact-container': compact}]">
       <radio :disabled="props.disabled" class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in items" :key="item.name"
         :class="[{'compact-item': compact, 'uni-list-cell-line': !compact && index < items.length - 1}]"
-         :value="item.value + ''" :checked="item.checked" :color="isDarkMode ? '#a8a8b7' : '#007AFF'">
+         :value="item.value + ''" :checked="item.checked">
         <text class="radio-text">{{ item.name }}</text>
       </radio>
     </radio-group>
@@ -61,6 +60,10 @@ function _change(e : RadioGroupChangeEvent) {
 </template>
 
 <style>
+.uni-list {
+  border-bottom: 0px;
+}
+
 .radio-text {
   color: var(--text-color, #333333);
 }

@@ -77,12 +77,12 @@ function focus() {
 </script>
 
 <template>
-  <view class="uni-padding-wrap">
+  <view class="uni-padding-wrap uni-theme-root">
     <view class="uni-title uni-common-mt">
       <text class="uni-title-text"> {{title}} </text>
     </view>
   </view>
-  <view class="input-wrapper">
+  <view class="input-wrapper uni-theme-root">
     <input class="uni-input" :type="inputType" :value="inputClearValue" :placeholder="title" :maxlength="-1" @input="input" @blur="blur"
       @focus="focus" />
     <!-- #ifdef WEB || MP -->
@@ -98,13 +98,13 @@ function focus() {
 
 <style>
   .input-wrapper {
-    border: 1px solid rgba(0, 0, 0, .08);
+    border: 1px solid var(--input-data-border-color, rgba(0, 0, 0, .08));
     flex-direction: row;
     justify-content: center;
     padding: 0;
     margin: 0 10px;
     flex-wrap: nowrap;
-    background-color: #ffffff;
+    background-color: var(--input-data-background-color, #ffffff);
   }
 
   .input-wrapper_image {
@@ -112,5 +112,12 @@ function focus() {
     height: 22px;
     align-self: center;
     margin-right: 5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .input-wrapper {
+      --input-data-border-color: rgba(255, 255, 255, 0.1);
+      --input-data-background-color: #2d2d2d;
+    }
   }
 </style>

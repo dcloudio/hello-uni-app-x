@@ -166,10 +166,10 @@
 
 <template>
   <!-- #ifdef APP && !VUE3-VAPOR -->
-  <scroll-view style="flex: 1">
+  <scroll-view class="uni-theme-root" style="flex: 1">
   <!-- #endif -->
-    <view class="main">
-      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea" :auto-focus="true" :focus="data.focus_boolean"
+    <view class="main uni-theme-root">
+      <textarea :value="data.default_value" id="uni-textarea" class="uni-textarea themed-textarea" :auto-focus="true" :focus="data.focus_boolean"
         :confirm-hold="data.confirm_hold_boolean" :auto-height="data.auto_height_boolean" :fixed="data.fixed_boolean"
         :show-confirm-bar="data.show_confirm_bar_boolean" :adjust-position="data.adjust_position_boolean"
         :cursor-color="data.cursor_color" :cursor="data.cursor" :placeholder="data.placeholder_value"
@@ -179,9 +179,9 @@
         @touchend="textarea_touchend" @tap="textarea_tap" @longpress="textarea_longpress" @confirm="textarea_confirm"
         @input="textarea_input" @linechange="textarea_linechange" @blur="textarea_blur"
         @keyboardheightchange="textarea_keyboardheightchange" @focus="textarea_focus" @change="textarea_change"
-        style="padding: 10px; border: 1px solid #666;height: 200px" />
+        style="padding: 10px;height: 200px" />
     </view>
-    <view style="margin-bottom: 40px;">
+    <view class="textarea-page uni-theme-root">
       <boolean-data :defaultValue="false" title="键盘弹起时，是否自动上推页面（限非 Web 平台）"
         @change="change_adjust_position_boolean"></boolean-data>
       <boolean-data :defaultValue="false" title="是否自动增高，设置auto-height时，style.height不生效"
@@ -377,7 +377,8 @@
   .main {
     min-height: 100px;
     padding: 5px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.06));
+    background-color: var(--background-color, #f8f8f8);
     flex-direction: row;
     justify-content: center;
   }
@@ -386,6 +387,11 @@
     width: 100px;
     height: 100px;
     background-color: aqua;
+    color: #1a1a1a;
+  }
+
+  .textarea-page {
+    margin-bottom: 40px;
   }
 
   .textarea-wrap {
@@ -397,11 +403,18 @@
     flex-direction: row;
     align-items: center;
     margin-left: 10px;
+    color: var(--text-color, #333333);
+  }
+
+  .themed-textarea,
+  .textarea-instance {
+    color: #333333;
+    background-color: #ffffff;
+    border: 1px solid #666666;
   }
 
   .textarea-instance {
     flex: 1;
-    border: 1px solid #666;
     margin: 10px;
     font-size: 15px;
   }
@@ -438,5 +451,14 @@
     border: 1px solid #007aff;
     opacity: 0.7;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .themed-textarea,
+    .textarea-instance {
+      color: #ffffff;
+      background-color: #2d2d2d;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
   }
 </style>
