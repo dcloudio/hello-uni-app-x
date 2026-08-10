@@ -2,7 +2,7 @@
 	<view class="uni-pay">
 
 		<!-- PC版收银台弹窗开始 -->
-		<uni-pay-popup v-if="modeCom == 'pc'" ref="payPopup" type="center" :safe-area="false">
+		<uni-pay-popup v-if="modeCom == 'pc'" ref="payPopupRef" type="center" :safe-area="false">
 			<view class="pc-pay-popup">
 				<view class="pc-pay-popup-title"><text class="pc-pay-popup-title-text">收银台</text></view>
 				<view class="pc-pay-popup-flex">
@@ -41,7 +41,7 @@
 		<!-- PC版收银台弹窗结束 -->
 
 		<!-- 手机版收银台弹窗开始 -->
-		<uni-pay-popup v-else ref="payPopup" type="bottom" :safe-area="false">
+		<uni-pay-popup v-else ref="payPopupRef" type="bottom" :safe-area="false">
 			<view class="mobile-pay-popup" :style="'min-height: '+height+';'">
 				<view class="mobile-pay-popup-title"><text class="mobile-pay-popup-title-text">收银台</text></view>
 				<view class="mobile-pay-popup-amount-box">
@@ -83,7 +83,7 @@
 		<!-- 手机版收银台弹窗结束 -->
 
 		<!-- 二维码支付弹窗开始 -->
-		<uni-pay-popup ref="qrcodePopup" type="center" :safe-area="false" :animation="false" :mask-click="false" @close="clearQrcode">
+		<uni-pay-popup ref="qrcodePopupRef" type="center" :safe-area="false" :animation="false" :mask-click="false" @close="clearQrcode">
 			<view class="qrcode-popup-content">
 				<image :src="orderRes['qr_code_image']" class="qrcode-popup-content-qrcode-image"></image>
 				<view class="qrcode-popup-info">
@@ -105,7 +105,7 @@
 		<!-- 二维码支付弹窗结束 -->
 
 		<!-- 外部浏览器确认支付弹窗开始 -->
-		<uni-pay-popup ref="payConfirmPopup" type="center" :safe-area="false" :animation="false" :mask-click="false">
+		<uni-pay-popup ref="payConfirmPopupRef" type="center" :safe-area="false" :animation="false" :mask-click="false">
 			<view class="pay-confirm-popup-content">
 				<view class="pay-confirm-popup-title"><text class="pay-confirm-popup-title-text">请确认支付是否已完成</text></view>
 				<view><button type="primary" @click="_getOrder()">已完成支付</button></view>
@@ -206,19 +206,31 @@
 		return systemInfo.deviceType == "pc" ? "pc" : "mobile"
 	})
 
-	// Get current instance for $refs and $emit
-	const instance = getCurrentInstance()
+	// 组件引用
+	const payPopupRef = ref<UniPayPopupComponentPublicInstance | null>(null)
+	const qrcodePopupRef = ref<UniPayPopupComponentPublicInstance | null>(null)
+	const payConfirmPopupRef = ref<UniPayPopupComponentPublicInstance | null>(null)
 
 	// Functions - MUST be declared BEFORE lifecycle hooks in UTS
 	function openPopup(name : string) {
-		let popupRef = instance!.proxy!.$refs[name] as UniPayPopupComponentPublicInstance
-		popupRef.open()
+		if (name == "payPopup") {
+			(payPopupRef.value as UniPayPopupComponentPublicInstance).open()
+		} else if (name == "qrcodePopup") {
+			(qrcodePopupRef.value as UniPayPopupComponentPublicInstance).open()
+		} else if (name == "payConfirmPopup") {
+			(payConfirmPopupRef.value as UniPayPopupComponentPublicInstance).open()
+		}
 	}
 
 	// 关闭弹窗
 	function closePopup(name : string) {
-		let popupRef = instance!.proxy!.$refs[name] as UniPayPopupComponentPublicInstance
-		popupRef.close()
+		if (name == "payPopup") {
+			(payPopupRef.value as UniPayPopupComponentPublicInstance).close()
+		} else if (name == "qrcodePopup") {
+			(qrcodePopupRef.value as UniPayPopupComponentPublicInstance).close()
+		} else if (name == "payConfirmPopup") {
+			(payConfirmPopupRef.value as UniPayPopupComponentPublicInstance).close()
+		}
 	}
 
 	// 查询订单（查询支付情况）
