@@ -56,35 +56,18 @@ describe('component-native-input', () => {
     it('focus', async () => {
       const input = await page.$('#uni-input-focus');
       expect(await input.attribute('focus')).toBe("true")
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
       await setPageData({focus: false})
       expect(await input.attribute('focus')).toBe("false")
-      // await page.waitFor(1000)
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-      // await page.setData({
-      //   focus: true,
-      // })
-      // expect(await input.attribute('focus')).toBe(true)
-      // await page.waitFor(1000)
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(true)
-      // await page.setData({
-      //   focus: false,
-      // })
-      // expect(await input.attribute('focus')).toBe(false)
-      // await page.waitFor(1000)
-      // expect(await page.data("inputFocusKeyBoardChangeValue")).toBe(false)
-      // await page.waitFor(1000)
     });
   }
-  // web ios 自动化测试时无法触发事件，手动测试可以
-  // TODO: dom2 harmony 暂时不支持 holdKeyboard
+  // web、iOS 自动化无法触发事件；Harmony Vapor 暂不支持通过 UniElement.focus() 触发 input focus
   if ((isHarmony && !isDom2) || isAndroid) {
     it("focus and blur event", async () => {
       if (isHarmony) {
         await program.tap({ x: 100, y: 50 })
         await page.waitFor(1000);
       }
-      await page.setData({
+      await setPageData({
         triggerFocus: false,
         triggerBlur: false,
       })
@@ -139,86 +122,24 @@ describe('component-native-input', () => {
     expect(image).toSaveImageSnapshot()
   })
 
-  //  测试密码属性
-  // it("password", async () => {
-  //   const input = await page.$('.uni-input-password');
-  //   expect(await input.attribute('password')).toBe(true)
-  //   await page.setData({
-  //     inputPassword: false,
-  //     inputPasswordValue: "inputPasswordValue"
-  //   })
-  //   expect(await input.attribute('password')).toBe(false)
-  //   await page.waitFor(500)
-  //   await page.setData({
-  //     inputPassword: true
-  //   })
-  // })
-  // 测试placeholder
-  // it("placeholder", async () => {
-  //   const placeholder1 = await page.$('.uni-input-placeholder1');
-  //   expect(await placeholder1.attribute("placeholder-style")).toMatchObject({
-  //     "color": "red"
-  //   })
-  //   expect(await placeholder1.attribute("placeholder")).toEqual("占位符文字颜色为红色")
-  //   await page.setData({
-  //     inputPlaceHolderStyle: "color:#CC00CC",
-  //   })
-  //   expect(await placeholder1.attribute("placeholder-style")).toMatchObject({
-  //     "color": "#CC00CC"
-  //   })
-
-  //   await page.setData({
-  //     inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0",
-  //   })
-  //   expect(await placeholder1.attribute("placeholder-style")).toMatchObject({
-  //     "color": "#CC19CC",
-  //     "backgroundColor": "#00b1c0"
-  //   })
-
-  //   await page.setData({
-  //     inputPlaceHolderStyle: "color:#CC19CC;background-color:#00b1c0;text-align:center;font-size:44px;font-weight:900",
-  //   })
-  //   expect(await placeholder1.attribute("placeholder-style")).toEqual({
-  //     "backgroundColor": "#00b1c0",
-  //     "color": "#CC19CC",
-  //     "fontSize": "44px",
-  //     "fontWeight": "900",
-  //     "textAlign": "center"
-  //   })
-
-  //   const placeholder2 = await page.$('.uni-input-placeholder2');
-  //   expect(await placeholder2.attribute("placeholder-class")).toMatchObject({
-  //     "backgroundColor": "#008000"
-  //   })
-  //   await page.setData({
-  //     inputPlaceHolderClass: "uni-input-placeholder-class-ts",
-  //   })
-  //   expect(await placeholder2.attribute("placeholder-class")).toMatchObject({
-  //     "backgroundColor": "#FFA500"
-  //   })
-  //   expect(await placeholder2.attribute("placeholder")).toEqual("占位符背景色为绿色")
-  // })
+  it("password updates dynamically", async () => {
+    const input = await page.$('#uni-input-password')
+    try {
+      expect(String(await input.attribute('password'))).toBe('true')
+      await setPageData({ inputPassword: false })
+      expect(String(await input.attribute('password'))).toBe('false')
+      await setPageData({ inputPassword: true })
+      expect(String(await input.attribute('password'))).toBe('true')
+    } finally {
+      await setPageData({ inputPassword: true })
+    }
+  })
 
   if(isMP) {
     it("disable", async () => {
       const input = await page.$('#uni-input-disable');
       expect(await input.property("disabled")).toBe(true)
     })
-    // 如下属性在自动化测试通过property、attribute + confirmType、confirm-type均无法获取
-    // it("confirm-type", async () => {
-    //   expect(await (await page.$('#uni-input-confirm-send')).attribute("confirm-type")).toEqual("send")
-    //   expect(await (await page.$('#uni-input-confirm-search')).property("confirmType")).toEqual("search")
-    //   expect(await (await page.$('#uni-input-confirm-next')).property("confirmType")).toEqual("next")
-    //   expect(await (await page.$('#uni-input-confirm-go')).property("confirmType")).toEqual("go")
-    //   expect(await (await page.$('#uni-input-confirm-done')).property("confirmType")).toEqual("done")
-    // })
-    // it("cursor-color", async () => {
-    //   await page.setData({
-    //     cursor_color: "red",
-    //   })
-    //   await page.waitFor(500)
-    //   expect(await (await page.$('#uni-input-cursor-color')).property("cursor-color")).toBe("red")
-    // })
   } else {
     it("disable", async () => {
       const input = await page.$('#uni-input-disable');
@@ -239,15 +160,6 @@ describe('component-native-input', () => {
     })
   }
 
-  // it("maxlength", async () => {
-  //   const input = await page.$('.uni-input-maxlength');
-  //   await page.setData({
-  //     inputMaxLengthValue: "uni-input-maxlength"
-  //   })
-  //   await page.waitFor(500)
-  // })
-
-
   it("maxlength", async () => {
     const input = await page.$('#uni-input-maxlength');
     let str = "";
@@ -267,16 +179,70 @@ describe('component-native-input', () => {
     await setPageData({inputPasswordValue: ""})
   })
 
+  async function waitForKeyboardHeightValue(predicate, timeout = 4000) {
+    const interval = 100
+    const attempts = Math.ceil(timeout / interval)
+    let keyboardHeight = 0
+    for (let i = 0; i < attempts; i++) {
+      keyboardHeight = await page.data('data.keyboardHeight')
+      if (predicate(keyboardHeight)) break
+      await page.waitFor(interval)
+    }
+    return keyboardHeight
+  }
+
+  async function waitForKeyboardHiddenAfter(previousChangeCount, keyboardWasVisible, timeout = 4000) {
+    const interval = 100
+    const attempts = Math.ceil(timeout / interval)
+    let keyboardHeight = 0
+    let changeCount = previousChangeCount
+    for (let i = 0; i < attempts; i++) {
+      keyboardHeight = await page.data('data.keyboardHeight')
+      changeCount = await page.data('data.keyboardHeightChangeCount')
+      if (keyboardHeight === 0 && (!keyboardWasVisible || changeCount > previousChangeCount)) break
+      await page.waitFor(interval)
+    }
+    return { keyboardHeight, changeCount }
+  }
+
+  async function waitForKeyboardAdjustInputsBlurred(timeout = 4000) {
+    const interval = 100
+    const attempts = Math.ceil(timeout / interval)
+    for (let i = 0; i < attempts; i++) {
+      const pageData = await page.data('data')
+      const targetBlurred = !pageData.showKeyboardAdjustTargetInput || !pageData.keyboardAdjustTargetFocused
+      if (!pageData.keyboardAdjustDefaultFocused && targetBlurred) return true
+      await page.waitFor(interval)
+    }
+    return false
+  }
+
+  async function closeKeyboardAdjustInputsForTest() {
+    const pageData = await page.data('data')
+    await setPageData({
+      focus: false,
+      focusedForKeyboardHeightChangeTest: false,
+      keyboardAdjustTargetFocus: false,
+    })
+    await page.callMethod('blurKeyboardAdjustInputsForTest')
+    const inputsBlurred = await waitForKeyboardAdjustInputsBlurred()
+    await page.callMethod('hideKeyboardForTest')
+    const keyboardState = await waitForKeyboardHiddenAfter(
+      pageData.keyboardHeightChangeCount,
+      pageData.keyboardHeight > 0
+    )
+    return { inputsBlurred, keyboardState }
+  }
+
   it("keyboard height changed after page back", async () => {
-    // TODO: dom2 harmony 暂时不支持 holdKeyboard
-    if (isWeb || isMP || isIOS || isDom2) {
+    if (isWeb || isMP || isIOS) {
       expect(1).toBe(1)
       return
     }
-    // TODO: harmony 页面隐藏时需要隐藏键盘
     if (isHarmony) {
-      await program.tap({ x: 100, y: 50 })
-      await page.waitFor(1000);
+      const initialResetState = await closeKeyboardAdjustInputsForTest()
+      expect(initialResetState.inputsBlurred).toBe(true)
+      expect(initialResetState.keyboardState.keyboardHeight).toBe(0)
     }
     await program.navigateTo("/pages/API/navigator/new-page/new-page-3")
     await page.waitFor(2000);
@@ -287,16 +253,230 @@ describe('component-native-input', () => {
 
     const keyboardHeight = await page.data('data.keyboardHeight');
     expect(keyboardHeight).toBeGreaterThan(25)
-    //reset
-    await setPageData({
-      focusedForKeyboardHeightChangeTest: false,
-      keyboardHeight: 0
-    })
-    if (isHarmony) {
-      await program.tap({ x: 100, y: 50 })
-      await page.waitFor(1000);
-    }
+    const resetState = await closeKeyboardAdjustInputsForTest()
+    expect(resetState.inputsBlurred).toBe(true)
+    expect(resetState.keyboardState.keyboardHeight).toBe(0)
   })
+
+  if (isHarmony) {
+    async function resetKeyboardAdjustTestState() {
+      const keyboardState = await closeKeyboardAdjustInputsForTest()
+      await setPageData({ showKeyboardAdjustTargetInput: false })
+      const targetRect = await waitForMethodResult(
+        'getKeyboardAdjustTargetInputRect',
+        rect => rect == null
+      )
+      await program.pageScrollTo(0)
+      const defaultRect = await waitForStableRect(
+        'getKeyboardAdjustInputRect',
+        rect => rect != null
+      )
+      return { ...keyboardState, targetRect, defaultRect }
+    }
+
+    function expectKeyboardAdjustReset(resetState) {
+      expect(resetState.inputsBlurred).toBe(true)
+      expect(resetState.keyboardState.keyboardHeight).toBe(0)
+      expect(resetState.targetRect).toBeNull()
+      expect(resetState.defaultRect).not.toBeNull()
+    }
+
+    async function runKeyboardAdjustTest(testBody) {
+      const initialResetState = await resetKeyboardAdjustTestState()
+      expectKeyboardAdjustReset(initialResetState)
+      let testCompleted = false
+      try {
+        await testBody()
+        testCompleted = true
+      } finally {
+        if (testCompleted) {
+          const finalResetState = await resetKeyboardAdjustTestState()
+          expectKeyboardAdjustReset(finalResetState)
+        } else {
+          try {
+            await resetKeyboardAdjustTestState()
+          } catch (error) {
+            console.warn('keyboard adjust cleanup failed after test failure', error)
+          }
+        }
+      }
+    }
+
+    async function waitForKeyboardShowAfter(previousChangeCount, timeout = 4000) {
+      const interval = 100
+      const attempts = Math.ceil(timeout / interval)
+      let keyboardHeight = 0
+      let changeCount = previousChangeCount
+      for (let i = 0; i < attempts; i++) {
+        keyboardHeight = await page.data('data.keyboardHeight')
+        changeCount = await page.data('data.keyboardHeightChangeCount')
+        if (changeCount > previousChangeCount && keyboardHeight > 25) break
+        await page.waitFor(interval)
+      }
+      return { keyboardHeight, changeCount }
+    }
+
+    async function waitForFocusCount(dataPath, previousCount, timeout = 4000) {
+      const interval = 100
+      const attempts = Math.ceil(timeout / interval)
+      let focusCount = previousCount
+      for (let i = 0; i < attempts; i++) {
+        focusCount = await page.data(dataPath)
+        if (focusCount > previousCount) break
+        await page.waitFor(interval)
+      }
+      return focusCount
+    }
+
+    async function waitForMethodResult(methodName, predicate, timeout = 4000) {
+      const interval = 100
+      const attempts = Math.ceil(timeout / interval)
+      let result = null
+      for (let i = 0; i < attempts; i++) {
+        result = await page.callMethod(methodName)
+        if (predicate(result)) break
+        await page.waitFor(interval)
+      }
+      return result
+    }
+
+    async function waitForStableRect(methodName, predicate, timeout = 4000) {
+      const interval = 100
+      const attempts = Math.ceil(timeout / interval)
+      const requiredStableSamples = 3
+      let result = null
+      let previousBottom = null
+      let stableSamples = 0
+      for (let i = 0; i < attempts; i++) {
+        result = await page.callMethod(methodName)
+        if (result != null && predicate(result)) {
+          stableSamples = previousBottom != null && Math.abs(result.bottom - previousBottom) <= 1
+            ? stableSamples + 1
+            : 1
+        } else {
+          stableSamples = 0
+        }
+        previousBottom = result == null ? null : result.bottom
+        if (stableSamples >= requiredStableSamples) break
+        await page.waitFor(interval)
+      }
+      return result
+    }
+
+    async function focusDefaultKeyboardAdjustInput(showTargetInput = false) {
+      if (showTargetInput) {
+        await setPageData({ showKeyboardAdjustTargetInput: true })
+        const targetRect = await waitForMethodResult(
+          'getKeyboardAdjustTargetInputRect',
+          rect => rect != null
+        )
+        expect(targetRect).not.toBeNull()
+      }
+
+      const windowInfo = await program.callUniMethod('getWindowInfo')
+      const viewportHeight = windowInfo.safeArea.height
+      let beforeRect = await page.callMethod('getKeyboardAdjustInputRect')
+      expect(beforeRect).not.toBeNull()
+
+      const scrollTop = Math.max(0, beforeRect.bottom - viewportHeight + 20)
+      const expectedBottom = viewportHeight - 20
+      await program.pageScrollTo(scrollTop)
+      beforeRect = await waitForStableRect(
+        'getKeyboardAdjustInputRect',
+        rect => scrollTop === 0 || Math.abs(rect.bottom - expectedBottom) <= 3
+      )
+      expect(beforeRect).not.toBeNull()
+      if (scrollTop > 0) {
+        expect(Math.abs(beforeRect.bottom - expectedBottom)).toBeLessThanOrEqual(3)
+      }
+
+      const defaultFocusCount = await page.data('data.keyboardAdjustDefaultFocusCount')
+      const keyboardHeightChangeCount = await page.data('data.keyboardHeightChangeCount')
+      await setPageData({ focusedForKeyboardHeightChangeTest: true })
+      const updatedDefaultFocusCount = await waitForFocusCount(
+        'data.keyboardAdjustDefaultFocusCount',
+        defaultFocusCount
+      )
+      expect(updatedDefaultFocusCount).toBeGreaterThan(defaultFocusCount)
+
+      const keyboardState = await waitForKeyboardShowAfter(keyboardHeightChangeCount)
+      expect(keyboardState.changeCount).toBeGreaterThan(keyboardHeightChangeCount)
+      expect(keyboardState.keyboardHeight).toBeGreaterThan(25)
+
+      const keyboardTop = viewportHeight - keyboardState.keyboardHeight
+      const afterRect = await waitForStableRect(
+        'getKeyboardAdjustInputRect',
+        rect => rect.bottom <= keyboardTop + 3
+      )
+      expect(afterRect).not.toBeNull()
+      expect(beforeRect.bottom).toBeGreaterThan(keyboardTop)
+      expect(afterRect.bottom).toBeLessThanOrEqual(keyboardTop + 3)
+      expect(afterRect.bottom).toBeLessThan(beforeRect.bottom)
+
+      return { viewportHeight, keyboardTop }
+    }
+
+    it('default adjust-position keeps input above keyboard', async () => {
+      await runKeyboardAdjustTest(async () => {
+        await focusDefaultKeyboardAdjustInput()
+      })
+    })
+
+    it('default adjust-position recovers after input removal during rapid refocus', async () => {
+      await runKeyboardAdjustTest(async () => {
+        const { viewportHeight, keyboardTop } = await focusDefaultKeyboardAdjustInput(true)
+
+        const targetFocusCount = await page.data('data.keyboardAdjustTargetFocusCount')
+        await setPageData({
+          focusedForKeyboardHeightChangeTest: false,
+          keyboardAdjustTargetFocus: true,
+        })
+        const updatedTargetFocusCount = await waitForFocusCount(
+          'data.keyboardAdjustTargetFocusCount',
+          targetFocusCount
+        )
+        expect(updatedTargetFocusCount).toBeGreaterThan(targetFocusCount)
+        const targetRect = await waitForStableRect(
+          'getKeyboardAdjustTargetInputRect',
+          rect => rect.bottom <= keyboardTop + 3
+        )
+        expect(targetRect).not.toBeNull()
+        expect(targetRect.bottom).toBeLessThanOrEqual(keyboardTop + 3)
+
+        await setPageData({ keyboardAdjustTargetFocus: false })
+        const targetBlurred = await waitForKeyboardAdjustInputsBlurred()
+        expect(targetBlurred).toBe(true)
+
+        await setPageData({ keyboardAdjustTargetFocus: true })
+        // Remove the node while the native refocus request may still be pending.
+        await setPageData({ showKeyboardAdjustTargetInput: false })
+        const removedTargetRect = await waitForMethodResult(
+          'getKeyboardAdjustTargetInputRect',
+          rect => rect == null
+        )
+        expect(removedTargetRect).toBeNull()
+
+        await setPageData({ keyboardAdjustTargetFocus: false })
+
+        const remainingFocusCount = await page.data('data.keyboardAdjustDefaultFocusCount')
+        await setPageData({ focusedForKeyboardHeightChangeTest: true })
+        const updatedRemainingFocusCount = await waitForFocusCount(
+          'data.keyboardAdjustDefaultFocusCount',
+          remainingFocusCount
+        )
+        expect(updatedRemainingFocusCount).toBeGreaterThan(remainingFocusCount)
+        const remainingKeyboardHeight = await waitForKeyboardHeightValue(height => height > 25)
+        expect(remainingKeyboardHeight).toBeGreaterThan(25)
+        const remainingKeyboardTop = viewportHeight - remainingKeyboardHeight
+        const remainingInputRect = await waitForStableRect(
+          'getKeyboardAdjustInputRect',
+          rect => rect.bottom <= remainingKeyboardTop + 3
+        )
+        expect(remainingInputRect).not.toBeNull()
+        expect(remainingInputRect.bottom).toBeLessThanOrEqual(remainingKeyboardTop + 3)
+      })
+    })
+  }
 
   it('focus with value', async () => {
     const value = 'hello uni-app x'

@@ -414,8 +414,17 @@
             v-if="data.keyboardHeightChangeEventDetail">{{ data.keyboardHeightChangeEventDetail }}</text>
         </view>
         <view class="input-wrapper">
-          <input class="uni-input" @keyboardheightchange="onKeyboardHeightChange"
+          <input id="keyboard-adjust-default-input" class="uni-input" @focus="onKeyboardAdjustDefaultFocus"
+            @blur="onKeyboardAdjustDefaultBlur"
+            @keyboardheightchange="onKeyboardHeightChange"
             :focus="data.focusedForKeyboardHeightChangeTest" />
+        </view>
+        <view v-if="data.showKeyboardAdjustTargetInput" class="input-wrapper">
+          <input id="keyboard-adjust-target-input" class="uni-input"
+            @focus="onKeyboardAdjustTargetFocus"
+            @blur="onKeyboardAdjustTargetBlur"
+            @keyboardheightchange="onKeyboardHeightChange"
+            :focus="data.keyboardAdjustTargetFocus" />
         </view>
       </view>
 
@@ -482,10 +491,16 @@
     onMaxLengthInputValue: string;
     inputMaxLengthFocus: boolean;
     inputPasswordValue: string;
-    inputFocusKeyBoardChangeValue: boolean;
     holdKeyboard: boolean;
     keyboardHeight: number;
+    keyboardHeightChangeCount: number;
     focusedForKeyboardHeightChangeTest: boolean;
+    keyboardAdjustDefaultFocusCount: number;
+    keyboardAdjustDefaultFocused: boolean;
+    keyboardAdjustTargetFocus: boolean;
+    keyboardAdjustTargetFocusCount: number;
+    keyboardAdjustTargetFocused: boolean;
+    showKeyboardAdjustTargetInput: boolean;
     demoValue: string;
     demoValue2: string;
     adjustPosition: boolean;
@@ -526,10 +541,16 @@
     onMaxLengthInputValue: "",
     inputMaxLengthFocus: false,
     inputPasswordValue: "cipher",
-    inputFocusKeyBoardChangeValue: true,
     holdKeyboard: false,
     keyboardHeight: 0,
+    keyboardHeightChangeCount: 0,
     focusedForKeyboardHeightChangeTest: false,
+    keyboardAdjustDefaultFocusCount: 0,
+    keyboardAdjustDefaultFocused: false,
+    keyboardAdjustTargetFocus: false,
+    keyboardAdjustTargetFocusCount: 0,
+    keyboardAdjustTargetFocused: false,
+    showKeyboardAdjustTargetInput: false,
     demoValue: '123',
     demoValue2: '123',
     adjustPosition: false,
@@ -546,7 +567,8 @@
   }
 
   const inputFocusKeyBoardChange = (e : UniInputKeyboardHeightChangeEvent) => {
-    data.inputFocusKeyBoardChangeValue = e.detail.height > 50
+    data.keyboardHeight = e.detail.height
+    data.keyboardHeightChangeCount++
   }
 
   const onMaxLengthInput = (event : UniInputEvent) => {
@@ -623,6 +645,27 @@
     console.log("键盘高度发生变化", JSON.stringify(event.detail));
     data.keyboardHeightChangeEventDetail = JSON.stringify(event.detail);
     data.keyboardHeight = event.detail.height;
+    data.keyboardHeightChangeCount++
+  }
+
+  const onKeyboardAdjustDefaultFocus = () => {
+    data.keyboardAdjustDefaultFocusCount++
+    data.keyboardAdjustDefaultFocused = true
+  }
+
+  const onKeyboardAdjustDefaultBlur = () => {
+    data.keyboardAdjustDefaultFocused = false
+    data.focusedForKeyboardHeightChangeTest = false
+  }
+
+  const onKeyboardAdjustTargetFocus = () => {
+    data.keyboardAdjustTargetFocusCount++
+    data.keyboardAdjustTargetFocused = true
+  }
+
+  const onKeyboardAdjustTargetBlur = () => {
+    data.keyboardAdjustTargetFocused = false
+    data.keyboardAdjustTargetFocus = false
   }
 
   const test_check_input_value = () : number => {
@@ -664,6 +707,24 @@
     }
   }
 
+  const getKeyboardAdjustInputRect = () : DOMRect | null => {
+    return uni.getElementById('keyboard-adjust-default-input')?.getBoundingClientRect() ?? null
+  }
+
+  const getKeyboardAdjustTargetInputRect = () : DOMRect | null => {
+    return uni.getElementById('keyboard-adjust-target-input')?.getBoundingClientRect() ?? null
+  }
+
+  const blurKeyboardAdjustInputsForTest = () => {
+    uni.getElementById('uni-input-focus')?.blur()
+    uni.getElementById('keyboard-adjust-default-input')?.blur()
+    uni.getElementById('keyboard-adjust-target-input')?.blur()
+  }
+
+  const hideKeyboardForTest = () => {
+    uni.hideKeyboard()
+  }
+
 
   const changeCheckedTypeNoneAndFocusCase = (checked : boolean) => {
     data.showTypeNoneAndFocusCase = checked
@@ -671,7 +732,11 @@
 
   defineExpose({
     data,
-    triggerFocusOrBlur
+    triggerFocusOrBlur,
+    getKeyboardAdjustInputRect,
+    getKeyboardAdjustTargetInputRect,
+    blurKeyboardAdjustInputsForTest,
+    hideKeyboardForTest
   })
 </script>
 
